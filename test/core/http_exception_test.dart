@@ -38,7 +38,25 @@ void main() {
       // Assert
       expect(ex.type, ErrorType.json);
       expect(ex.errors['foo'], 'bar');
+      expect(ex.statusCode, 400);
+      expect(ex.source, ExceptionSource.api);
+      expect(ex.context, isNull);
       expect(ex.toString(), contains('WgerHttpException'));
+    });
+
+    test('carries source and context when provided', () {
+      final resp = http.Response('{"error":"invalid"}', 200);
+
+      final ex = WgerHttpException(
+        resp,
+        source: ExceptionSource.powersync,
+        context: {'table': 'manager_routine', 'op': 'put'},
+      );
+
+      expect(ex.source, ExceptionSource.powersync);
+      expect(ex.statusCode, 200);
+      expect(ex.context, {'table': 'manager_routine', 'op': 'put'});
+      expect(ex.errors['error'], 'invalid');
     });
 
     test('falls back on malformed JSON', () {
@@ -102,6 +120,8 @@ void main() {
       // Assert
       expect(ex.type, ErrorType.json);
       expect(ex.errors, map);
+      expect(ex.source, ExceptionSource.api);
+      expect(ex.statusCode, isNull);
     });
   });
 }

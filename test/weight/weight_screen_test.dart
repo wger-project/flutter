@@ -17,14 +17,15 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/body_weight.dart';
-import 'package:wger/providers/nutrition.dart';
-import 'package:wger/providers/user.dart';
+import 'package:wger/providers/body_weight_repository.dart';
+import 'package:wger/providers/ingredient_repository.dart';
+import 'package:wger/providers/nutrition_repository.dart';
+import 'package:wger/providers/user_profile_repository.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/weight_screen.dart';
 import 'package:wger/widgets/measurements/charts.dart';
@@ -34,36 +35,44 @@ import '../../test_data/body_weight.dart';
 import '../../test_data/profile.dart';
 import 'weight_screen_test.mocks.dart';
 
-@GenerateMocks([BodyWeightProvider, UserProvider, NutritionPlansProvider])
+@GenerateMocks([
+  NutritionRepository,
+  IngredientRepository,
+  BodyWeightRepository,
+  UserProfileRepository,
+])
 void main() {
-  late MockBodyWeightProvider mockWeightProvider;
-  late MockUserProvider mockUserProvider;
-  late MockNutritionPlansProvider mockNutritionPlansProvider;
+  late MockNutritionRepository mockNutritionRepo;
+  late MockIngredientRepository mockIngredientRepo;
+  late MockUserProfileRepository mockUserProfileRepository;
+  MockBodyWeightRepository mockBodyWeightRepository = MockBodyWeightRepository();
 
   setUp(() {
-    mockWeightProvider = MockBodyWeightProvider();
-    when(mockWeightProvider.items).thenReturn(getWeightEntries());
+    mockNutritionRepo = MockNutritionRepository();
+    mockIngredientRepo = MockIngredientRepository();
+    when(mockIngredientRepo.getById(any)).thenAnswer((_) async => null);
 
-    mockUserProvider = MockUserProvider();
-    when(mockUserProvider.profile).thenReturn(tProfile1);
+    mockUserProfileRepository = MockUserProfileRepository();
+    when(
+      mockUserProfileRepository.watchDrift(),
+    ).thenAnswer((_) => Stream.value(tUserProfile1));
 
-    mockNutritionPlansProvider = MockNutritionPlansProvider();
-    when(mockNutritionPlansProvider.currentPlan).thenReturn(null);
-    when(mockNutritionPlansProvider.items).thenReturn([]);
+    mockBodyWeightRepository = MockBodyWeightRepository();
+    when(
+      mockBodyWeightRepository.watchAllDrift(),
+    ).thenAnswer((_) => Stream.value(getWeightEntries()));
+    when(
+      mockBodyWeightRepository.deleteLocalDrift(any),
+    ).thenAnswer((_) async => Future.value());
   });
 
   Widget createWeightScreen({locale = 'en'}) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider<NutritionPlansProvider>(
-          create: (ctx) => mockNutritionPlansProvider,
-        ),
-        ChangeNotifierProvider<BodyWeightProvider>(
-          create: (context) => mockWeightProvider,
-        ),
-        ChangeNotifierProvider<UserProvider>(
-          create: (context) => mockUserProvider,
-        ),
+    return ProviderScope(
+      overrides: [
+        bodyWeightRepositoryProvider.overrideWithValue(mockBodyWeightRepository),
+        userProfileRepositoryProvider.overrideWithValue(mockUserProfileRepository),
+        nutritionRepositoryProvider.overrideWithValue(mockNutritionRepo),
+        ingredientRepositoryProvider.overrideWithValue(mockIngredientRepo),
       ],
       child: MaterialApp(
         locale: Locale(locale),
@@ -77,6 +86,7 @@ void main() {
 
   testWidgets('Test the widgets on the body weight screen', (WidgetTester tester) async {
     await tester.pumpWidget(createWeightScreen());
+    await tester.pumpAndSettle();
 
     expect(find.text('Weight'), findsOneWidget);
     expect(find.byType(MeasurementChartWidgetFl), findsOneWidget);
@@ -87,6 +97,7 @@ void main() {
   testWidgets('Test deleting an item using the Delete button', (WidgetTester tester) async {
     // Arrange
     await tester.pumpWidget(createWeightScreen());
+    await tester.pumpAndSettle();
 
     // Act
     expect(find.byType(ListTile), findsNWidgets(2));
@@ -96,11 +107,14 @@ void main() {
     // Assert
     await tester.tap(find.text('Delete'));
     await tester.pumpAndSettle();
-    verify(mockWeightProvider.deleteEntry(1)).called(1);
+
+    // We would delete the entry from the DB
+    verify(mockBodyWeightRepository.deleteLocalDrift('1')).called(1);
   });
 
   testWidgets('Test the form on the body weight screen', (WidgetTester tester) async {
     await tester.pumpWidget(createWeightScreen());
+    await tester.pumpAndSettle();
 
     expect(find.byType(WeightForm), findsNothing);
     await tester.tap(find.byType(FloatingActionButton));
@@ -110,6 +124,7 @@ void main() {
 
   testWidgets('Tests the localization of dates - EN', (WidgetTester tester) async {
     await tester.pumpWidget(createWeightScreen());
+    await tester.pumpAndSettle();
     // these don't work because we only have 2 points, and to prevent overlaps we don't display their titles
     // expect(find.text('1/1'), findsOneWidget);
     //  expect(find.text('1/10'), findsOneWidget);
@@ -117,6 +132,7 @@ void main() {
 
   testWidgets('Tests the localization of dates - DE', (WidgetTester tester) async {
     await tester.pumpWidget(createWeightScreen(locale: 'de'));
+    await tester.pumpAndSettle();
     // these don't work because we only have 2 points, and to prevent overlaps we don't display their titles
     // expect(find.text('1.1.'), findsOneWidget);
     // expect(find.text('10.1.'), findsOneWidget);

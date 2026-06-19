@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -17,13 +17,14 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg_icons/flutter_svg_icons.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/nutrition/nutritional_plan.dart';
-import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/log_meals_screen.dart';
+import 'package:wger/widgets/core/object_gone_redirect.dart';
+import 'package:wger/widgets/core/progress_indicator.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/nutrition/nutritional_plan_detail.dart';
 
@@ -32,34 +33,28 @@ enum NutritionalPlanOptions {
   delete,
 }
 
-class NutritionalPlanScreen extends StatefulWidget {
+class NutritionalPlanScreen extends ConsumerWidget {
   const NutritionalPlanScreen();
 
   static const routeName = '/nutritional-plan-detail';
 
   @override
-  State<NutritionalPlanScreen> createState() => _NutritionalPlanScreenState();
-}
-
-class _NutritionalPlanScreenState extends State<NutritionalPlanScreen> {
-  Future<NutritionalPlan>? _planFuture;
-  late NutritionalPlan _nutritionalPlan;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (_planFuture == null) {
-      _nutritionalPlan = ModalRoute.of(context)!.settings.arguments as NutritionalPlan;
-      _planFuture = Provider.of<NutritionPlansProvider>(
-        context,
-        listen: false,
-      ).fetchAndSetPlanFull(_nutritionalPlan.id!);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final planId = ModalRoute.of(context)!.settings.arguments as String;
     const appBarForeground = Colors.white;
+
+    // Wait for the catalogue to stream in, then resolve the plan by id. A loaded
+    // state that no longer has it means the plan was deleted (here or on another
+    // device): leave, rather than render a phantom plan whose meal/diary writes
+    // would orphan against a missing plan.
+    final state = ref.watch(nutritionProvider).value;
+    if (state == null) {
+      return const Scaffold(body: Center(child: BoxedProgressIndicator()));
+    }
+    final nutritionalPlan = state.findByIdOrNull(planId);
+    if (nutritionalPlan == null) {
+      return objectGoneRedirect(context);
+    }
     return Scaffold(
       //appBar: getAppBar(nutritionalPlan),
       floatingActionButton: Row(
@@ -74,7 +69,7 @@ class _NutritionalPlanScreenState extends State<NutritionalPlanScreen> {
                 FormScreen.routeName,
                 arguments: FormScreenArguments(
                   AppLocalizations.of(context).logIngredient,
-                  getIngredientLogForm(_nutritionalPlan),
+                  getIngredientLogForm(nutritionalPlan),
                   hasListView: true,
                 ),
               );
@@ -91,7 +86,7 @@ class _NutritionalPlanScreenState extends State<NutritionalPlanScreen> {
             onPressed: () {
               Navigator.of(context).pushNamed(
                 LogMealsScreen.routeName,
-                arguments: _nutritionalPlan,
+                arguments: nutritionalPlan,
               );
             },
             child: const SvgIcon(
@@ -108,7 +103,7 @@ class _NutritionalPlanScreenState extends State<NutritionalPlanScreen> {
             pinned: true,
             iconTheme: const IconThemeData(color: appBarForeground),
             actions: [
-              if (!_nutritionalPlan.onlyLogging)
+              if (!nutritionalPlan.onlyLogging)
                 IconButton(
                   icon: const SvgIcon(
                     icon: SvgIconData('assets/icons/meal-add.svg'),
@@ -119,7 +114,7 @@ class _NutritionalPlanScreenState extends State<NutritionalPlanScreen> {
                       FormScreen.routeName,
                       arguments: FormScreenArguments(
                         AppLocalizations.of(context).addMeal,
-                        MealForm(_nutritionalPlan.id!),
+                        MealForm(nutritionalPlan.id!),
                       ),
                     );
                   },
@@ -134,16 +129,13 @@ class _NutritionalPlanScreenState extends State<NutritionalPlanScreen> {
                         FormScreen.routeName,
                         arguments: FormScreenArguments(
                           AppLocalizations.of(context).edit,
-                          PlanForm(_nutritionalPlan),
+                          PlanForm(nutritionalPlan),
                           hasListView: true,
                         ),
                       );
                       break;
                     case NutritionalPlanOptions.delete:
-                      Provider.of<NutritionPlansProvider>(
-                        context,
-                        listen: false,
-                      ).deletePlan(_nutritionalPlan.id!);
+                      ref.read(nutritionProvider.notifier).deletePlan(nutritionalPlan.id!);
                       Navigator.of(context).pop();
                       break;
                   }
@@ -172,32 +164,12 @@ class _NutritionalPlanScreenState extends State<NutritionalPlanScreen> {
             flexibleSpace: FlexibleSpaceBar(
               titlePadding: const EdgeInsets.fromLTRB(56, 0, 56, 16),
               title: Text(
-                _nutritionalPlan.getLabel(context),
+                nutritionalPlan.getLabel(context),
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(color: appBarForeground),
               ),
             ),
           ),
-          FutureBuilder(
-            future: _planFuture,
-            builder: (context, AsyncSnapshot<NutritionalPlan> snapshot) =>
-                snapshot.connectionState == ConnectionState.waiting
-                ? SliverList(
-                    delegate: SliverChildListDelegate(
-                      [
-                        const SizedBox(
-                          height: 200,
-                          child: Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                : Consumer<NutritionPlansProvider>(
-                    builder: (context, value, child) =>
-                        NutritionalPlanDetailWidget(_nutritionalPlan),
-                  ),
-          ),
+          NutritionalPlanDetailWidget(nutritionalPlan),
         ],
       ),
     );

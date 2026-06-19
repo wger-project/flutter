@@ -17,11 +17,11 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/helpers/locale.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/l10n/language_native_names.dart';
-import 'package:wger/providers/user.dart';
+import 'package:wger/providers/app_settings_notifier.dart';
 
 String _displayNameFor(Locale locale) {
   return languageNativeNames[encodeLocale(locale)] ??
@@ -29,13 +29,15 @@ String _displayNameFor(Locale locale) {
       encodeLocale(locale);
 }
 
-class SettingsLanguage extends StatelessWidget {
+class SettingsLanguage extends ConsumerWidget {
   const SettingsLanguage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final i18n = AppLocalizations.of(context);
-    final userProvider = Provider.of<UserProvider>(context);
+    final userLocale = ref.watch(
+      appSettingsProvider.select((s) => s.value?.userLocale),
+    );
 
     final supported = [...AppLocalizations.supportedLocales]
       ..sort((a, b) => _displayNameFor(a).compareTo(_displayNameFor(b)));
@@ -44,9 +46,9 @@ class SettingsLanguage extends StatelessWidget {
       title: Text(i18n.appLanguage),
       trailing: DropdownButton<Locale?>(
         key: const ValueKey('appLanguageDropdown'),
-        value: userProvider.userLocale,
+        value: userLocale,
         onChanged: (Locale? newValue) {
-          userProvider.setUserLocale(newValue);
+          ref.read(appSettingsProvider.notifier).setUserLocale(newValue);
         },
         items: <DropdownMenuItem<Locale?>>[
           DropdownMenuItem<Locale?>(

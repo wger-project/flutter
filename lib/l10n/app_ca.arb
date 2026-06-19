@@ -917,7 +917,6 @@
     "errorViewDetails": "Detalls tècnics",
     "applicationLogs": "Registres de l'aplicació",
     "errorCouldNotConnectToServer": "No s'ha pogut connectar al servidor",
-    "errorCouldNotConnectToServerDetails": "L'aplicació no s'ha pogut connectar al servidor. Comprova la teva connexió a internet, o la URL del servidor i torna-ho a intentar. Si el problema persisteix, contacta amb l'administrador.",
     "copyToClipboard": "Copia al porta-retalls",
     "min": "Mínim",
     "max": "Màxim",

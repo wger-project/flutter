@@ -49,6 +49,23 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <!-- app_link_router (app_links) is the sole consumer of the deep link
+                 below. Disable Flutter's built-in deep linking so the engine does
+                 not also push the callback URL as a named route, which matches
+                 nothing and throws in onUnknownRoute. -->
+            <meta-data
+                android:name="flutter_deeplinking_enabled"
+                android:value="false" />
+
+            <!-- Web-handoff deep link: the server redirects to wger://app-auth#token=…
+                 after a browser login; app_link_router consumes the URI. -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="wger" android:host="app-auth" />
+            </intent-filter>
         </activity>
 
 

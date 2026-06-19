@@ -25,7 +25,6 @@ import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/session.dart';
-import 'package:wger/models/workouts/session_api.dart';
 import 'package:wger/models/workouts/set_config_data.dart';
 import 'package:wger/models/workouts/slot.dart';
 import 'package:wger/models/workouts/slot_data.dart';
@@ -46,7 +45,8 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
   final testExercises = exercises ?? getTestExercises();
 
   final log1 = Log(
-    id: 1,
+    id: '1',
+    exerciseId: 1,
     iteration: 2,
     slotEntryId: 3,
     weight: 10,
@@ -54,14 +54,14 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
     date: DateTime(2021, 5, 1),
     repetitions: 10,
     routineId: 1,
-    exerciseId: testExercises[0].id!,
   );
-  log1.exerciseBase = testExercises[0];
+  log1.exercise = testExercises[0];
   log1.weightUnit = testWeightUnit1;
   log1.repetitionUnit = testRepetitionUnit1;
 
   final log2 = Log(
-    id: 2,
+    id: '2',
+    exerciseId: 1,
     iteration: 4,
     slotEntryId: 1,
     weight: 10,
@@ -69,14 +69,14 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
     date: DateTime(2021, 5, 1),
     repetitions: 12,
     routineId: 1,
-    exerciseId: testExercises[0].id!,
   );
-  log2.exerciseBase = testExercises[0];
+  log2.exercise = testExercises[0];
   log2.weightUnit = testWeightUnit1;
   log2.repetitionUnit = testRepetitionUnit1;
 
   final log3 = Log(
-    id: 3,
+    id: '3',
+    exerciseId: 2,
     iteration: 5,
     slotEntryId: 1,
     weight: 50,
@@ -84,35 +84,30 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
     date: DateTime(2021, 5, 2),
     repetitions: 8,
     routineId: 1,
-    exerciseId: testExercises[1].id!,
   );
-  log3.exerciseBase = testExercises[1];
+  log3.exercise = testExercises[1];
   log3.weightUnit = testWeightUnit1;
   log3.repetitionUnit = testRepetitionUnit1;
 
-  final session1 = WorkoutSessionApi(
-    session: WorkoutSession(
-      id: 1,
-      routineId: 1,
-      date: DateTime(2021, 5, 1),
-      impression: 3,
-      notes: 'This is a note',
-      timeStart: const TimeOfDay(hour: 10, minute: 0),
-      timeEnd: const TimeOfDay(hour: 12, minute: 34),
-    ),
+  final session1 = WorkoutSession(
+    id: '1',
+    routineId: 1,
+    date: DateTime(2021, 5, 1),
+    impression: WorkoutImpression.good,
+    notes: 'This is a note',
+    timeStart: const TimeOfDay(hour: 10, minute: 0),
+    timeEnd: const TimeOfDay(hour: 12, minute: 34),
     logs: [log1, log2],
   );
 
-  final session2 = WorkoutSessionApi(
-    session: WorkoutSession(
-      id: 2,
-      routineId: 1,
-      date: DateTime(2021, 5, 2),
-      impression: 1,
-      notes: 'This is a note',
-      timeStart: const TimeOfDay(hour: 6, minute: 12),
-      timeEnd: const TimeOfDay(hour: 8, minute: 1),
-    ),
+  final session2 = WorkoutSession(
+    id: '2',
+    routineId: 1,
+    date: DateTime(2021, 5, 2),
+    impression: WorkoutImpression.bad,
+    notes: 'This is a note',
+    timeStart: const TimeOfDay(hour: 6, minute: 12),
+    timeEnd: const TimeOfDay(hour: 8, minute: 1),
     logs: [log3],
   );
 
@@ -154,7 +149,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
     slotId: 2,
     type: SlotEntryType.normal,
     order: 1,
-    exerciseId: 8,
+    exerciseId: testExercises[4].id,
     repetitionUnitId: 1,
     repetitionRounding: 0.25,
     weightUnitId: 1,
@@ -176,7 +171,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
     slotId: 2,
     type: SlotEntryType.normal,
     order: 1,
-    exerciseId: 8,
+    exerciseId: testExercises[5].id,
     repetitionUnitId: 1,
     repetitionRounding: 0.25,
     weightUnitId: 1,
@@ -221,7 +216,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
         SlotData(
           comment: 'Make sure to warm up',
           isSuperset: false,
-          exerciseIds: [testExercises[0].id!],
+          exerciseIds: [testExercises[0].id],
           setConfigs: [
             SetConfigData(
               exerciseId: 1,
@@ -238,7 +233,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
               textRepr: '3x100kg',
             ),
             SetConfigData(
-              exerciseId: testExercises[0].id!,
+              exerciseId: testExercises[0].id,
               exercise: testExercises[0],
               slotEntryId: 1,
               nrOfSets: 1,
@@ -252,7 +247,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
               textRepr: '3x100kg',
             ),
             SetConfigData(
-              exerciseId: testExercises[0].id!,
+              exerciseId: testExercises[0].id,
               exercise: testExercises[0],
               slotEntryId: 1,
               nrOfSets: 1,
@@ -270,10 +265,10 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
         SlotData(
           comment: 'Side rises',
           isSuperset: false,
-          exerciseIds: [testExercises[5].id!],
+          exerciseIds: [testExercises[5].id],
           setConfigs: [
             SetConfigData(
-              exerciseId: testExercises[5].id!,
+              exerciseId: testExercises[5].id,
               exercise: testExercises[5],
               slotEntryId: 1,
               nrOfSets: 1,
@@ -287,7 +282,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
               textRepr: '12x10kg',
             ),
             SetConfigData(
-              exerciseId: testExercises[5].id!,
+              exerciseId: testExercises[5].id,
               exercise: testExercises[5],
               slotEntryId: 1,
               nrOfSets: 1,
@@ -301,7 +296,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
               textRepr: '12x10kg',
             ),
             SetConfigData(
-              exerciseId: testExercises[5].id!,
+              exerciseId: testExercises[5].id,
               exercise: testExercises[5],
               slotEntryId: 1,
               nrOfSets: 1,
@@ -327,10 +322,10 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
         SlotData(
           comment: 'Squats',
           isSuperset: false,
-          exerciseIds: [testExercises[4].id!],
+          exerciseIds: [testExercises[4].id],
           setConfigs: [
             SetConfigData(
-              exerciseId: 8,
+              exerciseId: testExercises[4].id,
               exercise: testExercises[4],
               slotEntryId: 1,
               nrOfSets: 1,
@@ -344,7 +339,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
               textRepr: '3x100kg',
             ),
             SetConfigData(
-              exerciseId: testExercises[4].id!,
+              exerciseId: testExercises[4].id,
               exercise: testExercises[4],
               slotEntryId: 1,
               nrOfSets: 1,
@@ -358,7 +353,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
               textRepr: '3x100kg',
             ),
             SetConfigData(
-              exerciseId: testExercises[4].id!,
+              exerciseId: testExercises[4].id,
               exercise: testExercises[4],
               slotEntryId: 1,
               nrOfSets: 1,
@@ -437,10 +432,10 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
         SlotData(
           comment: 'Make sure to go deep. Slow down, and push through your heels',
           isSuperset: false,
-          exerciseIds: [8],
+          exerciseIds: [testExercises[4].id],
           setConfigs: [
             SetConfigData(
-              exerciseId: 8,
+              exerciseId: testExercises[4].id,
               exercise: testExercises[4],
               slotEntryId: 1,
               nrOfSets: 4,
@@ -486,6 +481,7 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
     sessions: [session1, session2],
     dayData: dayDataDisplay,
     dayDataGym: dayDataGym,
+    isHydrated: true,
   );
 
   return routine;

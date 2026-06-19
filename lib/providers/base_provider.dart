@@ -23,8 +23,9 @@ import 'dart:math' as math;
 
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
-import 'package:wger/providers/auth.dart';
+import 'package:wger/providers/auth_notifier.dart' show getAppNameHeader;
 import 'package:wger/providers/helpers.dart';
 
 /// default timeout for GET requests
@@ -33,26 +34,30 @@ const DEFAULT_TIMEOUT = Duration(seconds: 15);
 /// Base provider class.
 ///
 /// Provides a couple of comfort functions so we avoid a bit of boilerplate.
+/// Holds the [serverUrl] + app version snapshot and a [client] that already
+/// handles authentication for every outgoing request (see `AuthHttpClient`).
+/// Building the `Authorization` header is therefore *not* a responsibility
+/// of this class anymore, the client owns it.
 class WgerBaseProvider {
   final _logger = Logger('WgerBaseProvider');
 
-  AuthProvider auth;
+  final String? serverUrl;
+  final PackageInfo? applicationVersion;
   late http.Client client;
 
-  WgerBaseProvider(this.auth, [http.Client? client]) {
-    auth = auth;
+  WgerBaseProvider({this.serverUrl, this.applicationVersion, http.Client? client}) {
     this.client = client ?? http.Client();
   }
 
-  Map<String, String> getDefaultHeaders({bool includeAuth = false, String? language}) {
+  String getAppNameHeaderValue() => getAppNameHeader(applicationVersion);
+
+  /// Default non-auth headers for outgoing requests. The `Authorization`
+  /// header is injected by the underlying `AuthHttpClient`
+  Map<String, String> getDefaultHeaders({String? language}) {
     final out = {
       HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
-      HttpHeaders.userAgentHeader: auth.getAppNameHeader(),
+      HttpHeaders.userAgentHeader: getAppNameHeaderValue(),
     };
-
-    if (includeAuth) {
-      out[HttpHeaders.authorizationHeader] = 'Token ${auth.token}';
-    }
 
     if (language != null) {
       out[HttpHeaders.acceptLanguageHeader] = language;
@@ -63,8 +68,11 @@ class WgerBaseProvider {
 
   /// Helper function to make a URL.
   Uri makeUrl(String path, {int? id, String? objectMethod, Map<String, dynamic>? query}) {
-    return makeUri(auth.serverUrl!, path, id, objectMethod, query);
+    return makeUri(serverUrl!, path, id: id, objectMethod: objectMethod, query: query);
   }
+
+  /// Builds a `/allauth/app/v1/<path>` URL for the headless API.
+  Uri makeHeadlessUrl(String path) => makeHeadlessUri(serverUrl!, path);
 
   /// Fetch and retrieve the overview list of objects, returns the JSON parsed response
   /// with a simple retry mechanism for transient errors.
@@ -90,7 +98,7 @@ class WgerBaseProvider {
     while (true) {
       try {
         final response = await client
-            .get(uri, headers: getDefaultHeaders(includeAuth: true, language: language))
+            .get(uri, headers: getDefaultHeaders(language: language))
             .timeout(timeout);
 
         if (response.statusCode >= 400) {
@@ -147,7 +155,7 @@ class WgerBaseProvider {
   Future<Map<String, dynamic>> post(Map<String, dynamic> data, Uri uri) async {
     final response = await client.post(
       uri,
-      headers: getDefaultHeaders(includeAuth: true),
+      headers: getDefaultHeaders(),
       body: json.encode(data),
     );
 
@@ -159,11 +167,22 @@ class WgerBaseProvider {
     return json.decode(response.body);
   }
 
+  /// PUTs to the given URI.
+  Future<Map<String, dynamic>> put(Map<String, dynamic> data, Uri uri) async {
+    final response = await client.put(uri, headers: getDefaultHeaders(), body: json.encode(data));
+
+    if (response.statusCode >= 400) {
+      throw WgerHttpException(response);
+    }
+
+    return response.body.isEmpty ? {} : json.decode(response.body);
+  }
+
   /// PATCHEs an existing object
   Future<Map<String, dynamic>> patch(Map<String, dynamic> data, Uri uri) async {
     final response = await client.patch(
       uri,
-      headers: getDefaultHeaders(includeAuth: true),
+      headers: getDefaultHeaders(),
       body: json.encode(data),
     );
 
@@ -181,7 +200,7 @@ class WgerBaseProvider {
 
     final response = await client.delete(
       deleteUrl,
-      headers: getDefaultHeaders(includeAuth: true),
+      headers: getDefaultHeaders(),
     );
 
     // Something wrong with our request

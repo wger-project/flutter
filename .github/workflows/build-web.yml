@@ -1,0 +1,49 @@
+name: Build Web
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Branch/Tag to build'
+        required: true
+        default: 'master'
+  workflow_call:
+    inputs:
+      ref:
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  # Builds two a default JavaScript build and a WebAssembly one
+  build_web:
+    name: Web
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout application
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.ref }}
+
+      - name: Common flutter setup
+        uses: ./.github/actions/flutter-common
+
+      - name: Build web (JavaScript)
+        run: flutter build web --release
+
+      - name: Package JavaScript build
+        run: tar -zcvf web.tar.gz -C build web
+
+      - name: Build web (WebAssembly)
+        run: flutter build web --release --wasm
+
+      - name: Package WebAssembly build
+        run: tar -zcvf web-wasm.tar.gz -C build web
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: builds-web
+          path: |
+            web.tar.gz
+            web-wasm.tar.gz

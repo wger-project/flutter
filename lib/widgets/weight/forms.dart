@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -17,18 +17,19 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/number_input.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/body_weight/weight_entry.dart';
-import 'package:wger/providers/body_weight.dart';
+import 'package:wger/providers/body_weight_notifier.dart';
+import 'package:wger/widgets/core/datetime_input.dart';
+import 'package:wger/widgets/core/form_submit_button.dart';
 
-class WeightForm extends StatelessWidget {
+class WeightForm extends riverpod.ConsumerWidget {
   final _form = GlobalKey<FormState>();
-  final dateController = TextEditingController(text: '');
-  final timeController = TextEditingController(text: '');
   final weightController = TextEditingController(text: '');
 
   final WeightEntry _weightEntry;
@@ -37,52 +38,24 @@ class WeightForm extends StatelessWidget {
     : _weightEntry = weightEntry ?? WeightEntry(date: DateTime.now());
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, riverpod.WidgetRef ref) {
     final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
-    final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
-    final timeFormat = DateFormat.Hm(Localizations.localeOf(context).languageCode);
 
     if (weightController.text.isEmpty && _weightEntry.weight != 0) {
       weightController.text = numberFormat.format(_weightEntry.weight);
-    }
-    if (dateController.text.isEmpty) {
-      dateController.text = dateFormat.format(_weightEntry.date);
-    }
-    if (timeController.text.isEmpty) {
-      timeController.text = TimeOfDay.fromDateTime(_weightEntry.date).format(context);
     }
 
     return Form(
       key: _form,
       child: Column(
         children: [
-          TextFormField(
+          DateInputWidget(
             key: const Key('dateInput'),
-            // Stop keyboard from appearing
-            readOnly: true,
-            decoration: InputDecoration(
-              labelText: AppLocalizations.of(context).date,
-              suffixIcon: const Icon(
-                Icons.calendar_today,
-                key: Key('calendarIcon'),
-              ),
-            ),
-            enableInteractiveSelection: false,
-            controller: dateController,
-            onTap: () async {
-              final pickedDate = await showDatePicker(
-                context: context,
-                initialDate: _weightEntry.date,
-                firstDate: DateTime(DateTime.now().year - 10),
-                lastDate: DateTime.now(),
-              );
-
-              if (pickedDate != null) {
-                dateController.text = dateFormat.format(pickedDate);
-              }
-            },
-            onSaved: (newValue) {
-              final date = dateFormat.parse(newValue!);
+            value: _weightEntry.date,
+            labelText: AppLocalizations.of(context).date,
+            firstDate: DateTime(DateTime.now().year - 10),
+            lastDate: DateTime.now(),
+            onChanged: (date) {
               _weightEntry.date = _weightEntry.date.copyWith(
                 year: date.year,
                 month: date.month,
@@ -90,35 +63,15 @@ class WeightForm extends StatelessWidget {
               );
             },
           ),
-          TextFormField(
+          TimeInputWidget(
             key: const Key('timeInput'),
-            // Stop keyboard from appearing
-            readOnly: true,
-            decoration: InputDecoration(
-              labelText: AppLocalizations.of(context).time,
-              suffixIcon: const Icon(
-                Icons.access_time_outlined,
-                key: Key('clockIcon'),
-              ),
-            ),
-            enableInteractiveSelection: false,
-            controller: timeController,
-            onTap: () async {
-              final pickedTime = await showTimePicker(
-                context: context,
-                initialTime: TimeOfDay.fromDateTime(_weightEntry.date),
-              );
-
-              if (pickedTime != null) {
-                timeController.text = pickedTime.format(context);
-              }
-            },
-            onSaved: (newValue) {
-              final time = timeFormat.parse(newValue!);
+            value: TimeOfDay.fromDateTime(_weightEntry.date),
+            labelText: AppLocalizations.of(context).time,
+            onChanged: (time) {
               _weightEntry.date = _weightEntry.date.copyWith(
                 hour: time.hour,
                 minute: time.minute,
-                second: time.second,
+                second: 0,
               );
             },
           ),
@@ -135,20 +88,30 @@ class WeightForm extends StatelessWidget {
                     key: const Key('quickMinus'),
                     icon: const FaIcon(FontAwesomeIcons.circleMinus),
                     onPressed: () {
-                      try {
-                        final newValue = numberFormat.parse(weightController.text) - 1;
-                        weightController.text = numberFormat.format(newValue);
-                      } on FormatException {}
+                      final parsed = numberFormat.tryParse(weightController.text);
+                      if (parsed == null) {
+                        return;
+                      }
+                      final newValue = parsed - WeightEntry.stepperBig;
+                      if (newValue < WeightEntry.minValue) {
+                        return;
+                      }
+                      weightController.text = numberFormat.format(newValue);
                     },
                   ),
                   IconButton(
                     key: const Key('quickMinusSmall'),
                     icon: const FaIcon(FontAwesomeIcons.minus),
                     onPressed: () {
-                      try {
-                        final newValue = numberFormat.parse(weightController.text) - 0.1;
-                        weightController.text = numberFormat.format(newValue);
-                      } on FormatException {}
+                      final parsed = numberFormat.tryParse(weightController.text);
+                      if (parsed == null) {
+                        return;
+                      }
+                      final newValue = parsed - WeightEntry.stepperSmall;
+                      if (newValue < WeightEntry.minValue) {
+                        return;
+                      }
+                      weightController.text = numberFormat.format(newValue);
                     },
                   ),
                 ],
@@ -160,20 +123,30 @@ class WeightForm extends StatelessWidget {
                     key: const Key('quickPlusSmall'),
                     icon: const FaIcon(FontAwesomeIcons.plus),
                     onPressed: () {
-                      try {
-                        final newValue = numberFormat.parse(weightController.text) + 0.1;
-                        weightController.text = numberFormat.format(newValue);
-                      } on FormatException {}
+                      final parsed = numberFormat.tryParse(weightController.text);
+                      if (parsed == null) {
+                        return;
+                      }
+                      final newValue = parsed + WeightEntry.stepperSmall;
+                      if (newValue > WeightEntry.maxValue) {
+                        return;
+                      }
+                      weightController.text = numberFormat.format(newValue);
                     },
                   ),
                   IconButton(
                     key: const Key('quickPlus'),
                     icon: const FaIcon(FontAwesomeIcons.circlePlus),
                     onPressed: () {
-                      try {
-                        final newValue = numberFormat.parse(weightController.text) + 1;
-                        weightController.text = numberFormat.format(newValue);
-                      } on FormatException {}
+                      final parsed = numberFormat.tryParse(weightController.text);
+                      if (parsed == null) {
+                        return;
+                      }
+                      final newValue = parsed + WeightEntry.stepperBig;
+                      if (newValue > WeightEntry.maxValue) {
+                        return;
+                      }
+                      weightController.text = numberFormat.format(newValue);
                     },
                   ),
                 ],
@@ -181,25 +154,28 @@ class WeightForm extends StatelessWidget {
             ),
             controller: weightController,
             keyboardType: textInputTypeDecimal,
+            inputFormatters: [LocalizedDecimalInputFormatter(numberFormat.symbols.DECIMAL_SEP)],
             onSaved: (newValue) {
               _weightEntry.weight = numberFormat.parse(newValue!);
             },
             validator: (value) {
+              final i18n = AppLocalizations.of(context);
               if (value!.isEmpty) {
-                return AppLocalizations.of(context).enterValue;
+                return i18n.enterValue;
               }
-
-              try {
-                numberFormat.parse(value);
-              } catch (error) {
-                return AppLocalizations.of(context).enterValidNumber;
+              final parsed = numberFormat.tryParse(value);
+              if (parsed == null) {
+                return i18n.enterValidNumber;
+              }
+              if (parsed < WeightEntry.minValue || parsed > WeightEntry.maxValue) {
+                return i18n.formMinMaxValues(WeightEntry.minValue, WeightEntry.maxValue);
               }
               return null;
             },
           ),
-          ElevatedButton(
+          FormSubmitButton(
             key: const Key(SUBMIT_BUTTON_KEY_NAME),
-            child: Text(AppLocalizations.of(context).save),
+            label: AppLocalizations.of(context).save,
             onPressed: () async {
               // Validate and save the current values to the weightEntry
               final isValid = _form.currentState!.validate();
@@ -209,10 +185,10 @@ class WeightForm extends StatelessWidget {
               _form.currentState!.save();
 
               // Save the entry on the server
-              final provider = Provider.of<BodyWeightProvider>(context, listen: false);
+              final notifier = ref.read(weightEntryProvider.notifier);
               _weightEntry.id == null
-                  ? await provider.addEntry(_weightEntry)
-                  : await provider.editEntry(_weightEntry);
+                  ? await notifier.addEntry(_weightEntry)
+                  : await notifier.updateEntry(_weightEntry);
 
               if (context.mounted) {
                 Navigator.of(context).pop();

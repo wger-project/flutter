@@ -23,7 +23,7 @@ class PreferenceHelper {
   /// SharedPreferences is migrated to SharedPreferencesAsync. This migration
   /// only happens once, as checked by the migrationCompletedKey.
   ///
-  /// [migrationCompletedKey] is used to track if the migration has been
+  /// `migrationCompletedKey` is used to track if the migration has been
   /// completed.
   Future<void> migrationSupportFunctionForSharedPreferences() async {
     const SharedPreferencesOptions sharedPreferencesOptions = SharedPreferencesOptions();

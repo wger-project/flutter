@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -17,27 +17,32 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/helpers/measurements.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/body_weight.dart';
-import 'package:wger/providers/nutrition.dart';
-import 'package:wger/providers/user.dart';
+import 'package:wger/providers/body_weight_notifier.dart';
+import 'package:wger/providers/nutrition_notifier.dart';
+import 'package:wger/providers/user_profile_notifier.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
+import 'package:wger/widgets/core/async_value_widget.dart';
+import 'package:wger/widgets/core/confirm_delete_dialog.dart';
 import 'package:wger/widgets/core/text_prompt.dart';
 import 'package:wger/widgets/measurements/charts.dart';
 
-class NutritionalPlansList extends StatelessWidget {
-  final NutritionPlansProvider _nutritionProvider;
-
-  const NutritionalPlansList(this._nutritionProvider);
+class NutritionalPlansList extends riverpod.ConsumerWidget {
+  const NutritionalPlansList({super.key});
 
   /// Builds the weight change information for a nutritional plan period
-  Widget _buildWeightChangeInfo(BuildContext context, DateTime startDate, DateTime? endDate) {
-    final provider = Provider.of<BodyWeightProvider>(context, listen: false);
+  Widget _buildWeightChangeInfo(
+    BuildContext context,
+    riverpod.WidgetRef ref,
+    DateTime startDate,
+    DateTime? endDate,
+  ) {
+    final entriesList = ref.watch(weightEntryProvider).asData?.value ?? [];
 
-    final entriesAll = provider.items.map((e) => MeasurementChartEntry(e.weight, e.date)).toList();
+    final entriesAll = entriesList.map((e) => MeasurementChartEntry(e.weight, e.date)).toList();
     final entries7dAvg = moving7dAverage(entriesAll).whereDateWithInterpolation(startDate, endDate);
     if (entries7dAvg.length < 2) {
       return const SizedBox.shrink();
@@ -51,9 +56,14 @@ class NutritionalPlansList extends StatelessWidget {
     // Format the weight change text and determine color
     final String weightChangeText;
     final Color weightChangeColor;
-    final profile = context.read<UserProvider>().profile;
+    final profile = ref.watch(userProfileProvider).value;
+    if (profile == null) {
+      // Profile not yet loaded, skip the weight-change row entirely. The
+      // widget will rebuild with the value once available.
+      return const SizedBox.shrink();
+    }
 
-    final unit = weightUnit(profile!.isMetric, context);
+    final unit = weightUnit(profile.isMetric, context);
 
     if (weightDifference > 0) {
       weightChangeText = '+${weightDifference.toStringAsFixed(1)} $unit';
@@ -87,104 +97,74 @@ class NutritionalPlansList extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: () => _nutritionProvider.fetchAndSetAllPlansSparse(),
-      child: _nutritionProvider.items.isEmpty
-          ? const TextPrompt()
-          : ListView.builder(
-              padding: const EdgeInsets.all(10.0),
-              itemCount: _nutritionProvider.items.length,
-              itemBuilder: (context, index) {
-                final currentPlan = _nutritionProvider.items[index];
-                return Card(
-                  child: ListTile(
-                    onTap: () {
-                      Navigator.of(context).pushNamed(
-                        NutritionalPlanScreen.routeName,
-                        arguments: currentPlan,
-                      );
-                    },
-                    title: Text(currentPlan.getLabel(context)),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          currentPlan.endDate != null
-                              ? 'from ${DateFormat.yMd(
-                                  Localizations.localeOf(context).languageCode,
-                                ).format(currentPlan.startDate)} to ${DateFormat.yMd(
-                                  Localizations.localeOf(context).languageCode,
-                                ).format(currentPlan.endDate!)}'
-                              : 'from ${DateFormat.yMd(
-                                  Localizations.localeOf(context).languageCode,
-                                ).format(currentPlan.startDate)} (open ended)',
-                        ),
-                        _buildWeightChangeInfo(context, currentPlan.startDate, currentPlan.endDate),
-                      ],
-                    ),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const VerticalDivider(),
-                        IconButton(
-                          icon: const Icon(Icons.delete),
-                          tooltip: AppLocalizations.of(context).delete,
-                          onPressed: () async {
-                            // Delete the plan from DB
-                            await showDialog(
-                              context: context,
-                              builder: (BuildContext contextDialog) {
-                                return AlertDialog(
-                                  content: Text(
-                                    AppLocalizations.of(
-                                      context,
-                                    ).confirmDelete(currentPlan.description),
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                      child: Text(
-                                        MaterialLocalizations.of(context).cancelButtonLabel,
-                                      ),
-                                      onPressed: () => Navigator.of(contextDialog).pop(),
-                                    ),
-                                    TextButton(
-                                      child: Text(
-                                        AppLocalizations.of(context).delete,
-                                        style: TextStyle(
-                                          color: Theme.of(context).colorScheme.error,
-                                        ),
-                                      ),
-                                      onPressed: () {
-                                        // Confirmed, delete the plan
-                                        _nutritionProvider.deletePlan(currentPlan.id!);
+  Widget build(BuildContext context, riverpod.WidgetRef ref) {
+    final plansAsync = ref.watch(nutritionProvider);
+    final notifier = ref.read(nutritionProvider.notifier);
 
-                                        // Close the popup
-                                        Navigator.of(contextDialog).pop();
-
-                                        // and inform the user
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          SnackBar(
-                                            content: Text(
-                                              AppLocalizations.of(context).successfullyDeleted,
-                                              textAlign: TextAlign.center,
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          },
-                        ),
-                      ],
+    return AsyncValueWidget<NutritionState>(
+      value: plansAsync,
+      loggerName: 'NutritionalPlansList',
+      data: (nutritionState) {
+        final plans = nutritionState.plans;
+        if (plans.isEmpty) {
+          return const TextPrompt();
+        }
+        return ListView.builder(
+          padding: const EdgeInsets.all(10.0),
+          itemCount: plans.length,
+          itemBuilder: (context, index) {
+            final currentPlan = plans[index];
+            return Card(
+              child: ListTile(
+                onTap: () {
+                  Navigator.of(context).pushNamed(
+                    NutritionalPlanScreen.routeName,
+                    arguments: currentPlan.id,
+                  );
+                },
+                title: Text(currentPlan.getLabel(context)),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      currentPlan.endDate != null
+                          ? 'from ${DateFormat.yMd(
+                              Localizations.localeOf(context).languageCode,
+                            ).format(currentPlan.startDate)} to ${DateFormat.yMd(
+                              Localizations.localeOf(context).languageCode,
+                            ).format(currentPlan.endDate!)}'
+                          : 'from ${DateFormat.yMd(
+                              Localizations.localeOf(context).languageCode,
+                            ).format(currentPlan.startDate)} (open ended)',
                     ),
-                  ),
-                );
-              },
-            ),
+                    _buildWeightChangeInfo(
+                      context,
+                      ref,
+                      currentPlan.startDate,
+                      currentPlan.endDate,
+                    ),
+                  ],
+                ),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const VerticalDivider(),
+                    IconButton(
+                      icon: const Icon(Icons.delete),
+                      tooltip: AppLocalizations.of(context).delete,
+                      onPressed: () => showConfirmDeleteDialog(
+                        context,
+                        itemName: currentPlan.description,
+                        onConfirm: () => notifier.deletePlan(currentPlan.id!),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }

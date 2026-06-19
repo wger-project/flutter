@@ -21,7 +21,7 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 /// Screen shown when the connected server's version is below the minimum
-/// required by this build of the app. Mirrors [UpdateAppScreen] but surfaces
+/// required by this build of the app. Mirrors `UpdateAppScreen` but surfaces
 /// to the user that they need to ask their server administrator to upgrade,
 /// rather than updating the app itself.
 class UpdateServerScreen extends StatelessWidget {

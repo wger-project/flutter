@@ -17,38 +17,48 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/exercises.dart';
+import 'package:wger/providers/exercise_filters_notifier.dart';
+import 'package:wger/providers/network_provider.dart';
 import 'package:wger/screens/add_exercise_screen.dart';
 
 import 'filter_modal.dart';
 
-class FilterRow extends StatefulWidget {
+class FilterRow extends ConsumerStatefulWidget {
   const FilterRow({super.key});
 
   @override
   _FilterRowState createState() => _FilterRowState();
 }
 
-class _FilterRowState extends State<FilterRow> {
+class _FilterRowState extends ConsumerState<FilterRow> {
   late final TextEditingController _exerciseNameController;
 
   @override
   void initState() {
     super.initState();
 
-    _exerciseNameController = TextEditingController()
+    final initialSearch = ref.read(exerciseListFiltersProvider).filters.searchTerm;
+
+    _exerciseNameController = TextEditingController(text: initialSearch)
       ..addListener(() {
-        final provider = Provider.of<ExercisesProvider>(context, listen: false);
-        if (provider.filters!.searchTerm != _exerciseNameController.text) {
-          provider.setFilters(provider.filters!.copyWith(searchTerm: _exerciseNameController.text));
+        final text = _exerciseNameController.text;
+        final currentFilters = ref.read(exerciseListFiltersProvider).filters;
+        if (currentFilters.searchTerm != text) {
+          ref
+              .read(exerciseListFiltersProvider.notifier)
+              .setFilters(
+                currentFilters.copyWith(searchTerm: text),
+                Localizations.localeOf(context).languageCode,
+              );
         }
       });
   }
 
   @override
   Widget build(BuildContext context) {
+    final isOnline = ref.watch(networkStatusProvider);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 15),
       child: Row(
@@ -87,7 +97,21 @@ class _FilterRowState extends State<FilterRow> {
                   return [
                     PopupMenuItem<ExerciseMoreOption>(
                       value: ExerciseMoreOption.ADD_EXERCISE,
-                      child: Text(AppLocalizations.of(context).contributeExercise),
+                      enabled: isOnline,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(AppLocalizations.of(context).contributeExercise),
+                          if (!isOnline) ...[
+                            const SizedBox(width: 8),
+                            Icon(
+                              Icons.cloud_off,
+                              size: 16,
+                              color: Theme.of(context).colorScheme.outline,
+                            ),
+                          ],
+                        ],
+                      ),
                     ),
                   ];
                 },

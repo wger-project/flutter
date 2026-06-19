@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -32,13 +32,29 @@ class IngredientImage {
   @JsonKey(required: true, name: 'ingredient_id')
   final int ingredientId;
 
-  /// URL of the image on the server
-  @JsonKey(required: true, name: 'image')
-  final String url;
+  /// Relative path of the image on the server (Django `ImageField`)
+  @JsonKey(required: true)
+  final String image;
 
   /// Size in bytes
   @JsonKey(required: true)
   final int size;
+
+  /// Image width in pixels
+  @JsonKey(required: true)
+  final int width;
+
+  /// Image height in pixels
+  @JsonKey(required: true)
+  final int height;
+
+  /// Server creation timestamp
+  @JsonKey(required: true)
+  final DateTime created;
+
+  /// Server last-modification timestamp
+  @JsonKey(required: true, name: 'last_update')
+  final DateTime lastUpdate;
 
   // License information
 
@@ -46,9 +62,9 @@ class IngredientImage {
   @JsonKey(required: true, name: 'license')
   final int licenseId;
 
-  /// Author(s)
+  /// Author(s), may be null on the server (`TextField(null=True)`)
   @JsonKey(required: true, name: 'license_author')
-  final String author;
+  final String? author;
 
   /// Author profile, if available
   @JsonKey(required: true, name: 'license_author_url')
@@ -70,8 +86,12 @@ class IngredientImage {
     required this.id,
     required this.uuid,
     required this.ingredientId,
-    required this.url,
+    required this.image,
     required this.size,
+    required this.width,
+    required this.height,
+    required this.created,
+    required this.lastUpdate,
     required this.licenseId,
     required this.author,
     required this.authorUrl,

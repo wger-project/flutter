@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -16,47 +16,53 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:wger/models/core/language.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
 import 'package:wger/models/exercises/exercise.dart';
-import 'package:wger/models/exercises/language.dart';
 import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/models/exercises/translation.dart';
 
 import 'screenshots_exercises.dart';
 
-const tLanguage1 = Language(id: 1, shortName: 'de', fullName: 'Deutsch');
-const tLanguage2 = Language(id: 2, shortName: 'en', fullName: 'English');
-const tLanguage3 = Language(id: 3, shortName: 'fr', fullName: 'Français');
-const tLanguage4 = Language(id: 12, shortName: 'es', fullName: 'Español');
-const tLanguage5 = Language(id: 13, shortName: 'it', fullName: 'Italiano');
-const testLanguages = [tLanguage1, tLanguage2, tLanguage3];
+const testGerman = Language(id: 1, shortName: 'de', fullName: 'Deutsch');
+const testEnglish = Language(id: 2, shortName: 'en', fullName: 'English');
+const testFrench = Language(id: 3, shortName: 'fr', fullName: 'Français');
+const testSpanish = Language(id: 12, shortName: 'es', fullName: 'Español');
+const testItalian = Language(id: 13, shortName: 'it', fullName: 'Italiano');
+const testLanguages = [testGerman, testEnglish, testFrench];
 
 const tMuscle1 = Muscle(id: 1, name: 'Flutterus maximus', nameEn: 'Glutes', isFront: true);
 const tMuscle2 = Muscle(id: 2, name: 'Biceps brachii', nameEn: 'Biceps', isFront: true);
 const tMuscle3 = Muscle(id: 3, name: 'Gluteus maximus', nameEn: 'Glutes', isFront: false);
 const testMuscles = [tMuscle1, tMuscle2, tMuscle3];
 
-const tCategory1 = ExerciseCategory(id: 1, name: 'Arms');
-const tCategory2 = ExerciseCategory(id: 2, name: 'Legs');
-const tCategory3 = ExerciseCategory(id: 3, name: 'Abs');
-const tCategory4 = ExerciseCategory(id: 4, name: 'Shoulders');
-const tCategory5 = ExerciseCategory(id: 5, name: 'Calves');
-const testCategories = [tCategory1, tCategory2, tCategory3, tCategory4, tCategory5];
+const testCategoryArms = ExerciseCategory(id: 1, name: 'Arms');
+const testCategoryLegs = ExerciseCategory(id: 2, name: 'Legs');
+const testCategoryAbs = ExerciseCategory(id: 3, name: 'Abs');
+const testCategoryShoulders = ExerciseCategory(id: 4, name: 'Shoulders');
+const testCategoryCalves = ExerciseCategory(id: 5, name: 'Calves');
+const testCategories = [
+  testCategoryArms,
+  testCategoryLegs,
+  testCategoryAbs,
+  testCategoryShoulders,
+  testCategoryCalves,
+];
 
-const tEquipment1 = Equipment(id: 1, name: 'Bench');
-const tEquipment2 = Equipment(id: 2, name: 'Dumbbell');
-const tEquipment3 = Equipment(id: 3, name: 'Bench');
-const tEquipment4 = Equipment(id: 10, name: 'Gym mat');
-const testEquipment = [tEquipment1, tEquipment2, tEquipment3];
+const testEquipmentBench = Equipment(id: 1, name: 'Bench');
+const testEquipmentDumbbell = Equipment(id: 2, name: 'Dumbbell');
+const testEquipmentBarbell = Equipment(id: 3, name: 'Barbell');
+const testEquipmentMat = Equipment(id: 10, name: 'Gym mat');
+const testEquipment = [testEquipmentBench, testEquipmentDumbbell, testEquipmentBarbell];
 
 final testBenchPress = Exercise(
   id: 1,
   uuid: '364f196c-881b-4839-8bfc-9e8f651521b6',
   created: DateTime(2021, 09, 01),
   lastUpdate: DateTime(2021, 09, 10),
-  category: tCategory1,
-  equipment: const [tEquipment1, tEquipment2],
+  category: testCategoryArms,
+  equipment: const [testEquipmentBench, testEquipmentDumbbell],
   muscles: const [tMuscle1, tMuscle2],
   musclesSecondary: const [tMuscle3],
   translations: [benchPressEn, benchPressDe],
@@ -67,8 +73,8 @@ final testCrunches = Exercise(
   uuid: '82415754-fc4c-49ea-8ca7-1516dd36d5a0',
   created: DateTime(2021, 08, 01),
   lastUpdate: DateTime(2021, 08, 10),
-  category: tCategory2,
-  equipment: const [tEquipment2],
+  category: testCategoryLegs,
+  equipment: const [testEquipmentDumbbell],
   muscles: const [tMuscle1],
   musclesSecondary: const [tMuscle2],
   translations: [crunchesEn, crunchesDe, crunchesFr],
@@ -79,8 +85,8 @@ final testDeadLift = Exercise(
   uuid: 'ca84e2c5-5608-4d6d-ba57-6d4b6b5e7acd',
   created: DateTime(2021, 08, 01),
   lastUpdate: DateTime(2021, 08, 01),
-  category: tCategory3,
-  equipment: const [tEquipment2],
+  category: testCategoryAbs,
+  equipment: const [testEquipmentDumbbell],
   muscles: const [tMuscle1],
   musclesSecondary: const [tMuscle2],
   translations: [deadLiftEn],
@@ -91,8 +97,8 @@ final testCurls = Exercise(
   uuid: '361f024c-fdf8-4146-b7d7-0c1b67c58141',
   created: DateTime(2021, 08, 01),
   lastUpdate: DateTime(2021, 08, 01),
-  category: tCategory3,
-  equipment: const [tEquipment2],
+  category: testCategoryAbs,
+  equipment: const [testEquipmentDumbbell],
   muscles: const [tMuscle1],
   musclesSecondary: const [tMuscle2],
   translations: [curlsEn],
@@ -103,8 +109,8 @@ final testSquats = Exercise(
   uuid: '361f024c-fdf8-4146-b7d7-0c1b67c58141',
   created: DateTime(2021, 08, 01),
   lastUpdate: DateTime(2021, 08, 01),
-  category: tCategory3,
-  equipment: const [tEquipment2],
+  category: testCategoryAbs,
+  equipment: const [testEquipmentDumbbell],
   muscles: const [tMuscle1],
   musclesSecondary: const [tMuscle2],
   translations: [squatsEn],
@@ -115,8 +121,8 @@ final testSideRaises = Exercise(
   uuid: '721ff972-c568-41e3-8cf5-cf1e5c5c801c',
   created: DateTime(2022, 11, 01),
   lastUpdate: DateTime(2022, 11, 01),
-  category: tCategory4,
-  equipment: const [tEquipment2],
+  category: testCategoryShoulders,
+  equipment: const [testEquipmentDumbbell],
   muscles: const [tMuscle1],
   musclesSecondary: const [tMuscle2],
   translations: [sideRaisesEn],
@@ -130,7 +136,7 @@ final benchPressDe = Translation(
   description: 'add clever text',
   descriptionSource: 'add clever text',
   exerciseId: 1,
-  language: tLanguage1,
+  language: testGerman,
 );
 
 final benchPressEn = Translation(
@@ -141,7 +147,7 @@ final benchPressEn = Translation(
   description: 'add clever text',
   descriptionSource: 'add clever text',
   exerciseId: 1,
-  language: tLanguage1,
+  language: testEnglish,
 );
 
 final deadLiftEn = Translation(
@@ -152,7 +158,7 @@ final deadLiftEn = Translation(
   description: 'Lorem ipsum etc',
   descriptionSource: 'Lorem ipsum etc',
   exerciseId: 3,
-  language: tLanguage2,
+  language: testEnglish,
 );
 
 final crunchesFr = Translation(
@@ -163,7 +169,7 @@ final crunchesFr = Translation(
   description: 'The man in black fled across the desert, and the gunslinger followed',
   descriptionSource: 'The man in black fled across the desert, and the gunslinger followed',
   exerciseId: 2,
-  language: tLanguage3,
+  language: testFrench,
 );
 
 final crunchesDe = Translation(
@@ -174,7 +180,7 @@ final crunchesDe = Translation(
   description: 'The story so far: in the beginning, the universe was created',
   descriptionSource: 'The story so far: in the beginning, the universe was created',
   exerciseId: 2,
-  language: tLanguage1,
+  language: testGerman,
 );
 
 final crunchesEn = Translation(
@@ -185,7 +191,7 @@ final crunchesEn = Translation(
   description: 'I am an invisible man',
   descriptionSource: 'I am an invisible man',
   exerciseId: 2,
-  language: tLanguage2,
+  language: testEnglish,
 );
 
 final curlsEn = Translation(
@@ -196,7 +202,7 @@ final curlsEn = Translation(
   description: 'It was a bright cold day in April, and the clocks were striking thirteen',
   descriptionSource: 'It was a bright cold day in April, and the clocks were striking thirteen',
   exerciseId: 4,
-  language: tLanguage2,
+  language: testEnglish,
 );
 
 final squatsEn = Translation(
@@ -207,7 +213,7 @@ final squatsEn = Translation(
   description: 'It was a bright cold day in April, and the clocks were striking thirteen',
   descriptionSource: 'It was a bright cold day in April, and the clocks were striking thirteen',
   exerciseId: 5,
-  language: tLanguage2,
+  language: testEnglish,
 );
 
 final sideRaisesEn = Translation(
@@ -218,7 +224,7 @@ final sideRaisesEn = Translation(
   description: 'It was a bright cold day in April, and the clocks were striking thirteen',
   descriptionSource: 'It was a bright cold day in April, and the clocks were striking thirteen',
   exerciseId: 6,
-  language: tLanguage2,
+  language: testEnglish,
 );
 
 List<Exercise> getTestExercises() {
@@ -226,12 +232,12 @@ List<Exercise> getTestExercises() {
 }
 
 List<Exercise> getScreenshotExercises() {
-  testBenchPress.translations = benchPressTranslations;
-  testCrunches.translations = crunchesTranslations;
-  testDeadLift.translations = deadLiftTranslations;
-  testCurls.translations = curlsTranslations;
-  testSquats.translations = squatsTranslations;
-  testSideRaises.translations = raisesTranslations;
-
-  return [testBenchPress, testCrunches, testDeadLift, testCurls, testSquats, testSideRaises];
+  return [
+    testBenchPress.copyWith(translations: benchPressTranslations),
+    testCrunches.copyWith(translations: crunchesTranslations),
+    testDeadLift.copyWith(translations: deadLiftTranslations),
+    testCurls.copyWith(translations: curlsTranslations),
+    testSquats.copyWith(translations: squatsTranslations),
+    testSideRaises.copyWith(translations: raisesTranslations),
+  ];
 }

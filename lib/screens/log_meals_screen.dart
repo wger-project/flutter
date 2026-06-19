@@ -61,7 +61,6 @@ class _LogMealsScreenState extends State<LogMealsScreen> {
                     itemCount: nutritionalPlan.meals.length,
                     itemBuilder: (context, index) => MealWidget(
                       nutritionalPlan.meals[index],
-                      nutritionalPlan.dedupMealItems,
                       true,
                       true,
                     ),
@@ -83,7 +82,7 @@ class _LogMealsScreenState extends State<LogMealsScreen> {
                   onPressed: () {
                     Navigator.of(context).pushReplacementNamed(
                       NutritionalPlanScreen.routeName,
-                      arguments: nutritionalPlan,
+                      arguments: nutritionalPlan.id,
                     );
                   },
                 ),

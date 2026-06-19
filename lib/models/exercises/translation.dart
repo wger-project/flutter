@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,82 +17,36 @@
  */
 
 import 'package:equatable/equatable.dart';
-import 'package:json_annotation/json_annotation.dart';
+import 'package:wger/models/core/language.dart';
 import 'package:wger/models/exercises/alias.dart';
 import 'package:wger/models/exercises/comment.dart';
-import 'package:wger/models/exercises/exercise.dart';
-import 'package:wger/models/exercises/language.dart';
 
-part 'translation.g.dart';
-
-@JsonSerializable()
 class Translation extends Equatable {
-  @JsonKey(required: true)
   final int? id;
-
-  @JsonKey(required: true)
   final String? uuid;
-
-  @JsonKey(required: true, name: 'language')
-  late int languageId;
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  late Language languageObj;
-
-  @JsonKey(required: true, name: 'created')
+  final Language language;
   final DateTime? created;
-
-  @JsonKey(required: true, name: 'exercise')
-  late int? exerciseId;
-
-  @JsonKey(required: true)
+  final int? exerciseId;
   final String name;
-
-  @JsonKey(required: true)
   final String description;
-
-  @JsonKey(name: 'description_source', defaultValue: '')
   final String descriptionSource;
+  final List<Comment> notes;
+  final List<Alias> aliases;
 
-  @JsonKey(includeFromJson: true, includeToJson: false)
-  List<Comment> notes = [];
+  int get languageId => language.id;
 
-  @JsonKey(includeFromJson: true, includeToJson: false)
-  List<Alias> aliases = [];
-
-  Translation({
+  const Translation({
     this.id,
     this.uuid,
     this.created,
     required this.name,
     required this.description,
     this.descriptionSource = '',
-    int? exerciseId,
-    language,
-  }) {
-    if (exerciseId != null) {
-      this.exerciseId = exerciseId;
-    }
-
-    if (language != null) {
-      languageObj = language;
-      languageId = language.id;
-    }
-  }
-
-  set exercise(Exercise exercise) {
-    exerciseId = exercise.id;
-  }
-
-  set language(Language language) {
-    languageObj = language;
-    languageId = language.id;
-  }
-
-  // Boilerplate
-  factory Translation.fromJson(Map<String, dynamic> json) => _$TranslationFromJson(json);
-
-  Map<String, dynamic> toJson() => _$TranslationToJson(this);
+    this.exerciseId,
+    required this.language,
+    this.notes = const [],
+    this.aliases = const [],
+  });
 
   @override
   List<Object?> get props => [

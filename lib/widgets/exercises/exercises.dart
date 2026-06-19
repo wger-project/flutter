@@ -18,268 +18,47 @@
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/helpers/i18n.dart';
-import 'package:wger/helpers/platform.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/exercises/image.dart';
 import 'package:wger/models/exercises/muscle.dart';
-import 'package:wger/models/exercises/translation.dart';
-import 'package:wger/providers/exercises.dart';
-import 'package:wger/widgets/core/core.dart';
+import 'package:wger/widgets/exercises/detail/aliases_section.dart';
+import 'package:wger/widgets/exercises/detail/category_equipment_row.dart';
+import 'package:wger/widgets/exercises/detail/description_section.dart';
+import 'package:wger/widgets/exercises/detail/images_section.dart';
+import 'package:wger/widgets/exercises/detail/muscles_section.dart';
+import 'package:wger/widgets/exercises/detail/notes_section.dart';
+import 'package:wger/widgets/exercises/detail/variations_section.dart';
+import 'package:wger/widgets/exercises/detail/videos_section.dart';
 import 'package:wger/widgets/exercises/images.dart';
-import 'package:wger/widgets/exercises/list_tile.dart';
-import 'package:wger/widgets/exercises/videos.dart';
 
 class ExerciseDetail extends StatelessWidget {
   final Exercise _exercise;
-  late Translation _translation;
-  static const PADDING = 9.0;
-  final CarouselController carouselController = CarouselController();
 
-  ExerciseDetail(this._exercise);
+  const ExerciseDetail(this._exercise, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    _translation = _exercise.getTranslation(Localizations.localeOf(context).languageCode);
+    final translation = _exercise.getTranslation(Localizations.localeOf(context).languageCode);
 
     return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Category and equipment
-          getCategoriesAndEquipment(context),
-
-          // Alternative names
-          ...getAliases(context),
-
-          // Videos
-          ...getVideos(),
-
-          // Images
-          ...getImages(),
-
-          // Description
-          ...getDescription(context),
-
-          // Notes
-          ...getNotes(context),
-
-          // Muscles
-          ...getMuscles(context),
-
-          // Variants
-          ...getVariations(context),
+          CategoryEquipmentRow(exercise: _exercise),
+          AliasesSection(translation: translation),
+          VideosSection(exercise: _exercise),
+          ImagesSection(exercise: _exercise),
+          DescriptionSection(translation: translation),
+          NotesSection(translation: translation),
+          MusclesSection(exercise: _exercise),
+          VariationsSection(exercise: _exercise),
         ],
       ),
     );
-  }
-
-  List<Widget> getVariations(BuildContext context) {
-    final variations = Provider.of<ExercisesProvider>(context, listen: false)
-        .findExercisesByVariationGroup(
-          _exercise.variationGroup,
-          exerciseIdToExclude: _exercise.id,
-        );
-
-    final List<Widget> out = [];
-    if (_exercise.variationGroup == null) {
-      return out;
-    }
-
-    out.add(
-      Text(
-        AppLocalizations.of(context).variations,
-        style: Theme.of(context).textTheme.headlineSmall,
-      ),
-    );
-    for (final element in variations) {
-      out.add(ExerciseListTile(exercise: element));
-    }
-    if (variations.isEmpty) {
-      out.add(const Text('-/-'));
-    }
-
-    out.add(const SizedBox(height: PADDING));
-    return out;
-  }
-
-  List<Widget> getNotes(BuildContext context) {
-    final List<Widget> out = [];
-    if (_translation.notes.isNotEmpty) {
-      out.add(
-        Text(
-          AppLocalizations.of(context).notes,
-          style: Theme.of(context).textTheme.headlineSmall,
-        ),
-      );
-      for (final e in _translation.notes) {
-        out.add(Text(e.comment));
-      }
-      out.add(const SizedBox(height: PADDING));
-    }
-
-    return out;
-  }
-
-  List<Widget> getMuscles(BuildContext context) {
-    final List<Widget> out = [];
-    out.add(
-      Text(
-        AppLocalizations.of(context).muscles,
-        style: Theme.of(context).textTheme.headlineSmall,
-      ),
-    );
-    out.add(
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: PADDING),
-              child: MuscleWidget(
-                muscles: _exercise.muscles,
-                musclesSecondary: _exercise.musclesSecondary,
-                isFront: true,
-              ),
-            ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: PADDING),
-              child: MuscleWidget(
-                muscles: _exercise.muscles,
-                musclesSecondary: _exercise.musclesSecondary,
-                isFront: false,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-
-    out.add(
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const MuscleColorHelper(main: true),
-          ..._exercise.muscles.map((e) => Text(e.nameTranslated(context))),
-        ],
-      ),
-    );
-    out.add(const SizedBox(height: PADDING));
-    out.add(
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const MuscleColorHelper(main: false),
-          ..._exercise.musclesSecondary.map((e) => Text(e.name)),
-        ],
-      ),
-    );
-
-    out.add(const SizedBox(height: PADDING));
-
-    return out;
-  }
-
-  List<Widget> getDescription(BuildContext context) {
-    final List<Widget> out = [];
-    out.add(
-      Text(
-        AppLocalizations.of(context).description,
-        style: Theme.of(context).textTheme.headlineSmall,
-      ),
-    );
-    out.add(Html(data: _translation.description));
-
-    return out;
-  }
-
-  List<Widget> getImages() {
-    final List<Widget> out = [];
-    if (_exercise.images.isNotEmpty) {
-      out.add(
-        CarouselImages(
-          images: _exercise.images,
-        ),
-      );
-
-      // out.add(ExerciseImageWidget(
-      //   image: _exercise.getMainImage,
-      //   height: 250,
-      // ));
-      out.add(const SizedBox(height: PADDING));
-    }
-
-    return out;
-  }
-
-  Widget getCategoriesAndEquipment(BuildContext context) {
-    final List<Widget> out = [];
-    final theme = Theme.of(context);
-
-    out.add(
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4),
-        child: Chip(
-          label: Text(getServerStringTranslation(_exercise.category!.name, context)),
-          padding: EdgeInsets.zero,
-          backgroundColor: theme.splashColor,
-        ),
-      ),
-    );
-    if (_exercise.equipment.isNotEmpty) {
-      _exercise.equipment
-          .map(
-            (e) => Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4),
-              child: Chip(
-                label: Text(getServerStringTranslation(e.name, context)),
-                padding: EdgeInsets.zero,
-                backgroundColor: theme.splashColor,
-              ),
-            ),
-          )
-          .forEach((element) => out.add(element));
-    }
-    out.add(const SizedBox(height: PADDING));
-    return Row(children: [...out]);
-  }
-
-  List<Widget> getVideos() {
-    // TODO: add carousel for the other videos
-    final List<Widget> out = [];
-    if (_exercise.videos.isNotEmpty && !isDesktop) {
-      _exercise.videos.map((v) => ExerciseVideoWidget(video: v)).forEach((element) {
-        out.add(element);
-      });
-
-      out.add(const SizedBox(height: PADDING));
-    }
-    return out;
-  }
-
-  List<Widget> getAliases(BuildContext context) {
-    final List<Widget> out = [];
-    if (_translation.aliases.isNotEmpty) {
-      out.add(
-        MutedText(
-          AppLocalizations.of(context).alsoKnownAs(
-            _translation.aliases.map((e) => e.alias).toList().join(', '),
-          ),
-        ),
-      );
-      out.add(const SizedBox(height: PADDING));
-    }
-
-    return out;
   }
 }
 

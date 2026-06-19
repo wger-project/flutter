@@ -17,11 +17,11 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
-import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/widgets/nutrition/nutritional_diary_detail.dart';
 
 /// Arguments passed to the form screen
@@ -48,13 +48,16 @@ class NutritionalDiaryScreen extends StatelessWidget {
         title: Text(DateFormat.yMd(Localizations.localeOf(context).languageCode).format(args.date)),
       ),
       body: WidescreenWrapper(
-        child: Consumer<NutritionPlansProvider>(
-          builder: (context, nutritionProvider, child) => SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: NutritionalDiaryDetailWidget(args.plan, args.date),
-            ),
-          ),
+        child: Consumer(
+          builder: (context, ref, child) {
+            ref.watch(nutritionProvider);
+            return SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: NutritionalDiaryDetailWidget(args.plan, args.date),
+              ),
+            );
+          },
         ),
       ),
     );

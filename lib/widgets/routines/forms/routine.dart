@@ -1,30 +1,45 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (c)  2026 wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
-import 'package:wger/core/exceptions/http_exception.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/helpers/errors.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/routine.dart';
-import 'package:wger/providers/routines.dart';
+import 'package:wger/providers/network_provider.dart';
+import 'package:wger/providers/routines_notifier.dart';
 import 'package:wger/screens/routine_edit_screen.dart';
-import 'package:wger/widgets/core/progress_indicator.dart';
+import 'package:wger/widgets/core/datetime_input.dart';
+import 'package:wger/widgets/core/form_submit_button.dart';
 
-class RoutineForm extends StatefulWidget {
+class RoutineForm extends ConsumerStatefulWidget {
   final Routine _routine;
   final bool useListView;
 
   const RoutineForm(this._routine, {this.useListView = false});
 
   @override
-  State<RoutineForm> createState() => _RoutineFormState();
+  _RoutineFormState createState() => _RoutineFormState();
 }
 
-class _RoutineFormState extends State<RoutineForm> {
+class _RoutineFormState extends ConsumerState<RoutineForm> {
   final _form = GlobalKey<FormState>();
-  Widget errorMessage = const SizedBox.shrink();
 
-  bool isSaving = false;
   late bool fitInWeek;
   late DateTime startDate;
   late DateTime endDate;
@@ -51,9 +66,9 @@ class _RoutineFormState extends State<RoutineForm> {
   @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
+    final isOnline = ref.watch(networkStatusProvider);
 
     final children = [
-      errorMessage,
       TextFormField(
         key: const Key('field-name'),
         decoration: InputDecoration(labelText: i18n.name),
@@ -92,10 +107,18 @@ class _RoutineFormState extends State<RoutineForm> {
           widget._routine.description = newValue!;
         },
       ),
-      TextFormField(
+      DateInputWidget(
         key: const Key('field-start-date'),
-        // Stop keyboard from appearing
-        readOnly: true,
+        value: startDate,
+        labelText: i18n.startDate,
+        firstDate: DateTime.now().subtract(const Duration(days: 365)),
+        lastDate: DateTime.now().add(const Duration(days: 365)),
+        onChanged: (picked) {
+          widget._routine.start = picked;
+          setState(() {
+            startDate = picked;
+          });
+        },
         validator: (value) {
           if (endDate.isBefore(startDate)) {
             return 'End date must be after start date';
@@ -108,74 +131,18 @@ class _RoutineFormState extends State<RoutineForm> {
           }
           return null;
         },
-        decoration: InputDecoration(
-          labelText: i18n.startDate,
-          suffixIcon: const Icon(
-            Icons.calendar_today,
-            key: Key('calendarIcon'),
-          ),
-        ),
-        enableInteractiveSelection: false,
-        controller: TextEditingController(
-          text: DateFormat.yMd(
-            Localizations.localeOf(context).languageCode,
-          ).format(startDate),
-        ),
-        onTap: () async {
-          final picked = await showDatePicker(
-            context: context,
-            initialDate: startDate,
-            firstDate: DateTime.now().subtract(const Duration(days: 365)),
-            lastDate: DateTime.now().add(const Duration(days: 365)),
-          );
-
-          if (picked == null) {
-            return;
-          }
-
-          widget._routine.start = picked;
-          if (mounted) {
-            setState(() {
-              startDate = picked;
-            });
-          }
-        },
       ),
-      TextFormField(
+      DateInputWidget(
         key: const Key('field-end-date'),
-        // Stop keyboard from appearing
-        readOnly: true,
-        decoration: InputDecoration(
-          labelText: i18n.endDate,
-          suffixIcon: const Icon(
-            Icons.calendar_today,
-            key: Key('calendarIcon'),
-          ),
-        ),
-        enableInteractiveSelection: false,
-        controller: TextEditingController(
-          text: DateFormat.yMd(
-            Localizations.localeOf(context).languageCode,
-          ).format(endDate),
-        ),
-        onTap: () async {
-          final picked = await showDatePicker(
-            context: context,
-            initialDate: endDate,
-            firstDate: DateTime.now().subtract(const Duration(days: 365)),
-            lastDate: DateTime.now().add(const Duration(days: 365)),
-          );
-
-          if (picked == null) {
-            return;
-          }
-
+        value: endDate,
+        labelText: i18n.endDate,
+        firstDate: DateTime.now().subtract(const Duration(days: 365)),
+        lastDate: DateTime.now().add(const Duration(days: 365)),
+        onChanged: (picked) {
           widget._routine.end = picked;
-          if (mounted) {
-            setState(() {
-              endDate = picked;
-            });
-          }
+          setState(() {
+            endDate = picked;
+          });
         },
       ),
       const SizedBox(height: 5),
@@ -199,54 +166,33 @@ class _RoutineFormState extends State<RoutineForm> {
         },
       ),
       const SizedBox(height: 5),
-      ElevatedButton(
+      // Creating a routine needs the server to assign an integer PK; editing an
+      // existing one syncs through PowerSync and works offline.
+      FormSubmitButton(
         key: const Key(SUBMIT_BUTTON_KEY_NAME),
-        onPressed: isSaving
-            ? null
-            : () async {
-                // Validate and save
-                final isValid = _form.currentState!.validate();
-                if (!isValid) {
-                  return;
-                }
-                _form.currentState!.save();
-                setState(() {
-                  isSaving = true;
-                });
+        enabled: !(widget._routine.id == null && !isOnline),
+        label: AppLocalizations.of(context).save,
+        onPressed: () async {
+          // Validate and save
+          final isValid = _form.currentState!.validate();
+          if (!isValid) {
+            return;
+          }
+          _form.currentState!.save();
 
-                // Save to DB
-                try {
-                  final routinesProvider = context.read<RoutinesProvider>();
-
-                  if (widget._routine.id != null) {
-                    await routinesProvider.editRoutine(widget._routine);
-                  } else {
-                    final routine = await routinesProvider.addRoutine(widget._routine);
-                    if (context.mounted) {
-                      Navigator.of(context).pushReplacementNamed(
-                        RoutineEditScreen.routeName,
-                        arguments: routine.id,
-                      );
-                    }
-                  }
-                  setState(() {
-                    errorMessage = const SizedBox.shrink();
-                  });
-                } on WgerHttpException catch (error) {
-                  if (context.mounted) {
-                    setState(() {
-                      errorMessage = FormHttpErrorsWidget(error);
-                    });
-                  }
-                } finally {
-                  if (mounted) {
-                    setState(() {
-                      isSaving = false;
-                    });
-                  }
-                }
-              },
-        child: isSaving ? const FormProgressIndicator() : Text(AppLocalizations.of(context).save),
+          final routinesProvider = ref.read(routinesRiverpodProvider.notifier);
+          if (widget._routine.id != null) {
+            await routinesProvider.editRoutine(widget._routine);
+          } else {
+            final routine = await routinesProvider.addRoutine(widget._routine);
+            if (context.mounted) {
+              Navigator.of(context).pushReplacementNamed(
+                RoutineEditScreen.routeName,
+                arguments: routine.id,
+              );
+            }
+          }
+        },
       ),
     ];
     return Form(

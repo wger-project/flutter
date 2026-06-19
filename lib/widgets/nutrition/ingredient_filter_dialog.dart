@@ -20,7 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
-import 'package:wger/providers/nutrition_ingredient_filters_riverpod.dart';
+import 'package:wger/providers/ingredient_filters_notifier.dart';
 import 'package:wger/widgets/search/language_dropdown.dart';
 
 /// Filter dialog for the ingredient search. Shown via [showDialog] from the

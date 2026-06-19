@@ -17,20 +17,21 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/helpers/exercises/validators.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/add_exercise.dart';
+import 'package:wger/providers/add_exercise_notifier.dart';
 import 'package:wger/widgets/add_exercise/add_exercise_text_area.dart';
 
-class Step3Description extends StatelessWidget {
+class Step3Description extends ConsumerWidget {
   final GlobalKey<FormState> formkey;
 
   const Step3Description({required this.formkey});
 
   @override
-  Widget build(BuildContext context) {
-    final addExerciseProvider = context.read<AddExerciseProvider>();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final notifier = ref.read(addExerciseProvider.notifier);
+    final descriptionEn = ref.read(addExerciseProvider).descriptionEn;
     final i18n = AppLocalizations.of(context);
 
     return Form(
@@ -39,13 +40,13 @@ class Step3Description extends StatelessWidget {
         children: [
           AddExerciseTextArea(
             useMarkdownEditor: true,
-            initialValue: addExerciseProvider.descriptionEn ?? '',
-            onChange: (value) => addExerciseProvider.descriptionEn = value,
+            initialValue: descriptionEn ?? '',
+            onChange: (value) => notifier.setDescriptionEn(value),
             title: '${i18n.description}*',
             helperText: i18n.enterTextInLanguage,
             isMultiline: true,
             validator: (name) => validateExerciseDescription(name, context),
-            onSaved: (String? description) => addExerciseProvider.descriptionEn = description,
+            onSaved: (String? description) => notifier.setDescriptionEn(description),
           ),
         ],
       ),

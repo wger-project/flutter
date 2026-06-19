@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c)  2025 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,13 +17,16 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:wger/core/exceptions/no_such_entry_exception.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/measurements/measurement_category.dart';
-import 'package:wger/providers/measurement.dart';
+import 'package:wger/providers/measurement_notifier.dart';
 import 'package:wger/screens/form_screen.dart';
+import 'package:wger/widgets/core/confirm_delete_dialog.dart';
+import 'package:wger/widgets/core/error.dart';
+import 'package:wger/widgets/core/object_gone_redirect.dart';
+import 'package:wger/widgets/core/progress_indicator.dart';
 import 'package:wger/widgets/measurements/entries.dart';
 import 'package:wger/widgets/measurements/forms.dart';
 
@@ -32,131 +35,117 @@ enum MeasurementOptions {
   delete,
 }
 
-class MeasurementEntriesScreen extends StatelessWidget {
+class MeasurementEntriesScreen extends ConsumerStatefulWidget {
   const MeasurementEntriesScreen();
 
   static const routeName = '/measurement-entries';
 
   @override
-  Widget build(BuildContext context) {
-    final categoryId = ModalRoute.of(context)!.settings.arguments as int;
-    final provider = Provider.of<MeasurementProvider>(context);
-    MeasurementCategory? category;
+  ConsumerState<MeasurementEntriesScreen> createState() => _MeasurementEntriesScreenState();
+}
 
-    try {
-      category = provider.findCategoryById(categoryId);
-    } on NoSuchEntryException {
-      Future.microtask(() {
-        if (context.mounted && Navigator.of(context).canPop()) {
-          Navigator.of(context).pop();
-        }
-      });
-      return const SizedBox(); // Return empty widget until pop happens
+class _MeasurementEntriesScreenState extends ConsumerState<MeasurementEntriesScreen> {
+  late final String _categoryId;
+  late final Stream<MeasurementCategory?> _categoryStream;
+  bool _initialised = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Initialise once, the route argument and notifier don't change for the
+    // lifetime of this screen, so we must not recreate the stream on every build
+    if (!_initialised) {
+      _categoryId = ModalRoute.of(context)!.settings.arguments as String;
+      _categoryStream = ref.read(measurementProvider.notifier).watchCategoryById(_categoryId);
+      _initialised = true;
     }
+  }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(category.name),
-        actions: [
-          PopupMenuButton<MeasurementOptions>(
-            icon: const Icon(Icons.more_vert),
-            onSelected: (value) {
-              switch (value) {
-                case MeasurementOptions.edit:
-                  Navigator.pushNamed(
-                    context,
-                    FormScreen.routeName,
-                    arguments: FormScreenArguments(
-                      AppLocalizations.of(context).edit,
-                      MeasurementCategoryForm(category),
-                    ),
-                  );
-                  break;
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<MeasurementCategory?>(
+      stream: _categoryStream,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const BoxedProgressIndicator();
+        }
+        if (snapshot.hasError) {
+          return StreamErrorIndicator(snapshot.error.toString());
+        }
 
-                case MeasurementOptions.delete:
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext contextDialog) {
-                      return AlertDialog(
-                        content: Text(
-                          AppLocalizations.of(context).confirmDelete(category!.name),
+        // Category was deleted (locally or via PowerSync from another device).
+        // Leave this now-stale screen.
+        final category = snapshot.data;
+        if (category == null) {
+          return objectGoneRedirect(context);
+        }
+
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(category.name),
+            actions: [
+              PopupMenuButton<MeasurementOptions>(
+                icon: const Icon(Icons.more_vert),
+                onSelected: (value) {
+                  switch (value) {
+                    case MeasurementOptions.edit:
+                      Navigator.pushNamed(
+                        context,
+                        FormScreen.routeName,
+                        arguments: FormScreenArguments(
+                          AppLocalizations.of(context).edit,
+                          MeasurementCategoryForm(category),
                         ),
-                        actions: [
-                          TextButton(
-                            child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-                            onPressed: () => Navigator.of(contextDialog).pop(),
-                          ),
-                          TextButton(
-                            child: Text(
-                              AppLocalizations.of(context).delete,
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.error,
-                              ),
-                            ),
-                            onPressed: () {
-                              // Confirmed, delete the workout
-                              Provider.of<MeasurementProvider>(
-                                context,
-                                listen: false,
-                              ).deleteCategory(category!.id!);
-                              // Close the popup
-                              Navigator.of(contextDialog).pop();
-
-                              Navigator.of(context).pop(); // Exit detail screen
-
-                              // and inform the user
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    AppLocalizations.of(context).successfullyDeleted,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        ],
                       );
-                    },
-                  );
-                  break;
-              }
-            },
-            itemBuilder: (context) {
-              return [
-                PopupMenuItem<MeasurementOptions>(
-                  value: MeasurementOptions.edit,
-                  child: Text(AppLocalizations.of(context).edit),
+                      break;
+
+                    case MeasurementOptions.delete:
+                      showConfirmDeleteDialog(
+                        context,
+                        itemName: category.name,
+                        onConfirm: () =>
+                            ref.read(measurementProvider.notifier).deleteCategory(category.id!),
+                        // Exit the detail screen once the category is gone.
+                        onDeleted: () => Navigator.of(context).pop(),
+                      );
+                      break;
+                  }
+                },
+                itemBuilder: (context) {
+                  return [
+                    PopupMenuItem<MeasurementOptions>(
+                      value: MeasurementOptions.edit,
+                      child: Text(AppLocalizations.of(context).edit),
+                    ),
+                    PopupMenuItem<MeasurementOptions>(
+                      value: MeasurementOptions.delete,
+                      child: Text(AppLocalizations.of(context).delete),
+                    ),
+                  ];
+                },
+              ),
+            ],
+          ),
+          floatingActionButton: FloatingActionButton(
+            child: const Icon(Icons.add, color: Colors.white),
+            onPressed: () {
+              Navigator.pushNamed(
+                context,
+                FormScreen.routeName,
+                arguments: FormScreenArguments(
+                  AppLocalizations.of(context).newEntry,
+                  MeasurementEntryForm(_categoryId),
                 ),
-                PopupMenuItem<MeasurementOptions>(
-                  value: MeasurementOptions.delete,
-                  child: Text(AppLocalizations.of(context).delete),
-                ),
-              ];
+              );
             },
           ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add, color: Colors.white),
-        onPressed: () {
-          Navigator.pushNamed(
-            context,
-            FormScreen.routeName,
-            arguments: FormScreenArguments(
-              AppLocalizations.of(context).newEntry,
-              MeasurementEntryForm(categoryId),
+          body: WidescreenWrapper(
+            child: SingleChildScrollView(
+              child: EntriesList(category),
             ),
-          );
-        },
-      ),
-      body: WidescreenWrapper(
-        child: SingleChildScrollView(
-          child: Consumer<MeasurementProvider>(
-            builder: (context, provider, child) => EntriesList(category!),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

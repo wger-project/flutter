@@ -415,7 +415,6 @@
     "errorViewDetails": "Detalii tehnice",
     "applicationLogs": "Jurnalele aplicației",
     "errorCouldNotConnectToServer": "Nu ne-am putut conecta la server",
-    "errorCouldNotConnectToServerDetails": "Aplicația nu s-a putut conecta la server. Te rugăm să îți verifici conexiunea la internet sau URL-ul serverului și să încerci din nou. Dacă problema persistă, contactează administratorul serverului.",
     "copyToClipboard": "Copiază în clipboard",
     "min": "Min",
     "max": "Max",

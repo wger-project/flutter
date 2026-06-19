@@ -17,31 +17,42 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/models/body_weight/weight_entry.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
-import 'package:wger/providers/body_weight.dart';
+import 'package:wger/providers/body_weight_notifier.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
 import 'package:wger/widgets/nutrition/macro_nutrients_table.dart';
 import 'package:wger/widgets/nutrition/meal.dart';
 import 'package:wger/widgets/nutrition/nutritional_diary_table.dart';
 
-class NutritionalPlanDetailWidget extends StatelessWidget {
+class NutritionalPlanDetailWidget extends riverpod.ConsumerWidget {
   final NutritionalPlan _nutritionalPlan;
 
   const NutritionalPlanDetailWidget(this._nutritionalPlan);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, riverpod.WidgetRef ref) {
     final nutritionalGoals = _nutritionalPlan.nutritionalGoals;
-    final lastWeightEntry = Provider.of<BodyWeightProvider>(
-      context,
-      listen: false,
-    ).getNewestEntry();
+    final entriesList = ref.watch(weightEntryProvider).asData?.value ?? [];
+    final WeightEntry? lastWeightEntry = entriesList.isNotEmpty ? entriesList.first : null;
     final nutritionalGoalsGperKg = lastWeightEntry != null
         ? nutritionalGoals / lastWeightEntry.weight.toDouble()
         : null;
+
+    final i18n = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context).languageCode;
+    final startDateFormatted = DateFormat.yMd(locale).format(_nutritionalPlan.startDate);
+
+    String dateDisplay;
+    if (_nutritionalPlan.endDate != null) {
+      final endDateFormatted = DateFormat.yMd(locale).format(_nutritionalPlan.endDate!);
+      dateDisplay = i18n.planDateRange(startDateFormatted, endDateFormatted);
+    } else {
+      dateDisplay = '${i18n.planStartDate(startDateFormatted)} (${i18n.openEnded})';
+    }
 
     return SliverList(
       delegate: SliverChildListDelegate(
@@ -50,15 +61,7 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Text(
-              _nutritionalPlan.endDate != null
-                  ? 'from ${DateFormat.yMd(
-                      Localizations.localeOf(context).languageCode,
-                    ).format(_nutritionalPlan.startDate)} to ${DateFormat.yMd(
-                      Localizations.localeOf(context).languageCode,
-                    ).format(_nutritionalPlan.endDate!)}'
-                  : 'from ${DateFormat.yMd(
-                      Localizations.localeOf(context).languageCode,
-                    ).format(_nutritionalPlan.startDate)} (${AppLocalizations.of(context).openEnded})',
+              dateDisplay,
               style: Theme.of(context).textTheme.titleSmall?.copyWith(
                 fontStyle: FontStyle.italic,
               ),
@@ -79,14 +82,12 @@ class NutritionalPlanDetailWidget extends StatelessWidget {
           ..._nutritionalPlan.meals.map(
             (meal) => MealWidget(
               meal,
-              _nutritionalPlan.dedupMealItems,
               false,
               false,
             ),
           ),
           MealWidget(
-            _nutritionalPlan.pseudoMealOthers('Other logs'),
-            _nutritionalPlan.dedupMealItems,
+            _nutritionalPlan.pseudoMealOthers(i18n.otherLogs),
             false,
             true,
           ),

@@ -17,25 +17,29 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
-import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/ingredient_repository.dart';
+import 'package:wger/providers/nutrition_repository.dart';
 import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/widgets/nutrition/forms.dart';
 
 import './nutritional_plan_form_test.mocks.dart';
 
-@GenerateMocks([NutritionPlansProvider])
+@GenerateMocks([NutritionRepository, IngredientRepository])
 void main() {
-  var mockNutrition = MockNutritionPlansProvider();
+  late MockNutritionRepository mockRepo;
+  late MockIngredientRepository mockIngredientRepo;
+
+  const planUuid1 = 'cc000000-0000-4000-8000-000000000001';
 
   final plan1 = NutritionalPlan(
-    id: 1,
+    id: planUuid1,
     creationDate: DateTime(2021, 1, 1),
     startDate: DateTime(2021, 1, 1),
     endDate: DateTime(2021, 2, 10),
@@ -44,17 +48,24 @@ void main() {
   final plan2 = NutritionalPlan.empty();
 
   setUp(() {
-    mockNutrition = MockNutritionPlansProvider();
+    mockRepo = MockNutritionRepository();
+    mockIngredientRepo = MockIngredientRepository();
 
-    when(mockNutrition.editPlan(any)).thenAnswer((_) => Future.value(plan1));
-    when(mockNutrition.addPlan(any)).thenAnswer((_) => Future.value(plan1));
+    when(mockRepo.addPlanLocalDrift(any)).thenAnswer((_) async => Future.value());
+    when(mockRepo.editLocalDrift(any)).thenAnswer((_) async => Future.value());
+    when(mockRepo.watchAllDrift()).thenAnswer((_) => Stream.value(const []));
+    when(mockRepo.watchAllMealsHydrated()).thenAnswer((_) => Stream.value(const []));
+    when(mockRepo.watchAllLogsHydrated()).thenAnswer((_) => Stream.value(const []));
   });
 
   Widget createNutritionalPlanScreen(NutritionalPlan plan, {locale = 'en'}) {
     final key = GlobalKey<NavigatorState>();
 
-    return ChangeNotifierProvider<NutritionPlansProvider>(
-      create: (context) => mockNutrition,
+    return ProviderScope(
+      overrides: [
+        nutritionRepositoryProvider.overrideWithValue(mockRepo),
+        ingredientRepositoryProvider.overrideWithValue(mockIngredientRepo),
+      ],
       child: MaterialApp(
         locale: Locale(locale),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -89,28 +100,15 @@ void main() {
     await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
 
     // Correct method was called
-    verify(mockNutrition.editPlan(any));
-    verifyNever(mockNutrition.addPlan(any));
-
-    // TODO(x): edit calls Navigator.pop(), since the form can only be reached from the
-    //       detail page. The test needs to add the detail page to the stack so that
-    //       this can be checked.
-    // https://stackoverflow.com/questions/50704647/how-to-test-navigation-via-navigator-in-flutter
-
-    // Detail page
-    // await tester.pumpAndSettle();
-    //expect(
-    // find.text(('New description')),
-    //findsOneWidget,
-    //reason: 'Nutritional plan detail page',
-    //);
+    verify(mockRepo.editLocalDrift(any));
+    verifyNever(mockRepo.addPlanLocalDrift(any));
   });
 
   testWidgets('Goal macros survive a no-op save in a comma-decimal locale', (
     WidgetTester tester,
   ) async {
     final planWithGoals = NutritionalPlan(
-      id: 1,
+      id: 'cc000000-0000-4000-8000-000000000002',
       creationDate: DateTime(2021, 1, 1),
       startDate: DateTime(2021, 1, 1),
       description: 'plan with goals',
@@ -134,7 +132,7 @@ void main() {
     await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
     await tester.pumpAndSettle();
 
-    final saved = verify(mockNutrition.editPlan(captureAny)).captured.single as NutritionalPlan;
+    final saved = verify(mockRepo.editLocalDrift(captureAny)).captured.single as NutritionalPlan;
     expect(saved.goalEnergy, 2000.0);
     expect(saved.goalProtein, 150.0);
     expect(saved.goalCarbohydrates, 250.0);
@@ -155,11 +153,7 @@ void main() {
     await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
 
     // Correct method was called
-    verifyNever(mockNutrition.editPlan(any));
-    verify(mockNutrition.addPlan(any));
-
-    // TODO: detail page
-    // await tester.pumpAndSettle();
-    // expect(find.text('New cool plan'), findsOneWidget, reason: 'Nutritional plan detail page');
+    verifyNever(mockRepo.editLocalDrift(any));
+    verify(mockRepo.addPlanLocalDrift(any));
   });
 }

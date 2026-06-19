@@ -19,36 +19,37 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/gallery/image.dart' as gallery;
-import 'package:wger/providers/gallery.dart';
+import 'package:wger/models/gallery/image.dart';
+import 'package:wger/providers/gallery_notifier.dart';
+import 'package:wger/providers/network_provider.dart';
+import 'package:wger/widgets/core/datetime_input.dart';
+import 'package:wger/widgets/core/form_submit_button.dart';
+import 'package:wger/widgets/core/wger_image.dart';
 
-class ImageForm extends StatefulWidget {
-  late final gallery.Image _image;
+class ImageForm extends ConsumerStatefulWidget {
+  late final GalleryImage _image;
 
-  ImageForm([gallery.Image? image]) {
-    _image = image ?? gallery.Image.emtpy();
+  ImageForm([GalleryImage? image]) {
+    _image = image ?? GalleryImage.empty();
   }
 
   @override
-  _ImageFormState createState() => _ImageFormState();
+  ConsumerState<ImageForm> createState() => _ImageFormState();
 }
 
-class _ImageFormState extends State<ImageForm> {
+class _ImageFormState extends ConsumerState<ImageForm> {
   final _form = GlobalKey<FormState>();
 
   XFile? _file;
 
-  final dateController = TextEditingController(text: '');
   final TextEditingController descriptionController = TextEditingController();
 
   @override
   void dispose() {
-    dateController.dispose();
     descriptionController.dispose();
     super.dispose();
   }
@@ -79,8 +80,11 @@ class _ImageFormState extends State<ImageForm> {
     }
 
     // We are editing an existing entry
-    if (widget._image.url != null) {
-      return Image.network(widget._image.url!);
+    if (widget._image.imagePath != null) {
+      return WgerImage(
+        mediaPath: widget._image.imagePath,
+        fit: BoxFit.contain,
+      );
     }
 
     // No picture available, show a message to the user
@@ -96,11 +100,11 @@ class _ImageFormState extends State<ImageForm> {
 
   @override
   Widget build(BuildContext context) {
-    final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
-
-    if (dateController.text.isEmpty) {
-      dateController.text = dateFormat.format(widget._image.date);
-    }
+    final isOnline = ref.watch(networkStatusProvider);
+    // Creating an image or replacing its photo is a binary REST upload and
+    // needs connectivity. A metadata-only edit syncs through PowerSync and
+    // works offline.
+    final requiresUpload = widget._image.id == null || _file != null;
 
     return Form(
       key: _form,
@@ -144,38 +148,17 @@ class _ImageFormState extends State<ImageForm> {
               child: getPicture(),
             ),
           ),
-          TextFormField(
+          DateInputWidget(
             key: const Key('field-date'),
-            decoration: InputDecoration(
-              labelText: AppLocalizations.of(context).date,
-              suffixIcon: const Icon(Icons.calendar_today),
-            ),
-            readOnly: true,
-            // Stop keyboard from appearing
-            controller: dateController,
-            onTap: () async {
-              // Stop keyboard from appearing
-              FocusScope.of(context).requestFocus(FocusNode());
-
-              // Show Date Picker Here
-              final pickedDate = await showDatePicker(
-                context: context,
-                initialDate: widget._image.date,
-                firstDate: DateTime.now().subtract(const Duration(days: 3000)),
-                lastDate: DateTime.now(),
-              );
-              if (pickedDate != null) {
-                dateController.text = dateFormat.format(pickedDate);
-              }
-            },
-            onSaved: (newValue) {
-              widget._image.date = dateFormat.parse(newValue!);
-            },
+            value: widget._image.date,
+            labelText: AppLocalizations.of(context).date,
+            firstDate: DateTime.now().subtract(const Duration(days: 3000)),
+            lastDate: DateTime.now(),
+            onChanged: (date) => widget._image.date = date,
             validator: (value) {
               if (widget._image.id == null && _file == null) {
                 return AppLocalizations.of(context).selectImage;
               }
-
               return null;
             },
           ),
@@ -186,14 +169,16 @@ class _ImageFormState extends State<ImageForm> {
             ),
             minLines: 3,
             maxLines: 10,
+            maxLength: GalleryImage.MAX_LENGTH_DESCRIPTION,
             controller: descriptionController,
             onSaved: (newValue) {
               widget._image.description = newValue!;
             },
           ),
-          ElevatedButton(
+          FormSubmitButton(
             key: const Key(SUBMIT_BUTTON_KEY_NAME),
-            child: Text(AppLocalizations.of(context).save),
+            enabled: !(requiresUpload && !isOnline),
+            label: AppLocalizations.of(context).save,
             onPressed: () async {
               // Validate and save
               final isValid = _form.currentState!.validate();
@@ -202,17 +187,13 @@ class _ImageFormState extends State<ImageForm> {
               }
               _form.currentState!.save();
 
+              final notifier = ref.read(galleryProvider.notifier);
               if (widget._image.id == null) {
-                Provider.of<GalleryProvider>(
-                  context,
-                  listen: false,
-                ).addImage(widget._image, _file!);
-                Navigator.of(context).pop();
+                await notifier.addImage(widget._image, _file!);
               } else {
-                Provider.of<GalleryProvider>(
-                  context,
-                  listen: false,
-                ).editImage(widget._image, _file);
+                await notifier.editImage(widget._image, _file);
+              }
+              if (context.mounted) {
                 Navigator.of(context).pop();
               }
             },

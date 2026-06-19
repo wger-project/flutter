@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/log.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
-import 'package:wger/providers/nutrition.dart';
+import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/widgets/nutrition/helpers.dart';
 import 'package:wger/widgets/nutrition/nutrition_tile.dart';
 import 'package:wger/widgets/nutrition/widgets.dart';
 
 /// a NutritionTitle showing an ingredient, with its
 /// avatar, nutritional values and button to popup its details
-class MealItemValuesTile extends StatelessWidget {
+class MealItemValuesTile extends ConsumerWidget {
   final Ingredient ingredient;
   final NutritionalValues nutritionalValues;
 
@@ -25,14 +25,14 @@ class MealItemValuesTile extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return NutritionTile(
       leading: IngredientAvatar(ingredient: ingredient),
       title: Text(getShortNutritionValues(nutritionalValues, context)),
       trailing: IconButton(
         icon: const Icon(Icons.info_outline),
         onPressed: () {
-          showIngredientDetails(context, ingredient.id);
+          showIngredientDetails(context, ref, ingredient);
         },
       ),
     );
@@ -52,27 +52,29 @@ class DiaryheaderTile extends StatelessWidget {
 }
 
 /// a NutritionTitle showing diary entries
-class DiaryEntryTile extends StatelessWidget {
+class DiaryEntryTile extends ConsumerWidget {
   const DiaryEntryTile({
     super.key,
     required this.diaryEntry,
     this.nutritionalPlan,
   });
 
-  final Log diaryEntry;
+  final LogItem diaryEntry;
   final NutritionalPlan? nutritionalPlan;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return NutritionTile(
       leading: Text(
         DateFormat.Hm(Localizations.localeOf(context).languageCode).format(diaryEntry.datetime),
         style: const TextStyle(fontWeight: FontWeight.bold),
       ),
       title: Text(
+        // Ingredient is null briefly between local insert and PowerSync
+        // pulling the row down, show an ellipsis placeholder.
         diaryEntry.weightUnitObj != null
-            ? '${diaryEntry.amount.toStringAsFixed(0)} × ${diaryEntry.weightUnitObj!.name} ${diaryEntry.ingredient.name}'
-            : '${AppLocalizations.of(context).gValue(diaryEntry.amount.toStringAsFixed(0))} ${diaryEntry.ingredient.name}',
+            ? '${diaryEntry.amount.toStringAsFixed(0)} × ${diaryEntry.weightUnitObj!.name} ${diaryEntry.ingredient?.name ?? '…'}'
+            : '${AppLocalizations.of(context).gValue(diaryEntry.amount.toStringAsFixed(0))} ${diaryEntry.ingredient?.name ?? '…'}',
         overflow: TextOverflow.ellipsis,
       ),
       subtitle: getNutritionRow(
@@ -84,10 +86,7 @@ class DiaryEntryTile extends StatelessWidget {
           : IconButton(
               tooltip: AppLocalizations.of(context).delete,
               onPressed: () {
-                Provider.of<NutritionPlansProvider>(
-                  context,
-                  listen: false,
-                ).deleteLog(diaryEntry.id!, nutritionalPlan!.id!);
+                ref.read(nutritionProvider.notifier).deleteLog(diaryEntry.id!);
               },
               icon: const Icon(Icons.delete_outline),
               iconSize: ICON_SIZE_SMALL,

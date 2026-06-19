@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,23 +16,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:json_annotation/json_annotation.dart';
-import 'package:wger/helpers/json.dart';
+import 'package:drift/drift.dart';
+import 'package:wger/database/powersync/database.dart';
 
-part 'weight_entry.g.dart';
-
-@JsonSerializable()
 class WeightEntry {
-  @JsonKey(required: true)
-  int? id;
+  static const minValue = 30;
+  static const maxValue = 300;
 
-  @JsonKey(required: true, fromJson: stringToNum, toJson: numToString)
+  static const stepperSmall = 0.1;
+  static const stepperBig = 1;
+
+  /// Client-generated UUID, is `null` only before the first persist
+  String? id;
+
   late num weight = 0;
 
-  @JsonKey(required: true, fromJson: utcIso8601ToLocalDate, toJson: dateToUtcIso8601)
   late DateTime date;
 
-  WeightEntry({this.id, weight, DateTime? date}) {
+  WeightEntry({this.id, num? weight, DateTime? date}) {
     this.date = date ?? DateTime.now();
 
     if (weight != null) {
@@ -40,14 +41,17 @@ class WeightEntry {
     }
   }
 
-  WeightEntry copyWith({int? id, int? weight, DateTime? date}) => WeightEntry(
+  WeightEntry copyWith({String? id, int? weight, DateTime? date}) => WeightEntry(
     id: id,
     weight: weight ?? this.weight,
     date: date ?? this.date,
   );
 
-  // Boilerplate
-  factory WeightEntry.fromJson(Map<String, dynamic> json) => _$WeightEntryFromJson(json);
-
-  Map<String, dynamic> toJson() => _$WeightEntryToJson(this);
+  WeightEntryTableCompanion toCompanion() {
+    return WeightEntryTableCompanion(
+      id: id != null ? Value(id!) : const Value.absent(),
+      date: Value(date),
+      weight: Value(weight as double),
+    );
+  }
 }

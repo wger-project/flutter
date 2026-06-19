@@ -21,7 +21,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:network_image_mock/network_image_mock.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/trophies.dart';
+import 'package:wger/providers/trophy_notifier.dart';
 import 'package:wger/widgets/trophies/trophies_overview.dart';
 
 import '../../test_data/trophies.dart';

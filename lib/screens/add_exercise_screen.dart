@@ -1,14 +1,32 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (c)  2026 wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wger/core/error_dialogs.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/helpers/consts.dart';
-import 'package:wger/helpers/errors.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/exercises/exercise.dart';
-import 'package:wger/providers/add_exercise.dart';
-import 'package:wger/providers/exercises.dart';
-import 'package:wger/providers/user.dart';
+import 'package:wger/providers/account_notifier.dart';
+import 'package:wger/providers/add_exercise_notifier.dart';
+import 'package:wger/providers/exercises_notifier.dart';
+import 'package:wger/providers/network_provider.dart';
 import 'package:wger/screens/exercise_screen.dart';
 import 'package:wger/widgets/add_exercise/steps/step_1_basics.dart';
 import 'package:wger/widgets/add_exercise/steps/step_2_variations.dart';
@@ -22,20 +40,47 @@ import 'package:wger/widgets/user/forms.dart';
 
 import 'form_screen.dart';
 
-class AddExerciseScreen extends StatelessWidget {
+class AddExerciseScreen extends ConsumerWidget {
   const AddExerciseScreen({super.key});
 
   static const routeName = '/exercises/add';
 
   @override
-  Widget build(BuildContext context) {
-    final profile = context.read<UserProvider>().profile;
-
-    return profile!.isTrustworthy ? const AddExerciseStepper() : const EmailNotVerified();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isOnline = ref.watch(networkStatusProvider);
+    if (!isOnline) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(AppLocalizations.of(context).contributeExercise),
+        ),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.cloud_off, size: 48),
+                const SizedBox(height: 16),
+                Text(
+                  AppLocalizations.of(context).youAreOffline,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+    final account = ref.watch(accountProvider).value;
+    if (account == null) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+    return account.isTrustworthy ? const AddExerciseStepper() : const EmailNotVerified();
   }
 }
 
-class AddExerciseStepper extends StatefulWidget {
+class AddExerciseStepper extends ConsumerStatefulWidget {
   const AddExerciseStepper({super.key});
 
   static const STEPS_IN_FORM = 6;
@@ -46,7 +91,7 @@ class AddExerciseStepper extends StatefulWidget {
   _AddExerciseStepperState createState() => _AddExerciseStepperState();
 }
 
-class _AddExerciseStepperState extends State<AddExerciseStepper> {
+class _AddExerciseStepperState extends ConsumerState<AddExerciseStepper> {
   int _currentStep = 0;
   int lastStepIndex = AddExerciseStepper.STEPS_IN_FORM - 1;
   bool _isLoading = false;
@@ -94,13 +139,14 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
                           _isLoading = true;
                           errorWidget = const SizedBox.shrink();
                         });
-                        final addExerciseProvider = context.read<AddExerciseProvider>();
-                        final exerciseProvider = context.read<ExercisesProvider>();
+                        final addExerciseNotifier = ref.read(addExerciseProvider.notifier);
+                        // postExerciseToServer() clears the form, so capture the
+                        // name now for the success dialog's fallback.
+                        final submittedName = ref.read(addExerciseProvider).exerciseNameEn ?? '';
 
-                        Exercise? exercise;
+                        int? exerciseId;
                         try {
-                          final exerciseId = await addExerciseProvider.postExerciseToServer();
-                          exercise = await exerciseProvider.fetchAndSetExercise(exerciseId);
+                          exerciseId = await addExerciseNotifier.postExerciseToServer();
                         } on WgerHttpException catch (error) {
                           if (context.mounted) {
                             setState(() {
@@ -115,13 +161,23 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
                           }
                         }
 
-                        if (exercise == null || !context.mounted) {
+                        if (exerciseId == null || !context.mounted) {
                           return;
                         }
 
-                        final name = exercise
-                            .getTranslation(Localizations.localeOf(context).languageCode)
-                            .name;
+                        // The new exercise only reaches the local DB once it
+                        // syncs, so it may not be found yet. The dialog still
+                        // reports success, but we only offer to open it if it
+                        // is actually already available.
+                        final exercise = ref
+                            .read(exercisesProvider)
+                            .value
+                            ?.getByIdOrNull(exerciseId);
+                        final name =
+                            exercise
+                                ?.getTranslation(Localizations.localeOf(context).languageCode)
+                                .name ??
+                            submittedName;
 
                         return showDialog(
                           context: context,
@@ -134,11 +190,13 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
                                   child: Text(name),
                                   onPressed: () {
                                     Navigator.of(context).pop();
-                                    Navigator.pushReplacementNamed(
-                                      context,
-                                      ExerciseDetailScreen.routeName,
-                                      arguments: exercise,
-                                    );
+                                    if (exercise != null) {
+                                      Navigator.pushReplacementNamed(
+                                        context,
+                                        ExerciseDetailScreen.routeName,
+                                        arguments: exercise,
+                                      );
+                                    }
                                   },
                                 ),
                               ],
@@ -200,18 +258,19 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
             }
             _keys[_currentStep].currentState?.save();
 
-            final addExerciseProvider = context.read<AddExerciseProvider>();
+            final addExerciseState = ref.read(addExerciseProvider);
+            final addExerciseNotifier = ref.read(addExerciseProvider.notifier);
 
             // The Description and Translation steps require a language check
             if (_currentStep == AddExerciseStepper.DESCRIPTION_STEP_INDEX ||
                 _currentStep == AddExerciseStepper.TRANSLATION_STEP_INDEX) {
               final isTranslationStep = _currentStep == AddExerciseStepper.TRANSLATION_STEP_INDEX;
               final language = isTranslationStep
-                  ? addExerciseProvider.languageTranslation
-                  : addExerciseProvider.languageEn;
+                  ? addExerciseState.languageTranslation
+                  : addExerciseState.languageEn;
               final description = isTranslationStep
-                  ? addExerciseProvider.descriptionTrans
-                  : addExerciseProvider.descriptionEn;
+                  ? addExerciseState.descriptionTrans
+                  : addExerciseState.descriptionEn;
 
               // Only validate if there is text and a language to check against
               if (language != null && description != null && description.isNotEmpty) {
@@ -220,7 +279,7 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
                   _languageError = null;
                 });
 
-                final error = await addExerciseProvider.validateLanguage(
+                final error = await addExerciseNotifier.validateLanguage(
                   description,
                   language.shortName,
                 );
@@ -271,13 +330,11 @@ class _AddExerciseStepperState extends State<AddExerciseStepper> {
   }
 }
 
-class EmailNotVerified extends StatelessWidget {
+class EmailNotVerified extends ConsumerWidget {
   const EmailNotVerified({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final user = context.read<UserProvider>().profile;
-
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: EmptyAppBar(AppLocalizations.of(context).unVerifiedEmail),
       body: Container(
@@ -307,7 +364,7 @@ class EmailNotVerified extends StatelessWidget {
                           FormScreen.routeName,
                           arguments: FormScreenArguments(
                             AppLocalizations.of(context).userProfile,
-                            UserProfileForm(user!),
+                            const UserProfileForm(),
                           ),
                         );
                       },

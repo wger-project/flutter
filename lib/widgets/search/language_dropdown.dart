@@ -24,7 +24,7 @@ import 'package:wger/models/core/search_options.dart';
 /// Dropdown that lets the user pick which language(s) to search in.
 ///
 /// Shared between exercise and ingredient search filters. The widget is
-/// purely presentational — the caller passes the currently [selected] value
+/// purely presentational, the caller passes the currently [selected] value
 /// and an [onChanged] callback to react to user input.
 class SearchLanguageDropdown extends StatelessWidget {
   final SearchLanguage selected;

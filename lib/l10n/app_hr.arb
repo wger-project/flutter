@@ -937,7 +937,6 @@
     "errorViewDetails": "Tehnički detalji",
     "applicationLogs": "Dnevnici aplikacije",
     "errorCouldNotConnectToServer": "Neuspjelo povezivanje sa serverom",
-    "errorCouldNotConnectToServerDetails": "Aplikacija se nije mogla povezati sa serverom. Provjeri internetsku vezu ili URL servera i pokušaj ponovo. Ako problem ne nestane, obrati se administratoru servera.",
     "copyToClipboard": "Kopiraj u međuspremnik",
     "endDate": "Datum kraja",
     "@endDate": {
@@ -1185,5 +1184,13 @@
     "searchModeExact": "Točno",
     "@searchModeExact": {
         "description": "Label for the search mode that only matches exercises with this exact name"
+    },
+    "appLanguage": "Jezik aplikacije",
+    "@appLanguage": {
+        "description": "Label for the in-app language selector in settings"
+    },
+    "appLanguageSystem": "Standardne vrijednosti sustava",
+    "@appLanguageSystem": {
+        "description": "Dropdown entry that follows the device system language"
     }
 }

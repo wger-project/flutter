@@ -22,63 +22,71 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:provider/provider.dart';
-import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/session.dart';
-import 'package:wger/providers/gym_state.dart';
-import 'package:wger/providers/routines.dart';
+import 'package:wger/providers/gym_state_notifier.dart';
+import 'package:wger/providers/workout_session_repository.dart';
+import 'package:wger/widgets/core/datetime_input.dart';
 import 'package:wger/widgets/routines/gym_mode/session_page.dart';
 
 import '../../../test_data/routines.dart';
 import 'session_page_test.mocks.dart';
 
-@GenerateMocks([RoutinesProvider])
+@GenerateMocks([WorkoutSessionRepository])
 void main() {
-  final mockRoutinesProvider = MockRoutinesProvider();
+  late MockWorkoutSessionRepository mockRepository;
   late Routine testRoutine;
   late GymStateNotifier notifier;
   late ProviderContainer container;
 
   setUp(() {
     testRoutine = getTestRoutine();
-    container = ProviderContainer.test();
+    mockRepository = MockWorkoutSessionRepository();
+    when(mockRepository.watchAllDrift()).thenAnswer(
+      (_) => Stream<List<WorkoutSession>>.multi((controller) {
+        controller.add(testRoutine.sessions);
+      }),
+    );
+
+    container = ProviderContainer.test(
+      overrides: [
+        workoutSessionRepositoryProvider.overrideWithValue(mockRepository),
+      ],
+    );
     notifier = container.read(gymStateProvider.notifier);
     notifier.state = notifier.state.copyWith(
       showExercisePages: true,
       showTimerPages: true,
       dayId: 1,
       iteration: 1,
-      routine: getTestRoutine(),
+      routine: testRoutine,
     );
     notifier.calculatePages();
-    when(mockRoutinesProvider.editSession(any)).thenAnswer(
-      (_) => Future.value(testRoutine.sessions[0].session),
+    when(mockRepository.editLocalDrift(any)).thenAnswer(
+      (_) => Future.value(testRoutine.sessions[0]),
     );
-    when(mockRoutinesProvider.fetchAndSetRoutineFull(any)).thenAnswer(
-      (_) => Future.value(testRoutine),
-    );
+    // when(mockRoutinesProvider.fetchAndSetRoutineFull(any)).thenAnswer(
+    //   (_) => Future.value(testRoutine),
+    // );
   });
 
   Widget renderSessionPage({locale = 'en'}) {
-    final controller = PageController(initialPage: 0);
+    final pageController = PageController(initialPage: 0);
 
     return UncontrolledProviderScope(
       container: container,
-      child: ChangeNotifierProvider<RoutinesProvider>(
-        create: (context) => mockRoutinesProvider,
-        child: MaterialApp(
-          locale: Locale(locale),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: Scaffold(
-            body: PageView(
-              controller: controller,
-              children: [
-                SessionPage(controller),
-              ],
-            ),
+
+      child: MaterialApp(
+        locale: Locale(locale),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Scaffold(
+          body: PageView(
+            controller: pageController,
+            children: [
+              SessionPage(pageController),
+            ],
           ),
         ),
       ),
@@ -90,8 +98,8 @@ void main() {
       await tester.pumpWidget(renderSessionPage());
       await tester.pumpAndSettle();
 
-      expect(find.text('10:00'), findsOneWidget);
-      expect(find.text('12:34'), findsOneWidget);
+      expect(find.text('10:00 AM'), findsOneWidget);
+      expect(find.text('12:34 PM'), findsOneWidget);
       expect(find.text('This is a note'), findsOneWidget);
       final toggleButtons = tester.widget<ToggleButtons>(find.byType(ToggleButtons));
       expect(toggleButtons.isSelected[2], isTrue);
@@ -99,8 +107,8 @@ void main() {
   });
 
   testWidgets('Test that data from  session is loaded - null times', (WidgetTester tester) async {
-    testRoutine.sessions[0].session.timeStart = null;
-    testRoutine.sessions[0].session.timeEnd = null;
+    testRoutine.sessions[0].timeStart = null;
+    testRoutine.sessions[0].timeEnd = null;
 
     notifier.state = notifier.state.copyWith(routine: testRoutine);
     notifier.calculatePages();
@@ -111,18 +119,17 @@ void main() {
 
       final startTimeField = find.byKey(const ValueKey('time-start'));
       expect(startTimeField, findsOneWidget);
-      expect(tester.widget<TextFormField>(startTimeField).controller!.text, '');
+      expect(tester.widget<TimeInputWidget>(startTimeField).value, isNull);
 
       final endTimeField = find.byKey(const ValueKey('time-end'));
       expect(endTimeField, findsOneWidget);
-      expect(tester.widget<TextFormField>(endTimeField).controller!.text, '');
+      expect(tester.widget<TimeInputWidget>(endTimeField).value, isNull);
     });
   });
 
   testWidgets('Test correct default data (no existing session)', (WidgetTester tester) async {
     // Arrange
     testRoutine.sessions = [];
-    final timeNow = timeToString(TimeOfDay.now())!;
     notifier.state = notifier.state.copyWith(
       startTime: const TimeOfDay(hour: 13, minute: 35),
     );
@@ -132,7 +139,8 @@ void main() {
     await tester.pumpAndSettle();
 
     // Assert
-    expect(find.text('13:35'), findsOneWidget);
+    final timeNow = TimeOfDay.now().format(tester.element(find.byType(TextFormField).first));
+    expect(find.text('1:35 PM'), findsOneWidget);
     expect(find.text(timeNow), findsOneWidget);
     final toggleButtons = tester.widget<ToggleButtons>(find.byType(ToggleButtons));
     expect(toggleButtons.isSelected[1], isTrue);
@@ -144,10 +152,11 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const ValueKey('save-button')));
       final captured =
-          verify(mockRoutinesProvider.editSession(captureAny)).captured.single as WorkoutSession;
+          verify(mockRepository.editLocalDrift(captureAny as dynamic)).captured.single
+              as WorkoutSession;
 
-      expect(captured.id, 1);
-      expect(captured.impression, 3);
+      expect(captured.id, '1');
+      expect(captured.impression, WorkoutImpression.good);
       expect(captured.notes, equals('This is a note'));
       expect(captured.timeStart, equals(const TimeOfDay(hour: 10, minute: 0)));
       expect(captured.timeEnd, equals(const TimeOfDay(hour: 12, minute: 34)));

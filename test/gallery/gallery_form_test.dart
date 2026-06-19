@@ -17,32 +17,40 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:network_image_mock/network_image_mock.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/gallery/image.dart' as gallery;
-import 'package:wger/providers/gallery.dart';
+import 'package:wger/models/gallery/image.dart';
+import 'package:wger/providers/gallery_repository.dart';
+import 'package:wger/providers/network_provider.dart';
+import 'package:wger/widgets/core/form_submit_button.dart';
 import 'package:wger/widgets/gallery/forms.dart';
 
 import '../../test_data/gallery.dart';
 import 'gallery_form_test.mocks.dart';
 
-@GenerateMocks([GalleryProvider])
+@GenerateMocks([GalleryRepository])
 void main() {
-  late gallery.Image image;
-  final mockGalleryProvider = MockGalleryProvider();
+  late GalleryImage image;
+  late MockGalleryRepository mockGalleryRepository;
 
   setUp(() {
     image = getTestImages()[0];
+    mockGalleryRepository = MockGalleryRepository();
+    when(mockGalleryRepository.watchAllDrift()).thenAnswer((_) => Stream.value(const []));
+    when(mockGalleryRepository.editLocalDrift(any)).thenAnswer((_) async {});
   });
 
-  Widget createScreen({useImage = true, locale = 'en'}) {
-    return ChangeNotifierProvider<GalleryProvider>(
-      create: (context) => mockGalleryProvider,
+  Widget createScreen({useImage = true, locale = 'en', bool isOnline = true}) {
+    return ProviderScope(
+      overrides: [
+        networkStatusProvider.overrideWithValue(isOnline),
+        galleryRepositoryProvider.overrideWithValue(mockGalleryRepository),
+      ],
       child: MaterialApp(
         locale: Locale(locale),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -69,8 +77,8 @@ void main() {
     await tester.pump();
     await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
 
-    verifyNever(mockGalleryProvider.addImage(any, any));
-    verify(mockGalleryProvider.editImage(any, any));
+    verifyNever(mockGalleryRepository.addImageServer(any, any));
+    verify(mockGalleryRepository.editLocalDrift(any));
   });
 
   testWidgets('Test opening the form for a new image', (WidgetTester tester) async {
@@ -79,5 +87,47 @@ void main() {
 
     expect(find.text('Please select an image'), findsOneWidget);
     expect(find.byIcon(Icons.photo_camera), findsOneWidget);
+  });
+
+  testWidgets('Submit stays enabled offline for a metadata-only edit', (
+    WidgetTester tester,
+  ) async {
+    // Editing an existing image without replacing the photo syncs through
+    // PowerSync, so it works offline.
+    await mockNetworkImagesFor(
+      () => tester.pumpWidget(createScreen(useImage: true, isOnline: false)),
+    );
+    await tester.pumpAndSettle();
+
+    final button = tester.widget<FormSubmitButton>(
+      find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)),
+    );
+    expect(button.enabled, isTrue);
+  });
+
+  testWidgets('Submit is disabled offline for a new image', (WidgetTester tester) async {
+    // Creating an image is a binary REST upload and needs connectivity.
+    await mockNetworkImagesFor(
+      () => tester.pumpWidget(createScreen(useImage: false, isOnline: false)),
+    );
+    await tester.pumpAndSettle();
+
+    final button = tester.widget<FormSubmitButton>(
+      find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)),
+    );
+    expect(button.enabled, isFalse);
+  });
+
+  testWidgets('Description field caps length at the backend max', (WidgetTester tester) async {
+    await mockNetworkImagesFor(() => tester.pumpWidget(createScreen(useImage: true)));
+    await tester.pump();
+
+    final textField = tester.widget<TextField>(
+      find.descendant(
+        of: find.byKey(const Key('field-description')),
+        matching: find.byType(TextField),
+      ),
+    );
+    expect(textField.maxLength, GalleryImage.MAX_LENGTH_DESCRIPTION);
   });
 }

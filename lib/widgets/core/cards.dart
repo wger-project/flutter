@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) wger Team
+ * Copyright (c) 2020, 2020- wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -31,7 +31,27 @@ class InfoCard extends StatelessWidget {
       color: theme.colorScheme.primaryContainer,
       child: ListTile(
         leading: Icon(Icons.info, color: theme.colorScheme.primary),
-        subtitle: Text(text),
+        title: Text(text),
+      ),
+    );
+  }
+}
+
+class WarningCard extends StatelessWidget {
+  final String text;
+
+  const WarningCard({super.key, this.text = ''});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Card(
+      color: theme.colorScheme.errorContainer,
+      child: ListTile(
+        dense: true,
+        leading: Icon(Icons.info_outline, color: theme.colorScheme.primary),
+        title: Text(text),
       ),
     );
   }

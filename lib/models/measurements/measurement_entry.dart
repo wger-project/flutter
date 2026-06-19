@@ -1,48 +1,64 @@
-import 'package:equatable/equatable.dart';
-import 'package:json_annotation/json_annotation.dart';
-import 'package:wger/helpers/json.dart';
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (c)  2026 wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
-part 'measurement_entry.g.dart';
+import 'package:drift/drift.dart' hide JsonKey;
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:wger/database/powersync/database.dart';
 
-@JsonSerializable()
-class MeasurementEntry extends Equatable {
-  @JsonKey(required: true)
-  final int? id;
+part 'measurement_entry.freezed.dart';
 
-  @JsonKey(required: true)
-  final int category;
+@freezed
+class MeasurementEntry with _$MeasurementEntry {
+  static const minValue = 0;
+  static const maxValue = 1000;
 
-  @JsonKey(required: true, toJson: dateToYYYYMMDD)
+  /// Client-generated UUID, is `null` only before the first persist
+  @override
+  final String? id;
+
+  @override
+  final String categoryId;
+
+  @override
   final DateTime date;
 
-  @JsonKey(required: true)
+  @override
   final num value;
 
-  @JsonKey(required: true, defaultValue: '')
+  @override
   final String notes;
 
-  const MeasurementEntry({
-    required this.id,
-    required this.category,
+  MeasurementEntry({
+    this.id,
+    required this.categoryId,
     required this.date,
     required this.value,
     required this.notes,
   });
 
-  MeasurementEntry copyWith({int? id, int? category, DateTime? date, num? value, String? notes}) =>
-      MeasurementEntry(
-        id: id ?? this.id,
-        category: category ?? this.category,
-        date: date ?? this.date,
-        value: value ?? this.value,
-        notes: notes ?? this.notes,
-      );
-
   // Boilerplate
-  factory MeasurementEntry.fromJson(Map<String, dynamic> json) => _$MeasurementEntryFromJson(json);
-
-  Map<String, dynamic> toJson() => _$MeasurementEntryToJson(this);
-
-  @override
-  List<Object?> get props => [id, category, date, value, notes];
+  MeasurementEntryTableCompanion toCompanion() {
+    return MeasurementEntryTableCompanion(
+      id: id != null ? Value(id!) : const Value.absent(),
+      categoryId: Value(categoryId),
+      date: Value(date),
+      value: Value(value.toDouble()),
+      notes: Value(notes),
+    );
+  }
 }

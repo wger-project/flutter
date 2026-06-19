@@ -1,26 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
-import 'package:wger/providers/exercises.dart';
+import 'package:wger/providers/exercise_filters_notifier.dart';
 import 'package:wger/widgets/core/app_bar.dart';
+import 'package:wger/widgets/core/progress_indicator.dart';
 import 'package:wger/widgets/exercises/filter_row.dart';
 import 'package:wger/widgets/exercises/list_tile.dart';
 
-class ExercisesScreen extends StatefulWidget {
+class ExercisesScreen extends ConsumerWidget {
   const ExercisesScreen({super.key});
 
   static const routeName = '/exercises';
 
   @override
-  _ExercisesScreenState createState() => _ExercisesScreenState();
-}
-
-class _ExercisesScreenState extends State<ExercisesScreen> {
-  @override
-  Widget build(BuildContext context) {
-    final exercisesList = Provider.of<ExercisesProvider>(context).filteredExercises;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final exerciseState = ref.watch(exerciseListFiltersProvider);
 
     return Scaffold(
       appBar: EmptyAppBar(AppLocalizations.of(context).exercises),
@@ -29,15 +25,11 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
           children: [
             const FilterRow(),
             Expanded(
-              child: exercisesList.isEmpty
-                  ? const Center(
-                      child: SizedBox(
-                        height: 30,
-                        width: 30,
-                        child: CircularProgressIndicator(),
-                      ),
-                    )
-                  : _ExercisesList(exerciseList: exercisesList),
+              child: exerciseState.isLoading
+                  ? const BoxedProgressIndicator()
+                  : _ExercisesList(
+                      exerciseList: exerciseState.filteredExercises,
+                    ),
             ),
           ],
         ),

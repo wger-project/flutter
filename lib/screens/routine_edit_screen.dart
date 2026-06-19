@@ -17,25 +17,41 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
-import 'package:wger/providers/routines.dart';
+import 'package:wger/providers/routines_notifier.dart';
 import 'package:wger/widgets/core/app_bar.dart';
+import 'package:wger/widgets/core/async_value_widget.dart';
+import 'package:wger/widgets/core/error.dart';
+import 'package:wger/widgets/core/object_gone_redirect.dart';
 import 'package:wger/widgets/routines/routine_edit.dart';
 
-class RoutineEditScreen extends StatelessWidget {
+class RoutineEditScreen extends ConsumerWidget {
   const RoutineEditScreen();
 
   static const routeName = '/routine-edit';
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final routineId = ModalRoute.of(context)!.settings.arguments as int;
-    final routine = Provider.of<RoutinesProvider>(context).findById(routineId);
 
-    return Scaffold(
-      appBar: EmptyAppBar(routine.name),
-      body: WidescreenWrapper(child: RoutineEdit(routine)),
+    return AsyncValueWidget<RoutinesState>(
+      value: ref.watch(routinesRiverpodProvider),
+      loggerName: 'RoutineEditScreen',
+      loading: const Scaffold(body: Center(child: CircularProgressIndicator())),
+      errorBuilder: (e, st) => Scaffold(
+        body: Center(child: StreamErrorIndicator(e, stacktrace: st)),
+      ),
+      data: (state) {
+        final routine = state.findByIdOrNull(routineId);
+        if (routine == null) {
+          return objectGoneRedirect(context);
+        }
+        return Scaffold(
+          appBar: EmptyAppBar(routine.name),
+          body: WidescreenWrapper(child: RoutineEdit(routine)),
+        );
+      },
     );
   }
 }

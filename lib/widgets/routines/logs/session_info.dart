@@ -57,7 +57,7 @@ class _SessionInfoState extends State<SessionInfo> {
           ),
           if (editMode)
             SessionForm(
-              widget._session.routineId,
+              widget._session.routineId!,
               onSaved: () => setState(() => editMode = false),
               session: widget._session,
             )
@@ -66,7 +66,7 @@ class _SessionInfoState extends State<SessionInfo> {
               children: [
                 SessionRow(
                   label: i18n.impression,
-                  value: widget._session.impressionAsString(context),
+                  value: widget._session.impression.localized(context),
                 ),
                 SessionRow(
                   label: i18n.duration,
@@ -74,7 +74,9 @@ class _SessionInfoState extends State<SessionInfo> {
                 ),
                 SessionRow(
                   label: i18n.notes,
-                  value: widget._session.notes.isNotEmpty ? widget._session.notes : '-/-',
+                  value: (widget._session.notes != null && widget._session.notes!.isNotEmpty)
+                      ? widget._session.notes!
+                      : '-/-',
                 ),
               ],
             ),

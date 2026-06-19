@@ -265,8 +265,6 @@
     "@applicationLogs": {},
     "errorCouldNotConnectToServer": "اتصال به سرور امکان پذیر نیست",
     "@errorCouldNotConnectToServer": {},
-    "errorCouldNotConnectToServerDetails": "برنامه نمی تواند به سرور وصل شود. لطفاً اتصال اینترنت یا URL سرور خود را بررسی کرده و دوباره امتحان کنید. اگر مشکل ادامه پیدا کرد، با مدیر سرور تماس بگیرید.",
-    "@errorCouldNotConnectToServerDetails": {},
     "copyToClipboard": "کپی در کلیپ بورد",
     "@copyToClipboard": {},
     "weight": "وزن",

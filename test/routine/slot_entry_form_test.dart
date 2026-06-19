@@ -17,15 +17,16 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:provider/provider.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/base_config.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
-import 'package:wger/providers/routines.dart';
+import 'package:wger/providers/routines_notifier.dart';
+import 'package:wger/providers/routines_repository.dart';
 import 'package:wger/widgets/routines/forms/repetitions.dart';
 import 'package:wger/widgets/routines/forms/rir.dart';
 import 'package:wger/widgets/routines/forms/slot_entry.dart';
@@ -33,26 +34,36 @@ import 'package:wger/widgets/routines/forms/weight.dart';
 
 import '../../test_data/routines.dart';
 import './slot_entry_form_test.mocks.dart';
+import 'helpers/routine_form_test_overrides.dart';
 
-@GenerateMocks([RoutinesProvider])
+@GenerateMocks([RoutinesRepository])
 void main() {
-  var mockRoutinesProvider = MockRoutinesProvider();
-
-  final slotEntry = getTestRoutine().days[0].slots[0].entries[0];
+  late MockRoutinesRepository mockRoutinesRepository;
+  late SlotEntry slotEntry;
 
   setUp(() {
-    mockRoutinesProvider = MockRoutinesProvider();
-    when(mockRoutinesProvider.weightUnits).thenReturn(testWeightUnits);
-    when(mockRoutinesProvider.findWeightUnitById(any)).thenReturn(testWeightUnit1);
-    when(mockRoutinesProvider.repetitionUnits).thenReturn(testRepetitionUnits);
-    when(mockRoutinesProvider.findRepetitionUnitById(any)).thenReturn(testRepetitionUnit1);
+    slotEntry = getTestRoutine().days[0].slots[0].entries[0];
+
+    mockRoutinesRepository = MockRoutinesRepository();
+    when(
+      mockRoutinesRepository.fetchAndSetRoutineFullServer(any),
+    ).thenAnswer((_) => Future.value(getTestRoutine()));
   });
 
   Widget renderWidget({simpleMode = true, locale = 'en', SlotEntry? entry}) {
     final key = GlobalKey<NavigatorState>();
 
-    return ChangeNotifierProvider<RoutinesProvider>(
-      create: (context) => mockRoutinesProvider,
+    return ProviderScope(
+      overrides: [
+        routineWeightUnitProvider.overrideWithValue(
+          const AsyncValue.data(testWeightUnits),
+        ),
+        routineRepetitionUnitProvider.overrideWithValue(
+          const AsyncValue.data(testRepetitionUnits),
+        ),
+        routinesRepositoryProvider.overrideWithValue(mockRoutinesRepository),
+        ...exerciseAndSessionRepoOverrides(),
+      ],
       child: MaterialApp(
         locale: Locale(locale),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -122,7 +133,7 @@ void main() {
     await tester.pumpAndSettle();
 
     verify(
-      mockRoutinesProvider.editSlotEntry(
+      mockRoutinesRepository.editSlotEntryServer(
         argThat(
           isA<SlotEntry>()
               .having((d) => d.id, 'id', null)
@@ -130,12 +141,11 @@ void main() {
               .having((d) => d.order, 'order', 1)
               .having((d) => d.type, 'type', SlotEntryType.myo),
         ),
-        1,
       ),
     );
 
     final verification = verify(
-      mockRoutinesProvider.handleConfig(captureAny, captureAny, captureAny),
+      mockRoutinesRepository.handleConfigServer(captureAny, captureAny, captureAny),
     );
     final capturedArgs = verification.captured; // List with 8*3 arguments (3 per call)
 
@@ -158,6 +168,39 @@ void main() {
     expect(capturedArgs[(6 * 3) + 2], ConfigType.maxRest);
   });
 
+  testWidgets('rejects a weight value above the backend cap', (WidgetTester tester) async {
+    await tester.pumpWidget(renderWidget(simpleMode: false));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(
+      find.byKey(const ValueKey('field-weight')),
+      '${BaseConfig.MAX_VALUE + 1}',
+    );
+
+    await tester.tap(find.byKey(const ValueKey(SUBMIT_BUTTON_KEY_NAME)));
+    await tester.pumpAndSettle();
+
+    // Validation blocks the save, so nothing reaches the repository.
+    verifyNever(mockRoutinesRepository.handleConfigServer(any, any, any));
+    verifyNever(mockRoutinesRepository.editSlotEntryServer(any));
+  });
+
+  testWidgets('rejects a rest value above the backend cap', (WidgetTester tester) async {
+    await tester.pumpWidget(renderWidget(simpleMode: false));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(
+      find.byKey(const ValueKey('field-rest')),
+      '${BaseConfig.MAX_REST + 1}',
+    );
+
+    await tester.tap(find.byKey(const ValueKey(SUBMIT_BUTTON_KEY_NAME)));
+    await tester.pumpAndSettle();
+
+    verifyNever(mockRoutinesRepository.handleConfigServer(any, any, any));
+    verifyNever(mockRoutinesRepository.editSlotEntryServer(any));
+  });
+
   testWidgets('Fractional weight survives a no-op save in a comma-decimal locale', (
     WidgetTester tester,
   ) async {
@@ -175,7 +218,7 @@ void main() {
     await tester.pumpAndSettle();
 
     final capturedArgs = verify(
-      mockRoutinesProvider.handleConfig(captureAny, captureAny, captureAny),
+      mockRoutinesRepository.handleConfigServer(captureAny, captureAny, captureAny),
     ).captured;
 
     expect(capturedArgs[(1 * 3) + 2], ConfigType.weight);
@@ -194,7 +237,7 @@ void main() {
     await tester.pumpAndSettle();
 
     final capturedArgs = verify(
-      mockRoutinesProvider.handleConfig(captureAny, captureAny, captureAny),
+      mockRoutinesRepository.handleConfigServer(captureAny, captureAny, captureAny),
     ).captured;
 
     expect(capturedArgs[(7 * 3) + 2], ConfigType.rir);

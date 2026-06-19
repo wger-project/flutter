@@ -3,17 +3,17 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i6;
-import 'dart:ui' as _i9;
+import 'dart:async' as _i8;
 
-import 'package:flutter/material.dart' as _i8;
-import 'package:http/http.dart' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:shared_preferences/shared_preferences.dart' as _i5;
-import 'package:wger/models/user/profile.dart' as _i10;
-import 'package:wger/providers/auth.dart' as _i2;
-import 'package:wger/providers/base_provider.dart' as _i4;
-import 'package:wger/providers/user.dart' as _i7;
+import 'package:wger/models/workouts/base_config.dart' as _i6;
+import 'package:wger/models/workouts/day.dart' as _i3;
+import 'package:wger/models/workouts/repetition_unit.dart' as _i10;
+import 'package:wger/models/workouts/routine.dart' as _i2;
+import 'package:wger/models/workouts/slot.dart' as _i4;
+import 'package:wger/models/workouts/slot_entry.dart' as _i5;
+import 'package:wger/models/workouts/weight_unit.dart' as _i9;
+import 'package:wger/providers/routines_repository.dart' as _i7;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -30,368 +30,240 @@ import 'package:wger/providers/user.dart' as _i7;
 // ignore_for_file: subtype_of_sealed_class
 // ignore_for_file: invalid_use_of_internal_member
 
-class _FakeAuthProvider_0 extends _i1.SmartFake implements _i2.AuthProvider {
-  _FakeAuthProvider_0(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+class _FakeRoutine_0 extends _i1.SmartFake implements _i2.Routine {
+  _FakeRoutine_0(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
-class _FakeClient_1 extends _i1.SmartFake implements _i3.Client {
-  _FakeClient_1(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+class _FakeDay_1 extends _i1.SmartFake implements _i3.Day {
+  _FakeDay_1(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
-class _FakeUri_2 extends _i1.SmartFake implements Uri {
-  _FakeUri_2(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+class _FakeSlot_2 extends _i1.SmartFake implements _i4.Slot {
+  _FakeSlot_2(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
-class _FakeResponse_3 extends _i1.SmartFake implements _i3.Response {
-  _FakeResponse_3(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+class _FakeSlotEntry_3 extends _i1.SmartFake implements _i5.SlotEntry {
+  _FakeSlotEntry_3(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
-class _FakeWgerBaseProvider_4 extends _i1.SmartFake
-    implements _i4.WgerBaseProvider {
-  _FakeWgerBaseProvider_4(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+class _FakeBaseConfig_4 extends _i1.SmartFake implements _i6.BaseConfig {
+  _FakeBaseConfig_4(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
-class _FakeSharedPreferencesAsync_5 extends _i1.SmartFake
-    implements _i5.SharedPreferencesAsync {
-  _FakeSharedPreferencesAsync_5(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
-}
-
-/// A class which mocks [WgerBaseProvider].
+/// A class which mocks [RoutinesRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockWgerBaseProvider extends _i1.Mock implements _i4.WgerBaseProvider {
-  MockWgerBaseProvider() {
+class MockRoutinesRepository extends _i1.Mock implements _i7.RoutinesRepository {
+  MockRoutinesRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i2.AuthProvider get auth =>
+  _i8.Future<_i2.Routine> fetchAndSetRoutineFullServer(int? routineId) =>
       (super.noSuchMethod(
-            Invocation.getter(#auth),
-            returnValue: _FakeAuthProvider_0(this, Invocation.getter(#auth)),
-          )
-          as _i2.AuthProvider);
-
-  @override
-  _i3.Client get client =>
-      (super.noSuchMethod(
-            Invocation.getter(#client),
-            returnValue: _FakeClient_1(this, Invocation.getter(#client)),
-          )
-          as _i3.Client);
-
-  @override
-  set auth(_i2.AuthProvider? value) => super.noSuchMethod(
-    Invocation.setter(#auth, value),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  set client(_i3.Client? value) => super.noSuchMethod(
-    Invocation.setter(#client, value),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  Map<String, String> getDefaultHeaders({
-    bool? includeAuth = false,
-    String? language,
-  }) =>
-      (super.noSuchMethod(
-            Invocation.method(#getDefaultHeaders, [], {
-              #includeAuth: includeAuth,
-              #language: language,
-            }),
-            returnValue: <String, String>{},
-          )
-          as Map<String, String>);
-
-  @override
-  Uri makeUrl(
-    String? path, {
-    int? id,
-    String? objectMethod,
-    Map<String, dynamic>? query,
-  }) =>
-      (super.noSuchMethod(
-            Invocation.method(
-              #makeUrl,
-              [path],
-              {#id: id, #objectMethod: objectMethod, #query: query},
-            ),
-            returnValue: _FakeUri_2(
-              this,
-              Invocation.method(
-                #makeUrl,
-                [path],
-                {#id: id, #objectMethod: objectMethod, #query: query},
-              ),
-            ),
-          )
-          as Uri);
-
-  @override
-  _i6.Future<dynamic> fetch(
-    Uri? uri, {
-    int? maxRetries = 3,
-    Duration? initialDelay = const Duration(milliseconds: 250),
-    Duration? timeout = const Duration(seconds: 15),
-    String? language,
-  }) =>
-      (super.noSuchMethod(
-            Invocation.method(
-              #fetch,
-              [uri],
-              {
-                #maxRetries: maxRetries,
-                #initialDelay: initialDelay,
-                #timeout: timeout,
-                #language: language,
-              },
-            ),
-            returnValue: _i6.Future<dynamic>.value(),
-          )
-          as _i6.Future<dynamic>);
-
-  @override
-  _i6.Future<List<dynamic>> fetchPaginated(
-    Uri? uri, {
-    String? language,
-    Duration? timeout = const Duration(seconds: 15),
-  }) =>
-      (super.noSuchMethod(
-            Invocation.method(
-              #fetchPaginated,
-              [uri],
-              {#language: language, #timeout: timeout},
-            ),
-            returnValue: _i6.Future<List<dynamic>>.value(<dynamic>[]),
-          )
-          as _i6.Future<List<dynamic>>);
-
-  @override
-  _i6.Future<Map<String, dynamic>> post(Map<String, dynamic>? data, Uri? uri) =>
-      (super.noSuchMethod(
-            Invocation.method(#post, [data, uri]),
-            returnValue: _i6.Future<Map<String, dynamic>>.value(
-              <String, dynamic>{},
-            ),
-          )
-          as _i6.Future<Map<String, dynamic>>);
-
-  @override
-  _i6.Future<Map<String, dynamic>> patch(
-    Map<String, dynamic>? data,
-    Uri? uri,
-  ) =>
-      (super.noSuchMethod(
-            Invocation.method(#patch, [data, uri]),
-            returnValue: _i6.Future<Map<String, dynamic>>.value(
-              <String, dynamic>{},
-            ),
-          )
-          as _i6.Future<Map<String, dynamic>>);
-
-  @override
-  _i6.Future<_i3.Response> deleteRequest(String? url, int? id) =>
-      (super.noSuchMethod(
-            Invocation.method(#deleteRequest, [url, id]),
-            returnValue: _i6.Future<_i3.Response>.value(
-              _FakeResponse_3(
+            Invocation.method(#fetchAndSetRoutineFullServer, [routineId]),
+            returnValue: _i8.Future<_i2.Routine>.value(
+              _FakeRoutine_0(
                 this,
-                Invocation.method(#deleteRequest, [url, id]),
+                Invocation.method(#fetchAndSetRoutineFullServer, [routineId]),
               ),
             ),
           )
-          as _i6.Future<_i3.Response>);
-}
-
-/// A class which mocks [UserProvider].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockUserProvider extends _i1.Mock implements _i7.UserProvider {
-  MockUserProvider() {
-    _i1.throwOnMissingStub(this);
-  }
+          as _i8.Future<_i2.Routine>);
 
   @override
-  _i8.ThemeMode get themeMode =>
+  _i8.Future<_i2.Routine> addRoutineServer(_i2.Routine? routine) =>
       (super.noSuchMethod(
-            Invocation.getter(#themeMode),
-            returnValue: _i8.ThemeMode.system,
-          )
-          as _i8.ThemeMode);
-
-  @override
-  _i4.WgerBaseProvider get baseProvider =>
-      (super.noSuchMethod(
-            Invocation.getter(#baseProvider),
-            returnValue: _FakeWgerBaseProvider_4(
-              this,
-              Invocation.getter(#baseProvider),
+            Invocation.method(#addRoutineServer, [routine]),
+            returnValue: _i8.Future<_i2.Routine>.value(
+              _FakeRoutine_0(
+                this,
+                Invocation.method(#addRoutineServer, [routine]),
+              ),
             ),
           )
-          as _i4.WgerBaseProvider);
+          as _i8.Future<_i2.Routine>);
 
   @override
-  _i5.SharedPreferencesAsync get prefs =>
+  _i8.Stream<List<_i2.Routine>> watchAllDrift() =>
       (super.noSuchMethod(
-            Invocation.getter(#prefs),
-            returnValue: _FakeSharedPreferencesAsync_5(
-              this,
-              Invocation.getter(#prefs),
+            Invocation.method(#watchAllDrift, []),
+            returnValue: _i8.Stream<List<_i2.Routine>>.empty(),
+          )
+          as _i8.Stream<List<_i2.Routine>>);
+
+  @override
+  _i8.Future<void> editLocalDrift(_i2.Routine? routine) =>
+      (super.noSuchMethod(
+            Invocation.method(#editLocalDrift, [routine]),
+            returnValue: _i8.Future<void>.value(),
+            returnValueForMissingStub: _i8.Future<void>.value(),
+          )
+          as _i8.Future<void>);
+
+  @override
+  _i8.Future<void> deleteLocalDrift(int? id) =>
+      (super.noSuchMethod(
+            Invocation.method(#deleteLocalDrift, [id]),
+            returnValue: _i8.Future<void>.value(),
+            returnValueForMissingStub: _i8.Future<void>.value(),
+          )
+          as _i8.Future<void>);
+
+  @override
+  _i8.Stream<List<_i9.WeightUnit>> watchWeightUnitsDrift() =>
+      (super.noSuchMethod(
+            Invocation.method(#watchWeightUnitsDrift, []),
+            returnValue: _i8.Stream<List<_i9.WeightUnit>>.empty(),
+          )
+          as _i8.Stream<List<_i9.WeightUnit>>);
+
+  @override
+  _i8.Stream<List<_i10.RepetitionUnit>> watchRepetitionUnitsDrift() =>
+      (super.noSuchMethod(
+            Invocation.method(#watchRepetitionUnitsDrift, []),
+            returnValue: _i8.Stream<List<_i10.RepetitionUnit>>.empty(),
+          )
+          as _i8.Stream<List<_i10.RepetitionUnit>>);
+
+  @override
+  _i8.Future<_i3.Day> addDayServer(_i3.Day? day) =>
+      (super.noSuchMethod(
+            Invocation.method(#addDayServer, [day]),
+            returnValue: _i8.Future<_i3.Day>.value(
+              _FakeDay_1(this, Invocation.method(#addDayServer, [day])),
             ),
           )
-          as _i5.SharedPreferencesAsync);
+          as _i8.Future<_i3.Day>);
 
   @override
-  List<_i7.DashboardWidget> get dashboardWidgets =>
+  _i8.Future<void> editDayServer(_i3.Day? day) =>
       (super.noSuchMethod(
-            Invocation.getter(#dashboardWidgets),
-            returnValue: <_i7.DashboardWidget>[],
+            Invocation.method(#editDayServer, [day]),
+            returnValue: _i8.Future<void>.value(),
+            returnValueForMissingStub: _i8.Future<void>.value(),
           )
-          as List<_i7.DashboardWidget>);
+          as _i8.Future<void>);
 
   @override
-  List<_i7.DashboardWidget> get allDashboardWidgets =>
+  _i8.Future<void> deleteDayServer(int? dayId) =>
       (super.noSuchMethod(
-            Invocation.getter(#allDashboardWidgets),
-            returnValue: <_i7.DashboardWidget>[],
+            Invocation.method(#deleteDayServer, [dayId]),
+            returnValue: _i8.Future<void>.value(),
+            returnValueForMissingStub: _i8.Future<void>.value(),
           )
-          as List<_i7.DashboardWidget>);
+          as _i8.Future<void>);
 
   @override
-  set themeMode(_i8.ThemeMode? value) => super.noSuchMethod(
-    Invocation.setter(#themeMode, value),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  set userLocale(_i9.Locale? value) => super.noSuchMethod(
-    Invocation.setter(#userLocale, value),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  set prefs(_i5.SharedPreferencesAsync? value) => super.noSuchMethod(
-    Invocation.setter(#prefs, value),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  set profile(_i10.Profile? value) => super.noSuchMethod(
-    Invocation.setter(#profile, value),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  bool get hasListeners =>
-      (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false)
-          as bool);
-
-  @override
-  void clear() => super.noSuchMethod(
-    Invocation.method(#clear, []),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  bool isDashboardWidgetVisible(_i7.DashboardWidget? key) =>
+  _i8.Future<_i4.Slot> addSlotServer(_i4.Slot? slot) =>
       (super.noSuchMethod(
-            Invocation.method(#isDashboardWidgetVisible, [key]),
-            returnValue: false,
+            Invocation.method(#addSlotServer, [slot]),
+            returnValue: _i8.Future<_i4.Slot>.value(
+              _FakeSlot_2(this, Invocation.method(#addSlotServer, [slot])),
+            ),
           )
-          as bool);
+          as _i8.Future<_i4.Slot>);
 
   @override
-  _i6.Future<void> setDashboardWidgetVisible(
-    _i7.DashboardWidget? key,
-    bool? visible,
+  _i8.Future<void> deleteSlotServer(int? slotId) =>
+      (super.noSuchMethod(
+            Invocation.method(#deleteSlotServer, [slotId]),
+            returnValue: _i8.Future<void>.value(),
+            returnValueForMissingStub: _i8.Future<void>.value(),
+          )
+          as _i8.Future<void>);
+
+  @override
+  _i8.Future<void> editSlotServer(_i4.Slot? slot) =>
+      (super.noSuchMethod(
+            Invocation.method(#editSlotServer, [slot]),
+            returnValue: _i8.Future<void>.value(),
+            returnValueForMissingStub: _i8.Future<void>.value(),
+          )
+          as _i8.Future<void>);
+
+  @override
+  _i8.Future<_i5.SlotEntry> addSlotEntryServer(_i5.SlotEntry? entry) =>
+      (super.noSuchMethod(
+            Invocation.method(#addSlotEntryServer, [entry]),
+            returnValue: _i8.Future<_i5.SlotEntry>.value(
+              _FakeSlotEntry_3(
+                this,
+                Invocation.method(#addSlotEntryServer, [entry]),
+              ),
+            ),
+          )
+          as _i8.Future<_i5.SlotEntry>);
+
+  @override
+  _i8.Future<void> deleteSlotEntryServer(int? id) =>
+      (super.noSuchMethod(
+            Invocation.method(#deleteSlotEntryServer, [id]),
+            returnValue: _i8.Future<void>.value(),
+            returnValueForMissingStub: _i8.Future<void>.value(),
+          )
+          as _i8.Future<void>);
+
+  @override
+  _i8.Future<void> editSlotEntryServer(_i5.SlotEntry? entry) =>
+      (super.noSuchMethod(
+            Invocation.method(#editSlotEntryServer, [entry]),
+            returnValue: _i8.Future<void>.value(),
+            returnValueForMissingStub: _i8.Future<void>.value(),
+          )
+          as _i8.Future<void>);
+
+  @override
+  _i8.Future<_i6.BaseConfig> editConfigServer(
+    _i6.BaseConfig? config,
+    _i5.ConfigType? type,
   ) =>
       (super.noSuchMethod(
-            Invocation.method(#setDashboardWidgetVisible, [key, visible]),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            Invocation.method(#editConfigServer, [config, type]),
+            returnValue: _i8.Future<_i6.BaseConfig>.value(
+              _FakeBaseConfig_4(
+                this,
+                Invocation.method(#editConfigServer, [config, type]),
+              ),
+            ),
           )
-          as _i6.Future<void>);
+          as _i8.Future<_i6.BaseConfig>);
 
   @override
-  _i6.Future<void> setDashboardOrder(int? oldIndex, int? newIndex) =>
+  _i8.Future<_i6.BaseConfig> addConfigServer(
+    _i6.BaseConfig? config,
+    _i5.ConfigType? type,
+  ) =>
       (super.noSuchMethod(
-            Invocation.method(#setDashboardOrder, [oldIndex, newIndex]),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            Invocation.method(#addConfigServer, [config, type]),
+            returnValue: _i8.Future<_i6.BaseConfig>.value(
+              _FakeBaseConfig_4(
+                this,
+                Invocation.method(#addConfigServer, [config, type]),
+              ),
+            ),
           )
-          as _i6.Future<void>);
+          as _i8.Future<_i6.BaseConfig>);
 
   @override
-  void setThemeMode(_i8.ThemeMode? mode) => super.noSuchMethod(
-    Invocation.method(#setThemeMode, [mode]),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  _i6.Future<void> setUserLocale(_i9.Locale? locale) =>
+  _i8.Future<void> deleteConfigServer(int? id, _i5.ConfigType? type) =>
       (super.noSuchMethod(
-            Invocation.method(#setUserLocale, [locale]),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            Invocation.method(#deleteConfigServer, [id, type]),
+            returnValue: _i8.Future<void>.value(),
+            returnValueForMissingStub: _i8.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i8.Future<void>);
 
   @override
-  _i6.Future<void> saveProfile() =>
+  _i8.Future<void> handleConfigServer(
+    _i5.SlotEntry? entry,
+    num? value,
+    _i5.ConfigType? type,
+  ) =>
       (super.noSuchMethod(
-            Invocation.method(#saveProfile, []),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            Invocation.method(#handleConfigServer, [entry, value, type]),
+            returnValue: _i8.Future<void>.value(),
+            returnValueForMissingStub: _i8.Future<void>.value(),
           )
-          as _i6.Future<void>);
-
-  @override
-  _i6.Future<void> verifyEmail() =>
-      (super.noSuchMethod(
-            Invocation.method(#verifyEmail, []),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
-          )
-          as _i6.Future<void>);
-
-  @override
-  _i6.Future<bool> isMetric() =>
-      (super.noSuchMethod(
-            Invocation.method(#isMetric, []),
-            returnValue: _i6.Future<bool>.value(false),
-          )
-          as _i6.Future<bool>);
-
-  @override
-  void addListener(_i9.VoidCallback? listener) => super.noSuchMethod(
-    Invocation.method(#addListener, [listener]),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  void removeListener(_i9.VoidCallback? listener) => super.noSuchMethod(
-    Invocation.method(#removeListener, [listener]),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  void dispose() => super.noSuchMethod(
-    Invocation.method(#dispose, []),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  void notifyListeners() => super.noSuchMethod(
-    Invocation.method(#notifyListeners, []),
-    returnValueForMissingStub: null,
-  );
+          as _i8.Future<void>);
 }

@@ -52,7 +52,7 @@ class ExerciseListTile extends StatelessWidget {
         maxLines: 2,
       ),
       subtitle: Text(
-        '${getServerStringTranslation(exercise.category!.name, context)} / ${exercise.equipment.map((e) => getServerStringTranslation(e.name, context)).toList().join(', ')}',
+        '${getServerStringTranslation(exercise.category.name, context)} / ${exercise.equipment.map((e) => getServerStringTranslation(e.name, context)).toList().join(', ')}',
       ),
       onTap: () {
         Navigator.pushNamed(context, ExerciseDetailScreen.routeName, arguments: exercise);

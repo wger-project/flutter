@@ -17,27 +17,29 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wger/database/powersync/powersync.dart' show syncStatus;
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/auth.dart';
-import 'package:wger/providers/body_weight.dart';
-import 'package:wger/providers/gallery.dart';
-import 'package:wger/providers/nutrition.dart';
-import 'package:wger/providers/routines.dart';
-import 'package:wger/providers/user.dart';
+import 'package:wger/providers/account_notifier.dart';
+import 'package:wger/providers/auth_notifier.dart';
+import 'package:wger/providers/network_provider.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/settings_dashboard_widgets_screen.dart';
 import 'package:wger/widgets/core/about.dart';
 import 'package:wger/widgets/core/settings.dart';
+import 'package:wger/widgets/core/sync_status_dialog.dart';
 import 'package:wger/widgets/user/forms.dart';
 
-class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
+class MainAppBar extends ConsumerWidget implements PreferredSizeWidget {
   final String _title;
 
   const MainAppBar(this._title);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final syncState = ref.watch(syncStatus);
+    final status = syncStatusIconAndLabel(syncState, AppLocalizations.of(context));
+
     return AppBar(
       title: Text(_title),
       actions: [
@@ -46,6 +48,13 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
           onPressed: () {
             Navigator.of(context).pushNamed(ConfigureDashboardWidgetsScreen.routeName);
           },
+        ),
+        IconButton(
+          icon: Icon(status.icon),
+          onPressed: () => showDialog<void>(
+            context: context,
+            builder: (_) => SyncStatusDialog(syncState),
+          ),
         ),
         IconButton(
           icon: const Icon(Icons.settings),
@@ -66,11 +75,13 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
 
-class MainSettingsDialog extends StatelessWidget {
+class MainSettingsDialog extends ConsumerWidget {
   const MainSettingsDialog({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isOnline = ref.watch(networkStatusProvider);
+
     return AlertDialog(
       title: Text(AppLocalizations.of(context).optionsLabel),
       actions: [
@@ -89,16 +100,20 @@ class MainSettingsDialog extends StatelessWidget {
             //dense: true,
             leading: const Icon(Icons.person),
             title: Text(AppLocalizations.of(context).userProfile),
-            onTap: () => Navigator.pushNamed(
-              context,
-              FormScreen.routeName,
-              arguments: FormScreenArguments(
-                AppLocalizations.of(context).userProfile,
-                UserProfileForm(
-                  context.read<UserProvider>().profile!,
+            enabled: isOnline,
+            trailing: isOnline
+                ? null
+                : Icon(Icons.cloud_off, color: Theme.of(context).colorScheme.outline),
+            onTap: () {
+              Navigator.pushNamed(
+                context,
+                FormScreen.routeName,
+                arguments: FormScreenArguments(
+                  AppLocalizations.of(context).userProfile,
+                  const UserProfileForm(),
                 ),
-              ),
-            ),
+              );
+            },
           ),
           ListTile(
             leading: const Icon(Icons.settings),
@@ -115,16 +130,18 @@ class MainSettingsDialog extends StatelessWidget {
             //dense: true,
             leading: const Icon(Icons.exit_to_app),
             title: Text(AppLocalizations.of(context).logout),
-            onTap: () {
-              context.read<AuthProvider>().logout();
-              context.read<RoutinesProvider>().clear();
-              context.read<NutritionPlansProvider>().clear();
-              context.read<BodyWeightProvider>().clear();
-              context.read<GalleryProvider>().clear();
-              context.read<UserProvider>().clear();
+            onTap: () async {
+              final navigator = Navigator.of(context);
 
-              Navigator.of(context).pop();
-              Navigator.of(context).pushReplacementNamed('/');
+              // Auth logout wipes the local PowerSync DB as part of its
+              // lifecycle. Await it so we don't race the navigation. Gallery
+              // state lives in PowerSync now and gets cleared along with the
+              // rest of the synced tables.
+              await ref.read(authProvider.notifier).logout();
+              ref.read(accountProvider.notifier).clear();
+
+              navigator.pop();
+              navigator.pushReplacementNamed('/');
             },
           ),
         ],

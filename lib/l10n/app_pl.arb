@@ -707,7 +707,6 @@
     "apiToken": "API Token",
     "restTime": "Czas odpoczynku",
     "errorCouldNotConnectToServer": "Nie możemy połączyć się z serwerem",
-    "errorCouldNotConnectToServerDetails": "Aplikacja nie może połączyć się z serwerem. Prosimy sprawdzić swoje połączenie z internetem lub adres URL i spróbować ponownie. Jeżeli problem nadal występuje, skontaktuj się z administratorem.",
     "aboutWhySupportTitle": "Open Source & za darmo ❤️",
     "routines": "Rutyny",
     "newRoutine": "Nowa rutyna",

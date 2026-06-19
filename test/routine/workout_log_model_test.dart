@@ -26,7 +26,7 @@ void main() {
 
     setUp(() {
       log1 = Log(
-        id: 123,
+        id: '123',
         iteration: 1,
         slotEntryId: 100,
         routineId: 100,
@@ -39,7 +39,7 @@ void main() {
         date: DateTime(2010, 10, 1),
       );
       log2 = Log(
-        id: 9,
+        id: '9',
         iteration: 2,
         slotEntryId: 42,
         routineId: 42,

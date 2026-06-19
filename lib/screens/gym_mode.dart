@@ -17,10 +17,8 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart' hide Consumer;
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
-import 'package:wger/providers/routines.dart';
 import 'package:wger/widgets/routines/gym_mode/gym_mode.dart';
 
 class GymModeArguments {
@@ -42,13 +40,9 @@ class GymModeScreen extends ConsumerWidget {
 
     return Scaffold(
       // backgroundColor: Theme.of(context).cardColor,
-      //primary: false,
+      // primary: false,
       body: SafeArea(
-        child: WidescreenWrapper(
-          child: Consumer<RoutinesProvider>(
-            builder: (context, value, child) => GymMode(args),
-          ),
-        ),
+        child: WidescreenWrapper(child: GymMode(args)),
       ),
     );
   }

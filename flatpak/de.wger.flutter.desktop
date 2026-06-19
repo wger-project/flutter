@@ -8,7 +8,8 @@ Comment=Fitness/workout, nutrition and weight tracker
 # HealthFitness;Exercise;Nutrition
 Categories=Education;Utility;Sports;
 Icon=de.wger.flutter
-Exec=wger
+Exec=wger %u
+MimeType=x-scheme-handler/wger;
 StartupWMClass=wger
 X-Purism-FormFactor=Workstation;Mobile;
 X-KDE-FormFactors=desktop;tablet;handset;mediacenter;

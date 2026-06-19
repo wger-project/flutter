@@ -15,198 +15,122 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import 'dart:developer';
-
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
-import 'package:json_annotation/json_annotation.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/helpers/consts.dart';
+import 'package:wger/models/core/language.dart';
 import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/equipment.dart';
-import 'package:wger/models/exercises/exercise_api.dart';
 import 'package:wger/models/exercises/image.dart';
-import 'package:wger/models/exercises/language.dart';
 import 'package:wger/models/exercises/muscle.dart';
 import 'package:wger/models/exercises/translation.dart';
 import 'package:wger/models/exercises/video.dart';
 
-part 'exercise.g.dart';
-
-@JsonSerializable(explicitToJson: true)
 class Exercise extends Equatable {
-  final _logger = Logger('ExerciseModel');
+  static final _logger = Logger('ExerciseModel');
 
-  @JsonKey(required: true)
-  late final int? id;
+  final int id;
+  final String uuid;
+  final String? variationGroup;
+  final DateTime? created;
+  final DateTime? lastUpdate;
+  final ExerciseCategory category;
+  final List<Muscle> muscles;
+  final List<Muscle> musclesSecondary;
+  final List<Equipment> equipment;
+  final List<ExerciseImage> images;
+  final List<Translation> translations;
+  final List<Video> videos;
+  final List<String> authors;
+  final List<String> authorsGlobal;
 
-  @JsonKey(required: true)
-  late final String? uuid;
+  int get categoryId => category.id;
+  List<int> get musclesIds => muscles.map((e) => e.id).toList();
+  List<int> get musclesSecondaryIds => musclesSecondary.map((e) => e.id).toList();
+  List<int> get equipmentIds => equipment.map((e) => e.id).toList();
 
-  @JsonKey(required: true, name: 'variation_group')
-  late final String? variationGroup;
-
-  @JsonKey(required: true, name: 'created')
-  late final DateTime? created;
-
-  @JsonKey(required: true, name: 'last_update')
-  late final DateTime? lastUpdate;
-
-  @JsonKey(required: true, name: 'last_update_global')
-  late final DateTime? lastUpdateGlobal;
-
-  @JsonKey(required: true, name: 'category')
-  late int categoryId;
-
-  @JsonKey(includeFromJson: true, includeToJson: true, name: 'categories')
-  ExerciseCategory? category;
-
-  @JsonKey(required: true, name: 'muscles')
-  List<int> musclesIds = [];
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  List<Muscle> muscles = [];
-
-  @JsonKey(required: true, name: 'muscles_secondary')
-  List<int> musclesSecondaryIds = [];
-
-  @JsonKey(includeFromJson: false, includeToJson: true)
-  List<Muscle> musclesSecondary = [];
-
-  @JsonKey(required: true, name: 'equipment')
-  List<int> equipmentIds = [];
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  List<Equipment> equipment = [];
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  List<ExerciseImage> images = [];
-
-  @JsonKey(includeFromJson: true, includeToJson: false)
-  List<Translation> translations = [];
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  List<Video> videos = [];
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  List<String> authors = [];
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  List<String> authorsGlobal = [];
-
-  Exercise({
-    this.id,
-    this.uuid,
+  const Exercise({
+    required this.id,
+    required this.uuid,
     this.created,
     this.lastUpdate,
-    this.lastUpdateGlobal,
     this.variationGroup,
+    required this.category,
+    this.muscles = const [],
+    this.musclesSecondary = const [],
+    this.equipment = const [],
+    this.images = const [],
+    this.translations = const [],
+    this.videos = const [],
+    this.authors = const [],
+    this.authorsGlobal = const [],
+  });
+
+  Exercise copyWith({
+    int? id,
+    String? uuid,
+    DateTime? created,
+    DateTime? lastUpdate,
+    String? variationGroup,
+    ExerciseCategory? category,
     List<Muscle>? muscles,
     List<Muscle>? musclesSecondary,
     List<Equipment>? equipment,
     List<ExerciseImage>? images,
     List<Translation>? translations,
-    ExerciseCategory? category,
     List<Video>? videos,
     List<String>? authors,
     List<String>? authorsGlobal,
   }) {
-    this.images = images ?? [];
-    this.equipment = equipment ?? [];
-    if (category != null) {
-      this.category = category;
-      categoryId = category.id;
-    }
-
-    if (muscles != null) {
-      this.muscles = muscles;
-      musclesIds = muscles.map((e) => e.id).toList();
-    }
-
-    if (musclesSecondary != null) {
-      this.musclesSecondary = musclesSecondary;
-      musclesSecondaryIds = musclesSecondary.map((e) => e.id).toList();
-    }
-
-    if (equipment != null) {
-      this.equipment = equipment;
-      equipmentIds = equipment.map((e) => e.id).toList();
-    }
-
-    if (translations != null) {
-      this.translations = translations;
-    }
-
-    if (videos != null) {
-      this.videos = videos;
-    }
-    this.authors = authors ?? [];
-    this.authorsGlobal = authorsGlobal ?? [];
+    return Exercise(
+      id: id ?? this.id,
+      uuid: uuid ?? this.uuid,
+      created: created ?? this.created,
+      lastUpdate: lastUpdate ?? this.lastUpdate,
+      variationGroup: variationGroup ?? this.variationGroup,
+      category: category ?? this.category,
+      muscles: muscles ?? this.muscles,
+      musclesSecondary: musclesSecondary ?? this.musclesSecondary,
+      equipment: equipment ?? this.equipment,
+      images: images ?? this.images,
+      translations: translations ?? this.translations,
+      videos: videos ?? this.videos,
+      authors: authors ?? this.authors,
+      authorsGlobal: authorsGlobal ?? this.authorsGlobal,
+    );
   }
 
   bool get showPlateCalculator => equipment.map((e) => e.id).contains(ID_EQUIPMENT_BARBELL);
 
-  Exercise.fromApiDataString(String baseData, List<Language> languages)
-    : this.fromApiData(ExerciseApiData.fromString(baseData), languages);
-
-  Exercise.fromApiDataJson(Map<String, dynamic> baseData, List<Language> languages)
-    : this.fromApiData(ExerciseApiData.fromJson(baseData), languages);
-
-  Exercise.fromApiData(ExerciseApiData exerciseData, List<Language> languages) {
-    id = exerciseData.id;
-    uuid = exerciseData.uuid;
-    categoryId = exerciseData.category.id;
-    category = exerciseData.category;
-
-    created = exerciseData.created;
-    lastUpdate = exerciseData.lastUpdate;
-    lastUpdateGlobal = exerciseData.lastUpdateGlobal;
-
-    muscles = exerciseData.muscles;
-    musclesSecondary = exerciseData.musclesSecondary;
-    equipment = exerciseData.equipment;
-    category = exerciseData.category;
-    translations = exerciseData.translations.map((e) {
-      e.language = languages.firstWhere(
-        (l) => l.id == e.languageId,
-
-        // workaround for https://github.com/wger-project/flutter/issues/722
-        orElse: () {
-          log('Could not find language for translation ${e.languageId}');
-          return Language(id: e.languageId, shortName: 'unknown', fullName: 'unknown');
-        },
-      );
-      return e;
-    }).toList();
-    videos = exerciseData.videos;
-    images = exerciseData.images;
-
-    authors = exerciseData.authors;
-    authorsGlobal = exerciseData.authorsGlobal;
-
-    variationGroup = exerciseData.variationGroup;
-  }
-
-  /// Returns translation for the given language
+  /// Returns the translation for the given language.
   ///
-  /// If no translation is found, English will be returned
-  ///
-  /// Note: we return the first translation as a fallback if we don't find a
-  ///       translation in English. This is something that should never happen,
-  ///       but we can't make sure that no local installation hasn't deleted
-  ///       the entry in English.
+  /// Falls back to English, then to any available translation. If the exercise
+  /// has no translations at all, an empty placeholder in the requested language
+  /// is returned so callers never have to handle a missing translation. This
+  /// happens transiently while translations are still syncing, or for exercises
+  /// that genuinely ship without any translation.
   Translation getTranslation(String language) {
     // If the language is in the form en-US, take the language code only
     final languageCode = language.split('-')[0];
 
+    if (translations.isEmpty) {
+      _logger.info('Exercise-ID $id has no translations, returning an empty placeholder.');
+      return Translation(
+        name: '',
+        description: '',
+        language: Language(id: -1, shortName: languageCode, fullName: ''),
+      );
+    }
+
     return translations.firstWhere(
-      (e) => e.languageObj.shortName == languageCode,
+      (e) => e.language.shortName == languageCode,
       orElse: () => translations.firstWhere(
-        (e) => e.languageObj.shortName == LANGUAGE_SHORT_ENGLISH,
+        (e) => e.language.shortName == LANGUAGE_SHORT_ENGLISH,
         orElse: () {
           _logger.info(
             'Could not find fallback english translation for exercise-ID $id, returning '
-            'first language (${translations.first.languageObj.shortName}) instead.',
+            'first language (${translations.first.language.shortName}) instead.',
           );
           return translations.first;
         },
@@ -217,16 +141,6 @@ class Exercise extends Equatable {
   ExerciseImage? get getMainImage {
     return images.firstWhereOrNull((image) => image.isMain);
   }
-
-  set setCategory(ExerciseCategory category) {
-    categoryId = category.id;
-    this.category = category;
-  }
-
-  // Boilerplate
-  factory Exercise.fromJson(Map<String, dynamic> json) => _$ExerciseFromJson(json);
-
-  Map<String, dynamic> toJson() => _$ExerciseToJson(this);
 
   @override
   List<Object?> get props => [

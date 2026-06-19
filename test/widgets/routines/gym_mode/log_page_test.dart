@@ -21,72 +21,82 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:provider/provider.dart' as provider;
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day_data.dart';
 import 'package:wger/models/workouts/log.dart';
+import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/set_config_data.dart';
 import 'package:wger/models/workouts/slot_data.dart';
-import 'package:wger/providers/exercises.dart';
 import 'package:wger/providers/gym_state.dart';
-import 'package:wger/providers/routines.dart';
+import 'package:wger/providers/gym_state_notifier.dart';
+import 'package:wger/providers/workout_logs_repository.dart';
 import 'package:wger/widgets/routines/gym_mode/log_page.dart';
 
 import '../../../../test_data/exercises.dart';
 import '../../../../test_data/routines.dart' as testdata;
 import 'log_page_test.mocks.dart';
 
-@GenerateMocks([ExercisesProvider, RoutinesProvider])
+@GenerateMocks([WorkoutLogRepository])
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   group('LogPage tests', () {
     late List<Exercise> testExercises;
     late ProviderContainer container;
+    late MockWorkoutLogRepository mockWorkoutLogRepo;
 
     setUp(() {
       SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
       testExercises = getTestExercises();
-      container = ProviderContainer.test();
+      mockWorkoutLogRepo = MockWorkoutLogRepository();
+      when(mockWorkoutLogRepo.addLocalDrift(any)).thenAnswer((_) async {});
+      container = ProviderContainer.test(
+        overrides: [workoutLogRepositoryProvider.overrideWithValue(mockWorkoutLogRepo)],
+      );
     });
 
-    Future<void> pumpLogPage(WidgetTester tester, {RoutinesProvider? routinesProvider}) async {
-      final providerValue = routinesProvider ?? MockRoutinesProvider();
+    /// Seeds the gym state with [routine] and navigates to the first log page
+    /// (index 2: start -> exercise overview -> log). [setCurrentPage] also
+    /// seeds gymLogProvider with the log template for that slot.
+    void seedLogPage(Routine routine) {
+      final notifier = container.read(gymStateProvider.notifier);
+      notifier.initData(routine, routine.days.first.id!, 1);
+      notifier.setCurrentPage(2);
+    }
 
+    Future<void> pumpLogPage(WidgetTester tester) async {
+      // The widget resolves its own slot now, so hand it the uuid of the slot
+      // the gym state was seeded on (via setCurrentPage above).
+      final slotUuid = container.read(gymStateProvider).getSlotEntryPageByIndex()!.uuid;
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
-          child: provider.ChangeNotifierProvider<RoutinesProvider>.value(
-            value: providerValue,
-            child: MaterialApp(
-              locale: const Locale('en'),
-              localizationsDelegates: AppLocalizations.localizationsDelegates,
-              supportedLocales: AppLocalizations.supportedLocales,
-              home: Scaffold(
-                // Provide a PageView so the PageController used by LogPage is attached
-                body: Builder(
-                  builder: (context) {
-                    final controller = PageController();
-                    return PageView(
-                      controller: controller,
-                      children: [LogPage(controller)],
-                    );
-                  },
-                ),
+          child: MaterialApp(
+            locale: const Locale('en'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: Scaffold(
+              // A PageView gives LogPage's PageController something to attach to.
+              body: Builder(
+                builder: (context) {
+                  final controller = PageController();
+                  return PageView(
+                    controller: controller,
+                    children: [LogPage(controller, slotUuid)],
+                  );
+                },
               ),
             ),
           ),
         ),
       );
-
       await tester.pumpAndSettle();
     }
 
-    testWidgets('handles null values', (tester) async {
-      // Arrange
+    testWidgets('handles null reps/weight without crashing', (tester) async {
       final notifier = container.read(gymStateProvider.notifier);
       final routine = testdata.getTestRoutine();
       routine.dayDataGym = [
@@ -98,10 +108,10 @@ void main() {
           slots: [
             SlotData(
               isSuperset: false,
-              exerciseIds: [testExercises[0].id!],
+              exerciseIds: [testExercises[0].id],
               setConfigs: [
                 SetConfigData(
-                  exerciseId: testExercises[0].id!,
+                  exerciseId: testExercises[0].id,
                   exercise: testExercises[0],
                   slotEntryId: 1,
                   nrOfSets: 1,
@@ -119,243 +129,112 @@ void main() {
           ],
         ),
       ];
-      notifier.state = notifier.state.copyWith(
-        dayId: routine.days.first.id,
-        routine: routine,
-        iteration: 1,
-        currentPage: 2,
-      );
-
-      // Act
-      notifier.calculatePages();
+      notifier.initData(routine, routine.days.first.id!, 1);
       notifier.setCurrentPage(2);
 
-      // Assert
       expect(notifier.state.getSlotEntryPageByIndex()!.type, SlotPageType.log);
       await pumpLogPage(tester);
       expect(find.byType(LogPage), findsOneWidget);
     });
 
-    testWidgets('renders without crashing for default slotEntryPage', (tester) async {
-      final notifier = container.read(gymStateProvider.notifier);
-      final routine = testdata.getTestRoutine();
-      notifier.state = notifier.state.copyWith(
-        dayId: routine.days.first.id,
-        routine: routine,
-        iteration: 1,
-      );
-      notifier.calculatePages();
+    testWidgets('renders without crashing for the default slot entry page', (tester) async {
+      seedLogPage(testdata.getTestRoutine());
       await pumpLogPage(tester);
 
       expect(find.byType(LogPage), findsOneWidget);
     });
 
-    testWidgets('copy from past log updates form fields and shows SnackBar', (tester) async {
-      // Arrange
-      final notifier = container.read(gymStateProvider.notifier);
-      final routine = testdata.getTestRoutine();
-      notifier.state = notifier.state.copyWith(
-        dayId: routine.days.first.id,
-        routine: routine,
-        iteration: 1,
-      );
-      notifier.calculatePages();
-      notifier.setCurrentPage(2);
-
-      // Act
-      // Log page is at index 2
-      notifier.state = notifier.state.copyWith(currentPage: 2);
-      expect(notifier.state.getSlotEntryPageByIndex()!.type, SlotPageType.log);
+    testWidgets('copy from past log updates form fields and shows a SnackBar', (tester) async {
+      seedLogPage(testdata.getTestRoutine());
       await pumpLogPage(tester);
 
-      // Assert
-      final pastLogTile = find.byKey(const ValueKey('past-log-1'));
-      expect(pastLogTile, findsOneWidget);
-      await tester.tap(pastLogTile);
+      final pastLogTile = find.byWidgetPredicate(
+        (w) => w.key is ValueKey && '${(w.key as ValueKey).value}'.startsWith('past-log-'),
+      );
+      expect(pastLogTile, findsWidgets);
+      await tester.tap(pastLogTile.first);
       await tester.pumpAndSettle();
 
       final editableFields = find.byType(EditableText);
       expect(editableFields, findsWidgets);
-
-      // Get controller texts
-      final repControllerText = tester.widget<EditableText>(editableFields.at(0)).controller.text;
-      final weightControllerText = tester
-          .widget<EditableText>(editableFields.at(1))
-          .controller
-          .text;
-
-      expect(repControllerText, contains('10'));
-      expect(weightControllerText, contains('10'));
+      final repText = tester.widget<EditableText>(editableFields.at(0)).controller.text;
+      final weightText = tester.widget<EditableText>(editableFields.at(1)).controller.text;
+      expect(repText, contains('10'));
+      expect(weightText, contains('10'));
       expect(find.byType(SnackBar), findsOneWidget);
     });
 
-    testWidgets('save button calls addLog on RoutinesProvider', (tester) async {
-      // Arrange
-      final notifier = container.read(gymStateProvider.notifier);
-      final routine = testdata.getTestRoutine();
-      notifier.state = notifier.state.copyWith(
-        dayId: routine.days.first.id,
-        routine: routine,
-        iteration: 1,
-      );
-      notifier.calculatePages();
-      notifier.setCurrentPage(2);
-      notifier.state = notifier.state.copyWith(currentPage: 2);
-      final mockRoutines = MockRoutinesProvider();
+    testWidgets('save button persists the entered reps/weight with slot/routine/iteration', (
+      tester,
+    ) async {
+      seedLogPage(testdata.getTestRoutine());
+      await pumpLogPage(tester);
 
-      // Act
-      await pumpLogPage(tester, routinesProvider: mockRoutines);
-
-      final editableFields = find.byType(EditableText);
-      expect(editableFields, findsWidgets);
-
-      await tester.enterText(editableFields.at(0), '12'); // Reps
-      await tester.enterText(editableFields.at(1), '34'); // Weight
+      // Overwrite the pre-filled values so the assertion proves the user's
+      // edits flow through, not just the set-config defaults.
+      final fields = find.byType(TextFormField);
+      await tester.enterText(fields.at(0), '12'); // reps
+      await tester.enterText(fields.at(1), '34'); // weight
       await tester.pump();
 
-      Log? capturedLog;
-      when(mockRoutines.addLog(any)).thenAnswer((invocation) async {
-        capturedLog = invocation.positionalArguments[0] as Log;
-        capturedLog!.id = 42;
-        return capturedLog!;
-      });
-
-      final saveButton = find.byKey(const ValueKey('save-log-button'));
-      expect(saveButton, findsOneWidget);
-
-      await tester.tap(saveButton);
+      await tester.tap(find.byKey(const ValueKey('save-log-button')));
       await tester.pumpAndSettle();
 
-      // Assert
-      verify(mockRoutines.addLog(any)).called(1);
-      expect(capturedLog, isNotNull);
-      expect(capturedLog!.repetitions, equals(12));
-      expect(capturedLog!.weight, equals(34));
-
-      final currentSlotPage = notifier.state.getSlotEntryPageByIndex()!;
-      expect(capturedLog!.slotEntryId, equals(currentSlotPage.setConfigData!.slotEntryId));
-      expect(capturedLog!.routineId, equals(notifier.state.routine.id));
-      expect(capturedLog!.iteration, equals(notifier.state.iteration));
+      final saved = verify(mockWorkoutLogRepo.addLocalDrift(captureAny)).captured.single as Log;
+      final gymState = container.read(gymStateProvider);
+      expect(saved.repetitions, 12);
+      expect(saved.weight, 34);
+      expect(saved.slotEntryId, gymState.getSlotEntryPageByIndex()!.setConfigData!.slotEntryId);
+      expect(saved.routineId, gymState.routine.id);
+      expect(saved.iteration, gymState.iteration);
     });
 
-    testWidgets('LogsRepsWidget quick buttons update values', (tester) async {
-      // Arrange
-      final notifier = container.read(gymStateProvider.notifier);
+    testWidgets('reps quick buttons increment and decrement the value', (tester) async {
       final routine = testdata.getTestRoutine();
       routine.dayDataGym[0].slots[0].setConfigs[0].repetitions = 0;
-      notifier.state = notifier.state.copyWith(
-        dayId: routine.days.first.id,
-        routine: routine,
-        iteration: 1,
-      );
-      notifier.calculatePages();
-      notifier.setCurrentPage(2);
-      notifier.state = notifier.state.copyWith(currentPage: 2);
-      final mockRoutines = MockRoutinesProvider();
-      await pumpLogPage(tester, routinesProvider: mockRoutines);
+      seedLogPage(routine);
+      await pumpLogPage(tester);
 
-      // Act
-      final repsWidgetFinder = find.byKey(const ValueKey('logs-reps-widget'));
-      expect(repsWidgetFinder, findsOneWidget);
-      final addBtn = find.descendant(
-        of: repsWidgetFinder,
-        matching: find.byIcon(Icons.add),
-      );
-      final removeBtn = find.descendant(
-        of: repsWidgetFinder,
-        matching: find.byIcon(Icons.remove),
-      );
+      final repsWidget = find.byKey(const ValueKey('logs-reps-widget'));
+      expect(repsWidget, findsOneWidget);
+      final addBtn = find.descendant(of: repsWidget, matching: find.byIcon(Icons.add));
+      final removeBtn = find.descendant(of: repsWidget, matching: find.byIcon(Icons.remove));
 
-      // Assert
-      // Increment 0 -> 1
       await tester.tap(addBtn);
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 100));
       await tester.pumpAndSettle();
-      expect(
-        find.descendant(of: repsWidgetFinder, matching: find.text('1')),
-        findsOneWidget,
-      );
+      expect(find.descendant(of: repsWidget, matching: find.text('1')), findsOneWidget);
 
-      // Increment 1 -> 2
       await tester.tap(addBtn);
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 100));
       await tester.pumpAndSettle();
-      expect(
-        find.descendant(of: repsWidgetFinder, matching: find.text('2')),
-        findsOneWidget,
-      );
+      expect(find.descendant(of: repsWidget, matching: find.text('2')), findsOneWidget);
 
-      // Decrement 2 -> 1
       await tester.tap(removeBtn);
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 100));
       await tester.pumpAndSettle();
-      expect(
-        find.descendant(of: repsWidgetFinder, matching: find.text('1')),
-        findsOneWidget,
-      );
+      expect(find.descendant(of: repsWidget, matching: find.text('1')), findsOneWidget);
     });
 
-    testWidgets('LogsWeightWidget quick buttons update values', (tester) async {
-      // Arrange
-      final notifier = container.read(gymStateProvider.notifier);
+    testWidgets('weight quick buttons increment and decrement the value', (tester) async {
       final routine = testdata.getTestRoutine();
       routine.dayDataGym[0].slots[0].setConfigs[0].weight = 0;
-      notifier.state = notifier.state.copyWith(
-        dayId: routine.days.first.id,
-        routine: routine,
-        iteration: 1,
-      );
-      notifier.calculatePages();
-      notifier.setCurrentPage(2);
-      notifier.state = notifier.state.copyWith(currentPage: 2);
-      final mockRoutines = MockRoutinesProvider();
-      await pumpLogPage(tester, routinesProvider: mockRoutines);
+      seedLogPage(routine);
+      await pumpLogPage(tester);
 
-      // Act
-      final weightWidgetFinder = find.byKey(const ValueKey('logs-weight-widget'));
-      expect(weightWidgetFinder, findsOneWidget);
-      final addBtn = find.descendant(
-        of: weightWidgetFinder,
-        matching: find.byIcon(Icons.add),
-      );
-      final removeBtn = find.descendant(
-        of: weightWidgetFinder,
-        matching: find.byIcon(Icons.remove),
-      );
+      final weightWidget = find.byKey(const ValueKey('logs-weight-widget'));
+      expect(weightWidget, findsOneWidget);
+      final addBtn = find.descendant(of: weightWidget, matching: find.byIcon(Icons.add));
+      final removeBtn = find.descendant(of: weightWidget, matching: find.byIcon(Icons.remove));
 
-      // Assert
-      // Increment 0 -> 1.25
       await tester.tap(addBtn);
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 100));
       await tester.pumpAndSettle();
-      expect(
-        find.descendant(of: weightWidgetFinder, matching: find.text('1.25')),
-        findsOneWidget,
-      );
+      expect(find.descendant(of: weightWidget, matching: find.text('1.25')), findsOneWidget);
 
-      // Increment 1.25 -> 2.5
       await tester.tap(addBtn);
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 100));
       await tester.pumpAndSettle();
-      expect(
-        find.descendant(of: weightWidgetFinder, matching: find.text('2.5')),
-        findsOneWidget,
-      );
+      expect(find.descendant(of: weightWidget, matching: find.text('2.5')), findsOneWidget);
 
-      // Decrement 2.5 -> 1.25
       await tester.tap(removeBtn);
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 100));
       await tester.pumpAndSettle();
-      expect(
-        find.descendant(of: weightWidgetFinder, matching: find.text('1.25')),
-        findsOneWidget,
-      );
+      expect(find.descendant(of: weightWidget, matching: find.text('1.25')), findsOneWidget);
     });
   });
 }
