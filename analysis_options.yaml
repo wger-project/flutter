@@ -23,10 +23,6 @@ formatter:
   page_width: 100
   trailing_commas: preserve
 
-# Note: it seems that adding riverpod_lint here has the side effect that every
-# standard lint is reported twice. We are leaving this for now since the
-# riverpod-specific checks are worth it.
-# Use `dart analyze | sort -u` in scripts if duplicates are a problem.
 plugins:
   riverpod_lint: 3.1.3
 
