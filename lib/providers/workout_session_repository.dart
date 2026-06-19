@@ -100,7 +100,7 @@ class WorkoutSessionRepository {
     await stmt.write(session.toCompanion());
   }
 
-  /// Inserts the session locally; if [session.id] is null, Drift mints one
+  /// Inserts the session locally; if `session.id` is null, Drift mints one
   /// and writes it back so the caller can reference it immediately.
   Future<void> addLocalDrift(WorkoutSession session) async {
     _logger.finer('Adding local workout session entry ${session.date}');

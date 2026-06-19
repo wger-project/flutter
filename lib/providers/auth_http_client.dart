@@ -40,14 +40,14 @@ const refreshLeeway = Duration(seconds: 30);
 ///   within [refreshLeeway] of now.
 /// - On a 401 reply for a *replayable* [http.Request] body that was sent
 ///   with a JWT, refresh once and retry. If the retry also returns 401
-///   the session is treated as genuinely revoked: [onSessionExpired]
+///   the session is treated as genuinely revoked: `onSessionExpired`
 ///   runs (clear credentials + surface a snackbar) and a synthetic 401
 ///   is returned to the caller. Non-replayable bodies (multipart /
 ///   streamed) are not retried; the pre-emptive refresh in the happy
 ///   path is the primary safeguard.
 ///
 /// Wrapped behind [authenticatedHttpClientProvider] so consumers
-/// ([WgerBaseProvider], PowerSync's connector) get the auth handling for
+/// (`WgerBaseProvider`, PowerSync's connector) get the auth handling for
 /// free without needing to know about the migration state.
 class AuthHttpClient extends http.BaseClient {
   final http.Client _inner;

@@ -23,7 +23,7 @@ import 'package:shared_preferences_platform_interface/in_memory_shared_preferenc
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/helpers/shared_preferences.dart';
 
-/// Installs the platform-channel fakes that [authProvider] needs during
+/// Installs the platform-channel fakes that `authProvider` needs during
 /// its eager `build()`. Any screen test that transitively subscribes
 /// to `authProvider` (most do, via `wgerBaseProvider`) must call this.
 ///

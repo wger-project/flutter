@@ -208,7 +208,7 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
   }
 
   /// Re-runs hydration on the current state and re-emits it. Triggered by
-  /// [ref.listen] on the upstream reference-data providers (sessions,
+  /// `ref.listen` on the upstream reference-data providers (sessions,
   /// exercises, repetition/weight units).
   void _rehydrate() {
     final current = state.value;

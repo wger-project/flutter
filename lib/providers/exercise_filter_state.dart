@@ -23,8 +23,8 @@ import 'package:wger/models/exercises/exercise.dart';
 /// UI state for the exercise list screen: the current filter
 /// configuration plus the resulting [filteredExercises]. The raw
 /// equipment / categories lists are not kept here, consumers that
-/// need them should watch [exerciseEquipmentProvider] /
-/// [exerciseCategoriesProvider] directly.
+/// need them should watch `exerciseEquipmentProvider` /
+/// `exerciseCategoriesProvider` directly.
 class ExerciseFilterState {
   final List<Exercise> exercises;
   final List<Exercise> filteredExercises;

@@ -125,7 +125,7 @@ class DjangoConnector extends PowerSyncBackendConnector {
 
   /// Transform a record before sending it to the backend.
   ///
-  /// Note that PowerSync hands us [op.opData] as native SQLite primitives only
+  /// Note that PowerSync hands us `op.opData` as native SQLite primitives only
   /// (`null`, `int`, `double`, `String`, `Uint8List`).
   ///
   ///   * inject the row [id] (PowerSync stores it separately from the

@@ -31,9 +31,9 @@ part 'network_provider.g.dart';
 
 /// Returns whether the wger backend is actually reachable.
 ///
-/// Given [probeUri] any HTTP response counts as reachable, only a
+/// Given `probeUri` any HTTP response counts as reachable, only a
 /// network-level error or timeout counts as offline. The request carries
-/// [userAgent] so the probe is identifiable in server logs. When [probeUri] is
+/// `userAgent` so the probe is identifiable in server logs. When `probeUri` is
 /// null (no server configured yet, e.g. on the login screen) it falls back to
 /// a DNS lookup so there is still a sane online/offline signal.
 ///

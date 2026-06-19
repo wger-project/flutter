@@ -43,7 +43,7 @@ class ApiClient {
 
   /// Fetches a short-lived PowerSync JWT and its endpoint URL from the
   /// wger backend. The `Authorization` header for this request is set
-  /// by the underlying [AuthHttpClient] based on the current auth state.
+  /// by the underlying `AuthHttpClient` based on the current auth state.
   Future<Map<String, dynamic>> getPowersyncToken() async {
     final response = await _client.get(
       Uri.parse('$serverUrl/api/v2/powersync-token'),

@@ -402,7 +402,7 @@ class AuthNotifier extends _$AuthNotifier {
   }
 
   /// Re-runs the auto-login flow. Used by the recovery screens
-  /// ([ServerUnreachableScreen], [PowerSyncUnreachableScreen]) so the user
+  /// (`ServerUnreachableScreen`, `PowerSyncUnreachableScreen`) so the user
   /// can retry without restarting the app.
   Future<void> retryAutoLogin() async {
     state = const AsyncLoading();
@@ -857,7 +857,8 @@ class AuthNotifier extends _$AuthNotifier {
   }
 
   /// User-driven logout. Always wipes credentials; the local PowerSync data is
-  /// kept by default and only wiped when the user opts out ([keepDataOnLogout]).
+  /// kept by default and only wiped when the user opts out
+  /// ([AuthCredentialsStorage.keepDataOnLogout]).
   /// Keeping it lets the same user sign back in and resume the sync
   /// incrementally instead of re-downloading everything; the DB-owner marker is
   /// preserved so a *different* user signing in still triggers a wipe.
@@ -939,7 +940,7 @@ class AuthNotifier extends _$AuthNotifier {
   }
 
   /// Removes the local PowerSync data whether or not the DB has been built:
-  /// when the instance exists we use PowerSync's own [disconnectAndClear],
+  /// when the instance exists we use PowerSync's own `disconnectAndClear`,
   /// otherwise (cold start, before any data widget has built it) we delete
   /// the on-disk files directly so no data survives.
   ///

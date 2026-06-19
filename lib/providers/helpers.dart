@@ -21,7 +21,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show ProviderListenable;
 
-/// Awaits the first value of [provider] by explicitly subscribing via
+/// Awaits the first value of `provider` by explicitly subscribing via
 /// [Ref.listen]. Use this in notifier methods (outside of `build()`)
 /// instead of `ref.read(streamProvider.future)`, which can hang
 /// indefinitely if no other consumer is `ref.watch`-ing the provider:

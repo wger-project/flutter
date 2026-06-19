@@ -47,7 +47,7 @@ final wgerBaseProvider = Provider<WgerBaseProvider>((ref) {
 /// when no prefix has been detected yet.
 ///
 /// Returns `null` when the user is not logged in (no server URL) or
-/// when [path] is null/empty.
+/// when `path` is null/empty.
 final mediaUrlBuilderProvider = Provider<Uri? Function(String? path)>((ref) {
   final serverUrl = ref.watch(authProvider).asData?.value.serverUrl;
   final prefix = ref.watch(mediaUrlPrefixProvider).asData?.value;

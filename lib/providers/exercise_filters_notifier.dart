@@ -29,7 +29,7 @@ part 'exercise_filters_notifier.g.dart';
 
 /// Holds the *UI-side* state for the exercises catalogue screen:
 /// search term, selected categories/equipment, and the resulting
-/// [filteredExercises] list.
+/// [ExerciseFilterState.filteredExercises] list.
 @Riverpod(keepAlive: true)
 class ExerciseListFiltersNotifier extends _$ExerciseListFiltersNotifier {
   final _logger = Logger('ExerciseListFiltersNotifier');

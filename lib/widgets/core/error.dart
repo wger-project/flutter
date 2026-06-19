@@ -25,7 +25,7 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 /// HTML pages scroll inside this box rather than blowing up the parent card.
 const double _kMaxErrorHeight = 280;
 
-/// Inline error indicator used by [AsyncValueWidget]
+/// Inline error indicator used by `AsyncValueWidget`
 ///
 /// Accepts the raw error object so we can introspect it - if it's a
 /// [WgerHttpException] with [ErrorType.html] (typical for Django's debug

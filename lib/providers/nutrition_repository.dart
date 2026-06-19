@@ -53,7 +53,7 @@ class NutritionRepository {
   }
 
   /// Inserts a nutritional plan into the local Drift table. If [plan] has no
-  /// id, Drift mints one and writes it back to [plan.id] so the caller can
+  /// id, Drift mints one and writes it back to `plan.id` so the caller can
   /// reference it immediately (e.g. to add child meals in the same flow).
   Future<void> addPlanLocalDrift(NutritionalPlan plan) async {
     _logger.finer('Inserting local nutritional plan');

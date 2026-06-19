@@ -34,7 +34,7 @@ final workoutLogRepositoryProvider = Provider<WorkoutLogRepository>((ref) {
 });
 
 /// Write-side access to the local `workout_log` table. Reading logs happens
-/// through [WorkoutSessionRepository.watchAllDrift], which joins logs onto
+/// through `WorkoutSessionRepository.watchAllDrift`, which joins logs onto
 /// their parent session.
 class WorkoutLogRepository {
   final _logger = Logger('WorkoutLogRepository');

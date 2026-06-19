@@ -21,7 +21,7 @@ import 'package:wger/helpers/jwt.dart';
 
 part 'auth_credential.freezed.dart';
 
-/// Sealed credential carried inside [AuthState] for every authenticated
+/// Sealed credential carried inside `AuthState` for every authenticated
 /// caller. Branch via `switch` or `is` to access the variant-specific
 /// fields; the two getters below cover everything the HTTP layer needs.
 ///
