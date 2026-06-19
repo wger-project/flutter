@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2020, 2025 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -22,6 +22,7 @@ import 'package:wger/models/exercises/category.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/set_config_data.dart';
+import 'package:wger/models/workouts/weight_unit.dart';
 
 void main() {
   group('Log.volume', () {
@@ -176,6 +177,24 @@ void main() {
 
       expect(log.weightUnitId, WEIGHT_UNIT_LB);
       expect(log.repetitionsUnitId, REP_UNIT_TILL_FAILURE_ID);
+    });
+
+    test('derives the unit ID from the resolved unit object when no explicit ID is set', () {
+      // Imperial users: routine hydration leaves weightUnitId null and only
+      // resolves the weightUnit object (lb) from the profile. The log must pick
+      // up lb for *both* the ID and the object
+      const lb = WeightUnit(id: WEIGHT_UNIT_LB, name: 'lb');
+      final setConfig = SetConfigData(
+        exerciseId: 1,
+        slotEntryId: 1,
+        exercise: exercise,
+        weightUnit: lb,
+      );
+
+      final log = Log.fromSetConfigData(setConfig);
+
+      expect(log.weightUnitId, WEIGHT_UNIT_LB);
+      expect(log.weightUnitObj, lb);
     });
 
     test('copies weight and repetitions values', () {

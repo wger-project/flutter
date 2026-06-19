@@ -93,7 +93,9 @@ class Log {
 
     weight = setConfig.weight;
     weightTarget = setConfig.weight;
-    weightUnitId = setConfig.weightUnitId ?? WEIGHT_UNIT_KG;
+    // Fall back to the resolved unit object (set during routine hydration from
+    // the user's metric preference) when the config carries no explicit unit.
+    weightUnitId = setConfig.weightUnitId ?? setConfig.weightUnit?.id ?? WEIGHT_UNIT_KG;
     weightUnitObj = setConfig.weightUnit;
 
     repetitions = setConfig.repetitions;
