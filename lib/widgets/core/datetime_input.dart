@@ -58,7 +58,6 @@ class TimeInputWidget extends StatefulWidget {
 }
 
 class _TimeInputWidgetState extends State<TimeInputWidget> {
-  final _controller = TextEditingController();
   TimeOfDay? _value;
 
   @override
@@ -76,19 +75,13 @@ class _TimeInputWidgetState extends State<TimeInputWidget> {
   }
 
   @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    // The field is read-only, so rewriting the display text every build is safe.
-    _controller.text = _value?.format(context) ?? '';
-
+    // Keyed initialValue, not a controller: a controller notifies the enclosing
+    // Form on assignment, which crashes if that happens during a build.
     return TextFormField(
+      key: ValueKey(_value),
       readOnly: true,
-      controller: _controller,
+      initialValue: _value?.format(context) ?? '',
       validator: widget.validator,
       decoration: InputDecoration(
         labelText: widget.labelText,
@@ -170,7 +163,6 @@ class DateInputWidget extends StatefulWidget {
 }
 
 class _DateInputWidgetState extends State<DateInputWidget> {
-  final _controller = TextEditingController();
   DateTime? _value;
 
   @override
@@ -188,20 +180,14 @@ class _DateInputWidgetState extends State<DateInputWidget> {
   }
 
   @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
-    // The field is read-only, so rewriting the display text every build is safe.
-    _controller.text = _value != null ? dateFormat.format(_value!) : '';
-
+    // Keyed initialValue, not a controller: a controller notifies the enclosing
+    // Form on assignment, which crashes if that happens during a build.
     return TextFormField(
+      key: ValueKey(_value),
       readOnly: true,
-      controller: _controller,
+      initialValue: _value != null ? dateFormat.format(_value!) : '',
       validator: widget.validator,
       decoration: InputDecoration(
         labelText: widget.labelText,

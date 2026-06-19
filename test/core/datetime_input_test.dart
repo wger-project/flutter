@@ -95,6 +95,29 @@ void main() {
       expect(cleared, isTrue);
       expect(find.text('3:30 PM'), findsNothing);
     });
+
+    testWidgets('does not rebuild the enclosing Form during build when the value '
+        'changes from the parent (regression: issue #2401)', (WidgetTester tester) async {
+      final notifier = ValueNotifier<TimeOfDay?>(null);
+      await tester.pumpWidget(
+        wrap(
+          Form(
+            child: ValueListenableBuilder<TimeOfDay?>(
+              valueListenable: notifier,
+              builder: (context, value, _) =>
+                  TimeInputWidget(value: value, labelText: 'Time', onChanged: (_) {}),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      notifier.value = const TimeOfDay(hour: 15, minute: 30);
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      expect(find.text('3:30 PM'), findsOneWidget);
+    });
   });
 
   group('DateInputWidget', () {
@@ -129,6 +152,29 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('5.1.2021'), findsOneWidget);
+    });
+
+    testWidgets('does not rebuild the enclosing Form during build when the value '
+        'changes from the parent (regression: issue #2401)', (WidgetTester tester) async {
+      final notifier = ValueNotifier<DateTime?>(null);
+      await tester.pumpWidget(
+        wrap(
+          Form(
+            child: ValueListenableBuilder<DateTime?>(
+              valueListenable: notifier,
+              builder: (context, value, _) =>
+                  DateInputWidget(value: value, labelText: 'Date', onChanged: (_) {}),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      notifier.value = DateTime(2021, 1, 5);
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      expect(find.text('1/5/2021'), findsOneWidget);
     });
   });
 }
