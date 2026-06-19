@@ -275,6 +275,12 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
     final logProvider = ref.read(workoutLogProvider);
     final log = ref.watch(gymLogProvider);
 
+    // The log is populated when the page becomes current: the PageView can lay
+    // out and mount this page before that happens, so guard against null.
+    if (log == null) {
+      return const SizedBox.shrink();
+    }
+
     return Form(
       key: _form,
       child: Column(
@@ -290,9 +296,9 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
               Flexible(
                 child: RepetitionInputWidget(
                   key: const ValueKey('logs-reps-widget'),
-                  value: log?.repetitions,
+                  value: log.repetitions,
                   valueChange: widget.configData.repetitionsRounding,
-                  unit: log?.repetitionsUnitObj,
+                  unit: log.repetitionsUnitObj,
                   onChanged: (v) {
                     if (v != null) {
                       ref.read(gymLogProvider.notifier).setRepetitions(v);
@@ -308,9 +314,9 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
               Flexible(
                 child: WeightInputWidget(
                   key: const ValueKey('logs-weight-widget'),
-                  value: log?.weight,
+                  value: log.weight,
                   valueChange: widget.configData.weightRounding,
-                  unit: log?.weightUnitObj,
+                  unit: log.weightUnitObj,
                   onChanged: (v) {
                     if (v != null) {
                       ref.read(gymLogProvider.notifier).setWeight(v);
@@ -328,7 +334,7 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
           ),
           RiRInputWidget(
             key: const ValueKey('rir-input-widget'),
-            log!.rir,
+            log.rir,
             onChanged: (value) {
               log.rir = value == '' ? null : num.parse(value);
             },
