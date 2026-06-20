@@ -58,20 +58,30 @@ class TimeInputWidget extends StatefulWidget {
 }
 
 class _TimeInputWidgetState extends State<TimeInputWidget> {
-  final _controller = TextEditingController();
+  late final TextEditingController _controller;
   TimeOfDay? _value;
 
   @override
   void initState() {
     super.initState();
     _value = widget.value;
+    // initialize controller in initState(), format time in didChangeDependencies()
+    _controller = TextEditingController(text: '');
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _controller.text = _value?.format(context) ?? '';
   }
 
   @override
   void didUpdateWidget(TimeInputWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
+    // rebuild if new value received from parent and format the time
     if (widget.value != oldWidget.value) {
       _value = widget.value;
+      _controller.text = _value?.format(context) ?? '';
     }
   }
 
@@ -83,9 +93,6 @@ class _TimeInputWidgetState extends State<TimeInputWidget> {
 
   @override
   Widget build(BuildContext context) {
-    // The field is read-only, so rewriting the display text every build is safe.
-    _controller.text = _value?.format(context) ?? '';
-
     return TextFormField(
       readOnly: true,
       controller: _controller,
@@ -97,7 +104,10 @@ class _TimeInputWidgetState extends State<TimeInputWidget> {
             ? IconButton(
                 icon: const Icon(Icons.clear),
                 onPressed: () {
-                  setState(() => _value = null);
+                  setState(() {
+                    _value = null;
+                    _controller.clear();
+                  });
                   widget.onCleared!();
                 },
               )
@@ -112,7 +122,10 @@ class _TimeInputWidgetState extends State<TimeInputWidget> {
           initialTime: _value ?? TimeOfDay.now(),
         );
         if (picked != null && context.mounted) {
-          setState(() => _value = picked);
+          setState(() {
+            _value = picked;
+            _controller.text = picked.format(context);
+          });
           widget.onChanged(picked);
         }
       },
@@ -170,13 +183,28 @@ class DateInputWidget extends StatefulWidget {
 }
 
 class _DateInputWidgetState extends State<DateInputWidget> {
-  final _controller = TextEditingController();
+  late final TextEditingController _controller;
   DateTime? _value;
+  late DateFormat _dateFormat;
 
   @override
   void initState() {
     super.initState();
     _value = widget.value;
+    _dateFormat = DateFormat.yMd('en');
+    _controller = TextEditingController(text: '');
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Update formatter if locale changes
+    final locale = Localizations.localeOf(context).languageCode;
+    final newPattern = DateFormat.yMd(locale).pattern;
+    if (newPattern != _dateFormat.pattern) {
+      _dateFormat = DateFormat.yMd(locale);
+      _controller.text = _formatDate(_value);
+    }
   }
 
   @override
@@ -184,6 +212,7 @@ class _DateInputWidgetState extends State<DateInputWidget> {
     super.didUpdateWidget(oldWidget);
     if (widget.value != oldWidget.value) {
       _value = widget.value;
+      _controller.text = _formatDate(_value);
     }
   }
 
@@ -193,12 +222,12 @@ class _DateInputWidgetState extends State<DateInputWidget> {
     super.dispose();
   }
 
+  String _formatDate(DateTime? date) {
+    return date != null ? _dateFormat.format(date) : '';
+  }
+
   @override
   Widget build(BuildContext context) {
-    final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
-    // The field is read-only, so rewriting the display text every build is safe.
-    _controller.text = _value != null ? dateFormat.format(_value!) : '';
-
     return TextFormField(
       readOnly: true,
       controller: _controller,
@@ -211,7 +240,10 @@ class _DateInputWidgetState extends State<DateInputWidget> {
             ? IconButton(
                 icon: const Icon(Icons.clear),
                 onPressed: () {
-                  setState(() => _value = null);
+                  setState(() {
+                    _value = null;
+                    _controller.clear();
+                  });
                   widget.onCleared!();
                 },
               )
@@ -228,7 +260,10 @@ class _DateInputWidgetState extends State<DateInputWidget> {
           lastDate: widget.lastDate ?? DateTime(2100),
         );
         if (picked != null && context.mounted) {
-          setState(() => _value = picked);
+          setState(() {
+            _value = picked;
+            _controller.text = _formatDate(_value);
+          });
           widget.onChanged(picked);
         }
       },
