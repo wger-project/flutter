@@ -87,6 +87,12 @@
         </screenshot>
     </screenshots>
     <releases>
+        <release version="2.0.1" date="2026-06-21">
+            <description>
+                <p>Bug fixes and improvements.</p>
+            </description>
+            <url>https://github.com/wger-project/flutter/releases/tag/2.0.1</url>
+        </release>
         <release version="2.0.0" date="2026-06-16">
             <description>
                 <p>Bug fixes and improvements.</p>
