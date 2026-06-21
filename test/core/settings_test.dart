@@ -167,6 +167,49 @@ void main() {
     });
   });
 
+  group('Allow-self-signed-certs (AppSettingsNotifier)', () {
+    riverpod.ProviderContainer makeContainer() {
+      final container = riverpod.ProviderContainer(
+        overrides: [
+          appSettingsPrefsProvider.overrideWithValue(mockSharedPreferences),
+        ],
+      );
+      addTearDown(container.dispose);
+      return container;
+    }
+
+    test('defaults to false', () async {
+      when(
+        mockSharedPreferences.getBool(PREFS_ALLOW_SELF_SIGNED_CERTS),
+      ).thenAnswer((_) async => null);
+
+      final settings = await makeContainer().read(appSettingsProvider.future);
+      expect(settings.allowSelfSignedCerts, false);
+    });
+
+    test('loads true from prefs', () async {
+      when(
+        mockSharedPreferences.getBool(PREFS_ALLOW_SELF_SIGNED_CERTS),
+      ).thenAnswer((_) async => true);
+
+      final settings = await makeContainer().read(appSettingsProvider.future);
+      expect(settings.allowSelfSignedCerts, true);
+    });
+
+    test('persists the toggle', () async {
+      when(
+        mockSharedPreferences.getBool(PREFS_ALLOW_SELF_SIGNED_CERTS),
+      ).thenAnswer((_) async => null);
+      final container = makeContainer();
+
+      await container.read(appSettingsProvider.future);
+      await container.read(appSettingsProvider.notifier).setAllowSelfSignedCerts(true);
+
+      expect(container.read(appSettingsProvider).requireValue.allowSelfSignedCerts, true);
+      verify(mockSharedPreferences.setBool(PREFS_ALLOW_SELF_SIGNED_CERTS, true)).called(1);
+    });
+  });
+
   group('Language switcher', () {
     testWidgets('shows system option when no override set', (WidgetTester tester) async {
       await tester.pumpWidget(createSettingsScreen());

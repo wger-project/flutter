@@ -27,6 +27,7 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/errors.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/app_link_router.dart';
+import 'package:wger/providers/app_settings_notifier.dart';
 import 'package:wger/providers/auth_notifier.dart';
 import 'package:wger/providers/auth_state.dart';
 import 'package:wger/providers/network_provider.dart';
@@ -69,6 +70,7 @@ class _AuthCardState extends ConsumerState<AuthCard> {
   bool _autoValidate = false;
   bool _hideCustomServer = true;
   bool _useUsernameAndPassword = true;
+  bool _allowSelfSignedCerts = ALLOW_SELF_SIGNED_CERTS_DEFAULT;
   var _isLoading = false;
 
   final _usernameController = TextEditingController();
@@ -102,6 +104,13 @@ class _AuthCardState extends ConsumerState<AuthCard> {
           // than the official server counts as a self-hosted instance.
           _hideCustomServer = value == DEFAULT_SERVER_PROD;
         });
+      }
+    });
+
+    // Surface the persisted self-signed-cert preference in the advanced sheet.
+    ref.read(appSettingsProvider.future).then((settings) {
+      if (mounted) {
+        setState(() => _allowSelfSignedCerts = settings.allowSelfSignedCerts);
       }
     });
 
@@ -252,13 +261,18 @@ class _AuthCardState extends ConsumerState<AuthCard> {
       context: context,
       initialHideCustomServer: _hideCustomServer,
       initialUsePassword: _useUsernameAndPassword,
+      initialAllowSelfSignedCerts: _allowSelfSignedCerts,
       loginMode: _authMode == AuthMode.login,
       serverUrlController: _serverUrlController,
-      onChanged: (hideCustomServer, usePassword) {
+      onChanged: (hideCustomServer, usePassword, allowSelfSignedCerts) {
         setState(() {
           _hideCustomServer = hideCustomServer;
           _useUsernameAndPassword = usePassword;
+          _allowSelfSignedCerts = allowSelfSignedCerts;
         });
+        // Persist immediately and install the override so the next login
+        // request (still made from this screen) trusts the self-signed cert.
+        ref.read(appSettingsProvider.notifier).setAllowSelfSignedCerts(allowSelfSignedCerts);
       },
     ).then((_) {
       if (mounted) {
