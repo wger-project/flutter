@@ -1192,5 +1192,26 @@
     "appLanguageSystem": "Padrão do sistema",
     "@appLanguageSystem": {
         "description": "Dropdown entry that follows the device system language"
+    },
+    "refreshToken": "Token de atualização",
+    "invalidRefreshToken": "Por favor, insira um token de atualização válido",
+    "@invalidRefreshToken": {
+        "description": "Error message when the user enters an invalid refresh token"
+    },
+    "refreshTokenValidChars": "Um token de atualização possui três segmentos separados por pontos (cabeçalho.carga útil.assinatura), cada um composto por letras, dígitos, '-' e '_'",
+    "@refreshTokenValidChars": {
+        "description": "Error message when the user pastes a string that does not match the JWT shape"
+    },
+    "refreshTokenHelperText": "Gere um token de atualização JWT no site da wger e cole-o aqui. Isso é útil quando seu servidor está atrás de um proxy de autenticação ou quando você deseja ignorar o fluxo de login normal.",
+    "@refreshTokenHelperText": {
+        "description": "Helper text on the refresh-token paste field"
+    },
+    "mfaChallengeTitle": "Autenticação de dois fatores",
+    "@mfaChallengeTitle": {
+        "description": "App bar title on the 2FA challenge screen"
+    },
+    "mfaChallengeTotpPrompt": "Insira o código de 6 dígitos do seu aplicativo autenticador",
+    "@mfaChallengeTotpPrompt": {
+        "description": "Helper text above the TOTP input field"
     }
 }
