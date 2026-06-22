@@ -188,7 +188,7 @@ class _WeightInputWidgetState extends ConsumerState<WeightInputWidget> {
       children: [
         // "Quick-remove" button
         IconButton(
-          icon: const Icon(Icons.remove, color: Colors.black),
+          icon: const Icon(Icons.remove),
           iconSize: 25,
           padding: EdgeInsets.zero,
           constraints: const BoxConstraints(),
@@ -239,7 +239,7 @@ class _WeightInputWidgetState extends ConsumerState<WeightInputWidget> {
 
         // "Quick-add" button
         IconButton(
-          icon: const Icon(Icons.add, color: Colors.black),
+          icon: const Icon(Icons.add),
           iconSize: 25,
           padding: EdgeInsets.zero,
           constraints: const BoxConstraints(),
