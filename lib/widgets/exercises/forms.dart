@@ -78,7 +78,7 @@ class _ExerciseCategoryInputWidgetState<T> extends State<ExerciseCategoryInputWi
         },
         items: widget._entries.map<DropdownMenuItem<T>>((value) {
           return DropdownMenuItem<T>(
-            key: Key(value.uuid.toString()),
+            key: ValueKey(value),
             value: value,
             child: Text(widget._getDisplayName(value)),
           );
