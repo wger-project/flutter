@@ -1192,5 +1192,17 @@
     "appLanguageSystem": "Standardne vrijednosti sustava",
     "@appLanguageSystem": {
         "description": "Dropdown entry that follows the device system language"
-    }
+    },
+    "alreadyHaveAccount": "Već imaš korisnički račun?",
+    "tokenLabel": "Token",
+    "signInWithToken": "Prijavi se s tokenom",
+    "signInMethodSectionLabel": "Način prijave",
+    "advanced": "Napredno",
+    "advancedSubtitle": "Opcije servera i autentifikacije",
+    "serverSectionLabel": "Server",
+    "serverOptionDefaultDetail": "Službeni server",
+    "serverOptionSelfHostedTitle": "Vlastiti hosting",
+    "serverOptionSelfHostedDetail": "Poveži se na vlastitu instancu",
+    "authOptionPasswordTitle": "korisničko ime i lozinka",
+    "tokenSubtitle": "Generiraj jedan na wger web-stranici"
 }
