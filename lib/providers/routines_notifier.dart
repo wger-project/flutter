@@ -19,6 +19,7 @@
 import 'package:collection/collection.dart';
 import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/day_data.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
@@ -30,6 +31,7 @@ import 'package:wger/models/workouts/weight_unit.dart';
 import 'package:wger/providers/exercises_notifier.dart';
 import 'package:wger/providers/helpers.dart';
 import 'package:wger/providers/routines_repository.dart';
+import 'package:wger/providers/user_profile_notifier.dart';
 import 'package:wger/providers/workout_session_notifier.dart';
 
 part 'routines_notifier.g.dart';
@@ -111,6 +113,9 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
     ref.listen(exercisesProvider, (_, _) => _rehydrate());
     ref.listen(routineRepetitionUnitProvider, (_, _) => _rehydrate());
     ref.listen(routineWeightUnitProvider, (_, _) => _rehydrate());
+    // The default weight unit for set configs without an explicit one depends
+    // on the user's metric preference, so re-hydrate when the profile arrives.
+    ref.listen(userProfileProvider, (_, _) => _rehydrate());
 
     return repo.watchAllDrift().map((freshRoutines) {
       final existing = state.value?.routines ?? const <Routine>[];
@@ -140,6 +145,13 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
     final repetitionUnits =
         ref.read(routineRepetitionUnitProvider).value ?? const <RepetitionUnit>[];
     final weightUnits = ref.read(routineWeightUnitProvider).value ?? const <WeightUnit>[];
+    final profile = ref.read(userProfileProvider).value;
+
+    // Used for set configs that don't carry an explicit weight unit: kg for
+    // metric users, lb otherwise. Defaults to kg while the profile is still
+    // syncing (the profile listener re-hydrates once it arrives).
+    final defaultWeightUnitId = (profile?.isMetric ?? true) ? WEIGHT_UNIT_KG : WEIGHT_UNIT_LB;
+    final defaultWeightUnit = weightUnits.firstWhereOrNull((u) => u.id == defaultWeightUnitId);
 
     routine.sessions = sessions.where((s) => s.routineId == routine.id).toList();
 
@@ -195,9 +207,9 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
             setConfig.repetitionsUnit = repetitionUnits.firstWhereOrNull(
               (u) => u.id == setConfig.repetitionsUnitId,
             );
-            setConfig.weightUnit = weightUnits.firstWhereOrNull(
-              (u) => u.id == setConfig.weightUnitId,
-            );
+            setConfig.weightUnit = setConfig.weightUnitId != null
+                ? weightUnits.firstWhereOrNull((u) => u.id == setConfig.weightUnitId)
+                : defaultWeightUnit;
           }
         }
       }

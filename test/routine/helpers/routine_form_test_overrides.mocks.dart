@@ -12,9 +12,11 @@ import 'package:wger/models/exercises/category.dart' as _i6;
 import 'package:wger/models/exercises/equipment.dart' as _i8;
 import 'package:wger/models/exercises/exercise_filters.dart' as _i5;
 import 'package:wger/models/exercises/muscle.dart' as _i9;
+import 'package:wger/models/user/user_profile.dart' as _i14;
 import 'package:wger/models/workouts/session.dart' as _i12;
 import 'package:wger/providers/exercise_repository.dart' as _i2;
 import 'package:wger/providers/exercises_notifier.dart' as _i7;
+import 'package:wger/providers/user_profile_repository.dart' as _i13;
 import 'package:wger/providers/workout_session_repository.dart' as _i11;
 
 // ignore_for_file: type=lint
@@ -158,6 +160,32 @@ class MockWorkoutSessionRepository extends _i1.Mock implements _i11.WorkoutSessi
   _i3.Future<void> addLocalDrift(_i12.WorkoutSession? session) =>
       (super.noSuchMethod(
             Invocation.method(#addLocalDrift, [session]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
+}
+
+/// A class which mocks [UserProfileRepository].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockUserProfileRepository extends _i1.Mock implements _i13.UserProfileRepository {
+  MockUserProfileRepository() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i3.Stream<_i14.UserProfile?> watchDrift() =>
+      (super.noSuchMethod(
+            Invocation.method(#watchDrift, []),
+            returnValue: _i3.Stream<_i14.UserProfile?>.empty(),
+          )
+          as _i3.Stream<_i14.UserProfile?>);
+
+  @override
+  _i3.Future<void> editLocalDrift(_i14.UserProfile? profile) =>
+      (super.noSuchMethod(
+            Invocation.method(#editLocalDrift, [profile]),
             returnValue: _i3.Future<void>.value(),
             returnValueForMissingStub: _i3.Future<void>.value(),
           )

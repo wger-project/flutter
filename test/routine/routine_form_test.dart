@@ -36,6 +36,7 @@ import 'package:wger/providers/exercises_notifier.dart';
 import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/routines_notifier.dart';
 import 'package:wger/providers/routines_repository.dart';
+import 'package:wger/providers/user_profile_repository.dart';
 import 'package:wger/providers/workout_session_repository.dart';
 import 'package:wger/screens/routine_edit_screen.dart';
 import 'package:wger/screens/routine_screen.dart';
@@ -46,13 +47,19 @@ import '../../test_data/routines.dart';
 import '../fake_connectivity.dart';
 import './routine_form_test.mocks.dart';
 
-@GenerateMocks([RoutinesRepository, WorkoutSessionRepository, ExerciseRepository])
+@GenerateMocks([
+  RoutinesRepository,
+  WorkoutSessionRepository,
+  ExerciseRepository,
+  UserProfileRepository,
+])
 void main() {
   installFakeConnectivity();
 
   late MockRoutinesRepository mockRoutinesRepository;
   late MockWorkoutSessionRepository mockSessionRepo;
   late MockExerciseRepository mockExerciseRepo;
+  late MockUserProfileRepository mockUserProfileRepo;
   late StreamController<List<Routine>> routineStream;
   late Routine existingRoutine;
   late Routine newRoutine;
@@ -92,6 +99,10 @@ void main() {
     when(
       mockExerciseRepo.watchAllDrift(),
     ).thenAnswer((_) => Stream.value(const ExerciseState(<Exercise>[])));
+    // RoutinesRiverpod.build() also listens to the user profile for the default
+    // weight unit; stub it so the real PowerSync DB isn't pulled in.
+    mockUserProfileRepo = MockUserProfileRepository();
+    when(mockUserProfileRepo.watchDrift()).thenAnswer((_) => Stream.value(null));
   });
 
   tearDown(() {
@@ -106,6 +117,7 @@ void main() {
         routinesRepositoryProvider.overrideWithValue(mockRoutinesRepository),
         workoutSessionRepositoryProvider.overrideWithValue(mockSessionRepo),
         exerciseRepositoryProvider.overrideWithValue(mockExerciseRepo),
+        userProfileRepositoryProvider.overrideWithValue(mockUserProfileRepo),
         networkStatusProvider.overrideWithValue(isOnline),
         routineRepetitionUnitProvider.overrideWith(
           (ref) => Stream<List<RepetitionUnit>>.value(testRepetitionUnits),

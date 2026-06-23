@@ -26,14 +26,15 @@ import 'package:wger/models/workouts/weight_unit.dart';
 import 'package:wger/providers/exercise_repository.dart';
 import 'package:wger/providers/exercises_notifier.dart';
 import 'package:wger/providers/routines_notifier.dart';
+import 'package:wger/providers/user_profile_repository.dart';
 import 'package:wger/providers/workout_session_repository.dart';
 
 import 'routine_form_test_overrides.mocks.dart';
 
 export 'routine_form_test_overrides.mocks.dart'
-    show MockExerciseRepository, MockWorkoutSessionRepository;
+    show MockExerciseRepository, MockWorkoutSessionRepository, MockUserProfileRepository;
 
-@GenerateMocks([ExerciseRepository, WorkoutSessionRepository])
+@GenerateMocks([ExerciseRepository, WorkoutSessionRepository, UserProfileRepository])
 /// Repository overrides for the two reference-data notifiers that
 /// `RoutinesRiverpod.fetchAndSetRoutineFull` `awaitFirstValue`s on:
 /// `exercisesProvider` and `workoutSessionProvider`. Both notifiers read
@@ -46,13 +47,25 @@ export 'routine_form_test_overrides.mocks.dart'
 List<Override> exerciseAndSessionRepoOverrides({
   MockExerciseRepository? exercise,
   MockWorkoutSessionRepository? session,
+  MockUserProfileRepository? userProfile,
 }) {
   final exerciseRepo = exercise ?? _emptyExerciseRepoMock();
   final sessionRepo = session ?? _emptySessionRepoMock();
   return [
     exerciseRepositoryProvider.overrideWithValue(exerciseRepo),
     workoutSessionRepositoryProvider.overrideWithValue(sessionRepo),
+    // RoutinesRiverpod.build listens to the user profile to pick the default
+    // weight unit; stub it so the real Drift-backed repo isn't pulled in.
+    // Defaults to a null (metric) profile; pass [userProfile] to exercise the
+    // imperial default-unit path.
+    userProfileRepositoryProvider.overrideWithValue(userProfile ?? _emptyUserProfileRepoMock()),
   ];
+}
+
+MockUserProfileRepository _emptyUserProfileRepoMock() {
+  final mock = MockUserProfileRepository();
+  when(mock.watchDrift()).thenAnswer((_) => Stream.value(null));
+  return mock;
 }
 
 MockExerciseRepository _emptyExerciseRepoMock() {
@@ -80,10 +93,15 @@ MockWorkoutSessionRepository _emptySessionRepoMock() {
 List<Override> routineFormAmbientOverrides({
   MockExerciseRepository? exercise,
   MockWorkoutSessionRepository? session,
+  MockUserProfileRepository? userProfile,
   List<RepetitionUnit> repetitionUnits = const [],
   List<WeightUnit> weightUnits = const [],
 }) => [
-  ...exerciseAndSessionRepoOverrides(exercise: exercise, session: session),
+  ...exerciseAndSessionRepoOverrides(
+    exercise: exercise,
+    session: session,
+    userProfile: userProfile,
+  ),
   routineRepetitionUnitProvider.overrideWith(
     (ref) => Stream<List<RepetitionUnit>>.value(repetitionUnits),
   ),

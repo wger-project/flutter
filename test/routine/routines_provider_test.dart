@@ -22,15 +22,20 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/models/user/user_profile.dart';
 import 'package:wger/models/workouts/day.dart';
+import 'package:wger/models/workouts/day_data.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/session.dart';
+import 'package:wger/models/workouts/set_config_data.dart';
 import 'package:wger/models/workouts/slot.dart';
+import 'package:wger/models/workouts/slot_data.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
 import 'package:wger/providers/exercises_notifier.dart';
 import 'package:wger/providers/routines_notifier.dart';
 import 'package:wger/providers/routines_repository.dart';
+import 'package:wger/providers/user_profile_notifier.dart';
 
 import '../../test_data/exercises.dart';
 import '../../test_data/routines.dart';
@@ -358,6 +363,60 @@ void main() {
 
       // Assert: `_fullFetchInFlight` collapses them into a single roundtrip.
       verify(mockRepo.fetchAndSetRoutineFullServer(101)).called(1);
+    });
+
+    test('resolves the default weight unit from an imperial profile', () async {
+      // A set config without an explicit weight unit must inherit the unit
+      // implied by the profile: lb (id 2) for an imperial user, not kg.
+      overrideStreams(mockExerciseRepo);
+      final setConfig = SetConfigData(
+        exerciseId: 1,
+        slotEntryId: 1,
+        exercise: getTestExercises()[0],
+        // No weightUnit / weightUnitId: the server omits it, the default applies.
+      );
+      final routine = Routine(id: 101, name: 'Test routine')
+        ..dayDataGym = [
+          DayData(
+            iteration: 1,
+            date: DateTime(2024, 11, 1),
+            label: '',
+            day: Day(id: 1, routineId: 101, name: 'Test', order: 1),
+            slots: [
+              SlotData(comment: '', isSuperset: false, exerciseIds: [1], setConfigs: [setConfig]),
+            ],
+          ),
+        ];
+      when(mockRepo.fetchAndSetRoutineFullServer(101)).thenAnswer((_) async => routine);
+
+      final imperialProfileRepo = MockUserProfileRepository();
+      when(
+        imperialProfileRepo.watchDrift(),
+      ).thenAnswer((_) => Stream.value(UserProfile(id: 1, weightUnitStr: 'lb')));
+
+      final container = ProviderContainer.test(
+        overrides: [
+          routinesRepositoryProvider.overrideWithValue(mockRepo),
+          ...routineFormAmbientOverrides(
+            exercise: mockExerciseRepo,
+            session: mockSessionRepo,
+            userProfile: imperialProfileRepo,
+            repetitionUnits: testRepetitionUnits,
+            weightUnits: testWeightUnits,
+          ),
+        ],
+      );
+
+      // fetchAndSetRoutineFull doesn't await the profile, so keep it alive and
+      // let its stream emit before hydration reads it (post-sync steady state).
+      container.listen(userProfileProvider, (_, _) {});
+      await pumpEventQueue();
+      final notifier = container.read(routinesRiverpodProvider.notifier);
+      final result = await notifier.fetchAndSetRoutineFull(101);
+
+      // testWeightUnit2 has id 2 == WEIGHT_UNIT_LB.
+      final hydratedConfig = result.dayDataGym[0].slots[0].setConfigs[0];
+      expect(hydratedConfig.weightUnit, testWeightUnit2);
     });
   });
 
