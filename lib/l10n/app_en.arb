@@ -534,6 +534,38 @@
       }
     }
   },
+  "chartLastYearTitle": "{name} last year",
+  "@chartLastYearTitle": {
+    "description": "last year chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chartLast3MonthsTitle": "{name} last 3 months",
+  "@chartLast3MonthsTitle": {
+    "description": "last 3 months chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chartRangeAll": "All",
+  "@chartRangeAll": {
+    "description": "Label for the chart time-range selector option showing all data"
+  },
+  "chartRangeLastYear": "Last year",
+  "@chartRangeLastYear": {
+    "description": "Label for the chart time-range selector option showing the last year"
+  },
+  "chartRangeLast3Months": "Last 3 months",
+  "@chartRangeLast3Months": {
+    "description": "Label for the chart time-range selector option showing the last 3 months"
+  },
   "measurement": "Measurement",
   "@measurement": {},
   "measurements": "Measurements",

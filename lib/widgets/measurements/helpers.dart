@@ -42,12 +42,13 @@ List<Widget> getOverviewWidgetsSeries(
   List<MeasurementChartEntry> entries7dAvg,
   List<NutritionalPlan> plans,
   String unit,
-  BuildContext context,
-) {
+  BuildContext context, {
+  String? mainChartTitle,
+}) {
   final monthAgo = DateTime.now().subtract(const Duration(days: 30));
   return [
     ...getOverviewWidgets(
-      AppLocalizations.of(context).chartAllTimeTitle(name),
+      mainChartTitle ?? AppLocalizations.of(context).chartAllTimeTitle(name),
       entriesAll,
       entries7dAvg,
       unit,

@@ -94,6 +94,33 @@ void main() {
     expect(find.byType(ListTile), findsNWidgets(2));
   });
 
+  testWidgets('Weight chart range selector filters the data', (WidgetTester tester) async {
+    await tester.pumpWidget(createWeightScreen());
+    await tester.pumpAndSettle();
+
+    // The range selector is shown with the three options
+    expect(find.byKey(const ValueKey('weightChartRangeSelector')), findsOneWidget);
+    expect(find.text('All'), findsOneWidget);
+    expect(find.text('Last year'), findsOneWidget);
+    expect(find.text('Last 3 months'), findsOneWidget);
+
+    // By default (all time) the chart is shown for the seeded entries
+    expect(find.byType(MeasurementChartWidgetFl), findsOneWidget);
+
+    // Restricting to the last 3 months excludes the (old) seeded data
+    await tester.ensureVisible(find.text('Last 3 months'));
+    await tester.tap(find.text('Last 3 months'));
+    await tester.pumpAndSettle();
+    expect(find.byType(MeasurementChartWidgetFl), findsNothing);
+    expect(find.text('No data available'), findsOneWidget);
+
+    // Switching back to all time restores the chart
+    await tester.ensureVisible(find.text('All'));
+    await tester.tap(find.text('All'));
+    await tester.pumpAndSettle();
+    expect(find.byType(MeasurementChartWidgetFl), findsOneWidget);
+  });
+
   testWidgets('Test deleting an item using the Delete button', (WidgetTester tester) async {
     // Arrange
     await tester.pumpWidget(createWeightScreen());
