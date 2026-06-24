@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/plate_weights.dart';
@@ -63,6 +64,10 @@ class ConfigureAvailablePlates extends ConsumerStatefulWidget {
 }
 
 class _AddPlateWeightsState extends ConsumerState<ConfigureAvailablePlates> {
+  final TextEditingController _barWeightController = TextEditingController();
+  bool _barWeightInitialized = false;
+  String? _barWeightError;
+
   @override
   void initState() {
     super.initState();
@@ -72,12 +77,33 @@ class _AddPlateWeightsState extends ConsumerState<ConfigureAvailablePlates> {
   }
 
   @override
+  void dispose() {
+    _barWeightController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
+    final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
 
     final plateWeightsState = ref.watch(plateCalculatorProvider);
     final plateWeightsNotifier = ref.read(plateCalculatorProvider.notifier);
     // final userProvider = provider.Provider.of<UserProvider>(context);
+
+    // Initialise the field with the current value and keep it in sync when the
+    // bar weight changes from outside the field (data loaded from prefs, unit
+    // switch, preset chips), without clobbering what the user is typing.
+    if (!_barWeightInitialized) {
+      _barWeightController.text = numberFormat.format(plateWeightsState.barWeight);
+      _barWeightInitialized = true;
+    }
+    ref.listen(plateCalculatorProvider.select((s) => s.barWeight), (_, barWeight) {
+      if (numberFormat.tryParse(_barWeightController.text) != barWeight) {
+        _barWeightController.text = numberFormat.format(barWeight);
+        _barWeightError = null;
+      }
+    });
 
     return Column(
       mainAxisSize: MainAxisSize.max,
@@ -108,24 +134,42 @@ class _AddPlateWeightsState extends ConsumerState<ConfigureAvailablePlates> {
         ),
         Padding(
           padding: const EdgeInsets.all(10),
-          child: DropdownMenu<num>(
-            key: const ValueKey('barWeightDropdown'),
-            width: double.infinity,
-            initialSelection: plateWeightsState.barWeight,
-            requestFocusOnTap: true,
-            label: Text(i18n.barWeight),
-            onSelected: (num? value) {
-              if (value == null) {
-                return;
-              }
-              plateWeightsNotifier.setBarWeight(value);
-            },
-            dropdownMenuEntries: plateWeightsState.availableBarsWeights.map((value) {
-              return DropdownMenuEntry<num>(
-                value: value,
-                label: value.toString(),
-              );
-            }).toList(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextFormField(
+                key: const ValueKey('barWeightField'),
+                controller: _barWeightController,
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                decoration: InputDecoration(
+                  labelText: i18n.barWeight,
+                  errorText: _barWeightError,
+                ),
+                onChanged: (value) {
+                  final parsed = numberFormat.tryParse(value);
+                  setState(() {
+                    if (parsed == null || parsed <= 0) {
+                      _barWeightError = i18n.enterValidNumber;
+                    } else {
+                      _barWeightError = null;
+                      plateWeightsNotifier.setBarWeight(parsed);
+                    }
+                  });
+                },
+              ),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                children: plateWeightsState.availableBarsWeights.map((value) {
+                  return ChoiceChip(
+                    key: ValueKey('barWeightChip-$value'),
+                    label: Text(value.toString()),
+                    selected: plateWeightsState.barWeight == value,
+                    onSelected: (_) => plateWeightsNotifier.setBarWeight(value),
+                  );
+                }).toList(),
+              ),
+            ],
           ),
         ),
         SwitchListTile(

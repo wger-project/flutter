@@ -67,18 +67,16 @@ void main() {
       await tester.pumpAndSettle();
       expect(notifier.state.isMetric, isFalse);
 
-      // Correctly changes the bar weight
+      // Correctly changes the bar weight via a preset chip
       expect(notifier.state.barWeight, 45);
-      await tester.tap(find.byKey(const ValueKey('barWeightDropdown')));
-      await tester.pumpAndSettle();
-      final menuItem = find.ancestor(
-        of: find.text('25'),
-        matching: find.byType(InkWell),
-      );
-      expect(menuItem, findsOneWidget);
-      await tester.tap(menuItem);
+      await tester.tap(find.byKey(const ValueKey('barWeightChip-25')));
       await tester.pumpAndSettle();
       expect(notifier.state.barWeight, 25);
+
+      // Correctly accepts a custom bar weight typed into the field
+      await tester.enterText(find.byKey(const ValueKey('barWeightField')), '7.5');
+      await tester.pumpAndSettle();
+      expect(notifier.state.barWeight, 7.5);
 
       // Correctly toggles the useColors switch
       expect(notifier.state.useColors, isFalse);
