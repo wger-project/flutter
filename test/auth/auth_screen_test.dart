@@ -17,6 +17,7 @@
  */
 
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -542,6 +543,37 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('https://wger.de'), findsOneWidget);
       expect(find.text('http://localhost:8000'), findsNothing);
+    });
+
+    testWidgets('Self-hosted exposes the self-signed-cert toggle and persists it', (
+      WidgetTester tester,
+    ) async {
+      // Toggling the switch installs a global HttpOverrides; undo it so the
+      // override does not leak into later tests in this isolate.
+      addTearDown(() => HttpOverrides.global = null);
+
+      await tester.binding.setSurfaceSize(const Size(1080, 1920));
+      tester.view.devicePixelRatio = 1.0;
+      await tester.pumpWidget(getWidget());
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('advancedButton')));
+      await tester.pumpAndSettle();
+
+      // The toggle only exists once a self-hosted server is selected.
+      final toggle = find.byKey(const Key('allowSelfSignedCertsSwitch'));
+      expect(toggle, findsNothing);
+      await tester.tap(find.text('Self-hosted'));
+      await tester.pumpAndSettle();
+      expect(toggle, findsOneWidget);
+
+      await tester.tap(toggle);
+      await tester.pumpAndSettle();
+
+      expect(
+        await PreferenceHelper.asyncPref.getBool(PREFS_ALLOW_SELF_SIGNED_CERTS),
+        isTrue,
+      );
     });
 
     testWidgets('Sheet pre-selects Self-hosted for a custom last-used server', (

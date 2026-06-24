@@ -25,7 +25,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/core/error_dialogs.dart';
 import 'package:wger/core/keys.dart';
+import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/errors.dart';
+import 'package:wger/helpers/http_overrides.dart';
 import 'package:wger/helpers/locale.dart';
 import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -107,6 +109,13 @@ void main() async {
 
   // SharedPreferences to SharedPreferencesAsync migration function
   await PreferenceHelper.instance.migrationSupportFunctionForSharedPreferences();
+
+  // Install the self-signed certificate override before any network request
+  // (e.g. the auto-login probe) is made, based on the persisted preference.
+  final allowSelfSignedCerts =
+      await PreferenceHelper.asyncPref.getBool(PREFS_ALLOW_SELF_SIGNED_CERTS) ??
+      ALLOW_SELF_SIGNED_CERTS_DEFAULT;
+  applySelfSignedCertOverride(allowSelfSignedCerts);
 
   // Catch errors from Flutter itself (widget build, layout, paint, etc.)
   FlutterError.onError = (FlutterErrorDetails details) {

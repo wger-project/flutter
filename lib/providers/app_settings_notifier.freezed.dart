@@ -17,7 +17,9 @@ mixin _$AppSettings {
  ThemeMode get themeMode; List<DashboardItem> get dashboardItems;/// Locale override. Null means the app follows the system locale.
  Locale? get userLocale;/// When true, a manual logout keeps the local database on disk instead
 /// of wiping it, so the same user signing back in resumes incrementally.
- bool get keepDataOnLogout;
+ bool get keepDataOnLogout;/// When true, TLS certificate validation is disabled so the app can
+/// connect to self-hosted instances using a self-signed certificate.
+ bool get allowSelfSignedCerts;
 /// Create a copy of AppSettings
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +30,16 @@ $AppSettingsCopyWith<AppSettings> get copyWith => _$AppSettingsCopyWithImpl<AppS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppSettings&&(identical(other.themeMode, themeMode) || other.themeMode == themeMode)&&const DeepCollectionEquality().equals(other.dashboardItems, dashboardItems)&&(identical(other.userLocale, userLocale) || other.userLocale == userLocale)&&(identical(other.keepDataOnLogout, keepDataOnLogout) || other.keepDataOnLogout == keepDataOnLogout));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppSettings&&(identical(other.themeMode, themeMode) || other.themeMode == themeMode)&&const DeepCollectionEquality().equals(other.dashboardItems, dashboardItems)&&(identical(other.userLocale, userLocale) || other.userLocale == userLocale)&&(identical(other.keepDataOnLogout, keepDataOnLogout) || other.keepDataOnLogout == keepDataOnLogout)&&(identical(other.allowSelfSignedCerts, allowSelfSignedCerts) || other.allowSelfSignedCerts == allowSelfSignedCerts));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,themeMode,const DeepCollectionEquality().hash(dashboardItems),userLocale,keepDataOnLogout);
+int get hashCode => Object.hash(runtimeType,themeMode,const DeepCollectionEquality().hash(dashboardItems),userLocale,keepDataOnLogout,allowSelfSignedCerts);
 
 @override
 String toString() {
-  return 'AppSettings(themeMode: $themeMode, dashboardItems: $dashboardItems, userLocale: $userLocale, keepDataOnLogout: $keepDataOnLogout)';
+  return 'AppSettings(themeMode: $themeMode, dashboardItems: $dashboardItems, userLocale: $userLocale, keepDataOnLogout: $keepDataOnLogout, allowSelfSignedCerts: $allowSelfSignedCerts)';
 }
 
 
@@ -48,7 +50,7 @@ abstract mixin class $AppSettingsCopyWith<$Res>  {
   factory $AppSettingsCopyWith(AppSettings value, $Res Function(AppSettings) _then) = _$AppSettingsCopyWithImpl;
 @useResult
 $Res call({
- ThemeMode themeMode, List<DashboardItem> dashboardItems, Locale? userLocale, bool keepDataOnLogout
+ ThemeMode themeMode, List<DashboardItem> dashboardItems, Locale? userLocale, bool keepDataOnLogout, bool allowSelfSignedCerts
 });
 
 
@@ -65,12 +67,13 @@ class _$AppSettingsCopyWithImpl<$Res>
 
 /// Create a copy of AppSettings
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? themeMode = null,Object? dashboardItems = null,Object? userLocale = freezed,Object? keepDataOnLogout = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? themeMode = null,Object? dashboardItems = null,Object? userLocale = freezed,Object? keepDataOnLogout = null,Object? allowSelfSignedCerts = null,}) {
   return _then(_self.copyWith(
 themeMode: null == themeMode ? _self.themeMode : themeMode // ignore: cast_nullable_to_non_nullable
 as ThemeMode,dashboardItems: null == dashboardItems ? _self.dashboardItems : dashboardItems // ignore: cast_nullable_to_non_nullable
 as List<DashboardItem>,userLocale: freezed == userLocale ? _self.userLocale : userLocale // ignore: cast_nullable_to_non_nullable
 as Locale?,keepDataOnLogout: null == keepDataOnLogout ? _self.keepDataOnLogout : keepDataOnLogout // ignore: cast_nullable_to_non_nullable
+as bool,allowSelfSignedCerts: null == allowSelfSignedCerts ? _self.allowSelfSignedCerts : allowSelfSignedCerts // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }
@@ -153,10 +156,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( ThemeMode themeMode,  List<DashboardItem> dashboardItems,  Locale? userLocale,  bool keepDataOnLogout)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( ThemeMode themeMode,  List<DashboardItem> dashboardItems,  Locale? userLocale,  bool keepDataOnLogout,  bool allowSelfSignedCerts)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AppSettings() when $default != null:
-return $default(_that.themeMode,_that.dashboardItems,_that.userLocale,_that.keepDataOnLogout);case _:
+return $default(_that.themeMode,_that.dashboardItems,_that.userLocale,_that.keepDataOnLogout,_that.allowSelfSignedCerts);case _:
   return orElse();
 
 }
@@ -174,10 +177,10 @@ return $default(_that.themeMode,_that.dashboardItems,_that.userLocale,_that.keep
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( ThemeMode themeMode,  List<DashboardItem> dashboardItems,  Locale? userLocale,  bool keepDataOnLogout)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( ThemeMode themeMode,  List<DashboardItem> dashboardItems,  Locale? userLocale,  bool keepDataOnLogout,  bool allowSelfSignedCerts)  $default,) {final _that = this;
 switch (_that) {
 case _AppSettings():
-return $default(_that.themeMode,_that.dashboardItems,_that.userLocale,_that.keepDataOnLogout);}
+return $default(_that.themeMode,_that.dashboardItems,_that.userLocale,_that.keepDataOnLogout,_that.allowSelfSignedCerts);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -191,10 +194,10 @@ return $default(_that.themeMode,_that.dashboardItems,_that.userLocale,_that.keep
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( ThemeMode themeMode,  List<DashboardItem> dashboardItems,  Locale? userLocale,  bool keepDataOnLogout)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( ThemeMode themeMode,  List<DashboardItem> dashboardItems,  Locale? userLocale,  bool keepDataOnLogout,  bool allowSelfSignedCerts)?  $default,) {final _that = this;
 switch (_that) {
 case _AppSettings() when $default != null:
-return $default(_that.themeMode,_that.dashboardItems,_that.userLocale,_that.keepDataOnLogout);case _:
+return $default(_that.themeMode,_that.dashboardItems,_that.userLocale,_that.keepDataOnLogout,_that.allowSelfSignedCerts);case _:
   return null;
 
 }
@@ -206,7 +209,7 @@ return $default(_that.themeMode,_that.dashboardItems,_that.userLocale,_that.keep
 
 
 class _AppSettings implements AppSettings {
-  const _AppSettings({this.themeMode = ThemeMode.system, final  List<DashboardItem> dashboardItems = const [], this.userLocale, this.keepDataOnLogout = KEEP_DATA_ON_LOGOUT_DEFAULT}): _dashboardItems = dashboardItems;
+  const _AppSettings({this.themeMode = ThemeMode.system, final  List<DashboardItem> dashboardItems = const [], this.userLocale, this.keepDataOnLogout = KEEP_DATA_ON_LOGOUT_DEFAULT, this.allowSelfSignedCerts = ALLOW_SELF_SIGNED_CERTS_DEFAULT}): _dashboardItems = dashboardItems;
   
 
 @override@JsonKey() final  ThemeMode themeMode;
@@ -222,6 +225,9 @@ class _AppSettings implements AppSettings {
 /// When true, a manual logout keeps the local database on disk instead
 /// of wiping it, so the same user signing back in resumes incrementally.
 @override@JsonKey() final  bool keepDataOnLogout;
+/// When true, TLS certificate validation is disabled so the app can
+/// connect to self-hosted instances using a self-signed certificate.
+@override@JsonKey() final  bool allowSelfSignedCerts;
 
 /// Create a copy of AppSettings
 /// with the given fields replaced by the non-null parameter values.
@@ -233,16 +239,16 @@ _$AppSettingsCopyWith<_AppSettings> get copyWith => __$AppSettingsCopyWithImpl<_
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppSettings&&(identical(other.themeMode, themeMode) || other.themeMode == themeMode)&&const DeepCollectionEquality().equals(other._dashboardItems, _dashboardItems)&&(identical(other.userLocale, userLocale) || other.userLocale == userLocale)&&(identical(other.keepDataOnLogout, keepDataOnLogout) || other.keepDataOnLogout == keepDataOnLogout));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppSettings&&(identical(other.themeMode, themeMode) || other.themeMode == themeMode)&&const DeepCollectionEquality().equals(other._dashboardItems, _dashboardItems)&&(identical(other.userLocale, userLocale) || other.userLocale == userLocale)&&(identical(other.keepDataOnLogout, keepDataOnLogout) || other.keepDataOnLogout == keepDataOnLogout)&&(identical(other.allowSelfSignedCerts, allowSelfSignedCerts) || other.allowSelfSignedCerts == allowSelfSignedCerts));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,themeMode,const DeepCollectionEquality().hash(_dashboardItems),userLocale,keepDataOnLogout);
+int get hashCode => Object.hash(runtimeType,themeMode,const DeepCollectionEquality().hash(_dashboardItems),userLocale,keepDataOnLogout,allowSelfSignedCerts);
 
 @override
 String toString() {
-  return 'AppSettings(themeMode: $themeMode, dashboardItems: $dashboardItems, userLocale: $userLocale, keepDataOnLogout: $keepDataOnLogout)';
+  return 'AppSettings(themeMode: $themeMode, dashboardItems: $dashboardItems, userLocale: $userLocale, keepDataOnLogout: $keepDataOnLogout, allowSelfSignedCerts: $allowSelfSignedCerts)';
 }
 
 
@@ -253,7 +259,7 @@ abstract mixin class _$AppSettingsCopyWith<$Res> implements $AppSettingsCopyWith
   factory _$AppSettingsCopyWith(_AppSettings value, $Res Function(_AppSettings) _then) = __$AppSettingsCopyWithImpl;
 @override @useResult
 $Res call({
- ThemeMode themeMode, List<DashboardItem> dashboardItems, Locale? userLocale, bool keepDataOnLogout
+ ThemeMode themeMode, List<DashboardItem> dashboardItems, Locale? userLocale, bool keepDataOnLogout, bool allowSelfSignedCerts
 });
 
 
@@ -270,12 +276,13 @@ class __$AppSettingsCopyWithImpl<$Res>
 
 /// Create a copy of AppSettings
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? themeMode = null,Object? dashboardItems = null,Object? userLocale = freezed,Object? keepDataOnLogout = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? themeMode = null,Object? dashboardItems = null,Object? userLocale = freezed,Object? keepDataOnLogout = null,Object? allowSelfSignedCerts = null,}) {
   return _then(_AppSettings(
 themeMode: null == themeMode ? _self.themeMode : themeMode // ignore: cast_nullable_to_non_nullable
 as ThemeMode,dashboardItems: null == dashboardItems ? _self._dashboardItems : dashboardItems // ignore: cast_nullable_to_non_nullable
 as List<DashboardItem>,userLocale: freezed == userLocale ? _self.userLocale : userLocale // ignore: cast_nullable_to_non_nullable
 as Locale?,keepDataOnLogout: null == keepDataOnLogout ? _self.keepDataOnLogout : keepDataOnLogout // ignore: cast_nullable_to_non_nullable
+as bool,allowSelfSignedCerts: null == allowSelfSignedCerts ? _self.allowSelfSignedCerts : allowSelfSignedCerts // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }
