@@ -20,7 +20,7 @@
  * Repository for body weight network operations.
  */
 
-import 'package:drift/drift.dart' show BooleanExpressionOperators;
+import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/models/workouts/log.dart';
@@ -33,14 +33,57 @@ final workoutLogRepositoryProvider = Provider<WorkoutLogRepository>((ref) {
   return WorkoutLogRepository(db);
 });
 
-/// Write-side access to the local `workout_log` table. Reading logs happens
-/// through `WorkoutSessionRepository.watchAllDrift`, which joins logs onto
-/// their parent session.
+/// Local access to the `workout_log` table: writes (add/update/delete) plus a
+/// per-exercise read stream. Reading logs grouped under their parent session
+/// happens through `WorkoutSessionRepository.watchAllDrift`.
 class WorkoutLogRepository {
   final _logger = Logger('WorkoutLogRepository');
   final DriftPowersyncDatabase _db;
 
   WorkoutLogRepository(this._db);
+
+  /// Streams the logs for a single exercise within a routine, newest first,
+  /// with their repetition and weight units attached.
+  Stream<List<Log>> watchLogsByExerciseDrift({
+    required int routineId,
+    required int exerciseId,
+  }) {
+    _logger.finer('Watching local logs for routine $routineId, exercise $exerciseId');
+
+    final query =
+        _db.select(_db.workoutLogTable).join([
+            leftOuterJoin(
+              _db.routineRepetitionUnitTable,
+              _db.routineRepetitionUnitTable.id.equalsExp(_db.workoutLogTable.repetitionsUnitId),
+            ),
+            leftOuterJoin(
+              _db.routineWeightUnitTable,
+              _db.routineWeightUnitTable.id.equalsExp(_db.workoutLogTable.weightUnitId),
+            ),
+          ])
+          ..where(
+            _db.workoutLogTable.routineId.equals(routineId) &
+                _db.workoutLogTable.exerciseId.equals(exerciseId),
+          )
+          ..orderBy([
+            OrderingTerm(expression: _db.workoutLogTable.date, mode: OrderingMode.desc),
+          ]);
+
+    return query.watch().map((rows) {
+      return rows.map((row) {
+        final log = row.readTable(_db.workoutLogTable);
+        final repetitionUnit = row.readTableOrNull(_db.routineRepetitionUnitTable);
+        if (repetitionUnit != null) {
+          log.repetitionUnit = repetitionUnit;
+        }
+        final weightUnit = row.readTableOrNull(_db.routineWeightUnitTable);
+        if (weightUnit != null) {
+          log.weightUnit = weightUnit;
+        }
+        return log;
+      }).toList();
+    });
+  }
 
   Future<void> deleteLocalDrift(String id) async {
     _logger.finer('Deleting local workout log entry $id');

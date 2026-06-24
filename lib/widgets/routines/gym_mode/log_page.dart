@@ -33,6 +33,7 @@ import 'package:wger/providers/plate_weights.dart';
 import 'package:wger/providers/workout_logs_notifier.dart';
 import 'package:wger/screens/settings_plates_screen.dart';
 import 'package:wger/widgets/core/core.dart';
+import 'package:wger/widgets/core/error.dart';
 import 'package:wger/widgets/routines/forms/repetitions.dart';
 import 'package:wger/widgets/routines/forms/rir.dart';
 import 'package:wger/widgets/routines/forms/weight.dart';
@@ -70,6 +71,15 @@ class LogPage extends ConsumerWidget {
       return Container();
     }
     final setConfigData = slotEntryPage.setConfigData!;
+
+    // Past logs come straight from the local DB (not the gym-mode routine
+    // snapshot) so a set logged during this workout shows up right away.
+    final pastLogs = ref.watch(
+      pastExerciseLogsProvider(
+        routineId: gymState.routine.id!,
+        exerciseId: setConfigData.exerciseId,
+      ),
+    );
 
     // Mark done sets
     final decorationStyle = slotEntryPage.logDone
@@ -125,13 +135,7 @@ class LogPage extends ConsumerWidget {
         if (slotEntryPage.setConfigData!.comment.isNotEmpty)
           Text(slotEntryPage.setConfigData!.comment, textAlign: TextAlign.center),
         const SizedBox(height: 10),
-        Expanded(
-          child: (gymState.routine.filterLogsByExercise(setConfigData.exerciseId).isNotEmpty)
-              ? LogsPastLogsWidget(
-                  pastLogs: gymState.routine.filterLogsByExercise(setConfigData.exerciseId),
-                )
-              : Container(),
-        ),
+        Expanded(child: _buildPastLogs(pastLogs)),
 
         Padding(
           padding: const EdgeInsets.all(10),
@@ -151,6 +155,19 @@ class LogPage extends ConsumerWidget {
         NavigationFooter(_controller),
       ],
     );
+  }
+
+  /// Renders the previous logs for this exercise
+  Widget _buildPastLogs(AsyncValue<List<Log>> pastLogs) {
+    if (pastLogs.hasError) {
+      _logger.warning('Could not load past logs', pastLogs.error, pastLogs.stackTrace);
+      // Scroll-wrap so the indicator fits this slim slot instead of overflowing.
+      return SingleChildScrollView(
+        child: StreamErrorIndicator(pastLogs.error!, stacktrace: pastLogs.stackTrace),
+      );
+    }
+    final logs = pastLogs.value ?? const <Log>[];
+    return logs.isEmpty ? const SizedBox.shrink() : LogsPastLogsWidget(pastLogs: logs);
   }
 }
 

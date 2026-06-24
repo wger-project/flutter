@@ -27,10 +27,25 @@ import 'package:wger/providers/workout_logs_repository.dart' as _i2;
 /// A class which mocks [WorkoutLogRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockWorkoutLogRepository extends _i1.Mock implements _i2.WorkoutLogRepository {
+class MockWorkoutLogRepository extends _i1.Mock
+    implements _i2.WorkoutLogRepository {
   MockWorkoutLogRepository() {
     _i1.throwOnMissingStub(this);
   }
+
+  @override
+  _i3.Stream<List<_i4.Log>> watchLogsByExerciseDrift({
+    required int? routineId,
+    required int? exerciseId,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#watchLogsByExerciseDrift, [], {
+              #routineId: routineId,
+              #exerciseId: exerciseId,
+            }),
+            returnValue: _i3.Stream<List<_i4.Log>>.empty(),
+          )
+          as _i3.Stream<List<_i4.Log>>);
 
   @override
   _i3.Future<void> deleteLocalDrift(String? id) =>

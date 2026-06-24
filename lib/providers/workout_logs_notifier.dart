@@ -17,12 +17,27 @@
  */
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/providers/workout_logs_repository.dart';
+
+part 'workout_logs_notifier.g.dart';
 
 final workoutLogProvider = Provider<WorkoutLogMutations>((ref) {
   return WorkoutLogMutations(ref.read(workoutLogRepositoryProvider));
 });
+
+/// Streams the past logs for [exerciseId] within [routineId], newest first.
+@riverpod
+Stream<List<Log>> pastExerciseLogs(
+  Ref ref, {
+  required int routineId,
+  required int exerciseId,
+}) {
+  return ref
+      .read(workoutLogRepositoryProvider)
+      .watchLogsByExerciseDrift(routineId: routineId, exerciseId: exerciseId);
+}
 
 class WorkoutLogMutations {
   final WorkoutLogRepository _repo;

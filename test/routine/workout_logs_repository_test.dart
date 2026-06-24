@@ -58,6 +58,15 @@ void main() {
   Future<List<dynamic>> readLogs() => db.select(db.workoutLogTable).get();
   Future<List<dynamic>> readSessions() => db.select(db.workoutSessionTable).get();
 
+  Future<void> seedUnits() async {
+    await db
+        .into(db.routineRepetitionUnitTable)
+        .insert(RoutineRepetitionUnitTableCompanion.insert(id: 1, name: 'Repetitions'));
+    await db
+        .into(db.routineWeightUnitTable)
+        .insert(RoutineWeightUnitTableCompanion.insert(id: 1, name: 'kg'));
+  }
+
   group('addLocalDrift, log already has a sessionId', () {
     test('inserts the log without touching the session table', () async {
       final log = makeLog(sessionId: 'existing-session');
@@ -175,6 +184,75 @@ void main() {
       await repo.deleteLocalDrift('does-not-exist');
 
       expect(await readLogs(), hasLength(1));
+    });
+  });
+
+  group('watchLogsByExerciseDrift', () {
+    test('emits an empty list when nothing matches', () async {
+      expect(await repo.watchLogsByExerciseDrift(routineId: 100, exerciseId: 1).first, isEmpty);
+    });
+
+    test('returns only logs for the given routine and exercise', () async {
+      await seedUnits();
+      await db
+          .into(db.workoutLogTable)
+          .insert(makeLog(exerciseId: 1, routineId: 100).toCompanion());
+      // Different exercise, same routine.
+      await db
+          .into(db.workoutLogTable)
+          .insert(makeLog(exerciseId: 2, routineId: 100).toCompanion());
+      // Same exercise, different routine.
+      await db
+          .into(db.workoutLogTable)
+          .insert(makeLog(exerciseId: 1, routineId: 999).toCompanion());
+
+      final logs = await repo.watchLogsByExerciseDrift(routineId: 100, exerciseId: 1).first;
+
+      expect(logs, hasLength(1));
+      expect(logs.single.exerciseId, 1);
+      expect(logs.single.routineId, 100);
+    });
+
+    test('sorts by date descending', () async {
+      await seedUnits();
+      // Tag each row with a distinct weight so the order can be asserted without
+      // depending on the timezone the date converter reads back in.
+      await db
+          .into(db.workoutLogTable)
+          .insert(makeLog(date: DateTime.utc(2026, 4, 14), weight: 14).toCompanion());
+      await db
+          .into(db.workoutLogTable)
+          .insert(makeLog(date: DateTime.utc(2026, 4, 16), weight: 16).toCompanion());
+      await db
+          .into(db.workoutLogTable)
+          .insert(makeLog(date: DateTime.utc(2026, 4, 15), weight: 15).toCompanion());
+
+      final logs = await repo.watchLogsByExerciseDrift(routineId: 100, exerciseId: 1).first;
+
+      expect(logs.map((l) => l.weight).toList(), [16, 15, 14]);
+    });
+
+    test('attaches the repetition and weight unit to each log', () async {
+      await seedUnits();
+      await db.into(db.workoutLogTable).insert(makeLog().toCompanion());
+
+      final logs = await repo.watchLogsByExerciseDrift(routineId: 100, exerciseId: 1).first;
+
+      expect(logs.single.repetitionsUnitObj?.name, 'Repetitions');
+      expect(logs.single.weightUnitObj?.name, 'kg');
+    });
+
+    test('re-emits when a matching log is added', () async {
+      await seedUnits();
+      final stream = repo.watchLogsByExerciseDrift(routineId: 100, exerciseId: 1);
+      final emissions = <List<Log>>[];
+      final sub = stream.listen(emissions.add);
+
+      await db.into(db.workoutLogTable).insert(makeLog().toCompanion());
+      await pumpEventQueue();
+
+      expect(emissions.last, hasLength(1));
+      await sub.cancel();
     });
   });
 }

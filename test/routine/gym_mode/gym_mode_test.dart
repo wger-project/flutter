@@ -37,6 +37,7 @@ import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/routines_notifier.dart';
 import 'package:wger/providers/routines_repository.dart';
 import 'package:wger/providers/trophy_repository.dart';
+import 'package:wger/providers/workout_logs_repository.dart';
 import 'package:wger/providers/workout_session_repository.dart';
 import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/screens/routine_screen.dart';
@@ -54,7 +55,13 @@ import '../../../test_data/routines.dart';
 import '../../fake_connectivity.dart';
 import 'gym_mode_test.mocks.dart';
 
-@GenerateMocks([WorkoutSessionRepository, ExerciseRepository, RoutinesRepository, TrophyRepository])
+@GenerateMocks([
+  WorkoutSessionRepository,
+  ExerciseRepository,
+  RoutinesRepository,
+  TrophyRepository,
+  WorkoutLogRepository,
+])
 void main() {
   installFakeConnectivity();
 
@@ -66,6 +73,7 @@ void main() {
   final mockSessionRepo = MockWorkoutSessionRepository();
   final mockExerciseRepo = MockExerciseRepository();
   final mockRoutinesRepo = MockRoutinesRepository();
+  final mockLogRepo = MockWorkoutLogRepository();
 
   setUp(() {
     SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
@@ -89,6 +97,18 @@ void main() {
     when(
       mockRoutinesRepo.fetchAndSetRoutineFullServer(any),
     ).thenAnswer((_) async => testRoutine);
+
+    // Past logs on the log page come from this stream (per exercise). Reuse the
+    // test routine's logs so the assertions on previous entries keep working.
+    when(
+      mockLogRepo.watchLogsByExerciseDrift(
+        routineId: anyNamed('routineId'),
+        exerciseId: anyNamed('exerciseId'),
+      ),
+    ).thenAnswer((invocation) {
+      final exerciseId = invocation.namedArguments[#exerciseId] as int;
+      return Stream.value(testRoutine.filterLogsByExercise(exerciseId));
+    });
   });
 
   Widget renderGymMode({
@@ -102,6 +122,7 @@ void main() {
         routinesRepositoryProvider.overrideWithValue(mockRoutinesRepo),
         exerciseRepositoryProvider.overrideWithValue(mockExerciseRepo),
         workoutSessionRepositoryProvider.overrideWithValue(mockSessionRepo),
+        workoutLogRepositoryProvider.overrideWithValue(mockLogRepo),
         ...extraOverrides,
         // The repetition + weight unit catalogues are tiny direct-Drift
         // stream providers, overriding them inline is the established

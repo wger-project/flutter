@@ -30,7 +30,8 @@ import 'package:wger/providers/workout_logs_repository.dart' as _i9;
 // ignore_for_file: subtype_of_sealed_class
 // ignore_for_file: invalid_use_of_internal_member
 
-class _FakeWgerBaseProvider_0 extends _i1.SmartFake implements _i2.WgerBaseProvider {
+class _FakeWgerBaseProvider_0 extends _i1.SmartFake
+    implements _i2.WgerBaseProvider {
   _FakeWgerBaseProvider_0(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
@@ -131,10 +132,25 @@ class MockTrophyRepository extends _i1.Mock implements _i3.TrophyRepository {
 /// A class which mocks [WorkoutLogRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockWorkoutLogRepository extends _i1.Mock implements _i9.WorkoutLogRepository {
+class MockWorkoutLogRepository extends _i1.Mock
+    implements _i9.WorkoutLogRepository {
   MockWorkoutLogRepository() {
     _i1.throwOnMissingStub(this);
   }
+
+  @override
+  _i5.Stream<List<_i10.Log>> watchLogsByExerciseDrift({
+    required int? routineId,
+    required int? exerciseId,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#watchLogsByExerciseDrift, [], {
+              #routineId: routineId,
+              #exerciseId: exerciseId,
+            }),
+            returnValue: _i5.Stream<List<_i10.Log>>.empty(),
+          )
+          as _i5.Stream<List<_i10.Log>>);
 
   @override
   _i5.Future<void> deleteLocalDrift(String? id) =>

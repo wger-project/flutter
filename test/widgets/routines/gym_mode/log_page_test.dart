@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -33,6 +35,7 @@ import 'package:wger/models/workouts/slot_data.dart';
 import 'package:wger/providers/gym_state.dart';
 import 'package:wger/providers/gym_state_notifier.dart';
 import 'package:wger/providers/workout_logs_repository.dart';
+import 'package:wger/widgets/core/error.dart';
 import 'package:wger/widgets/routines/gym_mode/log_page.dart';
 
 import '../../../../test_data/exercises.dart';
@@ -53,6 +56,17 @@ void main() {
       testExercises = getTestExercises();
       mockWorkoutLogRepo = MockWorkoutLogRepository();
       when(mockWorkoutLogRepo.addLocalDrift(any)).thenAnswer((_) async {});
+      // Past logs on the page come from this stream (per exercise); reuse the
+      // test routine's logs so the previous-entries assertions keep working.
+      when(
+        mockWorkoutLogRepo.watchLogsByExerciseDrift(
+          routineId: anyNamed('routineId'),
+          exerciseId: anyNamed('exerciseId'),
+        ),
+      ).thenAnswer((invocation) {
+        final exerciseId = invocation.namedArguments[#exerciseId] as int;
+        return Stream.value(testdata.getTestRoutine().filterLogsByExercise(exerciseId));
+      });
       container = ProviderContainer.test(
         overrides: [workoutLogRepositoryProvider.overrideWithValue(mockWorkoutLogRepo)],
       );
@@ -162,6 +176,27 @@ void main() {
       expect(repText, contains('10'));
       expect(weightText, contains('10'));
       expect(find.byType(SnackBar), findsOneWidget);
+    });
+
+    testWidgets('shows an error indicator when past logs fail to load', (tester) async {
+      // Error via a stream event (not a build throw), so riverpod surfaces it
+      // as state instead of scheduling a retry timer.
+      final controller = StreamController<List<Log>>();
+      addTearDown(controller.close);
+      when(
+        mockWorkoutLogRepo.watchLogsByExerciseDrift(
+          routineId: anyNamed('routineId'),
+          exerciseId: anyNamed('exerciseId'),
+        ),
+      ).thenAnswer((_) => controller.stream);
+
+      seedLogPage(testdata.getTestRoutine());
+      await pumpLogPage(tester);
+
+      controller.addError(Exception('boom'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(StreamErrorIndicator), findsOneWidget);
     });
 
     testWidgets('save button persists the entered reps/weight with slot/routine/iteration', (
