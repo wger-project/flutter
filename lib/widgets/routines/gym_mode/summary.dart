@@ -26,8 +26,10 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/trophies/user_trophy.dart';
 import 'package:wger/models/workouts/session.dart';
 import 'package:wger/providers/gym_state_notifier.dart';
+import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/routines_notifier.dart';
 import 'package:wger/providers/trophy_notifier.dart';
+import 'package:wger/widgets/core/error.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
 import 'package:wger/widgets/routines/gym_mode/navigation.dart';
 
@@ -52,10 +54,17 @@ class _WorkoutSummaryState extends ConsumerState<WorkoutSummary> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (!_didInit) {
-      final languageCode = Localizations.localeOf(context).languageCode;
-      _trophyFuture = ref
-          .read(trophyStateProvider.notifier)
-          .fetchUserTrophies(language: languageCode);
+      // Trophies are REST-only and only enrich the summary (PR count + markers).
+      // Fetch them when the server is reachable; offline we skip the doomed
+      // request so the local session stats render right away.
+      if (ref.read(networkStatusProvider)) {
+        final languageCode = Localizations.localeOf(context).languageCode;
+        _trophyFuture = ref
+            .read(trophyStateProvider.notifier)
+            .fetchUserTrophies(language: languageCode);
+      } else {
+        _trophyFuture = Future<void>.value();
+      }
       _didInit = true;
     }
   }
@@ -79,9 +88,13 @@ class _WorkoutSummaryState extends ConsumerState<WorkoutSummary> {
             future: _trophyFuture,
             builder: (context, snapshot) {
               if (snapshot.hasError) {
-                widget._logger.warning(snapshot.error);
-                widget._logger.warning(snapshot.stackTrace);
-                return Center(child: Text('Error: ${snapshot.error}'));
+                // An error reaching here is a genuine, unexpected exception worth surfacing
+                widget._logger.warning(
+                  'Could not fetch user trophies',
+                  snapshot.error,
+                  snapshot.stackTrace,
+                );
+                return StreamErrorIndicator(snapshot.error!, stacktrace: snapshot.stackTrace);
               }
               if (snapshot.connectionState == ConnectionState.waiting || routine == null) {
                 return const BoxedProgressIndicator();

@@ -3,27 +3,33 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i8;
+import 'dart:async' as _i9;
 
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:wger/models/core/language.dart' as _i17;
-import 'package:wger/models/core/search_options.dart' as _i11;
-import 'package:wger/models/exercises/category.dart' as _i13;
-import 'package:wger/models/exercises/equipment.dart' as _i15;
-import 'package:wger/models/exercises/exercise_filters.dart' as _i12;
-import 'package:wger/models/exercises/muscle.dart' as _i16;
+import 'package:mockito/src/dummies.dart' as _i23;
+import 'package:wger/models/core/language.dart' as _i18;
+import 'package:wger/models/core/search_options.dart' as _i12;
+import 'package:wger/models/exercises/category.dart' as _i14;
+import 'package:wger/models/exercises/equipment.dart' as _i16;
+import 'package:wger/models/exercises/exercise_filters.dart' as _i13;
+import 'package:wger/models/exercises/muscle.dart' as _i17;
+import 'package:wger/models/trophies/trophy.dart' as _i24;
+import 'package:wger/models/trophies/user_trophy.dart' as _i25;
+import 'package:wger/models/trophies/user_trophy_progression.dart' as _i26;
 import 'package:wger/models/workouts/base_config.dart' as _i6;
 import 'package:wger/models/workouts/day.dart' as _i3;
-import 'package:wger/models/workouts/repetition_unit.dart' as _i20;
+import 'package:wger/models/workouts/repetition_unit.dart' as _i21;
 import 'package:wger/models/workouts/routine.dart' as _i2;
-import 'package:wger/models/workouts/session.dart' as _i9;
+import 'package:wger/models/workouts/session.dart' as _i10;
 import 'package:wger/models/workouts/slot.dart' as _i4;
 import 'package:wger/models/workouts/slot_entry.dart' as _i5;
-import 'package:wger/models/workouts/weight_unit.dart' as _i19;
-import 'package:wger/providers/exercise_repository.dart' as _i10;
-import 'package:wger/providers/exercises_notifier.dart' as _i14;
-import 'package:wger/providers/routines_repository.dart' as _i18;
-import 'package:wger/providers/workout_session_repository.dart' as _i7;
+import 'package:wger/models/workouts/weight_unit.dart' as _i20;
+import 'package:wger/providers/base_provider.dart' as _i7;
+import 'package:wger/providers/exercise_repository.dart' as _i11;
+import 'package:wger/providers/exercises_notifier.dart' as _i15;
+import 'package:wger/providers/routines_repository.dart' as _i19;
+import 'package:wger/providers/trophy_repository.dart' as _i22;
+import 'package:wger/providers/workout_session_repository.dart' as _i8;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -60,60 +66,65 @@ class _FakeBaseConfig_4 extends _i1.SmartFake implements _i6.BaseConfig {
   _FakeBaseConfig_4(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
+class _FakeWgerBaseProvider_5 extends _i1.SmartFake implements _i7.WgerBaseProvider {
+  _FakeWgerBaseProvider_5(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
 /// A class which mocks [WorkoutSessionRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockWorkoutSessionRepository extends _i1.Mock implements _i7.WorkoutSessionRepository {
+class MockWorkoutSessionRepository extends _i1.Mock implements _i8.WorkoutSessionRepository {
   MockWorkoutSessionRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i8.Stream<List<_i9.WorkoutSession>> watchAllDrift() =>
+  _i9.Stream<List<_i10.WorkoutSession>> watchAllDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchAllDrift, []),
-            returnValue: _i8.Stream<List<_i9.WorkoutSession>>.empty(),
+            returnValue: _i9.Stream<List<_i10.WorkoutSession>>.empty(),
           )
-          as _i8.Stream<List<_i9.WorkoutSession>>);
+          as _i9.Stream<List<_i10.WorkoutSession>>);
 
   @override
-  _i8.Future<void> deleteLocalDrift(String? id) =>
+  _i9.Future<void> deleteLocalDrift(String? id) =>
       (super.noSuchMethod(
             Invocation.method(#deleteLocalDrift, [id]),
-            returnValue: _i8.Future<void>.value(),
-            returnValueForMissingStub: _i8.Future<void>.value(),
+            returnValue: _i9.Future<void>.value(),
+            returnValueForMissingStub: _i9.Future<void>.value(),
           )
-          as _i8.Future<void>);
+          as _i9.Future<void>);
 
   @override
-  _i8.Future<void> editLocalDrift(_i9.WorkoutSession? session) =>
+  _i9.Future<void> editLocalDrift(_i10.WorkoutSession? session) =>
       (super.noSuchMethod(
             Invocation.method(#editLocalDrift, [session]),
-            returnValue: _i8.Future<void>.value(),
-            returnValueForMissingStub: _i8.Future<void>.value(),
+            returnValue: _i9.Future<void>.value(),
+            returnValueForMissingStub: _i9.Future<void>.value(),
           )
-          as _i8.Future<void>);
+          as _i9.Future<void>);
 
   @override
-  _i8.Future<void> addLocalDrift(_i9.WorkoutSession? session) =>
+  _i9.Future<void> addLocalDrift(_i10.WorkoutSession? session) =>
       (super.noSuchMethod(
             Invocation.method(#addLocalDrift, [session]),
-            returnValue: _i8.Future<void>.value(),
-            returnValueForMissingStub: _i8.Future<void>.value(),
+            returnValue: _i9.Future<void>.value(),
+            returnValueForMissingStub: _i9.Future<void>.value(),
           )
-          as _i8.Future<void>);
+          as _i9.Future<void>);
 }
 
 /// A class which mocks [ExerciseRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockExerciseRepository extends _i1.Mock implements _i10.ExerciseRepository {
+class MockExerciseRepository extends _i1.Mock implements _i11.ExerciseRepository {
   MockExerciseRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i8.Future<List<int>> searchExerciseServer(
+  _i9.Future<List<int>> searchExerciseServer(
     String? term, {
     String? languageCode = 'en',
     bool? searchEnglish = false,
@@ -124,17 +135,17 @@ class MockExerciseRepository extends _i1.Mock implements _i10.ExerciseRepository
               [term],
               {#languageCode: languageCode, #searchEnglish: searchEnglish},
             ),
-            returnValue: _i8.Future<List<int>>.value(<int>[]),
+            returnValue: _i9.Future<List<int>>.value(<int>[]),
           )
-          as _i8.Future<List<int>>);
+          as _i9.Future<List<int>>);
 
   @override
-  _i8.Future<List<int>> searchExerciseServerWithSearchMode(
+  _i9.Future<List<int>> searchExerciseServerWithSearchMode(
     String? term, {
     String? languageCode = 'en',
-    _i11.SearchLanguage? searchLanguage = _i11.SearchLanguage.currentAndEnglish,
-    _i12.ExerciseSearchMode? searchMode = _i12.ExerciseSearchMode.fulltext,
-    Set<_i13.ExerciseCategory>? categories = const {},
+    _i12.SearchLanguage? searchLanguage = _i12.SearchLanguage.currentAndEnglish,
+    _i13.ExerciseSearchMode? searchMode = _i13.ExerciseSearchMode.fulltext,
+    Set<_i14.ExerciseCategory>? categories = const {},
   }) =>
       (super.noSuchMethod(
             Invocation.method(
@@ -147,265 +158,358 @@ class MockExerciseRepository extends _i1.Mock implements _i10.ExerciseRepository
                 #categories: categories,
               },
             ),
-            returnValue: _i8.Future<List<int>>.value(<int>[]),
+            returnValue: _i9.Future<List<int>>.value(<int>[]),
           )
-          as _i8.Future<List<int>>);
+          as _i9.Future<List<int>>);
 
   @override
-  _i8.Stream<_i14.ExerciseState> watchAllDrift() =>
+  _i9.Stream<_i15.ExerciseState> watchAllDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchAllDrift, []),
-            returnValue: _i8.Stream<_i14.ExerciseState>.empty(),
+            returnValue: _i9.Stream<_i15.ExerciseState>.empty(),
           )
-          as _i8.Stream<_i14.ExerciseState>);
+          as _i9.Stream<_i15.ExerciseState>);
 
   @override
-  _i8.Stream<List<_i13.ExerciseCategory>> watchCategoriesDrift() =>
+  _i9.Stream<List<_i14.ExerciseCategory>> watchCategoriesDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchCategoriesDrift, []),
-            returnValue: _i8.Stream<List<_i13.ExerciseCategory>>.empty(),
+            returnValue: _i9.Stream<List<_i14.ExerciseCategory>>.empty(),
           )
-          as _i8.Stream<List<_i13.ExerciseCategory>>);
+          as _i9.Stream<List<_i14.ExerciseCategory>>);
 
   @override
-  _i8.Stream<List<_i15.Equipment>> watchEquipmentDrift() =>
+  _i9.Stream<List<_i16.Equipment>> watchEquipmentDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchEquipmentDrift, []),
-            returnValue: _i8.Stream<List<_i15.Equipment>>.empty(),
+            returnValue: _i9.Stream<List<_i16.Equipment>>.empty(),
           )
-          as _i8.Stream<List<_i15.Equipment>>);
+          as _i9.Stream<List<_i16.Equipment>>);
 
   @override
-  _i8.Stream<List<_i16.Muscle>> watchMusclesDrift() =>
+  _i9.Stream<List<_i17.Muscle>> watchMusclesDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchMusclesDrift, []),
-            returnValue: _i8.Stream<List<_i16.Muscle>>.empty(),
+            returnValue: _i9.Stream<List<_i17.Muscle>>.empty(),
           )
-          as _i8.Stream<List<_i16.Muscle>>);
+          as _i9.Stream<List<_i17.Muscle>>);
 
   @override
-  _i8.Stream<List<_i17.Language>> watchLanguagesDrift() =>
+  _i9.Stream<List<_i18.Language>> watchLanguagesDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchLanguagesDrift, []),
-            returnValue: _i8.Stream<List<_i17.Language>>.empty(),
+            returnValue: _i9.Stream<List<_i18.Language>>.empty(),
           )
-          as _i8.Stream<List<_i17.Language>>);
+          as _i9.Stream<List<_i18.Language>>);
 }
 
 /// A class which mocks [RoutinesRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockRoutinesRepository extends _i1.Mock implements _i18.RoutinesRepository {
+class MockRoutinesRepository extends _i1.Mock implements _i19.RoutinesRepository {
   MockRoutinesRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i8.Future<_i2.Routine> fetchAndSetRoutineFullServer(int? routineId) =>
+  _i9.Future<_i2.Routine> fetchAndSetRoutineFullServer(int? routineId) =>
       (super.noSuchMethod(
             Invocation.method(#fetchAndSetRoutineFullServer, [routineId]),
-            returnValue: _i8.Future<_i2.Routine>.value(
+            returnValue: _i9.Future<_i2.Routine>.value(
               _FakeRoutine_0(
                 this,
                 Invocation.method(#fetchAndSetRoutineFullServer, [routineId]),
               ),
             ),
           )
-          as _i8.Future<_i2.Routine>);
+          as _i9.Future<_i2.Routine>);
 
   @override
-  _i8.Future<_i2.Routine> addRoutineServer(_i2.Routine? routine) =>
+  _i9.Future<_i2.Routine> addRoutineServer(_i2.Routine? routine) =>
       (super.noSuchMethod(
             Invocation.method(#addRoutineServer, [routine]),
-            returnValue: _i8.Future<_i2.Routine>.value(
+            returnValue: _i9.Future<_i2.Routine>.value(
               _FakeRoutine_0(
                 this,
                 Invocation.method(#addRoutineServer, [routine]),
               ),
             ),
           )
-          as _i8.Future<_i2.Routine>);
+          as _i9.Future<_i2.Routine>);
 
   @override
-  _i8.Stream<List<_i2.Routine>> watchAllDrift() =>
+  _i9.Stream<List<_i2.Routine>> watchAllDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchAllDrift, []),
-            returnValue: _i8.Stream<List<_i2.Routine>>.empty(),
+            returnValue: _i9.Stream<List<_i2.Routine>>.empty(),
           )
-          as _i8.Stream<List<_i2.Routine>>);
+          as _i9.Stream<List<_i2.Routine>>);
 
   @override
-  _i8.Future<void> editLocalDrift(_i2.Routine? routine) =>
+  _i9.Future<void> editLocalDrift(_i2.Routine? routine) =>
       (super.noSuchMethod(
             Invocation.method(#editLocalDrift, [routine]),
-            returnValue: _i8.Future<void>.value(),
-            returnValueForMissingStub: _i8.Future<void>.value(),
+            returnValue: _i9.Future<void>.value(),
+            returnValueForMissingStub: _i9.Future<void>.value(),
           )
-          as _i8.Future<void>);
+          as _i9.Future<void>);
 
   @override
-  _i8.Future<void> deleteLocalDrift(int? id) =>
+  _i9.Future<void> deleteLocalDrift(int? id) =>
       (super.noSuchMethod(
             Invocation.method(#deleteLocalDrift, [id]),
-            returnValue: _i8.Future<void>.value(),
-            returnValueForMissingStub: _i8.Future<void>.value(),
+            returnValue: _i9.Future<void>.value(),
+            returnValueForMissingStub: _i9.Future<void>.value(),
           )
-          as _i8.Future<void>);
+          as _i9.Future<void>);
 
   @override
-  _i8.Stream<List<_i19.WeightUnit>> watchWeightUnitsDrift() =>
+  _i9.Stream<List<_i20.WeightUnit>> watchWeightUnitsDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchWeightUnitsDrift, []),
-            returnValue: _i8.Stream<List<_i19.WeightUnit>>.empty(),
+            returnValue: _i9.Stream<List<_i20.WeightUnit>>.empty(),
           )
-          as _i8.Stream<List<_i19.WeightUnit>>);
+          as _i9.Stream<List<_i20.WeightUnit>>);
 
   @override
-  _i8.Stream<List<_i20.RepetitionUnit>> watchRepetitionUnitsDrift() =>
+  _i9.Stream<List<_i21.RepetitionUnit>> watchRepetitionUnitsDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchRepetitionUnitsDrift, []),
-            returnValue: _i8.Stream<List<_i20.RepetitionUnit>>.empty(),
+            returnValue: _i9.Stream<List<_i21.RepetitionUnit>>.empty(),
           )
-          as _i8.Stream<List<_i20.RepetitionUnit>>);
+          as _i9.Stream<List<_i21.RepetitionUnit>>);
 
   @override
-  _i8.Future<_i3.Day> addDayServer(_i3.Day? day) =>
+  _i9.Future<_i3.Day> addDayServer(_i3.Day? day) =>
       (super.noSuchMethod(
             Invocation.method(#addDayServer, [day]),
-            returnValue: _i8.Future<_i3.Day>.value(
+            returnValue: _i9.Future<_i3.Day>.value(
               _FakeDay_1(this, Invocation.method(#addDayServer, [day])),
             ),
           )
-          as _i8.Future<_i3.Day>);
+          as _i9.Future<_i3.Day>);
 
   @override
-  _i8.Future<void> editDayServer(_i3.Day? day) =>
+  _i9.Future<void> editDayServer(_i3.Day? day) =>
       (super.noSuchMethod(
             Invocation.method(#editDayServer, [day]),
-            returnValue: _i8.Future<void>.value(),
-            returnValueForMissingStub: _i8.Future<void>.value(),
+            returnValue: _i9.Future<void>.value(),
+            returnValueForMissingStub: _i9.Future<void>.value(),
           )
-          as _i8.Future<void>);
+          as _i9.Future<void>);
 
   @override
-  _i8.Future<void> deleteDayServer(int? dayId) =>
+  _i9.Future<void> deleteDayServer(int? dayId) =>
       (super.noSuchMethod(
             Invocation.method(#deleteDayServer, [dayId]),
-            returnValue: _i8.Future<void>.value(),
-            returnValueForMissingStub: _i8.Future<void>.value(),
+            returnValue: _i9.Future<void>.value(),
+            returnValueForMissingStub: _i9.Future<void>.value(),
           )
-          as _i8.Future<void>);
+          as _i9.Future<void>);
 
   @override
-  _i8.Future<_i4.Slot> addSlotServer(_i4.Slot? slot) =>
+  _i9.Future<_i4.Slot> addSlotServer(_i4.Slot? slot) =>
       (super.noSuchMethod(
             Invocation.method(#addSlotServer, [slot]),
-            returnValue: _i8.Future<_i4.Slot>.value(
+            returnValue: _i9.Future<_i4.Slot>.value(
               _FakeSlot_2(this, Invocation.method(#addSlotServer, [slot])),
             ),
           )
-          as _i8.Future<_i4.Slot>);
+          as _i9.Future<_i4.Slot>);
 
   @override
-  _i8.Future<void> deleteSlotServer(int? slotId) =>
+  _i9.Future<void> deleteSlotServer(int? slotId) =>
       (super.noSuchMethod(
             Invocation.method(#deleteSlotServer, [slotId]),
-            returnValue: _i8.Future<void>.value(),
-            returnValueForMissingStub: _i8.Future<void>.value(),
+            returnValue: _i9.Future<void>.value(),
+            returnValueForMissingStub: _i9.Future<void>.value(),
           )
-          as _i8.Future<void>);
+          as _i9.Future<void>);
 
   @override
-  _i8.Future<void> editSlotServer(_i4.Slot? slot) =>
+  _i9.Future<void> editSlotServer(_i4.Slot? slot) =>
       (super.noSuchMethod(
             Invocation.method(#editSlotServer, [slot]),
-            returnValue: _i8.Future<void>.value(),
-            returnValueForMissingStub: _i8.Future<void>.value(),
+            returnValue: _i9.Future<void>.value(),
+            returnValueForMissingStub: _i9.Future<void>.value(),
           )
-          as _i8.Future<void>);
+          as _i9.Future<void>);
 
   @override
-  _i8.Future<_i5.SlotEntry> addSlotEntryServer(_i5.SlotEntry? entry) =>
+  _i9.Future<_i5.SlotEntry> addSlotEntryServer(_i5.SlotEntry? entry) =>
       (super.noSuchMethod(
             Invocation.method(#addSlotEntryServer, [entry]),
-            returnValue: _i8.Future<_i5.SlotEntry>.value(
+            returnValue: _i9.Future<_i5.SlotEntry>.value(
               _FakeSlotEntry_3(
                 this,
                 Invocation.method(#addSlotEntryServer, [entry]),
               ),
             ),
           )
-          as _i8.Future<_i5.SlotEntry>);
+          as _i9.Future<_i5.SlotEntry>);
 
   @override
-  _i8.Future<void> deleteSlotEntryServer(int? id) =>
+  _i9.Future<void> deleteSlotEntryServer(int? id) =>
       (super.noSuchMethod(
             Invocation.method(#deleteSlotEntryServer, [id]),
-            returnValue: _i8.Future<void>.value(),
-            returnValueForMissingStub: _i8.Future<void>.value(),
+            returnValue: _i9.Future<void>.value(),
+            returnValueForMissingStub: _i9.Future<void>.value(),
           )
-          as _i8.Future<void>);
+          as _i9.Future<void>);
 
   @override
-  _i8.Future<void> editSlotEntryServer(_i5.SlotEntry? entry) =>
+  _i9.Future<void> editSlotEntryServer(_i5.SlotEntry? entry) =>
       (super.noSuchMethod(
             Invocation.method(#editSlotEntryServer, [entry]),
-            returnValue: _i8.Future<void>.value(),
-            returnValueForMissingStub: _i8.Future<void>.value(),
+            returnValue: _i9.Future<void>.value(),
+            returnValueForMissingStub: _i9.Future<void>.value(),
           )
-          as _i8.Future<void>);
+          as _i9.Future<void>);
 
   @override
-  _i8.Future<_i6.BaseConfig> editConfigServer(
+  _i9.Future<_i6.BaseConfig> editConfigServer(
     _i6.BaseConfig? config,
     _i5.ConfigType? type,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#editConfigServer, [config, type]),
-            returnValue: _i8.Future<_i6.BaseConfig>.value(
+            returnValue: _i9.Future<_i6.BaseConfig>.value(
               _FakeBaseConfig_4(
                 this,
                 Invocation.method(#editConfigServer, [config, type]),
               ),
             ),
           )
-          as _i8.Future<_i6.BaseConfig>);
+          as _i9.Future<_i6.BaseConfig>);
 
   @override
-  _i8.Future<_i6.BaseConfig> addConfigServer(
+  _i9.Future<_i6.BaseConfig> addConfigServer(
     _i6.BaseConfig? config,
     _i5.ConfigType? type,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#addConfigServer, [config, type]),
-            returnValue: _i8.Future<_i6.BaseConfig>.value(
+            returnValue: _i9.Future<_i6.BaseConfig>.value(
               _FakeBaseConfig_4(
                 this,
                 Invocation.method(#addConfigServer, [config, type]),
               ),
             ),
           )
-          as _i8.Future<_i6.BaseConfig>);
+          as _i9.Future<_i6.BaseConfig>);
 
   @override
-  _i8.Future<void> deleteConfigServer(int? id, _i5.ConfigType? type) =>
+  _i9.Future<void> deleteConfigServer(int? id, _i5.ConfigType? type) =>
       (super.noSuchMethod(
             Invocation.method(#deleteConfigServer, [id, type]),
-            returnValue: _i8.Future<void>.value(),
-            returnValueForMissingStub: _i8.Future<void>.value(),
+            returnValue: _i9.Future<void>.value(),
+            returnValueForMissingStub: _i9.Future<void>.value(),
           )
-          as _i8.Future<void>);
+          as _i9.Future<void>);
 
   @override
-  _i8.Future<void> handleConfigServer(
+  _i9.Future<void> handleConfigServer(
     _i5.SlotEntry? entry,
     num? value,
     _i5.ConfigType? type,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#handleConfigServer, [entry, value, type]),
-            returnValue: _i8.Future<void>.value(),
-            returnValueForMissingStub: _i8.Future<void>.value(),
+            returnValue: _i9.Future<void>.value(),
+            returnValueForMissingStub: _i9.Future<void>.value(),
           )
-          as _i8.Future<void>);
+          as _i9.Future<void>);
+}
+
+/// A class which mocks [TrophyRepository].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockTrophyRepository extends _i1.Mock implements _i22.TrophyRepository {
+  MockTrophyRepository() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i7.WgerBaseProvider get base =>
+      (super.noSuchMethod(
+            Invocation.getter(#base),
+            returnValue: _FakeWgerBaseProvider_5(
+              this,
+              Invocation.getter(#base),
+            ),
+          )
+          as _i7.WgerBaseProvider);
+
+  @override
+  String get trophiesPath =>
+      (super.noSuchMethod(
+            Invocation.getter(#trophiesPath),
+            returnValue: _i23.dummyValue<String>(
+              this,
+              Invocation.getter(#trophiesPath),
+            ),
+          )
+          as String);
+
+  @override
+  String get userTrophiesPath =>
+      (super.noSuchMethod(
+            Invocation.getter(#userTrophiesPath),
+            returnValue: _i23.dummyValue<String>(
+              this,
+              Invocation.getter(#userTrophiesPath),
+            ),
+          )
+          as String);
+
+  @override
+  String get userTrophyProgressionPath =>
+      (super.noSuchMethod(
+            Invocation.getter(#userTrophyProgressionPath),
+            returnValue: _i23.dummyValue<String>(
+              this,
+              Invocation.getter(#userTrophyProgressionPath),
+            ),
+          )
+          as String);
+
+  @override
+  _i9.Future<List<_i24.Trophy>> fetchTrophies({String? language}) =>
+      (super.noSuchMethod(
+            Invocation.method(#fetchTrophies, [], {#language: language}),
+            returnValue: _i9.Future<List<_i24.Trophy>>.value(<_i24.Trophy>[]),
+          )
+          as _i9.Future<List<_i24.Trophy>>);
+
+  @override
+  _i9.Future<List<_i25.UserTrophy>> fetchUserTrophies({
+    Map<String, String>? filterQuery,
+    String? language,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#fetchUserTrophies, [], {
+              #filterQuery: filterQuery,
+              #language: language,
+            }),
+            returnValue: _i9.Future<List<_i25.UserTrophy>>.value(
+              <_i25.UserTrophy>[],
+            ),
+          )
+          as _i9.Future<List<_i25.UserTrophy>>);
+
+  @override
+  _i9.Future<List<_i26.UserTrophyProgression>> fetchProgression({
+    Map<String, String>? filterQuery,
+    String? language,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#fetchProgression, [], {
+              #filterQuery: filterQuery,
+              #language: language,
+            }),
+            returnValue: _i9.Future<List<_i26.UserTrophyProgression>>.value(
+              <_i26.UserTrophyProgression>[],
+            ),
+          )
+          as _i9.Future<List<_i26.UserTrophyProgression>>);
 }

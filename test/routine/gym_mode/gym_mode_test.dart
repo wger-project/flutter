@@ -19,6 +19,7 @@
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
+import 'package:flutter_riverpod/misc.dart' as riverpod;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -35,6 +36,7 @@ import 'package:wger/providers/gym_state.dart';
 import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/routines_notifier.dart';
 import 'package:wger/providers/routines_repository.dart';
+import 'package:wger/providers/trophy_repository.dart';
 import 'package:wger/providers/workout_session_repository.dart';
 import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/screens/routine_screen.dart';
@@ -52,7 +54,7 @@ import '../../../test_data/routines.dart';
 import '../../fake_connectivity.dart';
 import 'gym_mode_test.mocks.dart';
 
-@GenerateMocks([WorkoutSessionRepository, ExerciseRepository, RoutinesRepository])
+@GenerateMocks([WorkoutSessionRepository, ExerciseRepository, RoutinesRepository, TrophyRepository])
 void main() {
   installFakeConnectivity();
 
@@ -89,13 +91,18 @@ void main() {
     ).thenAnswer((_) async => testRoutine);
   });
 
-  Widget renderGymMode({locale = 'en', bool isOnline = true}) {
+  Widget renderGymMode({
+    locale = 'en',
+    bool isOnline = true,
+    List<riverpod.Override> extraOverrides = const [],
+  }) {
     return riverpod.ProviderScope(
       overrides: [
         networkStatusProvider.overrideWithValue(isOnline),
         routinesRepositoryProvider.overrideWithValue(mockRoutinesRepo),
         exerciseRepositoryProvider.overrideWithValue(mockExerciseRepo),
         workoutSessionRepositoryProvider.overrideWithValue(mockSessionRepo),
+        ...extraOverrides,
         // The repetition + weight unit catalogues are tiny direct-Drift
         // stream providers, overriding them inline is the established
         // pattern (see also [exerciseCategoriesProvider] etc.).
@@ -362,6 +369,79 @@ void main() {
       expect(find.byType(StreamErrorIndicator), findsNothing);
       expect(find.byType(StartPage), findsOneWidget);
       verifyNever(mockRoutinesRepo.fetchAndSetRoutineFullServer(any));
+    });
+  });
+
+  testWidgets('offline summary shows the local session stats', (WidgetTester tester) async {
+    // The trophy fetch is REST-only; offline it is skipped so the locally
+    // stored session stats (duration, volume) render right away instead of
+    // waiting behind a doomed network request. The clock matches a session in
+    // the test routine so there is data to show.
+    await withClock(Clock.fixed(DateTime(2021, 5, 1, 14, 33)), () async {
+      await tester.pumpWidget(renderGymMode(isOnline: false));
+      await tester.pumpAndSettle();
+
+      // Prime the keepAlive routines stream (see the offline test above).
+      final container = riverpod.ProviderScope.containerOf(
+        tester.element(find.byType(TextButton)),
+      );
+      container.listen(routinesRiverpodProvider, (_, _) {});
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byType(TextButton));
+      await tester.pumpAndSettle();
+
+      // Jump straight to the summary via the menu's "End workout" shortcut.
+      await tester.tap(find.byIcon(Icons.menu));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('End workout'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(WorkoutSummary), findsOneWidget);
+      expect(find.byType(StreamErrorIndicator), findsNothing);
+      expect(find.text('Duration'), findsOneWidget);
+      expect(find.text('Volume'), findsOneWidget);
+    });
+  });
+
+  testWidgets('summary surfaces an unexpected trophy-fetch error', (WidgetTester tester) async {
+    // Network/server errors are swallowed by the repository, so an error that
+    // does reach the summary is a genuine exception and must be shown, not
+    // hidden behind the stats.
+    final mockTrophyRepo = MockTrophyRepository();
+    when(mockTrophyRepo.fetchTrophies(language: anyNamed('language'))).thenAnswer((_) async => []);
+    when(
+      mockTrophyRepo.fetchProgression(
+        filterQuery: anyNamed('filterQuery'),
+        language: anyNamed('language'),
+      ),
+    ).thenAnswer((_) async => []);
+    when(
+      mockTrophyRepo.fetchUserTrophies(
+        filterQuery: anyNamed('filterQuery'),
+        language: anyNamed('language'),
+      ),
+    ).thenThrow(Exception('unexpected'));
+
+    await withClock(Clock.fixed(DateTime(2021, 5, 1, 14, 33)), () async {
+      await tester.pumpWidget(
+        renderGymMode(
+          extraOverrides: [trophyRepositoryProvider.overrideWithValue(mockTrophyRepo)],
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.byType(TextButton));
+      await tester.pumpAndSettle();
+
+      // Jump straight to the summary via the menu's "End workout" shortcut.
+      await tester.tap(find.byIcon(Icons.menu));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('End workout'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(WorkoutSummary), findsOneWidget);
+      expect(find.byType(StreamErrorIndicator), findsOneWidget);
+      expect(find.text('Duration'), findsNothing);
     });
   });
 
