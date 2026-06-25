@@ -1187,5 +1187,6 @@
     "webHandoffLinkLabel": "خيارات تسجيل دخول أخرى",
     "webHandoffLinkSubtitle": "تسجيل الدخول عبر وسائل التواصل الاجتماعي، مفتاح المرور، تسجيل الدخول المُوحّد",
     "slotEntryTypeMyo": "ميو",
-    "slotEntryTypeWarmup": "التحمية"
+    "slotEntryTypeWarmup": "التحمية",
+    "preview": "عرض مبدئي"
 }
