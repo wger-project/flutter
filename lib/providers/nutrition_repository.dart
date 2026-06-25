@@ -20,6 +20,7 @@ import 'package:collection/collection.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
+import 'package:stream_transform/stream_transform.dart';
 import 'package:wger/database/powersync/database.dart';
 import 'package:wger/models/nutrition/ingredient.dart';
 import 'package:wger/models/nutrition/ingredient_weight_unit.dart';
@@ -39,6 +40,10 @@ class NutritionRepository {
   final DriftPowersyncDatabase _db;
 
   NutritionRepository(this._db);
+
+  /// Coalesces bursts of Drift table updates (e.g. during the initial sync) so
+  /// the heavy per-emission hydration runs once they settle, not on every write.
+  static const _hydrationDebounce = Duration(milliseconds: 200);
 
   // --- Plans ---
 
@@ -113,7 +118,7 @@ class NutritionRepository {
           OrderingTerm.asc(_db.mealTable.time),
         ]);
 
-    return query.watch().map(_hydrateMeals);
+    return query.watch().debounce(_hydrationDebounce).map(_hydrateMeals);
   }
 
   /// Collapses cross-joined rows into hydrated [Meal]s with their child items.
@@ -268,7 +273,7 @@ class NutritionRepository {
       ),
     ])..orderBy([OrderingTerm(expression: _db.logItemTable.datetime)]);
 
-    return query.watch().map(_hydrateLogs);
+    return query.watch().debounce(_hydrationDebounce).map(_hydrateLogs);
   }
 
   /// Collapses the cross-joined rows into hydrated [LogItem]s.

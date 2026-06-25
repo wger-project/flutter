@@ -165,6 +165,7 @@ class ExerciseRepository {
 
     late StreamController<ExerciseState> controller;
     final subs = <StreamSubscription>[];
+    Timer? emitTimer;
 
     void emit() {
       if (exerciseRows == null ||
@@ -303,6 +304,14 @@ class ExerciseRepository {
       controller.add(ExerciseState(exercises));
     }
 
+    // A full rebuild runs on every table update. During the initial sync many
+    // updates arrive in bursts, so coalesce them into a single rebuild once
+    // they settle instead of reassembling the whole catalog hundreds of times.
+    void scheduleEmit() {
+      emitTimer?.cancel();
+      emitTimer = Timer(const Duration(milliseconds: 200), emit);
+    }
+
     controller = StreamController<ExerciseState>(
       onListen: () {
         void addSub<T>(Stream<T> source, void Function(T) assign) {
@@ -310,7 +319,7 @@ class ExerciseRepository {
             source.listen(
               (value) {
                 assign(value);
-                emit();
+                scheduleEmit();
               },
               onError: controller.addError,
             ),
@@ -334,6 +343,7 @@ class ExerciseRepository {
         addSub(_db.select(_db.exerciseCommentTable).watch(), (v) => comments = v);
       },
       onCancel: () async {
+        emitTimer?.cancel();
         for (final s in subs) {
           await s.cancel();
         }
