@@ -15,7 +15,7 @@ jobs:
     name: 'iOS'
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Common flutter setup
         uses: ./.github/actions/flutter-common
@@ -58,7 +58,7 @@ jobs:
             device_type: androidTabletBig
             folder: tenInchScreenshots
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Common flutter setup
         uses: ./.github/actions/flutter-common
@@ -131,7 +131,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Download all screenshot artifacts
         uses: actions/download-artifact@v8
