@@ -34,7 +34,7 @@ class VariationsSection extends ConsumerWidget {
       return const SizedBox.shrink();
     }
 
-    final exerciseState = ref.watch(exercisesProvider).value ?? const ExerciseState([]);
+    final exerciseState = ref.watch(exercisesProvider).value ?? ExerciseState(const []);
     final variations = exerciseState.findByVariationGroup(
       exercise.variationGroup,
       exerciseIdToExclude: exercise.id,

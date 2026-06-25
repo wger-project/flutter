@@ -73,7 +73,7 @@ void main() {
       variationGroup: 'legs',
     );
     final variationExercises = [benchPress, inclineBench, squat, testCrunches];
-    const emptyState = ExerciseState([]);
+    final emptyState = ExerciseState(const []);
 
     test('getById returns the matching exercise', () {
       final s = ExerciseState(exercises);

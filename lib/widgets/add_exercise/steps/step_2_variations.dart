@@ -13,7 +13,7 @@ class Step2Variations extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // Reactive: rebuilds when the exercise catalogue changes. Falls back to
     // an empty state while the stream hasn't emitted yet.
-    final exerciseState = ref.watch(exercisesProvider).value ?? const ExerciseState([]);
+    final exerciseState = ref.watch(exercisesProvider).value ?? ExerciseState(const []);
     final byVariation = exerciseState.getByVariation();
 
     return Form(

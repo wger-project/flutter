@@ -44,7 +44,7 @@ void main() {
     mockExerciseRepo = MockExerciseRepository();
     when(
       mockExerciseRepo.watchAllDrift(),
-    ).thenAnswer((_) => Stream.value(const ExerciseState(<Exercise>[])));
+    ).thenAnswer((_) => Stream.value(ExerciseState(const <Exercise>[])));
   });
 
   Widget createHomeScreen({locale = 'en'}) {

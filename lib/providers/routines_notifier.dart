@@ -148,9 +148,7 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
         for (final log in session.logs) {
           // Fall back gracefully if the referenced exercise hasn't been
           // synced yet (rare but possible on a cold start).
-          final exercise = exerciseState.exercises.firstWhereOrNull(
-            (e) => e.id == log.exerciseId,
-          );
+          final exercise = exerciseState.getByIdOrNull(log.exerciseId);
           if (exercise != null) {
             log.exerciseObj = exercise;
           }
@@ -162,9 +160,7 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
       for (final slot in day.slots) {
         for (final entry in slot.entries) {
           if (exerciseState != null) {
-            final exercise = exerciseState.exercises.firstWhereOrNull(
-              (e) => e.id == entry.exerciseId,
-            );
+            final exercise = exerciseState.getByIdOrNull(entry.exerciseId);
             if (exercise != null) {
               entry.exerciseObj = exercise;
             }
@@ -185,9 +181,7 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
         for (final slot in entry.slots) {
           for (final setConfig in slot.setConfigs) {
             if (exerciseState != null) {
-              final exercise = exerciseState.exercises.firstWhereOrNull(
-                (e) => e.id == setConfig.exerciseId,
-              );
+              final exercise = exerciseState.getByIdOrNull(setConfig.exerciseId);
               if (exercise != null) {
                 setConfig.exercise = exercise;
               }

@@ -59,7 +59,7 @@ MockExerciseRepository _emptyExerciseRepoMock() {
   final mock = MockExerciseRepository();
   when(
     mock.watchAllDrift(),
-  ).thenAnswer((_) => Stream.value(const ExerciseState(<Exercise>[])));
+  ).thenAnswer((_) => Stream.value(ExerciseState(const <Exercise>[])));
   return mock;
 }
 

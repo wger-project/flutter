@@ -54,7 +54,7 @@ void main() {
     mockExerciseRepository = MockExerciseRepository();
     when(
       mockExerciseRepository.watchAllDrift(),
-    ).thenAnswer((_) => Stream.value(const ExerciseState(<Exercise>[])));
+    ).thenAnswer((_) => Stream.value(ExerciseState(const <Exercise>[])));
   });
 
   /// Stubs the account fetch so the contribution gate sees a (non-)trustworthy

@@ -16,7 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:collection/collection.dart';
 import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wger/helpers/consts.dart';
@@ -35,13 +34,18 @@ part 'exercises_notifier.g.dart';
 class ExerciseState {
   final List<Exercise> exercises;
 
-  const ExerciseState(this.exercises);
+  /// Id index so lookups don't scan the full catalogue.
+  final Map<int, Exercise> _byId;
+
+  ExerciseState(List<Exercise> exercises)
+      : exercises = exercises,
+        _byId = {for (final e in exercises) e.id: e};
 
   /// Returns the exercise with the given [id], throws if no match
-  Exercise getById(int id) => exercises.firstWhere((e) => e.id == id);
+  Exercise getById(int id) => _byId[id] ?? (throw StateError('No exercise with id $id'));
 
   /// Returns the exercise with the given [id], or null if no match
-  Exercise? getByIdOrNull(int id) => exercises.firstWhereOrNull((e) => e.id == id);
+  Exercise? getByIdOrNull(int id) => _byId[id];
 
   /// Buckets exercises by their `variationGroup` (skipping those without one)
   Map<String, List<Exercise>> getByVariation() {
