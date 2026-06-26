@@ -100,7 +100,7 @@ Widget createGymModeResultsScreen({Locale? locale}) {
 
   final key = GlobalKey<NavigatorState>();
   final routine = getTestRoutine(exercises: getScreenshotExercises());
-  routine.sessions.first.date = clock.now();
+  routine.sessions[0] = routine.sessions.first.copyWith(date: clock.now());
 
   return riverpod.UncontrolledProviderScope(
     container: riverpod.ProviderContainer.test(

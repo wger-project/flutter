@@ -40,7 +40,7 @@ final class WorkoutSessionNotifier extends _$WorkoutSessionNotifier {
     await _repo.editLocalDrift(entry);
   }
 
-  Future<void> addEntry(WorkoutSession entry) async {
-    await _repo.addLocalDrift(entry);
+  Future<WorkoutSession> addEntry(WorkoutSession entry) async {
+    return _repo.addLocalDrift(entry);
   }
 }

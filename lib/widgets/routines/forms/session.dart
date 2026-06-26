@@ -29,22 +29,17 @@ import 'package:wger/widgets/core/form_submit_button.dart';
 
 class SessionForm extends ConsumerStatefulWidget {
   final _logger = Logger('SessionForm');
-  final WorkoutSession _session;
+  final int _routineId;
+  final int? _dayId;
+
+  /// The session to edit, or null to create a new one.
+  final WorkoutSession? _session;
   final Function()? _onSaved;
 
-  static const SLIDER_START = -0.5;
-
-  SessionForm(int routineId, {Function()? onSaved, WorkoutSession? session, int? dayId})
+  SessionForm(this._routineId, {Function()? onSaved, WorkoutSession? session, int? dayId})
     : _onSaved = onSaved,
-      _session =
-          session ??
-          WorkoutSession(
-            routineId: routineId,
-            dayId: dayId,
-            date: clock.now(),
-            timeStart: null,
-            timeEnd: null,
-          );
+      _session = session,
+      _dayId = dayId;
 
   @override
   _SessionFormState createState() => _SessionFormState();
@@ -55,10 +50,29 @@ class _SessionFormState extends ConsumerState<SessionForm> {
 
   final notesController = TextEditingController();
 
+  /// Editable copy. Seeded once and owned by the form, so parent rebuilds
+  /// (e.g. stream re-emissions) don't clobber the user's in-progress edits.
+  late WorkoutSession _draft;
+
   @override
   void initState() {
     super.initState();
-    notesController.text = widget._session.notes ?? '';
+    _draft =
+        widget._session ??
+        WorkoutSession(routineId: widget._routineId, dayId: widget._dayId, date: clock.now());
+    notesController.text = _draft.notes ?? '';
+  }
+
+  @override
+  void didUpdateWidget(SessionForm oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Adopt a new server identity (e.g. a session created lazily while logging
+    // arrives only after the form first built) without discarding edits when
+    // the same session is merely re-emitted by the stream.
+    if (widget._session != null && widget._session!.id != oldWidget._session?.id) {
+      _draft = widget._session!;
+      notesController.text = _draft.notes ?? '';
+    }
   }
 
   @override
@@ -81,12 +95,10 @@ class _SessionFormState extends ConsumerState<SessionForm> {
             renderBorder: false,
             onPressed: (int index) {
               setState(() {
-                widget._session.impression = WorkoutImpression.values[index];
+                _draft = _draft.copyWith(impression: WorkoutImpression.values[index]);
               });
             },
-            isSelected: WorkoutImpression.values
-                .map((e) => e == widget._session.impression)
-                .toList(),
+            isSelected: WorkoutImpression.values.map((e) => e == _draft.impression).toList(),
             children: const [
               Icon(Icons.sentiment_very_dissatisfied),
               Icon(Icons.sentiment_neutral),
@@ -103,7 +115,7 @@ class _SessionFormState extends ConsumerState<SessionForm> {
             keyboardType: TextInputType.multiline,
             onFieldSubmitted: (_) {},
             onSaved: (newValue) {
-              widget._session.notes = newValue;
+              _draft = _draft.copyWith(notes: newValue);
             },
             validator: (value) {
               if (value != null && value.length > WorkoutSession.maxNotesChars) {
@@ -120,19 +132,19 @@ class _SessionFormState extends ConsumerState<SessionForm> {
               Flexible(
                 child: TimeInputWidget(
                   key: const ValueKey('time-start'),
-                  value: widget._session.timeStart,
+                  value: _draft.timeStart,
                   labelText: AppLocalizations.of(context).timeStart,
-                  onCleared: () => widget._session.timeStart = null,
-                  onChanged: (time) => widget._session.timeStart = time,
+                  onCleared: () => _draft = _draft.copyWith(timeStart: null),
+                  onChanged: (time) => _draft = _draft.copyWith(timeStart: time),
                 ),
               ),
               Flexible(
                 child: TimeInputWidget(
                   key: const ValueKey('time-end'),
-                  value: widget._session.timeEnd,
+                  value: _draft.timeEnd,
                   labelText: AppLocalizations.of(context).timeEnd,
-                  onCleared: () => widget._session.timeEnd = null,
-                  onChanged: (time) => widget._session.timeEnd = time,
+                  onCleared: () => _draft = _draft.copyWith(timeEnd: null),
+                  onChanged: (time) => _draft = _draft.copyWith(timeEnd: time),
                 ),
               ),
             ],
@@ -149,8 +161,8 @@ class _SessionFormState extends ConsumerState<SessionForm> {
 
               final i18n = AppLocalizations.of(context);
               final error = validateWorkoutSessionTimes(
-                timeStart: widget._session.timeStart,
-                timeEnd: widget._session.timeEnd,
+                timeStart: _draft.timeStart,
+                timeEnd: _draft.timeEnd,
                 i18n: i18n,
               );
               if (error != null) {
@@ -159,12 +171,12 @@ class _SessionFormState extends ConsumerState<SessionForm> {
               }
 
               // A WgerHttpException is surfaced inline by FormSubmitButton.
-              if (widget._session.id == null) {
+              if (_draft.id == null) {
                 widget._logger.fine('Adding new session');
-                await sessionProvider.addEntry(widget._session);
+                await sessionProvider.addEntry(_draft);
               } else {
-                widget._logger.fine('Editing existing session with id ${widget._session.id}');
-                await sessionProvider.updateEntry(widget._session);
+                widget._logger.fine('Editing existing session with id ${_draft.id}');
+                await sessionProvider.updateEntry(_draft);
               }
 
               if (context.mounted && widget._onSaved != null) {

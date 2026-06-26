@@ -23,6 +23,7 @@
 import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
+import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/session.dart';
 
 import '../database/powersync/database.dart';
@@ -59,14 +60,13 @@ class WorkoutSessionRepository {
 
     return query.watch().map((rows) {
       final sessions = <String, WorkoutSession>{};
+      final logsBySession = <String, List<Log>>{};
       final seenLogs = <String>{};
 
       for (final row in rows) {
         final session = row.readTable(_db.workoutSessionTable);
-        final entry = sessions.putIfAbsent(session.id!, () {
-          session.logs = [];
-          return session;
-        });
+        sessions.putIfAbsent(session.id!, () => session);
+        final logs = logsBySession.putIfAbsent(session.id!, () => []);
 
         final log = row.readTableOrNull(_db.workoutLogTable);
         if (log == null || seenLogs.contains(log.id)) {
@@ -82,10 +82,10 @@ class WorkoutSessionRepository {
         if (weightUnit != null) {
           log.weightUnit = weightUnit;
         }
-        entry.logs.add(log);
+        logs.add(log);
       }
 
-      return sessions.values.toList();
+      return sessions.values.map((s) => s.copyWith(logs: logsBySession[s.id]!)).toList();
     });
   }
 
@@ -100,11 +100,11 @@ class WorkoutSessionRepository {
     await stmt.write(session.toCompanion());
   }
 
-  /// Inserts the session locally; if `session.id` is null, Drift mints one
-  /// and writes it back so the caller can reference it immediately.
-  Future<void> addLocalDrift(WorkoutSession session) async {
+  /// Inserts the session locally and returns the persisted row. When
+  /// `session.id` is null, Drift mints one, so the returned session carries
+  /// the id the caller needs to reference it.
+  Future<WorkoutSession> addLocalDrift(WorkoutSession session) async {
     _logger.finer('Adding local workout session entry ${session.date}');
-    final inserted = await _db.into(_db.workoutSessionTable).insertReturning(session.toCompanion());
-    session.id = inserted.id;
+    return _db.into(_db.workoutSessionTable).insertReturning(session.toCompanion());
   }
 }

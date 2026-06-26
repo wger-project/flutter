@@ -74,6 +74,9 @@ void main() {
     testWidgets('saves a new session', (WidgetTester tester) async {
       // Arrange
       bool onSavedCalled = false;
+      when(mockRepository.addLocalDrift(any)).thenAnswer(
+        (inv) async => inv.positionalArguments.first as WorkoutSession,
+      );
       await pumpSessionForm(tester, onSaved: () => onSavedCalled = true);
 
       // Act

@@ -52,7 +52,7 @@ class _SessionPageState extends ConsumerState<SessionPage> {
             value: ref.watch(workoutSessionProvider),
             loggerName: 'SessionPage',
             data: (sessions) {
-              final session = sessions.firstWhere(
+              final found = sessions.firstWhere(
                 (s) => s.date.isSameDayAs(clock.now()) && s.routineId == gymState.routine.id,
                 orElse: () => WorkoutSession(
                   dayId: gymState.dayId,
@@ -64,8 +64,10 @@ class _SessionPageState extends ConsumerState<SessionPage> {
               // Prefill missing times. A session may have been created lazily
               // while logging sets (without times), so fall back to the gym
               // session's start and the current time.
-              session.timeStart ??= gymState.startTime;
-              session.timeEnd ??= TimeOfDay.fromDateTime(clock.now());
+              final session = found.copyWith(
+                timeStart: found.timeStart ?? gymState.startTime,
+                timeEnd: found.timeEnd ?? TimeOfDay.fromDateTime(clock.now()),
+              );
 
               return Column(
                 children: [

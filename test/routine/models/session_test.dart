@@ -24,8 +24,6 @@ import 'package:wger/models/workouts/session.dart';
 void main() {
   group('WorkoutSession.volume', () {
     test('sums metric volumes correctly', () {
-      final session = WorkoutSession(routineId: 1);
-
       final a = Log(
         exerciseId: 1,
         routineId: 1,
@@ -48,7 +46,7 @@ void main() {
         repetitionsUnitId: REP_UNIT_REPETITIONS_ID,
       );
 
-      session.logs = [a, b];
+      final session = WorkoutSession(routineId: 1, date: DateTime(2021), logs: [a, b]);
 
       final vol = session.volume;
       expect(vol['metric'], equals(100 * 3 + 50 * 2));
@@ -56,8 +54,6 @@ void main() {
     });
 
     test('sums imperial volumes correctly', () {
-      final session = WorkoutSession(routineId: 1);
-
       final a = Log(
         exerciseId: 3,
         routineId: 1,
@@ -80,7 +76,7 @@ void main() {
         repetitionsUnitId: REP_UNIT_REPETITIONS_ID,
       );
 
-      session.logs = [a, b];
+      final session = WorkoutSession(routineId: 1, date: DateTime(2021), logs: [a, b]);
 
       final vol = session.volume;
       expect(vol['imperial'], equals(220 * 4 + 150 * 1));
@@ -88,8 +84,6 @@ void main() {
     });
 
     test('ignores logs with non-matching units or non-rep units', () {
-      final session = WorkoutSession(routineId: 1);
-
       final a = Log(
         exerciseId: 5,
         routineId: 1,
@@ -123,7 +117,7 @@ void main() {
         repetitionsUnitId: 999, // some other repetition unit -> should be ignored
       );
 
-      session.logs = [a, b, c];
+      final session = WorkoutSession(routineId: 1, date: DateTime(2021), logs: [a, b, c]);
 
       final vol = session.volume;
       // only 'a' should count for metric, only 'b' for imperial
@@ -132,8 +126,7 @@ void main() {
     });
 
     test('returns zero for empty logs', () {
-      final session = WorkoutSession(routineId: 1);
-      session.logs = [];
+      final session = WorkoutSession(routineId: 1, date: DateTime(2021), logs: []);
 
       final vol = session.volume;
       expect(vol['metric'], equals(0));
@@ -141,8 +134,6 @@ void main() {
     });
 
     test('works with fractional weights and reps', () {
-      final session = WorkoutSession(routineId: 1);
-
       final a = Log(
         exerciseId: 8,
         routineId: 1,
@@ -165,7 +156,7 @@ void main() {
         repetitionsUnitId: REP_UNIT_REPETITIONS_ID,
       );
 
-      session.logs = [a, b];
+      final session = WorkoutSession(routineId: 1, date: DateTime(2021), logs: [a, b]);
 
       final vol = session.volume;
       expect(vol['metric'], closeTo(10.5 * 3 + 5.25 * 2.5, 1e-9));

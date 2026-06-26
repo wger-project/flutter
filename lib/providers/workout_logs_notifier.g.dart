@@ -9,26 +9,16 @@ part of 'workout_logs_notifier.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 /// Streams the past logs for [exerciseId] within [routineId], newest first.
-///
-/// Reads the local `workout_log` table directly, so a set logged during a
-/// workout shows up immediately, independent of the gym-mode routine snapshot.
 
 @ProviderFor(pastExerciseLogs)
 final pastExerciseLogsProvider = PastExerciseLogsFamily._();
 
 /// Streams the past logs for [exerciseId] within [routineId], newest first.
-///
-/// Reads the local `workout_log` table directly, so a set logged during a
-/// workout shows up immediately, independent of the gym-mode routine snapshot.
 
 final class PastExerciseLogsProvider
-    extends
-        $FunctionalProvider<AsyncValue<List<Log>>, List<Log>, Stream<List<Log>>>
+    extends $FunctionalProvider<AsyncValue<List<Log>>, List<Log>, Stream<List<Log>>>
     with $FutureModifier<List<Log>>, $StreamProvider<List<Log>> {
   /// Streams the past logs for [exerciseId] within [routineId], newest first.
-  ///
-  /// Reads the local `workout_log` table directly, so a set logged during a
-  /// workout shows up immediately, independent of the gym-mode routine snapshot.
   PastExerciseLogsProvider._({
     required PastExerciseLogsFamily super.from,
     required ({int routineId, int exerciseId}) super.argument,
@@ -79,16 +69,9 @@ final class PastExerciseLogsProvider
 String _$pastExerciseLogsHash() => r'e2345fbf5c2bcbaa81a673d39212a59099de5424';
 
 /// Streams the past logs for [exerciseId] within [routineId], newest first.
-///
-/// Reads the local `workout_log` table directly, so a set logged during a
-/// workout shows up immediately, independent of the gym-mode routine snapshot.
 
 final class PastExerciseLogsFamily extends $Family
-    with
-        $FunctionalFamilyOverride<
-          Stream<List<Log>>,
-          ({int routineId, int exerciseId})
-        > {
+    with $FunctionalFamilyOverride<Stream<List<Log>>, ({int routineId, int exerciseId})> {
   PastExerciseLogsFamily._()
     : super(
         retry: null,
@@ -99,9 +82,6 @@ final class PastExerciseLogsFamily extends $Family
       );
 
   /// Streams the past logs for [exerciseId] within [routineId], newest first.
-  ///
-  /// Reads the local `workout_log` table directly, so a set logged during a
-  /// workout shows up immediately, independent of the gym-mode routine snapshot.
 
   PastExerciseLogsProvider call({
     required int routineId,

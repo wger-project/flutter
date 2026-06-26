@@ -38,8 +38,8 @@ class ExerciseState {
   final Map<int, Exercise> _byId;
 
   ExerciseState(List<Exercise> exercises)
-      : exercises = exercises,
-        _byId = {for (final e in exercises) e.id: e};
+    : exercises = exercises,
+      _byId = {for (final e in exercises) e.id: e};
 
   /// Returns the exercise with the given [id], throws if no match
   Exercise getById(int id) => _byId[id] ?? (throw StateError('No exercise with id $id'));

@@ -79,31 +79,26 @@ void main() {
 
   group('CRUD', () {
     test('addLocalDrift inserts a row', () async {
-      final session = makeSession();
-
-      await repo.addLocalDrift(session);
+      final inserted = await repo.addLocalDrift(makeSession());
 
       final rows = await db.select(db.workoutSessionTable).get();
       expect(rows, hasLength(1));
-      expect(rows.first.id, session.id);
+      expect(rows.first.id, inserted.id);
     });
 
     test('editLocalDrift overwrites the row with matching id', () async {
-      final session = makeSession();
-      await repo.addLocalDrift(session);
+      final inserted = await repo.addLocalDrift(makeSession());
 
-      session.notes = 'updated';
-      await repo.editLocalDrift(session);
+      await repo.editLocalDrift(inserted.copyWith(notes: 'updated'));
 
       final rows = await db.select(db.workoutSessionTable).get();
       expect(rows.single.notes, 'updated');
     });
 
     test('deleteLocalDrift removes the row with matching id', () async {
-      final session = makeSession();
-      await repo.addLocalDrift(session);
+      final inserted = await repo.addLocalDrift(makeSession());
 
-      await repo.deleteLocalDrift(session.id!);
+      await repo.deleteLocalDrift(inserted.id!);
 
       expect(await db.select(db.workoutSessionTable).get(), isEmpty);
     });
@@ -134,8 +129,7 @@ void main() {
 
     test('attaches logs to their parent session', () async {
       await seedUnits();
-      final session = makeSession();
-      await repo.addLocalDrift(session);
+      final session = await repo.addLocalDrift(makeSession());
       final log1 = makeLog(sessionId: session.id!, exerciseId: 1);
       final log2 = makeLog(sessionId: session.id!, exerciseId: 2);
       await db.into(db.workoutLogTable).insert(log1.toCompanion());
@@ -148,8 +142,7 @@ void main() {
 
     test('hydrates each log with its repetition and weight unit', () async {
       await seedUnits();
-      final session = makeSession();
-      await repo.addLocalDrift(session);
+      final session = await repo.addLocalDrift(makeSession());
       await db.into(db.workoutLogTable).insert(makeLog(sessionId: session.id!).toCompanion());
 
       final emitted = await repo.watchAllDrift().first;
@@ -169,10 +162,8 @@ void main() {
 
     test('does not duplicate logs across sessions', () async {
       await seedUnits();
-      final s1 = makeSession(routineId: 1);
-      final s2 = makeSession(routineId: 2);
-      await repo.addLocalDrift(s1);
-      await repo.addLocalDrift(s2);
+      final s1 = await repo.addLocalDrift(makeSession(routineId: 1));
+      final s2 = await repo.addLocalDrift(makeSession(routineId: 2));
       await db.into(db.workoutLogTable).insert(makeLog(sessionId: s1.id!).toCompanion());
       await db.into(db.workoutLogTable).insert(makeLog(sessionId: s2.id!).toCompanion());
 

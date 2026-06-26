@@ -3,19 +3,19 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i3;
+import 'dart:async' as _i4;
 
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:wger/models/core/language.dart' as _i10;
-import 'package:wger/models/core/search_options.dart' as _i4;
-import 'package:wger/models/exercises/category.dart' as _i6;
-import 'package:wger/models/exercises/equipment.dart' as _i8;
-import 'package:wger/models/exercises/exercise_filters.dart' as _i5;
-import 'package:wger/models/exercises/muscle.dart' as _i9;
-import 'package:wger/models/workouts/session.dart' as _i12;
-import 'package:wger/providers/exercise_repository.dart' as _i2;
-import 'package:wger/providers/exercises_notifier.dart' as _i7;
-import 'package:wger/providers/workout_session_repository.dart' as _i11;
+import 'package:wger/models/core/language.dart' as _i11;
+import 'package:wger/models/core/search_options.dart' as _i5;
+import 'package:wger/models/exercises/category.dart' as _i7;
+import 'package:wger/models/exercises/equipment.dart' as _i9;
+import 'package:wger/models/exercises/exercise_filters.dart' as _i6;
+import 'package:wger/models/exercises/muscle.dart' as _i10;
+import 'package:wger/models/workouts/session.dart' as _i2;
+import 'package:wger/providers/exercise_repository.dart' as _i3;
+import 'package:wger/providers/exercises_notifier.dart' as _i8;
+import 'package:wger/providers/workout_session_repository.dart' as _i12;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -32,16 +32,21 @@ import 'package:wger/providers/workout_session_repository.dart' as _i11;
 // ignore_for_file: subtype_of_sealed_class
 // ignore_for_file: invalid_use_of_internal_member
 
+class _FakeWorkoutSession_0 extends _i1.SmartFake implements _i2.WorkoutSession {
+  _FakeWorkoutSession_0(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
 /// A class which mocks [ExerciseRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockExerciseRepository extends _i1.Mock implements _i2.ExerciseRepository {
+class MockExerciseRepository extends _i1.Mock implements _i3.ExerciseRepository {
   MockExerciseRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i3.Future<List<int>> searchExerciseServer(
+  _i4.Future<List<int>> searchExerciseServer(
     String? term, {
     String? languageCode = 'en',
     bool? searchEnglish = false,
@@ -52,17 +57,17 @@ class MockExerciseRepository extends _i1.Mock implements _i2.ExerciseRepository 
               [term],
               {#languageCode: languageCode, #searchEnglish: searchEnglish},
             ),
-            returnValue: _i3.Future<List<int>>.value(<int>[]),
+            returnValue: _i4.Future<List<int>>.value(<int>[]),
           )
-          as _i3.Future<List<int>>);
+          as _i4.Future<List<int>>);
 
   @override
-  _i3.Future<List<int>> searchExerciseServerWithSearchMode(
+  _i4.Future<List<int>> searchExerciseServerWithSearchMode(
     String? term, {
     String? languageCode = 'en',
-    _i4.SearchLanguage? searchLanguage = _i4.SearchLanguage.currentAndEnglish,
-    _i5.ExerciseSearchMode? searchMode = _i5.ExerciseSearchMode.fulltext,
-    Set<_i6.ExerciseCategory>? categories = const {},
+    _i5.SearchLanguage? searchLanguage = _i5.SearchLanguage.currentAndEnglish,
+    _i6.ExerciseSearchMode? searchMode = _i6.ExerciseSearchMode.fulltext,
+    Set<_i7.ExerciseCategory>? categories = const {},
   }) =>
       (super.noSuchMethod(
             Invocation.method(
@@ -75,91 +80,95 @@ class MockExerciseRepository extends _i1.Mock implements _i2.ExerciseRepository 
                 #categories: categories,
               },
             ),
-            returnValue: _i3.Future<List<int>>.value(<int>[]),
+            returnValue: _i4.Future<List<int>>.value(<int>[]),
           )
-          as _i3.Future<List<int>>);
+          as _i4.Future<List<int>>);
 
   @override
-  _i3.Stream<_i7.ExerciseState> watchAllDrift() =>
+  _i4.Stream<_i8.ExerciseState> watchAllDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchAllDrift, []),
-            returnValue: _i3.Stream<_i7.ExerciseState>.empty(),
+            returnValue: _i4.Stream<_i8.ExerciseState>.empty(),
           )
-          as _i3.Stream<_i7.ExerciseState>);
+          as _i4.Stream<_i8.ExerciseState>);
 
   @override
-  _i3.Stream<List<_i6.ExerciseCategory>> watchCategoriesDrift() =>
+  _i4.Stream<List<_i7.ExerciseCategory>> watchCategoriesDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchCategoriesDrift, []),
-            returnValue: _i3.Stream<List<_i6.ExerciseCategory>>.empty(),
+            returnValue: _i4.Stream<List<_i7.ExerciseCategory>>.empty(),
           )
-          as _i3.Stream<List<_i6.ExerciseCategory>>);
+          as _i4.Stream<List<_i7.ExerciseCategory>>);
 
   @override
-  _i3.Stream<List<_i8.Equipment>> watchEquipmentDrift() =>
+  _i4.Stream<List<_i9.Equipment>> watchEquipmentDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchEquipmentDrift, []),
-            returnValue: _i3.Stream<List<_i8.Equipment>>.empty(),
+            returnValue: _i4.Stream<List<_i9.Equipment>>.empty(),
           )
-          as _i3.Stream<List<_i8.Equipment>>);
+          as _i4.Stream<List<_i9.Equipment>>);
 
   @override
-  _i3.Stream<List<_i9.Muscle>> watchMusclesDrift() =>
+  _i4.Stream<List<_i10.Muscle>> watchMusclesDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchMusclesDrift, []),
-            returnValue: _i3.Stream<List<_i9.Muscle>>.empty(),
+            returnValue: _i4.Stream<List<_i10.Muscle>>.empty(),
           )
-          as _i3.Stream<List<_i9.Muscle>>);
+          as _i4.Stream<List<_i10.Muscle>>);
 
   @override
-  _i3.Stream<List<_i10.Language>> watchLanguagesDrift() =>
+  _i4.Stream<List<_i11.Language>> watchLanguagesDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchLanguagesDrift, []),
-            returnValue: _i3.Stream<List<_i10.Language>>.empty(),
+            returnValue: _i4.Stream<List<_i11.Language>>.empty(),
           )
-          as _i3.Stream<List<_i10.Language>>);
+          as _i4.Stream<List<_i11.Language>>);
 }
 
 /// A class which mocks [WorkoutSessionRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockWorkoutSessionRepository extends _i1.Mock implements _i11.WorkoutSessionRepository {
+class MockWorkoutSessionRepository extends _i1.Mock implements _i12.WorkoutSessionRepository {
   MockWorkoutSessionRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i3.Stream<List<_i12.WorkoutSession>> watchAllDrift() =>
+  _i4.Stream<List<_i2.WorkoutSession>> watchAllDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchAllDrift, []),
-            returnValue: _i3.Stream<List<_i12.WorkoutSession>>.empty(),
+            returnValue: _i4.Stream<List<_i2.WorkoutSession>>.empty(),
           )
-          as _i3.Stream<List<_i12.WorkoutSession>>);
+          as _i4.Stream<List<_i2.WorkoutSession>>);
 
   @override
-  _i3.Future<void> deleteLocalDrift(String? id) =>
+  _i4.Future<void> deleteLocalDrift(String? id) =>
       (super.noSuchMethod(
             Invocation.method(#deleteLocalDrift, [id]),
-            returnValue: _i3.Future<void>.value(),
-            returnValueForMissingStub: _i3.Future<void>.value(),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
           )
-          as _i3.Future<void>);
+          as _i4.Future<void>);
 
   @override
-  _i3.Future<void> editLocalDrift(_i12.WorkoutSession? session) =>
+  _i4.Future<void> editLocalDrift(_i2.WorkoutSession? session) =>
       (super.noSuchMethod(
             Invocation.method(#editLocalDrift, [session]),
-            returnValue: _i3.Future<void>.value(),
-            returnValueForMissingStub: _i3.Future<void>.value(),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
           )
-          as _i3.Future<void>);
+          as _i4.Future<void>);
 
   @override
-  _i3.Future<void> addLocalDrift(_i12.WorkoutSession? session) =>
+  _i4.Future<_i2.WorkoutSession> addLocalDrift(_i2.WorkoutSession? session) =>
       (super.noSuchMethod(
             Invocation.method(#addLocalDrift, [session]),
-            returnValue: _i3.Future<void>.value(),
-            returnValueForMissingStub: _i3.Future<void>.value(),
+            returnValue: _i4.Future<_i2.WorkoutSession>.value(
+              _FakeWorkoutSession_0(
+                this,
+                Invocation.method(#addLocalDrift, [session]),
+              ),
+            ),
           )
-          as _i3.Future<void>);
+          as _i4.Future<_i2.WorkoutSession>);
 }

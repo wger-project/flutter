@@ -56,7 +56,7 @@ void main() {
 
   setUp(() {
     routine = getTestRoutine();
-    routine.sessions[0].date = DateTime(2025, 3, 29);
+    routine.sessions[0] = routine.sessions[0].copyWith(date: DateTime(2025, 3, 29));
     // Pin every log to a known session id so we can verify the edit
     // dialog round-trips the value through the model.
     for (final log in routine.sessions[0].logs) {

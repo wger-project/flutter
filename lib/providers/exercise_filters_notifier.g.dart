@@ -10,19 +10,19 @@ part of 'exercise_filters_notifier.dart';
 // ignore_for_file: type=lint, type=warning
 /// Holds the *UI-side* state for the exercises catalogue screen:
 /// search term, selected categories/equipment, and the resulting
-/// [filteredExercises] list.
+/// [ExerciseFilterState.filteredExercises] list.
 
 @ProviderFor(ExerciseListFiltersNotifier)
 final exerciseListFiltersProvider = ExerciseListFiltersNotifierProvider._();
 
 /// Holds the *UI-side* state for the exercises catalogue screen:
 /// search term, selected categories/equipment, and the resulting
-/// [filteredExercises] list.
+/// [ExerciseFilterState.filteredExercises] list.
 final class ExerciseListFiltersNotifierProvider
     extends $NotifierProvider<ExerciseListFiltersNotifier, ExerciseFilterState> {
   /// Holds the *UI-side* state for the exercises catalogue screen:
   /// search term, selected categories/equipment, and the resulting
-  /// [filteredExercises] list.
+  /// [ExerciseFilterState.filteredExercises] list.
   ExerciseListFiltersNotifierProvider._()
     : super(
         from: null,
@@ -50,11 +50,11 @@ final class ExerciseListFiltersNotifierProvider
   }
 }
 
-String _$exerciseListFiltersNotifierHash() => r'482f7dedaa33f4872088942fa120ac2402060399';
+String _$exerciseListFiltersNotifierHash() => r'960fd73689d5e34150a7e923aa33bfdb82dd6be5';
 
 /// Holds the *UI-side* state for the exercises catalogue screen:
 /// search term, selected categories/equipment, and the resulting
-/// [filteredExercises] list.
+/// [ExerciseFilterState.filteredExercises] list.
 
 abstract class _$ExerciseListFiltersNotifier extends $Notifier<ExerciseFilterState> {
   ExerciseFilterState build();

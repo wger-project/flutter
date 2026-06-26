@@ -111,8 +111,7 @@ void main() {
     // A session created lazily while logging has no times; the page should
     // prefill the gym session's start and the current time instead of leaving
     // both fields blank.
-    testRoutine.sessions[0].timeStart = null;
-    testRoutine.sessions[0].timeEnd = null;
+    testRoutine.sessions[0] = testRoutine.sessions[0].copyWith(timeStart: null, timeEnd: null);
 
     notifier.state = notifier.state.copyWith(
       routine: testRoutine,

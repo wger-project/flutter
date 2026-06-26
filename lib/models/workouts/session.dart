@@ -16,13 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:clock/clock.dart';
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:wger/database/powersync/database.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/log.dart';
+
+part 'session.freezed.dart';
 
 /// User's general impression of a workout session.
 ///
@@ -54,33 +56,42 @@ extension WorkoutImpressionL10n on WorkoutImpression {
   }
 }
 
-class WorkoutSession {
+@freezed
+class WorkoutSession with _$WorkoutSession {
   /// Inclusive upper bound for [notes]
   static const maxNotesChars = 1000;
 
   /// Client-generated UUID, is `null` only before the first persist
-  String? id;
-  late int? routineId;
-  int? dayId;
-  DateTime date;
-  WorkoutImpression impression;
-  late String? notes;
-  late TimeOfDay? timeStart;
-  late TimeOfDay? timeEnd;
-
-  List<Log> logs = [];
+  @override
+  final String? id;
+  @override
+  final int? routineId;
+  @override
+  final int? dayId;
+  @override
+  final DateTime date;
+  @override
+  final WorkoutImpression impression;
+  @override
+  final String? notes;
+  @override
+  final TimeOfDay? timeStart;
+  @override
+  final TimeOfDay? timeEnd;
+  @override
+  final List<Log> logs;
 
   WorkoutSession({
     this.id,
     this.dayId,
     required this.routineId,
+    required this.date,
     this.impression = WorkoutImpression.neutral,
     this.notes = '',
     this.timeStart,
     this.timeEnd,
     this.logs = const [],
-    DateTime? date,
-  }) : date = date ?? clock.now();
+  });
 
   WorkoutSessionTableCompanion toCompanion() {
     return WorkoutSessionTableCompanion(
