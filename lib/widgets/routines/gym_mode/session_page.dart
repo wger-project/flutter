@@ -58,10 +58,14 @@ class _SessionPageState extends ConsumerState<SessionPage> {
                   dayId: gymState.dayId,
                   date: clock.now(),
                   routineId: gymState.routine.id,
-                  timeStart: gymState.startTime,
-                  timeEnd: TimeOfDay.fromDateTime(clock.now()),
                 ),
               );
+
+              // Prefill missing times. A session may have been created lazily
+              // while logging sets (without times), so fall back to the gym
+              // session's start and the current time.
+              session.timeStart ??= gymState.startTime;
+              session.timeEnd ??= TimeOfDay.fromDateTime(clock.now());
 
               return Column(
                 children: [

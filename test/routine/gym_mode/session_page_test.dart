@@ -27,7 +27,6 @@ import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/session.dart';
 import 'package:wger/providers/gym_state_notifier.dart';
 import 'package:wger/providers/workout_session_repository.dart';
-import 'package:wger/widgets/core/datetime_input.dart';
 import 'package:wger/widgets/routines/gym_mode/session_page.dart';
 
 import '../../../test_data/routines.dart';
@@ -106,25 +105,27 @@ void main() {
     });
   });
 
-  testWidgets('Test that data from  session is loaded - null times', (WidgetTester tester) async {
+  testWidgets('Existing session with null times falls back to defaults', (
+    WidgetTester tester,
+  ) async {
+    // A session created lazily while logging has no times; the page should
+    // prefill the gym session's start and the current time instead of leaving
+    // both fields blank.
     testRoutine.sessions[0].timeStart = null;
     testRoutine.sessions[0].timeEnd = null;
 
-    notifier.state = notifier.state.copyWith(routine: testRoutine);
+    notifier.state = notifier.state.copyWith(
+      routine: testRoutine,
+      startTime: const TimeOfDay(hour: 13, minute: 35),
+    );
     notifier.calculatePages();
 
-    withClock(Clock.fixed(DateTime(2021, 5, 1)), () async {
-      await tester.pumpWidget(renderSessionPage());
-      await tester.pumpAndSettle();
+    await tester.pumpWidget(renderSessionPage());
+    await tester.pumpAndSettle();
 
-      final startTimeField = find.byKey(const ValueKey('time-start'));
-      expect(startTimeField, findsOneWidget);
-      expect(tester.widget<TimeInputWidget>(startTimeField).value, isNull);
-
-      final endTimeField = find.byKey(const ValueKey('time-end'));
-      expect(endTimeField, findsOneWidget);
-      expect(tester.widget<TimeInputWidget>(endTimeField).value, isNull);
-    });
+    final timeNow = TimeOfDay.now().format(tester.element(find.byType(TextFormField).first));
+    expect(find.text('1:35 PM'), findsOneWidget);
+    expect(find.text(timeNow), findsOneWidget);
   });
 
   testWidgets('Test correct default data (no existing session)', (WidgetTester tester) async {
