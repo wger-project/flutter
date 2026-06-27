@@ -1384,5 +1384,10 @@
     "timeStartEndBothOrNeither": "Postavi vrijeme početka i vrijeme kraja ili ostavi oba polja prazna",
     "@timeStartEndBothOrNeither": {
         "description": "Validation error when only one of start/end time is set on a workout session"
-    }
+    },
+    "refreshTokenHelperText": "Generiraj JWT token za osvježavanje na wger web-stranici i zalijepi ga ovdje. Korisno kada se tvof server nalazi iza proxyja za autorizaciju ili kada želiš preskočiti uobičajeni tok prijave.",
+    "@refreshTokenHelperText": {
+        "description": "Helper text on the refresh-token paste field"
+    },
+    "powerSyncUnreachableContent": "Tvoj je wger server dostupan, ali (zasebna) usluga koja obrađuje izvanmrežnu sinkronizaciju ne odgovara. Ako pokrećeš vlastiti hosting za wger, provjeri konfiguraciju i provjeri je li PowerSync usluga ispravno radi."
 }
