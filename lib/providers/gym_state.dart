@@ -168,7 +168,7 @@ class GymModeState {
   final List<PageEntry> pages;
   final int currentPage;
 
-  final TimeOfDay startTime;
+  final DateTime startTime;
   final DateTime validUntil;
 
   // User settings
@@ -199,9 +199,9 @@ class GymModeState {
     Routine? routine,
 
     DateTime? validUntil,
-    TimeOfDay? startTime,
+    DateTime? startTime,
   }) : validUntil = validUntil ?? clock.now().add(DEFAULT_DURATION),
-       startTime = startTime ?? TimeOfDay.fromDateTime(clock.now()) {
+       startTime = startTime ?? clock.now() {
     if (dayId != null) {
       this.dayId = dayId;
     }
@@ -225,7 +225,7 @@ class GymModeState {
     int? dayId,
     int? iteration,
     DateTime? validUntil,
-    TimeOfDay? startTime,
+    DateTime? startTime,
     Routine? routine,
 
     // User settings

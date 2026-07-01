@@ -39,8 +39,8 @@ String? validateWorkoutLogCrossField({
 /// - [timeStart] and [timeEnd] must both be set or both be empty,
 /// - if both are set, [timeStart] must not be after [timeEnd].
 String? validateWorkoutSessionTimes({
-  required TimeOfDay? timeStart,
-  required TimeOfDay? timeEnd,
+  required DateTime? timeStart,
+  required DateTime? timeEnd,
   required AppLocalizations i18n,
 }) {
   if ((timeStart == null) != (timeEnd == null)) {

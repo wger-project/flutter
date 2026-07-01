@@ -111,7 +111,8 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
       events.putIfAbsent(date, () => []);
       var time = '';
       if (session.timeStart != null && session.timeEnd != null) {
-        time = '(${timeToString(session.timeStart)} - ${timeToString(session.timeEnd)})';
+        time =
+            '(${timeToString(TimeOfDay.fromDateTime(session.timeStart!))} - ${timeToString(TimeOfDay.fromDateTime(session.timeEnd!))})';
       }
       events[date]!.add(
         Event(

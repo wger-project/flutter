@@ -120,19 +120,44 @@ class _SessionFormState extends ConsumerState<SessionForm> {
               Flexible(
                 child: TimeInputWidget(
                   key: const ValueKey('time-start'),
-                  value: widget._session.timeStart,
+                  value: widget._session.timeStart != null
+                      ? TimeOfDay.fromDateTime(widget._session.timeStart!)
+                      : null,
                   labelText: AppLocalizations.of(context).timeStart,
                   onCleared: () => widget._session.timeStart = null,
-                  onChanged: (time) => widget._session.timeStart = time,
+
+                  onChanged: (time) {
+                    final now = clock.now();
+                    widget._session.timeStart = (widget._session.timeStart ?? now).copyWith(
+                      hour: time.hour,
+                      minute: time.minute,
+                    );
+                  },
                 ),
               ),
               Flexible(
                 child: TimeInputWidget(
                   key: const ValueKey('time-end'),
-                  value: widget._session.timeEnd,
+                  value: widget._session.timeEnd != null
+                      ? TimeOfDay.fromDateTime(widget._session.timeEnd!)
+                      : null,
                   labelText: AppLocalizations.of(context).timeEnd,
                   onCleared: () => widget._session.timeEnd = null,
-                  onChanged: (time) => widget._session.timeEnd = time,
+
+                  onChanged: (time) {
+                    final now = clock.now();
+                    final start = widget._session.timeStart ?? now;
+                    final end = (widget._session.timeEnd ?? now).copyWith(
+                      hour: time.hour,
+                      minute: time.minute,
+                    );
+
+                    if (end.isBefore(start)) {
+                      widget._session.timeEnd = end.add(const Duration(days: 1));
+                    } else {
+                      widget._session.timeEnd = end;
+                    }
+                  },
                 ),
               ),
             ],

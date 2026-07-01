@@ -54,6 +54,8 @@ extension WorkoutImpressionL10n on WorkoutImpression {
   }
 }
 
+const sessionMaxDuration = Duration(hours: 5);
+
 class WorkoutSession {
   /// Inclusive upper bound for [notes]
   static const maxNotesChars = 1000;
@@ -65,10 +67,10 @@ class WorkoutSession {
   DateTime date;
   WorkoutImpression impression;
   late String? notes;
-  late TimeOfDay? timeStart;
-  late TimeOfDay? timeEnd;
+  DateTime? timeStart;
+  DateTime? timeEnd;
 
-  List<Log> logs = [];
+  List<Log> logs;
 
   WorkoutSession({
     this.id,
@@ -87,28 +89,34 @@ class WorkoutSession {
       id: id != null ? drift.Value(id!) : const drift.Value.absent(),
       routineId: routineId != null ? drift.Value(routineId) : const drift.Value.absent(),
       dayId: dayId != null ? drift.Value(dayId) : const drift.Value.absent(),
-      // Server-side `date` is a `DateField` (no time, no TZ). We  send here the
-      // calendar day the user picked, packaged as midnight-UTC so it round-trips
+      // Server-side `date` is a `DateTimeField`. It round-trips
       // through PowerSync's ISO8601 wire format and lands on the right day on
       // the server.
       date: drift.Value(DateTime.utc(date.year, date.month, date.day)),
       notes: drift.Value(notes),
       impression: drift.Value(impression),
-      timeStart: timeStart != null ? drift.Value(timeStart) : const drift.Value.absent(),
-      timeEnd: timeEnd != null ? drift.Value(timeEnd) : const drift.Value.absent(),
+      timeStart: timeStart != null
+          ? drift.Value(TimeOfDay.fromDateTime(timeStart!))
+          : const drift.Value.absent(),
+      timeEnd: timeEnd != null
+          ? drift.Value(TimeOfDay.fromDateTime(timeEnd!))
+          : const drift.Value.absent(),
     );
   }
 
+  /// Calculates the duration between [timeStart] and [timeEnd].
+  /// Returns null if either is missing.
   Duration? get duration {
-    if (timeStart == null || timeEnd == null) {
+    final start = timeStart;
+    final end = timeEnd;
+    if (start == null || end == null) {
       return null;
     }
-    final now = DateTime.now();
-    final startDate = DateTime(now.year, now.month, now.day, timeStart!.hour, timeStart!.minute);
-    final endDate = DateTime(now.year, now.month, now.day, timeEnd!.hour, timeEnd!.minute);
-    return endDate.difference(startDate);
+
+    return end.difference(start);
   }
 
+  /// Returns a localized string representation of the duration (e.g., "2h 30m").
   String durationTxt(BuildContext context) {
     final duration = this.duration;
     if (duration == null) {
@@ -119,14 +127,17 @@ class WorkoutSession {
     ).durationHoursMinutes(duration.inHours, duration.inMinutes.remainder(60));
   }
 
+  /// Returns a formatted string: "2h 30m (09:00 AM - 11:30 AM)".
   String durationTxtWithStartEnd(BuildContext context) {
-    final duration = this.duration;
-    if (duration == null) {
+    final start = timeStart;
+    final end = timeEnd;
+    if (end == null || start == null) {
       return '-/-';
     }
 
-    final startTime = MaterialLocalizations.of(context).formatTimeOfDay(timeStart!);
-    final endTime = MaterialLocalizations.of(context).formatTimeOfDay(timeEnd!);
+    final localizations = MaterialLocalizations.of(context);
+    final startTime = localizations.formatTimeOfDay(TimeOfDay.fromDateTime(start));
+    final endTime = localizations.formatTimeOfDay(TimeOfDay.fromDateTime(end));
 
     return '${durationTxt(context)} ($startTime - $endTime)';
   }

@@ -52,14 +52,19 @@ class _SessionPageState extends ConsumerState<SessionPage> {
             value: ref.watch(workoutSessionProvider),
             loggerName: 'SessionPage',
             data: (sessions) {
+              final nowDt = clock.now();
+              final start = gymState.startTime;
               final session = sessions.firstWhere(
-                (s) => s.date.isSameDayAs(clock.now()) && s.routineId == gymState.routine.id,
+                (s) =>
+                    s.timeEnd == null &&
+                    s.routineId == gymState.routine.id &&
+                    nowDt.difference(s.timeStart!) <= sessionMaxDuration,
                 orElse: () => WorkoutSession(
                   dayId: gymState.dayId,
                   date: clock.now(),
                   routineId: gymState.routine.id,
                   timeStart: gymState.startTime,
-                  timeEnd: TimeOfDay.fromDateTime(clock.now()),
+                  timeEnd: nowDt,
                 ),
               );
 
