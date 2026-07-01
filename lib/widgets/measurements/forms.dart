@@ -28,32 +28,41 @@ import 'package:wger/widgets/core/error.dart';
 import 'package:wger/widgets/core/form_submit_button.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
 
-class MeasurementCategoryForm extends ConsumerWidget {
+class MeasurementCategoryForm extends ConsumerStatefulWidget {
+  final MeasurementCategory? _category;
+
+  const MeasurementCategoryForm([this._category]);
+
+  @override
+  ConsumerState<MeasurementCategoryForm> createState() => _MeasurementCategoryFormState();
+}
+
+class _MeasurementCategoryFormState extends ConsumerState<MeasurementCategoryForm> {
   final _form = GlobalKey<FormState>();
-  final nameController = TextEditingController();
-  final unitController = TextEditingController();
 
-  final String? _existingId;
+  late MeasurementCategory _draft;
 
-  MeasurementCategoryForm([MeasurementCategory? category]) : _existingId = category?.id {
-    nameController.text = category?.name ?? '';
-    unitController.text = category?.unit ?? '';
+  @override
+  void initState() {
+    super.initState();
+    _draft = widget._category ?? MeasurementCategory();
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return Form(
       key: _form,
       child: Column(
         children: [
           // Name
           TextFormField(
+            initialValue: _draft.name,
             decoration: InputDecoration(
               labelText: AppLocalizations.of(context).name,
               helperText: AppLocalizations.of(context).measurementCategoriesHelpText,
             ),
-            controller: nameController,
             maxLength: MeasurementCategory.maxNameChars,
+            onSaved: (value) => _draft = _draft.copyWith(name: value ?? ''),
             validator: (value) {
               final i18n = AppLocalizations.of(context);
               if (value!.isEmpty) {
@@ -68,12 +77,13 @@ class MeasurementCategoryForm extends ConsumerWidget {
 
           // Unit
           TextFormField(
+            initialValue: _draft.unit,
             decoration: InputDecoration(
               labelText: AppLocalizations.of(context).unit,
               helperText: AppLocalizations.of(context).measurementEntriesHelpText,
             ),
-            controller: unitController,
             maxLength: MeasurementCategory.maxUnitChars,
+            onSaved: (value) => _draft = _draft.copyWith(unit: value ?? ''),
             validator: (value) {
               final i18n = AppLocalizations.of(context);
               if (value!.isEmpty) {
@@ -88,23 +98,16 @@ class MeasurementCategoryForm extends ConsumerWidget {
           FormSubmitButton(
             label: AppLocalizations.of(context).save,
             onPressed: () async {
-              final isValid = _form.currentState!.validate();
-              if (!isValid) {
+              if (!_form.currentState!.validate()) {
                 return;
               }
               _form.currentState!.save();
 
               final notifier = ref.read(measurementProvider.notifier);
-              final category = MeasurementCategory(
-                id: _existingId,
-                name: nameController.text,
-                unit: unitController.text,
-              );
-
-              if (category.id == null) {
-                await notifier.addCategory(category);
+              if (_draft.id == null) {
+                await notifier.addCategory(_draft);
               } else {
-                notifier.updateCategory(category);
+                notifier.updateCategory(_draft);
               }
 
               if (context.mounted) {

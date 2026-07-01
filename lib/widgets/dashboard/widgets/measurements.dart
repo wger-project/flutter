@@ -50,7 +50,7 @@ class _DashboardMeasurementWidgetState extends ConsumerState<DashboardMeasuremen
           return NothingFound(
             AppLocalizations.of(context).moreMeasurementEntries,
             AppLocalizations.of(context).newEntry,
-            MeasurementCategoryForm(),
+            const MeasurementCategoryForm(),
           );
         }
 

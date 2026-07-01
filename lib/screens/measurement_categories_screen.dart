@@ -40,7 +40,7 @@ class MeasurementCategoriesScreen extends StatelessWidget {
             FormScreen.routeName,
             arguments: FormScreenArguments(
               AppLocalizations.of(context).newEntry,
-              MeasurementCategoryForm(),
+              const MeasurementCategoryForm(),
             ),
           );
         },
