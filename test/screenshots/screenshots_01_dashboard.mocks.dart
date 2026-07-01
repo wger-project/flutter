@@ -8,6 +8,10 @@ import 'dart:async' as _i10;
 import 'package:image_picker/image_picker.dart' as _i11;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i32;
+import 'package:wger/features/trophies/models/trophy.dart' as _i33;
+import 'package:wger/features/trophies/models/user_trophy.dart' as _i34;
+import 'package:wger/features/trophies/models/user_trophy_progression.dart' as _i35;
+import 'package:wger/features/trophies/providers/trophy_repository.dart' as _i31;
 import 'package:wger/features/weight/models/weight_entry.dart' as _i22;
 import 'package:wger/features/weight/providers/body_weight_repository.dart' as _i21;
 import 'package:wger/models/core/search_options.dart' as _i20;
@@ -20,9 +24,6 @@ import 'package:wger/models/nutrition/log.dart' as _i16;
 import 'package:wger/models/nutrition/meal.dart' as _i14;
 import 'package:wger/models/nutrition/meal_item.dart' as _i15;
 import 'package:wger/models/nutrition/nutritional_plan.dart' as _i13;
-import 'package:wger/models/trophies/trophy.dart' as _i33;
-import 'package:wger/models/trophies/user_trophy.dart' as _i34;
-import 'package:wger/models/trophies/user_trophy_progression.dart' as _i35;
 import 'package:wger/models/user/user_profile.dart' as _i27;
 import 'package:wger/models/workouts/base_config.dart' as _i7;
 import 'package:wger/models/workouts/day.dart' as _i4;
@@ -37,7 +38,6 @@ import 'package:wger/providers/ingredient_repository.dart' as _i17;
 import 'package:wger/providers/measurement_repository.dart' as _i23;
 import 'package:wger/providers/nutrition_repository.dart' as _i12;
 import 'package:wger/providers/routines_repository.dart' as _i28;
-import 'package:wger/providers/trophy_repository.dart' as _i31;
 import 'package:wger/providers/user_profile_repository.dart' as _i26;
 
 // ignore_for_file: type=lint

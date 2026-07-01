@@ -17,7 +17,7 @@
  */
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:wger/models/trophies/trophy.dart';
+import 'package:wger/features/trophies/models/trophy.dart';
 
 void main() {
   group('Trophy model', () {

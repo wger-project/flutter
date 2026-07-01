@@ -19,10 +19,10 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:wger/features/trophies/providers/trophy_repository.dart';
 import 'package:wger/providers/base_provider.dart';
-import 'package:wger/providers/trophy_repository.dart';
 
-import 'trophies_provider_test.mocks.dart';
+import 'trophy_repository_test.mocks.dart';
 
 const trophyJson = {
   'id': 1,

@@ -18,9 +18,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
+import 'package:wger/features/trophies/widgets/trophies_overview.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/widgets/core/app_bar.dart';
-import 'package:wger/widgets/trophies/trophies_overview.dart';
 
 class TrophyScreen extends StatelessWidget {
   const TrophyScreen();

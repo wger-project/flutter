@@ -7,15 +7,16 @@ import 'dart:async' as _i10;
 
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i23;
+import 'package:wger/features/trophies/models/trophy.dart' as _i24;
+import 'package:wger/features/trophies/models/user_trophy.dart' as _i25;
+import 'package:wger/features/trophies/models/user_trophy_progression.dart' as _i26;
+import 'package:wger/features/trophies/providers/trophy_repository.dart' as _i22;
 import 'package:wger/models/core/language.dart' as _i18;
 import 'package:wger/models/core/search_options.dart' as _i12;
 import 'package:wger/models/exercises/category.dart' as _i14;
 import 'package:wger/models/exercises/equipment.dart' as _i16;
 import 'package:wger/models/exercises/exercise_filters.dart' as _i13;
 import 'package:wger/models/exercises/muscle.dart' as _i17;
-import 'package:wger/models/trophies/trophy.dart' as _i24;
-import 'package:wger/models/trophies/user_trophy.dart' as _i25;
-import 'package:wger/models/trophies/user_trophy_progression.dart' as _i26;
 import 'package:wger/models/workouts/base_config.dart' as _i7;
 import 'package:wger/models/workouts/day.dart' as _i4;
 import 'package:wger/models/workouts/log.dart' as _i28;
@@ -29,7 +30,6 @@ import 'package:wger/providers/base_provider.dart' as _i8;
 import 'package:wger/providers/exercise_repository.dart' as _i11;
 import 'package:wger/providers/exercises_notifier.dart' as _i15;
 import 'package:wger/providers/routines_repository.dart' as _i19;
-import 'package:wger/providers/trophy_repository.dart' as _i22;
 import 'package:wger/providers/workout_logs_repository.dart' as _i27;
 import 'package:wger/providers/workout_session_repository.dart' as _i9;
 

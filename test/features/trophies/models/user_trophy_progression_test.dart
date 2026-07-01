@@ -17,8 +17,8 @@
  */
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:wger/models/trophies/trophy.dart';
-import 'package:wger/models/trophies/user_trophy_progression.dart';
+import 'package:wger/features/trophies/models/trophy.dart';
+import 'package:wger/features/trophies/models/user_trophy_progression.dart';
 
 void main() {
   group('UserTrophyProgression model', () {

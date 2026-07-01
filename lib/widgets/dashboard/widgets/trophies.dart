@@ -18,11 +18,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wger/features/trophies/models/trophy.dart';
+import 'package:wger/features/trophies/providers/trophy_notifier.dart';
+import 'package:wger/features/trophies/screens/trophy_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/trophies/trophy.dart';
 import 'package:wger/providers/network_provider.dart';
-import 'package:wger/providers/trophy_notifier.dart';
-import 'package:wger/screens/trophy_screen.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/core/wger_image.dart';
 

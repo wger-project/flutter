@@ -17,10 +17,10 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:wger/features/trophies/models/user_trophy.dart';
 import 'package:wger/helpers/i18n.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/exercises/exercise.dart';
-import 'package:wger/models/trophies/user_trophy.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/session.dart';
 
