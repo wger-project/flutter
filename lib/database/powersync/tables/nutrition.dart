@@ -23,10 +23,10 @@ import 'package:wger/database/converters/date_only_text_converter.dart';
 import 'package:wger/database/converters/time_of_day_converter.dart';
 import 'package:wger/database/converters/utc_datetime_converter.dart';
 import 'package:wger/database/powersync/tables/ingredient.dart';
-import 'package:wger/models/nutrition/log.dart';
-import 'package:wger/models/nutrition/meal.dart';
-import 'package:wger/models/nutrition/meal_item.dart';
-import 'package:wger/models/nutrition/nutritional_plan.dart';
+import 'package:wger/features/nutrition/models/log.dart';
+import 'package:wger/features/nutrition/models/meal.dart';
+import 'package:wger/features/nutrition/models/meal_item.dart';
+import 'package:wger/features/nutrition/models/nutritional_plan.dart';
 
 @UseRowClass(NutritionalPlan)
 class NutritionalPlanTable extends Table {

@@ -17,19 +17,19 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:wger/models/exercises/exercise.dart';
-import 'package:wger/models/workouts/base_config.dart';
-import 'package:wger/models/workouts/day.dart';
-import 'package:wger/models/workouts/day_data.dart';
-import 'package:wger/models/workouts/log.dart';
-import 'package:wger/models/workouts/repetition_unit.dart';
-import 'package:wger/models/workouts/routine.dart';
-import 'package:wger/models/workouts/session.dart';
-import 'package:wger/models/workouts/set_config_data.dart';
-import 'package:wger/models/workouts/slot.dart';
-import 'package:wger/models/workouts/slot_data.dart';
-import 'package:wger/models/workouts/slot_entry.dart';
-import 'package:wger/models/workouts/weight_unit.dart';
+import 'package:wger/features/exercises/models/exercise.dart';
+import 'package:wger/features/routines/models/base_config.dart';
+import 'package:wger/features/routines/models/day.dart';
+import 'package:wger/features/routines/models/day_data.dart';
+import 'package:wger/features/routines/models/log.dart';
+import 'package:wger/features/routines/models/repetition_unit.dart';
+import 'package:wger/features/routines/models/routine.dart';
+import 'package:wger/features/routines/models/session.dart';
+import 'package:wger/features/routines/models/set_config_data.dart';
+import 'package:wger/features/routines/models/slot.dart';
+import 'package:wger/features/routines/models/slot_data.dart';
+import 'package:wger/features/routines/models/slot_entry.dart';
+import 'package:wger/features/routines/models/weight_unit.dart';
 
 import './exercises.dart';
 

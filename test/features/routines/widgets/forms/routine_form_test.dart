@@ -1,0 +1,288 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (c) 2020 - 2026 wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
+import 'package:wger/core/consts.dart';
+import 'package:wger/core/exceptions/http_exception.dart';
+import 'package:wger/core/network/network_provider.dart';
+import 'package:wger/core/widgets/form_submit_button.dart';
+import 'package:wger/features/exercises/models/exercise.dart';
+import 'package:wger/features/exercises/providers/exercise_repository.dart';
+import 'package:wger/features/exercises/providers/exercises_notifier.dart';
+import 'package:wger/features/routines/models/repetition_unit.dart';
+import 'package:wger/features/routines/models/routine.dart';
+import 'package:wger/features/routines/models/session.dart';
+import 'package:wger/features/routines/models/weight_unit.dart';
+import 'package:wger/features/routines/providers/routines_notifier.dart';
+import 'package:wger/features/routines/providers/routines_repository.dart';
+import 'package:wger/features/routines/providers/workout_session_repository.dart';
+import 'package:wger/features/routines/screens/routine_edit_screen.dart';
+import 'package:wger/features/routines/screens/routine_screen.dart';
+import 'package:wger/features/routines/widgets/forms/routine.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
+
+import '../../../../../test_data/routines.dart';
+import '../../../../fake_connectivity.dart';
+import './routine_form_test.mocks.dart';
+
+@GenerateMocks([RoutinesRepository, WorkoutSessionRepository, ExerciseRepository])
+void main() {
+  installFakeConnectivity();
+
+  late MockRoutinesRepository mockRoutinesRepository;
+  late MockWorkoutSessionRepository mockSessionRepo;
+  late MockExerciseRepository mockExerciseRepo;
+  late StreamController<List<Routine>> routineStream;
+  late Routine existingRoutine;
+  late Routine newRoutine;
+
+  setUp(() {
+    newRoutine = Routine.empty();
+    existingRoutine = Routine(
+      id: 1,
+      created: DateTime(2021, 1, 1),
+      start: DateTime(2024, 11, 1),
+      end: DateTime(2024, 12, 1),
+      name: 'test 1',
+      description: 'description 1',
+      fitInWeek: false,
+    );
+
+    mockRoutinesRepository = MockRoutinesRepository();
+    when(
+      mockRoutinesRepository.fetchAndSetRoutineFullServer(any),
+    ).thenAnswer((_) async => getTestRoutine());
+    routineStream = StreamController<List<Routine>>.broadcast();
+    when(mockRoutinesRepository.watchAllDrift()).thenAnswer((_) => routineStream.stream);
+
+    // Edit + delete now go through Drift instead of REST.
+    when(mockRoutinesRepository.editLocalDrift(any)).thenAnswer((_) async => Future.value());
+    when(mockRoutinesRepository.deleteLocalDrift(any)).thenAnswer((_) async => Future.value());
+
+    // RoutinesRiverpod.build() listens to workoutSessionProvider and
+    // exercisesProvider for session/exercise hydration; stub the
+    // repositories that back them so we don't fall through to the real
+    // PowerSync DB.
+    mockSessionRepo = MockWorkoutSessionRepository();
+    when(
+      mockSessionRepo.watchAllDrift(),
+    ).thenAnswer((_) => Stream.value(const <WorkoutSession>[]));
+    mockExerciseRepo = MockExerciseRepository();
+    when(
+      mockExerciseRepo.watchAllDrift(),
+    ).thenAnswer((_) => Stream.value(ExerciseState(const <Exercise>[])));
+  });
+
+  tearDown(() {
+    routineStream.close();
+  });
+
+  Widget renderWidget(Routine routine, {locale = 'en', bool isOnline = true}) {
+    final key = GlobalKey<NavigatorState>();
+
+    return ProviderScope(
+      overrides: [
+        routinesRepositoryProvider.overrideWithValue(mockRoutinesRepository),
+        workoutSessionRepositoryProvider.overrideWithValue(mockSessionRepo),
+        exerciseRepositoryProvider.overrideWithValue(mockExerciseRepo),
+        networkStatusProvider.overrideWithValue(isOnline),
+        routineRepetitionUnitProvider.overrideWith(
+          (ref) => Stream<List<RepetitionUnit>>.value(testRepetitionUnits),
+        ),
+        routineWeightUnitProvider.overrideWith(
+          (ref) => Stream<List<WeightUnit>>.value(testWeightUnits),
+        ),
+      ],
+      child: MaterialApp(
+        locale: Locale(locale),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        navigatorKey: key,
+        home: Scaffold(body: RoutineForm(routine)),
+        routes: {
+          RoutineScreen.routeName: (ctx) => const RoutineScreen(),
+          RoutineEditScreen.routeName: (ctx) => const RoutineEditScreen(),
+        },
+      ),
+    );
+  }
+
+  testWidgets('Test the widgets on the routine form', (WidgetTester tester) async {
+    await tester.pumpWidget(renderWidget(existingRoutine));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(TextFormField), findsNWidgets(4));
+    expect(find.byType(ElevatedButton), findsOneWidget);
+  });
+
+  testWidgets('Test editing an existing routine', (WidgetTester tester) async {
+    await tester.pumpWidget(renderWidget(existingRoutine));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text('test 1'),
+      findsOneWidget,
+      reason: 'Name of existing routine',
+    );
+    expect(
+      find.text('description 1'),
+      findsOneWidget,
+      reason: 'Description of existing routine',
+    );
+    await tester.enterText(find.byKey(const Key('field-name')), 'New description');
+    await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
+
+    // Correct method was called
+    verify(mockRoutinesRepository.editLocalDrift(any));
+    verifyNever(mockRoutinesRepository.addRoutineServer(any));
+
+    // TODO(x): edit calls Navigator.pop(), since the form can only be reached from the
+    //       detail page. The test needs to add the detail page to the stack so that
+    //       this can be checked.
+    // https://stackoverflow.com/questions/50704647/how-to-test-navigation-via-navigator-in-flutter
+    // Detail page
+    //await tester.pumpAndSettle();
+    //expect(find.text(('New description')), findsOneWidget, reason: 'Workout plan detail page');
+  });
+
+  testWidgets('Test editing an existing routine - server error', (WidgetTester tester) async {
+    // Arrange
+    when(mockRoutinesRepository.editLocalDrift(any)).thenThrow(
+      WgerHttpException.fromMap({
+        'name': ['The name is not valid'],
+      }),
+    );
+
+    // Act
+    await tester.pumpWidget(renderWidget(existingRoutine));
+    await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
+    await tester.pump();
+
+    // Assert
+    expect(find.text('The name is not valid'), findsOneWidget, reason: 'Error message is shown');
+  });
+
+  testWidgets('Test creating a new routine - only name', (WidgetTester tester) async {
+    final editRoutine = Routine(
+      id: 2,
+      created: newRoutine.created,
+      start: DateTime(2024, 11, 1),
+      end: DateTime(2024, 12, 1),
+      name: 'New cool routine',
+    );
+
+    when(mockRoutinesRepository.addRoutineServer(any)).thenAnswer((_) => Future.value(editRoutine));
+
+    await tester.pumpWidget(renderWidget(newRoutine));
+    await tester.pumpAndSettle();
+
+    expect(find.text(''), findsNWidgets(2), reason: 'New routine has no name or description');
+    await tester.enterText(find.byKey(const Key('field-name')), editRoutine.name);
+    await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
+
+    verifyNever(mockRoutinesRepository.editLocalDrift(any));
+    verify(mockRoutinesRepository.addRoutineServer(any));
+
+    // Detail page
+    await tester.pumpAndSettle();
+    expect(find.text('New cool routine'), findsWidgets, reason: 'routine detail page');
+  });
+
+  testWidgets('Test creating a new routine - name and description', (WidgetTester tester) async {
+    final editRoutine = Routine(
+      id: 2,
+      created: newRoutine.created,
+      start: DateTime(2024, 11, 1),
+      end: DateTime(2024, 12, 1),
+      name: 'My routine',
+      description: 'Get yuuuge',
+    );
+    when(mockRoutinesRepository.addRoutineServer(any)).thenAnswer((_) => Future.value(editRoutine));
+
+    await tester.pumpWidget(renderWidget(newRoutine));
+    await tester.pumpAndSettle();
+
+    expect(find.text(''), findsNWidgets(2), reason: 'New routine has no name or description');
+    await tester.enterText(find.byKey(const Key('field-name')), editRoutine.name);
+    await tester.enterText(find.byKey(const Key('field-description')), editRoutine.description);
+    await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
+
+    verifyNever(mockRoutinesRepository.editLocalDrift(any));
+    verify(mockRoutinesRepository.addRoutineServer(any));
+
+    // Detail page
+    await tester.pumpAndSettle();
+    expect(find.text('My routine'), findsWidgets, reason: 'routine detail page');
+  });
+
+  testWidgets('Test creating a new routine - server error', (WidgetTester tester) async {
+    // Arrange
+    when(mockRoutinesRepository.addRoutineServer(any)).thenThrow(
+      WgerHttpException.fromMap({
+        'name': ['The name is not valid'],
+      }),
+    );
+
+    // Act
+    await tester.pumpWidget(renderWidget(newRoutine));
+    await tester.enterText(find.byKey(const Key('field-name')), 'test 1234');
+    await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
+    await tester.pump();
+
+    // Assert
+    expect(find.text('The name is not valid'), findsOneWidget, reason: 'Error message is shown');
+  });
+
+  testWidgets('Submit stays enabled offline when editing a routine', (WidgetTester tester) async {
+    // Editing a routine syncs through PowerSync and works offline.
+    await tester.pumpWidget(renderWidget(existingRoutine, isOnline: false));
+    await tester.pumpAndSettle();
+
+    final button = tester.widget<FormSubmitButton>(
+      find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)),
+    );
+    expect(button.enabled, isTrue);
+
+    await tester.enterText(find.byKey(const Key('field-name')), 'New name');
+    await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
+    await tester.pump();
+    verify(mockRoutinesRepository.editLocalDrift(any));
+  });
+
+  testWidgets('Submit is disabled offline when creating a routine', (WidgetTester tester) async {
+    // Creating a routine needs the server to assign the integer PK.
+    await tester.pumpWidget(renderWidget(newRoutine, isOnline: false));
+    await tester.pumpAndSettle();
+
+    final button = tester.widget<FormSubmitButton>(
+      find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)),
+    );
+    expect(button.enabled, isFalse);
+
+    // And tapping it must not trigger the create request.
+    await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)), warnIfMissed: false);
+    await tester.pump();
+    verifyNever(mockRoutinesRepository.addRoutineServer(any));
+  });
+}

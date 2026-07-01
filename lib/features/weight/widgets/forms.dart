@@ -1,0 +1,202 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (c) 2020 - 2026 wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
+import 'package:wger/core/consts.dart';
+import 'package:wger/core/number_input.dart';
+import 'package:wger/core/widgets/datetime_input.dart';
+import 'package:wger/core/widgets/form_submit_button.dart';
+import 'package:wger/features/weight/models/weight_entry.dart';
+import 'package:wger/features/weight/providers/body_weight_notifier.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
+
+class WeightForm extends riverpod.ConsumerWidget {
+  final _form = GlobalKey<FormState>();
+  final weightController = TextEditingController(text: '');
+
+  final WeightEntry _weightEntry;
+
+  WeightForm([WeightEntry? weightEntry])
+    : _weightEntry = weightEntry ?? WeightEntry(date: DateTime.now());
+
+  @override
+  Widget build(BuildContext context, riverpod.WidgetRef ref) {
+    final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
+
+    if (weightController.text.isEmpty && _weightEntry.weight != 0) {
+      weightController.text = numberFormat.format(_weightEntry.weight);
+    }
+
+    return Form(
+      key: _form,
+      child: Column(
+        children: [
+          DateInputWidget(
+            key: const Key('dateInput'),
+            value: _weightEntry.date,
+            labelText: AppLocalizations.of(context).date,
+            firstDate: DateTime(DateTime.now().year - 10),
+            lastDate: DateTime.now(),
+            onChanged: (date) {
+              _weightEntry.date = _weightEntry.date.copyWith(
+                year: date.year,
+                month: date.month,
+                day: date.day,
+              );
+            },
+          ),
+          TimeInputWidget(
+            key: const Key('timeInput'),
+            value: TimeOfDay.fromDateTime(_weightEntry.date),
+            labelText: AppLocalizations.of(context).time,
+            onChanged: (time) {
+              _weightEntry.date = _weightEntry.date.copyWith(
+                hour: time.hour,
+                minute: time.minute,
+                second: 0,
+              );
+            },
+          ),
+
+          // Weight
+          TextFormField(
+            key: const Key('weightInput'),
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context).weight,
+              prefix: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    key: const Key('quickMinus'),
+                    icon: const FaIcon(FontAwesomeIcons.circleMinus),
+                    onPressed: () {
+                      final parsed = numberFormat.tryParse(weightController.text);
+                      if (parsed == null) {
+                        return;
+                      }
+                      final newValue = parsed - WeightEntry.stepperBig;
+                      if (newValue < WeightEntry.minValue) {
+                        return;
+                      }
+                      weightController.text = numberFormat.format(newValue);
+                    },
+                  ),
+                  IconButton(
+                    key: const Key('quickMinusSmall'),
+                    icon: const FaIcon(FontAwesomeIcons.minus),
+                    onPressed: () {
+                      final parsed = numberFormat.tryParse(weightController.text);
+                      if (parsed == null) {
+                        return;
+                      }
+                      final newValue = parsed - WeightEntry.stepperSmall;
+                      if (newValue < WeightEntry.minValue) {
+                        return;
+                      }
+                      weightController.text = numberFormat.format(newValue);
+                    },
+                  ),
+                ],
+              ),
+              suffix: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    key: const Key('quickPlusSmall'),
+                    icon: const FaIcon(FontAwesomeIcons.plus),
+                    onPressed: () {
+                      final parsed = numberFormat.tryParse(weightController.text);
+                      if (parsed == null) {
+                        return;
+                      }
+                      final newValue = parsed + WeightEntry.stepperSmall;
+                      if (newValue > WeightEntry.maxValue) {
+                        return;
+                      }
+                      weightController.text = numberFormat.format(newValue);
+                    },
+                  ),
+                  IconButton(
+                    key: const Key('quickPlus'),
+                    icon: const FaIcon(FontAwesomeIcons.circlePlus),
+                    onPressed: () {
+                      final parsed = numberFormat.tryParse(weightController.text);
+                      if (parsed == null) {
+                        return;
+                      }
+                      final newValue = parsed + WeightEntry.stepperBig;
+                      if (newValue > WeightEntry.maxValue) {
+                        return;
+                      }
+                      weightController.text = numberFormat.format(newValue);
+                    },
+                  ),
+                ],
+              ),
+            ),
+            controller: weightController,
+            keyboardType: textInputTypeDecimal,
+            inputFormatters: [LocalizedDecimalInputFormatter(numberFormat.symbols.DECIMAL_SEP)],
+            onSaved: (newValue) {
+              _weightEntry.weight = numberFormat.parse(newValue!);
+            },
+            validator: (value) {
+              final i18n = AppLocalizations.of(context);
+              if (value!.isEmpty) {
+                return i18n.enterValue;
+              }
+              final parsed = numberFormat.tryParse(value);
+              if (parsed == null) {
+                return i18n.enterValidNumber;
+              }
+              if (parsed < WeightEntry.minValue || parsed > WeightEntry.maxValue) {
+                return i18n.formMinMaxValues(WeightEntry.minValue, WeightEntry.maxValue);
+              }
+              return null;
+            },
+          ),
+          FormSubmitButton(
+            key: const Key(SUBMIT_BUTTON_KEY_NAME),
+            label: AppLocalizations.of(context).save,
+            onPressed: () async {
+              // Validate and save the current values to the weightEntry
+              final isValid = _form.currentState!.validate();
+              if (!isValid) {
+                return;
+              }
+              _form.currentState!.save();
+
+              // Save the entry on the server
+              final notifier = ref.read(weightEntryProvider.notifier);
+              _weightEntry.id == null
+                  ? await notifier.addEntry(_weightEntry)
+                  : await notifier.updateEntry(_weightEntry);
+
+              if (context.mounted) {
+                Navigator.of(context).pop();
+              }
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
