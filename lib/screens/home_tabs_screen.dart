@@ -20,11 +20,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:wger/features/gallery/screens/gallery_screen.dart';
+import 'package:wger/features/nutrition/screens/nutritional_plans_screen.dart';
 import 'package:wger/features/weight/screens/weight_screen.dart';
 import 'package:wger/helpers/material.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/screens/dashboard.dart';
-import 'package:wger/screens/nutritional_plans_screen.dart';
 import 'package:wger/screens/routine_list_screen.dart';
 
 class HomeTabsScreen extends ConsumerStatefulWidget {

@@ -24,9 +24,9 @@ import 'package:mockito/mockito.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
 import 'package:wger/features/measurements/screens/measurement_entries_screen.dart';
+import 'package:wger/features/nutrition/providers/ingredient_repository.dart';
+import 'package:wger/features/nutrition/providers/nutrition_repository.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/ingredient_repository.dart';
-import 'package:wger/providers/nutrition_repository.dart';
 
 import '../../../../test_data/measurements.dart';
 import 'measurement_entries_screen_test.mocks.dart';

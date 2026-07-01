@@ -1,9 +1,9 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences/util/legacy_to_async_migration_util.dart';
 import 'package:wger/features/exercises/models/exercise_filters.dart';
+import 'package:wger/features/nutrition/models/ingredient.dart';
+import 'package:wger/features/nutrition/models/ingredient_filters.dart';
 import 'package:wger/models/core/search_options.dart';
-import 'package:wger/models/nutrition/ingredient.dart';
-import 'package:wger/models/nutrition/ingredient_filters.dart';
 
 /// A helper class that manages preferences using SharedPreferencesAsync
 /// and handles migration from the legacy SharedPreferences to

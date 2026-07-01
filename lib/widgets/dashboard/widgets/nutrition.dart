@@ -20,16 +20,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg_icons/flutter_svg_icons.dart';
 import 'package:intl/intl.dart';
+import 'package:wger/features/nutrition/providers/nutrition_notifier.dart';
+import 'package:wger/features/nutrition/screens/log_meals_screen.dart';
+import 'package:wger/features/nutrition/screens/nutritional_plan_screen.dart';
+import 'package:wger/features/nutrition/widgets/charts.dart';
+import 'package:wger/features/nutrition/widgets/forms.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/screens/form_screen.dart';
-import 'package:wger/screens/log_meals_screen.dart';
-import 'package:wger/screens/nutritional_plan_screen.dart';
 import 'package:wger/widgets/core/async_value_widget.dart';
 import 'package:wger/widgets/core/error.dart';
 import 'package:wger/widgets/dashboard/widgets/nothing_found.dart';
-import 'package:wger/widgets/nutrition/charts.dart';
-import 'package:wger/widgets/nutrition/forms.dart';
 
 class DashboardNutritionWidget extends ConsumerWidget {
   const DashboardNutritionWidget();

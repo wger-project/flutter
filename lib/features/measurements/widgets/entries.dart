@@ -23,8 +23,8 @@ import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/measurements/widgets/charts.dart';
 import 'package:wger/features/measurements/widgets/helpers.dart';
+import 'package:wger/features/nutrition/providers/nutrition_notifier.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/screens/form_screen.dart';
 
 import 'forms.dart';

@@ -21,6 +21,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:wger/features/nutrition/widgets/forms.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/providers/network_provider.dart';
@@ -28,7 +29,6 @@ import 'package:wger/providers/routines_repository.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/screens/routine_list_screen.dart';
 import 'package:wger/screens/routine_screen.dart';
-import 'package:wger/widgets/nutrition/forms.dart';
 import 'package:wger/widgets/routines/forms/routine.dart';
 
 import 'routines_screen_test.mocks.dart';
