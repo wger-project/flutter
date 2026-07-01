@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wger/features/nutrition/models/ingredient.dart';
+import 'package:wger/features/nutrition/models/ingredient_image.dart';
 import 'package:wger/features/nutrition/widgets/ingredient_dialogs.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
@@ -78,6 +79,35 @@ Future<void> pumpIngredientScanDialog(
         ),
       ),
     ),
+  );
+}
+
+Ingredient makeDetailIngredient({
+  String name = 'Apple',
+  String? sourceName = 'Open Food Facts',
+  IngredientImage? image,
+}) {
+  return Ingredient(
+    id: 1,
+    remoteId: '1',
+    sourceName: sourceName,
+    sourceUrl: 'http://test.com',
+    code: null,
+    name: name,
+    created: DateTime.utc(2026),
+    energy: 100,
+    carbohydrates: 10,
+    protein: 5,
+    fat: 2,
+    image: image,
+  );
+}
+
+Widget detailHost(Widget child) {
+  return MaterialApp(
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    supportedLocales: AppLocalizations.supportedLocales,
+    home: Scaffold(body: SingleChildScrollView(child: child)),
   );
 }
 
@@ -189,5 +219,33 @@ void main() {
         expect(find.byType(AlertDialog), findsNothing);
       },
     );
+  });
+
+  group('IngredientDetails widget tests', () {
+    testWidgets('renders the macronutrients header, dietary section and source', (tester) async {
+      await tester.pumpWidget(detailHost(IngredientDetails(makeDetailIngredient())));
+
+      // "Macronutrients" appears as the section header and as a column
+      // header inside MacronutrientsTable, both occurrences are fine.
+      expect(find.text('Macronutrients'), findsAtLeast(1));
+      // DietaryInfoSection is rendered (its widget identity is stable).
+      expect(find.byType(DietaryInfoSection), findsOneWidget);
+      // Source line picks up the ingredient's sourceName.
+      expect(find.textContaining('Open Food Facts'), findsOneWidget);
+    });
+
+    testWidgets('omits the image header when the ingredient has no image', (tester) async {
+      await tester.pumpWidget(detailHost(IngredientDetails(makeDetailIngredient())));
+
+      expect(find.byType(IngredientImageHeader), findsNothing);
+    });
+
+    testWidgets('falls back to "unknown" when sourceName is null', (tester) async {
+      await tester.pumpWidget(
+        detailHost(IngredientDetails(makeDetailIngredient(sourceName: null))),
+      );
+
+      expect(find.textContaining('unknown'), findsOneWidget);
+    });
   });
 }
