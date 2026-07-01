@@ -21,6 +21,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:wger/features/measurements/widgets/charts.dart';
 import 'package:wger/features/weight/providers/body_weight_repository.dart';
 import 'package:wger/features/weight/screens/weight_screen.dart';
 import 'package:wger/features/weight/widgets/forms.dart';
@@ -29,7 +30,6 @@ import 'package:wger/providers/ingredient_repository.dart';
 import 'package:wger/providers/nutrition_repository.dart';
 import 'package:wger/providers/user_profile_repository.dart';
 import 'package:wger/screens/form_screen.dart';
-import 'package:wger/widgets/measurements/charts.dart';
 
 import '../../../../test_data/body_weight.dart';
 import '../../../../test_data/profile.dart';

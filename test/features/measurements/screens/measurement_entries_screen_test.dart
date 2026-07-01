@@ -21,14 +21,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:wger/features/measurements/models/measurement_category.dart';
+import 'package:wger/features/measurements/providers/measurement_repository.dart';
+import 'package:wger/features/measurements/screens/measurement_entries_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/measurements/measurement_category.dart';
 import 'package:wger/providers/ingredient_repository.dart';
-import 'package:wger/providers/measurement_repository.dart';
 import 'package:wger/providers/nutrition_repository.dart';
-import 'package:wger/screens/measurement_entries_screen.dart';
 
-import '../../test_data/measurements.dart';
+import '../../../../test_data/measurements.dart';
 import 'measurement_entries_screen_test.mocks.dart';
 
 @GenerateMocks([MeasurementRepository, NutritionRepository, IngredientRepository])

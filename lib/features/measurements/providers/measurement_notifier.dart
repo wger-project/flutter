@@ -23,8 +23,8 @@
 import 'package:collection/collection.dart';
 import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:wger/models/measurements/measurement_category.dart';
-import 'package:wger/models/measurements/measurement_entry.dart';
+import 'package:wger/features/measurements/models/measurement_category.dart';
+import 'package:wger/features/measurements/models/measurement_entry.dart';
 
 import 'measurement_repository.dart';
 

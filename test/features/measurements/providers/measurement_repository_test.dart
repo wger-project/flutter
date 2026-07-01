@@ -20,12 +20,12 @@ import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wger/database/powersync/database.dart';
-import 'package:wger/models/measurements/measurement_category.dart';
-import 'package:wger/models/measurements/measurement_entry.dart';
-import 'package:wger/providers/measurement_repository.dart';
+import 'package:wger/features/measurements/models/measurement_category.dart';
+import 'package:wger/features/measurements/models/measurement_entry.dart';
+import 'package:wger/features/measurements/providers/measurement_repository.dart';
 
-import '../../test_data/measurements.dart';
-import '../helpers/in_memory_drift.dart';
+import '../../../../test_data/measurements.dart';
+import '../../../helpers/in_memory_drift.dart';
 
 void main() {
   late DriftPowersyncDatabase db;

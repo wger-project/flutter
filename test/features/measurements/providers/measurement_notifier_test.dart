@@ -20,11 +20,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:wger/providers/measurement_notifier.dart';
-import 'package:wger/providers/measurement_repository.dart';
+import 'package:wger/features/measurements/providers/measurement_notifier.dart';
+import 'package:wger/features/measurements/providers/measurement_repository.dart';
 
-import '../../test_data/measurements.dart';
-import 'measurement_provider_test.mocks.dart';
+import '../../../../test_data/measurements.dart';
+import 'measurement_notifier_test.mocks.dart';
 
 @GenerateMocks([MeasurementRepository])
 void main() {

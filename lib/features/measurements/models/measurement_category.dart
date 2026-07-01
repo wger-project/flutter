@@ -20,7 +20,7 @@ import 'package:drift/drift.dart' hide JsonKey;
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:wger/core/exceptions/no_such_entry_exception.dart';
 import 'package:wger/database/powersync/database.dart';
-import 'package:wger/models/measurements/measurement_entry.dart';
+import 'package:wger/features/measurements/models/measurement_entry.dart';
 
 part 'measurement_category.freezed.dart';
 

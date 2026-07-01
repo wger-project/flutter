@@ -16,9 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:wger/features/measurements/widgets/charts.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/date.dart';
-import 'package:wger/widgets/measurements/charts.dart';
 
 extension MeasurementChartEntryListExtensions on List<MeasurementChartEntry> {
   List<MeasurementChartEntry> whereDate(DateTime start, DateTime? end) {

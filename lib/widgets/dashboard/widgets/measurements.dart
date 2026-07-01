@@ -20,14 +20,14 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:wger/features/measurements/models/measurement_category.dart';
+import 'package:wger/features/measurements/providers/measurement_notifier.dart';
+import 'package:wger/features/measurements/screens/measurement_categories_screen.dart';
+import 'package:wger/features/measurements/widgets/categories_card.dart';
+import 'package:wger/features/measurements/widgets/forms.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/measurements/measurement_category.dart';
-import 'package:wger/providers/measurement_notifier.dart';
-import 'package:wger/screens/measurement_categories_screen.dart';
 import 'package:wger/widgets/core/async_value_widget.dart';
 import 'package:wger/widgets/dashboard/widgets/nothing_found.dart';
-import 'package:wger/widgets/measurements/categories_card.dart';
-import 'package:wger/widgets/measurements/forms.dart';
 
 class DashboardMeasurementWidget extends ConsumerStatefulWidget {
   const DashboardMeasurementWidget();

@@ -18,10 +18,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wger/features/measurements/models/measurement_category.dart';
+import 'package:wger/features/measurements/models/measurement_entry.dart';
+import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/measurements/measurement_category.dart';
-import 'package:wger/models/measurements/measurement_entry.dart';
-import 'package:wger/providers/measurement_notifier.dart';
 import 'package:wger/widgets/core/datetime_input.dart';
 import 'package:wger/widgets/core/decimal_input.dart';
 import 'package:wger/widgets/core/error.dart';

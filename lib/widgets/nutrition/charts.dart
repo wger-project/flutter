@@ -20,11 +20,11 @@ import 'dart:math';
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:wger/features/measurements/widgets/charts.dart';
 import 'package:wger/helpers/colors.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
 import 'package:wger/models/nutrition/nutritional_values.dart';
-import 'package:wger/widgets/measurements/charts.dart';
 
 // * fl_chart doesn't support horizontal bar charts yet.
 //   see https://github.com/imaNNeo/fl_chart/issues/113

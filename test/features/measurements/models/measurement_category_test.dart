@@ -18,9 +18,9 @@
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wger/core/exceptions/no_such_entry_exception.dart';
-import 'package:wger/models/measurements/measurement_category.dart';
+import 'package:wger/features/measurements/models/measurement_category.dart';
 
-import '../../test_data/measurements.dart';
+import '../../../../test_data/measurements.dart';
 
 void main() {
   late MeasurementCategory category;

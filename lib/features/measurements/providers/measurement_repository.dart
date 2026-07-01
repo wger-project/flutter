@@ -24,10 +24,9 @@ import 'package:collection/collection.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
-import 'package:wger/models/measurements/measurement_category.dart';
-import 'package:wger/models/measurements/measurement_entry.dart';
-
-import '../database/powersync/database.dart';
+import 'package:wger/database/powersync/database.dart';
+import 'package:wger/features/measurements/models/measurement_category.dart';
+import 'package:wger/features/measurements/models/measurement_entry.dart';
 
 final measurementRepositoryProvider = Provider<MeasurementRepository>((ref) {
   final db = ref.read(driftPowerSyncDatabase);

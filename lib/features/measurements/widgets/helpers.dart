@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:wger/helpers/measurements.dart';
+import 'package:wger/features/measurements/measurements.dart';
+import 'package:wger/features/measurements/widgets/charts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
-import 'package:wger/widgets/measurements/charts.dart';
 
 List<Widget> getOverviewWidgets(
   String title,

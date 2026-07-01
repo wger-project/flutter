@@ -17,10 +17,10 @@
  */
 
 import 'package:flutter/widgets.dart';
+import 'package:wger/features/measurements/widgets/charts.dart';
 import 'package:wger/helpers/colors.dart';
 import 'package:wger/helpers/misc.dart';
 import 'package:wger/models/workouts/log.dart';
-import 'package:wger/widgets/measurements/charts.dart';
 import 'package:wger/widgets/routines/charts.dart';
 
 class ExerciseLogChart extends StatelessWidget {
