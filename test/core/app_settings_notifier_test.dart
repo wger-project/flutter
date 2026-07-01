@@ -248,4 +248,78 @@ void main() {
       expect(settings.userLocale, null);
     });
   });
+
+  group('theme mode', () {
+    test('defaults to system when no override is stored', () async {
+      final settings = await container.read(appSettingsProvider.future);
+      expect(settings.themeMode, ThemeMode.system);
+    });
+
+    test('loads light theme from prefs', () async {
+      SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+      final prefs = SharedPreferencesAsync();
+      await prefs.setBool(PREFS_USER_DARK_THEME, false);
+
+      container.dispose();
+      container = ProviderContainer(
+        overrides: [appSettingsPrefsProvider.overrideWithValue(prefs)],
+      );
+
+      final settings = await container.read(appSettingsProvider.future);
+      expect(settings.themeMode, ThemeMode.light);
+    });
+
+    test('setThemeMode persists to prefs', () async {
+      SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+      final prefs = SharedPreferencesAsync();
+
+      container.dispose();
+      container = ProviderContainer(
+        overrides: [appSettingsPrefsProvider.overrideWithValue(prefs)],
+      );
+
+      await container.read(appSettingsProvider.future);
+      await container.read(appSettingsProvider.notifier).setThemeMode(ThemeMode.dark);
+
+      expect(container.read(appSettingsProvider).requireValue.themeMode, ThemeMode.dark);
+      expect(await prefs.getBool(PREFS_USER_DARK_THEME), true);
+    });
+  });
+
+  group('keep data on logout', () {
+    test('defaults to true', () async {
+      final settings = await container.read(appSettingsProvider.future);
+      expect(settings.keepDataOnLogout, true);
+    });
+
+    test('loads false from prefs', () async {
+      SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+      final prefs = SharedPreferencesAsync();
+      await prefs.setBool(PREFS_KEEP_DATA_ON_LOGOUT, false);
+
+      container.dispose();
+      container = ProviderContainer(
+        overrides: [appSettingsPrefsProvider.overrideWithValue(prefs)],
+      );
+
+      final settings = await container.read(appSettingsProvider.future);
+      expect(settings.keepDataOnLogout, false);
+    });
+
+    test('setKeepDataOnLogout persists the toggle', () async {
+      SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+      final prefs = SharedPreferencesAsync();
+
+      container.dispose();
+      container = ProviderContainer(
+        overrides: [appSettingsPrefsProvider.overrideWithValue(prefs)],
+      );
+
+      await container.read(appSettingsProvider.future);
+      await container.read(appSettingsProvider.notifier).setKeepDataOnLogout(true);
+
+      expect(container.read(appSettingsProvider).requireValue.keepDataOnLogout, true);
+      expect(await prefs.getBool(PREFS_KEEP_DATA_ON_LOGOUT), true);
+    });
+  });
 }

@@ -63,55 +63,7 @@ void main() {
     );
   }
 
-  group('Theme settings (AppSettingsNotifier)', () {
-    test('default theme is system', () async {
-      when(
-        mockSharedPreferences.getBool(PREFS_USER_DARK_THEME),
-      ).thenAnswer((_) async => null);
-      final container = riverpod.ProviderContainer(
-        overrides: [
-          appSettingsPrefsProvider.overrideWithValue(mockSharedPreferences),
-        ],
-      );
-      addTearDown(container.dispose);
-
-      final settings = await container.read(appSettingsProvider.future);
-      expect(settings.themeMode, ThemeMode.system);
-    });
-
-    test('loads light theme from prefs', () async {
-      when(
-        mockSharedPreferences.getBool(PREFS_USER_DARK_THEME),
-      ).thenAnswer((_) async => false);
-      final container = riverpod.ProviderContainer(
-        overrides: [
-          appSettingsPrefsProvider.overrideWithValue(mockSharedPreferences),
-        ],
-      );
-      addTearDown(container.dispose);
-
-      final settings = await container.read(appSettingsProvider.future);
-      expect(settings.themeMode, ThemeMode.light);
-    });
-
-    test('saves theme to prefs', () async {
-      when(
-        mockSharedPreferences.getBool(PREFS_USER_DARK_THEME),
-      ).thenAnswer((_) async => null);
-      final container = riverpod.ProviderContainer(
-        overrides: [
-          appSettingsPrefsProvider.overrideWithValue(mockSharedPreferences),
-        ],
-      );
-      addTearDown(container.dispose);
-
-      await container.read(appSettingsProvider.future);
-      await container.read(appSettingsProvider.notifier).setThemeMode(ThemeMode.dark);
-
-      expect(container.read(appSettingsProvider).requireValue.themeMode, ThemeMode.dark);
-      verify(mockSharedPreferences.setBool(PREFS_USER_DARK_THEME, true)).called(1);
-    });
-
+  group('Theme settings', () {
     testWidgets('Test changing the theme mode in preferences', (WidgetTester tester) async {
       await tester.pumpWidget(createSettingsScreen());
       await tester.pumpAndSettle();
@@ -121,49 +73,6 @@ void main() {
       await tester.pumpAndSettle();
 
       verify(mockSharedPreferences.setBool(PREFS_USER_DARK_THEME, false)).called(1);
-    });
-  });
-
-  group('Keep-data-on-logout (AppSettingsNotifier)', () {
-    riverpod.ProviderContainer makeContainer() {
-      final container = riverpod.ProviderContainer(
-        overrides: [
-          appSettingsPrefsProvider.overrideWithValue(mockSharedPreferences),
-        ],
-      );
-      addTearDown(container.dispose);
-      return container;
-    }
-
-    test('defaults to true', () async {
-      when(
-        mockSharedPreferences.getBool(PREFS_KEEP_DATA_ON_LOGOUT),
-      ).thenAnswer((_) async => null);
-
-      final settings = await makeContainer().read(appSettingsProvider.future);
-      expect(settings.keepDataOnLogout, true);
-    });
-
-    test('loads false from prefs', () async {
-      when(
-        mockSharedPreferences.getBool(PREFS_KEEP_DATA_ON_LOGOUT),
-      ).thenAnswer((_) async => false);
-
-      final settings = await makeContainer().read(appSettingsProvider.future);
-      expect(settings.keepDataOnLogout, false);
-    });
-
-    test('persists the toggle', () async {
-      when(
-        mockSharedPreferences.getBool(PREFS_KEEP_DATA_ON_LOGOUT),
-      ).thenAnswer((_) async => null);
-      final container = makeContainer();
-
-      await container.read(appSettingsProvider.future);
-      await container.read(appSettingsProvider.notifier).setKeepDataOnLogout(true);
-
-      expect(container.read(appSettingsProvider).requireValue.keepDataOnLogout, true);
-      verify(mockSharedPreferences.setBool(PREFS_KEEP_DATA_ON_LOGOUT, true)).called(1);
     });
   });
 
