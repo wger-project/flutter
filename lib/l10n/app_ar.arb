@@ -1113,5 +1113,8 @@
             }
         }
     },
-    "searchLanguageAll": "كافة اللغات"
+    "searchLanguageAll": "كافة اللغات",
+    "endBeforeStart": "قيمة النهاية لا يمكن ان تكون قبل البداية",
+    "minLengthRoutine": "يجب أن يستمر الروتين لمدة لا تقل عن {number} أسبوعًا",
+    "maxLengthRoutine": "يمكن أن يستمر الروتين لمدة أقصاها {number} أسبوعًا"
 }

@@ -18,6 +18,16 @@
 
 import 'package:wger/l10n/generated/app_localizations.dart';
 
+/// Validates that [end], when set, is not before [start]. Returns a localized
+/// error message on failure, or null when the range is valid (including when
+/// [end] is null).
+String? validateDateRange(DateTime start, DateTime? end, AppLocalizations i18n) {
+  if (end != null && end.isBefore(start)) {
+    return i18n.endBeforeStart;
+  }
+  return null;
+}
+
 String? validateUrl(String? value, AppLocalizations i18n, {bool required = true}) {
   // Required?
   if (required && (value == null || value.trim().isEmpty)) {

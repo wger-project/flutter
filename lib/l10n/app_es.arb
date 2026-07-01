@@ -1187,5 +1187,8 @@
     "syncStatusErrorDetails": "Detalles del error",
     "sessionExpired": "Tu sesión ha expirado, inicia sesión de nuevo",
     "weightOrRepsRequired": "Introduce un peso, repeticiones o ambos",
-    "timeStartEndBothOrNeither": "Indica la hora de inicio y de fin, o deja ambas vacías"
+    "timeStartEndBothOrNeither": "Indica la hora de inicio y de fin, o deja ambas vacías",
+    "endBeforeStart": "El final no puede ser anterior al inicio",
+    "minLengthRoutine": "La rutina debe ser de al menos {number} semanas",
+    "maxLengthRoutine": "La rutina debe tener como mucho {number} semanas"
 }

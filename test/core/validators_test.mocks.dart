@@ -1806,6 +1806,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get otherLogs =>
+      (super.noSuchMethod(
+            Invocation.getter(#otherLogs),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#otherLogs),
+            ),
+          )
+          as String);
+
+  @override
   String get goalEnergy =>
       (super.noSuchMethod(
             Invocation.getter(#goalEnergy),
@@ -2034,6 +2045,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.getter(#endDate),
+            ),
+          )
+          as String);
+
+  @override
+  String get endBeforeStart =>
+      (super.noSuchMethod(
+            Invocation.getter(#endBeforeStart),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#endBeforeStart),
             ),
           )
           as String);
@@ -2415,6 +2437,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.getter(#sodium),
+            ),
+          )
+          as String);
+
+  @override
+  String get carbohydratesSugar =>
+      (super.noSuchMethod(
+            Invocation.getter(#carbohydratesSugar),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#carbohydratesSugar),
             ),
           )
           as String);
@@ -4570,6 +4603,28 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String planDateRange(String? startDate, String? endDate) =>
+      (super.noSuchMethod(
+            Invocation.method(#planDateRange, [startDate, endDate]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#planDateRange, [startDate, endDate]),
+            ),
+          )
+          as String);
+
+  @override
+  String planStartDate(String? startDate) =>
+      (super.noSuchMethod(
+            Invocation.method(#planStartDate, [startDate]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#planStartDate, [startDate]),
+            ),
+          )
+          as String);
+
+  @override
   String chartAllTimeTitle(String? name) =>
       (super.noSuchMethod(
             Invocation.method(#chartAllTimeTitle, [name]),
@@ -4598,6 +4653,28 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.method(#chartDuringPlanTitle, [chartName, planName]),
+            ),
+          )
+          as String);
+
+  @override
+  String minLengthRoutine(int? number) =>
+      (super.noSuchMethod(
+            Invocation.method(#minLengthRoutine, [number]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#minLengthRoutine, [number]),
+            ),
+          )
+          as String);
+
+  @override
+  String maxLengthRoutine(int? number) =>
+      (super.noSuchMethod(
+            Invocation.method(#maxLengthRoutine, [number]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#maxLengthRoutine, [number]),
             ),
           )
           as String);

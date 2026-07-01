@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/network/network_provider.dart';
+import 'package:wger/core/validators.dart';
 import 'package:wger/core/widgets/datetime_input.dart';
 import 'package:wger/core/widgets/form_submit_button.dart';
 import 'package:wger/features/routines/models/routine.dart';
@@ -120,14 +121,15 @@ class _RoutineFormState extends ConsumerState<RoutineForm> {
           });
         },
         validator: (value) {
-          if (endDate.isBefore(startDate)) {
-            return 'End date must be after start date';
+          final rangeError = validateDateRange(startDate, endDate, i18n);
+          if (rangeError != null) {
+            return rangeError;
           }
           if (endDate.difference(startDate).inDays < Routine.MIN_DURATION * 7) {
-            return 'Duration of the routine must be more than ${Routine.MIN_DURATION} weeks';
+            return i18n.minLengthRoutine(Routine.MIN_DURATION);
           }
           if (endDate.difference(startDate).inDays > Routine.MAX_DURATION * 7) {
-            return 'Duration of the routine must be less than ${Routine.MAX_DURATION} weeks';
+            return i18n.maxLengthRoutine(Routine.MAX_DURATION);
           }
           return null;
         },

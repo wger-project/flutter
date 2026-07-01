@@ -21,6 +21,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/number_input.dart';
+import 'package:wger/core/validators.dart';
 import 'package:wger/core/widgets/datetime_input.dart';
 import 'package:wger/core/widgets/decimal_input.dart';
 import 'package:wger/core/widgets/form_submit_button.dart';
@@ -536,13 +537,11 @@ class _PlanFormState extends ConsumerState<PlanForm> {
                 widget._plan.startDate = pickedDate;
               });
             },
-            validator: (value) {
-              if (widget._plan.endDate != null &&
-                  widget._plan.endDate!.isBefore(widget._plan.startDate)) {
-                return 'End date must be after start date';
-              }
-              return null;
-            },
+            validator: (value) => validateDateRange(
+              widget._plan.startDate,
+              widget._plan.endDate,
+              AppLocalizations.of(context),
+            ),
           ),
           // End Date
           Row(

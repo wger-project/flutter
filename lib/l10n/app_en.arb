@@ -552,6 +552,24 @@
   "@endDate": {
     "description": "The End date of a nutritional plan or routine"
   },
+  "endBeforeStart": "The end value cannot be before the start",
+  "@endBeforeStart": {
+    "description": "Validation error shown when a plan or routine end date is before its start date"
+  },
+  "minLengthRoutine": "The routine needs to be at least {number} weeks long",
+  "@minLengthRoutine": {
+    "description": "Validation error when a routine is shorter than the minimum allowed duration",
+    "placeholders": {
+      "number": { "type": "int" }
+    }
+  },
+  "maxLengthRoutine": "The routine can be at most {number} weeks long",
+  "@maxLengthRoutine": {
+    "description": "Validation error when a routine is longer than the maximum allowed duration",
+    "placeholders": {
+      "number": { "type": "int" }
+    }
+  },
   "openEnded": "Open ended",
   "@openEnded": {
     "description": "When a nutrition plan has no pre-defined end date"
