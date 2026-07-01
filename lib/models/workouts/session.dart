@@ -20,8 +20,8 @@ import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:wger/database/powersync/database.dart';
+import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/log.dart';
 
 part 'session.freezed.dart';

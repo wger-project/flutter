@@ -19,9 +19,9 @@
 import 'package:drift/drift.dart' as drift;
 import 'package:json_annotation/json_annotation.dart';
 import 'package:wger/database/powersync/database.dart';
+import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/helpers/date.dart';
 import 'package:wger/helpers/json.dart';
-import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/day_data.dart';
 import 'package:wger/models/workouts/log.dart';

@@ -17,10 +17,10 @@
  */
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/base_config.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/weight_unit.dart';

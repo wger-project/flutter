@@ -19,10 +19,10 @@
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
 import 'package:wger/database/powersync/database.dart';
+import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/i18n.dart';
 import 'package:wger/helpers/misc.dart';
-import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/set_config_data.dart';
 import 'package:wger/models/workouts/weight_unit.dart';

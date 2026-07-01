@@ -6,15 +6,15 @@
 import 'dart:async' as _i4;
 
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:wger/features/exercises/models/category.dart' as _i7;
+import 'package:wger/features/exercises/models/equipment.dart' as _i9;
+import 'package:wger/features/exercises/models/exercise_filters.dart' as _i6;
+import 'package:wger/features/exercises/models/muscle.dart' as _i10;
+import 'package:wger/features/exercises/providers/exercise_repository.dart' as _i3;
+import 'package:wger/features/exercises/providers/exercises_notifier.dart' as _i8;
 import 'package:wger/models/core/language.dart' as _i11;
 import 'package:wger/models/core/search_options.dart' as _i5;
-import 'package:wger/models/exercises/category.dart' as _i7;
-import 'package:wger/models/exercises/equipment.dart' as _i9;
-import 'package:wger/models/exercises/exercise_filters.dart' as _i6;
-import 'package:wger/models/exercises/muscle.dart' as _i10;
 import 'package:wger/models/workouts/session.dart' as _i2;
-import 'package:wger/providers/exercise_repository.dart' as _i3;
-import 'package:wger/providers/exercises_notifier.dart' as _i8;
 import 'package:wger/providers/workout_session_repository.dart' as _i12;
 
 // ignore_for_file: type=lint

@@ -17,7 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/models/workouts/base_config.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/day_data.dart';

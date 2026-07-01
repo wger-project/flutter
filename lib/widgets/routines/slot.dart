@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/exercises/exercise.dart';
 
 class ProgressionRulesInfoBox extends StatelessWidget {
   final Exercise exercise;

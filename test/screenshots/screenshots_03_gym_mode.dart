@@ -19,10 +19,10 @@
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
+import 'package:wger/features/exercises/providers/exercise_filter_state.dart';
+import 'package:wger/features/exercises/providers/exercise_filters_notifier.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/routine.dart';
-import 'package:wger/providers/exercise_filter_state.dart';
-import 'package:wger/providers/exercise_filters_notifier.dart';
 import 'package:wger/providers/gym_state.dart';
 import 'package:wger/providers/gym_state_notifier.dart';
 import 'package:wger/providers/routines_notifier.dart';

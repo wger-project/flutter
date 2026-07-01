@@ -19,11 +19,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
+import 'package:wger/features/exercises/widgets/autocompleter.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/gym_state.dart';
 import 'package:wger/providers/gym_state_notifier.dart';
-import 'package:wger/widgets/exercises/autocompleter.dart';
 
 class WorkoutMenu extends StatelessWidget {
   final PageController _controller;

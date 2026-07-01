@@ -18,8 +18,8 @@
 
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
+import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/helpers/uuid.dart';
-import 'package:wger/models/exercises/exercise.dart';
 import 'package:wger/models/workouts/day_data.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/set_config_data.dart';

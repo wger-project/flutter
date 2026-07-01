@@ -21,14 +21,14 @@ import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/features/exercises/models/exercise.dart';
+import 'package:wger/features/exercises/providers/exercises_notifier.dart';
 import 'package:wger/models/workouts/day.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/session.dart';
 import 'package:wger/models/workouts/slot.dart';
 import 'package:wger/models/workouts/slot_entry.dart';
-import 'package:wger/providers/exercises_notifier.dart';
 import 'package:wger/providers/routines_notifier.dart';
 import 'package:wger/providers/routines_repository.dart';
 

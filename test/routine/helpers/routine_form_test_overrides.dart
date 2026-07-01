@@ -19,12 +19,12 @@
 import 'package:flutter_riverpod/misc.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:wger/models/exercises/exercise.dart';
+import 'package:wger/features/exercises/models/exercise.dart';
+import 'package:wger/features/exercises/providers/exercise_repository.dart';
+import 'package:wger/features/exercises/providers/exercises_notifier.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/session.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
-import 'package:wger/providers/exercise_repository.dart';
-import 'package:wger/providers/exercises_notifier.dart';
 import 'package:wger/providers/routines_notifier.dart';
 import 'package:wger/providers/workout_session_repository.dart';
 

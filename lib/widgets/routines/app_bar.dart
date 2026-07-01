@@ -18,12 +18,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wger/features/exercises/screens/add_exercise_screen.dart';
+import 'package:wger/features/exercises/screens/exercises_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/routines_notifier.dart';
-import 'package:wger/screens/add_exercise_screen.dart';
-import 'package:wger/screens/exercises_screen.dart';
 import 'package:wger/screens/routine_edit_screen.dart';
 import 'package:wger/screens/routine_logs_screen.dart';
 
