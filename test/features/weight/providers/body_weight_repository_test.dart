@@ -20,11 +20,11 @@ import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wger/database/powersync/database.dart';
-import 'package:wger/models/body_weight/weight_entry.dart';
-import 'package:wger/providers/body_weight_repository.dart';
+import 'package:wger/features/weight/models/weight_entry.dart';
+import 'package:wger/features/weight/providers/body_weight_repository.dart';
 
-import '../../test_data/body_weight.dart';
-import '../helpers/in_memory_drift.dart';
+import '../../../../test_data/body_weight.dart';
+import '../../../helpers/in_memory_drift.dart';
 
 void main() {
   late DriftPowersyncDatabase db;

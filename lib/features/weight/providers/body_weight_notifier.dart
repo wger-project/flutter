@@ -18,7 +18,7 @@
 
 import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:wger/models/body_weight/weight_entry.dart';
+import 'package:wger/features/weight/models/weight_entry.dart';
 
 import 'body_weight_repository.dart';
 

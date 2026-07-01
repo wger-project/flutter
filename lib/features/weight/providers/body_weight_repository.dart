@@ -23,9 +23,8 @@
 import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
-import 'package:wger/models/body_weight/weight_entry.dart';
-
-import '../database/powersync/database.dart';
+import 'package:wger/database/powersync/database.dart';
+import 'package:wger/features/weight/models/weight_entry.dart';
 
 final bodyWeightRepositoryProvider = Provider<BodyWeightRepository>((ref) {
   final db = ref.read(driftPowerSyncDatabase);

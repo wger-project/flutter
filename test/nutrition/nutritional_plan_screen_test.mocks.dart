@@ -10,7 +10,8 @@ import 'dart:typed_data' as _i15;
 import 'package:http/http.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i14;
-import 'package:wger/models/body_weight/weight_entry.dart' as _i17;
+import 'package:wger/features/weight/models/weight_entry.dart' as _i17;
+import 'package:wger/features/weight/providers/body_weight_repository.dart' as _i16;
 import 'package:wger/models/core/search_options.dart' as _i12;
 import 'package:wger/models/nutrition/ingredient.dart' as _i10;
 import 'package:wger/models/nutrition/ingredient_filters.dart' as _i11;
@@ -18,7 +19,6 @@ import 'package:wger/models/nutrition/log.dart' as _i8;
 import 'package:wger/models/nutrition/meal.dart' as _i6;
 import 'package:wger/models/nutrition/meal_item.dart' as _i7;
 import 'package:wger/models/nutrition/nutritional_plan.dart' as _i5;
-import 'package:wger/providers/body_weight_repository.dart' as _i16;
 import 'package:wger/providers/ingredient_repository.dart' as _i9;
 import 'package:wger/providers/nutrition_repository.dart' as _i3;
 

@@ -22,14 +22,14 @@ import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:wger/features/weight/models/weight_entry.dart';
+import 'package:wger/features/weight/providers/body_weight_repository.dart';
+import 'package:wger/features/weight/widgets/forms.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/body_weight/weight_entry.dart';
-import 'package:wger/providers/body_weight_repository.dart';
-import 'package:wger/widgets/weight/forms.dart';
 
-import '../../test_data/body_weight.dart';
-import 'weight_form_test.mocks.dart';
+import '../../../../test_data/body_weight.dart';
+import 'forms_test.mocks.dart';
 
 @GenerateMocks([BodyWeightRepository])
 void main() {

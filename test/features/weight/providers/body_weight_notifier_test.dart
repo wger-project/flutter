@@ -20,11 +20,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:wger/models/body_weight/weight_entry.dart';
-import 'package:wger/providers/body_weight_notifier.dart';
-import 'package:wger/providers/body_weight_repository.dart';
+import 'package:wger/features/weight/models/weight_entry.dart';
+import 'package:wger/features/weight/providers/body_weight_notifier.dart';
+import 'package:wger/features/weight/providers/body_weight_repository.dart';
 
-import 'weight_provider_test.mocks.dart';
+import 'body_weight_notifier_test.mocks.dart';
 
 @GenerateMocks([BodyWeightRepository])
 void main() {

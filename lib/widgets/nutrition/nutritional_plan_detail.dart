@@ -19,10 +19,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:intl/intl.dart';
+import 'package:wger/features/weight/models/weight_entry.dart';
+import 'package:wger/features/weight/providers/body_weight_notifier.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/body_weight/weight_entry.dart';
 import 'package:wger/models/nutrition/nutritional_plan.dart';
-import 'package:wger/providers/body_weight_notifier.dart';
 import 'package:wger/widgets/nutrition/charts.dart';
 import 'package:wger/widgets/nutrition/macro_nutrients_table.dart';
 import 'package:wger/widgets/nutrition/meal.dart';

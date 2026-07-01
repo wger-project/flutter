@@ -20,14 +20,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:wger/features/weight/providers/body_weight_repository.dart';
+import 'package:wger/features/weight/screens/weight_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/body_weight_repository.dart';
 import 'package:wger/providers/ingredient_repository.dart';
 import 'package:wger/providers/nutrition_notifier.dart';
 import 'package:wger/providers/nutrition_repository.dart';
 import 'package:wger/providers/user_profile_repository.dart';
 import 'package:wger/screens/form_screen.dart';
-import 'package:wger/screens/weight_screen.dart';
 import 'package:wger/theme/theme.dart';
 
 import '../../test_data/body_weight.dart';

@@ -26,7 +26,7 @@ import 'package:wger/database/converters/exercise_image_style_converter.dart';
 import 'package:wger/database/converters/time_of_day_converter.dart';
 import 'package:wger/database/converters/utc_datetime_converter.dart';
 import 'package:wger/database/converters/workout_impression_converter.dart';
-import 'package:wger/models/body_weight/weight_entry.dart';
+import 'package:wger/features/weight/models/weight_entry.dart';
 import 'package:wger/models/core/language.dart';
 import 'package:wger/models/core/license.dart';
 import 'package:wger/models/exercises/alias.dart';
