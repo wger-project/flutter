@@ -21,12 +21,12 @@ import 'dart:async';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:wger/database/powersync/database.dart';
-import 'package:wger/models/gallery/image.dart';
+import 'package:wger/features/gallery/models/image.dart';
+import 'package:wger/features/gallery/providers/gallery_repository.dart';
 import 'package:wger/providers/base_provider.dart';
-import 'package:wger/providers/gallery_repository.dart';
 
-import '../../test_data/gallery.dart';
-import '../helpers/in_memory_drift.dart';
+import '../../../../test_data/gallery.dart';
+import '../../../helpers/in_memory_drift.dart';
 import 'gallery_repository_test.mocks.dart';
 
 @GenerateMocks([WgerBaseProvider])

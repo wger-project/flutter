@@ -22,16 +22,16 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:network_image_mock/network_image_mock.dart';
+import 'package:wger/features/gallery/models/image.dart';
+import 'package:wger/features/gallery/providers/gallery_repository.dart';
+import 'package:wger/features/gallery/widgets/forms.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/gallery/image.dart';
-import 'package:wger/providers/gallery_repository.dart';
 import 'package:wger/providers/network_provider.dart';
 import 'package:wger/widgets/core/form_submit_button.dart';
-import 'package:wger/widgets/gallery/forms.dart';
 
-import '../../test_data/gallery.dart';
-import 'gallery_form_test.mocks.dart';
+import '../../../../test_data/gallery.dart';
+import 'forms_test.mocks.dart';
 
 @GenerateMocks([GalleryRepository])
 void main() {

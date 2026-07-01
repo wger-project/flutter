@@ -20,11 +20,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:wger/models/gallery/image.dart';
-import 'package:wger/providers/gallery_notifier.dart';
-import 'package:wger/providers/gallery_repository.dart';
+import 'package:wger/features/gallery/models/image.dart';
+import 'package:wger/features/gallery/providers/gallery_notifier.dart';
+import 'package:wger/features/gallery/providers/gallery_repository.dart';
 
-import 'gallery_provider_test.mocks.dart';
+import 'gallery_notifier_test.mocks.dart';
 
 @GenerateMocks([GalleryRepository])
 void main() {

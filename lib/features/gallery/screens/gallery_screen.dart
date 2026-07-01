@@ -19,14 +19,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
+import 'package:wger/features/gallery/widgets/forms.dart';
+import 'package:wger/features/gallery/widgets/overview.dart';
 import 'package:wger/helpers/platform.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/network_provider.dart';
+import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/core/app_bar.dart';
-import 'package:wger/widgets/gallery/forms.dart';
-import 'package:wger/widgets/gallery/overview.dart';
-
-import 'form_screen.dart';
 
 class GalleryScreen extends ConsumerWidget {
   static const routeName = '/gallery';

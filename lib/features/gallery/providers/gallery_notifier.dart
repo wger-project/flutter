@@ -19,8 +19,8 @@
 import 'package:image_picker/image_picker.dart';
 import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:wger/models/gallery/image.dart';
-import 'package:wger/providers/gallery_repository.dart';
+import 'package:wger/features/gallery/models/image.dart';
+import 'package:wger/features/gallery/providers/gallery_repository.dart';
 
 part 'gallery_notifier.g.dart';
 

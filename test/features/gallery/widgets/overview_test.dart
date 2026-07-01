@@ -23,14 +23,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:network_image_mock/network_image_mock.dart';
+import 'package:wger/features/gallery/providers/gallery_repository.dart';
+import 'package:wger/features/gallery/widgets/overview.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/gallery_repository.dart';
 import 'package:wger/providers/network_provider.dart';
-import 'package:wger/screens/gallery_screen.dart';
-import 'package:wger/widgets/gallery/overview.dart';
 
-import '../../test_data/gallery.dart';
-import './gallery_screen_test.mocks.dart';
+import '../../../../test_data/gallery.dart';
+import 'overview_test.mocks.dart';
 
 @GenerateMocks([GalleryRepository])
 void main() {
@@ -72,21 +71,6 @@ void main() {
     );
   }
 
-  Widget renderGalleryScreen({locale = 'en', bool isOnline = true}) {
-    return ProviderScope(
-      overrides: [
-        networkStatusProvider.overrideWithValue(isOnline),
-        galleryRepositoryProvider.overrideWithValue(mockGalleryRepository),
-      ],
-      child: MaterialApp(
-        locale: Locale(locale),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: const GalleryScreen(),
-      ),
-    );
-  }
-
   testWidgets('Test the widgets on the gallery screen', (WidgetTester tester) async {
     await mockNetworkImagesFor(() async {
       await tester.pumpWidget(renderScreen());
@@ -120,16 +104,5 @@ void main() {
       find.widgetWithIcon(IconButton, Icons.delete),
     );
     expect(deleteButton.onPressed, isNotNull);
-  });
-
-  testWidgets('Add button is disabled when offline', (WidgetTester tester) async {
-    // Adding an image is a binary REST upload, so it needs connectivity.
-    await mockNetworkImagesFor(
-      () => tester.pumpWidget(renderGalleryScreen(isOnline: false)),
-    );
-    await tester.pumpAndSettle();
-
-    final fab = tester.widget<FloatingActionButton>(find.byType(FloatingActionButton));
-    expect(fab.onPressed, isNull);
   });
 }

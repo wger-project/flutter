@@ -25,8 +25,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/database/powersync/database.dart';
+import 'package:wger/features/gallery/models/image.dart';
 import 'package:wger/helpers/json.dart';
-import 'package:wger/models/gallery/image.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/wger_base.dart';
 
