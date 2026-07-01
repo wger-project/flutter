@@ -95,12 +95,8 @@ class WorkoutSession {
       date: drift.Value(DateTime.utc(date.year, date.month, date.day)),
       notes: drift.Value(notes),
       impression: drift.Value(impression),
-      timeStart: timeStart != null
-          ? drift.Value(TimeOfDay.fromDateTime(timeStart!))
-          : const drift.Value.absent(),
-      timeEnd: timeEnd != null
-          ? drift.Value(TimeOfDay.fromDateTime(timeEnd!))
-          : const drift.Value.absent(),
+      timeStart: timeStart != null ? drift.Value(timeStart) : const drift.Value.absent(),
+      timeEnd: timeEnd != null ? drift.Value(timeEnd) : const drift.Value.absent(),
     );
   }
 

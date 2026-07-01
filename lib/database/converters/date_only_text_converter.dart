@@ -42,3 +42,22 @@ class DateOnlyTextConverter extends TypeConverter<DateTime, String> {
       '${value.month.toString().padLeft(2, '0')}-'
       '${value.day.toString().padLeft(2, '0')}';
 }
+
+class DateTimeTextConverter extends TypeConverter<DateTime, String> {
+  const DateTimeTextConverter();
+
+  @override
+  DateTime fromSql(String fromDb) {
+    final day = DateTime.parse(fromDb.substring(0, 19));
+    return DateTime.utc(day.year, day.month, day.day, day.hour, day.minute, day.second);
+  }
+
+  @override
+  String toSql(DateTime value) =>
+      '${value.year.toString().padLeft(4, '0')}-'
+      '${value.month.toString().padLeft(2, '0')}-'
+      '${value.day.toString().padLeft(2, '0')}T'
+      '${value.hour.toString().padLeft(2, '0')}:'
+      '${value.minute.toString().padLeft(2, '0')}:'
+      '${value.second.toString().padLeft(2, '0')}';
+}

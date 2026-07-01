@@ -23,6 +23,7 @@
 import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
+import 'package:wger/helpers/json.dart';
 import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/session.dart';
 
@@ -110,18 +111,22 @@ class WorkoutLogRepository {
     await _db.transaction(() async {
       if (log.sessionId == null) {
         final dayMidnightUtc = DateTime.utc(log.date.year, log.date.month, log.date.day);
+        final windowStart = log.date.subtract(sessionMaxDuration);
 
         final existing =
             await (_db.select(_db.workoutSessionTable)
                   ..where(
-                    (t) => t.routineId.equals(log.routineId) & t.date.equalsValue(dayMidnightUtc),
+                    (t) =>
+                        t.routineId.equals(log.routineId) &
+                        t.timeStart.isBiggerOrEqualValue(dateToUtcIso8601(windowStart)) &
+                        t.timeStart.isSmallerOrEqualValue(dateToUtcIso8601(log.date)),
                   )
+                  ..orderBy([(t) => OrderingTerm.desc(t.timeStart)])
                   ..limit(1))
                 .getSingleOrNull();
 
-        if (existing != null) {
-          log.sessionId = existing.id;
-        } else {
+        if (existing == null) {
+          // No session at all -> create new session
           final newSession = WorkoutSession(
             routineId: log.routineId,
             date: dayMidnightUtc,
@@ -131,6 +136,20 @@ class WorkoutLogRepository {
               .insertReturning(newSession.toCompanion());
           log.sessionId = inserted.id;
           _logger.finer('Created lazy session ${inserted.id} for log');
+        } else if (existing.timeEnd != null && log.date.isAfter(existing.timeEnd!)) {
+          // Session found but already closed -> create new session
+          final newSession = WorkoutSession(
+            routineId: log.routineId,
+            date: dayMidnightUtc,
+          );
+          final inserted = await _db
+              .into(_db.workoutSessionTable)
+              .insertReturning(newSession.toCompanion());
+          log.sessionId = inserted.id;
+          _logger.finer('Created lazy session ${inserted.id} for log');
+        } else {
+          // Session is open and within window -> reuse it
+          log.sessionId = existing.id;
         }
       }
 

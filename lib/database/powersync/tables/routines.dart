@@ -124,8 +124,9 @@ class WorkoutSessionTable extends Table {
   TextColumn get notes => text().nullable()();
   TextColumn get impression => text().map(const WorkoutImpressionConverter())();
   TextColumn get timeStart =>
-      text().named('time_start').nullable().map(const TimeOfDayConverter())();
-  TextColumn get timeEnd => text().named('time_end').nullable().map(const TimeOfDayConverter())();
+      text().named('time_start').nullable().map(const DateTimeTextConverter())();
+  TextColumn get timeEnd =>
+      text().named('time_end').nullable().map(const DateTimeTextConverter())();
 }
 
 const PowersyncWorkoutSessionTable = ps.Table(
