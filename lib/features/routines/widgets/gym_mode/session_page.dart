@@ -19,15 +19,15 @@
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wger/core/consts.dart';
+import 'package:wger/core/date.dart';
+import 'package:wger/core/widgets/async_value_widget.dart';
 import 'package:wger/features/routines/models/session.dart';
 import 'package:wger/features/routines/providers/gym_state_notifier.dart';
 import 'package:wger/features/routines/providers/workout_session_notifier.dart';
 import 'package:wger/features/routines/widgets/forms/session.dart';
 import 'package:wger/features/routines/widgets/gym_mode/navigation.dart';
-import 'package:wger/helpers/consts.dart';
-import 'package:wger/helpers/date.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/widgets/core/async_value_widget.dart';
 
 class SessionPage extends ConsumerStatefulWidget {
   final PageController _controller;

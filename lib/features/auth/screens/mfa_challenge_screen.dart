@@ -21,11 +21,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/core/error_dialogs.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
+import 'package:wger/core/network/auth_notifier.dart';
+import 'package:wger/core/network/auth_state.dart';
+import 'package:wger/core/update_app_screen.dart';
+import 'package:wger/core/update_server_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/auth_notifier.dart';
-import 'package:wger/providers/auth_state.dart';
-import 'package:wger/screens/update_app_screen.dart';
-import 'package:wger/screens/update_server_screen.dart';
 
 /// Screen shown when `auth/login` reports a pending second-factor challenge.
 /// Collects either a TOTP code or one of the user's recovery codes and

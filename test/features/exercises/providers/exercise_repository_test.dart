@@ -19,10 +19,10 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:wger/core/network/base_provider.dart';
 import 'package:wger/database/powersync/database.dart';
 import 'package:wger/features/exercises/models/image.dart';
 import 'package:wger/features/exercises/providers/exercise_repository.dart';
-import 'package:wger/providers/base_provider.dart';
 
 import '../../../../test_data/exercises.dart';
 import '../../../helpers/in_memory_drift.dart';

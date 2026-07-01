@@ -21,14 +21,14 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:wger/core/consts.dart';
+import 'package:wger/core/network/network_provider.dart';
+import 'package:wger/core/widgets/datetime_input.dart';
+import 'package:wger/core/widgets/form_submit_button.dart';
+import 'package:wger/core/widgets/wger_image.dart';
 import 'package:wger/features/gallery/models/image.dart';
 import 'package:wger/features/gallery/providers/gallery_notifier.dart';
-import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/network_provider.dart';
-import 'package:wger/widgets/core/datetime_input.dart';
-import 'package:wger/widgets/core/form_submit_button.dart';
-import 'package:wger/widgets/core/wger_image.dart';
 
 class ImageForm extends ConsumerStatefulWidget {
   late final GalleryImage _image;

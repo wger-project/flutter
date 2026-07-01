@@ -17,11 +17,11 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:wger/core/form_screen.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/features/measurements/widgets/categories.dart';
 import 'package:wger/features/measurements/widgets/forms.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/screens/form_screen.dart';
 
 class MeasurementCategoriesScreen extends StatelessWidget {
   const MeasurementCategoriesScreen();

@@ -18,12 +18,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wger/core/form_screen.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
+import 'package:wger/core/widgets/app_bar.dart';
 import 'package:wger/features/weight/widgets/forms.dart';
 import 'package:wger/features/weight/widgets/weight_overview.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/screens/form_screen.dart';
-import 'package:wger/widgets/core/app_bar.dart';
 
 class WeightScreen extends ConsumerWidget {
   const WeightScreen();

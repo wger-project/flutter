@@ -22,12 +22,12 @@ import 'package:drift/drift.dart' show Value;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:wger/core/network/base_provider.dart';
+import 'package:wger/core/search_options.dart';
 import 'package:wger/database/powersync/database.dart';
 import 'package:wger/features/nutrition/models/ingredient.dart';
 import 'package:wger/features/nutrition/models/ingredient_filters.dart';
 import 'package:wger/features/nutrition/providers/ingredient_repository.dart';
-import 'package:wger/models/core/search_options.dart';
-import 'package:wger/providers/base_provider.dart';
 
 import '../../../fixtures/fixture_reader.dart';
 import '../../../helpers/in_memory_drift.dart';

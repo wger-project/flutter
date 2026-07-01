@@ -18,11 +18,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wger/core/widgets/language_dropdown.dart';
 import 'package:wger/features/exercises/models/exercise_filters.dart';
 import 'package:wger/features/exercises/providers/exercise_filters_riverpod.dart';
 import 'package:wger/features/exercises/providers/exercises_notifier.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/widgets/search/language_dropdown.dart';
 
 /// Filter dialog for the exercise search. Shown via [showDialog] from the
 /// filter icon button next to the autocomplete field.

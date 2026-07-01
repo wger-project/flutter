@@ -31,13 +31,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:url_launcher_platform_interface/url_launcher_platform_interface.dart';
+import 'package:wger/core/consts.dart';
+import 'package:wger/core/network/auth_notifier.dart';
+import 'package:wger/core/network/network_provider.dart';
+import 'package:wger/core/network/secure_token_storage.dart';
+import 'package:wger/core/shared_preferences.dart';
 import 'package:wger/features/auth/screens/auth_screen.dart';
-import 'package:wger/helpers/consts.dart';
-import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/auth_notifier.dart';
-import 'package:wger/providers/network_provider.dart';
-import 'package:wger/providers/secure_token_storage.dart';
 
 import '../../../fake_connectivity.dart';
 import 'auth_screen_test.mocks.dart';

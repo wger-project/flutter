@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
+import 'package:wger/core/widgets/app_bar.dart';
+import 'package:wger/core/widgets/progress_indicator.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/exercises/providers/exercise_filters_notifier.dart';
 import 'package:wger/features/exercises/widgets/filter_row.dart';
 import 'package:wger/features/exercises/widgets/list_tile.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/widgets/core/app_bar.dart';
-import 'package:wger/widgets/core/progress_indicator.dart';
 
 class ExercisesScreen extends ConsumerWidget {
   const ExercisesScreen({super.key});

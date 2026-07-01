@@ -18,7 +18,7 @@
 
 import 'package:connectivity_plus_platform_interface/connectivity_plus_platform_interface.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
-import 'package:wger/providers/network_provider.dart';
+import 'package:wger/core/network/network_provider.dart';
 
 /// Swaps [ConnectivityPlatform.instance] with a fake that always reports
 /// Wi-Fi and emits no change events, *and* replaces the DNS reachability

@@ -20,12 +20,12 @@ import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
+import 'package:wger/core/widgets/datetime_input.dart';
+import 'package:wger/core/widgets/form_submit_button.dart';
 import 'package:wger/features/routines/models/session.dart';
 import 'package:wger/features/routines/providers/workout_session_notifier.dart';
 import 'package:wger/features/routines/validators.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/widgets/core/datetime_input.dart';
-import 'package:wger/widgets/core/form_submit_button.dart';
 
 class SessionForm extends ConsumerStatefulWidget {
   final _logger = Logger('SessionForm');

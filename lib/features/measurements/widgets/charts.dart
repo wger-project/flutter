@@ -19,8 +19,8 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:wger/helpers/charts.dart';
-import 'package:wger/helpers/consts.dart';
+import 'package:wger/core/charts.dart';
+import 'package:wger/core/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 class MeasurementOverallChangeWidget extends StatelessWidget {

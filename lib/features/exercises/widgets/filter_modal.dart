@@ -18,9 +18,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wger/core/i18n.dart';
 import 'package:wger/features/exercises/providers/exercise_filter_state.dart';
 import 'package:wger/features/exercises/providers/exercise_filters_notifier.dart';
-import 'package:wger/helpers/i18n.dart';
 
 class ExerciseFilterModalBody extends ConsumerStatefulWidget {
   const ExerciseFilterModalBody({super.key});

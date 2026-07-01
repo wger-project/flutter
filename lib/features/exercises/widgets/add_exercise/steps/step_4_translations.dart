@@ -18,13 +18,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wger/core/language.dart';
 import 'package:wger/features/exercises/providers/add_exercise_notifier.dart';
 import 'package:wger/features/exercises/providers/exercises_notifier.dart';
 import 'package:wger/features/exercises/validators.dart';
 import 'package:wger/features/exercises/widgets/add_exercise/add_exercise_text_area.dart';
 import 'package:wger/features/exercises/widgets/forms.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/core/language.dart';
 
 class Step4Translation extends ConsumerStatefulWidget {
   final GlobalKey<FormState> formkey;

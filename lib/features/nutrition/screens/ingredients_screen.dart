@@ -19,13 +19,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
+import 'package:wger/core/widgets/progress_indicator.dart';
 import 'package:wger/features/nutrition/models/ingredient.dart';
 import 'package:wger/features/nutrition/providers/ingredient_filters_notifier.dart';
 import 'package:wger/features/nutrition/providers/ingredient_notifier.dart';
 import 'package:wger/features/nutrition/widgets/ingredient_filter_row.dart';
 import 'package:wger/features/nutrition/widgets/ingredient_list_tile.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/widgets/core/progress_indicator.dart';
 
 class IngredientsScreen extends ConsumerStatefulWidget {
   const IngredientsScreen({super.key});

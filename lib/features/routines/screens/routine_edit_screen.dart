@@ -19,12 +19,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
+import 'package:wger/core/widgets/app_bar.dart';
+import 'package:wger/core/widgets/async_value_widget.dart';
+import 'package:wger/core/widgets/error.dart';
+import 'package:wger/core/widgets/object_gone_redirect.dart';
 import 'package:wger/features/routines/providers/routines_notifier.dart';
 import 'package:wger/features/routines/widgets/routine_edit.dart';
-import 'package:wger/widgets/core/app_bar.dart';
-import 'package:wger/widgets/core/async_value_widget.dart';
-import 'package:wger/widgets/core/error.dart';
-import 'package:wger/widgets/core/object_gone_redirect.dart';
 
 class RoutineEditScreen extends ConsumerWidget {
   const RoutineEditScreen();

@@ -27,12 +27,12 @@ import 'package:path_provider/path_provider.dart';
 import 'package:powersync/powersync.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:stream_transform/stream_transform.dart';
+import 'package:wger/core/network/auth_http_client.dart';
+import 'package:wger/core/network/network_provider.dart';
+import 'package:wger/core/network/wger_base.dart';
 import 'package:wger/powersync/api_client.dart';
 import 'package:wger/powersync/connector.dart';
 import 'package:wger/powersync/schema.dart';
-import 'package:wger/providers/auth_http_client.dart';
-import 'package:wger/providers/network_provider.dart';
-import 'package:wger/providers/wger_base.dart';
 
 part 'powersync.g.dart';
 

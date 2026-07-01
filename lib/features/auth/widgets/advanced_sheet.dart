@@ -17,8 +17,8 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:wger/core/consts.dart';
 import 'package:wger/features/auth/widgets/server_field.dart';
-import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 /// Opens the advanced bottom sheet (server + sign-in-method selection).

@@ -17,15 +17,15 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:wger/core/date.dart';
+import 'package:wger/core/widgets/core.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/exercises/widgets/exercises.dart';
 import 'package:wger/features/exercises/widgets/images.dart';
 import 'package:wger/features/routines/models/day_data.dart';
 import 'package:wger/features/routines/models/slot_data.dart';
 import 'package:wger/features/routines/screens/gym_mode.dart';
-import 'package:wger/helpers/date.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/widgets/core/core.dart';
 
 class SetConfigDataWidget extends StatelessWidget {
   final Exercise exercise;

@@ -18,8 +18,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wger/core/network/auth_notifier.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/auth_notifier.dart';
 
 /// Shown when auto-login fails outright (e.g. a transient blip on a startup
 /// probe). Keeps the failure recoverable with a retry, instead of stranding

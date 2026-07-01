@@ -17,13 +17,13 @@
  */
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:wger/core/language.dart';
 import 'package:wger/features/exercises/models/category.dart';
 import 'package:wger/features/exercises/models/equipment.dart';
 import 'package:wger/features/exercises/models/exercise_submission_images.dart';
 import 'package:wger/features/exercises/models/muscle.dart';
 import 'package:wger/features/exercises/providers/add_exercise_repository.dart';
 import 'package:wger/features/exercises/providers/add_exercise_state.dart';
-import 'package:wger/models/core/language.dart';
 
 part 'add_exercise_notifier.g.dart';
 

@@ -18,9 +18,9 @@
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
+import 'package:wger/core/network/base_provider.dart';
+import 'package:wger/core/network/wger_base.dart';
 import 'package:wger/features/account/models/account.dart';
-import 'package:wger/providers/base_provider.dart';
-import 'package:wger/providers/wger_base.dart';
 
 const _PROFILE_URL = 'userprofile';
 const _HEADLESS_ACCOUNT_EMAIL = 'account/email';

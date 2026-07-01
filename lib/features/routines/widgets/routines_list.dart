@@ -19,13 +19,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:wger/core/network/network_provider.dart';
+import 'package:wger/core/widgets/async_value_widget.dart';
+import 'package:wger/core/widgets/confirm_delete_dialog.dart';
+import 'package:wger/core/widgets/text_prompt.dart';
 import 'package:wger/features/routines/providers/routines_notifier.dart';
 import 'package:wger/features/routines/screens/routine_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/network_provider.dart';
-import 'package:wger/widgets/core/async_value_widget.dart';
-import 'package:wger/widgets/core/confirm_delete_dialog.dart';
-import 'package:wger/widgets/core/text_prompt.dart';
 
 class RoutinesList extends ConsumerStatefulWidget {
   const RoutinesList();

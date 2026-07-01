@@ -18,15 +18,15 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wger/core/widgets/datetime_input.dart';
+import 'package:wger/core/widgets/decimal_input.dart';
+import 'package:wger/core/widgets/error.dart';
+import 'package:wger/core/widgets/form_submit_button.dart';
+import 'package:wger/core/widgets/progress_indicator.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/measurement_entry.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/widgets/core/datetime_input.dart';
-import 'package:wger/widgets/core/decimal_input.dart';
-import 'package:wger/widgets/core/error.dart';
-import 'package:wger/widgets/core/form_submit_button.dart';
-import 'package:wger/widgets/core/progress_indicator.dart';
 
 class MeasurementCategoryForm extends ConsumerStatefulWidget {
   final MeasurementCategory? _category;

@@ -20,10 +20,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:markdown/markdown.dart' as md;
+import 'package:wger/core/widgets/cards.dart';
 import 'package:wger/features/exercises/providers/add_exercise_notifier.dart';
 import 'package:wger/features/exercises/widgets/add_exercise/preview_images.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/widgets/core/cards.dart';
 
 class Step6Overview extends ConsumerWidget {
   @override

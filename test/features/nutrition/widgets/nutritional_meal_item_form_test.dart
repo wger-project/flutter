@@ -29,6 +29,7 @@ import 'package:mockito/mockito.dart';
 import 'package:network_image_mock/network_image_mock.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
+import 'package:wger/core/consts.dart';
 import 'package:wger/features/nutrition/models/ingredient.dart';
 import 'package:wger/features/nutrition/models/meal.dart';
 import 'package:wger/features/nutrition/models/meal_item.dart';
@@ -38,7 +39,6 @@ import 'package:wger/features/nutrition/providers/nutrition_notifier.dart';
 import 'package:wger/features/nutrition/providers/nutrition_repository.dart';
 import 'package:wger/features/nutrition/screens/nutritional_plan_screen.dart';
 import 'package:wger/features/nutrition/widgets/forms.dart';
-import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 import '../../../../test_data/nutritional_plans.dart';

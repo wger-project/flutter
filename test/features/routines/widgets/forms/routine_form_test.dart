@@ -23,7 +23,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:wger/core/consts.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
+import 'package:wger/core/network/network_provider.dart';
+import 'package:wger/core/widgets/form_submit_button.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/exercises/providers/exercise_repository.dart';
 import 'package:wger/features/exercises/providers/exercises_notifier.dart';
@@ -37,10 +40,7 @@ import 'package:wger/features/routines/providers/workout_session_repository.dart
 import 'package:wger/features/routines/screens/routine_edit_screen.dart';
 import 'package:wger/features/routines/screens/routine_screen.dart';
 import 'package:wger/features/routines/widgets/forms/routine.dart';
-import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/network_provider.dart';
-import 'package:wger/widgets/core/form_submit_button.dart';
 
 import '../../../../../test_data/routines.dart';
 import '../../../../fake_connectivity.dart';

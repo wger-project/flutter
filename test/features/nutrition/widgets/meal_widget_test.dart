@@ -19,11 +19,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/features/nutrition/models/meal.dart';
 import 'package:wger/features/nutrition/providers/nutrition_notifier.dart';
 import 'package:wger/features/nutrition/widgets/meal.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/network_provider.dart';
 
 class _StubNutritionNotifier extends NutritionNotifier {
   @override

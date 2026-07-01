@@ -18,9 +18,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wger/core/consts.dart';
 import 'package:wger/features/routines/providers/gym_state_notifier.dart';
 import 'package:wger/features/routines/widgets/gym_mode/workout_menu.dart';
-import 'package:wger/helpers/consts.dart';
 import 'package:wger/theme/theme.dart';
 
 class NavigationHeader extends StatelessWidget {

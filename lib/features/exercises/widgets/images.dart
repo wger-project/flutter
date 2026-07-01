@@ -17,8 +17,8 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:wger/core/widgets/wger_image.dart';
 import 'package:wger/features/exercises/models/image.dart';
-import 'package:wger/widgets/core/wger_image.dart';
 
 /// Renders an exercise image with disk + memory caching, falling back to
 /// a tinted asset placeholder when [image] is null or the network load

@@ -18,12 +18,12 @@
 
 import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:wger/core/consts.dart';
 import 'package:wger/features/exercises/models/category.dart';
 import 'package:wger/features/exercises/models/equipment.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/exercises/providers/exercise_filter_state.dart';
 import 'package:wger/features/exercises/providers/exercises_notifier.dart';
-import 'package:wger/helpers/consts.dart';
 
 part 'exercise_filters_notifier.g.dart';
 

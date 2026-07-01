@@ -26,7 +26,7 @@ import 'package:logging/logging.dart';
 import 'package:powersync/powersync.dart';
 import 'package:wger/core/error_dialogs.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
-import 'package:wger/helpers/jwt.dart';
+import 'package:wger/core/network/jwt.dart';
 import 'package:wger/powersync/api_client.dart';
 
 final logger = Logger('powersync-django');

@@ -18,11 +18,11 @@
 
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
+import 'package:wger/core/uuid.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/routines/models/day_data.dart';
 import 'package:wger/features/routines/models/routine.dart';
 import 'package:wger/features/routines/models/set_config_data.dart';
-import 'package:wger/helpers/uuid.dart';
 
 const DEFAULT_DURATION = Duration(hours: 5);
 

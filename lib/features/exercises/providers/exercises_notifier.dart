@@ -18,16 +18,16 @@
 
 import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:wger/core/consts.dart';
+import 'package:wger/core/language.dart';
+import 'package:wger/core/network/network_provider.dart';
+import 'package:wger/core/search_options.dart';
 import 'package:wger/features/exercises/models/category.dart';
 import 'package:wger/features/exercises/models/equipment.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/exercises/models/exercise_filters.dart';
 import 'package:wger/features/exercises/models/muscle.dart';
 import 'package:wger/features/exercises/providers/exercise_repository.dart';
-import 'package:wger/helpers/consts.dart';
-import 'package:wger/models/core/language.dart';
-import 'package:wger/models/core/search_options.dart';
-import 'package:wger/providers/network_provider.dart';
 
 part 'exercises_notifier.g.dart';
 

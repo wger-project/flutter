@@ -19,6 +19,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:wger/core/consts.dart';
+import 'package:wger/core/number_input.dart';
+import 'package:wger/core/widgets/datetime_input.dart';
+import 'package:wger/core/widgets/decimal_input.dart';
+import 'package:wger/core/widgets/form_submit_button.dart';
 import 'package:wger/features/nutrition/models/ingredient.dart';
 import 'package:wger/features/nutrition/models/ingredient_weight_unit.dart';
 import 'package:wger/features/nutrition/models/log.dart';
@@ -30,12 +35,7 @@ import 'package:wger/features/nutrition/screens/nutritional_plan_screen.dart';
 import 'package:wger/features/nutrition/widgets/helpers.dart';
 import 'package:wger/features/nutrition/widgets/nutrition_tiles.dart';
 import 'package:wger/features/nutrition/widgets/widgets.dart';
-import 'package:wger/helpers/consts.dart';
-import 'package:wger/helpers/number_input.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/widgets/core/datetime_input.dart';
-import 'package:wger/widgets/core/decimal_input.dart';
-import 'package:wger/widgets/core/form_submit_button.dart';
 
 class MealForm extends ConsumerWidget {
   late final Meal _meal;

@@ -19,6 +19,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg_icons/flutter_svg_icons.dart';
+import 'package:wger/core/consts.dart';
+import 'package:wger/core/form_screen.dart';
+import 'package:wger/core/widgets/core.dart';
+import 'package:wger/core/widgets/progress_indicator.dart';
 import 'package:wger/features/nutrition/models/meal.dart';
 import 'package:wger/features/nutrition/models/meal_item.dart';
 import 'package:wger/features/nutrition/providers/nutrition_notifier.dart';
@@ -29,11 +33,7 @@ import 'package:wger/features/nutrition/widgets/helpers.dart';
 import 'package:wger/features/nutrition/widgets/nutrition_tile.dart';
 import 'package:wger/features/nutrition/widgets/nutrition_tiles.dart';
 import 'package:wger/features/nutrition/widgets/widgets.dart';
-import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/screens/form_screen.dart';
-import 'package:wger/widgets/core/core.dart';
-import 'package:wger/widgets/core/progress_indicator.dart';
 
 enum ViewMode {
   base, // just highlevel meal info (name, time)

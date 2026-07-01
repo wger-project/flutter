@@ -20,13 +20,13 @@ import 'package:clock/clock.dart';
 import 'package:collection/collection.dart';
 import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:wger/core/shared_preferences.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/routines/models/log.dart';
 import 'package:wger/features/routines/models/routine.dart';
 import 'package:wger/features/routines/models/set_config_data.dart';
 import 'package:wger/features/routines/providers/gym_log_notifier.dart';
 import 'package:wger/features/routines/providers/gym_state.dart';
-import 'package:wger/helpers/shared_preferences.dart';
 
 part 'gym_state_notifier.g.dart';
 

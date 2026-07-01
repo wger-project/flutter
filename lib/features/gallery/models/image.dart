@@ -18,8 +18,8 @@
 
 import 'package:drift/drift.dart' as drift;
 import 'package:json_annotation/json_annotation.dart';
+import 'package:wger/core/json.dart';
 import 'package:wger/database/powersync/database.dart';
-import 'package:wger/helpers/json.dart';
 
 part 'image.g.dart';
 

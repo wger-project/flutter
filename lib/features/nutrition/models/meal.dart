@@ -18,12 +18,12 @@
 
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
+import 'package:wger/core/consts.dart';
+import 'package:wger/core/date.dart';
 import 'package:wger/database/powersync/database.dart';
 import 'package:wger/features/nutrition/models/log.dart';
 import 'package:wger/features/nutrition/models/meal_item.dart';
 import 'package:wger/features/nutrition/models/nutritional_values.dart';
-import 'package:wger/helpers/consts.dart';
-import 'package:wger/helpers/date.dart';
 
 class Meal {
   /// Client-generated UUID, is `null` only before the first persist

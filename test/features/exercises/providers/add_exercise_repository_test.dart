@@ -20,9 +20,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
+import 'package:wger/core/network/base_provider.dart';
 import 'package:wger/features/exercises/models/exercise_submission.dart';
 import 'package:wger/features/exercises/providers/add_exercise_repository.dart';
-import 'package:wger/providers/base_provider.dart';
 
 import 'add_exercise_repository_test.mocks.dart';
 

@@ -17,8 +17,8 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:wger/core/widgets/wger_image.dart';
 import 'package:wger/features/nutrition/models/ingredient_image.dart';
-import 'package:wger/widgets/core/wger_image.dart';
 
 /// Renders an ingredient image using WgerImage for disk + memory caching, falling back to
 /// a tinted asset placeholder when [image] is null or the network load

@@ -17,11 +17,11 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:wger/core/i18n.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/routines/models/log.dart';
 import 'package:wger/features/routines/models/session.dart';
 import 'package:wger/features/trophies/models/user_trophy.dart';
-import 'package:wger/helpers/i18n.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 class ExercisesCard extends StatelessWidget {

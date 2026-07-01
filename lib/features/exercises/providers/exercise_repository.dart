@@ -21,6 +21,11 @@ import 'dart:async';
 import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
+import 'package:wger/core/consts.dart';
+import 'package:wger/core/language.dart';
+import 'package:wger/core/network/base_provider.dart';
+import 'package:wger/core/network/wger_base.dart';
+import 'package:wger/core/search_options.dart';
 import 'package:wger/database/powersync/database.dart';
 import 'package:wger/features/exercises/models/alias.dart';
 import 'package:wger/features/exercises/models/category.dart';
@@ -33,11 +38,6 @@ import 'package:wger/features/exercises/models/muscle.dart';
 import 'package:wger/features/exercises/models/translation.dart';
 import 'package:wger/features/exercises/models/video.dart';
 import 'package:wger/features/exercises/providers/exercises_notifier.dart';
-import 'package:wger/helpers/consts.dart';
-import 'package:wger/models/core/language.dart';
-import 'package:wger/models/core/search_options.dart';
-import 'package:wger/providers/base_provider.dart';
-import 'package:wger/providers/wger_base.dart';
 
 final exerciseRepositoryProvider = Provider<ExerciseRepository>((ref) {
   final base = ref.read(wgerBaseProvider);

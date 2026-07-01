@@ -18,10 +18,10 @@
 
 import 'package:flutter_riverpod/flutter_riverpod.dart' show Provider;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:wger/core/search_options.dart';
+import 'package:wger/core/shared_preferences.dart';
 import 'package:wger/features/exercises/models/category.dart';
 import 'package:wger/features/exercises/models/exercise_filters.dart';
-import 'package:wger/helpers/shared_preferences.dart';
-import 'package:wger/models/core/search_options.dart';
 
 part 'exercise_filters_riverpod.g.dart';
 

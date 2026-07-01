@@ -17,10 +17,10 @@
  */
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/features/nutrition/models/ingredient.dart';
 import 'package:wger/features/nutrition/providers/ingredient_filters_notifier.dart';
 import 'package:wger/features/nutrition/providers/ingredient_repository.dart';
-import 'package:wger/providers/network_provider.dart';
 
 part 'ingredient_notifier.g.dart';
 

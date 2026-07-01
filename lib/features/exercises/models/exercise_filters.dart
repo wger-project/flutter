@@ -17,9 +17,9 @@
  */
 
 import 'package:flutter/foundation.dart';
+import 'package:wger/core/consts.dart';
+import 'package:wger/core/search_options.dart';
 import 'package:wger/features/exercises/models/category.dart';
-import 'package:wger/helpers/consts.dart';
-import 'package:wger/models/core/search_options.dart';
 
 enum ExerciseSearchMode {
   exact,

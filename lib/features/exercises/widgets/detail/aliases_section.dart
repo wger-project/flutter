@@ -17,9 +17,9 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:wger/core/widgets/core.dart';
 import 'package:wger/features/exercises/models/translation.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/widgets/core/core.dart';
 
 class AliasesSection extends StatelessWidget {
   final Translation translation;

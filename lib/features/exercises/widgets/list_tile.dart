@@ -17,10 +17,10 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:wger/core/i18n.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/exercises/screens/exercise_screen.dart';
 import 'package:wger/features/exercises/widgets/images.dart';
-import 'package:wger/helpers/i18n.dart';
 
 class ExerciseListTile extends StatelessWidget {
   const ExerciseListTile({super.key, required this.exercise});

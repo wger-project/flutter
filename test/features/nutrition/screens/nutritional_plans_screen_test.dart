@@ -22,6 +22,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:wger/core/form_screen.dart';
+import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/features/account/models/user_profile.dart';
 import 'package:wger/features/account/providers/user_profile_repository.dart';
 import 'package:wger/features/nutrition/models/nutritional_plan.dart';
@@ -31,8 +33,6 @@ import 'package:wger/features/nutrition/screens/nutritional_plans_screen.dart';
 import 'package:wger/features/nutrition/widgets/forms.dart';
 import 'package:wger/features/weight/providers/body_weight_repository.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/network_provider.dart';
-import 'package:wger/screens/form_screen.dart';
 
 import '../../../fake_connectivity.dart';
 import 'nutritional_plans_screen_test.mocks.dart';

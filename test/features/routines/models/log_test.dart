@@ -17,11 +17,11 @@
  */
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:wger/core/consts.dart';
 import 'package:wger/features/exercises/models/category.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/routines/models/log.dart';
 import 'package:wger/features/routines/models/set_config_data.dart';
-import 'package:wger/helpers/consts.dart';
 
 void main() {
   group('Log.volume', () {

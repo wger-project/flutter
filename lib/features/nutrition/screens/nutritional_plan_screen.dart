@@ -19,14 +19,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg_icons/flutter_svg_icons.dart';
+import 'package:wger/core/form_screen.dart';
+import 'package:wger/core/widgets/object_gone_redirect.dart';
+import 'package:wger/core/widgets/progress_indicator.dart';
 import 'package:wger/features/nutrition/providers/nutrition_notifier.dart';
 import 'package:wger/features/nutrition/screens/log_meals_screen.dart';
 import 'package:wger/features/nutrition/widgets/forms.dart';
 import 'package:wger/features/nutrition/widgets/nutritional_plan_detail.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/screens/form_screen.dart';
-import 'package:wger/widgets/core/object_gone_redirect.dart';
-import 'package:wger/widgets/core/progress_indicator.dart';
 
 enum NutritionalPlanOptions {
   edit,

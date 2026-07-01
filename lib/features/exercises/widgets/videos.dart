@@ -23,8 +23,8 @@ import 'package:logging/logging.dart';
 import 'package:video_player/video_player.dart';
 import 'package:wger/core/error_dialogs.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
+import 'package:wger/core/network/wger_base.dart';
 import 'package:wger/features/exercises/models/video.dart';
-import 'package:wger/providers/wger_base.dart';
 
 class ExerciseVideoWidget extends ConsumerStatefulWidget {
   const ExerciseVideoWidget({required this.video});

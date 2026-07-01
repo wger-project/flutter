@@ -16,10 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import 'package:json_annotation/json_annotation.dart';
+import 'package:wger/core/json.dart';
 import 'package:wger/features/nutrition/models/ingredient_image.dart';
 import 'package:wger/features/nutrition/models/ingredient_weight_unit.dart';
 import 'package:wger/features/nutrition/models/nutritional_values.dart';
-import 'package:wger/helpers/json.dart';
 
 part 'ingredient.g.dart';
 

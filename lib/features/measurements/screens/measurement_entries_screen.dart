@@ -18,17 +18,17 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wger/core/form_screen.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
+import 'package:wger/core/widgets/confirm_delete_dialog.dart';
+import 'package:wger/core/widgets/error.dart';
+import 'package:wger/core/widgets/object_gone_redirect.dart';
+import 'package:wger/core/widgets/progress_indicator.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/measurements/widgets/entries.dart';
 import 'package:wger/features/measurements/widgets/forms.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/screens/form_screen.dart';
-import 'package:wger/widgets/core/confirm_delete_dialog.dart';
-import 'package:wger/widgets/core/error.dart';
-import 'package:wger/widgets/core/object_gone_redirect.dart';
-import 'package:wger/widgets/core/progress_indicator.dart';
 
 enum MeasurementOptions {
   edit,

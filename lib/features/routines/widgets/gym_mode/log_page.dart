@@ -20,6 +20,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
+import 'package:wger/core/consts.dart';
+import 'package:wger/core/widgets/core.dart';
+import 'package:wger/core/widgets/error.dart';
 import 'package:wger/features/routines/models/log.dart';
 import 'package:wger/features/routines/models/set_config_data.dart';
 import 'package:wger/features/routines/models/slot_entry.dart';
@@ -35,10 +38,7 @@ import 'package:wger/features/routines/widgets/forms/rir.dart';
 import 'package:wger/features/routines/widgets/forms/weight.dart';
 import 'package:wger/features/routines/widgets/gym_mode/navigation.dart';
 import 'package:wger/features/routines/widgets/plate_calculator.dart';
-import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/widgets/core/core.dart';
-import 'package:wger/widgets/core/error.dart';
 
 class LogPage extends ConsumerWidget {
   final _logger = Logger('LogPage');

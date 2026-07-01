@@ -25,12 +25,12 @@ import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
+import 'package:wger/core/search_options.dart';
+import 'package:wger/core/shared_preferences.dart';
 import 'package:wger/features/nutrition/models/ingredient.dart';
 import 'package:wger/features/nutrition/providers/ingredient_repository.dart';
 import 'package:wger/features/nutrition/widgets/widgets.dart';
-import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/core/search_options.dart';
 
 import '../../../../test_data/nutritional_plans.dart';
 import '../../../fake_connectivity.dart';

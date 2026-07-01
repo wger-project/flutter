@@ -18,12 +18,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wger/core/form_screen.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/features/nutrition/screens/ingredients_screen.dart';
 import 'package:wger/features/nutrition/widgets/forms.dart';
 import 'package:wger/features/nutrition/widgets/nutritional_plans_list.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/screens/form_screen.dart';
 
 enum _NutritionalPlansAppBarOptions {
   list,

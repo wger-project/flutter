@@ -20,10 +20,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/exercises/providers/exercise_repository.dart';
 import 'package:wger/features/exercises/providers/exercises_notifier.dart';
-import 'package:wger/providers/network_provider.dart';
 
 import '../../../../test_data/exercises.dart';
 import 'exercises_notifier_test.mocks.dart';

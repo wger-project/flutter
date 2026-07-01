@@ -17,8 +17,8 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:wger/core/i18n.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
-import 'package:wger/helpers/i18n.dart';
 
 class CategoryEquipmentRow extends StatelessWidget {
   final Exercise exercise;

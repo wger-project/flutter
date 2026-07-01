@@ -17,7 +17,7 @@
  */
 
 import 'package:json_annotation/json_annotation.dart';
-import 'package:wger/helpers/json.dart';
+import 'package:wger/core/json.dart';
 
 import 'trophy.dart';
 import 'user_trophy_context_data.dart';

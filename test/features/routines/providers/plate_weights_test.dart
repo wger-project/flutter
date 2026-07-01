@@ -4,8 +4,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart'; // Added for annotations
 import 'package:mockito/mockito.dart'; // Added for mockito
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:wger/core/consts.dart';
 import 'package:wger/features/routines/providers/plate_weights.dart';
-import 'package:wger/helpers/consts.dart';
 
 import 'plate_weights_test.mocks.dart';
 

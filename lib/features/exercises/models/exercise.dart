@@ -18,14 +18,14 @@
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:logging/logging.dart';
+import 'package:wger/core/consts.dart';
+import 'package:wger/core/language.dart';
 import 'package:wger/features/exercises/models/category.dart';
 import 'package:wger/features/exercises/models/equipment.dart';
 import 'package:wger/features/exercises/models/image.dart';
 import 'package:wger/features/exercises/models/muscle.dart';
 import 'package:wger/features/exercises/models/translation.dart';
 import 'package:wger/features/exercises/models/video.dart';
-import 'package:wger/helpers/consts.dart';
-import 'package:wger/models/core/language.dart';
 
 class Exercise extends Equatable {
   static final _logger = Logger('ExerciseModel');

@@ -18,7 +18,7 @@
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
-import 'package:wger/helpers/i18n.dart';
+import 'package:wger/core/i18n.dart';
 
 class Muscle extends Equatable {
   final int id;

@@ -24,6 +24,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/features/routines/models/log.dart';
 import 'package:wger/features/routines/models/repetition_unit.dart';
 import 'package:wger/features/routines/models/routine.dart';
@@ -35,7 +36,6 @@ import 'package:wger/features/routines/screens/routine_screen.dart';
 import 'package:wger/features/routines/widgets/logs/log_overview_routine.dart';
 import 'package:wger/features/trophies/providers/trophy_repository.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/network_provider.dart';
 
 import '../../../../test_data/routines.dart';
 import '../../../test_data/trophies.dart';

@@ -18,12 +18,12 @@
 
 import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:wger/core/consts.dart';
+import 'package:wger/core/network/base_provider.dart';
+import 'package:wger/core/network/wger_base.dart';
 import 'package:wger/features/trophies/models/trophy.dart';
 import 'package:wger/features/trophies/models/user_trophy.dart';
 import 'package:wger/features/trophies/models/user_trophy_progression.dart';
-import 'package:wger/helpers/consts.dart';
-import 'package:wger/providers/base_provider.dart';
-import 'package:wger/providers/wger_base.dart';
 
 part 'trophy_repository.g.dart';
 

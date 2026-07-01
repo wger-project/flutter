@@ -21,6 +21,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:wger/core/consts.dart';
 import 'package:wger/features/routines/models/base_config.dart';
 import 'package:wger/features/routines/models/slot_entry.dart';
 import 'package:wger/features/routines/providers/routines_notifier.dart';
@@ -29,7 +30,6 @@ import 'package:wger/features/routines/widgets/forms/repetitions.dart';
 import 'package:wger/features/routines/widgets/forms/rir.dart';
 import 'package:wger/features/routines/widgets/forms/slot_entry.dart';
 import 'package:wger/features/routines/widgets/forms/weight.dart';
-import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 import '../../../../../test_data/routines.dart';

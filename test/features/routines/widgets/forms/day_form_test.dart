@@ -21,13 +21,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:wger/core/consts.dart';
+import 'package:wger/core/network/network_provider.dart';
+import 'package:wger/core/widgets/form_submit_button.dart';
 import 'package:wger/features/routines/models/day.dart';
 import 'package:wger/features/routines/providers/routines_repository.dart';
 import 'package:wger/features/routines/widgets/forms/day.dart';
-import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/network_provider.dart';
-import 'package:wger/widgets/core/form_submit_button.dart';
 
 import '../../../../../test_data/routines.dart';
 import '../../helpers/routine_form_test_overrides.dart';

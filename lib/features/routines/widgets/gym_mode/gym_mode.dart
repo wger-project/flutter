@@ -22,14 +22,14 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
+import 'package:wger/core/network/network_provider.dart';
+import 'package:wger/core/widgets/error.dart';
+import 'package:wger/core/widgets/progress_indicator.dart';
 import 'package:wger/features/routines/models/routine.dart';
 import 'package:wger/features/routines/providers/gym_state.dart';
 import 'package:wger/features/routines/providers/gym_state_notifier.dart';
 import 'package:wger/features/routines/providers/routines_notifier.dart';
 import 'package:wger/features/routines/screens/gym_mode.dart';
-import 'package:wger/providers/network_provider.dart';
-import 'package:wger/widgets/core/error.dart';
-import 'package:wger/widgets/core/progress_indicator.dart';
 
 import 'exercise_overview.dart';
 import 'log_page.dart';

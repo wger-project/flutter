@@ -17,9 +17,9 @@
  */
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:wger/core/consts.dart';
 import 'package:wger/features/routines/models/log.dart';
 import 'package:wger/features/routines/models/session.dart';
-import 'package:wger/helpers/consts.dart';
 
 void main() {
   group('WorkoutSession.volume', () {

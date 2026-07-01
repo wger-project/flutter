@@ -6,14 +6,14 @@
 import 'dart:async' as _i3;
 
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:wger/core/language.dart' as _i10;
+import 'package:wger/core/search_options.dart' as _i4;
 import 'package:wger/features/exercises/models/category.dart' as _i6;
 import 'package:wger/features/exercises/models/equipment.dart' as _i8;
 import 'package:wger/features/exercises/models/exercise_filters.dart' as _i5;
 import 'package:wger/features/exercises/models/muscle.dart' as _i9;
 import 'package:wger/features/exercises/providers/exercise_repository.dart' as _i2;
 import 'package:wger/features/exercises/providers/exercises_notifier.dart' as _i7;
-import 'package:wger/models/core/language.dart' as _i10;
-import 'package:wger/models/core/search_options.dart' as _i4;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values

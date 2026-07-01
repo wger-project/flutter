@@ -19,6 +19,7 @@
 import 'package:collection/collection.dart';
 import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:wger/core/helpers.dart';
 import 'package:wger/features/exercises/providers/exercises_notifier.dart';
 import 'package:wger/features/routines/models/day.dart';
 import 'package:wger/features/routines/models/day_data.dart';
@@ -30,7 +31,6 @@ import 'package:wger/features/routines/models/slot_entry.dart';
 import 'package:wger/features/routines/models/weight_unit.dart';
 import 'package:wger/features/routines/providers/routines_repository.dart';
 import 'package:wger/features/routines/providers/workout_session_notifier.dart';
-import 'package:wger/providers/helpers.dart';
 
 part 'routines_notifier.g.dart';
 

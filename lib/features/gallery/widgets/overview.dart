@@ -20,13 +20,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:intl/intl.dart';
+import 'package:wger/core/form_screen.dart';
+import 'package:wger/core/platform.dart';
+import 'package:wger/core/widgets/text_prompt.dart';
+import 'package:wger/core/widgets/wger_image.dart';
 import 'package:wger/features/gallery/models/image.dart';
 import 'package:wger/features/gallery/providers/gallery_notifier.dart';
-import 'package:wger/helpers/platform.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/screens/form_screen.dart';
-import 'package:wger/widgets/core/text_prompt.dart';
-import 'package:wger/widgets/core/wger_image.dart';
 
 import 'forms.dart';
 

@@ -19,6 +19,8 @@
 import 'package:drift/drift.dart' show OrderingTerm;
 import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:wger/core/network/base_provider.dart';
+import 'package:wger/core/network/wger_base.dart';
 import 'package:wger/database/powersync/database.dart';
 import 'package:wger/features/routines/models/base_config.dart';
 import 'package:wger/features/routines/models/day.dart';
@@ -28,8 +30,6 @@ import 'package:wger/features/routines/models/routine.dart';
 import 'package:wger/features/routines/models/slot.dart';
 import 'package:wger/features/routines/models/slot_entry.dart';
 import 'package:wger/features/routines/models/weight_unit.dart';
-import 'package:wger/providers/base_provider.dart';
-import 'package:wger/providers/wger_base.dart';
 
 part 'routines_repository.g.dart';
 

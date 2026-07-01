@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wger/core/consts.dart';
 import 'package:wger/core/error_dialogs.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
+import 'package:wger/core/network/network_provider.dart';
+import 'package:wger/core/widgets/confirm_delete_dialog.dart';
+import 'package:wger/core/widgets/form_submit_button.dart';
 import 'package:wger/features/routines/models/day.dart';
 import 'package:wger/features/routines/providers/routines_notifier.dart';
 import 'package:wger/features/routines/widgets/forms/slot.dart';
-import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/network_provider.dart';
-import 'package:wger/widgets/core/confirm_delete_dialog.dart';
-import 'package:wger/widgets/core/form_submit_button.dart';
 
 class ReorderableDaysList extends ConsumerStatefulWidget {
   final int routineId;

@@ -21,6 +21,8 @@ import 'package:drift_sqlite_async/drift_sqlite_async.dart';
 import 'package:flutter/material.dart' show TimeOfDay;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:powersync/powersync.dart' as ps;
+import 'package:wger/core/language.dart';
+import 'package:wger/core/license.dart';
 import 'package:wger/database/converters/date_only_text_converter.dart';
 import 'package:wger/database/converters/exercise_image_style_converter.dart';
 import 'package:wger/database/converters/time_of_day_converter.dart';
@@ -50,8 +52,6 @@ import 'package:wger/features/routines/models/routine.dart';
 import 'package:wger/features/routines/models/session.dart';
 import 'package:wger/features/routines/models/weight_unit.dart';
 import 'package:wger/features/weight/models/weight_entry.dart';
-import 'package:wger/models/core/language.dart';
-import 'package:wger/models/core/license.dart';
 
 import 'powersync.dart';
 import 'tables/exercise.dart';

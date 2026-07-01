@@ -18,7 +18,7 @@
 
 import 'package:drift/drift.dart';
 import 'package:powersync/powersync.dart' as ps;
-import 'package:wger/models/core/language.dart';
+import 'package:wger/core/language.dart';
 
 @UseRowClass(Language)
 class LanguageTable extends Table {

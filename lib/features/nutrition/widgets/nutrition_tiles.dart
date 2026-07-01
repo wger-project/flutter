@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:wger/core/consts.dart';
 import 'package:wger/features/nutrition/models/ingredient.dart';
 import 'package:wger/features/nutrition/models/log.dart';
 import 'package:wger/features/nutrition/models/nutritional_plan.dart';
@@ -9,7 +10,6 @@ import 'package:wger/features/nutrition/providers/nutrition_notifier.dart';
 import 'package:wger/features/nutrition/widgets/helpers.dart';
 import 'package:wger/features/nutrition/widgets/nutrition_tile.dart';
 import 'package:wger/features/nutrition/widgets/widgets.dart';
-import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 /// a NutritionTitle showing an ingredient, with its

@@ -19,12 +19,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
+import 'package:wger/core/consts.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
+import 'package:wger/core/network/base_provider.dart';
+import 'package:wger/core/network/wger_base.dart';
 import 'package:wger/features/exercises/models/exercise_submission.dart';
 import 'package:wger/features/exercises/models/exercise_submission_images.dart';
-import 'package:wger/helpers/consts.dart';
-import 'package:wger/providers/base_provider.dart';
-import 'package:wger/providers/wger_base.dart';
 
 final addExerciseRepositoryProvider = Provider<AddExerciseRepository>((ref) {
   final base = ref.read(wgerBaseProvider);

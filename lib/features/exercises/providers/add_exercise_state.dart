@@ -17,12 +17,12 @@
  */
 
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:wger/core/language.dart';
 import 'package:wger/features/exercises/models/category.dart';
 import 'package:wger/features/exercises/models/equipment.dart';
 import 'package:wger/features/exercises/models/exercise_submission.dart';
 import 'package:wger/features/exercises/models/exercise_submission_images.dart';
 import 'package:wger/features/exercises/models/muscle.dart';
-import 'package:wger/models/core/language.dart';
 
 part 'add_exercise_state.freezed.dart';
 

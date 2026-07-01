@@ -18,9 +18,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wger/core/widgets/confirm_delete_dialog.dart';
 import 'package:wger/features/routines/models/log.dart';
 import 'package:wger/features/routines/providers/workout_logs_notifier.dart';
-import 'package:wger/widgets/core/confirm_delete_dialog.dart';
 
 /// Confirms and deletes [log], showing a success snackbar afterwards.
 void showDeleteLogDialog(BuildContext context, String confirmDeleteName, Log log) {

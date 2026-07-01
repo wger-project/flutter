@@ -18,11 +18,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wger/core/widgets/async_value_widget.dart';
+import 'package:wger/core/widgets/progress_indicator.dart';
 import 'package:wger/features/nutrition/models/ingredient.dart';
 import 'package:wger/features/nutrition/providers/ingredient_notifier.dart';
 import 'package:wger/features/nutrition/widgets/ingredient_dialogs.dart';
-import 'package:wger/widgets/core/async_value_widget.dart';
-import 'package:wger/widgets/core/progress_indicator.dart';
 
 class IngredientDetailScreen extends ConsumerWidget {
   static const routeName = '/ingredient-detail';

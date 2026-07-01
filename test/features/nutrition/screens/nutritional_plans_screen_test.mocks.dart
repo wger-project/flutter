@@ -10,6 +10,7 @@ import 'dart:typed_data' as _i15;
 import 'package:http/http.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i14;
+import 'package:wger/core/search_options.dart' as _i12;
 import 'package:wger/features/account/models/user_profile.dart' as _i19;
 import 'package:wger/features/account/providers/user_profile_repository.dart' as _i18;
 import 'package:wger/features/nutrition/models/ingredient.dart' as _i10;
@@ -22,7 +23,6 @@ import 'package:wger/features/nutrition/providers/ingredient_repository.dart' as
 import 'package:wger/features/nutrition/providers/nutrition_repository.dart' as _i3;
 import 'package:wger/features/weight/models/weight_entry.dart' as _i17;
 import 'package:wger/features/weight/providers/body_weight_repository.dart' as _i16;
-import 'package:wger/models/core/search_options.dart' as _i12;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values

@@ -18,12 +18,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wger/core/widgets/core.dart';
 import 'package:wger/features/nutrition/models/ingredient.dart';
 import 'package:wger/features/nutrition/models/meal.dart';
 import 'package:wger/features/nutrition/models/nutritional_values.dart';
 import 'package:wger/features/nutrition/widgets/ingredient_dialogs.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/widgets/core/core.dart';
 
 List<String> getNutritionColumnNames(BuildContext context) => [
   AppLocalizations.of(context).energy,

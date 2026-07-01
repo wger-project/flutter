@@ -17,9 +17,9 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:wger/core/platform.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/exercises/widgets/videos.dart';
-import 'package:wger/helpers/platform.dart';
 
 class VideosSection extends StatelessWidget {
   final Exercise exercise;

@@ -23,10 +23,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:network_image_mock/network_image_mock.dart';
+import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/features/gallery/providers/gallery_repository.dart';
 import 'package:wger/features/gallery/widgets/overview.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/network_provider.dart';
 
 import '../../../../test_data/gallery.dart';
 import 'overview_test.mocks.dart';

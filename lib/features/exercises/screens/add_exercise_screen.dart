@@ -18,9 +18,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wger/core/consts.dart';
 import 'package:wger/core/error_dialogs.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
+import 'package:wger/core/form_screen.dart';
+import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
+import 'package:wger/core/widgets/app_bar.dart';
+import 'package:wger/core/widgets/progress_indicator.dart';
 import 'package:wger/features/account/providers/account_notifier.dart';
 import 'package:wger/features/account/widgets/forms.dart';
 import 'package:wger/features/exercises/providers/add_exercise_notifier.dart';
@@ -32,12 +37,7 @@ import 'package:wger/features/exercises/widgets/add_exercise/steps/step_3_descri
 import 'package:wger/features/exercises/widgets/add_exercise/steps/step_4_translations.dart';
 import 'package:wger/features/exercises/widgets/add_exercise/steps/step_5_images.dart';
 import 'package:wger/features/exercises/widgets/add_exercise/steps/step_6_overview.dart';
-import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/network_provider.dart';
-import 'package:wger/screens/form_screen.dart';
-import 'package:wger/widgets/core/app_bar.dart';
-import 'package:wger/widgets/core/progress_indicator.dart';
 
 class AddExerciseScreen extends ConsumerWidget {
   const AddExerciseScreen({super.key});

@@ -10,8 +10,8 @@ import 'package:drift/src/runtime/executor/stream_queries.dart' as _i5;
 import 'package:http/http.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i8;
+import 'package:wger/core/network/base_provider.dart' as _i7;
 import 'package:wger/database/powersync/database.dart' as _i4;
-import 'package:wger/providers/base_provider.dart' as _i7;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values

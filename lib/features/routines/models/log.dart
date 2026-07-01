@@ -18,14 +18,14 @@
 
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
+import 'package:wger/core/consts.dart';
+import 'package:wger/core/i18n.dart';
+import 'package:wger/core/misc.dart';
 import 'package:wger/database/powersync/database.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/routines/models/repetition_unit.dart';
 import 'package:wger/features/routines/models/set_config_data.dart';
 import 'package:wger/features/routines/models/weight_unit.dart';
-import 'package:wger/helpers/consts.dart';
-import 'package:wger/helpers/i18n.dart';
-import 'package:wger/helpers/misc.dart';
 
 enum LogTargetStatus {
   lessThanTarget,

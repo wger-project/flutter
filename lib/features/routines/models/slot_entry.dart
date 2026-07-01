@@ -17,12 +17,12 @@
  */
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:wger/core/consts.dart';
+import 'package:wger/core/json.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/routines/models/base_config.dart';
 import 'package:wger/features/routines/models/repetition_unit.dart';
 import 'package:wger/features/routines/models/weight_unit.dart';
-import 'package:wger/helpers/consts.dart';
-import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 part 'slot_entry.g.dart';

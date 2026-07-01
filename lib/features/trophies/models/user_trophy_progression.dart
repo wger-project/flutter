@@ -17,8 +17,8 @@
  */
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:wger/core/json.dart';
 import 'package:wger/features/trophies/models/trophy.dart';
-import 'package:wger/helpers/json.dart';
 
 part 'user_trophy_progression.g.dart';
 

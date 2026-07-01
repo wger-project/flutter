@@ -19,14 +19,14 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:wger/core/misc.dart';
+import 'package:wger/core/widgets/error.dart';
+import 'package:wger/core/widgets/progress_indicator.dart';
+import 'package:wger/core/widgets/wger_image.dart';
 import 'package:wger/features/nutrition/models/ingredient.dart';
 import 'package:wger/features/nutrition/widgets/macro_nutrients_table.dart';
 import 'package:wger/features/nutrition/widgets/nutri_score_badge.dart';
-import 'package:wger/helpers/misc.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/widgets/core/error.dart';
-import 'package:wger/widgets/core/progress_indicator.dart';
-import 'package:wger/widgets/core/wger_image.dart';
 
 class IngredientImageHeader extends StatelessWidget {
   const IngredientImageHeader({super.key, required this.mediaPath});

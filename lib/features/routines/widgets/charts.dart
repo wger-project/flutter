@@ -19,10 +19,10 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:wger/core/charts.dart';
+import 'package:wger/core/colors.dart';
+import 'package:wger/core/misc.dart';
 import 'package:wger/features/routines/models/log.dart';
-import 'package:wger/helpers/charts.dart';
-import 'package:wger/helpers/colors.dart';
-import 'package:wger/helpers/misc.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 class LogChartWidgetFl extends StatefulWidget {

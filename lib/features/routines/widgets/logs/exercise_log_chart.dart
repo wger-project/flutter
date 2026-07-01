@@ -17,11 +17,11 @@
  */
 
 import 'package:flutter/widgets.dart';
+import 'package:wger/core/colors.dart';
+import 'package:wger/core/misc.dart';
 import 'package:wger/features/measurements/widgets/charts.dart';
 import 'package:wger/features/routines/models/log.dart';
 import 'package:wger/features/routines/widgets/charts.dart';
-import 'package:wger/helpers/colors.dart';
-import 'package:wger/helpers/misc.dart';
 
 class ExerciseLogChart extends StatelessWidget {
   final Map<num, List<Log>> _logs;

@@ -22,11 +22,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/features/routines/models/routine.dart';
 import 'package:wger/features/routines/providers/routines_notifier.dart';
 import 'package:wger/features/routines/screens/routine_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/network_provider.dart';
 
 import '../../../../test_data/routines.dart';
 import '../../../fake_auth_environment.dart';

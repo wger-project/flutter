@@ -18,10 +18,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/features/exercises/providers/exercise_filters_notifier.dart';
 import 'package:wger/features/exercises/screens/add_exercise_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/network_provider.dart';
 
 import 'filter_modal.dart';
 

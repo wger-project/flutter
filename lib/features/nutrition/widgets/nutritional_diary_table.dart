@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:wger/core/colors.dart';
 import 'package:wger/features/nutrition/models/nutritional_goals.dart';
 import 'package:wger/features/nutrition/models/nutritional_plan.dart';
 import 'package:wger/features/nutrition/models/nutritional_values.dart';
 import 'package:wger/features/nutrition/screens/nutritional_diary_screen.dart';
-import 'package:wger/helpers/colors.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 class NutritionalDiaryTable extends StatelessWidget {

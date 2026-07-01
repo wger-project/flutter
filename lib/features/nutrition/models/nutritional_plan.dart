@@ -20,13 +20,13 @@ import 'package:collection/collection.dart';
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter/widgets.dart';
 import 'package:logging/logging.dart';
+import 'package:wger/core/consts.dart';
 import 'package:wger/database/powersync/database.dart';
 import 'package:wger/features/nutrition/models/log.dart';
 import 'package:wger/features/nutrition/models/meal.dart';
 import 'package:wger/features/nutrition/models/meal_item.dart';
 import 'package:wger/features/nutrition/models/nutritional_goals.dart';
 import 'package:wger/features/nutrition/models/nutritional_values.dart';
-import 'package:wger/helpers/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 class NutritionalPlan {

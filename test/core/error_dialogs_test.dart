@@ -19,7 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wger/core/error_dialogs.dart';
-import 'package:wger/helpers/errors.dart';
+import 'package:wger/core/errors.dart';
 
 void main() {
   group('formatApiErrors', () {

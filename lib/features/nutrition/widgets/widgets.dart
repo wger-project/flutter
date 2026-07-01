@@ -23,6 +23,12 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:flutter_zxing/flutter_zxing.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:logging/logging.dart';
+import 'package:wger/core/consts.dart';
+import 'package:wger/core/network/network_provider.dart';
+import 'package:wger/core/platform.dart';
+import 'package:wger/core/search_options.dart';
+import 'package:wger/core/widgets/core.dart';
+import 'package:wger/core/widgets/wger_image.dart';
 import 'package:wger/features/nutrition/models/ingredient.dart';
 import 'package:wger/features/nutrition/providers/ingredient_filters_notifier.dart';
 import 'package:wger/features/nutrition/providers/ingredient_repository.dart';
@@ -30,13 +36,7 @@ import 'package:wger/features/nutrition/widgets/helpers.dart';
 import 'package:wger/features/nutrition/widgets/ingredient_dialogs.dart';
 import 'package:wger/features/nutrition/widgets/ingredient_filter_dialog.dart';
 import 'package:wger/features/nutrition/widgets/nutri_score_badge.dart';
-import 'package:wger/helpers/consts.dart';
-import 'package:wger/helpers/platform.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/core/search_options.dart';
-import 'package:wger/providers/network_provider.dart';
-import 'package:wger/widgets/core/core.dart';
-import 'package:wger/widgets/core/wger_image.dart';
 
 class ScanReader extends StatelessWidget {
   const ScanReader();

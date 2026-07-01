@@ -18,10 +18,10 @@
 
 import 'package:flutter_riverpod/flutter_riverpod.dart' show Provider;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:wger/core/search_options.dart';
+import 'package:wger/core/shared_preferences.dart';
 import 'package:wger/features/nutrition/models/ingredient.dart';
 import 'package:wger/features/nutrition/models/ingredient_filters.dart';
-import 'package:wger/helpers/shared_preferences.dart';
-import 'package:wger/models/core/search_options.dart';
 
 part 'ingredient_filters_notifier.g.dart';
 
