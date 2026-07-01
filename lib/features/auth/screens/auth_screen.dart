@@ -17,8 +17,8 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:wger/features/auth/widgets/auth_card.dart';
 import 'package:wger/theme/theme.dart';
-import 'package:wger/widgets/auth/auth_card.dart';
 
 class AuthScreen extends StatelessWidget {
   const AuthScreen();

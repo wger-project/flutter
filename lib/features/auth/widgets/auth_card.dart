@@ -23,6 +23,8 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:wger/core/error_dialogs.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/core/exceptions/mfa_required_exception.dart';
+import 'package:wger/features/auth/screens/mfa_challenge_screen.dart';
+import 'package:wger/features/auth/widgets/advanced_sheet.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/errors.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -30,8 +32,6 @@ import 'package:wger/providers/app_link_router.dart';
 import 'package:wger/providers/auth_notifier.dart';
 import 'package:wger/providers/auth_state.dart';
 import 'package:wger/providers/network_provider.dart';
-import 'package:wger/screens/mfa_challenge_screen.dart';
-import 'package:wger/widgets/auth/advanced_sheet.dart';
 import 'package:wger/widgets/core/server_config_warning_dialog.dart';
 
 import 'advanced_footer.dart';
