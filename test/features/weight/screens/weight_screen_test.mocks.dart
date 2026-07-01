@@ -6,6 +6,8 @@
 import 'dart:async' as _i3;
 
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:wger/features/account/models/user_profile.dart' as _i15;
+import 'package:wger/features/account/providers/user_profile_repository.dart' as _i14;
 import 'package:wger/features/nutrition/models/ingredient.dart' as _i9;
 import 'package:wger/features/nutrition/models/ingredient_filters.dart' as _i10;
 import 'package:wger/features/nutrition/models/log.dart' as _i7;
@@ -17,8 +19,6 @@ import 'package:wger/features/nutrition/providers/nutrition_repository.dart' as 
 import 'package:wger/features/weight/models/weight_entry.dart' as _i13;
 import 'package:wger/features/weight/providers/body_weight_repository.dart' as _i12;
 import 'package:wger/models/core/search_options.dart' as _i11;
-import 'package:wger/models/user/user_profile.dart' as _i15;
-import 'package:wger/providers/user_profile_repository.dart' as _i14;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values

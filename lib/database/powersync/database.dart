@@ -26,6 +26,7 @@ import 'package:wger/database/converters/exercise_image_style_converter.dart';
 import 'package:wger/database/converters/time_of_day_converter.dart';
 import 'package:wger/database/converters/utc_datetime_converter.dart';
 import 'package:wger/database/converters/workout_impression_converter.dart';
+import 'package:wger/features/account/models/user_profile.dart';
 import 'package:wger/features/exercises/models/alias.dart';
 import 'package:wger/features/exercises/models/category.dart';
 import 'package:wger/features/exercises/models/comment.dart';
@@ -51,7 +52,6 @@ import 'package:wger/features/routines/models/weight_unit.dart';
 import 'package:wger/features/weight/models/weight_entry.dart';
 import 'package:wger/models/core/language.dart';
 import 'package:wger/models/core/license.dart';
-import 'package:wger/models/user/user_profile.dart';
 
 import 'powersync.dart';
 import 'tables/exercise.dart';

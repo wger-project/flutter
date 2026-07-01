@@ -19,8 +19,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/database/powersync/powersync.dart' show syncStatus;
+import 'package:wger/features/account/providers/account_notifier.dart';
+import 'package:wger/features/account/widgets/forms.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/account_notifier.dart';
 import 'package:wger/providers/auth_notifier.dart';
 import 'package:wger/providers/network_provider.dart';
 import 'package:wger/screens/form_screen.dart';
@@ -28,7 +29,6 @@ import 'package:wger/screens/settings_dashboard_widgets_screen.dart';
 import 'package:wger/widgets/core/about.dart';
 import 'package:wger/widgets/core/settings.dart';
 import 'package:wger/widgets/core/sync_status_dialog.dart';
-import 'package:wger/widgets/user/forms.dart';
 
 class MainAppBar extends ConsumerWidget implements PreferredSizeWidget {
   final String _title;

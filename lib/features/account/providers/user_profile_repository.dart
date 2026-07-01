@@ -19,7 +19,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/database/powersync/database.dart';
-import 'package:wger/models/user/user_profile.dart';
+import 'package:wger/features/account/models/user_profile.dart';
 
 final userProfileRepositoryProvider = Provider<UserProfileRepository>((ref) {
   final db = ref.read(driftPowerSyncDatabase);

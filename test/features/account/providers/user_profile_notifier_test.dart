@@ -20,9 +20,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:wger/models/user/user_profile.dart';
-import 'package:wger/providers/user_profile_notifier.dart';
-import 'package:wger/providers/user_profile_repository.dart';
+import 'package:wger/features/account/models/user_profile.dart';
+import 'package:wger/features/account/providers/user_profile_notifier.dart';
+import 'package:wger/features/account/providers/user_profile_repository.dart';
 
 import 'user_profile_notifier_test.mocks.dart';
 

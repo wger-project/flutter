@@ -1,5 +1,5 @@
-import 'package:wger/models/user/account.dart';
-import 'package:wger/models/user/user_profile.dart';
+import 'package:wger/features/account/models/account.dart';
+import 'package:wger/features/account/models/user_profile.dart';
 
 const tAccount1 = Account(
   username: 'super root',

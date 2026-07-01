@@ -19,7 +19,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:wger/providers/account_repository.dart';
+import 'package:wger/features/account/providers/account_repository.dart';
 import 'package:wger/providers/base_provider.dart';
 
 import 'account_repository_test.mocks.dart';

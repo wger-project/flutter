@@ -3,13 +3,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:wger/features/account/providers/account_notifier.dart';
 import 'package:wger/features/exercises/models/exercise_submission_images.dart';
 import 'package:wger/features/exercises/providers/add_exercise_notifier.dart';
 import 'package:wger/features/exercises/widgets/add_exercise/image_details_form.dart';
 import 'package:wger/features/exercises/widgets/add_exercise/mixins/image_picker_mixin.dart';
 import 'package:wger/features/exercises/widgets/add_exercise/preview_images.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/account_notifier.dart';
 
 /// Step 5 of exercise creation wizard - Image upload with license metadata
 ///

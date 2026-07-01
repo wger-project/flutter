@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:intl/intl.dart';
+import 'package:wger/features/account/providers/user_profile_notifier.dart';
 import 'package:wger/features/measurements/widgets/charts.dart';
 import 'package:wger/features/measurements/widgets/helpers.dart';
 import 'package:wger/features/nutrition/providers/nutrition_notifier.dart';
@@ -26,7 +27,6 @@ import 'package:wger/features/weight/models/weight_entry.dart';
 import 'package:wger/features/weight/providers/body_weight_notifier.dart';
 import 'package:wger/features/weight/widgets/forms.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/user_profile_notifier.dart';
 import 'package:wger/screens/form_screen.dart';
 import 'package:wger/widgets/core/async_value_widget.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';

@@ -20,10 +20,10 @@ import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wger/database/powersync/database.dart';
-import 'package:wger/models/user/user_profile.dart';
-import 'package:wger/providers/user_profile_repository.dart';
+import 'package:wger/features/account/models/user_profile.dart';
+import 'package:wger/features/account/providers/user_profile_repository.dart';
 
-import '../helpers/in_memory_drift.dart';
+import '../../../helpers/in_memory_drift.dart';
 
 void main() {
   late DriftPowersyncDatabase db;

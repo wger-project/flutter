@@ -19,13 +19,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:wger/features/account/models/user_profile.dart';
+import 'package:wger/features/account/providers/account_notifier.dart';
+import 'package:wger/features/account/providers/user_profile_notifier.dart';
 import 'package:wger/helpers/misc.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/user/user_profile.dart';
-import 'package:wger/providers/account_notifier.dart';
 import 'package:wger/providers/auth_notifier.dart';
 import 'package:wger/providers/network_provider.dart';
-import 'package:wger/providers/user_profile_notifier.dart';
 import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/core/form_submit_button.dart';
 

@@ -31,6 +31,8 @@ import 'package:wger/core/error_dialogs.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/core/exceptions/mfa_required_exception.dart';
 import 'package:wger/database/powersync/powersync.dart';
+import 'package:wger/features/account/providers/account_notifier.dart';
+import 'package:wger/features/account/providers/user_profile_notifier.dart';
 import 'package:wger/features/gallery/providers/gallery_notifier.dart';
 import 'package:wger/features/nutrition/providers/nutrition_notifier.dart';
 import 'package:wger/features/routines/providers/routines_notifier.dart';
@@ -39,14 +41,12 @@ import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/errors.dart';
 import 'package:wger/helpers/jwt.dart';
 import 'package:wger/helpers/shared_preferences.dart';
-import 'package:wger/providers/account_notifier.dart';
 import 'package:wger/providers/auth_credentials_storage.dart';
 import 'package:wger/providers/auth_http_client.dart';
 import 'package:wger/providers/auth_state.dart';
 import 'package:wger/providers/helpers.dart';
 import 'package:wger/providers/network_provider.dart';
 import 'package:wger/providers/server_gating.dart';
-import 'package:wger/providers/user_profile_notifier.dart';
 
 part 'auth_notifier.g.dart';
 

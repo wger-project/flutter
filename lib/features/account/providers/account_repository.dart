@@ -18,7 +18,7 @@
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
-import 'package:wger/models/user/account.dart';
+import 'package:wger/features/account/models/account.dart';
 import 'package:wger/providers/base_provider.dart';
 import 'package:wger/providers/wger_base.dart';
 

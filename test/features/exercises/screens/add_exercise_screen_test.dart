@@ -21,6 +21,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:wger/features/account/models/account.dart';
+import 'package:wger/features/account/providers/account_repository.dart';
 import 'package:wger/features/exercises/models/category.dart';
 import 'package:wger/features/exercises/models/equipment.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
@@ -31,8 +33,6 @@ import 'package:wger/features/exercises/providers/exercises_notifier.dart';
 import 'package:wger/features/exercises/screens/add_exercise_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/models/core/language.dart';
-import 'package:wger/models/user/account.dart';
-import 'package:wger/providers/account_repository.dart';
 import 'package:wger/providers/network_provider.dart';
 
 import '../../../fake_connectivity.dart';

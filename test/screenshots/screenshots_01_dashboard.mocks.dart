@@ -8,6 +8,8 @@ import 'dart:async' as _i10;
 import 'package:image_picker/image_picker.dart' as _i11;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i32;
+import 'package:wger/features/account/models/user_profile.dart' as _i27;
+import 'package:wger/features/account/providers/user_profile_repository.dart' as _i26;
 import 'package:wger/features/gallery/models/image.dart' as _i2;
 import 'package:wger/features/gallery/providers/gallery_repository.dart' as _i9;
 import 'package:wger/features/measurements/models/measurement_category.dart' as _i24;
@@ -36,9 +38,7 @@ import 'package:wger/features/trophies/providers/trophy_repository.dart' as _i31
 import 'package:wger/features/weight/models/weight_entry.dart' as _i22;
 import 'package:wger/features/weight/providers/body_weight_repository.dart' as _i21;
 import 'package:wger/models/core/search_options.dart' as _i20;
-import 'package:wger/models/user/user_profile.dart' as _i27;
 import 'package:wger/providers/base_provider.dart' as _i8;
-import 'package:wger/providers/user_profile_repository.dart' as _i26;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values

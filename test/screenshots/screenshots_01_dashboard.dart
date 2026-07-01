@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:wger/features/account/providers/user_profile_repository.dart';
 import 'package:wger/features/gallery/providers/gallery_repository.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
@@ -33,7 +34,6 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/auth_notifier.dart';
 import 'package:wger/providers/auth_state.dart';
 import 'package:wger/providers/network_provider.dart';
-import 'package:wger/providers/user_profile_repository.dart';
 import 'package:wger/screens/home_tabs_screen.dart';
 import 'package:wger/theme/theme.dart';
 
