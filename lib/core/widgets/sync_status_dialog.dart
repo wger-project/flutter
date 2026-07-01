@@ -17,9 +17,9 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:powersync/powersync.dart'
     show CredentialsException, PowerSyncProtocolException, SyncResponseException, SyncStatus;
+import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/powersync/connector.dart' show RetryableUploadException;
 
@@ -141,9 +141,7 @@ class SyncStatusDialog extends StatelessWidget {
           Text(
             lastSynced == null
                 ? '-/-'
-                : DateFormat.yMd(
-                    Localizations.localeOf(context).languageCode,
-                  ).add_Hms().format(lastSynced.toLocal()),
+                : localizedDate(context).add_Hms().format(lastSynced.toLocal()),
           ),
 
           // Raw error in an expandable section. Only shown when an error

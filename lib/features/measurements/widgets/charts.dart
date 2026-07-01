@@ -21,6 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:wger/core/charts.dart';
 import 'package:wger/core/consts.dart';
+import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 class MeasurementOverallChangeWidget extends StatelessWidget {
@@ -79,9 +80,7 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
       touchTooltipData: LineTouchTooltipData(
         getTooltipColor: (touchedSpot) => Theme.of(context).colorScheme.primaryContainer,
         getTooltipItems: (touchedSpots) {
-          final numberFormat = NumberFormat.decimalPattern(
-            Localizations.localeOf(context).toString(),
-          );
+          final numberFormat = localizedNumberFormat(context);
 
           return touchedSpots.map((touchedSpot) {
             final msSinceEpoch = touchedSpot.x.toInt();
@@ -105,7 +104,7 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
   }
 
   LineChartData mainData() {
-    final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
+    final numberFormat = localizedNumberFormat(context);
 
     return LineChartData(
       lineTouchData: tooltipData(),
@@ -144,7 +143,7 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
               if (DateTime.fromMillisecondsSinceEpoch(meta.min.toInt()).year !=
                   DateTime.fromMillisecondsSinceEpoch(meta.max.toInt()).year) {
                 return Text(
-                  DateFormat.yMd(Localizations.localeOf(context).languageCode).format(date),
+                  localizedDate(context).format(date),
                 );
               }
               return Text(

@@ -18,7 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
+import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/features/nutrition/models/nutritional_plan.dart';
 import 'package:wger/features/nutrition/providers/nutrition_notifier.dart';
@@ -45,7 +45,7 @@ class NutritionalDiaryScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(DateFormat.yMd(Localizations.localeOf(context).languageCode).format(args.date)),
+        title: Text(localizedDate(context).format(args.date)),
       ),
       body: WidescreenWrapper(
         child: Consumer(

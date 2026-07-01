@@ -18,8 +18,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
-import 'package:intl/intl.dart';
 import 'package:wger/core/form_screen.dart';
+import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/core/widgets/async_value_widget.dart';
 import 'package:wger/core/widgets/progress_indicator.dart';
 import 'package:wger/features/account/providers/user_profile_notifier.dart';
@@ -37,7 +37,7 @@ class WeightOverview extends riverpod.ConsumerWidget {
   @override
   Widget build(BuildContext context, riverpod.WidgetRef ref) {
     final profileAsync = ref.watch(userProfileProvider);
-    final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
+    final numberFormat = localizedNumberFormat(context);
     final plans = ref.watch(nutritionProvider).value?.plans ?? const [];
 
     return AsyncValueWidget<List<WeightEntry>>(
@@ -92,9 +92,7 @@ class WeightOverview extends riverpod.ConsumerWidget {
                         '${numberFormat.format(currentEntry.weight)} ${weightUnit(profile.isMetric, context)}',
                       ),
                       subtitle: Text(
-                        DateFormat.yMd(
-                          Localizations.localeOf(context).languageCode,
-                        ).add_Hm().format(currentEntry.date),
+                        localizedDate(context).add_Hm().format(currentEntry.date),
                       ),
                       trailing: PopupMenuButton(
                         itemBuilder: (BuildContext context) {

@@ -19,8 +19,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg_icons/flutter_svg_icons.dart';
-import 'package:intl/intl.dart';
 import 'package:wger/core/form_screen.dart';
+import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/core/widgets/async_value_widget.dart';
 import 'package:wger/core/widgets/dashboard/widgets/nothing_found.dart';
 import 'package:wger/core/widgets/error.dart';
@@ -107,9 +107,7 @@ class DashboardNutritionWidget extends ConsumerWidget {
               ListTile(
                 title: Text(plan.description, style: Theme.of(context).textTheme.headlineSmall),
                 subtitle: Text(
-                  DateFormat.yMd(
-                    Localizations.localeOf(context).languageCode,
-                  ).format(plan.creationDate),
+                  localizedDate(context).format(plan.creationDate),
                 ),
                 leading: Icon(
                   Icons.restaurant,

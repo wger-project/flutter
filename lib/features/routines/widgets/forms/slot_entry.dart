@@ -18,11 +18,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/error_dialogs.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/core/form_validators.dart';
+import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/core/widgets/decimal_input.dart';
 import 'package:wger/core/widgets/form_submit_button.dart';
@@ -129,7 +129,7 @@ class _SlotEntryFormState extends ConsumerState<SlotEntryForm> {
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
     final languageCode = Localizations.localeOf(context).languageCode;
-    final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
+    final numberFormat = localizedNumberFormat(context);
 
     final provider = ref.read(routinesRiverpodProvider.notifier);
     final isOnline = ref.watch(networkStatusProvider);

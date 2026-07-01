@@ -17,8 +17,8 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:wger/core/consts.dart';
+import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/core/number_input.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
@@ -64,7 +64,7 @@ class DecimalInputWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
-    final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
+    final numberFormat = localizedNumberFormat(context);
 
     return TextFormField(
       initialValue: value == null ? '' : numberFormat.format(value),

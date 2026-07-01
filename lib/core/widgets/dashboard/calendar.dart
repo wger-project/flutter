@@ -18,10 +18,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
-import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/date.dart';
+import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/core/json.dart';
 import 'package:wger/core/widgets/progress_indicator.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
@@ -83,7 +83,7 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
     required List<WorkoutSession> sessions,
     required List<NutritionalPlan> plans,
   }) {
-    final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
+    final numberFormat = localizedNumberFormat(context);
     final i18n = AppLocalizations.of(context);
     final events = <String, List<Event>>{};
 

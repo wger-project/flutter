@@ -18,7 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
+import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/core/widgets/async_value_widget.dart';
 import 'package:wger/core/widgets/confirm_delete_dialog.dart';
@@ -39,7 +39,7 @@ class _RoutinesListState extends ConsumerState<RoutinesList> {
 
   @override
   Widget build(BuildContext context) {
-    final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
+    final dateFormat = localizedDate(context);
     final routineProvider = ref.read(routinesRiverpodProvider.notifier);
     final routinesAsync = ref.watch(routinesRiverpodProvider);
     final isOnline = ref.watch(networkStatusProvider);

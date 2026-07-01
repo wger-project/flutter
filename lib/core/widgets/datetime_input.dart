@@ -17,7 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:wger/core/formatting/formatting.dart';
 
 /// Read-only field that opens a time picker on tap.
 ///
@@ -181,7 +181,7 @@ class _DateInputWidgetState extends State<DateInputWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
+    final dateFormat = localizedDate(context);
     // Keyed initialValue, not a controller: a controller notifies the enclosing
     // Form on assignment, which crashes if that happens during a build.
     return TextFormField(

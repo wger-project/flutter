@@ -18,9 +18,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/core/consts.dart';
+import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/core/widgets/core.dart';
 import 'package:wger/core/widgets/error.dart';
 import 'package:wger/features/routines/models/log.dart';
@@ -236,7 +236,7 @@ class LogsPastLogsWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final logProvider = ref.read(gymLogProvider.notifier);
-    final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
+    final dateFormat = localizedDate(context);
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8),

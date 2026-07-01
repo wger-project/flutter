@@ -18,7 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
-import 'package:intl/intl.dart';
+import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/core/widgets/async_value_widget.dart';
 import 'package:wger/core/widgets/confirm_delete_dialog.dart';
 import 'package:wger/core/widgets/text_prompt.dart';
@@ -128,14 +128,8 @@ class NutritionalPlansList extends riverpod.ConsumerWidget {
                   children: [
                     Text(
                       currentPlan.endDate != null
-                          ? 'from ${DateFormat.yMd(
-                              Localizations.localeOf(context).languageCode,
-                            ).format(currentPlan.startDate)} to ${DateFormat.yMd(
-                              Localizations.localeOf(context).languageCode,
-                            ).format(currentPlan.endDate!)}'
-                          : 'from ${DateFormat.yMd(
-                              Localizations.localeOf(context).languageCode,
-                            ).format(currentPlan.startDate)} (open ended)',
+                          ? 'from ${localizedDate(context).format(currentPlan.startDate)} to ${localizedDate(context).format(currentPlan.endDate!)}'
+                          : 'from ${localizedDate(context).format(currentPlan.startDate)} (open ended)',
                     ),
                     _buildWeightChangeInfo(
                       context,

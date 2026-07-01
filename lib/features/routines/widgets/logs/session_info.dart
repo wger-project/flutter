@@ -17,7 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/features/routines/models/session.dart';
 import 'package:wger/features/routines/widgets/forms/session.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -47,9 +47,7 @@ class _SessionInfoState extends State<SessionInfo> {
               style: Theme.of(context).textTheme.headlineSmall,
             ),
             subtitle: Text(
-              DateFormat.yMd(
-                Localizations.localeOf(context).languageCode,
-              ).format(widget._session.date),
+              localizedDate(context).format(widget._session.date),
             ),
             onTap: () => setState(() => editMode = !editMode),
             trailing: Icon(editMode ? Icons.edit_off : Icons.edit),

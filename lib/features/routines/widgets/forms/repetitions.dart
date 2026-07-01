@@ -22,6 +22,7 @@ import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/form_validators.dart';
+import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/core/i18n.dart';
 import 'package:wger/core/number_input.dart';
 import 'package:wger/features/routines/models/log.dart';
@@ -124,7 +125,7 @@ class _RepetitionInputWidgetState extends ConsumerState<RepetitionInputWidget> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
+    _numberFormat = localizedNumberFormat(context);
   }
 
   @override

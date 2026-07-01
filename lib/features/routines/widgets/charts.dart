@@ -18,9 +18,9 @@
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:wger/core/charts.dart';
 import 'package:wger/core/colors.dart';
+import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/core/misc.dart';
 import 'package:wger/features/routines/models/log.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -101,7 +101,7 @@ class _LogChartWidgetFlState extends State<LogChartWidgetFl> {
 
               final DateTime date = DateTime.fromMillisecondsSinceEpoch(value.toInt());
               return Text(
-                DateFormat.yMd(Localizations.localeOf(context).languageCode).format(date),
+                localizedDate(context).format(date),
               );
             },
             interval: chartGetInterval(

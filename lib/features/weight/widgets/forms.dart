@@ -19,8 +19,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:intl/intl.dart';
 import 'package:wger/core/consts.dart';
+import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/core/number_input.dart';
 import 'package:wger/core/widgets/datetime_input.dart';
 import 'package:wger/core/widgets/form_submit_button.dart';
@@ -39,7 +39,7 @@ class WeightForm extends riverpod.ConsumerWidget {
 
   @override
   Widget build(BuildContext context, riverpod.WidgetRef ref) {
-    final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
+    final numberFormat = localizedNumberFormat(context);
 
     if (weightController.text.isEmpty && _weightEntry.weight != 0) {
       weightController.text = numberFormat.format(_weightEntry.weight);

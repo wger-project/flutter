@@ -18,8 +18,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:wger/core/consts.dart';
+import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/core/number_input.dart';
 import 'package:wger/core/validators.dart';
 import 'package:wger/core/widgets/datetime_input.dart';
@@ -226,7 +226,7 @@ class IngredientFormState extends ConsumerState<IngredientForm> {
     final suggestions = widget.recent
         .where((e) => e.ingredient?.name.toLowerCase().contains(queryLower) ?? false)
         .toList();
-    final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
+    final numberFormat = localizedNumberFormat(context);
 
     return Container(
       margin: const EdgeInsets.all(20),

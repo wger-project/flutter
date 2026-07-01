@@ -18,8 +18,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:wger/core/form_screen.dart';
+import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/measurements/widgets/charts.dart';
@@ -37,7 +37,7 @@ class EntriesList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final plans = ref.watch(nutritionProvider).value?.plans ?? const [];
-    final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
+    final numberFormat = localizedNumberFormat(context);
     final provider = ref.read(measurementProvider.notifier);
 
     final entriesAll = _category.entries
@@ -45,7 +45,7 @@ class EntriesList extends ConsumerWidget {
         .toList();
     final entries7dAvg = moving7dAverage(entriesAll);
 
-    final datetimeFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
+    final datetimeFormat = localizedDate(context);
 
     return Column(
       children: [

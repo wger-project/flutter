@@ -19,8 +19,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:intl/intl.dart';
 import 'package:wger/core/form_screen.dart';
+import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/core/platform.dart';
 import 'package:wger/core/widgets/text_prompt.dart';
 import 'package:wger/core/widgets/wger_image.dart';
@@ -84,7 +84,7 @@ class ImageDetail extends ConsumerWidget {
       child: Column(
         children: [
           Text(
-            DateFormat.yMd(Localizations.localeOf(context).languageCode).format(image.date),
+            localizedDate(context).format(image.date),
             style: Theme.of(context).textTheme.headlineSmall,
           ),
           Expanded(
