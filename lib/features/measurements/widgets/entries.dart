@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/core/form_screen.dart';
 import 'package:wger/core/formatting/formatting.dart';
+import 'package:wger/core/snackbar.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/measurements/widgets/charts.dart';
@@ -94,13 +95,10 @@ class EntriesList extends ConsumerWidget {
 
                             // and inform the user
                             if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    AppLocalizations.of(context).successfullyDeleted,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
+                              showSnackbar(
+                                context,
+                                AppLocalizations.of(context).successfullyDeleted,
+                                center: true,
                               );
                             }
                           },

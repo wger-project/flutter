@@ -21,6 +21,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/core/number_input.dart';
+import 'package:wger/core/snackbar.dart';
 import 'package:wger/core/validators.dart';
 import 'package:wger/core/widgets/datetime_input.dart';
 import 'package:wger/core/widgets/decimal_input.dart';
@@ -126,14 +127,7 @@ Widget getIngredientLogForm(NutritionalPlan plan) {
     recent: plan.dedupDiaryEntries,
     onSave: (BuildContext context, WidgetRef ref, MealItem mealItem, DateTime? dt) {
       ref.read(nutritionProvider.notifier).logIngredientToDiary(mealItem, plan.id!, dt);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            AppLocalizations.of(context).ingredientLogged,
-            textAlign: TextAlign.center,
-          ),
-        ),
-      );
+      showSnackbar(context, AppLocalizations.of(context).ingredientLogged, center: true);
     },
     withDate: true,
   );

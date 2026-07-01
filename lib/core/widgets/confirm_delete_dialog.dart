@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:wger/core/snackbar.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 /// Shows a "confirm delete" dialog for [itemName].
@@ -58,11 +59,7 @@ Future<void> showConfirmDeleteDialog(
               }
               if (context.mounted) {
                 onDeleted?.call();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(i18n.successfullyDeleted, textAlign: TextAlign.center),
-                  ),
-                );
+                showSnackbar(context, i18n.successfullyDeleted, center: true);
               }
             },
           ),

@@ -21,6 +21,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/formatting/formatting.dart';
+import 'package:wger/core/snackbar.dart';
 import 'package:wger/core/widgets/core.dart';
 import 'package:wger/core/widgets/error.dart';
 import 'package:wger/features/routines/models/log.dart';
@@ -256,9 +257,7 @@ class LogsPastLogsWidget extends ConsumerWidget {
               onTap: () {
                 logProvider.setLog(pastLog);
                 ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(AppLocalizations.of(context).dataCopied)),
-                );
+                showSnackbar(context, AppLocalizations.of(context).dataCopied);
               },
               contentPadding: const EdgeInsets.symmetric(horizontal: 40),
             );
@@ -371,7 +370,7 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
                 i18n: i18n,
               );
               if (error != null) {
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error)));
+                showSnackbar(context, error);
                 return;
               }
 
@@ -387,14 +386,11 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
               }
 
               gymProvider.markSlotPageAsDone(page.uuid, isDone: true);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  duration: const Duration(seconds: 2),
-                  content: Text(
-                    i18n.successfullySaved,
-                    textAlign: TextAlign.center,
-                  ),
-                ),
+              showSnackbar(
+                context,
+                i18n.successfullySaved,
+                center: true,
+                duration: const Duration(seconds: 2),
               );
               widget.controller.nextPage(
                 duration: DEFAULT_ANIMATION_DURATION,

@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
+import 'package:wger/core/snackbar.dart';
 import 'package:wger/features/routines/models/log.dart';
 import 'package:wger/features/routines/models/repetition_unit.dart';
 import 'package:wger/features/routines/models/weight_unit.dart';
@@ -94,7 +95,7 @@ class _LogEditDialogState extends ConsumerState<LogEditDialog> {
       i18n: i18n,
     );
     if (error != null) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error)));
+      showSnackbar(context, error);
       return;
     }
 
@@ -113,11 +114,11 @@ class _LogEditDialogState extends ConsumerState<LogEditDialog> {
       if (!mounted) {
         return;
       }
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          duration: const Duration(seconds: 2),
-          content: Text(i18n.successfullySaved, textAlign: TextAlign.center),
-        ),
+      showSnackbar(
+        context,
+        i18n.successfullySaved,
+        center: true,
+        duration: const Duration(seconds: 2),
       );
       Navigator.of(context).pop();
     } catch (error, stack) {

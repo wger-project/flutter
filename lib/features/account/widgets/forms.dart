@@ -22,6 +22,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:wger/core/misc.dart';
 import 'package:wger/core/network/auth_notifier.dart';
 import 'package:wger/core/network/network_provider.dart';
+import 'package:wger/core/snackbar.dart';
 import 'package:wger/core/widgets/form_submit_button.dart';
 import 'package:wger/features/account/models/user_profile.dart';
 import 'package:wger/features/account/providers/account_notifier.dart';
@@ -126,11 +127,7 @@ class _UserProfileFormState extends ConsumerState<UserProfileForm> {
                       if (!context.mounted) {
                         return;
                       }
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(i18n.verifiedEmailInfo(account.email)),
-                        ),
-                      );
+                      showSnackbar(context, i18n.verifiedEmailInfo(account.email));
                     }
                   : null,
               child: Text(i18n.verify),
@@ -183,12 +180,9 @@ class _UserProfileFormState extends ConsumerState<UserProfileForm> {
                 return;
               }
               Navigator.of(context).pop();
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    emailChanged ? i18n.verifiedEmailInfo(newEmail) : i18n.successfullySaved,
-                  ),
-                ),
+              showSnackbar(
+                context,
+                emailChanged ? i18n.verifiedEmailInfo(newEmail) : i18n.successfullySaved,
               );
             },
             label: i18n.save,

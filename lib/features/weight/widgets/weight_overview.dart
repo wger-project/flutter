@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:wger/core/form_screen.dart';
 import 'package:wger/core/formatting/formatting.dart';
+import 'package:wger/core/snackbar.dart';
 import 'package:wger/core/widgets/async_value_widget.dart';
 import 'package:wger/core/widgets/progress_indicator.dart';
 import 'package:wger/features/account/providers/user_profile_notifier.dart';
@@ -117,13 +118,10 @@ class WeightOverview extends riverpod.ConsumerWidget {
 
                                 // and inform the user
                                 if (context.mounted) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        AppLocalizations.of(context).successfullyDeleted,
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
+                                  showSnackbar(
+                                    context,
+                                    AppLocalizations.of(context).successfullyDeleted,
+                                    center: true,
                                   );
                                 }
                               },

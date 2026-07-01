@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wger/core/snackbar.dart';
 import 'package:wger/core/widgets/datetime_input.dart';
 import 'package:wger/features/nutrition/models/meal.dart';
 import 'package:wger/features/nutrition/providers/nutrition_notifier.dart';
@@ -140,14 +141,7 @@ class _LogMealScreenState extends ConsumerState<LogMealScreen> {
                                 .logMealToDiary(meal, loggedDate);
 
                             if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    i18n.mealLogged,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              );
+                              showSnackbar(context, i18n.mealLogged, center: true);
 
                               Navigator.of(context).pop();
                               if (args.popTwice) {

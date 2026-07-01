@@ -21,6 +21,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg_icons/flutter_svg_icons.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/form_screen.dart';
+import 'package:wger/core/snackbar.dart';
 import 'package:wger/core/widgets/core.dart';
 import 'package:wger/core/widgets/progress_indicator.dart';
 import 'package:wger/features/nutrition/models/meal.dart';
@@ -181,14 +182,7 @@ class MealItemEditableFullTile extends ConsumerWidget {
                 ref.read(nutritionProvider.notifier).deleteMealItem(_item);
 
                 // and inform the user
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      i18n.successfullyDeleted,
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                );
+                showSnackbar(context, i18n.successfullyDeleted, center: true);
               },
             )
           : null,
@@ -404,14 +398,7 @@ class MealEditingToolbar extends ConsumerWidget {
               ref.read(nutritionProvider.notifier).deleteMeal(meal);
 
               // and inform the user
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    AppLocalizations.of(context).successfullyDeleted,
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              );
+              showSnackbar(context, AppLocalizations.of(context).successfullyDeleted, center: true);
             },
             label: Text(AppLocalizations.of(context).delete),
             icon: const Icon(Icons.delete),
