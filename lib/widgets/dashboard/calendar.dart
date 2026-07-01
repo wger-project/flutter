@@ -24,14 +24,14 @@ import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/nutrition/models/nutritional_plan.dart';
 import 'package:wger/features/nutrition/providers/nutrition_notifier.dart';
+import 'package:wger/features/routines/models/session.dart';
+import 'package:wger/features/routines/providers/routines_notifier.dart';
 import 'package:wger/features/weight/models/weight_entry.dart';
 import 'package:wger/features/weight/providers/body_weight_notifier.dart';
 import 'package:wger/helpers/consts.dart';
 import 'package:wger/helpers/date.dart';
 import 'package:wger/helpers/json.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/workouts/session.dart';
-import 'package:wger/providers/routines_notifier.dart';
 import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
 

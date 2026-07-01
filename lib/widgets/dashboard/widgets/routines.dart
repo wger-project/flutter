@@ -19,20 +19,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:wger/features/routines/models/day_data.dart';
+import 'package:wger/features/routines/models/routine.dart';
+import 'package:wger/features/routines/providers/routines_notifier.dart';
+import 'package:wger/features/routines/screens/gym_mode.dart';
+import 'package:wger/features/routines/screens/routine_screen.dart';
+import 'package:wger/features/routines/widgets/forms/routine.dart';
 import 'package:wger/helpers/date.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/workouts/day_data.dart';
-import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/providers/network_provider.dart';
-import 'package:wger/providers/routines_notifier.dart';
-import 'package:wger/screens/gym_mode.dart';
-import 'package:wger/screens/routine_screen.dart';
 import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/core/async_value_widget.dart';
 import 'package:wger/widgets/core/core.dart';
 import 'package:wger/widgets/core/error.dart';
 import 'package:wger/widgets/dashboard/widgets/nothing_found.dart';
-import 'package:wger/widgets/routines/forms/routine.dart';
 
 class DashboardRoutineWidget extends ConsumerStatefulWidget {
   const DashboardRoutineWidget();

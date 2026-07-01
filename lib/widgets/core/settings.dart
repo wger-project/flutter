@@ -18,8 +18,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
+import 'package:wger/features/routines/screens/settings_plates_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/screens/settings_plates_screen.dart';
 import 'package:wger/widgets/core/settings/data_privacy.dart';
 import 'package:wger/widgets/core/settings/image_cache.dart';
 import 'package:wger/widgets/core/settings/language.dart';

@@ -1,0 +1,95 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (c) 2020 - 2026 wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+import 'package:clock/clock.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wger/features/routines/models/session.dart';
+import 'package:wger/features/routines/providers/gym_state_notifier.dart';
+import 'package:wger/features/routines/providers/workout_session_notifier.dart';
+import 'package:wger/features/routines/widgets/forms/session.dart';
+import 'package:wger/features/routines/widgets/gym_mode/navigation.dart';
+import 'package:wger/helpers/consts.dart';
+import 'package:wger/helpers/date.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/widgets/core/async_value_widget.dart';
+
+class SessionPage extends ConsumerStatefulWidget {
+  final PageController _controller;
+
+  const SessionPage(this._controller);
+
+  @override
+  ConsumerState<SessionPage> createState() => _SessionPageState();
+}
+
+class _SessionPageState extends ConsumerState<SessionPage> {
+  @override
+  Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
+    final gymState = ref.read(gymStateProvider);
+
+    return Column(
+      children: [
+        NavigationHeader(i18n.workoutSession, widget._controller),
+        Expanded(
+          child: AsyncValueWidget<List<WorkoutSession>>(
+            value: ref.watch(workoutSessionProvider),
+            loggerName: 'SessionPage',
+            data: (sessions) {
+              final found = sessions.firstWhere(
+                (s) => s.date.isSameDayAs(clock.now()) && s.routineId == gymState.routine.id,
+                orElse: () => WorkoutSession(
+                  dayId: gymState.dayId,
+                  date: clock.now(),
+                  routineId: gymState.routine.id,
+                ),
+              );
+
+              // Prefill missing times. A session may have been created lazily
+              // while logging sets (without times), so fall back to the gym
+              // session's start and the current time.
+              final session = found.copyWith(
+                timeStart: found.timeStart ?? gymState.startTime,
+                timeEnd: found.timeEnd ?? TimeOfDay.fromDateTime(clock.now()),
+              );
+
+              return Column(
+                children: [
+                  Expanded(child: Container()),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    child: SessionForm(
+                      gymState.routine.id!,
+                      onSaved: () => widget._controller.nextPage(
+                        duration: DEFAULT_ANIMATION_DURATION,
+                        curve: DEFAULT_ANIMATION_CURVE,
+                      ),
+                      session: session,
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
+        NavigationFooter(widget._controller),
+      ],
+    );
+  }
+}

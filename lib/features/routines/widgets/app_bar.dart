@@ -1,0 +1,158 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (c) 2020,  wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wger/features/exercises/screens/add_exercise_screen.dart';
+import 'package:wger/features/exercises/screens/exercises_screen.dart';
+import 'package:wger/features/routines/models/routine.dart';
+import 'package:wger/features/routines/providers/routines_notifier.dart';
+import 'package:wger/features/routines/screens/routine_edit_screen.dart';
+import 'package:wger/features/routines/screens/routine_logs_screen.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/providers/network_provider.dart';
+
+enum _RoutineAppBarOptions {
+  list,
+  contribute,
+}
+
+enum _RoutineDetailBarOptions {
+  edit,
+  delete,
+  logs,
+}
+
+class RoutineListAppBar extends ConsumerWidget implements PreferredSizeWidget {
+  const RoutineListAppBar();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final i18n = AppLocalizations.of(context);
+    final isOnline = ref.watch(networkStatusProvider);
+
+    return AppBar(
+      title: Text(i18n.routines),
+      actions: [
+        PopupMenuButton(
+          itemBuilder: (context) {
+            return [
+              PopupMenuItem<_RoutineAppBarOptions>(
+                value: _RoutineAppBarOptions.list,
+                child: Text(i18n.exerciseList),
+              ),
+              PopupMenuItem<_RoutineAppBarOptions>(
+                value: _RoutineAppBarOptions.contribute,
+                enabled: isOnline,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(i18n.contributeExercise),
+                    if (!isOnline) ...[
+                      const SizedBox(width: 8),
+                      Icon(
+                        Icons.cloud_off,
+                        size: 16,
+                        color: Theme.of(context).colorScheme.outline,
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ];
+          },
+          onSelected: (value) {
+            switch (value) {
+              case _RoutineAppBarOptions.contribute:
+                Navigator.of(context).pushNamed(AddExerciseScreen.routeName);
+                break;
+              case _RoutineAppBarOptions.list:
+                Navigator.of(context).pushNamed(ExercisesScreen.routeName);
+                break;
+            }
+          },
+        ),
+      ],
+    );
+  }
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+}
+
+class RoutineDetailAppBar extends ConsumerWidget implements PreferredSizeWidget {
+  final Routine routine;
+
+  const RoutineDetailAppBar(this.routine);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final i18n = AppLocalizations.of(context);
+    final provider = ref.read(routinesRiverpodProvider.notifier);
+    final isOnline = ref.watch(networkStatusProvider);
+
+    return AppBar(
+      title: Text(routine.name),
+      actions: [
+        PopupMenuButton(
+          itemBuilder: (context) {
+            return [
+              PopupMenuItem<_RoutineDetailBarOptions>(
+                value: _RoutineDetailBarOptions.logs,
+                child: Text(i18n.labelWorkoutLogs),
+              ),
+              PopupMenuItem<_RoutineDetailBarOptions>(
+                value: _RoutineDetailBarOptions.edit,
+                enabled: isOnline,
+                child: Text(i18n.edit),
+              ),
+              PopupMenuItem<_RoutineDetailBarOptions>(
+                value: _RoutineDetailBarOptions.delete,
+                child: Text(i18n.delete),
+              ),
+            ];
+          },
+          onSelected: (value) {
+            switch (value) {
+              case _RoutineDetailBarOptions.edit:
+                Navigator.pushNamed(
+                  context,
+                  RoutineEditScreen.routeName,
+                  arguments: routine.id,
+                );
+
+              case _RoutineDetailBarOptions.logs:
+                Navigator.pushNamed(
+                  context,
+                  WorkoutLogsScreen.routeName,
+                  arguments: routine.id,
+                );
+
+              case _RoutineDetailBarOptions.delete:
+                provider.deleteRoutine(routine.id!);
+                Navigator.of(context).pop();
+            }
+          },
+        ),
+      ],
+    );
+  }
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+}

@@ -26,13 +26,13 @@ import 'package:wger/features/measurements/providers/measurement_repository.dart
 import 'package:wger/features/nutrition/providers/ingredient_repository.dart';
 import 'package:wger/features/nutrition/providers/nutrition_notifier.dart';
 import 'package:wger/features/nutrition/providers/nutrition_repository.dart';
+import 'package:wger/features/routines/providers/routines_repository.dart';
 import 'package:wger/features/trophies/providers/trophy_repository.dart';
 import 'package:wger/features/weight/providers/body_weight_repository.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/auth_notifier.dart';
 import 'package:wger/providers/auth_state.dart';
 import 'package:wger/providers/network_provider.dart';
-import 'package:wger/providers/routines_repository.dart';
 import 'package:wger/providers/user_profile_repository.dart';
 import 'package:wger/screens/home_tabs_screen.dart';
 import 'package:wger/theme/theme.dart';

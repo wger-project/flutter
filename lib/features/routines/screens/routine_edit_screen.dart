@@ -1,0 +1,57 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (C) 2020, 2021 wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * wger Workout Manager is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wger/core/wide_screen_wrapper.dart';
+import 'package:wger/features/routines/providers/routines_notifier.dart';
+import 'package:wger/features/routines/widgets/routine_edit.dart';
+import 'package:wger/widgets/core/app_bar.dart';
+import 'package:wger/widgets/core/async_value_widget.dart';
+import 'package:wger/widgets/core/error.dart';
+import 'package:wger/widgets/core/object_gone_redirect.dart';
+
+class RoutineEditScreen extends ConsumerWidget {
+  const RoutineEditScreen();
+
+  static const routeName = '/routine-edit';
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final routineId = ModalRoute.of(context)!.settings.arguments as int;
+
+    return AsyncValueWidget<RoutinesState>(
+      value: ref.watch(routinesRiverpodProvider),
+      loggerName: 'RoutineEditScreen',
+      loading: const Scaffold(body: Center(child: CircularProgressIndicator())),
+      errorBuilder: (e, st) => Scaffold(
+        body: Center(child: StreamErrorIndicator(e, stacktrace: st)),
+      ),
+      data: (state) {
+        final routine = state.findByIdOrNull(routineId);
+        if (routine == null) {
+          return objectGoneRedirect(context);
+        }
+        return Scaffold(
+          appBar: EmptyAppBar(routine.name),
+          body: WidescreenWrapper(child: RoutineEdit(routine)),
+        );
+      },
+    );
+  }
+}
