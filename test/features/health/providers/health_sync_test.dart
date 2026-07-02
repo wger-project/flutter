@@ -16,9 +16,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:health/health.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
+import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
+import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
+import 'package:wger/core/shared_preferences.dart';
+import 'package:wger/features/health/models/health_reading.dart';
+import 'package:wger/features/health/providers/health_repository.dart';
 import 'package:wger/features/health/providers/health_sync.dart';
+import 'package:wger/features/measurements/models/measurement_category.dart';
+import 'package:wger/features/measurements/models/measurement_entry.dart';
+import 'package:wger/features/measurements/providers/measurement_repository.dart';
 
+import 'health_sync_test.mocks.dart';
+
+@GenerateMocks([HealthRepository, MeasurementRepository])
 void main() {
   group('HealthSyncState', () {
     test('default state has sync disabled', () {
@@ -34,6 +49,139 @@ void main() {
       expect(updated.isEnabled, true);
       expect(updated.isSyncing, false);
       expect(updated.lastSyncCount, 5);
+    });
+  });
+
+  group('syncOnAppOpen', () {
+    late MockHealthRepository health;
+    late MockMeasurementRepository measurements;
+
+    setUp(() async {
+      SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+      await PreferenceHelper.instance.setHealthSyncEnabled(true);
+
+      health = MockHealthRepository();
+      measurements = MockMeasurementRepository();
+
+      when(health.ensureAuthorized(any)).thenAnswer((_) async => true);
+      when(health.sourceName).thenReturn('apple_health');
+      when(measurements.addLocalDrift(any)).thenAnswer((_) async {});
+      when(measurements.addLocalDriftCategory(any)).thenAnswer((_) async {});
+    });
+
+    HealthSyncNotifier createNotifier() {
+      final container = ProviderContainer.test(
+        overrides: [
+          healthRepositoryProvider.overrideWithValue(health),
+          measurementRepositoryProvider.overrideWithValue(measurements),
+        ],
+      );
+      return container.read(healthSyncProvider.notifier);
+    }
+
+    void stubReadings(List<HealthReading> readings) {
+      when(
+        health.read(
+          types: anyNamed('types'),
+          start: anyNamed('start'),
+          end: anyNamed('end'),
+        ),
+      ).thenAnswer((_) async => readings);
+    }
+
+    test('imports enabled metrics into new categories with converted values', () async {
+      when(measurements.getAllOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
+      stubReadings([
+        HealthReading(
+          type: HealthDataType.BODY_FAT_PERCENTAGE,
+          value: 0.2,
+          date: DateTime(2026, 1, 1),
+          externalId: 'bf-1',
+        ),
+        HealthReading(
+          type: HealthDataType.HEIGHT,
+          value: 1.8,
+          date: DateTime(2026, 1, 2),
+          externalId: 'h-1',
+        ),
+      ]);
+
+      final count = await createNotifier().syncOnAppOpen();
+      expect(count, 2);
+
+      final createdCategories = verify(
+        measurements.addLocalDriftCategory(captureAny),
+      ).captured.cast<MeasurementCategory>();
+      expect(createdCategories.map((c) => c.metricType), containsAll(['body_fat', 'height']));
+
+      final entries = verify(
+        measurements.addLocalDrift(captureAny),
+      ).captured.cast<MeasurementEntry>();
+
+      final bodyFat = entries.firstWhere((e) => e.externalId == 'bf-1');
+      expect(bodyFat.value, closeTo(20, 0.001)); // fraction -> percent
+      expect(bodyFat.source, 'apple_health');
+
+      final height = entries.firstWhere((e) => e.externalId == 'h-1');
+      expect(height.value, closeTo(180, 0.001)); // meters -> cm
+    });
+
+    test('skips readings already imported (dedup by externalId)', () async {
+      final existing = MeasurementCategory(
+        id: 'cat-bf',
+        name: 'Body fat',
+        unit: '%',
+        metricType: 'body_fat',
+        entries: [
+          MeasurementEntry(
+            id: 'e1',
+            categoryId: 'cat-bf',
+            date: DateTime(2026, 1, 1),
+            value: 20,
+            notes: '',
+            source: 'apple_health',
+            externalId: 'bf-1',
+          ),
+        ],
+      );
+      when(measurements.getAllOnce()).thenAnswer((_) async => [existing]);
+      stubReadings([
+        HealthReading(
+          type: HealthDataType.BODY_FAT_PERCENTAGE,
+          value: 0.2,
+          date: DateTime(2026, 1, 1),
+          externalId: 'bf-1', // already imported
+        ),
+        HealthReading(
+          type: HealthDataType.BODY_FAT_PERCENTAGE,
+          value: 0.22,
+          date: DateTime(2026, 1, 3),
+          externalId: 'bf-2', // new
+        ),
+      ]);
+
+      final count = await createNotifier().syncOnAppOpen();
+      expect(count, 1);
+      verifyNever(measurements.addLocalDriftCategory(any));
+
+      final entries = verify(
+        measurements.addLocalDrift(captureAny),
+      ).captured.cast<MeasurementEntry>();
+      expect(entries.single.externalId, 'bf-2');
+    });
+
+    test('does nothing when sync is disabled', () async {
+      await PreferenceHelper.instance.setHealthSyncEnabled(false);
+
+      final count = await createNotifier().syncOnAppOpen();
+      expect(count, 0);
+      verifyNever(
+        health.read(
+          types: anyNamed('types'),
+          start: anyNamed('start'),
+          end: anyNamed('end'),
+        ),
+      );
     });
   });
 }

@@ -16,8 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'dart:io';
-
 import 'package:collection/collection.dart';
 import 'package:health/health.dart';
 import 'package:logging/logging.dart';
@@ -25,6 +23,7 @@ import 'package:powersync/powersync.dart' as ps;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wger/core/shared_preferences.dart';
 import 'package:wger/features/health/models/health_metric.dart';
+import 'package:wger/features/health/providers/health_repository.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/measurement_entry.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
@@ -52,25 +51,22 @@ class HealthSyncState {
 }
 
 /// Imports body metrics from Apple Health / Health Connect into measurement
-/// categories. Read-only: reads the platform, writes to the local Drift DB, and
-/// lets PowerSync push the rows up. Re-imports are deduplicated via each
-/// measurement's [MeasurementEntry.externalId] (the platform record UUID).
+/// categories. Read-only: reads the platform (via [HealthRepository]), writes to
+/// the local Drift DB, and lets PowerSync push the rows up. Re-imports are
+/// deduplicated via each measurement's [MeasurementEntry.externalId] (the
+/// platform record UUID).
 @Riverpod(keepAlive: true)
 class HealthSyncNotifier extends _$HealthSyncNotifier {
   final _logger = Logger('HealthSyncNotifier');
-  late final Health _health;
-  late final MeasurementRepository _repo;
+  late final HealthRepository _health;
+  late final MeasurementRepository _measurements;
 
   List<HealthDataType> get _types => enabledHealthMetrics.map((m) => m.dataType).toList();
 
-  List<HealthDataAccess> get _readAccess => List.filled(_types.length, HealthDataAccess.READ);
-
-  String get _sourceName => Platform.isIOS ? 'apple_health' : 'health_connect';
-
   @override
   HealthSyncState build() {
-    _health = Health();
-    _repo = ref.read(measurementRepositoryProvider);
+    _health = ref.read(healthRepositoryProvider);
+    _measurements = ref.read(measurementRepositoryProvider);
     _loadPersistedState();
     return const HealthSyncState();
   }
@@ -82,33 +78,16 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
   }
 
   /// Whether a health platform is available on this device.
-  Future<bool> isAvailable() async {
-    if (Platform.isAndroid) {
-      await _health.configure();
-      final status = await _health.getHealthConnectSdkStatus();
-      return status == HealthConnectSdkStatus.sdkAvailable;
-    }
-    return Platform.isIOS;
-  }
+  Future<bool> isAvailable() => _health.isAvailable();
 
   /// Requests permissions, persists the preference, and runs an initial import.
   Future<int> enableSync() async {
     _logger.info('Enabling health sync');
-    await _health.configure();
-
-    final authorized = await _health.requestAuthorization(_types, permissions: _readAccess);
-    if (!authorized) {
-      _logger.warning('Health permissions not granted');
+    if (!await _health.ensureAuthorized(_types)) {
       return 0;
     }
-
-    if (Platform.isAndroid) {
-      await _health.requestHealthDataHistoryAuthorization();
-    }
-
     await PreferenceHelper.instance.setHealthSyncEnabled(true);
     state = state.copyWith(isEnabled: true);
-
     return syncOnAppOpen();
   }
 
@@ -133,16 +112,10 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
     state = state.copyWith(isEnabled: true, isSyncing: true);
 
     try {
-      await _health.configure();
-
-      final hasPerms = await _health.hasPermissions(_types, permissions: _readAccess);
-      if (hasPerms != true) {
-        final authorized = await _health.requestAuthorization(_types, permissions: _readAccess);
-        if (!authorized) {
-          _logger.warning('Health permissions not granted during sync');
-          state = state.copyWith(isSyncing: false);
-          return 0;
-        }
+      if (!await _health.ensureAuthorized(_types)) {
+        _logger.warning('Health permissions not granted during sync');
+        state = state.copyWith(isSyncing: false);
+        return 0;
       }
 
       final lastSyncStr = await prefs.getLastHealthSyncTimestamp();
@@ -150,25 +123,21 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
       final endTime = DateTime.now();
       _logger.info('Syncing health data from $startTime to $endTime');
 
-      var points = await _health.getHealthDataFromTypes(
-        types: _types,
-        startTime: startTime,
-        endTime: endTime,
-      );
-      points = _health.removeDuplicates(points);
-      if (points.isEmpty) {
+      final readings = await _health.read(types: _types, start: startTime, end: endTime);
+      if (readings.isEmpty) {
         _logger.info('No new health data');
         state = state.copyWith(isSyncing: false, lastSyncCount: 0);
         return 0;
       }
 
-      final categories = await _repo.getAllOnce();
+      final categories = await _measurements.getAllOnce();
+      final source = _health.sourceName;
       var synced = 0;
       DateTime? latest;
 
       for (final metric in enabledHealthMetrics) {
-        final metricPoints = points.where((p) => p.type == metric.dataType);
-        if (metricPoints.isEmpty) {
+        final metricReadings = readings.where((r) => r.type == metric.dataType);
+        if (metricReadings.isEmpty) {
           continue;
         }
 
@@ -178,33 +147,29 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
             if (e.externalId != null) e.externalId!,
         };
 
-        for (final point in metricPoints) {
-          final value = point.value;
-          if (value is! NumericHealthValue) {
-            continue;
-          }
-          final uuid = point.uuid;
-          if (uuid.isNotEmpty && seen.contains(uuid)) {
+        for (final reading in metricReadings) {
+          final uuid = reading.externalId;
+          if (uuid != null && seen.contains(uuid)) {
             continue;
           }
 
-          await _repo.addLocalDrift(
+          await _measurements.addLocalDrift(
             MeasurementEntry(
               categoryId: category.id!,
-              date: point.dateFrom,
-              value: metric.toCategoryValue(value.numericValue.toDouble()),
+              date: reading.date,
+              value: metric.toCategoryValue(reading.value),
               notes: '',
-              source: _sourceName,
-              externalId: uuid.isEmpty ? null : uuid,
+              source: source,
+              externalId: uuid,
             ),
           );
 
-          if (uuid.isNotEmpty) {
+          if (uuid != null) {
             seen.add(uuid);
           }
           synced++;
-          if (latest == null || point.dateFrom.isAfter(latest)) {
-            latest = point.dateFrom;
+          if (latest == null || reading.date.isAfter(latest)) {
+            latest = reading.date;
           }
         }
       }
@@ -243,7 +208,7 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
       unit: metric.unit,
       metricType: metric.metricType,
     );
-    await _repo.addLocalDriftCategory(category);
+    await _measurements.addLocalDriftCategory(category);
     categories.add(category);
     return category;
   }
