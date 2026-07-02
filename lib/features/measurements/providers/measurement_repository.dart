@@ -82,6 +82,9 @@ class MeasurementRepository {
     return watchAll().map((categories) => categories.firstWhereOrNull((c) => c.id == id));
   }
 
+  /// One-shot snapshot of all categories with their entries.
+  Future<List<MeasurementCategory>> getAllOnce() => watchAll().first;
+
   // Entries
   Future<void> deleteLocalDrift(String id) async {
     _logger.finer('Deleting local measurement entry $id');

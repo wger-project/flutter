@@ -4880,8 +4880,19 @@ class $MeasurementCategoryTableTable extends MeasurementCategoryTable
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _metricTypeMeta = const VerificationMeta(
+    'metricType',
+  );
   @override
-  List<GeneratedColumn> get $columns => [id, name, unit];
+  late final GeneratedColumn<String> metricType = GeneratedColumn<String>(
+    'metric_type',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, name, unit, metricType];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -4913,6 +4924,12 @@ class $MeasurementCategoryTableTable extends MeasurementCategoryTable
     } else if (isInserting) {
       context.missing(_unitMeta);
     }
+    if (data.containsKey('metric_type')) {
+      context.handle(
+        _metricTypeMeta,
+        metricType.isAcceptableOrUnknown(data['metric_type']!, _metricTypeMeta),
+      );
+    }
     return context;
   }
 
@@ -4934,6 +4951,10 @@ class $MeasurementCategoryTableTable extends MeasurementCategoryTable
         DriftSqlType.string,
         data['${effectivePrefix}unit'],
       )!,
+      metricType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}metric_type'],
+      ),
     );
   }
 
@@ -4947,17 +4968,20 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
   final Value<String> id;
   final Value<String> name;
   final Value<String> unit;
+  final Value<String?> metricType;
   final Value<int> rowid;
   const MeasurementCategoryTableCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.unit = const Value.absent(),
+    this.metricType = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   MeasurementCategoryTableCompanion.insert({
     this.id = const Value.absent(),
     required String name,
     required String unit,
+    this.metricType = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : name = Value(name),
        unit = Value(unit);
@@ -4965,12 +4989,14 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
     Expression<String>? id,
     Expression<String>? name,
     Expression<String>? unit,
+    Expression<String>? metricType,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (unit != null) 'unit': unit,
+      if (metricType != null) 'metric_type': metricType,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -4979,12 +5005,14 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
     Value<String>? id,
     Value<String>? name,
     Value<String>? unit,
+    Value<String?>? metricType,
     Value<int>? rowid,
   }) {
     return MeasurementCategoryTableCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
       unit: unit ?? this.unit,
+      metricType: metricType ?? this.metricType,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -5001,6 +5029,9 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
     if (unit.present) {
       map['unit'] = Variable<String>(unit.value);
     }
+    if (metricType.present) {
+      map['metric_type'] = Variable<String>(metricType.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -5013,6 +5044,7 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('unit: $unit, ')
+          ..write('metricType: $metricType, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -5075,8 +5107,37 @@ class $MeasurementEntryTableTable extends MeasurementEntryTable
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _sourceMeta = const VerificationMeta('source');
   @override
-  List<GeneratedColumn> get $columns => [id, categoryId, date, value, notes];
+  late final GeneratedColumn<String> source = GeneratedColumn<String>(
+    'source',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('manual'),
+  );
+  static const VerificationMeta _externalIdMeta = const VerificationMeta(
+    'externalId',
+  );
+  @override
+  late final GeneratedColumn<String> externalId = GeneratedColumn<String>(
+    'external_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    categoryId,
+    date,
+    value,
+    notes,
+    source,
+    externalId,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -5116,6 +5177,18 @@ class $MeasurementEntryTableTable extends MeasurementEntryTable
     } else if (isInserting) {
       context.missing(_notesMeta);
     }
+    if (data.containsKey('source')) {
+      context.handle(
+        _sourceMeta,
+        source.isAcceptableOrUnknown(data['source']!, _sourceMeta),
+      );
+    }
+    if (data.containsKey('external_id')) {
+      context.handle(
+        _externalIdMeta,
+        externalId.isAcceptableOrUnknown(data['external_id']!, _externalIdMeta),
+      );
+    }
     return context;
   }
 
@@ -5147,6 +5220,14 @@ class $MeasurementEntryTableTable extends MeasurementEntryTable
         DriftSqlType.string,
         data['${effectivePrefix}notes'],
       )!,
+      source: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source'],
+      )!,
+      externalId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}external_id'],
+      ),
     );
   }
 
@@ -5164,6 +5245,8 @@ class MeasurementEntryTableCompanion extends UpdateCompanion<MeasurementEntry> {
   final Value<DateTime> date;
   final Value<double> value;
   final Value<String> notes;
+  final Value<String> source;
+  final Value<String?> externalId;
   final Value<int> rowid;
   const MeasurementEntryTableCompanion({
     this.id = const Value.absent(),
@@ -5171,6 +5254,8 @@ class MeasurementEntryTableCompanion extends UpdateCompanion<MeasurementEntry> {
     this.date = const Value.absent(),
     this.value = const Value.absent(),
     this.notes = const Value.absent(),
+    this.source = const Value.absent(),
+    this.externalId = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   MeasurementEntryTableCompanion.insert({
@@ -5179,6 +5264,8 @@ class MeasurementEntryTableCompanion extends UpdateCompanion<MeasurementEntry> {
     required DateTime date,
     required double value,
     required String notes,
+    this.source = const Value.absent(),
+    this.externalId = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : categoryId = Value(categoryId),
        date = Value(date),
@@ -5190,6 +5277,8 @@ class MeasurementEntryTableCompanion extends UpdateCompanion<MeasurementEntry> {
     Expression<DateTime>? date,
     Expression<double>? value,
     Expression<String>? notes,
+    Expression<String>? source,
+    Expression<String>? externalId,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -5198,6 +5287,8 @@ class MeasurementEntryTableCompanion extends UpdateCompanion<MeasurementEntry> {
       if (date != null) 'date': date,
       if (value != null) 'value': value,
       if (notes != null) 'notes': notes,
+      if (source != null) 'source': source,
+      if (externalId != null) 'external_id': externalId,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -5208,6 +5299,8 @@ class MeasurementEntryTableCompanion extends UpdateCompanion<MeasurementEntry> {
     Value<DateTime>? date,
     Value<double>? value,
     Value<String>? notes,
+    Value<String>? source,
+    Value<String?>? externalId,
     Value<int>? rowid,
   }) {
     return MeasurementEntryTableCompanion(
@@ -5216,6 +5309,8 @@ class MeasurementEntryTableCompanion extends UpdateCompanion<MeasurementEntry> {
       date: date ?? this.date,
       value: value ?? this.value,
       notes: notes ?? this.notes,
+      source: source ?? this.source,
+      externalId: externalId ?? this.externalId,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -5240,6 +5335,12 @@ class MeasurementEntryTableCompanion extends UpdateCompanion<MeasurementEntry> {
     if (notes.present) {
       map['notes'] = Variable<String>(notes.value);
     }
+    if (source.present) {
+      map['source'] = Variable<String>(source.value);
+    }
+    if (externalId.present) {
+      map['external_id'] = Variable<String>(externalId.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -5254,6 +5355,8 @@ class MeasurementEntryTableCompanion extends UpdateCompanion<MeasurementEntry> {
           ..write('date: $date, ')
           ..write('value: $value, ')
           ..write('notes: $notes, ')
+          ..write('source: $source, ')
+          ..write('externalId: $externalId, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -16368,6 +16471,7 @@ typedef $$MeasurementCategoryTableTableCreateCompanionBuilder =
       Value<String> id,
       required String name,
       required String unit,
+      Value<String?> metricType,
       Value<int> rowid,
     });
 typedef $$MeasurementCategoryTableTableUpdateCompanionBuilder =
@@ -16375,6 +16479,7 @@ typedef $$MeasurementCategoryTableTableUpdateCompanionBuilder =
       Value<String> id,
       Value<String> name,
       Value<String> unit,
+      Value<String?> metricType,
       Value<int> rowid,
     });
 
@@ -16436,6 +16541,11 @@ class $$MeasurementCategoryTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<String> get metricType => $composableBuilder(
+    column: $table.metricType,
+    builder: (column) => ColumnFilters(column),
+  );
+
   Expression<bool> measurementEntryTableRefs(
     Expression<bool> Function($$MeasurementEntryTableTableFilterComposer f) f,
   ) {
@@ -16484,6 +16594,11 @@ class $$MeasurementCategoryTableTableOrderingComposer
     column: $table.unit,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get metricType => $composableBuilder(
+    column: $table.metricType,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$MeasurementCategoryTableTableAnnotationComposer
@@ -16503,6 +16618,11 @@ class $$MeasurementCategoryTableTableAnnotationComposer
 
   GeneratedColumn<String> get unit =>
       $composableBuilder(column: $table.unit, builder: (column) => column);
+
+  GeneratedColumn<String> get metricType => $composableBuilder(
+    column: $table.metricType,
+    builder: (column) => column,
+  );
 
   Expression<T> measurementEntryTableRefs<T extends Object>(
     Expression<T> Function($$MeasurementEntryTableTableAnnotationComposer a) f,
@@ -16568,11 +16688,13 @@ class $$MeasurementCategoryTableTableTableManager
                 Value<String> id = const Value.absent(),
                 Value<String> name = const Value.absent(),
                 Value<String> unit = const Value.absent(),
+                Value<String?> metricType = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => MeasurementCategoryTableCompanion(
                 id: id,
                 name: name,
                 unit: unit,
+                metricType: metricType,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -16580,11 +16702,13 @@ class $$MeasurementCategoryTableTableTableManager
                 Value<String> id = const Value.absent(),
                 required String name,
                 required String unit,
+                Value<String?> metricType = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => MeasurementCategoryTableCompanion.insert(
                 id: id,
                 name: name,
                 unit: unit,
+                metricType: metricType,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -16651,6 +16775,8 @@ typedef $$MeasurementEntryTableTableCreateCompanionBuilder =
       required DateTime date,
       required double value,
       required String notes,
+      Value<String> source,
+      Value<String?> externalId,
       Value<int> rowid,
     });
 typedef $$MeasurementEntryTableTableUpdateCompanionBuilder =
@@ -16660,6 +16786,8 @@ typedef $$MeasurementEntryTableTableUpdateCompanionBuilder =
       Value<DateTime> date,
       Value<double> value,
       Value<String> notes,
+      Value<String> source,
+      Value<String?> externalId,
       Value<int> rowid,
     });
 
@@ -16722,6 +16850,16 @@ class $$MeasurementEntryTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<String> get source => $composableBuilder(
+    column: $table.source,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get externalId => $composableBuilder(
+    column: $table.externalId,
+    builder: (column) => ColumnFilters(column),
+  );
+
   $$MeasurementCategoryTableTableFilterComposer get categoryId {
     final $$MeasurementCategoryTableTableFilterComposer composer = $composerBuilder(
       composer: this,
@@ -16774,6 +16912,16 @@ class $$MeasurementEntryTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get source => $composableBuilder(
+    column: $table.source,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get externalId => $composableBuilder(
+    column: $table.externalId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   $$MeasurementCategoryTableTableOrderingComposer get categoryId {
     final $$MeasurementCategoryTableTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -16817,6 +16965,14 @@ class $$MeasurementEntryTableTableAnnotationComposer
 
   GeneratedColumn<String> get notes =>
       $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumn<String> get source =>
+      $composableBuilder(column: $table.source, builder: (column) => column);
+
+  GeneratedColumn<String> get externalId => $composableBuilder(
+    column: $table.externalId,
+    builder: (column) => column,
+  );
 
   $$MeasurementCategoryTableTableAnnotationComposer get categoryId {
     final $$MeasurementCategoryTableTableAnnotationComposer composer = $composerBuilder(
@@ -16882,6 +17038,8 @@ class $$MeasurementEntryTableTableTableManager
                 Value<DateTime> date = const Value.absent(),
                 Value<double> value = const Value.absent(),
                 Value<String> notes = const Value.absent(),
+                Value<String> source = const Value.absent(),
+                Value<String?> externalId = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => MeasurementEntryTableCompanion(
                 id: id,
@@ -16889,6 +17047,8 @@ class $$MeasurementEntryTableTableTableManager
                 date: date,
                 value: value,
                 notes: notes,
+                source: source,
+                externalId: externalId,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -16898,6 +17058,8 @@ class $$MeasurementEntryTableTableTableManager
                 required DateTime date,
                 required double value,
                 required String notes,
+                Value<String> source = const Value.absent(),
+                Value<String?> externalId = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => MeasurementEntryTableCompanion.insert(
                 id: id,
@@ -16905,6 +17067,8 @@ class $$MeasurementEntryTableTableTableManager
                 date: date,
                 value: value,
                 notes: notes,
+                source: source,
+                externalId: externalId,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

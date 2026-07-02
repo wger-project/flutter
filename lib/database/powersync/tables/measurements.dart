@@ -31,6 +31,9 @@ class MeasurementCategoryTable extends Table {
 
   TextColumn get name => text()();
   TextColumn get unit => text()();
+
+  /// `null` for plain user-created ("custom") categories.
+  TextColumn get metricType => text().named('metric_type').nullable()();
 }
 
 const PowersyncMeasurementCategoryTable = ps.Table(
@@ -38,6 +41,7 @@ const PowersyncMeasurementCategoryTable = ps.Table(
   [
     ps.Column.text('name'),
     ps.Column.text('unit'),
+    ps.Column.text('metric_type'),
   ],
 );
 
@@ -53,6 +57,14 @@ class MeasurementEntryTable extends Table {
   DateTimeColumn get date => dateTime().map(const UtcDateTimeConverter())();
   RealColumn get value => real()();
   TextColumn get notes => text()();
+
+  /// Where the reading came from: `manual` or a health platform
+  /// (`apple_health`, `health_connect`).
+  TextColumn get source => text().withDefault(const Constant('manual'))();
+
+  /// Platform record UUID, used to deduplicate re-imports. `null` for manual
+  /// entries.
+  TextColumn get externalId => text().named('external_id').nullable()();
 }
 
 const PowersyncMeasurementEntryTable = ps.Table(
@@ -62,8 +74,11 @@ const PowersyncMeasurementEntryTable = ps.Table(
     ps.Column.text('date'),
     ps.Column.real('value'),
     ps.Column.text('notes'),
+    ps.Column.text('source'),
+    ps.Column.text('external_id'),
   ],
   indexes: [
     ps.Index('category_idx', [ps.IndexedColumn('category_id')]),
+    ps.Index('external_id_idx', [ps.IndexedColumn('external_id')]),
   ],
 );

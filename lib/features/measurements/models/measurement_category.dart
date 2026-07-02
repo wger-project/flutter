@@ -45,11 +45,17 @@ class MeasurementCategory with _$MeasurementCategory {
   @override
   final List<MeasurementEntry> entries;
 
+  /// Drives the health-platform mapping (and, later, default unit/aggregation/
+  /// chart). `null` for plain user-created ("custom") categories.
+  @override
+  final String? metricType;
+
   MeasurementCategory({
     this.id,
     this.name = '',
     this.unit = '',
     this.entries = const [],
+    this.metricType,
   });
 
   MeasurementEntry findEntryById(String id) {
@@ -65,6 +71,7 @@ class MeasurementCategory with _$MeasurementCategory {
       id: id != null ? Value(id!) : const Value.absent(),
       name: Value(name),
       unit: Value(unit),
+      metricType: Value(metricType),
     );
   }
 }

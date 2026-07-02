@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2026 wger Team
+ * Copyright (c) 2026 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,8 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:wger/features/account/providers/user_profile_notifier.dart';
-import 'package:wger/features/weight/providers/health_sync.dart';
+import 'package:wger/features/health/providers/health_sync.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 class HealthSyncSettingsTile extends ConsumerStatefulWidget {
@@ -66,11 +65,9 @@ class _HealthSyncSettingsTileState extends ConsumerState<HealthSyncSettingsTile>
           : (enabled) async {
               final notifier = ref.read(healthSyncProvider.notifier);
               if (enabled) {
-                final profile = ref.read(userProfileProvider).value;
-                final isMetric = profile?.isMetric ?? true;
-                final count = await notifier.enableSync(isMetric: isMetric);
-                // Synced entries land in the local Drift DB and surface through
-                // the weight stream automatically, so no manual refresh is needed.
+                final count = await notifier.enableSync();
+                // Imported entries land in the local Drift DB and surface through
+                // the measurement stream automatically, so no manual refresh is needed.
                 if (context.mounted && count > 0) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text(i18n.healthSyncSuccess(count))),

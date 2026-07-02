@@ -17,49 +17,9 @@
  */
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:wger/features/weight/providers/health_sync.dart';
-
-/// Mirrors the conversion logic in HealthSyncNotifier.syncOnAppOpen
-double _convertWeight(double weightKg, {required bool isMetric}) {
-  return isMetric ? weightKg : weightKg * kgToLb;
-}
+import 'package:wger/features/health/providers/health_sync.dart';
 
 void main() {
-  group('Health sync constants', () {
-    test('kgToLb conversion factor is correct', () {
-      // 1 kg = 2.20462 lb
-      expect(kgToLb, closeTo(2.20462, 0.00001));
-    });
-  });
-
-  group('Weight unit conversion', () {
-    test('kg value is converted to lb correctly', () {
-      const weightKg = 85.0;
-      final weightLb = (weightKg * kgToLb * 100).roundToDouble() / 100;
-      expect(weightLb, closeTo(187.39, 0.01));
-    });
-
-    test('kg value stays as-is when metric', () {
-      const weightKg = 85.0;
-      final weight = _convertWeight(weightKg, isMetric: true);
-      expect(weight, 85.0);
-    });
-
-    test('kg value is converted when imperial', () {
-      const weightKg = 85.0;
-      final weight = _convertWeight(weightKg, isMetric: false);
-      expect(weight, closeTo(187.39, 0.01));
-    });
-
-    test('conversion rounds to 2 decimal places', () {
-      const weightKg = 85.12345;
-      const weight = weightKg * kgToLb;
-      final rounded = (weight * 100).roundToDouble() / 100;
-      // 85.12345 * 2.20462 = 187.66...
-      expect(rounded.toString().split('.').last.length, lessThanOrEqualTo(2));
-    });
-  });
-
   group('HealthSyncState', () {
     test('default state has sync disabled', () {
       const state = HealthSyncState();

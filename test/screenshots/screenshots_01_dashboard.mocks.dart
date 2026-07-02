@@ -473,6 +473,16 @@ class MockMeasurementRepository extends _i1.Mock implements _i23.MeasurementRepo
           as _i10.Stream<_i24.MeasurementCategory?>);
 
   @override
+  _i10.Future<List<_i24.MeasurementCategory>> getAllOnce() =>
+      (super.noSuchMethod(
+            Invocation.method(#getAllOnce, []),
+            returnValue: _i10.Future<List<_i24.MeasurementCategory>>.value(
+              <_i24.MeasurementCategory>[],
+            ),
+          )
+          as _i10.Future<List<_i24.MeasurementCategory>>);
+
+  @override
   _i10.Future<void> deleteLocalDrift(String? id) =>
       (super.noSuchMethod(
             Invocation.method(#deleteLocalDrift, [id]),

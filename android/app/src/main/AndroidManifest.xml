@@ -9,8 +9,9 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <!-- Health Connect permissions for weight sync -->
-    <uses-permission android:name="android.permission.health.READ_WEIGHT"/>
+    <!-- Health Connect permissions for the imported measurement types -->
+    <uses-permission android:name="android.permission.health.READ_BODY_FAT"/>
+    <uses-permission android:name="android.permission.health.READ_HEIGHT"/>
     <uses-permission android:name="android.permission.health.READ_HEALTH_DATA_HISTORY"/>
 
     <queries>

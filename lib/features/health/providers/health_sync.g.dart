@@ -8,12 +8,24 @@ part of 'health_sync.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
+/// Imports body metrics from Apple Health / Health Connect into measurement
+/// categories. Read-only: reads the platform, writes to the local Drift DB, and
+/// lets PowerSync push the rows up. Re-imports are deduplicated via each
+/// measurement's [MeasurementEntry.externalId] (the platform record UUID).
 
 @ProviderFor(HealthSyncNotifier)
 final healthSyncProvider = HealthSyncNotifierProvider._();
 
+/// Imports body metrics from Apple Health / Health Connect into measurement
+/// categories. Read-only: reads the platform, writes to the local Drift DB, and
+/// lets PowerSync push the rows up. Re-imports are deduplicated via each
+/// measurement's [MeasurementEntry.externalId] (the platform record UUID).
 final class HealthSyncNotifierProvider
     extends $NotifierProvider<HealthSyncNotifier, HealthSyncState> {
+  /// Imports body metrics from Apple Health / Health Connect into measurement
+  /// categories. Read-only: reads the platform, writes to the local Drift DB, and
+  /// lets PowerSync push the rows up. Re-imports are deduplicated via each
+  /// measurement's [MeasurementEntry.externalId] (the platform record UUID).
   HealthSyncNotifierProvider._()
     : super(
         from: null,
@@ -41,7 +53,12 @@ final class HealthSyncNotifierProvider
   }
 }
 
-String _$healthSyncNotifierHash() => r'451a05716a24477f7626a266aaac6a29c1707ab2';
+String _$healthSyncNotifierHash() => r'9efca0080b2dd104a3e409f1c81a9976ec0e635c';
+
+/// Imports body metrics from Apple Health / Health Connect into measurement
+/// categories. Read-only: reads the platform, writes to the local Drift DB, and
+/// lets PowerSync push the rows up. Re-imports are deduplicated via each
+/// measurement's [MeasurementEntry.externalId] (the platform record UUID).
 
 abstract class _$HealthSyncNotifier extends $Notifier<HealthSyncState> {
   HealthSyncState build();

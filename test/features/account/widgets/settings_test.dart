@@ -25,7 +25,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/core/app_settings_notifier.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/features/account/widgets/settings.dart';
-import 'package:wger/features/weight/providers/health_sync.dart';
+import 'package:wger/features/health/providers/health_sync.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 import 'settings_test.mocks.dart';

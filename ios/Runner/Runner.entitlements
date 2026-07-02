@@ -6,9 +6,5 @@
 	<string>development</string>
 	<key>com.apple.developer.healthkit</key>
 	<true/>
-	<key>com.apple.developer.healthkit.access</key>
-	<array>
-		<string>health-records</string>
-	</array>
 </dict>
 </plist>
