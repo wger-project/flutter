@@ -51,6 +51,7 @@ dependencies:
   flutter_zxing: ^2.3.0
   font_awesome_flutter: ^11.0.0
   freezed_annotation: ^3.1.0
+  health: ^13.3.1
   http: ^1.6.0
   image_picker: ^1.2.2
   intl: ^0.20.2
@@ -73,6 +74,12 @@ dependencies:
   state_notifier: ^1.0.0
   connectivity_plus: ^7.2.0
   powersync: ^2.3.0
+
+dependency_overrides:
+  # health -> device_info_plus ^12.1.0 pins win32 5.x, which conflicts with
+  # package_info_plus 10.2.0 (win32 ^6). device_info_plus 13.x is a pure win32
+  # bump with no Dart API change, so it satisfies health while keeping win32 6.
+  device_info_plus: ^13.0.0
 
 dev_dependencies:
   flutter_test:

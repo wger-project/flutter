@@ -25,9 +25,20 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/core/app_settings_notifier.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/features/account/widgets/settings.dart';
+import 'package:wger/features/weight/providers/health_sync.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 import 'settings_test.mocks.dart';
+
+/// Keeps the health sync tile inert (reports the platform as unavailable) so
+/// the settings page renders without booting the real health/preferences stack.
+class _FakeHealthSyncNotifier extends HealthSyncNotifier {
+  @override
+  HealthSyncState build() => const HealthSyncState();
+
+  @override
+  Future<bool> isAvailable() async => false;
+}
 
 @GenerateMocks([
   SharedPreferencesAsync,
@@ -53,6 +64,7 @@ void main() {
     return riverpod.ProviderScope(
       overrides: [
         appSettingsPrefsProvider.overrideWithValue(mockSharedPreferences),
+        healthSyncProvider.overrideWith(_FakeHealthSyncNotifier.new),
       ],
       child: MaterialApp(
         locale: Locale(locale),

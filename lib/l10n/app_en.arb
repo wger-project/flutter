@@ -1434,5 +1434,26 @@
   "timeStartEndBothOrNeither": "Either set both start and end time or leave both empty",
   "@timeStartEndBothOrNeither": {
     "description": "Validation error when only one of start/end time is set on a workout session"
+  },
+  "healthSync": "Health sync",
+  "@healthSync": {
+    "description": "Title for the health platform sync setting"
+  },
+  "healthSyncDescription": "Import weight from Apple Health or Health Connect",
+  "@healthSyncDescription": {
+    "description": "Subtitle for the health platform sync setting"
+  },
+  "healthSyncSuccess": "Synced {count} weight entries from Health",
+  "@healthSyncSuccess": {
+    "description": "Snackbar message after successful health sync",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "health": "Health",
+  "@health": {
+    "description": "Section header for health-related settings"
   }
 }
