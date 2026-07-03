@@ -43,7 +43,7 @@ enum MetricType {
   const MetricType(this.wireValue);
 
   /// Looks up an enum case by its Django wire value.
-  /// 
+  ///
   /// Defaults to [MetricType.custom] if the value is not recognized.
   static MetricType fromWire(String value) => MetricType.values.firstWhere(
     (e) => e.wireValue == value,
@@ -53,10 +53,7 @@ enum MetricType {
   /// `true` for metric types that should be aggregated per-day and shown as
   /// a bar/histogram instead of a raw-sample line chart.
   bool get isSummedPerDay => switch (this) {
-    MetricType.steps ||
-    MetricType.distance ||
-    MetricType.energy ||
-    MetricType.sleep => true,
+    MetricType.steps || MetricType.distance || MetricType.energy || MetricType.sleep => true,
     _ => false,
   };
 }
@@ -80,10 +77,6 @@ extension MeasurementMetricTypeL10n on MetricType {
   }
 }
 
-// Missing concrete implementation of 'getter _$MeasurementCategory.metricType'.
-// Try implementing the missing method, or make the class abstract.dartnon_abstract_class_inherits_abstract_member
-// class MeasurementCategory with _$MeasurementCategory
-// Declared in package:wger/models/measurements/measurement_category.dart.
 @freezed
 class MeasurementCategory with _$MeasurementCategory {
   /// Inclusive upper bound for [name]

@@ -95,6 +95,20 @@ class _MeasurementCategoryFormState extends ConsumerState<MeasurementCategoryFor
               return null;
             },
           ),
+
+          // metricType
+          DropdownButtonFormField(
+            items: MetricType.values
+                .map((t) => DropdownMenuItem(value: t, child: Text(t.name)))
+                .toList(),
+            onChanged: (value) {
+              if (value != null) {
+                setState(() {
+                  _draft = _draft.copyWith(metricType: value);
+                });
+              }
+            },
+          ),
           FormSubmitButton(
             label: AppLocalizations.of(context).save,
             onPressed: () async {

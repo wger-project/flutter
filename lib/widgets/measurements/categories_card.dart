@@ -34,6 +34,7 @@ class CategoriesCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // sensibleRange() operates on raw (pre-aggregation) entries
     final (entriesAll, entries7dAvg) = sensibleRange(
       currentCategory.entries.map((e) => MeasurementChartEntry(e.value, e.date)).toList(),
     );
@@ -57,13 +58,14 @@ class CategoriesCard extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(10),
               height: 220,
-              child: MeasurementChartWidgetFl(
+              child: buildChartForMetricType(
+                currentCategory.metricType,
                 entriesAll,
+                entries7dAvg,
                 currentCategory.unit,
-                avgs: entries7dAvg,
               ),
             ),
-            if (entries7dAvg.isNotEmpty)
+            if (entries7dAvg.isNotEmpty && !currentCategory.metricType.isSummedPerDay)
               MeasurementOverallChangeWidget(
                 entries7dAvg.first,
                 entries7dAvg.last,
