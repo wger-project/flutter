@@ -542,6 +542,10 @@
   },
   "measurementCategoriesHelpText": "Measurement category, such as 'biceps' or 'body fat'",
   "@measurementCategoriesHelpText": {},
+  "metricType": "Metric Type",
+  "@metricType": {
+    "description": "Metric type for a measurement category"
+  },
   "metricCustom": "Custom",
   "@metricCustom": {
     "description": "Label for custom metric type"

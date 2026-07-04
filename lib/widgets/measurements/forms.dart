@@ -98,6 +98,8 @@ class _MeasurementCategoryFormState extends ConsumerState<MeasurementCategoryFor
 
           // metricType
           DropdownButtonFormField(
+            initialValue: _draft.metricType,
+            decoration: InputDecoration(labelText: AppLocalizations.of(context).metricType),
             items: MetricType.values
                 .map((t) => DropdownMenuItem(value: t, child: Text(t.name)))
                 .toList(),

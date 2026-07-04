@@ -122,6 +122,7 @@ class MeasurementCategory with _$MeasurementCategory {
       id: id != null ? Value(id!) : const Value.absent(),
       name: Value(name),
       unit: Value(unit),
+      metricType: Value(metricType.wireValue)
     );
   }
 }
