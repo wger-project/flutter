@@ -55,9 +55,10 @@ String weightUnit(bool isMetric, BuildContext context) {
 class MeasurementChartWidgetFl extends StatefulWidget {
   final List<MeasurementChartEntry> _entries;
   final List<MeasurementChartEntry>? avgs;
+  final List<MeasurementChartEntry>? trend;
   final String _unit;
 
-  const MeasurementChartWidgetFl(this._entries, this._unit, {this.avgs});
+  const MeasurementChartWidgetFl(this._entries, this._unit, {this.avgs, this.trend});
 
   @override
   State<MeasurementChartWidgetFl> createState() => _MeasurementChartWidgetFlState();
@@ -210,6 +211,17 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
             isCurved: false,
             color: Theme.of(context).colorScheme.tertiary,
             barWidth: 1,
+            dotData: const FlDotData(show: false),
+          ),
+        if (widget.trend != null && widget.trend!.isNotEmpty)
+          LineChartBarData(
+            spots: widget.trend!
+                .map((e) => FlSpot(e.date.millisecondsSinceEpoch.toDouble(), e.value.toDouble()))
+                .toList(),
+            isCurved: true,
+            curveSmoothness: 0.4,
+            color: Theme.of(context).colorScheme.secondary,
+            barWidth: 3,
             dotData: const FlDotData(show: false),
           ),
       ],
@@ -380,6 +392,38 @@ class _MeasurementBarChartWidgetFlState extends State<MeasurementBarChartWidgetF
           .toList(),
     );
   }
+}
+
+/// Produces a smoothed trendline via a Exponential Moving Average (EMA).
+/// Produces a smoothed trendline via a Centered Moving Average (CMA).
+List<MeasurementChartEntry> smoothedTrendline(
+  List<MeasurementChartEntry> vals, {
+  // int windowDays = 14,
+  int period = 10,
+}) {
+  if (vals.isEmpty) {
+    return [];
+  }
+
+  final sorted = [...vals]..sort((a, b) => a.date.compareTo(b.date));
+  final List<MeasurementChartEntry> out = [];
+
+  // Seed the initialization layer with the first data point value
+  double currentEma = sorted[0].value.toDouble();
+  final double smoothing = 2 / (period + 1);
+
+  for (int i = 0; i < sorted.length; i++) {
+    final point = sorted[i];
+
+    if (i > 0) {
+      // EMA equation: point.weight * smoothing + ema * (1 - smoothing)
+      currentEma = (point.value * smoothing) + (currentEma * (1 - smoothing));
+    }
+
+    out.add(MeasurementChartEntry(currentEma, point.date));
+  }
+
+  return out;
 }
 
 class Indicator extends StatelessWidget {

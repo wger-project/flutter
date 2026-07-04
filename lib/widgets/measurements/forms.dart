@@ -101,7 +101,7 @@ class _MeasurementCategoryFormState extends ConsumerState<MeasurementCategoryFor
             initialValue: _draft.metricType,
             decoration: InputDecoration(labelText: AppLocalizations.of(context).metricType),
             items: MetricType.values
-                .map((t) => DropdownMenuItem(value: t, child: Text(t.name)))
+                .map((t) => DropdownMenuItem(value: t, child: Text(t.localized(context))))
                 .toList(),
             onChanged: (value) {
               if (value != null) {
