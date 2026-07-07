@@ -16,76 +16,106 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+// Core user-journey tests for the redesigned gym-mode log page. These pump a
+// single [LogPage] inside a seeded Riverpod container and assert on gym-state
+// plus stable widget keys (gym-input-*, gym-log-set-button, gym-set-row-<uuid>)
+// rather than on translated copy or field ordering, so cosmetic UI changes do
+// not cause false failures.
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/exercises/exercise.dart';
-import 'package:wger/models/workouts/day_data.dart';
+import 'package:wger/models/user/user_profile.dart';
 import 'package:wger/models/workouts/log.dart';
-import 'package:wger/models/workouts/routine.dart';
-import 'package:wger/models/workouts/set_config_data.dart';
-import 'package:wger/models/workouts/slot_data.dart';
 import 'package:wger/providers/gym_state.dart';
 import 'package:wger/providers/gym_state_notifier.dart';
-import 'package:wger/providers/workout_logs_repository.dart';
+import 'package:wger/providers/rest_timer_notifier.dart';
+import 'package:wger/providers/user_profile_notifier.dart';
+import 'package:wger/providers/workout_logs_notifier.dart';
+import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/routines/gym_mode/log_page.dart';
 
-import '../../../../test_data/exercises.dart';
-import '../../../../test_data/routines.dart' as testdata;
-import 'log_page_test.mocks.dart';
+import '../../../../test_data/routines.dart';
 
-@GenerateMocks([WorkoutLogRepository])
+/// Captures logged sets instead of writing them to the local drift database.
+class _FakeLogMutations implements WorkoutLogMutations {
+  final List<Log> added = [];
+
+  @override
+  Future<void> addEntry(Log log) async => added.add(log);
+
+  @override
+  Future<void> updateEntry(Log log) async {}
+
+  @override
+  Future<void> deleteEntry(String id) async {}
+}
+
+/// Stubs the user profile so the log page does not reach for the real drift DB
+/// when picking the default weight unit.
+class _FakeUserProfileNotifier extends UserProfileNotifier {
+  @override
+  Stream<UserProfile?> build() => Stream<UserProfile?>.value(null);
+}
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  group('LogPage tests', () {
-    late List<Exercise> testExercises;
+  group('LogPage core journeys', () {
     late ProviderContainer container;
-    late MockWorkoutLogRepository mockWorkoutLogRepo;
+    late _FakeLogMutations fakeLogs;
 
     setUp(() {
       SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
-      testExercises = getTestExercises();
-      mockWorkoutLogRepo = MockWorkoutLogRepository();
-      when(mockWorkoutLogRepo.addLocalDrift(any)).thenAnswer((_) async {});
+      fakeLogs = _FakeLogMutations();
       container = ProviderContainer.test(
-        overrides: [workoutLogRepositoryProvider.overrideWithValue(mockWorkoutLogRepo)],
+        overrides: [
+          workoutLogProvider.overrideWithValue(fakeLogs),
+          userProfileProvider.overrideWith(_FakeUserProfileNotifier.new),
+        ],
       );
+
+      final routine = getTestRoutine();
+      final notifier = container.read(gymStateProvider.notifier);
+      notifier.state = notifier.state.copyWith(
+        dayId: 1,
+        iteration: 1,
+        routine: routine,
+      );
+      notifier.calculatePages();
     });
 
-    /// Seeds the gym state with [routine] and navigates to the first log page
-    /// (index 2: start -> exercise overview -> log). [setCurrentPage] also
-    /// seeds gymLogProvider with the log template for that slot.
-    void seedLogPage(Routine routine) {
-      final notifier = container.read(gymStateProvider.notifier);
-      notifier.initData(routine, routine.days.first.id!, 1);
-      notifier.setCurrentPage(2);
-    }
+    /// The first exercise's set page (Bench press in the test routine).
+    PageEntry firstSetPage() =>
+        container.read(gymStateProvider).pages.firstWhere((p) => p.type == PageType.set);
+
+    List<SlotPageEntry> logSlots(PageEntry page) =>
+        page.slotPages.where((sp) => sp.type == SlotPageType.log).toList();
+
+    /// Re-reads [page] from the (immutable) state after a mutation.
+    PageEntry reread(PageEntry page) =>
+        container.read(gymStateProvider).pages.firstWhere((p) => p.uuid == page.uuid);
 
     Future<void> pumpLogPage(WidgetTester tester) async {
-      // The widget resolves its own slot now, so hand it the uuid of the slot
-      // the gym state was seeded on (via setCurrentPage above).
-      final slotUuid = container.read(gymStateProvider).getSlotEntryPageByIndex()!.uuid;
+      final pageEntry = firstSetPage();
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
           child: MaterialApp(
             locale: const Locale('en'),
+            theme: wgerLightTheme,
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
             home: Scaffold(
-              // A PageView gives LogPage's PageController something to attach to.
               body: Builder(
                 builder: (context) {
                   final controller = PageController();
                   return PageView(
                     controller: controller,
-                    children: [LogPage(controller, slotUuid)],
+                    children: [LogPage(controller, pageEntry: pageEntry)],
                   );
                 },
               ),
@@ -96,145 +126,199 @@ void main() {
       await tester.pumpAndSettle();
     }
 
-    testWidgets('handles null reps/weight without crashing', (tester) async {
-      final notifier = container.read(gymStateProvider.notifier);
-      final routine = testdata.getTestRoutine();
-      routine.dayDataGym = [
-        DayData(
-          iteration: 1,
-          date: DateTime(2024, 11, 01),
-          label: '',
-          day: routine.dayDataGym.first.day,
-          slots: [
-            SlotData(
-              isSuperset: false,
-              exerciseIds: [testExercises[0].id],
-              setConfigs: [
-                SetConfigData(
-                  exerciseId: testExercises[0].id,
-                  exercise: testExercises[0],
-                  slotEntryId: 1,
-                  nrOfSets: 1,
-                  repetitions: null,
-                  repetitionsUnit: null,
-                  weight: null,
-                  weightUnit: null,
-                  restTime: 120,
-                  rir: 1.5,
-                  rpe: 8,
-                  textRepr: '3x100kg',
-                ),
-              ],
-            ),
-          ],
-        ),
-      ];
-      notifier.initData(routine, routine.days.first.id!, 1);
-      notifier.setCurrentPage(2);
-
-      expect(notifier.state.getSlotEntryPageByIndex()!.type, SlotPageType.log);
-      await pumpLogPage(tester);
-      expect(find.byType(LogPage), findsOneWidget);
-    });
-
-    testWidgets('renders without crashing for the default slot entry page', (tester) async {
-      seedLogPage(testdata.getTestRoutine());
+    testWidgets('renders the log page with the exercise name (FR3)', (tester) async {
       await pumpLogPage(tester);
 
       expect(find.byType(LogPage), findsOneWidget);
+      // The active exercise is named in the hero/header at all times.
+      expect(find.text('Bench press'), findsWidgets);
     });
 
-    testWidgets('copy from past log updates form fields and shows a SnackBar', (tester) async {
-      seedLogPage(testdata.getTestRoutine());
+    testWidgets('inputs are pre-filled from the routine target (FR1e)', (tester) async {
       await pumpLogPage(tester);
 
-      final pastLogTile = find.byWidgetPredicate(
-        (w) => w.key is ValueKey && '${(w.key as ValueKey).value}'.startsWith('past-log-'),
-      );
-      expect(pastLogTile, findsWidgets);
-      await tester.tap(pastLogTile.first);
+      // The first pending set seeds its inputs from the configured target
+      // (Bench press: 10 × 10 kg) so the user only adjusts, never types blind.
+      final weight = tester.widget<TextField>(find.byKey(const ValueKey('gym-input-weight')));
+      final reps = tester.widget<TextField>(find.byKey(const ValueKey('gym-input-reps')));
+      expect(weight.controller!.text, '100');
+      expect(reps.controller!.text, '3');
+    });
+
+    testWidgets(
+      'hero shows the exercise prescription + note even when the active set is a '
+      'warm-up that carries none (regression)',
+      (tester) async {
+        // Mirror the real data shape: a warm-up first (active) set with no target
+        // text or note, while the prescription + note live on the working set.
+        final slots = logSlots(firstSetPage());
+        expect(slots.length, greaterThanOrEqualTo(2));
+        slots.first.setConfigData!
+          ..textRepr = ''
+          ..comment = '';
+        slots[1].setConfigData!
+          ..textRepr = '5 Reps @ 1 RiR 180s rest'
+          ..comment = 'Sub: Machine Chest Press';
+
+        await pumpLogPage(tester);
+
+        // The warm-up is active, but the hero must fall back to the working set
+        // so neither the target pill nor the note disappears.
+        expect(find.text('5 Reps @ 1 RiR 180s rest'), findsOneWidget);
+        expect(find.text('Sub: Machine Chest Press'), findsOneWidget);
+      },
+    );
+
+    testWidgets('logging a set persists it and marks the set done (FR1a)', (tester) async {
+      final firstLogUuid = logSlots(firstSetPage()).first.uuid;
+      await pumpLogPage(tester);
+
+      await tester.enterText(find.byKey(const ValueKey('gym-input-weight')), '52.5');
+      await tester.enterText(find.byKey(const ValueKey('gym-input-reps')), '8');
+      await tester.tap(find.byKey(const ValueKey('gym-log-set-button')));
       await tester.pumpAndSettle();
 
-      final editableFields = find.byType(EditableText);
-      expect(editableFields, findsWidgets);
-      final repText = tester.widget<EditableText>(editableFields.at(0)).controller.text;
-      final weightText = tester.widget<EditableText>(editableFields.at(1)).controller.text;
-      expect(repText, contains('10'));
-      expect(weightText, contains('10'));
-      expect(find.byType(SnackBar), findsOneWidget);
+      expect(fakeLogs.added, hasLength(1));
+      expect(fakeLogs.added.single.weight, 52.5);
+      expect(fakeLogs.added.single.repetitions, 8);
+
+      final slot = reread(firstSetPage()).slotPages.firstWhere((sp) => sp.uuid == firstLogUuid);
+      expect(slot.logDone, isTrue);
+
+      // Logging starts the (keep-alive) rest timer; stop it so no periodic timer
+      // outlives the test.
+      container.read(restTimerProvider.notifier).cancel();
     });
 
-    testWidgets('save button persists the entered reps/weight with slot/routine/iteration', (
+    testWidgets('logging with a blank RiR is allowed (FR2b)', (tester) async {
+      final firstLogUuid = logSlots(firstSetPage()).first.uuid;
+      await pumpLogPage(tester);
+
+      // The Bench press config has a RiR, so the field is present; clearing it
+      // must not block submission.
+      expect(find.byKey(const ValueKey('gym-input-rir')), findsOneWidget);
+      await tester.enterText(find.byKey(const ValueKey('gym-input-rir')), '');
+      await tester.tap(find.byKey(const ValueKey('gym-log-set-button')));
+      await tester.pumpAndSettle();
+
+      expect(fakeLogs.added, hasLength(1));
+      expect(fakeLogs.added.single.rir, isNull);
+      final slot = reread(firstSetPage()).slotPages.firstWhere((sp) => sp.uuid == firstLogUuid);
+      expect(slot.logDone, isTrue);
+
+      container.read(restTimerProvider.notifier).cancel();
+    });
+
+    testWidgets('adding a set shows a new set row (FR6a)', (tester) async {
+      await pumpLogPage(tester);
+
+      final page = firstSetPage();
+      final before = logSlots(page).length;
+
+      container.read(gymStateProvider.notifier).addSetToPage(page.uuid);
+      await tester.pumpAndSettle();
+
+      final after = logSlots(reread(page));
+      expect(after, hasLength(before + 1));
+      expect(find.byKey(ValueKey('gym-set-row-${after.last.uuid}')), findsOneWidget);
+    });
+
+    testWidgets('removing a set drops its row (FR6b)', (tester) async {
+      await pumpLogPage(tester);
+
+      final page = firstSetPage();
+      final slots = logSlots(page);
+      final removed = slots.last;
+      expect(find.byKey(ValueKey('gym-set-row-${removed.uuid}')), findsOneWidget);
+
+      container.read(gymStateProvider.notifier).removeSetFromPage(page.uuid, removed.uuid);
+      await tester.pumpAndSettle();
+
+      expect(logSlots(reread(page)), hasLength(slots.length - 1));
+      expect(find.byKey(ValueKey('gym-set-row-${removed.uuid}')), findsNothing);
+    });
+
+    // Regression for the "hydration" bug (TODO.md): finishing the last set of an
+    // exercise auto-advances to the next page, which disposes the LogPage's State
+    // (PageView does not keep it alive). Jumping back rebuilds the State from
+    // scratch; adding a set then has to re-seed the new slot from the rebuilt
+    // page. The exercise config (name/target/comment) must survive that round
+    // trip rather than coming back empty.
+    testWidgets('adding a set after finishing the exercise survives a jump-away/back', (
       tester,
     ) async {
-      seedLogPage(testdata.getTestRoutine());
-      await pumpLogPage(tester);
+      // The two set pages share one controller, exactly like the real PageView in
+      // gym_mode.dart. A small cacheExtent guarantees the first page's State is
+      // disposed once we advance past it.
+      final setPages = container
+          .read(gymStateProvider)
+          .pages
+          .where((p) => p.type == PageType.set)
+          .toList();
 
-      // Overwrite the pre-filled values so the assertion proves the user's
-      // edits flow through, not just the set-config defaults.
-      final fields = find.byType(TextFormField);
-      await tester.enterText(fields.at(0), '12'); // reps
-      await tester.enterText(fields.at(1), '34'); // weight
-      await tester.pump();
+      // Give the first exercise's sets a comment so we can assert the hero note
+      // survives the round trip (the test routine ships empty comments).
+      for (final sp in setPages.first.slotPages) {
+        sp.setConfigData?.comment = 'Keep your back straight';
+      }
 
-      await tester.tap(find.byKey(const ValueKey('save-log-button')));
+      final controller = PageController();
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp(
+            locale: const Locale('en'),
+            theme: wgerLightTheme,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: Scaffold(
+              body: PageView(
+                controller: controller,
+                children: [
+                  for (final p in setPages) LogPage(controller, pageEntry: p),
+                  const SizedBox.shrink(),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
       await tester.pumpAndSettle();
 
-      final saved = verify(mockWorkoutLogRepo.addLocalDrift(captureAny)).captured.single as Log;
-      final gymState = container.read(gymStateProvider);
-      expect(saved.repetitions, 12);
-      expect(saved.weight, 34);
-      expect(saved.slotEntryId, gymState.getSlotEntryPageByIndex()!.setConfigData!.slotEntryId);
-      expect(saved.routineId, gymState.routine.id);
-      expect(saved.iteration, gymState.iteration);
-    });
+      final page = setPages.first;
 
-    testWidgets('reps quick buttons increment and decrement the value', (tester) async {
-      final routine = testdata.getTestRoutine();
-      routine.dayDataGym[0].slots[0].setConfigs[0].repetitions = 0;
-      seedLogPage(routine);
-      await pumpLogPage(tester);
+      // Finish every set of the first exercise through the UI. Logging the last
+      // one auto-advances to the next page, disposing this LogPage's State.
+      for (var i = 0; i < logSlots(page).length; i++) {
+        await tester.tap(find.byKey(const ValueKey('gym-log-set-button')));
+        await tester.pumpAndSettle();
+      }
+      expect(reread(page).allLogsDone, isTrue);
 
-      final repsWidget = find.byKey(const ValueKey('logs-reps-widget'));
-      expect(repsWidget, findsOneWidget);
-      final addBtn = find.descendant(of: repsWidget, matching: find.byIcon(Icons.add));
-      final removeBtn = find.descendant(of: repsWidget, matching: find.byIcon(Icons.remove));
-
-      await tester.tap(addBtn);
+      // Jump back to the (now finished) first exercise: rebuilds the State.
+      controller.jumpToPage(0);
       await tester.pumpAndSettle();
-      expect(find.descendant(of: repsWidget, matching: find.text('1')), findsOneWidget);
 
-      await tester.tap(addBtn);
+      // Add another set, as the user would to log an extra one.
+      await tester.tap(find.byKey(const ValueKey('gym-add-set-button')));
       await tester.pumpAndSettle();
-      expect(find.descendant(of: repsWidget, matching: find.text('2')), findsOneWidget);
 
-      await tester.tap(removeBtn);
-      await tester.pumpAndSettle();
-      expect(find.descendant(of: repsWidget, matching: find.text('1')), findsOneWidget);
-    });
+      final added = logSlots(reread(page)).last;
+      // The new set must carry the exercise's config, not a null/empty one.
+      expect(added.setConfigData, isNotNull);
+      expect(added.setConfigData!.exercise.id, 1); // Bench press
+      expect(added.setConfigData!.textRepr, '3x100kg');
 
-    testWidgets('weight quick buttons increment and decrement the value', (tester) async {
-      final routine = testdata.getTestRoutine();
-      routine.dayDataGym[0].slots[0].setConfigs[0].weight = 0;
-      seedLogPage(routine);
-      await pumpLogPage(tester);
+      // The hero still names the exercise, shows the target prescription pill
+      // and the note, and the input panel pre-fills from the carried-over config.
+      expect(find.text('Bench press'), findsWidgets);
+      expect(find.text('3x100kg'), findsOneWidget);
+      expect(find.text('Keep your back straight'), findsOneWidget);
+      final weight = tester.widget<TextField>(find.byKey(const ValueKey('gym-input-weight')));
+      expect(weight.controller!.text, '100');
 
-      final weightWidget = find.byKey(const ValueKey('logs-weight-widget'));
-      expect(weightWidget, findsOneWidget);
-      final addBtn = find.descendant(of: weightWidget, matching: find.byIcon(Icons.add));
-      final removeBtn = find.descendant(of: weightWidget, matching: find.byIcon(Icons.remove));
-
-      await tester.tap(addBtn);
-      await tester.pumpAndSettle();
-      expect(find.descendant(of: weightWidget, matching: find.text('1.25')), findsOneWidget);
-
-      await tester.tap(addBtn);
-      await tester.pumpAndSettle();
-      expect(find.descendant(of: weightWidget, matching: find.text('2.5')), findsOneWidget);
-
-      await tester.tap(removeBtn);
-      await tester.pumpAndSettle();
-      expect(find.descendant(of: weightWidget, matching: find.text('1.25')), findsOneWidget);
+      container.read(restTimerProvider.notifier).cancel();
     });
   });
 }

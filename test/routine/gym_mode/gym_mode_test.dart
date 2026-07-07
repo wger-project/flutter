@@ -26,35 +26,53 @@ import 'package:shared_preferences_platform_interface/in_memory_shared_preferenc
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/repetition_unit.dart';
 import 'package:wger/models/workouts/session.dart';
 import 'package:wger/models/workouts/weight_unit.dart';
 import 'package:wger/providers/exercise_repository.dart';
 import 'package:wger/providers/exercises_notifier.dart';
 import 'package:wger/providers/gym_state.dart';
+import 'package:wger/providers/gym_state_notifier.dart';
 import 'package:wger/providers/network_provider.dart';
+import 'package:wger/providers/rest_timer_notifier.dart';
 import 'package:wger/providers/routines_notifier.dart';
 import 'package:wger/providers/routines_repository.dart';
+import 'package:wger/providers/workout_logs_notifier.dart';
 import 'package:wger/providers/workout_session_repository.dart';
 import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/screens/routine_screen.dart';
+import 'package:wger/theme/theme.dart';
 import 'package:wger/widgets/core/error.dart';
-import 'package:wger/widgets/routines/forms/rir.dart';
 import 'package:wger/widgets/routines/gym_mode/exercise_overview.dart';
 import 'package:wger/widgets/routines/gym_mode/log_page.dart';
 import 'package:wger/widgets/routines/gym_mode/session_page.dart';
 import 'package:wger/widgets/routines/gym_mode/start_page.dart';
-import 'package:wger/widgets/routines/gym_mode/summary.dart';
-import 'package:wger/widgets/routines/gym_mode/timer.dart';
 
 import '../../../test_data/exercises.dart';
 import '../../../test_data/routines.dart';
 import '../../fake_connectivity.dart';
 import 'gym_mode_test.mocks.dart';
 
+/// Captures logged sets instead of writing them to the local drift database.
+class _FakeLogMutations implements WorkoutLogMutations {
+  final List<Log> added = [];
+
+  @override
+  Future<void> addEntry(Log log) async => added.add(log);
+
+  @override
+  Future<void> updateEntry(Log log) async {}
+
+  @override
+  Future<void> deleteEntry(String id) async {}
+}
+
 @GenerateMocks([WorkoutSessionRepository, ExerciseRepository, RoutinesRepository])
 void main() {
   installFakeConnectivity();
+
+  final fakeLogs = _FakeLogMutations();
 
   final key = GlobalKey<NavigatorState>();
 
@@ -93,6 +111,7 @@ void main() {
     return riverpod.ProviderScope(
       overrides: [
         networkStatusProvider.overrideWithValue(isOnline),
+        workoutLogProvider.overrideWithValue(fakeLogs),
         routinesRepositoryProvider.overrideWithValue(mockRoutinesRepo),
         exerciseRepositoryProvider.overrideWithValue(mockExerciseRepo),
         workoutSessionRepositoryProvider.overrideWithValue(mockSessionRepo),
@@ -108,6 +127,7 @@ void main() {
       ],
       child: MaterialApp(
         locale: Locale(locale),
+        theme: wgerLightTheme,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: key,
@@ -126,209 +146,143 @@ void main() {
   }
 
   testWidgets(
-    'Test the widgets on the gym mode screen',
+    'swipe journey: start -> log page -> jump via queue -> finish',
     (WidgetTester tester) async {
-      await withClock(Clock.fixed(DateTime(2025, 3, 29, 14, 33)), () async {
-        await tester.pumpWidget(renderGymMode());
-        await tester.pumpAndSettle();
-        await tester.tap(find.byType(TextButton));
-        await tester.pumpAndSettle();
+      // The redesigned gym mode is a swipe PageView (start, one log page per
+      // exercise, session, summary) with persistent chrome (header + exercise
+      // queue) on the log pages. Navigation is swipe + queue chips + Finish,
+      // not the old per-set/per-timer chevron pages.
+      await tester.pumpWidget(renderGymMode());
+      await tester.pumpAndSettle();
+      await tester.tap(find.byType(TextButton));
+      await tester.pumpAndSettle();
 
-        //
-        // Start page
-        //
-        expect(find.byType(StartPage), findsOneWidget);
-        expect(find.text('Your workout today'), findsOneWidget);
-        expect(find.text('Bench press'), findsOneWidget);
-        expect(find.text('Side raises'), findsOneWidget);
-        expect(find.byIcon(Icons.close), findsOneWidget);
-        expect(find.byIcon(Icons.menu), findsOneWidget);
-        expect(find.byIcon(Icons.chevron_left), findsNothing);
-        expect(find.byIcon(Icons.chevron_right), findsOneWidget);
-        await tester.tap(find.byIcon(Icons.chevron_right));
-        await tester.pumpAndSettle();
+      // Start page lists the day's exercises.
+      expect(find.byType(StartPage), findsOneWidget);
+      expect(find.text('Bench press'), findsWidgets);
+      expect(find.text('Side raises'), findsWidgets);
 
-        //
-        // Bench press - exercise overview page
-        //
-        expect(find.text('Bench press'), findsOneWidget);
-        expect(find.byType(ExerciseOverview), findsOneWidget);
-        expect(find.byIcon(Icons.close), findsOneWidget);
-        expect(find.byIcon(Icons.menu), findsOneWidget);
-        expect(find.byIcon(Icons.chevron_left), findsOneWidget);
-        expect(find.byIcon(Icons.chevron_right), findsOneWidget);
-        await tester.drag(find.byType(ExerciseOverview), const Offset(-500.0, 0.0));
-        await tester.pumpAndSettle();
+      // Swipe off the start page; the first swipe lands on the first exercise's
+      // log page (FR3: the exercise name is shown).
+      await tester.drag(find.byType(StartPage), const Offset(-500.0, 0.0));
+      await tester.pumpAndSettle();
 
-        //
-        // Bench press - Log
-        //
-        expect(find.text('Bench press'), findsOneWidget);
-        expect(find.byType(LogPage), findsOneWidget);
-        expect(find.byType(Form), findsOneWidget);
-        expect(find.text('10 × 10 kg (1.5 RiR)'), findsOneWidget);
-        expect(find.text('12 × 10 kg (2 RiR)'), findsOneWidget);
+      expect(find.byType(LogPage), findsOneWidget);
+      expect(find.text('Bench press'), findsWidgets);
 
-        // TODO: commented out for now
-        // expect(find.text('Make sure to warm up'), findsOneWidget, reason: 'Set comment');
-        expect(find.byIcon(Icons.close), findsOneWidget);
-        expect(find.byIcon(Icons.menu), findsOneWidget);
-        expect(find.byIcon(Icons.chevron_left), findsOneWidget);
-        expect(find.byIcon(Icons.chevron_right), findsOneWidget);
+      // FR11: the total-workout-time chrome is visible and does not block
+      // navigation. The rest timer badge stays hidden until the first set is
+      // logged (it tracks rest *between* sets, so there is nothing to show yet).
+      expect(find.byKey(const ValueKey('gym-total-time')), findsOneWidget);
+      expect(find.byKey(const ValueKey('gym-rest-timer')), findsNothing);
 
-        // The form shows reps and weight, each with its own unit
-        // picker (PopupMenuButton<int>), plus the RiR slider, all at
-        // once. Scope the popup-menu lookup to the LogPage so other
-        // popup menus elsewhere in the app shell don't interfere.
-        expect(find.byType(TextFormField), findsNWidgets(2));
-        expect(
-          find.descendant(
-            of: find.byType(LogPage),
-            matching: find.byType(PopupMenuButton<int>),
-          ),
-          findsNWidgets(2),
-        );
-        expect(find.byType(RiRInputWidget), findsOneWidget);
-        // Advance to the next page via the chevron, the RiR slider
-        // would otherwise eat a horizontal-drag gesture started over
-        // its track.
-        await tester.tap(find.byIcon(Icons.chevron_right));
-        await tester.pumpAndSettle();
+      // The exercise (set) pages, used to target queue chips by uuid.
+      final container = riverpod.ProviderScope.containerOf(
+        tester.element(find.byType(LogPage)),
+      );
+      final setPages = container
+          .read(gymStateProvider)
+          .pages
+          .where((p) => p.type == PageType.set)
+          .toList();
+      expect(setPages.length, greaterThanOrEqualTo(2));
 
-        //
-        // Bench press - pause
-        //
-        expect(find.text('Pause'), findsOneWidget);
-        expect(find.byType(TimerCountdownWidget), findsOneWidget);
-        expect(find.byIcon(Icons.close), findsOneWidget);
-        expect(find.byIcon(Icons.menu), findsOneWidget);
-        expect(find.byIcon(Icons.chevron_left), findsOneWidget);
-        expect(find.byIcon(Icons.chevron_right), findsOneWidget);
-        await tester.tap(find.byIcon(Icons.chevron_right));
-        await tester.pumpAndSettle();
+      // FR10: jump straight to the second exercise via its queue chip.
+      await tester.tap(find.byKey(ValueKey('gym-queue-chip-${setPages[1].uuid}')));
+      await tester.pumpAndSettle();
+      expect(find.text('Side raises'), findsWidgets);
 
-        //
-        // Bench press - log
-        //
-        expect(find.text('Bench press'), findsOneWidget);
-        expect(find.byType(LogPage), findsOneWidget);
-        expect(find.byType(Form), findsOneWidget);
-        await tester.drag(find.byType(LogPage), const Offset(-500.0, 0.0));
-        await tester.pumpAndSettle();
-
-        //
-        // Pause
-        //
-        expect(find.text('Pause'), findsOneWidget);
-        expect(find.byType(TimerCountdownWidget), findsOneWidget);
-        expect(find.byIcon(Icons.chevron_left), findsOneWidget);
-        expect(find.byIcon(Icons.close), findsOneWidget);
-        expect(find.byIcon(Icons.chevron_right), findsOneWidget);
-        await tester.tap(find.byIcon(Icons.chevron_right));
-        await tester.pumpAndSettle();
-
-        //
-        // Bench press - log
-        //
-        expect(find.text('Bench press'), findsOneWidget);
-        expect(find.byType(LogPage), findsOneWidget);
-        expect(find.byType(Form), findsOneWidget);
-        await tester.tap(find.byIcon(Icons.chevron_right));
-        await tester.pumpAndSettle();
-
-        //
-        // Pause
-        //
-        expect(find.text('Pause'), findsOneWidget);
-        expect(find.byType(TimerCountdownWidget), findsOneWidget);
-        await tester.tap(find.byIcon(Icons.chevron_right));
-        await tester.pumpAndSettle();
-
-        //
-        // Side raises - overview
-        //
-        expect(find.text('Side raises'), findsOneWidget);
-        expect(find.byType(ExerciseOverview), findsOneWidget);
-        await tester.tap(find.byIcon(Icons.chevron_right));
-        await tester.pumpAndSettle();
-
-        //
-        // Side raises - log
-        //
-        expect(find.text('Side raises'), findsOneWidget);
-        expect(find.byType(LogPage), findsOneWidget);
-        await tester.tap(find.byIcon(Icons.chevron_right));
-        await tester.pumpAndSettle();
-
-        //
-        // Side raises - timer
-        //
-        expect(find.byType(TimerWidget), findsOneWidget);
-        await tester.tap(find.byIcon(Icons.chevron_right));
-        await tester.pumpAndSettle();
-
-        //
-        // Side raises - log
-        //
-        expect(find.text('Side raises'), findsOneWidget);
-        expect(find.byType(LogPage), findsOneWidget);
-        await tester.tap(find.byIcon(Icons.chevron_right));
-        await tester.pumpAndSettle();
-
-        //
-        // Side raises - timer
-        //
-        expect(find.byType(TimerWidget), findsOneWidget);
-        await tester.tap(find.byIcon(Icons.chevron_right));
-        await tester.pumpAndSettle();
-
-        //
-        // Side raises - log
-        //
-        expect(find.text('Side raises'), findsOneWidget);
-        expect(find.byType(LogPage), findsOneWidget);
-        await tester.tap(find.byIcon(Icons.chevron_right));
-        await tester.pumpAndSettle();
-
-        //
-        // Side raises - timer
-        //
-        expect(find.byType(TimerWidget), findsOneWidget);
-        await tester.tap(find.byIcon(Icons.chevron_right));
-        await tester.pumpAndSettle();
-
-        //
-        // Session
-        //
-        expect(find.text('Workout session'), findsOneWidget);
-        expect(find.byType(SessionPage), findsOneWidget);
-        expect(find.byType(Form), findsOneWidget);
-        expect(find.byIcon(Icons.sentiment_very_dissatisfied), findsOneWidget);
-        expect(find.byIcon(Icons.sentiment_neutral), findsOneWidget);
-        expect(find.byIcon(Icons.sentiment_very_satisfied), findsOneWidget);
-        expect(
-          find.text('2:33 PM'),
-          findsNWidgets(2),
-          reason: 'start and end time are the same',
-        );
-        final toggleButtons = tester.widget<ToggleButtons>(find.byType(ToggleButtons));
-        expect(toggleButtons.isSelected[1], isTrue);
-        expect(find.byIcon(Icons.chevron_left), findsOneWidget);
-        expect(find.byIcon(Icons.close), findsOneWidget);
-        expect(find.byIcon(Icons.chevron_right), findsOneWidget);
-        await tester.tap(find.byIcon(Icons.chevron_right));
-        await tester.pumpAndSettle();
-
-        //
-        // Workout summary
-        //
-        expect(find.byType(WorkoutSummary), findsOneWidget);
-        expect(find.byIcon(Icons.chevron_left), findsOneWidget);
-        expect(find.byIcon(Icons.close), findsOneWidget);
-        expect(find.byIcon(Icons.chevron_right), findsNothing);
-      });
+      // FR12: the Finish button jumps to the session page.
+      await tester.tap(find.byKey(const ValueKey('gym-finish-button')));
+      await tester.pumpAndSettle();
+      expect(find.byType(SessionPage), findsOneWidget);
     },
-    tags: ['golden'],
+    semanticsEnabled: false,
+  );
+
+  testWidgets(
+    'jumping back to a finished exercise still shows its comment/data, and an '
+    'added set keeps it',
+    (WidgetTester tester) async {
+      // Repro for the "hydration" bug: finish the last set of an exercise (which
+      // auto-advances to the next page and disposes this log page), then jump
+      // back to it. The exercise comment/target must still render, and adding a
+      // set must not blank them out.
+      await tester.pumpWidget(renderGymMode());
+      await tester.pumpAndSettle();
+      await tester.tap(find.byType(TextButton));
+      await tester.pumpAndSettle();
+
+      // Swipe onto the first exercise (Bench press).
+      await tester.drag(find.byType(StartPage), const Offset(-500.0, 0.0));
+      await tester.pumpAndSettle();
+      expect(find.text('Bench press'), findsWidgets);
+
+      final container = riverpod.ProviderScope.containerOf(
+        tester.element(find.byType(LogPage)),
+      );
+
+      // The test routine ships empty comments; give the first exercise's sets a
+      // comment so we can assert the hero note survives.
+      final setPages = container
+          .read(gymStateProvider)
+          .pages
+          .where((p) => p.type == PageType.set)
+          .toList();
+      for (final sp in setPages.first.slotPages) {
+        sp.setConfigData?.comment = 'Keep your back straight';
+      }
+
+      // Finish every set of Bench press. Logging the last one auto-advances to
+      // the next exercise, disposing the Bench press log page.
+      final benchUuid = setPages.first.uuid;
+      final logCount = container
+          .read(gymStateProvider)
+          .pages
+          .firstWhere((p) => p.uuid == benchUuid)
+          .slotPages
+          .where((sp) => sp.type == SlotPageType.log)
+          .length;
+      for (var i = 0; i < logCount; i++) {
+        await tester.tap(find.byKey(const ValueKey('gym-log-set-button')));
+        await tester.pump();
+        // Logging rebuilds the hero; the comment we set above is now rendered.
+        // (Asserting here proves the comment is genuinely shown before the jump,
+        // so a later miss is the bug and not a test artifact.)
+        if (i == 0) {
+          expect(find.text('Keep your back straight'), findsOneWidget);
+        }
+        // Logging starts the periodic rest timer; stop it so pumpAndSettle does
+        // not spin on it.
+        container.read(restTimerProvider.notifier).cancel();
+        await tester.pumpAndSettle();
+      }
+
+      // Move two pages away (onto the session page) so the PageView actually
+      // disposes the Bench press log page, then come back: this is the round
+      // trip that used to drop the exercise's data.
+      await tester.tap(find.byKey(const ValueKey('gym-finish-button')));
+      await tester.pumpAndSettle();
+      expect(find.byType(SessionPage), findsOneWidget);
+
+      // Swipe back to the finished Bench press, which is rebuilt from scratch.
+      await tester.drag(find.byType(SessionPage), const Offset(500.0, 0.0), warnIfMissed: false);
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(ValueKey('gym-queue-chip-$benchUuid')));
+      await tester.pumpAndSettle();
+
+      // The comment and exercise name must still be there after the round trip.
+      expect(find.text('Bench press'), findsWidgets);
+      expect(find.text('Keep your back straight'), findsOneWidget);
+
+      // Add another set; the comment/data must persist.
+      await tester.tap(find.byKey(const ValueKey('gym-add-set-button')));
+      await tester.pumpAndSettle();
+      expect(find.text('Bench press'), findsWidgets);
+      expect(find.text('Keep your back straight'), findsOneWidget);
+
+      container.read(restTimerProvider.notifier).cancel();
+    },
     semanticsEnabled: false,
   );
 
@@ -386,7 +340,8 @@ void main() {
 
         expect(tester.takeException(), isNull);
         expect(find.byType(LogPage), findsOneWidget);
-        expect(find.text('Bench press'), findsOneWidget);
+        // The exercise name now appears in both the queue chip and the hero.
+        expect(find.text('Bench press'), findsWidgets);
       });
     },
     semanticsEnabled: false,
