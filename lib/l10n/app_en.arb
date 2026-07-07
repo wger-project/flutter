@@ -1027,6 +1027,8 @@
   "images": "Images",
   "language": "Language",
   "addExercise": "Add exercise",
+  "removeExercise": "Remove exercise",
+  "gymModeRemoveExerciseConfirm": "Remove this exercise from the current workout? Sets you've already logged are kept.",
   "fitInWeek": "Fixed weekly schedule",
   "fitInWeekHelp": "If enabled, the days will repeat in a weekly cycle, otherwise the days will follow sequentially without regards to the start of a new week.",
   "addSuperset": "Add superset",
@@ -1416,5 +1418,157 @@
   "timeStartEndBothOrNeither": "Either set both start and end time or leave both empty",
   "@timeStartEndBothOrNeither": {
     "description": "Validation error when only one of start/end time is set on a workout session"
+  },
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Cancel button label"
+  },
+  "gymModeFinish": "Finish",
+  "@gymModeFinish": {
+    "description": "Button in gym mode header to finish the workout"
+  },
+  "gymModeWeekOf": "Week {iteration} of {totalWeeks}",
+  "@gymModeWeekOf": {
+    "description": "Shows current iteration/week in the gym mode header",
+    "placeholders": {
+      "iteration": { "type": "int" },
+      "totalWeeks": { "type": "int" }
+    }
+  },
+  "gymModeLastSession": "Last session",
+  "@gymModeLastSession": {
+    "description": "Label showing the previous workout session date"
+  },
+  "gymModeLastSessionDate": "Last session · {date}",
+  "@gymModeLastSessionDate": {
+    "description": "Label with date of the previous workout session",
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "gymModeSetsLogged": "Sets logged",
+  "@gymModeSetsLogged": {
+    "description": "Section header in the history sheet listing logged sets"
+  },
+  "gymModeSetOrderNote": "Set order may not match today's plan exactly.",
+  "@gymModeSetOrderNote": {
+    "description": "Footnote in the history sheet explaining set ordering"
+  },
+  "gymModeSetType": "Set type",
+  "@gymModeSetType": {
+    "description": "Title of the set type picker sheet"
+  },
+  "gymModeSetTypeHelp": "Tap to change how this set counts toward training.",
+  "@gymModeSetTypeHelp": {
+    "description": "Help text in the set type picker sheet"
+  },
+  "gymModeRemoveSet": "Remove this set",
+  "@gymModeRemoveSet": {
+    "description": "Button to remove a set in the set type picker sheet"
+  },
+  "gymModeAddAnotherSet": "Add another set · all logged ✓",
+  "@gymModeAddAnotherSet": {
+    "description": "Button shown when all sets are logged, allows adding another set"
+  },
+  "gymModeEditingSet": "Editing set {nr}",
+  "@gymModeEditingSet": {
+    "description": "Label in the bottom panel when editing a previously logged set",
+    "placeholders": {
+      "nr": { "type": "int" }
+    }
+  },
+  "gymModeLogSet": "Log set {nr}",
+  "@gymModeLogSet": {
+    "description": "Button label to log a specific set number",
+    "placeholders": {
+      "nr": { "type": "int" }
+    }
+  },
+  "gymModeSaveChanges": "Save changes",
+  "@gymModeSaveChanges": {
+    "description": "Button label to save edits to a logged set"
+  },
+  "gymModeExerciseInfo": "Exercise info",
+  "@gymModeExerciseInfo": {
+    "description": "Menu option to view exercise details in gym mode"
+  },
+  "gymModeNothingLoggedYet": "Nothing logged yet.",
+  "@gymModeNothingLoggedYet": {
+    "description": "Message shown in the workout summary when no sets have been logged"
+  },
+  "gymModeWeightUnit": "Weight ({unit})",
+  "@gymModeWeightUnit": {
+    "description": "Input label for weight showing the current unit (kg or lbs)",
+    "placeholders": {
+      "unit": { "type": "String" }
+    }
+  },
+  "gymModeSwap": "Swap",
+  "@gymModeSwap": {
+    "description": "Button to swap the current exercise for a different one in gym mode"
+  },
+  "gymModeStatusNow": "NOW",
+  "@gymModeStatusNow": {
+    "description": "Status badge on the currently active/pending set in gym mode"
+  },
+  "gymModeSetTypeBadgeNormal": "#",
+  "@gymModeSetTypeBadgeNormal": {
+    "description": "Single-character badge for a normal/working set"
+  },
+  "gymModeSetTypeBadgeWarmup": "W",
+  "@gymModeSetTypeBadgeWarmup": {
+    "description": "Single-character badge abbreviation for a warm-up set"
+  },
+  "gymModeSetTypeBadgeDropset": "D",
+  "@gymModeSetTypeBadgeDropset": {
+    "description": "Single-character badge abbreviation for a drop set"
+  },
+  "gymModeSetTypeBadgeMyo": "M",
+  "@gymModeSetTypeBadgeMyo": {
+    "description": "Single-character badge abbreviation for a myo-rep set"
+  },
+  "gymModeSetTypeBadgePartial": "P",
+  "@gymModeSetTypeBadgePartial": {
+    "description": "Single-character badge abbreviation for a partial rep set"
+  },
+  "gymModeSetTypeBadgeForced": "F",
+  "@gymModeSetTypeBadgeForced": {
+    "description": "Single-character badge abbreviation for a forced rep set"
+  },
+  "gymModeSetTypeBadgeTut": "T",
+  "@gymModeSetTypeBadgeTut": {
+    "description": "Single-character badge abbreviation for a time-under-tension set"
+  },
+  "gymModeSetTypeBadgeIso": "I",
+  "@gymModeSetTypeBadgeIso": {
+    "description": "Single-character badge abbreviation for an isometric hold set"
+  },
+  "gymModeSetTypeBadgeJump": "J",
+  "@gymModeSetTypeBadgeJump": {
+    "description": "Single-character badge abbreviation for a jump set"
+  },
+  "gymModeSetTypeNormal": "Working set",
+  "@gymModeSetTypeNormal": {
+    "description": "Name for the normal/working set type in the set type picker"
+  },
+  "gymModeSetTypeNormalDesc": "Your main sets that drive progress — numbered in order.",
+  "@gymModeSetTypeNormalDesc": {
+    "description": "Description for the working set type in the picker"
+  },
+  "gymModeSetTypeWarmupDesc": "Lighter prep sets to get the muscle ready. Not counted toward working volume.",
+  "@gymModeSetTypeWarmupDesc": {
+    "description": "Description for the warm-up set type in the picker"
+  },
+  "gymModeSetTypeDropsetDesc": "Reduce the weight and keep going immediately after reaching failure.",
+  "@gymModeSetTypeDropsetDesc": {
+    "description": "Description for the drop set type in the picker"
+  },
+  "gymModeSetTypeMyo": "Myo-rep",
+  "@gymModeSetTypeMyo": {
+    "description": "Name for the myo-rep set type in the set type picker"
+  },
+  "gymModeSetTypeMyo_desc": "A long activation set, brief rest, then short bursts of extra reps.",
+  "@gymModeSetTypeMyo_desc": {
+    "description": "Description for the myo-rep set type in the picker"
   }
 }

@@ -17,26 +17,24 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:wger/helpers/consts.dart';
-import 'package:wger/providers/gym_state_notifier.dart';
-import 'package:wger/theme/theme.dart';
-import 'package:wger/widgets/routines/gym_mode/workout_menu.dart';
+import 'package:wger/widgets/routines/gym_mode/timer.dart';
 
 class NavigationHeader extends StatelessWidget {
-  final PageController _controller;
   final String _title;
   final bool showEndWorkoutButton;
+  final int? restSecondsRemaining;
 
   const NavigationHeader(
-    this._title,
-    this._controller, {
+    this._title, {
     this.showEndWorkoutButton = true,
+    this.restSecondsRemaining,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
+    final restSecs = restSecondsRemaining;
+
     return Row(
       children: [
         IconButton(
@@ -45,6 +43,18 @@ class NavigationHeader extends StatelessWidget {
             Navigator.of(context).pop();
           },
         ),
+        const CompactElapsedTimer(),
+        if (restSecs != null && restSecs > 0) ...[
+          const SizedBox(width: 6),
+          Icon(Icons.timer_outlined, size: 14, color: Theme.of(context).colorScheme.primary),
+          const SizedBox(width: 2),
+          Text(
+            '${restSecs}s',
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: Theme.of(context).colorScheme.primary,
+            ),
+          ),
+        ],
         Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 10),
@@ -52,80 +62,11 @@ class NavigationHeader extends StatelessWidget {
               _title,
               style: Theme.of(context).textTheme.headlineSmall,
               textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
         ),
-        IconButton(
-          icon: const Icon(Icons.menu),
-          onPressed: () {
-            showDialog(
-              context: context,
-              builder: (ctx) => WorkoutMenuDialog(_controller),
-            );
-          },
-        ),
-      ],
-    );
-  }
-}
-
-class NavigationFooter extends ConsumerWidget {
-  final PageController _controller;
-  final bool showPrevious;
-  final bool showNext;
-
-  const NavigationFooter(
-    this._controller, {
-    this.showPrevious = true,
-    this.showNext = true,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final gymState = ref.watch(gymStateProvider);
-
-    return Row(
-      children: [
-        if (showPrevious)
-          IconButton(
-            icon: const Icon(Icons.chevron_left),
-            onPressed: () {
-              _controller.previousPage(
-                duration: DEFAULT_ANIMATION_DURATION,
-                curve: DEFAULT_ANIMATION_CURVE,
-              );
-            },
-          )
-        else
-          const SizedBox(width: 48),
-        Expanded(
-          child: GestureDetector(
-            onTap: () => showDialog(
-              context: context,
-              builder: (ctx) => WorkoutMenuDialog(_controller, initialIndex: 1),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 15),
-              child: LinearProgressIndicator(
-                minHeight: 3,
-                value: gymState.ratioCompleted,
-                valueColor: const AlwaysStoppedAnimation<Color>(wgerPrimaryColor),
-              ),
-            ),
-          ),
-        ),
-        if (showNext)
-          IconButton(
-            icon: const Icon(Icons.chevron_right),
-            onPressed: () {
-              _controller.nextPage(
-                duration: DEFAULT_ANIMATION_DURATION,
-                curve: DEFAULT_ANIMATION_CURVE,
-              );
-            },
-          )
-        else
-          const SizedBox(width: 48),
+        const SizedBox(width: 48),
       ],
     );
   }

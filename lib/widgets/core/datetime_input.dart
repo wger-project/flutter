@@ -67,17 +67,29 @@ class _TimeInputWidgetState extends State<TimeInputWidget> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Format depends on MaterialLocalizations, so (re)sync once dependencies
+    // are available rather than during build (which would notify the parent
+    // Form mid-build and trigger setState-during-build).
+    _syncText();
+  }
+
+  @override
   void didUpdateWidget(TimeInputWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.value != oldWidget.value) {
       _value = widget.value;
+      _syncText();
     }
   }
 
+  /// Rewrites the read-only display text to match [_value]. Must be called
+  /// outside of [build] because it notifies the controller's listeners.
+  void _syncText() {}
+
   @override
   Widget build(BuildContext context) {
-    // Keyed initialValue, not a controller: a controller notifies the enclosing
-    // Form on assignment, which crashes if that happens during a build.
     return TextFormField(
       key: ValueKey(_value),
       readOnly: true,
@@ -91,6 +103,7 @@ class _TimeInputWidgetState extends State<TimeInputWidget> {
                 icon: const Icon(Icons.clear),
                 onPressed: () {
                   setState(() => _value = null);
+                  _syncText();
                   widget.onCleared!();
                 },
               )
@@ -106,6 +119,7 @@ class _TimeInputWidgetState extends State<TimeInputWidget> {
         );
         if (picked != null && context.mounted) {
           setState(() => _value = picked);
+          _syncText();
           widget.onChanged(picked);
         }
       },
@@ -172,18 +186,30 @@ class _DateInputWidgetState extends State<DateInputWidget> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Format depends on the locale, so (re)sync once dependencies are
+    // available rather than during build (which would notify the parent Form
+    // mid-build and trigger setState-during-build).
+    _syncText();
+  }
+
+  @override
   void didUpdateWidget(DateInputWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.value != oldWidget.value) {
       _value = widget.value;
+      _syncText();
     }
   }
+
+  /// Rewrites the read-only display text to match [_value]. Must be called
+  /// outside of [build] because it notifies the controller's listeners.
+  void _syncText() {}
 
   @override
   Widget build(BuildContext context) {
     final dateFormat = DateFormat.yMd(Localizations.localeOf(context).languageCode);
-    // Keyed initialValue, not a controller: a controller notifies the enclosing
-    // Form on assignment, which crashes if that happens during a build.
     return TextFormField(
       key: ValueKey(_value),
       readOnly: true,
@@ -198,6 +224,7 @@ class _DateInputWidgetState extends State<DateInputWidget> {
                 icon: const Icon(Icons.clear),
                 onPressed: () {
                   setState(() => _value = null);
+                  _syncText();
                   widget.onCleared!();
                 },
               )
@@ -215,6 +242,7 @@ class _DateInputWidgetState extends State<DateInputWidget> {
         );
         if (picked != null && context.mounted) {
           setState(() => _value = picked);
+          _syncText();
           widget.onChanged(picked);
         }
       },

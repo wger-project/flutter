@@ -223,18 +223,21 @@ class Log {
       // is no weight defined so that we don't just output something like "8" but
       // rather "8 repetitions". If there is weight we want to output "8 x 50kg",
       // since the repetitions are implied. If other units are used, we always
-      // print them
-      if (repetitionsUnitObj != null && repetitionsUnitObj!.id != REP_UNIT_REPETITIONS_ID ||
-          weight == 0 ||
-          weight == null) {
-        out.add(getServerStringTranslation(repetitionsUnitObj!.name, context));
+      // print them. The unit object may be missing (not yet hydrated), in which
+      // case we simply omit the label rather than crash.
+      final repUnit = repetitionsUnitObj;
+      final isNonDefaultRepUnit = repUnit != null && repUnit.id != REP_UNIT_REPETITIONS_ID;
+      if ((isNonDefaultRepUnit || weight == 0 || weight == null) && repUnit != null) {
+        out.add(getServerStringTranslation(repUnit.name, context));
       }
     }
 
     if (weight != null && weight != 0) {
       out.add('×');
       out.add(formatNum(weight!).toString());
-      out.add(weightUnitObj!.name);
+      if (weightUnitObj != null) {
+        out.add(weightUnitObj!.name);
+      }
     }
 
     if (rir != null) {

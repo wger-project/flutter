@@ -31,12 +31,10 @@ import 'package:wger/screens/gym_mode.dart';
 import 'package:wger/widgets/core/error.dart';
 import 'package:wger/widgets/core/progress_indicator.dart';
 
-import 'exercise_overview.dart';
 import 'log_page.dart';
 import 'session_page.dart';
 import 'start_page.dart';
 import 'summary.dart';
-import 'timer.dart';
 
 class GymMode extends ConsumerStatefulWidget {
   final GymModeArguments _args;
@@ -52,6 +50,10 @@ class _GymModeState extends ConsumerState<GymMode> {
   late Future<int> _initData;
   bool _initialPageJumped = false;
   late final PageController _controller;
+
+  /// Index of the currently shown page within the [PageView]. Used to decide
+  /// whether the persistent set-logging chrome should be shown.
+  int _currentPage = 0;
 
   @override
   void initState() {
@@ -107,41 +109,20 @@ class _GymModeState extends ConsumerState<GymMode> {
   }
 
   List<Widget> _getContent(GymModeState state) {
-    final gymState = ref.watch(gymStateProvider);
     final List<Widget> out = [];
 
     // Workout overview
     out.add(StartPage(_controller));
 
-    // Sets
-    for (final page in state.pages) {
-      for (final slotPage in page.slotPages) {
-        if (slotPage.type == SlotPageType.exerciseOverview) {
-          out.add(ExerciseOverview(_controller, slotPage.uuid));
-        }
-
-        if (slotPage.type == SlotPageType.log) {
-          out.add(LogPage(_controller, slotPage.uuid));
-        }
-
-        // Timer. Use rest time from config data if available, otherwise use user settings
-        final rest = slotPage.setConfigData?.restTime;
-        if (slotPage.type == SlotPageType.timer) {
-          out.add(
-            (rest != null || gymState.useCountdownBetweenSets)
-                ? TimerCountdownWidget(
-                    _controller,
-                    (rest ?? gymState.countdownDuration.inSeconds).toInt(),
-                  )
-                : TimerWidget(_controller),
-          );
-        }
-      }
+    // Sets — one page per exercise (set PageEntry). The LogPage renders all of
+    // that exercise's sets at once, so we no longer create a page per set.
+    for (final page in state.pages.where((p) => p.type == PageType.set)) {
+      out.add(LogPage(_controller, pageEntry: page));
     }
 
     // End
     out.add(SessionPage(_controller));
-    out.add(WorkoutSummary(_controller));
+    out.add(WorkoutSummary());
 
     return out;
   }
@@ -163,7 +144,10 @@ class _GymModeState extends ConsumerState<GymMode> {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (!_initialPageJumped && _controller.hasClients) {
               _controller.jumpToPage(initialPage);
-              setState(() => _initialPageJumped = true);
+              setState(() {
+                _initialPageJumped = true;
+                _currentPage = initialPage;
+              });
             }
           });
 
@@ -172,18 +156,46 @@ class _GymModeState extends ConsumerState<GymMode> {
             ..._getContent(state),
           ];
 
-          return PageView(
-            controller: _controller,
-            onPageChanged: (page) {
-              ref.read(gymStateProvider.notifier).setCurrentPage(page);
+          // The header + exercise queue live above the PageView so they stay
+          // fixed while only the content below slides between exercises. They
+          // are shown only on the set-logging pages (not start/session/summary).
+          final currentSetPage = state.setPageForRenderIndex(_currentPage);
 
-              // Check if the last page is reached
-              if (page == children.length - 1) {
-                widget._logger.finer('Last page reached, clearing gym state');
-                ref.read(gymStateProvider.notifier).clear();
-              }
-            },
-            children: children,
+          return Column(
+            children: [
+              if (currentSetPage != null)
+                GymModeChrome(
+                  controller: _controller,
+                  currentPageUUID: currentSetPage.uuid,
+                ),
+              Expanded(
+                child: PageView(
+                  controller: _controller,
+                  onPageChanged: (page) {
+                    final isLastPage = page == children.length - 1;
+                    // Defer state changes out of the page-settle callback: calling
+                    // setState or mutating providers here can land mid build /
+                    // transition and trip "setState during build" and
+                    // navigator-locked assertions.
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      if (!mounted) {
+                        return;
+                      }
+                      setState(() => _currentPage = page);
+                      final notifier = ref.read(gymStateProvider.notifier);
+                      notifier.setCurrentPage(page);
+
+                      // Check if the last page is reached
+                      if (isLastPage) {
+                        widget._logger.finer('Last page reached, clearing gym state');
+                        notifier.clear();
+                      }
+                    });
+                  },
+                  children: children,
+                ),
+              ),
+            ],
           );
         }
 

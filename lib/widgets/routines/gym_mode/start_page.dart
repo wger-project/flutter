@@ -74,35 +74,19 @@ class _GymModeOptionsState extends ConsumerState<GymModeOptions> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      SwitchListTile(
-                        key: const ValueKey('gym-mode-option-show-exercises'),
-                        title: Text(i18n.gymModeShowExercises),
-                        value: gymState.showExercisePages,
-                        onChanged: (value) => gymNotifier.setShowExercisePages(value),
-                      ),
-                      SwitchListTile(
-                        key: const ValueKey('gym-mode-option-show-timer'),
-                        title: Text(i18n.gymModeShowTimer),
-                        value: gymState.showTimerPages,
-                        onChanged: (value) => gymNotifier.setShowTimerPages(value),
-                      ),
                       ListTile(
                         key: const ValueKey('gym-mode-timer-type'),
-                        enabled: gymState.showTimerPages,
                         title: Text(i18n.gymModeTimerType),
                         trailing: DropdownButton<bool>(
                           key: const ValueKey('countdown-type-dropdown'),
                           value: gymState.useCountdownBetweenSets,
-                          onChanged: gymState.showTimerPages
-                              ? (bool? newValue) {
-                                  if (newValue != null) {
-                                    gymNotifier.setUseCountdownBetweenSets(newValue);
-                                  }
-                                }
-                              : null,
+                          onChanged: (bool? newValue) {
+                            if (newValue != null) {
+                              gymNotifier.setUseCountdownBetweenSets(newValue);
+                            }
+                          },
                           items: [false, true].map<DropdownMenuItem<bool>>((bool value) {
                             final label = value ? i18n.countdown : i18n.stopwatch;
-
                             return DropdownMenuItem<bool>(value: value, child: Text(label));
                           }).toList(),
                         ),
@@ -110,14 +94,14 @@ class _GymModeOptionsState extends ConsumerState<GymModeOptions> {
                       ),
                       ListTile(
                         key: const ValueKey('gym-mode-default-countdown-time'),
-                        enabled: gymState.showTimerPages,
+                        enabled: gymState.useCountdownBetweenSets,
                         title: TextFormField(
                           controller: _countdownController,
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
                             labelText: i18n.gymModeDefaultCountdownTime,
                             suffix: IconButton(
-                              onPressed: gymState.showTimerPages && gymState.useCountdownBetweenSets
+                              onPressed: gymState.useCountdownBetweenSets
                                   ? () => gymNotifier.setCountdownDuration(
                                       DEFAULT_COUNTDOWN_DURATION,
                                     )
@@ -146,14 +130,14 @@ class _GymModeOptionsState extends ConsumerState<GymModeOptions> {
                             }
                             return null;
                           },
-                          enabled: gymState.showTimerPages && gymState.useCountdownBetweenSets,
+                          enabled: gymState.useCountdownBetweenSets,
                         ),
                       ),
                       SwitchListTile(
                         key: const ValueKey('gym-mode-notify-countdown'),
                         title: Text(i18n.gymModeNotifyOnCountdownFinish),
                         value: gymState.alertOnCountdownEnd,
-                        onChanged: (gymState.showTimerPages && gymState.useCountdownBetweenSets)
+                        onChanged: gymState.useCountdownBetweenSets
                             ? (value) => gymNotifier.setAlertOnCountdownEnd(value)
                             : null,
                       ),
@@ -191,7 +175,6 @@ class StartPage extends ConsumerWidget {
       children: [
         NavigationHeader(
           AppLocalizations.of(context).todaysWorkout,
-          _controller,
           showEndWorkoutButton: false,
         ),
 
@@ -248,7 +231,6 @@ class StartPage extends ConsumerWidget {
             );
           },
         ),
-        NavigationFooter(_controller, showPrevious: false),
       ],
     );
   }

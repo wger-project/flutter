@@ -22,11 +22,10 @@ import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wger/helpers/shared_preferences.dart';
 import 'package:wger/models/exercises/exercise.dart';
-import 'package:wger/models/workouts/log.dart';
 import 'package:wger/models/workouts/routine.dart';
 import 'package:wger/models/workouts/set_config_data.dart';
-import 'package:wger/providers/gym_log_notifier.dart';
 import 'package:wger/providers/gym_state.dart';
+import 'package:wger/providers/rest_timer_notifier.dart';
 
 part 'gym_state_notifier.g.dart';
 
@@ -257,6 +256,7 @@ class GymStateNotifier extends _$GymStateNotifier {
       routine: routine,
       iteration: iteration,
       currentPage: initialPage,
+      startedAt: shouldReset ? clock.now() : null,
     );
 
     // Calculate the pages.
@@ -272,17 +272,6 @@ class GymStateNotifier extends _$GymStateNotifier {
 
   void setCurrentPage(int page) {
     state = state.copyWith(currentPage: page);
-
-    // Ensure that there is a log entry for the current slot entry
-    final slotEntryPage = state.getSlotEntryPageByIndex();
-    if (slotEntryPage == null || slotEntryPage.setConfigData == null) {
-      return;
-    }
-
-    final log = Log.fromSetConfigData(slotEntryPage.setConfigData!);
-    log.routineId = state.routine.id!;
-    log.iteration = state.iteration;
-    ref.read(gymLogProvider.notifier).setLog(log);
   }
 
   void setShowExercisePages(bool value) {
@@ -419,8 +408,75 @@ class GymStateNotifier extends _$GymStateNotifier {
     recalculateIndices();
   }
 
+  void addSetToPage(String pageUUID) {
+    final updatedPages = state.pages.map((page) {
+      if (page.type != PageType.set || page.uuid != pageUUID) {
+        return page;
+      }
+      final logSlotPages = page.slotPages.where((sp) => sp.type == SlotPageType.log).toList();
+      final lastLog = logSlotPages.isNotEmpty ? logSlotPages.last : null;
+      // Seed the new set from the last logged set so it carries the exercise,
+      // target and comment. When the page has no logged set yet (e.g. only an
+      // exercise-overview slot exists) fall back to any sibling slot's config so
+      // the new slot never ends up with a null setConfigData — a log SlotPageEntry
+      // requires one, and a null would crash the page's exercise lookup.
+      final seedConfig =
+          lastLog?.setConfigData ??
+          page.slotPages.firstWhereOrNull((sp) => sp.setConfigData != null)?.setConfigData;
+      if (seedConfig == null) {
+        _logger.warning('Cannot add a set to page $pageUUID: no set config to seed from');
+        return page;
+      }
+      final newSlotPages = [...page.slotPages];
+      newSlotPages.add(
+        SlotPageEntry(
+          type: SlotPageType.log,
+          pageIndex: 0,
+          setIndex: page.slotPages.length,
+          setConfigData: seedConfig,
+        ),
+      );
+      return page.copyWith(slotPages: newSlotPages);
+    }).toList();
+    state = state.copyWith(pages: updatedPages);
+    recalculateIndices();
+    _logger.fine('Added set to page $pageUUID');
+  }
+
+  /// Removes a whole exercise (set [PageEntry]) from the session.
+  ///
+  /// No-op when it would leave the session with no exercises — there must
+  /// always be at least one exercise page to log against.
+  void removeExercisePage(String pageUUID) {
+    final setPages = state.pages.where((p) => p.type == PageType.set).toList();
+    if (setPages.length <= 1) {
+      _logger.warning('Refusing to remove the last exercise from page $pageUUID');
+      return;
+    }
+    final updatedPages = state.pages.where((page) {
+      return !(page.type == PageType.set && page.uuid == pageUUID);
+    }).toList();
+    state = state.copyWith(pages: updatedPages);
+    recalculateIndices();
+    _logger.fine('Removed exercise page $pageUUID');
+  }
+
+  void removeSetFromPage(String pageUUID, String slotUUID) {
+    final updatedPages = state.pages.map((page) {
+      if (page.type != PageType.set || page.uuid != pageUUID) {
+        return page;
+      }
+      final updatedSlotPages = page.slotPages.where((sp) => sp.uuid != slotUUID).toList();
+      return page.copyWith(slotPages: updatedSlotPages);
+    }).toList();
+    state = state.copyWith(pages: updatedPages);
+    recalculateIndices();
+    _logger.fine('Removed set $slotUUID from page $pageUUID');
+  }
+
   void clear() {
     _logger.fine('Clearing state');
+    ref.read(restTimerProvider.notifier).cancel();
     state = state.copyWith(
       isInitialized: false,
       pages: [],

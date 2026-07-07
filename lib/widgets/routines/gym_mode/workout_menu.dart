@@ -123,6 +123,7 @@ class _ProgressionTabState extends ConsumerState<ProgressionTab> {
     final state = ref.watch(gymStateProvider);
     final theme = Theme.of(context);
     final languageCode = Localizations.localeOf(context).languageCode;
+    final setPageCount = state.pages.where((p) => p.type == PageType.set).length;
 
     return SingleChildScrollView(
       child: Padding(
@@ -255,6 +256,35 @@ class _ProgressionTabState extends ConsumerState<ProgressionTab> {
                         ),
                       ),
                       Expanded(child: Container()),
+                      IconButton(
+                        key: ValueKey('remove-exercise-${page.uuid}'),
+                        tooltip: AppLocalizations.of(context).removeExercise,
+                        onPressed: setPageCount <= 1
+                            ? null
+                            : () async {
+                                final i18n = AppLocalizations.of(context);
+                                final confirmed = await showDialog<bool>(
+                                  context: context,
+                                  builder: (ctx) => AlertDialog(
+                                    content: Text(i18n.gymModeRemoveExerciseConfirm),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () => Navigator.of(ctx).pop(false),
+                                        child: Text(i18n.cancel),
+                                      ),
+                                      TextButton(
+                                        onPressed: () => Navigator.of(ctx).pop(true),
+                                        child: Text(i18n.delete),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                                if (confirmed ?? false) {
+                                  ref.read(gymStateProvider.notifier).removeExercisePage(page.uuid);
+                                }
+                              },
+                        icon: Icon(Icons.delete_outline, color: theme.colorScheme.error),
+                      ),
                       IconButton(
                         onPressed: () {
                           widget._controller.animateToPage(

@@ -18,35 +18,23 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
-import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/providers/gym_state_notifier.dart';
-import 'package:wger/theme/theme.dart';
-import 'package:wger/widgets/routines/gym_mode/navigation.dart';
 
-class TimerWidget extends StatefulWidget {
-  final PageController _controller;
-
-  const TimerWidget(this._controller);
+class CompactElapsedTimer extends ConsumerStatefulWidget {
+  const CompactElapsedTimer({super.key});
 
   @override
-  _TimerWidgetState createState() => _TimerWidgetState();
+  ConsumerState<CompactElapsedTimer> createState() => _CompactElapsedTimerState();
 }
 
-class _TimerWidgetState extends State<TimerWidget> {
-  late DateTime _startTime;
-  final _maxSeconds = 600;
-  late Timer _uiTimer;
+class _CompactElapsedTimerState extends ConsumerState<CompactElapsedTimer> {
+  late Timer _ticker;
 
   @override
   void initState() {
     super.initState();
-    _startTime = DateTime.now();
-
-    _uiTimer = Timer.periodic(const Duration(seconds: 1), (_) {
-      // ignore: no-empty-block, avoid-empty-setstate
+    _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
       if (mounted) {
         setState(() {});
       }
@@ -55,114 +43,19 @@ class _TimerWidgetState extends State<TimerWidget> {
 
   @override
   void dispose() {
-    _uiTimer.cancel();
+    _ticker.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final elapsed = DateTime.now().difference(_startTime).inSeconds;
-    final displaySeconds = elapsed > _maxSeconds ? _maxSeconds : elapsed;
-    final displayTime = DateTime(2000, 1, 1, 0, 0, 0).add(Duration(seconds: displaySeconds));
-
-    return Column(
-      children: [
-        NavigationHeader(
-          AppLocalizations.of(context).pause,
-          widget._controller,
-        ),
-        Expanded(
-          child: Center(
-            child: Text(
-              DateFormat('m:ss').format(displayTime),
-              style: Theme.of(context).textTheme.displayLarge!.copyWith(color: wgerPrimaryColor),
-            ),
-          ),
-        ),
-        NavigationFooter(widget._controller),
-      ],
-    );
-  }
-}
-
-class TimerCountdownWidget extends ConsumerStatefulWidget {
-  final PageController _controller;
-  final int _seconds;
-
-  const TimerCountdownWidget(
-    this._controller,
-    this._seconds,
-  );
-
-  @override
-  _TimerCountdownWidgetState createState() => _TimerCountdownWidgetState();
-}
-
-class _TimerCountdownWidgetState extends ConsumerState<TimerCountdownWidget> {
-  late DateTime _endTime;
-  late Timer _uiTimer;
-
-  bool _hasNotified = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _endTime = DateTime.now().add(Duration(seconds: widget._seconds));
-
-    _uiTimer = Timer.periodic(const Duration(seconds: 1), (_) {
-      // ignore: no-empty-block, avoid-empty-setstate
-      if (mounted) {
-        setState(() {});
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _uiTimer.cancel();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final remaining = _endTime.difference(DateTime.now());
-    final remainingSeconds = remaining.inSeconds <= 0 ? 0 : remaining.inSeconds;
-    final displayTime = DateTime(2000, 1, 1, 0, 0, 0).add(Duration(seconds: remainingSeconds));
-    final gymState = ref.watch(gymStateProvider);
-
-    //  When countdown finishes, notify ONCE, and respect settings
-    if (remainingSeconds == 0 && !_hasNotified) {
-      if (gymState.alertOnCountdownEnd) {
-        HapticFeedback.mediumImpact();
-
-        // Not that this only works on desktop platforms
-        SystemSound.play(SystemSoundType.alert);
-      }
-      setState(() {
-        _hasNotified = true;
-      });
-    }
-
-    return Column(
-      children: [
-        NavigationHeader(
-          AppLocalizations.of(context).pause,
-          widget._controller,
-        ),
-        Expanded(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                DateFormat('m:ss').format(displayTime),
-                style: Theme.of(context).textTheme.displayLarge!.copyWith(color: wgerPrimaryColor),
-              ),
-              const SizedBox(height: 16),
-            ],
-          ),
-        ),
-        NavigationFooter(widget._controller),
-      ],
+    final startedAt = ref.watch(gymStateProvider).startedAt;
+    final elapsed = DateTime.now().difference(startedAt);
+    final minutes = elapsed.inMinutes;
+    final seconds = elapsed.inSeconds % 60;
+    return Text(
+      '$minutes:${seconds.toString().padLeft(2, '0')}',
+      style: Theme.of(context).textTheme.bodyMedium,
     );
   }
 }

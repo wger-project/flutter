@@ -36,9 +36,8 @@ import '../logs/muscle_groups.dart';
 
 class WorkoutSummary extends ConsumerStatefulWidget {
   final _logger = Logger('WorkoutSummary');
-  final PageController _controller;
 
-  WorkoutSummary(this._controller);
+  WorkoutSummary();
 
   @override
   ConsumerState<WorkoutSummary> createState() => _WorkoutSummaryState();
@@ -71,7 +70,6 @@ class _WorkoutSummaryState extends ConsumerState<WorkoutSummary> {
       children: [
         NavigationHeader(
           AppLocalizations.of(context).workoutCompleted,
-          widget._controller,
           showEndWorkoutButton: false,
         ),
         Expanded(
@@ -98,7 +96,6 @@ class _WorkoutSummaryState extends ConsumerState<WorkoutSummary> {
             },
           ),
         ),
-        NavigationFooter(widget._controller, showNext: false),
       ],
     );
   }
@@ -117,7 +114,10 @@ class WorkoutSessionStats extends ConsumerWidget {
 
     if (_session == null) {
       return Center(
-        child: Text('Nothing logged yet.', style: Theme.of(context).textTheme.titleMedium),
+        child: Text(
+          AppLocalizations.of(context).gymModeNothingLoggedYet,
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
       );
     }
 
