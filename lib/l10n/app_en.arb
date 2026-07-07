@@ -412,6 +412,19 @@
   "@addSet": {
     "description": "Label for the button that adds a set (to a workout day)"
   },
+  
+"gymModeLogScope": "Last logs Scope",
+"gymModeLogScopeHelp": "Which logs to show as reference while training",
+"gymModeLogScopeCurrentRoutine": "Current routine",
+"gymModeLogScopeWeeks": "Last {weeks} weeks",
+"@gymModeLogScopeWeeks": {
+  "placeholders": {
+    "weeks": { "type": "int" }
+  }
+},
+"gymModeDistinctLogs": "Show distinct logs only",
+"gymModeDistinctLogsHelp": "Hide duplicate reps/weight combinations",
+"gymModeDistinctLogsShort": "Distinct",
   "addMeal": "Add meal",
   "@addMeal": {},
   "mealLogged": "Meal logged to diary",

@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
@@ -149,6 +151,10 @@ class _GymModeOptionsState extends ConsumerState<GymModeOptions> {
                           enabled: gymState.showTimerPages && gymState.useCountdownBetweenSets,
                         ),
                       ),
+
+                      // logs Controls
+                      ..._buildLogHistorySettings(context, ref, i18n, gymState, gymNotifier),
+
                       SwitchListTile(
                         key: const ValueKey('gym-mode-notify-countdown'),
                         title: Text(i18n.gymModeNotifyOnCountdownFinish),
@@ -252,4 +258,48 @@ class StartPage extends ConsumerWidget {
       ],
     );
   }
+}
+
+// Helper method for the settings tiles used to modify the log scope and deduplication logic.
+///
+/// These controls allow users to define the lookback duration and enable
+/// set deduplication for the pastExerciseLogs stream.
+List<Widget> _buildLogHistorySettings(
+  BuildContext context,
+  WidgetRef ref,
+  AppLocalizations i18n,
+  GymModeState gymState,
+  GymStateNotifier gymNotifier,
+) {
+  return [
+    ListTile(
+      key: const ValueKey('gym-mode-log-scope'),
+      title: Text(i18n.gymModeLogScope),
+      subtitle: Text(i18n.gymModeLogScopeHelp),
+      trailing: DropdownButton(
+        key: const ValueKey('log-scope-dropdown'),
+        value: gymState.logScopeWeeks,
+        items: [
+          DropdownMenuItem<int?>(
+            value: null,
+            child: Text(i18n.gymModeLogScopeCurrentRoutine),
+          ),
+          ...[8, 12, 25, 50].map(
+            (weeks) => DropdownMenuItem(
+              value: weeks,
+              child: Text(i18n.gymModeLogScopeWeeks(weeks)),
+            ),
+          ),
+        ],
+        onChanged: (value) => gymNotifier.setLogScopeWeeks(value),
+      ),
+    ),
+    SwitchListTile(
+      key: const ValueKey('gym-mode-distinct-logs'),
+      title: Text(i18n.gymModeDistinctLogs),
+      subtitle: Text(i18n.gymModeDistinctLogsHelp),
+      value: gymState.showDistinctLogs,
+      onChanged: (value) => gymNotifier.setShowDistinctLogs(value),
+    ),
+  ];
 }

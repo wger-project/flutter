@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:clock/clock.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wger/features/routines/models/log.dart';
@@ -33,10 +34,33 @@ Stream<List<Log>> pastExerciseLogs(
   Ref ref, {
   required int routineId,
   required int exerciseId,
+  int? weeksBack,
+  bool distinct = true,
 }) {
-  return ref
-      .read(workoutLogRepositoryProvider)
-      .watchLogsByExerciseDrift(routineId: routineId, exerciseId: exerciseId);
+  final repo = ref.read(workoutLogRepositoryProvider);
+  final cutoff = weeksBack != null ? clock.now().subtract(Duration(days: weeksBack * 7)) : null;
+
+  return repo
+      .watchLogsByExerciseDrift(
+        routineId: weeksBack == null ? routineId : null,
+        exerciseId: exerciseId,
+        since: cutoff,
+      )
+      .map((logs) => distinct ? _deduplicate(logs) : logs);
+}
+
+/// Returns the latest unique (reps, weight and weightUnit) per log
+List<Log> _deduplicate(List<Log> logs) {
+  final seen = <String>{};
+  final result = <Log>[];
+  for (final log in logs) {
+    final key = '${log.repetitions}_${log.weight}_${log.weightUnitId}';
+    if (seen.add(key)) {
+      result.add(log);
+    }
+  }
+
+  return result;
 }
 
 class WorkoutLogMutations {

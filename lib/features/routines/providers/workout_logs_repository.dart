@@ -44,29 +44,34 @@ class WorkoutLogRepository {
   /// Streams the logs for a single exercise within a routine, newest first,
   /// with their repetition and weight units attached.
   Stream<List<Log>> watchLogsByExerciseDrift({
-    required int routineId,
+    int? routineId,
     required int exerciseId,
+    DateTime? since,
   }) {
     _logger.finer('Watching local logs for routine $routineId, exercise $exerciseId');
 
-    final query =
-        _db.select(_db.workoutLogTable).join([
-            leftOuterJoin(
-              _db.routineRepetitionUnitTable,
-              _db.routineRepetitionUnitTable.id.equalsExp(_db.workoutLogTable.repetitionsUnitId),
-            ),
-            leftOuterJoin(
-              _db.routineWeightUnitTable,
-              _db.routineWeightUnitTable.id.equalsExp(_db.workoutLogTable.weightUnitId),
-            ),
-          ])
-          ..where(
-            _db.workoutLogTable.routineId.equals(routineId) &
-                _db.workoutLogTable.exerciseId.equals(exerciseId),
-          )
-          ..orderBy([
-            OrderingTerm(expression: _db.workoutLogTable.date, mode: OrderingMode.desc),
-          ]);
+    final query = _db.select(_db.workoutLogTable).join([
+      leftOuterJoin(
+        _db.routineRepetitionUnitTable,
+        _db.routineRepetitionUnitTable.id.equalsExp(_db.workoutLogTable.repetitionsUnitId),
+      ),
+      leftOuterJoin(
+        _db.routineWeightUnitTable,
+        _db.routineWeightUnitTable.id.equalsExp(_db.workoutLogTable.weightUnitId),
+      ),
+    ]);
+
+    var whereCondition = _db.workoutLogTable.exerciseId.equals(exerciseId);
+    if (routineId != null) {
+      whereCondition &= _db.workoutLogTable.routineId.equals(routineId);
+    }
+    if (since != null) {
+      whereCondition &= _db.workoutLogTable.date.isBiggerOrEqualValue(since);
+    }
+    query.where(whereCondition);
+    query.orderBy([
+      OrderingTerm(expression: _db.workoutLogTable.date, mode: OrderingMode.desc),
+    ]);
 
     return query.watch().map((rows) {
       return rows.map((row) {

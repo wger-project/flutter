@@ -21,7 +21,7 @@ final class PastExerciseLogsProvider
   /// Streams the past logs for [exerciseId] within [routineId], newest first.
   PastExerciseLogsProvider._({
     required PastExerciseLogsFamily super.from,
-    required ({int routineId, int exerciseId}) super.argument,
+    required ({int routineId, int exerciseId, int? weeksBack, bool distinct}) super.argument,
   }) : super(
          retry: null,
          name: r'pastExerciseLogsProvider',
@@ -47,11 +47,14 @@ final class PastExerciseLogsProvider
 
   @override
   Stream<List<Log>> create(Ref ref) {
-    final argument = this.argument as ({int routineId, int exerciseId});
+    final argument =
+        this.argument as ({int routineId, int exerciseId, int? weeksBack, bool distinct});
     return pastExerciseLogs(
       ref,
       routineId: argument.routineId,
       exerciseId: argument.exerciseId,
+      weeksBack: argument.weeksBack,
+      distinct: argument.distinct,
     );
   }
 
@@ -66,12 +69,16 @@ final class PastExerciseLogsProvider
   }
 }
 
-String _$pastExerciseLogsHash() => r'e2345fbf5c2bcbaa81a673d39212a59099de5424';
+String _$pastExerciseLogsHash() => r'b700cebfb109d1a8ff651d5af76812aabf2eae81';
 
 /// Streams the past logs for [exerciseId] within [routineId], newest first.
 
 final class PastExerciseLogsFamily extends $Family
-    with $FunctionalFamilyOverride<Stream<List<Log>>, ({int routineId, int exerciseId})> {
+    with
+        $FunctionalFamilyOverride<
+          Stream<List<Log>>,
+          ({int routineId, int exerciseId, int? weeksBack, bool distinct})
+        > {
   PastExerciseLogsFamily._()
     : super(
         retry: null,
@@ -86,8 +93,15 @@ final class PastExerciseLogsFamily extends $Family
   PastExerciseLogsProvider call({
     required int routineId,
     required int exerciseId,
+    int? weeksBack,
+    bool distinct = true,
   }) => PastExerciseLogsProvider._(
-    argument: (routineId: routineId, exerciseId: exerciseId),
+    argument: (
+      routineId: routineId,
+      exerciseId: exerciseId,
+      weeksBack: weeksBack,
+      distinct: distinct,
+    ),
     from: this,
   );
 

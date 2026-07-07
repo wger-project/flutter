@@ -72,13 +72,25 @@ class GymStateNotifier extends _$GymStateNotifier {
       );
     }
 
+    final logScopeWeeks = await prefs.getInt(PREFS_LOG_SCOPE_WEEKS);
+    if (logScopeWeeks != state.logScopeWeeks) {
+      state = state.copyWith(logScopeWeeks: logScopeWeeks);
+    }
+
+    final showDistinctLogs = await prefs.getBool(PREFS_SHOW_DISTINCT_LOGS);
+    if (showDistinctLogs != null && showDistinctLogs != state.showDistinctLogs) {
+      state = state.copyWith(showDistinctLogs: showDistinctLogs);
+    }
+
     _logger.finer(
       'Loaded saved preferences: '
       'showExercise=$showExercise '
       'showTimer=$showTimer '
       'alertOnCountdownEnd=$alertOnCountdownEnd '
       'useCountdownBetweenSets=$useCountdownBetweenSets '
-      'defaultCountdownDurationSeconds=$defaultCountdownDurationSeconds',
+      'defaultCountdownDurationSeconds=$defaultCountdownDurationSeconds'
+      'logScopeWeeks=$logScopeWeeks '
+      'showDistinctLogs=$showDistinctLogs ',
     );
   }
 
@@ -92,13 +104,22 @@ class GymStateNotifier extends _$GymStateNotifier {
       PREFS_COUNTDOWN_DURATION,
       state.countdownDuration.inSeconds,
     );
+    if (state.logScopeWeeks != null) {
+      await prefs.setInt(PREFS_LOG_SCOPE_WEEKS, state.logScopeWeeks!);
+    } else {
+      await prefs.remove(PREFS_LOG_SCOPE_WEEKS);
+    }
+    await prefs.setBool(PREFS_SHOW_DISTINCT_LOGS, state.showDistinctLogs);
+
     _logger.finer(
       'Saved preferences: '
       'showExercise=${state.showExercisePages} '
       'showTimer=${state.showTimerPages} '
       'alertOnCountdownEnd=${state.alertOnCountdownEnd} '
       'useCountdownBetweenSets=${state.useCountdownBetweenSets} '
-      'defaultCountdownDuration=${state.countdownDuration.inSeconds}',
+      'defaultCountdownDuration=${state.countdownDuration.inSeconds}'
+      'logScopeWeeks=${state.logScopeWeeks} '
+      'showDistinctLogs=${state.showDistinctLogs} ',
     );
   }
 
@@ -309,6 +330,16 @@ class GymStateNotifier extends _$GymStateNotifier {
 
   void setCountdownDuration(int duration) {
     state = state.copyWith(countdownDuration: duration);
+    _savePrefs();
+  }
+
+  void setLogScopeWeeks(int? weeks) {
+    state = state.copyWith(logScopeWeeks: weeks);
+    _savePrefs();
+  }
+
+  void setShowDistinctLogs(bool value) {
+    state = state.copyWith(showDistinctLogs: value);
     _savePrefs();
   }
 

@@ -31,6 +31,8 @@ const PREFS_SHOW_TIMER = 'showTimerPrefs';
 const PREFS_ALERT_COUNTDOWN = 'alertCountdownPrefs';
 const PREFS_USE_COUNTDOWN_BETWEEN_SETS = 'useCountdownBetweenSetsPrefs';
 const PREFS_COUNTDOWN_DURATION = 'countdownDurationSecondsPrefs';
+const PREFS_LOG_SCOPE_WEEKS = 'logScopeWeeksPrefs';
+const PREFS_SHOW_DISTINCT_LOGS = 'showDistinctLogsPrefs';
 
 /// In seconds
 const DEFAULT_COUNTDOWN_DURATION = 180;
@@ -177,6 +179,8 @@ class GymModeState {
   final bool alertOnCountdownEnd;
   final bool useCountdownBetweenSets;
   final Duration countdownDuration;
+  final int? logScopeWeeks;
+  final bool showDistinctLogs;
 
   // Routine data
   late final int dayId;
@@ -193,7 +197,8 @@ class GymModeState {
     this.alertOnCountdownEnd = true,
     this.useCountdownBetweenSets = false,
     this.countdownDuration = const Duration(seconds: DEFAULT_COUNTDOWN_DURATION),
-
+    this.logScopeWeeks,
+    this.showDistinctLogs = true,
     int? dayId,
     int? iteration,
     Routine? routine,
@@ -234,6 +239,9 @@ class GymModeState {
     bool? alertOnCountdownEnd,
     bool? useCountdownBetweenSets,
     int? countdownDuration,
+    int? logScopeWeeks,
+    bool clearLogScopeWeeks = false,
+    bool? showDistinctLogs,
   }) {
     return GymModeState(
       isInitialized: isInitialized ?? this.isInitialized,
@@ -253,6 +261,8 @@ class GymModeState {
       countdownDuration: Duration(
         seconds: countdownDuration ?? this.countdownDuration.inSeconds,
       ),
+      logScopeWeeks: clearLogScopeWeeks ? null : (logScopeWeeks ?? this.logScopeWeeks),
+      showDistinctLogs: showDistinctLogs ?? this.showDistinctLogs,
     );
   }
 
