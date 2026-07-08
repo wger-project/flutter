@@ -73,7 +73,7 @@ class GymStateNotifier extends _$GymStateNotifier {
     }
 
     final logScopeWeeks = await prefs.getInt(PREFS_LOG_SCOPE_WEEKS);
-    if (logScopeWeeks != state.logScopeWeeks) {
+    if (logScopeWeeks != null && logScopeWeeks != state.logScopeWeeks) {
       state = state.copyWith(logScopeWeeks: logScopeWeeks);
     }
 
@@ -333,8 +333,9 @@ class GymStateNotifier extends _$GymStateNotifier {
     _savePrefs();
   }
 
+  /// Passing null resets the scope to the current routine
   void setLogScopeWeeks(int? weeks) {
-    state = state.copyWith(logScopeWeeks: weeks);
+    state = state.copyWith(logScopeWeeks: weeks, clearLogScopeWeeks: weeks == null);
     _savePrefs();
   }
 

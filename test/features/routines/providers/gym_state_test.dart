@@ -18,6 +18,9 @@
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
+import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
+import 'package:wger/core/shared_preferences.dart';
 import 'package:wger/features/routines/providers/gym_state.dart';
 import 'package:wger/features/routines/providers/gym_state_notifier.dart';
 
@@ -29,6 +32,9 @@ void main() {
   late ProviderContainer container;
 
   setUp(() {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+
     container = ProviderContainer.test();
     notifier = container.read(gymStateProvider.notifier);
     notifier.state = notifier.state.copyWith(
@@ -272,6 +278,46 @@ void main() {
       expect(setEntry.slotPages[2].type, SlotPageType.log);
       expect(setEntry.slotPages[3].type, SlotPageType.log);
       expect(notifier.state.totalPages, 11);
+    });
+  });
+
+  group('GymStateNotifier.setLogScopeWeeks', () {
+    test('Sets the scope and persists it', () async {
+      // Act
+      notifier.setLogScopeWeeks(12);
+      await pumpEventQueue();
+
+      // Assert
+      expect(notifier.state.logScopeWeeks, 12);
+      expect(await PreferenceHelper.asyncPref.getInt(PREFS_LOG_SCOPE_WEEKS), 12);
+    });
+
+    test('Resets the scope to the current routine', () async {
+      // Arrange
+      notifier.setLogScopeWeeks(12);
+      await pumpEventQueue();
+
+      // Act
+      notifier.setLogScopeWeeks(null);
+      await pumpEventQueue();
+
+      // Assert
+      expect(notifier.state.logScopeWeeks, isNull);
+      expect(await PreferenceHelper.asyncPref.getInt(PREFS_LOG_SCOPE_WEEKS), isNull);
+    });
+  });
+
+  group('GymModeState.copyWith', () {
+    test('Keeps the log scope when it is not passed', () {
+      final state = notifier.state.copyWith(logScopeWeeks: 8);
+
+      expect(state.copyWith(showDistinctLogs: false).logScopeWeeks, 8);
+    });
+
+    test('Clears the log scope on clearLogScopeWeeks', () {
+      final state = notifier.state.copyWith(logScopeWeeks: 8);
+
+      expect(state.copyWith(clearLogScopeWeeks: true).logScopeWeeks, isNull);
     });
   });
 }

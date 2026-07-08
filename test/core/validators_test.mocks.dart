@@ -1597,6 +1597,72 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get gymModeLogScope =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeLogScope),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeLogScope),
+            ),
+          )
+          as String);
+
+  @override
+  String get gymModeLogScopeHelp =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeLogScopeHelp),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeLogScopeHelp),
+            ),
+          )
+          as String);
+
+  @override
+  String get gymModeLogScopeCurrentRoutine =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeLogScopeCurrentRoutine),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeLogScopeCurrentRoutine),
+            ),
+          )
+          as String);
+
+  @override
+  String get gymModeDistinctLogs =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeDistinctLogs),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeDistinctLogs),
+            ),
+          )
+          as String);
+
+  @override
+  String get gymModeDistinctLogsHelp =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeDistinctLogsHelp),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeDistinctLogsHelp),
+            ),
+          )
+          as String);
+
+  @override
+  String get gymModeDistinctLogsShort =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeDistinctLogsShort),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeDistinctLogsShort),
+            ),
+          )
+          as String);
+
+  @override
   String get addMeal =>
       (super.noSuchMethod(
             Invocation.getter(#addMeal),
@@ -4598,6 +4664,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.method(#durationHoursMinutes, [hours, minutes]),
+            ),
+          )
+          as String);
+
+  @override
+  String gymModeLogScopeWeeks(int? weeks) =>
+      (super.noSuchMethod(
+            Invocation.method(#gymModeLogScopeWeeks, [weeks]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#gymModeLogScopeWeeks, [weeks]),
             ),
           )
           as String);
