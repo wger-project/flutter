@@ -242,6 +242,71 @@ void main() {
       expect(logs.single.weightUnitObj?.name, 'kg');
     });
 
+    test('returns the logs of every routine when no routine is given', () async {
+      await seedUnits();
+      await db
+          .into(db.workoutLogTable)
+          .insert(makeLog(exerciseId: 1, routineId: 100).toCompanion());
+      await db
+          .into(db.workoutLogTable)
+          .insert(makeLog(exerciseId: 1, routineId: 999).toCompanion());
+      await db
+          .into(db.workoutLogTable)
+          .insert(makeLog(exerciseId: 2, routineId: 100).toCompanion());
+
+      final logs = await repo.watchLogsByExerciseDrift(exerciseId: 1).first;
+
+      expect(logs.map((l) => l.routineId).toSet(), {100, 999});
+    });
+
+    test('only returns logs on or after the given date', () async {
+      await seedUnits();
+      await db
+          .into(db.workoutLogTable)
+          .insert(makeLog(date: DateTime.utc(2026, 4, 14), weight: 14).toCompanion());
+      await db
+          .into(db.workoutLogTable)
+          .insert(makeLog(date: DateTime.utc(2026, 4, 16), weight: 16).toCompanion());
+
+      final logs = await repo
+          .watchLogsByExerciseDrift(
+            routineId: 100,
+            exerciseId: 1,
+            since: DateTime.utc(2026, 4, 15),
+          )
+          .first;
+
+      expect(logs.map((l) => l.weight).toList(), [16]);
+    });
+
+    test('compares a cutoff given in local time as an instant', () async {
+      // Dates are stored as UTC text, a local cutoff is bound with its offset
+      // appended. Both sides go through JULIANDAY, so the comparison happens on
+      // the instant rather than on the raw string.
+      await seedUnits();
+      await db
+          .into(db.workoutLogTable)
+          .insert(makeLog(date: DateTime.utc(2026, 4, 15, 9)).toCompanion());
+
+      final justBefore = await repo
+          .watchLogsByExerciseDrift(
+            routineId: 100,
+            exerciseId: 1,
+            since: DateTime.utc(2026, 4, 15, 8, 30).toLocal(),
+          )
+          .first;
+      expect(justBefore, hasLength(1), reason: 'Cutoff half an hour before the log');
+
+      final justAfter = await repo
+          .watchLogsByExerciseDrift(
+            routineId: 100,
+            exerciseId: 1,
+            since: DateTime.utc(2026, 4, 15, 9, 30).toLocal(),
+          )
+          .first;
+      expect(justAfter, isEmpty, reason: 'Cutoff half an hour after the log');
+    });
+
     test('re-emits when a matching log is added', () async {
       await seedUnits();
       final stream = repo.watchLogsByExerciseDrift(routineId: 100, exerciseId: 1);

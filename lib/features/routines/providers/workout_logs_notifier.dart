@@ -28,7 +28,12 @@ final workoutLogProvider = Provider<WorkoutLogMutations>((ref) {
   return WorkoutLogMutations(ref.read(workoutLogRepositoryProvider));
 });
 
-/// Streams the past logs for [exerciseId] within [routineId], newest first.
+/// Streams the past logs for [exerciseId], newest first.
+///
+/// Without [weeksBack] only the logs of [routineId] are returned. Setting it
+/// widens the scope to all routines and instead limits the logs to the last
+/// [weeksBack] weeks, in which case [routineId] is ignored. With [distinct],
+/// only the newest log of each repetition/weight combination is kept.
 @riverpod
 Stream<List<Log>> pastExerciseLogs(
   Ref ref, {
@@ -49,18 +54,18 @@ Stream<List<Log>> pastExerciseLogs(
       .map((logs) => distinct ? _deduplicate(logs) : logs);
 }
 
-/// Returns the latest unique (reps, weight and weightUnit) per log
+/// Keeps only the first log of each repetitions/weight combination, units included.
+///
+/// Expects [logs] to be sorted newest first, so the newest log of each
+/// combination survives.
 List<Log> _deduplicate(List<Log> logs) {
-  final seen = <String>{};
-  final result = <Log>[];
-  for (final log in logs) {
-    final key = '${log.repetitions}_${log.weight}_${log.weightUnitId}';
-    if (seen.add(key)) {
-      result.add(log);
-    }
-  }
+  final seen = <(num?, int?, num?, int?)>{};
 
-  return result;
+  return logs
+      .where(
+        (log) => seen.add((log.repetitions, log.repetitionsUnitId, log.weight, log.weightUnitId)),
+      )
+      .toList();
 }
 
 class WorkoutLogMutations {

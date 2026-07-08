@@ -41,14 +41,21 @@ class WorkoutLogRepository {
 
   WorkoutLogRepository(this._db);
 
-  /// Streams the logs for a single exercise within a routine, newest first,
-  /// with their repetition and weight units attached.
+  /// Streams the logs for a single exercise, newest first, with their
+  /// repetition and weight units attached.
+  ///
+  /// Only logs belonging to [routineId] are returned, pass null for all
+  /// routines. [since] additionally restricts the result to logs on or after
+  /// that point in time.
   Stream<List<Log>> watchLogsByExerciseDrift({
     int? routineId,
     required int exerciseId,
     DateTime? since,
   }) {
-    _logger.finer('Watching local logs for routine $routineId, exercise $exerciseId');
+    _logger.finer(
+      'Watching local logs for exercise $exerciseId, '
+      'routine ${routineId ?? 'any'}, since ${since ?? 'always'}',
+    );
 
     final query = _db.select(_db.workoutLogTable).join([
       leftOuterJoin(

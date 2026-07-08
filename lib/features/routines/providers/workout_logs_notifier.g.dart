@@ -8,17 +8,32 @@ part of 'workout_logs_notifier.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// Streams the past logs for [exerciseId] within [routineId], newest first.
+/// Streams the past logs for [exerciseId], newest first.
+///
+/// Without [weeksBack] only the logs of [routineId] are returned. Setting it
+/// widens the scope to all routines and instead limits the logs to the last
+/// [weeksBack] weeks, in which case [routineId] is ignored. With [distinct],
+/// only the newest log of each repetition/weight combination is kept.
 
 @ProviderFor(pastExerciseLogs)
 final pastExerciseLogsProvider = PastExerciseLogsFamily._();
 
-/// Streams the past logs for [exerciseId] within [routineId], newest first.
+/// Streams the past logs for [exerciseId], newest first.
+///
+/// Without [weeksBack] only the logs of [routineId] are returned. Setting it
+/// widens the scope to all routines and instead limits the logs to the last
+/// [weeksBack] weeks, in which case [routineId] is ignored. With [distinct],
+/// only the newest log of each repetition/weight combination is kept.
 
 final class PastExerciseLogsProvider
     extends $FunctionalProvider<AsyncValue<List<Log>>, List<Log>, Stream<List<Log>>>
     with $FutureModifier<List<Log>>, $StreamProvider<List<Log>> {
-  /// Streams the past logs for [exerciseId] within [routineId], newest first.
+  /// Streams the past logs for [exerciseId], newest first.
+  ///
+  /// Without [weeksBack] only the logs of [routineId] are returned. Setting it
+  /// widens the scope to all routines and instead limits the logs to the last
+  /// [weeksBack] weeks, in which case [routineId] is ignored. With [distinct],
+  /// only the newest log of each repetition/weight combination is kept.
   PastExerciseLogsProvider._({
     required PastExerciseLogsFamily super.from,
     required ({int routineId, int exerciseId, int? weeksBack, bool distinct}) super.argument,
@@ -71,7 +86,12 @@ final class PastExerciseLogsProvider
 
 String _$pastExerciseLogsHash() => r'b700cebfb109d1a8ff651d5af76812aabf2eae81';
 
-/// Streams the past logs for [exerciseId] within [routineId], newest first.
+/// Streams the past logs for [exerciseId], newest first.
+///
+/// Without [weeksBack] only the logs of [routineId] are returned. Setting it
+/// widens the scope to all routines and instead limits the logs to the last
+/// [weeksBack] weeks, in which case [routineId] is ignored. With [distinct],
+/// only the newest log of each repetition/weight combination is kept.
 
 final class PastExerciseLogsFamily extends $Family
     with
@@ -88,7 +108,12 @@ final class PastExerciseLogsFamily extends $Family
         isAutoDispose: true,
       );
 
-  /// Streams the past logs for [exerciseId] within [routineId], newest first.
+  /// Streams the past logs for [exerciseId], newest first.
+  ///
+  /// Without [weeksBack] only the logs of [routineId] are returned. Setting it
+  /// widens the scope to all routines and instead limits the logs to the last
+  /// [weeksBack] weeks, in which case [routineId] is ignored. With [distinct],
+  /// only the newest log of each repetition/weight combination is kept.
 
   PastExerciseLogsProvider call({
     required int routineId,

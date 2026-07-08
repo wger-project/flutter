@@ -139,9 +139,9 @@ class LogPage extends ConsumerWidget {
           Text(slotEntryPage.setConfigData!.comment, textAlign: TextAlign.center),
         const SizedBox(height: 10),
 
-        // logs settings
-        _LogScopeControls(gymState: gymState),
-
+        // Overriding the log scope from here is handled in a follow-up, the
+        // settings currently only live in the gym mode options.
+        // _LogScopeControls(gymState: gymState),
         Expanded(child: _buildPastLogs(pastLogs)),
 
         Padding(
@@ -411,63 +411,62 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
   }
 }
 
-/// Compact inline controls for overriding the global log-scope settings
-class _LogScopeControls extends ConsumerWidget {
-  final GymModeState gymState;
-
-  const _LogScopeControls({required this.gymState});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final gymNotifier = ref.read(gymStateProvider.notifier);
-    final i18n = AppLocalizations.of(context);
-    final theme = Theme.of(context);
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          // ── Scope dropdown ──────────────────────────────────────────
-          Row(
-            children: [
-              Icon(Icons.history, size: 18, color: theme.colorScheme.primary),
-              const SizedBox(width: 4),
-              DropdownButton<int?>(
-                value: gymState.logScopeWeeks,
-                isDense: true,
-                underline: const SizedBox.shrink(),
-                style: theme.textTheme.bodySmall,
-                onChanged: (value) => gymNotifier.setLogScopeWeeks(value),
-                items: [
-                  DropdownMenuItem<int?>(
-                    value: null,
-                    child: Text(i18n.gymModeLogScopeCurrentRoutine),
-                  ),
-                  ...[8, 12, 25, 50].map(
-                    (w) => DropdownMenuItem<int?>(
-                      value: w,
-                      child: Text(i18n.gymModeLogScopeWeeks(w)),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-
-          // -- Distinct toggle --
-          Row(
-            children: [
-              Text(i18n.gymModeDistinctLogsShort, style: theme.textTheme.bodySmall),
-              Switch.adaptive(
-                value: gymState.showDistinctLogs,
-                onChanged: (v) => gymNotifier.setShowDistinctLogs(v),
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
+// Compact inline controls for overriding the global log-scope settings. Kept
+// around for the follow-up that lets the scope be changed from the log page.
+//
+// class _LogScopeControls extends ConsumerWidget {
+//   final GymModeState gymState;
+//
+//   const _LogScopeControls({required this.gymState});
+//
+//   @override
+//   Widget build(BuildContext context, WidgetRef ref) {
+//     final gymNotifier = ref.read(gymStateProvider.notifier);
+//     final i18n = AppLocalizations.of(context);
+//     final theme = Theme.of(context);
+//
+//     return Padding(
+//       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+//       child: Row(
+//         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//         children: [
+//           Row(
+//             children: [
+//               Icon(Icons.history, size: 18, color: theme.colorScheme.primary),
+//               const SizedBox(width: 4),
+//               DropdownButton<int?>(
+//                 value: gymState.logScopeWeeks,
+//                 isDense: true,
+//                 underline: const SizedBox.shrink(),
+//                 style: theme.textTheme.bodySmall,
+//                 onChanged: (value) => gymNotifier.setLogScopeWeeks(value),
+//                 items: [
+//                   DropdownMenuItem<int?>(
+//                     value: null,
+//                     child: Text(i18n.gymModeLogScopeCurrentRoutine),
+//                   ),
+//                   ...[8, 12, 25, 50].map(
+//                     (w) => DropdownMenuItem<int?>(
+//                       value: w,
+//                       child: Text(i18n.gymModeLogScopeWeeks(w)),
+//                     ),
+//                   ),
+//                 ],
+//               ),
+//             ],
+//           ),
+//           Row(
+//             children: [
+//               Text(i18n.gymModeDistinctLogsShort, style: theme.textTheme.bodySmall),
+//               Switch.adaptive(
+//                 value: gymState.showDistinctLogs,
+//                 onChanged: (v) => gymNotifier.setShowDistinctLogs(v),
+//                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+//               ),
+//             ],
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
