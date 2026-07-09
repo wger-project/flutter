@@ -95,12 +95,10 @@ List<Widget> getOverviewWidgetsSeries(
           text: AppLocalizations.of(context).indicatorAvg,
           isSquare: true,
         ),
-        // if (!metricType.isSummedPerDay && !metricType.isRangeType)
         if (!metricType.isSummedPerDay)
           Indicator(
             color: Theme.of(context).colorScheme.secondary,
-            text: 'trend',
-            // text: AppLocalizations.of(context).indicatorTrend,
+            text: AppLocalizations.of(context).indicatorTrend,
             isSquare: true,
           ),
       ],

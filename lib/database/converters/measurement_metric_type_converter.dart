@@ -20,17 +20,12 @@ import 'package:drift/drift.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 
 /// Maps a [MetricType] to and from the SQLite string format.
-///
-/// The SQL side is nullable: the server does not persist `metric_type` yet, so a
-/// category synced back down arrives without it. A missing value reads as
-/// [MetricType.custom] rather than crashing the non-nullable model field.
-class MeasurementMetricTypeConverter extends TypeConverter<MetricType, String?> {
+class MeasurementMetricTypeConverter extends TypeConverter<MetricType, String> {
   const MeasurementMetricTypeConverter();
 
   @override
-  MetricType fromSql(String? fromDb) =>
-      fromDb == null ? MetricType.custom : MetricType.fromWire(fromDb);
+  MetricType fromSql(String fromDb) => MetricType.fromWire(fromDb);
 
   @override
-  String? toSql(MetricType value) => value.wireValue;
+  String toSql(MetricType value) => value.wireValue;
 }

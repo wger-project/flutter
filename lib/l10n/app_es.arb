@@ -838,6 +838,7 @@
     "@indicatorAvg": {
         "description": "added for localization of Class Indicator's field text"
     },
+    "indicatorTrend": "tendencia",
     "themeMode": "Modo del tema",
     "darkMode": "Siempre en modo oscuro",
     "lightMode": "Siempre en modo claro",

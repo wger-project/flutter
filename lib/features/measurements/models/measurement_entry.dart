@@ -43,8 +43,8 @@ class MeasurementEntry with _$MeasurementEntry {
   @override
   final String notes;
 
-  /// Where the reading came from: `manual` or a health platform
-  /// (`apple_health`, `health_connect`).
+  /// Origin of the reading; one of the server's `source` values
+  /// (`user`, `google`, `apple`).
   @override
   final String source;
 
@@ -59,7 +59,7 @@ class MeasurementEntry with _$MeasurementEntry {
     required this.date,
     required this.value,
     required this.notes,
-    this.source = 'manual',
+    this.source = 'user',
     this.externalId,
   });
 

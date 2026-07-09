@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2026 wger Team
+ * Copyright (c) 2026 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -188,8 +188,8 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
   }
 
   /// Finds the category for [metric] (by `metric_type`, falling back to the
-  /// canonical name once the server has nulled `metric_type` on a round-trip)
-  /// or creates it. The created category is appended to [categories] so a later
+  /// canonical name to reuse a matching category the user created by hand) or
+  /// creates it. The created category is appended to [categories] so a later
   /// metric in the same run reuses it.
   Future<MeasurementCategory> _findOrCreateCategory(
     HealthMetric metric,

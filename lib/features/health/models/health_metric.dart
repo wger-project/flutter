@@ -42,8 +42,8 @@ class HealthMetric {
   final HealthDataType dataType;
 
   /// Stable, non-localized category name. Used to find-or-create the category,
-  /// and as the fallback match after a sync round-trip resets [metricType] to
-  /// [MetricType.custom] (the server does not persist it yet).
+  /// and as the fallback match for a category the user already created by hand
+  /// (which carries [MetricType.custom], not this metric's type).
   final String canonicalName;
 
   /// Unit the value is stored in on the category.

@@ -33,7 +33,7 @@ class MeasurementCategoryTable extends Table {
   TextColumn get name => text()();
   TextColumn get unit => text()();
   TextColumn get metricType =>
-      text().named('metric_type').nullable().map(const MeasurementMetricTypeConverter())();
+      text().named('metric_type').map(const MeasurementMetricTypeConverter())();
 }
 
 const PowersyncMeasurementCategoryTable = ps.Table(

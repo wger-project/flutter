@@ -392,11 +392,11 @@ class _MeasurementBarChartWidgetFlState extends State<MeasurementBarChartWidgetF
   }
 }
 
-/// Produces a smoothed trendline via a Exponential Moving Average (EMA).
-/// Produces a smoothed trendline via a Centered Moving Average (CMA).
+/// Produces a smoothed trendline via an Exponential Moving Average (EMA),
+/// seeded with the first data point. A larger [period] tracks the raw values
+/// more loosely (smoother, more lag).
 List<MeasurementChartEntry> smoothedTrendline(
   List<MeasurementChartEntry> vals, {
-  // int windowDays = 14,
   int period = 10,
 }) {
   if (vals.isEmpty) {

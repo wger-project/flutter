@@ -15,8 +15,8 @@ T _$identity<T>(T value) => value;
 mixin _$MeasurementEntry {
 
 /// Client-generated UUID, is `null` only before the first persist
- String? get id; String get categoryId; DateTime get date; num get value; String get notes;/// Where the reading came from: `manual` or a health platform
-/// (`apple_health`, `health_connect`).
+ String? get id; String get categoryId; DateTime get date; num get value; String get notes;/// Origin of the reading; one of the server's `source` values
+/// (`user`, `google`, `apple`).
  String get source;/// Platform record UUID, used to deduplicate re-imports. `null` for manual
 /// entries.
  String? get externalId;

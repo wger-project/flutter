@@ -35,8 +35,9 @@ class HealthRepository {
   final Health _health;
   final _logger = Logger('HealthRepository');
 
-  /// Identifies which platform a reading came from.
-  String get sourceName => Platform.isIOS ? 'apple_health' : 'health_connect';
+  /// The measurement `source` value for readings from this platform: `apple`
+  /// for Apple Health, `google` for Health Connect.
+  String get sourceName => Platform.isIOS ? 'apple' : 'google';
 
   /// Whether a health platform is usable on this device.
   Future<bool> isAvailable() async {

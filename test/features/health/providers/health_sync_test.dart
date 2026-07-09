@@ -64,7 +64,7 @@ void main() {
       measurements = MockMeasurementRepository();
 
       when(health.ensureAuthorized(any)).thenAnswer((_) async => true);
-      when(health.sourceName).thenReturn('apple_health');
+      when(health.sourceName).thenReturn('apple');
       when(measurements.addLocalDrift(any)).thenAnswer((_) async {});
       when(measurements.addLocalDriftCategory(any)).thenAnswer((_) async {});
     });
@@ -123,7 +123,7 @@ void main() {
 
       final bodyFat = entries.firstWhere((e) => e.externalId == 'bf-1');
       expect(bodyFat.value, closeTo(20, 0.001)); // fraction -> percent
-      expect(bodyFat.source, 'apple_health');
+      expect(bodyFat.source, 'apple');
 
       final height = entries.firstWhere((e) => e.externalId == 'h-1');
       expect(height.value, closeTo(180, 0.001)); // meters -> cm
@@ -142,7 +142,6 @@ void main() {
             date: DateTime(2026, 1, 1),
             value: 20,
             notes: '',
-            source: 'apple_health',
             externalId: 'bf-1',
           ),
         ],

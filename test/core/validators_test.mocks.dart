@@ -4262,6 +4262,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get indicatorTrend =>
+      (super.noSuchMethod(
+            Invocation.getter(#indicatorTrend),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#indicatorTrend),
+            ),
+          )
+          as String);
+
+  @override
   String get endWorkout =>
       (super.noSuchMethod(
             Invocation.getter(#endWorkout),

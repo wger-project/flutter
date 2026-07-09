@@ -4885,9 +4885,9 @@ class $MeasurementCategoryTableTable extends MeasurementCategoryTable
       GeneratedColumn<String>(
         'metric_type',
         aliasedName,
-        true,
+        false,
         type: DriftSqlType.string,
-        requiredDuringInsert: false,
+        requiredDuringInsert: true,
       ).withConverter<MetricType>(
         $MeasurementCategoryTableTable.$convertermetricType,
       );
@@ -4949,7 +4949,7 @@ class $MeasurementCategoryTableTable extends MeasurementCategoryTable
         attachedDatabase.typeMapping.read(
           DriftSqlType.string,
           data['${effectivePrefix}metric_type'],
-        ),
+        )!,
       ),
     );
   }
@@ -4959,7 +4959,7 @@ class $MeasurementCategoryTableTable extends MeasurementCategoryTable
     return $MeasurementCategoryTableTable(attachedDatabase, alias);
   }
 
-  static TypeConverter<MetricType, String?> $convertermetricType =
+  static TypeConverter<MetricType, String> $convertermetricType =
       const MeasurementMetricTypeConverter();
 }
 
@@ -4980,10 +4980,11 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
     this.id = const Value.absent(),
     required String name,
     required String unit,
-    this.metricType = const Value.absent(),
+    required MetricType metricType,
     this.rowid = const Value.absent(),
   }) : name = Value(name),
-       unit = Value(unit);
+       unit = Value(unit),
+       metricType = Value(metricType);
   static Insertable<MeasurementCategory> custom({
     Expression<String>? id,
     Expression<String>? name,
@@ -16474,7 +16475,7 @@ typedef $$MeasurementCategoryTableTableCreateCompanionBuilder =
       Value<String> id,
       required String name,
       required String unit,
-      Value<MetricType> metricType,
+      required MetricType metricType,
       Value<int> rowid,
     });
 typedef $$MeasurementCategoryTableTableUpdateCompanionBuilder =
@@ -16706,7 +16707,7 @@ class $$MeasurementCategoryTableTableTableManager
                 Value<String> id = const Value.absent(),
                 required String name,
                 required String unit,
-                Value<MetricType> metricType = const Value.absent(),
+                required MetricType metricType,
                 Value<int> rowid = const Value.absent(),
               }) => MeasurementCategoryTableCompanion.insert(
                 id: id,

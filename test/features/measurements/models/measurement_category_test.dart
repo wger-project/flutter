@@ -43,4 +43,34 @@ void main() {
       expect(() => category.findEntryById('abc'), throwsA(isA<NoSuchEntryException>()));
     });
   });
+
+  group('MetricType', () {
+    test('fromWire maps a known wire value to its enum case', () {
+      expect(MetricType.fromWire('body_fat'), MetricType.bodyFat);
+      expect(MetricType.fromWire('blood_pressure'), MetricType.bloodPressure);
+      expect(MetricType.fromWire('custom'), MetricType.custom);
+    });
+
+    test('fromWire defaults to custom for an unknown value', () {
+      expect(MetricType.fromWire('something_new'), MetricType.custom);
+      expect(MetricType.fromWire(''), MetricType.custom);
+    });
+
+    test('wireValue round-trips through fromWire for every case', () {
+      for (final type in MetricType.values) {
+        expect(MetricType.fromWire(type.wireValue), type);
+      }
+    });
+
+    test('isSummedPerDay is true only for cumulative daily metrics', () {
+      expect(MetricType.steps.isSummedPerDay, isTrue);
+      expect(MetricType.distance.isSummedPerDay, isTrue);
+      expect(MetricType.energy.isSummedPerDay, isTrue);
+      expect(MetricType.sleep.isSummedPerDay, isTrue);
+
+      expect(MetricType.custom.isSummedPerDay, isFalse);
+      expect(MetricType.bodyWeight.isSummedPerDay, isFalse);
+      expect(MetricType.heartRate.isSummedPerDay, isFalse);
+    });
+  });
 }

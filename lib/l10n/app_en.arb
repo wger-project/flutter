@@ -1318,6 +1318,10 @@
   "@indicatorAvg": {
     "description": "added for localization of Class Indicator's field text"
   },
+  "indicatorTrend": "trend",
+  "@indicatorTrend": {
+    "description": "Legend label for the smoothed trendline on measurement charts"
+  },
   "endWorkout": "End workout",
   "@endWorkout": {
     "description": "Use the imperative, label on button to finish the current workout in gym mode"
