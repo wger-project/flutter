@@ -159,7 +159,35 @@ class _GymModeOptionsState extends ConsumerState<GymModeOptions> {
                             : null,
                       ),
 
-                      ..._buildLogHistorySettings(i18n, gymState, gymNotifier),
+                      ListTile(
+                        key: const ValueKey('gym-mode-log-scope'),
+                        title: Text(i18n.gymModeLogScope),
+                        subtitle: Text(i18n.gymModeLogScopeHelp),
+                        trailing: DropdownButton<int?>(
+                          key: const ValueKey('log-scope-dropdown'),
+                          value: gymState.logScopeWeeks,
+                          onChanged: (value) => gymNotifier.setLogScopeWeeks(value),
+                          items: [
+                            DropdownMenuItem<int?>(
+                              value: null,
+                              child: Text(i18n.gymModeLogScopeCurrentRoutine),
+                            ),
+                            ...[8, 12, 25, 50].map(
+                              (weeks) => DropdownMenuItem<int?>(
+                                value: weeks,
+                                child: Text(i18n.gymModeLogScopeWeeks(weeks)),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SwitchListTile(
+                        key: const ValueKey('gym-mode-distinct-logs'),
+                        title: Text(i18n.gymModeDistinctLogs),
+                        subtitle: Text(i18n.gymModeDistinctLogsHelp),
+                        value: gymState.showDistinctLogs,
+                        onChanged: (value) => gymNotifier.setShowDistinctLogs(value),
+                      ),
                     ],
                   ),
                 ),
@@ -255,44 +283,4 @@ class StartPage extends ConsumerWidget {
       ],
     );
   }
-}
-
-/// Settings tiles controlling which past logs are shown while training:
-/// the lookback duration and whether duplicate sets are collapsed.
-List<Widget> _buildLogHistorySettings(
-  AppLocalizations i18n,
-  GymModeState gymState,
-  GymStateNotifier gymNotifier,
-) {
-  return [
-    ListTile(
-      key: const ValueKey('gym-mode-log-scope'),
-      title: Text(i18n.gymModeLogScope),
-      subtitle: Text(i18n.gymModeLogScopeHelp),
-      trailing: DropdownButton(
-        key: const ValueKey('log-scope-dropdown'),
-        value: gymState.logScopeWeeks,
-        items: [
-          DropdownMenuItem<int?>(
-            value: null,
-            child: Text(i18n.gymModeLogScopeCurrentRoutine),
-          ),
-          ...[8, 12, 25, 50].map(
-            (weeks) => DropdownMenuItem(
-              value: weeks,
-              child: Text(i18n.gymModeLogScopeWeeks(weeks)),
-            ),
-          ),
-        ],
-        onChanged: (value) => gymNotifier.setLogScopeWeeks(value),
-      ),
-    ),
-    SwitchListTile(
-      key: const ValueKey('gym-mode-distinct-logs'),
-      title: Text(i18n.gymModeDistinctLogs),
-      subtitle: Text(i18n.gymModeDistinctLogsHelp),
-      value: gymState.showDistinctLogs,
-      onChanged: (value) => gymNotifier.setShowDistinctLogs(value),
-    ),
-  ];
 }
