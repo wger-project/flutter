@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:clock/clock.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wger/features/routines/models/log.dart';
@@ -27,16 +28,44 @@ final workoutLogProvider = Provider<WorkoutLogMutations>((ref) {
   return WorkoutLogMutations(ref.read(workoutLogRepositoryProvider));
 });
 
-/// Streams the past logs for [exerciseId] within [routineId], newest first.
+/// Streams the past logs for [exerciseId], newest first.
+///
+/// Without [weeksBack] only the logs of [routineId] are returned. Setting it
+/// widens the scope to all routines and instead limits the logs to the last
+/// [weeksBack] weeks, in which case [routineId] is ignored. With [distinct],
+/// only the newest log of each repetition/weight combination is kept.
 @riverpod
 Stream<List<Log>> pastExerciseLogs(
   Ref ref, {
   required int routineId,
   required int exerciseId,
+  int? weeksBack,
+  bool distinct = true,
 }) {
-  return ref
-      .read(workoutLogRepositoryProvider)
-      .watchLogsByExerciseDrift(routineId: routineId, exerciseId: exerciseId);
+  final repo = ref.read(workoutLogRepositoryProvider);
+  final cutoff = weeksBack != null ? clock.now().subtract(Duration(days: weeksBack * 7)) : null;
+
+  return repo
+      .watchLogsByExerciseDrift(
+        routineId: weeksBack == null ? routineId : null,
+        exerciseId: exerciseId,
+        since: cutoff,
+      )
+      .map((logs) => distinct ? _deduplicate(logs) : logs);
+}
+
+/// Keeps only the first log of each repetitions/weight combination, units included.
+///
+/// Expects [logs] to be sorted newest first, so the newest log of each
+/// combination survives.
+List<Log> _deduplicate(List<Log> logs) {
+  final seen = <(num?, int?, num?, int?)>{};
+
+  return logs
+      .where(
+        (log) => seen.add((log.repetitions, log.repetitionsUnitId, log.weight, log.weightUnitId)),
+      )
+      .toList();
 }
 
 class WorkoutLogMutations {
