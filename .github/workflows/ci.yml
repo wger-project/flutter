@@ -17,10 +17,18 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
-    name: Run tests
+    name: Run tests (shard ${{ matrix.shard }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3]
     env:
       TZ: Europe/Berlin
     steps:
@@ -29,19 +37,31 @@ jobs:
       - name: Common flutter setup
         uses: ./.github/actions/flutter-common
 
-      - name: Install dependencies
-        run: |
-          sudo apt install libsqlite3-dev lcov --no-install-recommends
-          flutter pub get
+      - name: Install system dependencies
+        run: sudo apt install libsqlite3-dev lcov --no-install-recommends
 
       # Removing some folders from the coverage since these files are not really
       # part of the app code and just get in the way of the report
       - name: Test app
         run: |
-          flutter test --coverage
+          flutter test --coverage --total-shards 4 --shard-index ${{ matrix.shard }}
           lcov --remove coverage/lcov.info 'lib/l10n/generated/*' 'lib/theme/*' -o coverage/lcov.info
 
-      - name: Coveralls
+      - name: Upload coverage to Coveralls
         uses: coverallsapp/github-action@v2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          flag-name: shard-${{ matrix.shard }}
+          parallel: true
+
+  finish:
+    name: Finish coverage
+    needs: test
+    runs-on: ubuntu-latest
+    if: ${{ always() }}
+    steps:
+      - name: Close parallel Coveralls build
+        uses: coverallsapp/github-action@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          parallel-finished: true
