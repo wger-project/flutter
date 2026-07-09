@@ -1,0 +1,90 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (c)  2026 wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
+import 'package:wger/features/nutrition/providers/ingredient_repository.dart';
+import 'package:wger/features/nutrition/providers/nutrition_notifier.dart';
+import 'package:wger/features/nutrition/providers/nutrition_repository.dart';
+import 'package:wger/features/nutrition/screens/nutritional_plan_screen.dart';
+import 'package:wger/features/weight/providers/body_weight_repository.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/theme/theme.dart';
+
+import '../../test_data/body_weight.dart';
+import '../../test_data/nutritional_plans.dart';
+import 'screenshots_05_nutritional_plan.mocks.dart';
+
+@GenerateMocks([NutritionRepository, IngredientRepository, BodyWeightRepository])
+Widget createNutritionalPlanScreen({Locale? locale}) {
+  locale ??= const Locale('en');
+
+  final key = GlobalKey<NavigatorState>();
+  final plan = getNutritionalPlanScreenshot();
+
+  final mockNutritionRepo = MockNutritionRepository();
+  final mockIngredientRepo = MockIngredientRepository();
+  when(mockIngredientRepo.getById(any)).thenAnswer((_) async => null);
+
+  final mockBodyWeightRepository = MockBodyWeightRepository();
+  when(
+    mockBodyWeightRepository.watchAllDrift(),
+  ).thenAnswer((_) => Stream.value(getScreenshotWeightEntries()));
+
+  final container = ProviderContainer.test(
+    overrides: [
+      bodyWeightRepositoryProvider.overrideWithValue(mockBodyWeightRepository),
+      nutritionRepositoryProvider.overrideWithValue(mockNutritionRepo),
+      ingredientRepositoryProvider.overrideWithValue(mockIngredientRepo),
+    ],
+  );
+  // The screen resolves the plan by id from the nutrition notifier state.
+  container.read(nutritionProvider.notifier).state = AsyncData(
+    NutritionState(plans: [plan]),
+  );
+
+  return MediaQuery(
+    data: MediaQueryData.fromView(WidgetsBinding.instance.platformDispatcher.views.first).copyWith(
+      padding: EdgeInsets.zero,
+      viewPadding: EdgeInsets.zero,
+      viewInsets: EdgeInsets.zero,
+    ),
+    child: UncontrolledProviderScope(
+      container: container,
+      child: MaterialApp(
+        locale: locale,
+        debugShowCheckedModeBanner: false,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        theme: wgerLightTheme,
+        navigatorKey: key,
+        home: TextButton(
+          onPressed: () => key.currentState!.push(
+            MaterialPageRoute<void>(
+              settings: RouteSettings(arguments: plan.id),
+              builder: (_) => const NutritionalPlanScreen(),
+            ),
+          ),
+          child: const SizedBox(),
+        ),
+      ),
+    ),
+  );
+}

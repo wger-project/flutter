@@ -16,9 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:wger/models/trophies/trophy.dart';
-import 'package:wger/models/trophies/user_trophy.dart';
-import 'package:wger/models/trophies/user_trophy_progression.dart';
+import 'package:wger/features/trophies/models/trophy.dart';
+import 'package:wger/features/trophies/models/user_trophy.dart';
+import 'package:wger/features/trophies/models/user_trophy_progression.dart';
 
 List<Trophy> getTestTrophies() {
   return [

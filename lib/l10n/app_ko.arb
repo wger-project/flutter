@@ -657,7 +657,6 @@
     "@toggleDetails": {
         "description": "Switch to toggle detail / overview"
     },
-    "errorCouldNotConnectToServerDetails": "애플리케이션이 서버에 연결할 수 없습니다. 인터넷 연결이나 서버 URL을 확인하고 다시 시도해 주세요. 문제가 지속되면 서버 관리자에게 문의하세요.",
     "max": "최대",
     "protein": "단백질",
     "proteinShort": "P",
@@ -903,5 +902,8 @@
     "newDay": "새로운 날",
     "today": "오늘",
     "loggedToday": "오늘 기록",
-    "others": "기타"
+    "others": "기타",
+    "endBeforeStart": "종료 값은 시작 값보다 앞서 있을 수 없습니다",
+    "minLengthRoutine": "루틴은 최소 {number}주 동안 지속되어야 합니다",
+    "maxLengthRoutine": "루틴은 최대 {number}주 동안 지속될 수 있습니다"
 }

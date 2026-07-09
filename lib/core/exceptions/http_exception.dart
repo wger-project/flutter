@@ -27,6 +27,11 @@ enum ErrorType {
   text,
 }
 
+/// Where an exception originated, so the error handler can route and present
+/// it differently (a plain API validation error vs a PowerSync upload
+/// rejection worth reporting).
+enum ExceptionSource { api, powersync, flutter }
+
 const HTML_ERROR_KEY = 'html_error';
 
 class WgerHttpException implements Exception {
@@ -37,8 +42,21 @@ class WgerHttpException implements Exception {
   /// or similar.
   late ErrorType type;
 
+  /// Where the exception came from (drives routing and presentation).
+  final ExceptionSource source;
+
+  /// The HTTP status code, when built from a [Response].
+  final int? statusCode;
+
+  /// Optional structured context for diagnostics (e.g. the PowerSync table/op).
+  final Map<String, dynamic>? context;
+
   /// Custom http exception
-  WgerHttpException(Response response) {
+  WgerHttpException(
+    Response response, {
+    this.source = ExceptionSource.api,
+    this.context,
+  }) : statusCode = response.statusCode {
     type = ErrorType.json;
     final dynamic responseBody = response.body;
 
@@ -67,7 +85,12 @@ class WgerHttpException implements Exception {
     }
   }
 
-  WgerHttpException.fromMap(Map<String, dynamic> map) : type = ErrorType.json {
+  WgerHttpException.fromMap(
+    Map<String, dynamic> map, {
+    this.source = ExceptionSource.api,
+    this.statusCode,
+    this.context,
+  }) : type = ErrorType.json {
     errors = map;
   }
 
@@ -81,6 +104,7 @@ class WgerHttpException implements Exception {
 
   @override
   String toString() {
-    return 'WgerHttpException ($type): $errors';
+    final ctxStr = context == null ? '' : ', context: $context';
+    return 'WgerHttpException(${source.name}, status ${statusCode ?? '-'}, $type): $errors$ctxStr';
   }
 }

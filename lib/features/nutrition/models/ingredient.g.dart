@@ -1,0 +1,98 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of 'ingredient.dart';
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+Ingredient _$IngredientFromJson(Map<String, dynamic> json) {
+  $checkKeys(
+    json,
+    requiredKeys: const [
+      'id',
+      'remote_id',
+      'source_name',
+      'source_url',
+      'license_object_url',
+      'code',
+      'name',
+      'created',
+      'energy',
+      'carbohydrates',
+      'carbohydrates_sugar',
+      'protein',
+      'fat',
+      'fat_saturated',
+      'fiber',
+      'sodium',
+    ],
+  );
+  return Ingredient(
+    remoteId: json['remote_id'] as String?,
+    sourceName: json['source_name'] as String?,
+    sourceUrl: json['source_url'] as String?,
+    languageId: (json['languageId'] as num?)?.toInt(),
+    licenseObjectURl: json['license_object_url'] as String?,
+    id: (json['id'] as num).toInt(),
+    code: json['code'] as String?,
+    name: json['name'] as String,
+    brand: json['brand'] as String?,
+    created: DateTime.parse(json['created'] as String),
+    energy: (json['energy'] as num).toInt(),
+    carbohydrates: stringToNum(json['carbohydrates'] as String?),
+    carbohydratesSugar: stringToNumNull(json['carbohydrates_sugar'] as String?),
+    protein: stringToNum(json['protein'] as String?),
+    fat: stringToNum(json['fat'] as String?),
+    fatSaturated: stringToNumNull(json['fat_saturated'] as String?),
+    fiber: stringToNumNull(json['fiber'] as String?),
+    sodium: stringToNumNull(json['sodium'] as String?),
+    isVegan: json['is_vegan'] as bool?,
+    isVegetarian: json['is_vegetarian'] as bool?,
+    nutriscore: $enumDecodeNullable(_$NutriScoreEnumMap, json['nutriscore']),
+    image: json['image'] == null
+        ? null
+        : IngredientImage.fromJson(json['image'] as Map<String, dynamic>),
+    weightUnits:
+        (json['weight_units'] as List<dynamic>?)
+            ?.map(
+              (e) => IngredientWeightUnit.fromJson(e as Map<String, dynamic>),
+            )
+            .toList() ??
+        [],
+  );
+}
+
+Map<String, dynamic> _$IngredientToJson(Ingredient instance) => <String, dynamic>{
+  'id': instance.id,
+  'remote_id': instance.remoteId,
+  'languageId': instance.languageId,
+  'source_name': instance.sourceName,
+  'source_url': instance.sourceUrl,
+  'license_object_url': instance.licenseObjectURl,
+  'code': instance.code,
+  'name': instance.name,
+  'brand': instance.brand,
+  'created': instance.created.toIso8601String(),
+  'energy': instance.energy,
+  'carbohydrates': numToString(instance.carbohydrates),
+  'carbohydrates_sugar': numToString(instance.carbohydratesSugar),
+  'protein': numToString(instance.protein),
+  'fat': numToString(instance.fat),
+  'fat_saturated': numToString(instance.fatSaturated),
+  'fiber': numToString(instance.fiber),
+  'sodium': numToString(instance.sodium),
+  'is_vegan': instance.isVegan,
+  'is_vegetarian': instance.isVegetarian,
+  'nutriscore': _$NutriScoreEnumMap[instance.nutriscore],
+  'image': instance.image,
+  'weight_units': instance.weightUnits,
+};
+
+const _$NutriScoreEnumMap = {
+  NutriScore.a: 'a',
+  NutriScore.b: 'b',
+  NutriScore.c: 'c',
+  NutriScore.d: 'd',
+  NutriScore.e: 'e',
+};

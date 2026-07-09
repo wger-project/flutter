@@ -1,0 +1,43 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (c) 2020 - 2026 wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+void launchURL(
+  String url,
+  BuildContext context, {
+  LaunchMode mode = LaunchMode.platformDefault,
+}) async {
+  final launched = await launchUrl(Uri.parse(url), mode: mode);
+
+  if (!launched && context.mounted) {
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    scaffoldMessenger.showSnackBar(
+      SnackBar(content: Text('Could not open $url.')),
+    );
+  }
+}
+
+/// Formats a number to an integer if it's a whole number
+num formatNum(num value) {
+  if (value is double && value == value.toInt()) {
+    return value.toInt();
+  }
+  return value;
+}

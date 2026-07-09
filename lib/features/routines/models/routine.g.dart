@@ -1,0 +1,49 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of 'routine.dart';
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+Routine _$RoutineFromJson(Map<String, dynamic> json) {
+  $checkKeys(
+    json,
+    requiredKeys: const [
+      'id',
+      'created',
+      'name',
+      'description',
+      'fit_in_week',
+      'start',
+      'end',
+    ],
+  );
+  return Routine(
+    id: (json['id'] as num?)?.toInt(),
+    created: utcIso8601ToLocalDate(json['created'] as String),
+    name: json['name'] as String,
+    start: json['start'] == null ? null : DateTime.parse(json['start'] as String),
+    end: json['end'] == null ? null : DateTime.parse(json['end'] as String),
+    fitInWeek: json['fit_in_week'] as bool? ?? false,
+    isTemplate: json['is_template'] as bool? ?? false,
+    isPublic: json['is_public'] as bool? ?? false,
+    description: json['description'] as String?,
+    days:
+        (json['days'] as List<dynamic>?)
+            ?.map((e) => Day.fromJson(e as Map<String, dynamic>))
+            .toList() ??
+        const [],
+  );
+}
+
+Map<String, dynamic> _$RoutineToJson(Routine instance) => <String, dynamic>{
+  'created': dateToUtcIso8601(instance.created),
+  'name': instance.name,
+  'description': instance.description,
+  'fit_in_week': instance.fitInWeek,
+  'is_template': instance.isTemplate,
+  'is_public': instance.isPublic,
+  'start': dateToYYYYMMDD(instance.start),
+  'end': dateToYYYYMMDD(instance.end),
+};

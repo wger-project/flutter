@@ -606,7 +606,6 @@
     "errorViewDetails": "Технички детали",
     "applicationLogs": "Логови на апликација",
     "errorCouldNotConnectToServer": "Не може да се поврзе до сервер",
-    "errorCouldNotConnectToServerDetails": "Апликацијата не можеше да се поврзе со серверот. Проверете ја вашата интернет-врска или URL-адресата на серверот и обидете се повторно. Ако проблемот продолжи, контактирајте го администраторот на серверот.",
     "weight": "Тежина",
     "@weight": {
         "description": "The weight of a workout log or body weight entry"

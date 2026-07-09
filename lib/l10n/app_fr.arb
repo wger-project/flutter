@@ -761,6 +761,7 @@
     "@indicatorAvg": {
         "description": "added for localization of Class Indicator's field text"
     },
+    "indicatorTrend": "tendance",
     "resistance_band": "Bande de résistance",
     "@resistance_band": {
         "description": "Generated entry for translation for server strings"
@@ -785,7 +786,7 @@
             }
         }
     },
-    "fitInWeek": "Ajouter à la semaine",
+    "fitInWeek": "Planning hebdomadaire fixe",
     "addSuperset": "Ajouter une supersérie",
     "useApiToken": "Utiliser un jeton API",
     "apiTokenValidChars": "Une clé API ne peut contenir que les lettres a-f, les chiffres 0-9 et 40 caractères exactement",
@@ -813,7 +814,6 @@
     "isRestDayHelp": "Veuillez noter que toutes les séries et tous les exercices seront supprimés lorsque vous marquerez un jour comme jour de repos.",
     "needsLogsToAdvance": "Nécessite des journaux pour avancer",
     "errorCouldNotConnectToServer": "Impossible de se connecter au serveur",
-    "errorCouldNotConnectToServerDetails": "L'application n'a pas pu se connecter au serveur. Veuillez vérifier votre connexion internet ou l'URL du serveur et réessayer. Si le problème persiste, contactez l'administrateur du serveur.",
     "copyToClipboard": "Copier dans le presse-papiers",
     "max": "Max",
     "aboutWhySupportTitle": "Open Source et gratuit ❤️",
@@ -1017,5 +1017,150 @@
         }
     },
     "searchLanguageAll": "Toutes les langues",
-    "trophies": "Trophées"
+    "trophies": "Trophées",
+    "dashboardWidgets": "Widgets de tableau de bord",
+    "slotEntryTypeWarmup": "Échauffement",
+    "topSet": "Série max : {value}",
+    "@topSet": {
+        "description": "Value is a representation of the set, like '10 x 80kg'",
+        "type": "text",
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    },
+    "preview": "Aperçu",
+    "useBasicMarkdown": "Vous pouvez utiliser du Markdown de base pour formater le texte",
+    "editorBold": "Gras",
+    "@editorBold": {
+        "description": "Label for bold formatting"
+    },
+    "editorItalic": "Italic",
+    "editorList": "Liste",
+    "appLanguage": "Langue de l'application",
+    "@appLanguage": {
+        "description": "Label for the in-app language selector in settings"
+    },
+    "appLanguageSystem": "Valeur par défaut du système",
+    "@appLanguageSystem": {
+        "description": "Dropdown entry that follows the device system language"
+    },
+    "exerciseSearchMode": "Mode de recherche",
+    "@exerciseSearchMode": {
+        "description": "Heading above the segmented control that lets the user pick between fuzzy and exact name matching"
+    },
+    "searchModeExact": "Exact",
+    "@searchModeExact": {
+        "description": "Label for the search mode that only matches exercises with this exact name"
+    },
+    "searchModeFuzzy": "Approximatif",
+    "@searchModeFuzzy": {
+        "description": "Label for the search mode that performs a fuzzy/substring search on exercise names"
+    },
+    "filterNutriscore": "Filtre Nutri-Score",
+    "@filterNutriscore": {
+        "description": "Heading for the Nutri-Score slider in the ingredient search filter dialog"
+    },
+    "filterNutriscoreOff": "Off",
+    "@filterNutriscoreOff": {
+        "description": "Label for the first slider stop, which disables the Nutri-Score filter"
+    },
+    "filterNutriscoreNoFilter": "Pas de filtre",
+    "@filterNutriscoreNoFilter": {
+        "description": "Helper text shown under the Nutri-Score slider when it is at the Off position"
+    },
+    "filterNutriscoreOrBetter": "{grade} ou mieux",
+    "@filterNutriscoreOrBetter": {
+        "description": "Helper text shown under the Nutri-Score slider when a grade is selected (e.g. 'C or better')",
+        "placeholders": {
+            "grade": {
+                "type": "String",
+                "example": "C"
+            }
+        }
+    },
+    "serverConfigIssueTitle": "Erreur de configuration du serveur",
+    "@serverConfigIssueTitle": {
+        "description": "Title of the dialog shown when server misconfiguration is detected"
+    },
+    "serverConfigIssueMessage": "Erreur de configuration du serveur, les en-têtes ne sont pas transmis correctement. Veuillez consulter la documentation.",
+    "@serverConfigIssueMessage": {
+        "description": "Message explaining server misconfiguration and linking to documentation"
+    },
+    "understand": "J'ai compris",
+    "@understand": {
+        "description": "Button label to acknowledge and dismiss the server configuration warning"
+    },
+    "viewDocumentation": "Voir la documentation",
+    "@viewDocumentation": {
+        "description": "Button label to open the documentation about server configuration"
+    },
+    "refreshToken": "Jeton de rafraîchissement",
+    "invalidRefreshToken": "Veuillez saisir un jeton de rafraîchissement valide",
+    "refreshTokenValidChars": "Un jeton de rafraîchissement comporte trois segments séparés par des points (header.payload.signature), chacun composé de lettres, de chiffres, de « - » et « _ »",
+    "refreshTokenHelperText": "Générez un jeton de rafraîchissement JWT sur le site web de wger et collez-le ici. Utile lorsque votre serveur se trouve derrière un proxy d'authentification ou lorsque vous souhaitez ignorer la procédure de connexion habituelle.",
+    "mfaChallengeTitle": "Authentification à deux facteurs",
+    "mfaChallengeTotpPrompt": "Saisissez le code à 6 chiffres de votre application d'authentification",
+    "mfaChallengeRecoveryPrompt": "Saisissez l'un de vos codes de récupération",
+    "mfaCodeLabel": "Code",
+    "mfaInvalidCode": "Veuillez saisir un code",
+    "mfaUseRecoveryCode": "Utiliser un code de récupération à la place",
+    "mfaUseTotpCode": "Utiliser un code de l'application d'authentification",
+    "mfaSubmit": "Vérifier",
+    "mfaUnsupportedFactor": "Votre compte est configuré avec un second facteur que cette application ne prend pas encore en charge. Veuillez vous connecter sur le site web.",
+    "manageAccountOnWeb": "Gérer le compte sur le web",
+    "manageAccountOnWebSubtitle": "Modifiez votre mot de passe, configurez l'authentification à deux facteurs, gérez les jetons d'API ou supprimez votre compte.",
+    "advanced": "Avancé",
+    "advancedSubtitle": "Options de serveur et d'authentification",
+    "serverSectionLabel": "Serveur",
+    "signInMethodSectionLabel": "Méthode de connexion",
+    "serverOptionDefaultDetail": "Le serveur officiel",
+    "serverOptionSelfHostedTitle": "Auto-hébergé",
+    "serverOptionSelfHostedDetail": "Connectez-vous à votre propre instance",
+    "authOptionPasswordTitle": "Nom d'utilisateur et mot de passe",
+    "signInWithToken": "Se connecter avec un jeton",
+    "tokenSubtitle": "Générez-en un sur le site web de wger",
+    "newToWger": "Nouveau sur wger ?",
+    "alreadyHaveAccount": "Vous avez déjà un compte ?",
+    "tokenLabel": "Jeton",
+    "webHandoffLinkLabel": "Autres options de connexion",
+    "webHandoffLinkSubtitle": "Connexion sociale, passkey, SSO",
+    "clearSearchTerm": "Effacer le terme de recherche (texte)",
+    "ingredients": "Ingrédients",
+    "planDateRange": "du {startDate} au {endDate}",
+    "planStartDate": "à partir du {startDate}",
+    "otherLogs": "Autres entrées",
+    "errorRawSource": "Données brutes",
+    "dietaryInformation": "Informations nutritionnelles",
+    "carbohydratesSugar": "Sucre (glucides)",
+    "aboutViewDocsTitle": "Ouvrir la documentation",
+    "aboutViewLicensesTitle": "Voir les licences",
+    "enterMaxCharacters": "Veuillez saisir au maximum {max} caractères",
+    "powerSyncUnreachableTitle": "Service de synchronisation inaccessible",
+    "powerSyncUnreachableContent": "Votre serveur wger est accessible, mais le service (distinct) qui gère la synchronisation hors ligne ne répond pas. Si vous hébergez wger vous-même, vérifiez votre configuration et assurez-vous que le service PowerSync fonctionne correctement.",
+    "serverUnreachableRetry": "Réessayer",
+    "increase": "Augmenter",
+    "decrease": "Diminuer",
+    "settingsImageCacheDescription": "Cache des images",
+    "settingsDataTitle": "Confidentialité",
+    "settingsKeepDataOnLogout": "Conserver les données à la déconnexion",
+    "settingsKeepDataOnLogoutDescription": "La base de données locale reste sur votre appareil jusqu'à ce qu'un autre compte se connecte.",
+    "youAreOffline": "Vous êtes hors ligne",
+    "syncStatusConnected": "Connecté",
+    "syncStatusConnecting": "Connexion en cours",
+    "syncStatusDisconnected": "Non connecté",
+    "syncStatusUploading": "Envoi en cours",
+    "syncStatusDownloading": "Téléchargement en cours",
+    "syncStatusSyncing": "Synchronisation en cours",
+    "syncStatusError": "Erreur de synchronisation",
+    "syncStatusDialogTitle": "État de la synchronisation",
+    "syncStatusLastSynced": "Dernière synchronisation",
+    "syncStatusErrorDetails": "Détails de l'erreur",
+    "sessionExpired": "Votre session a expiré, veuillez vous reconnecter",
+    "weightOrRepsRequired": "Veuillez saisir un poids, des répétitions, ou les deux",
+    "timeStartEndBothOrNeither": "Indiquez l'heure de début et de fin, ou laissez les deux vides",
+    "endBeforeStart": "La valeur de fin ne peut être avant le début",
+    "minLengthRoutine": "La routine doit durer au moins {number} semaines",
+    "maxLengthRoutine": "La routine peut durer au maximum {number} semaines"
 }

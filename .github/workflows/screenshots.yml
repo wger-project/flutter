@@ -15,16 +15,10 @@ jobs:
     name: 'iOS'
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Common flutter setup
         uses: ./.github/actions/flutter-common
-
-      - name: Install CocoaPods
-        run: |
-          cd ios
-          pod install || true
-          cd ..
 
       - name: Boot iOS simulator
         id: boot
@@ -64,7 +58,7 @@ jobs:
             device_type: androidTabletBig
             folder: tenInchScreenshots
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Common flutter setup
         uses: ./.github/actions/flutter-common
@@ -137,7 +131,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Download all screenshot artifacts
         uses: actions/download-artifact@v8
@@ -152,7 +146,7 @@ jobs:
           rsync --archive --checksum --itemize-changes "screenshots/screenshots-android-tenInchScreenshots/" fastlane/metadata/android/
           rsync --archive --checksum --itemize-changes "screenshots/screenshots-ios/" fastlane/metadata/ios/
 
-      - name: Commit screenshots to repository
+      - name: Commit screenshots to a dated branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -162,7 +156,9 @@ jobs:
           if git diff --staged --quiet; then
             echo "No new or changed screenshots to commit."
           else
-            BRANCH=$(git rev-parse --abbrev-ref HEAD)
-             git commit -m "Update screenshots"
-             git push origin HEAD:"${BRANCH}"
+            BRANCH="screenshots-$(date -u +%Y-%m-%d)"
+            git commit -m "Update screenshots"
+            # Force-push so a same-day re-run replaces that day's branch
+            git push --force origin HEAD:"${BRANCH}"
+            echo "Pushed screenshots to branch ${BRANCH}"
           fi

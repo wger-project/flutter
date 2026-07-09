@@ -58,6 +58,13 @@ jobs:
     with:
       ref: ${{ github.event.inputs.version }}
 
+  build_web:
+    name: Web
+    needs: determine_version
+    uses: ./.github/workflows/build-web.yml
+    with:
+      ref: ${{ github.event.inputs.version }}
+
   upload_play_store:
     name: Upload to Play Store
     runs-on: ubuntu-latest
@@ -66,7 +73,7 @@ jobs:
       - build_linux
     steps:
       - name: Checkout application
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           lfs: true
           ref: ${{ github.event.inputs.version }}
@@ -111,7 +118,7 @@ jobs:
   #      - build_apple
   #    steps:
   #      - name: Checkout application
-  #        uses: actions/checkout@v6
+  #        uses: actions/checkout@v7
   #        with:
   #          ref: feature/build-process
   #        #          ref: ${{ github.event.inputs.version }}
@@ -138,6 +145,7 @@ jobs:
       - build_linux
       - build_windows
       - build_apple
+      - build_web
 
     steps:
       - name: Download builds
@@ -156,5 +164,7 @@ jobs:
             builds-ipa/Runner.xcarchive.zip
             builds-macos/wger.app.zip
             builds-windows/windows-x64.zip
+            builds-web/web.tar.gz
+            builds-web/web-wasm.tar.gz
 
 

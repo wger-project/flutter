@@ -46,4 +46,34 @@ void main() {
     final result = validateUrl('https://example.com', mockI18n);
     expect(result, isNull);
   });
+
+  test('Scheme-only URL with empty host returns error', () {
+    // Uri.parse('http://') succeeds with an empty host; the validator must
+    // still reject it.
+    expect(validateUrl('http://', mockI18n), isNotNull);
+    expect(validateUrl('https://', mockI18n), isNotNull);
+  });
+
+  group('validateDateRange', () {
+    setUp(() {
+      when(mockI18n.endBeforeStart).thenReturn('The end value cannot be before the start');
+    });
+
+    test('returns null when end is null', () {
+      expect(validateDateRange(DateTime(2024, 1, 1), null, mockI18n), isNull);
+    });
+
+    test('returns null when end is after start', () {
+      expect(validateDateRange(DateTime(2024, 1, 1), DateTime(2024, 2, 1), mockI18n), isNull);
+    });
+
+    test('returns null when end equals start', () {
+      final date = DateTime(2024, 1, 1);
+      expect(validateDateRange(date, date, mockI18n), isNull);
+    });
+
+    test('returns an error when end is before start', () {
+      expect(validateDateRange(DateTime(2024, 2, 1), DateTime(2024, 1, 1), mockI18n), isNotNull);
+    });
+  });
 }

@@ -725,7 +725,6 @@
     "errorInfoDescription2": "Puedes seguir utilizando la aplicación pero algunas características pueden no funcionar.",
     "errorViewDetails": "Detalles técnicos",
     "errorCouldNotConnectToServer": "No se pudo conectar con el servidor",
-    "errorCouldNotConnectToServerDetails": "La aplicación no se pudo conectar con el servidor. Por favor, comprueba to conexión a internet o la URL del servidor y prueba de nuevo. Si el problema persiste, contacta con el administrador del servidor.",
     "copyToClipboard": "Copiar al portapapeles",
     "max": "Máximo",
     "aboutContributeTitle": "Contribuir",
@@ -839,6 +838,7 @@
     "@indicatorAvg": {
         "description": "added for localization of Class Indicator's field text"
     },
+    "indicatorTrend": "tendencia",
     "themeMode": "Modo del tema",
     "darkMode": "Siempre en modo oscuro",
     "lightMode": "Siempre en modo claro",
@@ -994,5 +994,202 @@
     "dashboardWidgets": "Widgets del panel",
     "trophies": "Trofeos",
     "personalRecords": "Registros personales",
-    "noTrophies": "No tienes trofeos todavía"
+    "noTrophies": "No tienes trofeos todavía",
+    "slotEntryTypeWarmup": "Calentamiento",
+    "preview": "Vista previa",
+    "serverUpdateTitle": "Actualización de servidor requerida",
+    "topSet": "Mejor serie: {value}",
+    "@topSet": {
+        "description": "Value is a representation of the set, like '10 x 80kg'",
+        "type": "text",
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    },
+    "serverUpdateContent": "El servidor conectado es demasiado antiguo para esta versión de la aplicación. Por favor, pide al administrador que actualice al menos a la versión {minVersion}.",
+    "@serverUpdateContent": {
+        "description": "Message shown when the server version is too old. minVersion is the minimum required server version string.",
+        "type": "text",
+        "placeholders": {
+            "minVersion": {
+                "type": "String"
+            }
+        }
+    },
+    "useBasicMarkdown": "Puedes usar Markdown básico para formatear el texto",
+    "editorBold": "Negrita",
+    "@editorBold": {
+        "description": "Label for bold formatting"
+    },
+    "editorItalic": "Cursiva",
+    "editorList": "Lista",
+    "appLanguage": "Idioma de la aplicación",
+    "@appLanguage": {
+        "description": "Label for the in-app language selector in settings"
+    },
+    "appLanguageSystem": "Predefinido del sistema",
+    "@appLanguageSystem": {
+        "description": "Dropdown entry that follows the device system language"
+    },
+    "productNotFoundOpenFoodFacts": "¡Puedes agregar este producto a Open Food Facts para ayudar a la comunidad!",
+    "@productNotFoundOpenFoodFacts": {
+        "description": "Label shown when product is not found to encourage users to go on Open Food Facts and add it themselves"
+    },
+    "addToOpenFoodFacts": "Agregar a Open Food Facts",
+    "@addToOpenFoodFacts": {
+        "description": "Label shown as the clickable link to go on Open Food Facts"
+    },
+    "isVegan": "Vegano",
+    "@isVegan": {
+        "description": "Label for vegan toggle"
+    },
+    "isVegetarian": "Vegetariano",
+    "@isVegetarian": {
+        "description": "Label for vegetarian toggle"
+    },
+    "filter": "Filtrar",
+    "@filter": {
+        "description": "Label for filter button"
+    },
+    "searchLanguageCurrent": "Solo en el idioma actual ({lang})",
+    "@searchLanguageCurrent": {
+        "type": "text",
+        "placeholders": {
+            "lang": {
+                "type": "String"
+            }
+        }
+    },
+    "searchLanguageEnglish": "Idioma actual ({lang}) e Inglés",
+    "@searchLanguageEnglish": {
+        "type": "text",
+        "placeholders": {
+            "lang": {
+                "type": "String"
+            }
+        }
+    },
+    "searchLanguageAll": "Todos los idiomas",
+    "@searchLanguageAll": {
+        "description": "Label used in the language selector to indicate no specific language filter is applied"
+    },
+    "exerciseSearchMode": "Modo de búsqueda",
+    "@exerciseSearchMode": {
+        "description": "Heading above the segmented control that lets the user pick between fuzzy and exact name matching"
+    },
+    "searchModeFuzzy": "Búsqueda aproximada",
+    "@searchModeFuzzy": {
+        "description": "Label for the search mode that performs a fuzzy/substring search on exercise names"
+    },
+    "searchModeExact": "Búsqueda exacta",
+    "@searchModeExact": {
+        "description": "Label for the search mode that only matches exercises with this exact name"
+    },
+    "filterNutriscore": "Filtro Nutri-Score",
+    "@filterNutriscore": {
+        "description": "Heading for the Nutri-Score slider in the ingredient search filter dialog"
+    },
+    "filterNutriscoreOff": "Apagado",
+    "@filterNutriscoreOff": {
+        "description": "Label for the first slider stop, which disables the Nutri-Score filter"
+    },
+    "filterNutriscoreNoFilter": "Sin filtro",
+    "@filterNutriscoreNoFilter": {
+        "description": "Helper text shown under the Nutri-Score slider when it is at the Off position"
+    },
+    "filterNutriscoreOrBetter": "{grade} o mejor",
+    "@filterNutriscoreOrBetter": {
+        "description": "Helper text shown under the Nutri-Score slider when a grade is selected (e.g. 'C or better')",
+        "placeholders": {
+            "grade": {
+                "type": "String",
+                "example": "C"
+            }
+        }
+    },
+    "serverConfigIssueTitle": "Problema de configuración del servidor",
+    "@serverConfigIssueTitle": {
+        "description": "Title of the dialog shown when server misconfiguration is detected"
+    },
+    "serverConfigIssueMessage": "Configuración incorrecta en el servidor: las cabeceras no se están transmitiendo correctamente. Por favor, consulte la documentación.",
+    "@serverConfigIssueMessage": {
+        "description": "Message explaining server misconfiguration and linking to documentation"
+    },
+    "understand": "Lo comprendo",
+    "@understand": {
+        "description": "Button label to acknowledge and dismiss the server configuration warning"
+    },
+    "viewDocumentation": "Ver documentación",
+    "@viewDocumentation": {
+        "description": "Button label to open the documentation about server configuration"
+    },
+    "refreshToken": "Token de actualización",
+    "invalidRefreshToken": "Introduce un token de actualización válido",
+    "refreshTokenValidChars": "Un token de actualización tiene tres segmentos separados por puntos (header.payload.signature), cada uno formado por letras, dígitos, «-» y «_»",
+    "refreshTokenHelperText": "Genera un token de actualización JWT en el sitio web de wger y pégalo aquí. Útil cuando tu servidor está detrás de un proxy de autenticación o cuando quieres omitir el inicio de sesión habitual.",
+    "mfaChallengeTitle": "Autenticación de dos factores",
+    "mfaChallengeTotpPrompt": "Introduce el código de 6 dígitos de tu aplicación de autenticación",
+    "mfaChallengeRecoveryPrompt": "Introduce uno de tus códigos de recuperación",
+    "mfaCodeLabel": "Código",
+    "mfaInvalidCode": "Introduce un código",
+    "mfaUseRecoveryCode": "Usar un código de recuperación en su lugar",
+    "mfaUseTotpCode": "Usar un código de la aplicación de autenticación",
+    "mfaSubmit": "Verificar",
+    "mfaUnsupportedFactor": "Tu cuenta está configurada con un segundo factor que esta aplicación aún no admite. Inicia sesión en el sitio web.",
+    "manageAccountOnWeb": "Gestionar la cuenta en la web",
+    "manageAccountOnWebSubtitle": "Cambia tu contraseña, configura la autenticación de dos factores, gestiona los tokens de API o elimina tu cuenta.",
+    "advanced": "Avanzado",
+    "advancedSubtitle": "Opciones de servidor y autenticación",
+    "serverSectionLabel": "Servidor",
+    "signInMethodSectionLabel": "Método de inicio de sesión",
+    "serverOptionDefaultDetail": "El servidor oficial",
+    "serverOptionSelfHostedTitle": "Autoalojado",
+    "serverOptionSelfHostedDetail": "Conéctate a tu propia instancia",
+    "authOptionPasswordTitle": "Usuario y contraseña",
+    "signInWithToken": "Iniciar sesión con token",
+    "tokenSubtitle": "Genera uno en el sitio web de wger",
+    "newToWger": "¿Nuevo en wger?",
+    "alreadyHaveAccount": "¿Ya tienes una cuenta?",
+    "tokenLabel": "Token",
+    "webHandoffLinkLabel": "Otras opciones de inicio de sesión",
+    "webHandoffLinkSubtitle": "Inicio de sesión social, passkey, SSO",
+    "clearSearchTerm": "Borrar el término de búsqueda (texto)",
+    "ingredients": "Ingredientes",
+    "planDateRange": "del {startDate} al {endDate}",
+    "planStartDate": "a partir del {startDate}",
+    "otherLogs": "Otros registros",
+    "errorRawSource": "Sin procesar",
+    "dietaryInformation": "Información nutricional",
+    "carbohydratesSugar": "Azúcar (carbohidratos)",
+    "aboutViewDocsTitle": "Abrir la documentación",
+    "aboutViewLicensesTitle": "Ver licencias",
+    "enterMaxCharacters": "Introduce como máximo {max} caracteres",
+    "powerSyncUnreachableTitle": "Servicio de sincronización no disponible",
+    "powerSyncUnreachableContent": "Tu servidor de wger es accesible, pero el servicio (independiente) que gestiona la sincronización sin conexión no responde. Si alojas wger por tu cuenta, revisa tu configuración y asegúrate de que el servicio PowerSync funcione correctamente.",
+    "serverUnreachableRetry": "Reintentar",
+    "increase": "Aumentar",
+    "decrease": "Disminuir",
+    "settingsImageCacheDescription": "Caché de imágenes",
+    "settingsDataTitle": "Privacidad",
+    "settingsKeepDataOnLogout": "Conservar los datos al cerrar sesión",
+    "settingsKeepDataOnLogoutDescription": "La base de datos local permanece en tu dispositivo hasta que inicie sesión otra cuenta.",
+    "youAreOffline": "Estás sin conexión",
+    "syncStatusConnected": "Conectado",
+    "syncStatusConnecting": "Conectando",
+    "syncStatusDisconnected": "No conectado",
+    "syncStatusUploading": "Subiendo",
+    "syncStatusDownloading": "Descargando",
+    "syncStatusSyncing": "Sincronizando",
+    "syncStatusError": "Error de sincronización",
+    "syncStatusDialogTitle": "Estado de sincronización",
+    "syncStatusLastSynced": "Última sincronización",
+    "syncStatusErrorDetails": "Detalles del error",
+    "sessionExpired": "Tu sesión ha expirado, inicia sesión de nuevo",
+    "weightOrRepsRequired": "Introduce un peso, repeticiones o ambos",
+    "timeStartEndBothOrNeither": "Indica la hora de inicio y de fin, o deja ambas vacías",
+    "endBeforeStart": "El final no puede ser anterior al inicio",
+    "minLengthRoutine": "La rutina debe ser de al menos {number} semanas",
+    "maxLengthRoutine": "La rutina debe tener como mucho {number} semanas"
 }

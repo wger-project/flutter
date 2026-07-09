@@ -1,0 +1,80 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (c)  2026 wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+import 'package:drift/drift.dart';
+import 'package:powersync/powersync.dart' as ps;
+import 'package:wger/database/converters/measurement_metric_type_converter.dart';
+import 'package:wger/database/converters/utc_datetime_converter.dart';
+import 'package:wger/features/measurements/models/measurement_category.dart';
+import 'package:wger/features/measurements/models/measurement_entry.dart';
+
+@UseRowClass(MeasurementCategory)
+class MeasurementCategoryTable extends Table {
+  @override
+  String get tableName => 'measurements_category';
+
+  TextColumn get id => text().clientDefault(() => ps.uuid.v7())();
+
+  TextColumn get name => text()();
+  TextColumn get unit => text()();
+  TextColumn get metricType =>
+      text().named('metric_type').map(const MeasurementMetricTypeConverter())();
+}
+
+const PowersyncMeasurementCategoryTable = ps.Table(
+  'measurements_category',
+  [ps.Column.text('name'), ps.Column.text('unit'), ps.Column.text('metric_type')],
+);
+
+@UseRowClass(MeasurementEntry)
+class MeasurementEntryTable extends Table {
+  @override
+  String get tableName => 'measurements_measurement';
+
+  TextColumn get id => text().clientDefault(() => ps.uuid.v7())();
+  TextColumn get categoryId =>
+      text().named('category_id').references(MeasurementCategoryTable, #id)();
+
+  DateTimeColumn get date => dateTime().map(const UtcDateTimeConverter())();
+  RealColumn get value => real()();
+  TextColumn get notes => text()();
+
+  /// Where the reading came from: `manual` or a health platform
+  /// (`apple_health`, `health_connect`).
+  TextColumn get source => text().withDefault(const Constant('manual'))();
+
+  /// Platform record UUID, used to deduplicate re-imports. `null` for manual
+  /// entries.
+  TextColumn get externalId => text().named('external_id').nullable()();
+}
+
+const PowersyncMeasurementEntryTable = ps.Table(
+  'measurements_measurement',
+  [
+    ps.Column.text('category_id'),
+    ps.Column.text('date'),
+    ps.Column.real('value'),
+    ps.Column.text('notes'),
+    ps.Column.text('source'),
+    ps.Column.text('external_id'),
+  ],
+  indexes: [
+    ps.Index('category_idx', [ps.IndexedColumn('category_id')]),
+    ps.Index('external_id_idx', [ps.IndexedColumn('external_id')]),
+  ],
+);

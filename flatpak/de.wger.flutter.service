@@ -1,0 +1,3 @@
+[D-BUS Service]
+Name=de.wger.flutter
+Exec=/app/bin/wger --gapplication-service

@@ -131,7 +131,7 @@ bool _checkPlist(List<String> expectedDash, {required bool fix}) {
     array.children.clear();
     array.children.add(XmlText('\n\t\t\t'));
     for (final tag in expectedDash) {
-      array.children.add(XmlElement(XmlName('string'), [], [XmlText(tag)]));
+      array.children.add(XmlElement(const XmlName.parts('string'), [], [XmlText(tag)]));
       array.children.add(XmlText('\n\t\t\t'));
     }
     // Trim the trailing inter-child indent and replace with the closing one.
@@ -172,7 +172,7 @@ bool _checkAndroidXml(List<String> expectedDash, {required bool fix}) {
     builder.processing('xml', 'version="1.0" encoding="utf-8"');
     builder.element(
       'locale-config',
-      namespaces: {'http://schemas.android.com/apk/res/android': 'android'},
+      namespaceUris: {'android': 'http://schemas.android.com/apk/res/android'},
       nest: () {
         for (final tag in expectedOrdered) {
           builder.element('locale', attributes: {'android:name': tag});

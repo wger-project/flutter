@@ -191,15 +191,15 @@
     "@passwordsDontMatch": {
         "description": "Error message when the user enters two different passwords during registration"
     },
-    "invalidUrl": "Skriv inn en gyldig nettadresse",
+    "invalidUrl": "Skriv inn en gyldig nettadresse (URL)",
     "@invalidUrl": {
         "description": "Error message when the user enters an invalid URL, e.g. in the login form"
     },
-    "useCustomServer": "Bruk egendefinert tjener",
+    "useCustomServer": "Bruk egendefinert server",
     "@useCustomServer": {
         "description": "Toggle button allowing users to switch between the default and a custom wger server"
     },
-    "useDefaultServer": "Bruk forvalgt tjener",
+    "useDefaultServer": "Bruk standardserver",
     "@useDefaultServer": {
         "description": "Toggle button allowing users to switch between the default and a custom wger server"
     },
@@ -229,7 +229,7 @@
     "@value": {
         "description": "The value of a measurement entry"
     },
-    "userProfile": "Din Profil",
+    "userProfile": "Din profil",
     "usernameValidChars": "Et brukernavn kan bare inneholde bokstaver, sifre og tegnene @,+,.,-, og _",
     "@usernameValidChars": {
         "description": "Error message when the user tries to register a username with forbidden characters"

@@ -878,7 +878,6 @@
     "errorViewDetails": "التفاصيل التقنية",
     "applicationLogs": "سجلات التطبيق",
     "errorCouldNotConnectToServer": "لم يتمكن التطبيق من الاتصال بالخادم",
-    "errorCouldNotConnectToServerDetails": "لم يتمكن التطبيق من الاتصال بالخادم. يرجى التحقق من اتصالك بالإنترنت أو عنوان URL الخاص بالخادم، ثم المحاولة مرة أخرى. إذا استمرت المشكلة، فاتصل بمسؤول الخادم.",
     "max": "الاقصى",
     "min": "الادنى",
     "chartDuringPlanTitle": "{chartName} خلال الخطة الغذائية {planName}",
@@ -1114,5 +1113,8 @@
             }
         }
     },
-    "searchLanguageAll": "كافة اللغات"
+    "searchLanguageAll": "كافة اللغات",
+    "endBeforeStart": "قيمة النهاية لا يمكن ان تكون قبل البداية",
+    "minLengthRoutine": "يجب أن يستمر الروتين لمدة لا تقل عن {number} أسبوعًا",
+    "maxLengthRoutine": "يمكن أن يستمر الروتين لمدة أقصاها {number} أسبوعًا"
 }

@@ -19,12 +19,12 @@
         "comment": "",
         "is_superset": false,
         "exercises": [
-          76
+          4
         ],
         "sets": [
           {
             "slot_entry_id": 2,
-            "exercise": 76,
+            "exercise": 4,
             "sets": 4,
             "max_sets": null,
             "weight": "80.00",
@@ -90,7 +90,7 @@
         "sets": [
           {
             "slot_entry_id": 3,
-            "exercise": 92,
+            "exercise": 6,
             "sets": 4,
             "max_sets": null,
             "weight": "20.00",
@@ -169,12 +169,12 @@
         "comment": "",
         "is_superset": false,
         "exercises": [
-          76
+          4
         ],
         "sets": [
           {
             "slot_entry_id": 2,
-            "exercise": 76,
+            "exercise": 4,
             "sets": 4,
             "max_sets": null,
             "weight": "80.00",
@@ -240,7 +240,7 @@
         "sets": [
           {
             "slot_entry_id": 3,
-            "exercise": 92,
+            "exercise": 6,
             "sets": 4,
             "max_sets": null,
             "weight": "21.00",
@@ -312,12 +312,12 @@
         "comment": "",
         "is_superset": false,
         "exercises": [
-          76
+          4
         ],
         "sets": [
           {
             "slot_entry_id": 2,
-            "exercise": 76,
+            "exercise": 4,
             "sets": 4,
             "max_sets": null,
             "weight": "80.00",
@@ -383,7 +383,7 @@
         "sets": [
           {
             "slot_entry_id": 3,
-            "exercise": 92,
+            "exercise": 6,
             "sets": 4,
             "max_sets": null,
             "weight": "22.00",
@@ -455,12 +455,12 @@
         "comment": "",
         "is_superset": false,
         "exercises": [
-          76
+          4
         ],
         "sets": [
           {
             "slot_entry_id": 2,
-            "exercise": 76,
+            "exercise": 4,
             "sets": 4,
             "max_sets": null,
             "weight": "80.00",
@@ -521,12 +521,12 @@
         "comment": "",
         "is_superset": false,
         "exercises": [
-          92
+          6
         ],
         "sets": [
           {
             "slot_entry_id": 3,
-            "exercise": 92,
+            "exercise": 6,
             "sets": 4,
             "max_sets": null,
             "weight": "23.00",
@@ -598,12 +598,12 @@
         "comment": "",
         "is_superset": false,
         "exercises": [
-          76
+          4
         ],
         "sets": [
           {
             "slot_entry_id": 2,
-            "exercise": 76,
+            "exercise": 4,
             "sets": 4,
             "max_sets": null,
             "weight": "80.00",
@@ -669,7 +669,7 @@
         "sets": [
           {
             "slot_entry_id": 3,
-            "exercise": 92,
+            "exercise": 6,
             "sets": 4,
             "max_sets": null,
             "weight": "24.00",

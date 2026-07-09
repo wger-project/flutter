@@ -158,7 +158,7 @@
     "@reset": {
         "description": "Button text allowing the user to reset the entered values to the default"
     },
-    "customServerHint": "Geben Sie die Adresse deines eigenen Servers ein, ansonsten wird die Standardadresse verwendet",
+    "customServerHint": "Gebe die Adresse deines eigenen Servers ein, ansonsten wird die Standardadresse verwendet",
     "@customServerHint": {
         "description": "Hint text for the form where the users can enter their own wger instance"
     },
@@ -558,6 +558,7 @@
             }
         }
     },
+    "enterMaxCharacters": "Bitte gebe höchstens {max} Zeichen ein",
     "baseNameEnglish": "Alle Übungen brauchen einen Basisnamen in Englisch",
     "contributeExerciseWarning": "Sie können nur Übungen beitragen, wenn Ihr Konto älter als {days} Tage ist und Sie Ihre E-Mail verifiziert haben",
     "@contributeExerciseWarning": {
@@ -602,7 +603,7 @@
     "oneNamePerLine": "Ein Name pro Zeile",
     "whatVariationsExist": "Welche Varianten dieser Übung gibt es eventuell?",
     "previous": "Vorherige",
-    "next": "Weiter",
+    "next": "Nächste",
     "swiss_ball": "Gymnastikball",
     "none__bodyweight_exercise_": "keine (Körpergewichtsübung)",
     "body_weight": "Körpergewicht",
@@ -641,8 +642,11 @@
     "aboutDonateTitle": "Mach eine Spende",
     "aboutDonateText": "Das Projekt ist kostenlos und wird es auch bleiben, der Betrieb des Servers hingegen ist es nicht! Die Entwicklung erfordert zudem viel Zeit und Mühe von Freiwilligen. Ihr Beitrag deckt diese Kosten direkt und trägt zur Zuverlässigkeit des Dienstes bei.",
     "settingsCacheTitle": "Zwischenspeicher",
-    "settingsExerciseCacheDescription": "Übungs-Zwischenspeicher",
+    "settingsImageCacheDescription": "Bild-Zwischenspeicher",
     "settingsCacheDeletedSnackbar": "Zwischenspeicher erfolgreich gelöscht",
+    "settingsDataTitle": "Datenschutz",
+    "settingsKeepDataOnLogout": "Daten beim Abmelden behalten",
+    "settingsKeepDataOnLogoutDescription": "Die lokale Datenbank bleibt auf dem Gerät, bis sich ein anderes Konto anmeldet.",
     "lb": "lb",
     "@lb": {
         "description": "Generated entry for translation for server strings"
@@ -833,10 +837,10 @@
     "@indicatorAvg": {
         "description": "added for localization of Class Indicator's field text"
     },
+    "indicatorTrend": "Trend",
     "themeMode": "Theme Modus",
     "lightMode": "Immer Hellmodus",
     "systemMode": "Systemeinstellungen",
-    "errorCouldNotConnectToServerDetails": "Die Anwendung konnte keine Verbindung zum Server herstellen. Bitte überprüfen Sie Ihre Internetverbindung oder die Server-URL und versuchen Sie es erneut. Sollte das Problem weiterhin bestehen, wenden Sie sich an den Serveradministrator.",
     "fitInWeek": "Fester Wochenrhythmus",
     "fitInWeekHelp": "Wenn diese Option aktiviert ist, wiederholen sich die Tage in einem wöchentlichen Zyklus, andernfalls folgen die Tage der Reihe nach, ohne Rücksicht auf den Beginn einer neuen Woche.",
     "aboutContributeText": "Beiträge aller Art sind willkommen. Egal, ob Sie Entwickler, Übersetzer oder einfach nur Fitnessbegeisterter sind – jede Unterstützung ist willkommen!",
@@ -931,7 +935,7 @@
     "gymModeShowTimer": "Timer zwischen Sätzen anzeigen",
     "gymModeTimerType": "Timer-Typ",
     "gymModeTimerTypeHelText": "Wenn ein Satz eine Pausenzeit hat, wird immer ein Countdown genutzt.",
-    "countdown": "Countdown",
+    "countdown": "Herunterzählen",
     "stopwatch": "Stoppuhr",
     "gymModeDefaultCountdownTime": "Standard-Countdown-Zeit in Sekunden",
     "gymModeNotifyOnCountdownFinish": "Benachrichtigung bei Ende des Countdowns",
@@ -967,13 +971,10 @@
             }
         }
     },
-    "superset": "Superset",
+    "superset": "Supersatz",
     "isVegan": "Vegan",
-    "@isVegan": {},
     "isVegetarian": "Vegetarisch",
-    "@isVegetarian": {},
     "filter": "Filtern",
-    "@filter": {},
     "searchLanguageCurrent": "Nur aktuelle Sprache ({lang})",
     "@searchLanguageCurrent": {
         "type": "text",
@@ -993,5 +994,163 @@
         }
     },
     "searchLanguageAll": "Alle Sprachen",
-    "@searchLanguageAll": {}
+    "dashboardWidgets": "Dashboard Widgets",
+    "slotEntryTypeWarmup": "Aufwärmtraining",
+    "trophies": "Trophäen",
+    "topSet": "Höchster Satz: {value}",
+    "@topSet": {
+        "description": "Value is a representation of the set, like '10 x 80kg'",
+        "type": "text",
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    },
+    "weightOrRepsRequired": "Bitte Gewicht, Wiederholungen oder beides eingeben",
+    "timeStartEndBothOrNeither": "Entweder Start- und Endzeit beide setzen oder beide leer lassen",
+    "personalRecords": "Persönliche Rekorde",
+    "noTrophies": "Du hast noch keine Trophäen",
+    "preview": "Vorschau",
+    "serverUpdateTitle": "Server-Update erforderlich",
+    "serverUpdateContent": "Der verbundene Server ist für diese Version der App zu alt. Bitte fragen Sie den Serveradministrator, ob er ein Update auf mindestens Version {minVersion} durchführen kann.",
+    "@serverUpdateContent": {
+        "description": "Message shown when the server version is too old. minVersion is the minimum required server version string.",
+        "type": "text",
+        "placeholders": {
+            "minVersion": {
+                "type": "String"
+            }
+        }
+    },
+    "useBasicMarkdown": "Du kannst den Text mit einfachen Markdown-Befehlen formatieren",
+    "editorBold": "Fett",
+    "@editorBold": {
+        "description": "Label for bold formatting"
+    },
+    "editorItalic": "Kursiv",
+    "appLanguage": "App-Sprache",
+    "@appLanguage": {
+        "description": "Label for the in-app language selector in settings"
+    },
+    "appLanguageSystem": "Systemstandard",
+    "@appLanguageSystem": {
+        "description": "Dropdown entry that follows the device system language"
+    },
+    "productNotFoundOpenFoodFacts": "Du kannst dieses Produkt zu Open Food Facts hinzufügen, um der Community zu helfen!",
+    "@productNotFoundOpenFoodFacts": {
+        "description": "Label shown when product is not found to encourage users to go on Open Food Facts and add it themselves"
+    },
+    "addToOpenFoodFacts": "Hinzufügen zu Open Food Facts",
+    "@addToOpenFoodFacts": {
+        "description": "Label shown as the clickable link to go on Open Food Facts"
+    },
+    "exerciseSearchMode": "Suchmodus",
+    "@exerciseSearchMode": {
+        "description": "Heading above the segmented control that lets the user pick between fuzzy and exact name matching"
+    },
+    "searchModeExact": "Genau",
+    "@searchModeExact": {
+        "description": "Label for the search mode that only matches exercises with this exact name"
+    },
+    "filterNutriscore": "Nährwertfilter",
+    "@filterNutriscore": {
+        "description": "Heading for the Nutri-Score slider in the ingredient search filter dialog"
+    },
+    "filterNutriscoreOff": "Aus",
+    "@filterNutriscoreOff": {
+        "description": "Label for the first slider stop, which disables the Nutri-Score filter"
+    },
+    "filterNutriscoreNoFilter": "Kein Filter",
+    "@filterNutriscoreNoFilter": {
+        "description": "Helper text shown under the Nutri-Score slider when it is at the Off position"
+    },
+    "filterNutriscoreOrBetter": "{grade} oder besser",
+    "@filterNutriscoreOrBetter": {
+        "description": "Helper text shown under the Nutri-Score slider when a grade is selected (e.g. 'C or better')",
+        "placeholders": {
+            "grade": {
+                "type": "String",
+                "example": "C"
+            }
+        }
+    },
+    "serverConfigIssueTitle": "Serverkonfigurationsproblem",
+    "@serverConfigIssueTitle": {
+        "description": "Title of the dialog shown when server misconfiguration is detected"
+    },
+    "serverConfigIssueMessage": "Fehlerhafte Serverkonfiguration festgestellt, Überschriften werden nicht korrekt übermittelt, bitte konsultieren Sie die Dokumentation.",
+    "@serverConfigIssueMessage": {
+        "description": "Message explaining server misconfiguration and linking to documentation"
+    },
+    "understand": "Ich verstehe",
+    "@understand": {
+        "description": "Button label to acknowledge and dismiss the server configuration warning"
+    },
+    "viewDocumentation": "Dokumentation anzeigen",
+    "@viewDocumentation": {
+        "description": "Button label to open the documentation about server configuration"
+    },
+    "editorList": "Liste",
+    "refreshToken": "Refresh-Token",
+    "invalidRefreshToken": "Bitte gib einen gültigen Refresh-Token ein",
+    "refreshTokenValidChars": "Ein Refresh-Token besteht aus drei durch Punkte getrennten Teilen (header.payload.signature), die jeweils nur Buchstaben, Ziffern, „-“ und „_“ enthalten",
+    "refreshTokenHelperText": "Erzeuge auf der wger-Website einen JWT-Refresh-Token und füge ihn hier ein. Nützlich, wenn dein Server hinter einem Auth-Proxy liegt oder du die normale Anmeldung überspringen möchtest.",
+    "mfaChallengeTitle": "Zwei-Faktor-Authentifizierung",
+    "mfaChallengeTotpPrompt": "Gib den 6-stelligen Code aus deiner Authenticator-App ein",
+    "mfaChallengeRecoveryPrompt": "Gib einen deiner Wiederherstellungscodes ein",
+    "mfaCodeLabel": "Code",
+    "mfaInvalidCode": "Bitte gib einen Code ein",
+    "mfaUseRecoveryCode": "Stattdessen einen Wiederherstellungscode verwenden",
+    "mfaUseTotpCode": "Code aus der Authenticator-App verwenden",
+    "mfaSubmit": "Verifizieren",
+    "mfaUnsupportedFactor": "Dein Konto verwendet einen zweiten Faktor, den diese App noch nicht unterstützt. Bitte melde dich auf der Website an.",
+    "manageAccountOnWeb": "Konto im Web verwalten",
+    "manageAccountOnWebSubtitle": "Ändere dein Passwort, richte die Zwei-Faktor-Authentifizierung ein, verwalte API-Token oder lösche dein Konto.",
+    "advanced": "Erweitert",
+    "advancedSubtitle": "Server- und Authentifizierungsoptionen",
+    "serverSectionLabel": "Server",
+    "signInMethodSectionLabel": "Anmeldemethode",
+    "serverOptionDefaultDetail": "Der offizielle Server",
+    "serverOptionSelfHostedTitle": "Selbst gehostet",
+    "serverOptionSelfHostedDetail": "Mit deiner eigenen Instanz verbinden",
+    "authOptionPasswordTitle": "Benutzername und Passwort",
+    "signInWithToken": "Mit Token anmelden",
+    "tokenSubtitle": "Erzeuge einen auf der wger-Website",
+    "newToWger": "Neu bei wger?",
+    "alreadyHaveAccount": "Hast du bereits ein Konto?",
+    "tokenLabel": "Token",
+    "webHandoffLinkLabel": "Weitere Anmeldeoptionen",
+    "webHandoffLinkSubtitle": "Social Login, Passkey, SSO",
+    "clearSearchTerm": "Suchbegriff löschen (Text)",
+    "ingredients": "Zutaten",
+    "planDateRange": "von {startDate} bis {endDate}",
+    "planStartDate": "ab {startDate}",
+    "otherLogs": "Weitere Einträge",
+    "errorRawSource": "Rohdaten",
+    "dietaryInformation": "Nährwertangaben",
+    "carbohydratesSugar": "Zucker (Kohlenhydrate)",
+    "aboutViewDocsTitle": "Dokumentation öffnen",
+    "aboutViewLicensesTitle": "Lizenzen anzeigen",
+    "powerSyncUnreachableTitle": "Sync-Dienst nicht erreichbar",
+    "powerSyncUnreachableContent": "Dein wger-Server ist erreichbar, aber der (separate) Dienst für die Offline-Synchronisierung antwortet nicht. Wenn du wger selbst hostest, überprüfe deine Konfiguration und stelle sicher, dass der PowerSync-Dienst korrekt läuft.",
+    "serverUnreachableRetry": "Erneut versuchen",
+    "increase": "Erhöhen",
+    "decrease": "Verringern",
+    "youAreOffline": "Du bist offline",
+    "searchModeFuzzy": "Unscharf",
+    "syncStatusConnected": "Verbunden",
+    "syncStatusConnecting": "Verbindung wird hergestellt",
+    "syncStatusDisconnected": "Nicht verbunden",
+    "syncStatusUploading": "Wird hochgeladen",
+    "syncStatusDownloading": "Wird heruntergeladen",
+    "syncStatusSyncing": "Wird synchronisiert",
+    "syncStatusError": "Synchronisierungsfehler",
+    "syncStatusDialogTitle": "Synchronisierungsstatus",
+    "syncStatusLastSynced": "Letzte Synchronisierung",
+    "syncStatusErrorDetails": "Fehlerdetails",
+    "sessionExpired": "Deine Sitzung ist abgelaufen, bitte melde dich erneut an",
+    "endBeforeStart": "Der Endwert darf nicht vor dem Startwert liegen",
+    "minLengthRoutine": "Die Routine muss mindestens {number} Wochen lang sein",
+    "maxLengthRoutine": "Die Routine darf maximal {number} Wochen lang sein"
 }
