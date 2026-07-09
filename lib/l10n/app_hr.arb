@@ -5,7 +5,7 @@
     "@time": {
         "description": "The time of a meal or workout"
     },
-    "timeEnd": "Vrijeme završetka",
+    "timeEnd": "Vrijeme kraja",
     "@timeEnd": {
         "description": "The end time of a workout"
     },
@@ -286,7 +286,7 @@
     "@timeStart": {
         "description": "The starting time of a workout"
     },
-    "timeStartAhead": "Vrijeme početka ne može biti prije vremena završetka",
+    "timeStartAhead": "Vrijeme početka ne može biti prije vremena kraja",
     "ingredient": "Sastojak",
     "energy": "Energija",
     "@energy": {
@@ -467,7 +467,7 @@
     "@close": {
         "description": "Translation for close"
     },
-    "enterMinCharacters": "Upiši barem {min} znaka",
+    "enterMinCharacters": "Upiši barem {min} znakova",
     "@enterMinCharacters": {
         "description": "Error message when the user hasn't entered the minimum amount characters in a form",
         "type": "text",
@@ -1193,6 +1193,203 @@
     "@appLanguageSystem": {
         "description": "Dropdown entry that follows the device system language"
     },
+    "alreadyHaveAccount": "Već imaš račun?",
+    "tokenLabel": "Token",
+    "signInWithToken": "Prijavi se s tokenom",
+    "signInMethodSectionLabel": "Način prijave",
+    "advanced": "Napredno",
+    "advancedSubtitle": "Opcije servera i autentifikacije",
+    "serverSectionLabel": "Server",
+    "serverOptionDefaultDetail": "Službeni server",
+    "serverOptionSelfHostedTitle": "Vlastiti hosting",
+    "serverOptionSelfHostedDetail": "Poveži se na vlastitu instancu",
+    "authOptionPasswordTitle": "korisničko ime i lozinka",
+    "tokenSubtitle": "Generiraj jedan na wger web-stranici",
+    "mfaChallengeTitle": "Dvofaktorska autentifikacija",
+    "@mfaChallengeTitle": {
+        "description": "App bar title on the 2FA challenge screen"
+    },
+    "syncStatusLastSynced": "Zadnja sinkronizacija",
+    "@syncStatusLastSynced": {
+        "description": "Label in the sync status dialog above the timestamp of the last successful sync"
+    },
+    "refreshToken": "Token za osvježavanje",
+    "mfaCodeLabel": "Kod",
+    "@mfaCodeLabel": {
+        "description": "Label on the 2FA code input field"
+    },
+    "mfaInvalidCode": "Upiši kod",
+    "@mfaInvalidCode": {
+        "description": "Validation error when the 2FA code field is empty"
+    },
+    "mfaUseRecoveryCode": "Umjesto toga upiši kod za obnavljanje",
+    "@mfaUseRecoveryCode": {
+        "description": "Button that switches the 2FA challenge to recovery-code mode"
+    },
+    "mfaUseTotpCode": "Koristi kod aplikacije za autentifikaciju",
+    "@mfaUseTotpCode": {
+        "description": "Button that switches the 2FA challenge back to TOTP mode"
+    },
+    "mfaSubmit": "Potvrdi",
+    "@mfaSubmit": {
+        "description": "Submit button on the 2FA challenge screen"
+    },
+    "mfaUnsupportedFactor": "Tvoj je račun postavljen s drugim faktorom koji ova aplikacija još ne podržava. Prijavi se na web-stranici.",
+    "@mfaUnsupportedFactor": {
+        "description": "Shown when the server reports only factor types the app cannot handle (e.g. webauthn)"
+    },
+    "manageAccountOnWeb": "Upravljaj računom na webu",
+    "@manageAccountOnWeb": {
+        "description": "Label on a button that opens the user's preferences page on the wger website"
+    },
+    "manageAccountOnWebSubtitle": "Promijeni lozinku, postavi dvofaktorsku autentifikaciju, upravljaj API tokenima ili izbriši svoj račun.",
+    "@manageAccountOnWebSubtitle": {
+        "description": "Helper text below the 'Manage account on the web' button listing what is configurable there"
+    },
+    "invalidRefreshToken": "Upiši valjani token za osvježavanje",
+    "@invalidRefreshToken": {
+        "description": "Error message when the user enters an invalid refresh token"
+    },
+    "refreshTokenValidChars": "Token za osvježavanje sadrži tri segmenta odvojena točkama (header.payload.signature), a svaki se sastoji od slova, znamenki, spojnica (-) i podvlaka (_)",
+    "@refreshTokenValidChars": {
+        "description": "Error message when the user pastes a string that does not match the JWT shape"
+    },
+    "mfaChallengeTotpPrompt": "Upiši 6-znamenkasti kod iz tvoje aplikacije za autentifikaciju",
+    "@mfaChallengeTotpPrompt": {
+        "description": "Helper text above the TOTP input field"
+    },
+    "webHandoffLinkLabel": "Druge opcije za prijavu",
+    "webHandoffLinkSubtitle": "Prijava putem društvenih mreža, pristupni ključ, SSO",
+    "newToWger": "Koristiš wger po prvi put?",
+    "planDateRange": "od {startDate} do {endDate}",
+    "@planDateRange": {
+        "description": "Label for the start and end date range of a plan",
+        "placeholders": {
+            "startDate": {
+                "type": "String"
+            },
+            "endDate": {
+                "type": "String"
+            }
+        }
+    },
+    "planStartDate": "od {startDate}",
+    "@planStartDate": {
+        "description": "Label for the start date of a plan",
+        "placeholders": {
+            "startDate": {
+                "type": "String"
+            }
+        }
+    },
+    "otherLogs": "Drugi zapisi",
+    "@otherLogs": {
+        "description": "Other unassigned logs. Label for the pseudo-meal section that groups all nutritional diary entries not assigned to a specific meal"
+    },
+    "carbohydratesSugar": "Šećer (ugljikohidrati)",
+    "@carbohydratesSugar": {
+        "description": "Label for the carbohydrates sugar"
+    },
+    "errorRawSource": "Neobrađeni podaci",
+    "@errorRawSource": {
+        "description": "Tab label for showing an HTML error response in its raw (unrendered) form, opposite of 'Preview'."
+    },
+    "mfaChallengeRecoveryPrompt": "Upiši jedan od svojih kodova za oporavak",
+    "@mfaChallengeRecoveryPrompt": {
+        "description": "Helper text above the recovery-code input field"
+    },
+    "clearSearchTerm": "Izbriši pojam pretrage (tekst)",
+    "@clearSearchTerm": {
+        "description": "Tooltip for the icon-button that clears the ingredient search text field"
+    },
+    "ingredients": "Sastojci",
+    "@ingredients": {
+        "description": "Plural title for the ingredients overview screen"
+    },
+    "dietaryInformation": "Informacije o prehrani",
+    "aboutViewDocsTitle": "Otvori dokumentaciju",
+    "aboutViewLicensesTitle": "Prikaži licence",
+    "powerSyncUnreachableTitle": "Usluga sinkronizacije nije dostupna",
+    "settingsImageCacheDescription": "Predmemorija slika",
+    "settingsDataTitle": "Privatnost",
+    "settingsKeepDataOnLogout": "Sačuvaj podatke prilikom odjave",
+    "settingsKeepDataOnLogoutDescription": "Lokalna baza podataka ostaje na tvom uređaju sve dok se ne prijavi jedan drugi račun.",
+    "youAreOffline": "Nemaš vezu s internetom",
+    "syncStatusConnected": "Povezano",
+    "@syncStatusConnected": {
+        "description": "Tooltip on the sync icon when the app is online and idle (no upload or download in progress)"
+    },
+    "syncStatusConnecting": "Povezivanje",
+    "@syncStatusConnecting": {
+        "description": "Tooltip on the sync icon while the app is establishing a connection to the sync service"
+    },
+    "syncStatusDisconnected": "Nepovezano",
+    "@syncStatusDisconnected": {
+        "description": "Tooltip on the sync icon when the app has no active connection to the sync service"
+    },
+    "syncStatusUploading": "Prenosi se",
+    "@syncStatusUploading": {
+        "description": "Tooltip on the sync icon while local changes are being uploaded to the server"
+    },
+    "syncStatusDownloading": "Preuzima se",
+    "@syncStatusDownloading": {
+        "description": "Tooltip on the sync icon while remote changes are being downloaded from the server"
+    },
+    "syncStatusSyncing": "Sinkronizira se",
+    "@syncStatusSyncing": {
+        "description": "Tooltip on the sync icon when the app is uploading and downloading at the same time"
+    },
+    "syncStatusError": "Greška pri sinkronizaciji",
+    "@syncStatusError": {
+        "description": "Status label shown in the sync status dialog when the latest sync attempt failed"
+    },
+    "syncStatusDialogTitle": "Stanje sinkronizacijie",
+    "@syncStatusDialogTitle": {
+        "description": "Title of the dialog opened by tapping the sync icon in the app bar"
+    },
+    "syncStatusErrorDetails": "Detalji greške",
+    "@syncStatusErrorDetails": {
+        "description": "Header of the expandable section in the sync status dialog that reveals the raw error message"
+    },
+    "enterMaxCharacters": "Upiši maksimalno {max} znakova",
+    "@enterMaxCharacters": {
+        "description": "Error message when the user has entered more than the allowed amount of characters in a form",
+        "type": "text",
+        "placeholders": {
+            "max": {
+                "type": "String"
+            }
+        }
+    },
+    "serverUnreachableRetry": "Pokušaj ponovo",
+    "@serverUnreachableRetry": {
+        "description": "Button that re-runs the auto-login attempt against the saved server."
+    },
+    "increase": "Povećaj",
+    "@increase": {
+        "description": "Tooltip / screen-reader label for a button that increases a numeric input by one step"
+    },
+    "decrease": "Smanji",
+    "@decrease": {
+        "description": "Tooltip / screen-reader label for a button that decreases a numeric input by one step"
+    },
+    "sessionExpired": "Tvoja je sesija istekla. Prijavi se ponovo",
+    "@sessionExpired": {
+        "description": "Snackbar message shown when the saved login token is no longer valid"
+    },
+    "weightOrRepsRequired": "Upiši težinu, broj ponavljanja ili oboje",
+    "@weightOrRepsRequired": {
+        "description": "Validation error when both weight and repetitions are empty in a workout log"
+    },
+    "timeStartEndBothOrNeither": "Postavi vrijeme početka i vrijeme kraja ili ostavi oba polja prazna",
+    "@timeStartEndBothOrNeither": {
+        "description": "Validation error when only one of start/end time is set on a workout session"
+    },
+    "refreshTokenHelperText": "Generiraj JWT token za osvježavanje na wger web-stranici i zalijepi ga ovdje. Korisno kada se tvof server nalazi iza proxyja za autorizaciju ili kada želiš preskočiti uobičajeni tok prijave.",
+    "@refreshTokenHelperText": {
+        "description": "Helper text on the refresh-token paste field"
+    },
+    "powerSyncUnreachableContent": "Tvoj je wger server dostupan, ali (zasebna) usluga koja obrađuje izvanmrežnu sinkronizaciju ne odgovara. Ako pokrećeš vlastiti hosting za wger, provjeri konfiguraciju i provjeri je li PowerSync usluga ispravno radi.",
     "endBeforeStart": "Vrijednost kraja ne može biti prije vrijednosti početka",
     "minLengthRoutine": "Rutina mora trajati najmanje {number} tjedna",
     "maxLengthRoutine": "Rutina mora trajati najviše {number} tjedna"
