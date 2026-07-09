@@ -1151,5 +1151,10 @@
     "sessionExpired": "Deine Sitzung ist abgelaufen, bitte melde dich erneut an",
     "endBeforeStart": "Der Endwert darf nicht vor dem Startwert liegen",
     "minLengthRoutine": "Die Routine muss mindestens {number} Wochen lang sein",
-    "maxLengthRoutine": "Die Routine darf maximal {number} Wochen lang sein"
+    "maxLengthRoutine": "Die Routine darf maximal {number} Wochen lang sein",
+    "gymModeLogScope": "Frühere Protokolle",
+    "gymModeLogScopeHelp": "Welche Protokolle beim Training als Referenz angezeigt werden",
+    "gymModeLogScopeCurrentRoutine": "Aktuelle Routine",
+    "gymModeLogScopeWeeks": "Letzte {weeks} Wochen",
+    "gymModeDistinctLogs": "Doppelte Werte ausblenden"
 }

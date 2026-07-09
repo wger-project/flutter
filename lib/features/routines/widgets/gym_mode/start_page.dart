@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2025 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -86,6 +86,8 @@ class _GymModeOptionsState extends ConsumerState<GymModeOptions> {
                         value: gymState.showTimerPages,
                         onChanged: (value) => gymNotifier.setShowTimerPages(value),
                       ),
+
+                      const Divider(),
                       ListTile(
                         key: const ValueKey('gym-mode-timer-type'),
                         enabled: gymState.showTimerPages,
@@ -159,6 +161,7 @@ class _GymModeOptionsState extends ConsumerState<GymModeOptions> {
                             : null,
                       ),
 
+                      const Divider(),
                       ListTile(
                         key: const ValueKey('gym-mode-log-scope'),
                         title: Text(i18n.gymModeLogScope),
@@ -184,7 +187,6 @@ class _GymModeOptionsState extends ConsumerState<GymModeOptions> {
                       SwitchListTile(
                         key: const ValueKey('gym-mode-distinct-logs'),
                         title: Text(i18n.gymModeDistinctLogs),
-                        subtitle: Text(i18n.gymModeDistinctLogsHelp),
                         value: gymState.showDistinctLogs,
                         onChanged: (value) => gymNotifier.setShowDistinctLogs(value),
                       ),

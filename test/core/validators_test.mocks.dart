@@ -1641,28 +1641,6 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
-  String get gymModeDistinctLogsHelp =>
-      (super.noSuchMethod(
-            Invocation.getter(#gymModeDistinctLogsHelp),
-            returnValue: _i3.dummyValue<String>(
-              this,
-              Invocation.getter(#gymModeDistinctLogsHelp),
-            ),
-          )
-          as String);
-
-  @override
-  String get gymModeDistinctLogsShort =>
-      (super.noSuchMethod(
-            Invocation.getter(#gymModeDistinctLogsShort),
-            returnValue: _i3.dummyValue<String>(
-              this,
-              Invocation.getter(#gymModeDistinctLogsShort),
-            ),
-          )
-          as String);
-
-  @override
   String get addMeal =>
       (super.noSuchMethod(
             Invocation.getter(#addMeal),

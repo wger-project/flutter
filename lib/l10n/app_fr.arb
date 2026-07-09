@@ -1161,5 +1161,10 @@
     "timeStartEndBothOrNeither": "Indiquez l'heure de début et de fin, ou laissez les deux vides",
     "endBeforeStart": "La valeur de fin ne peut être avant le début",
     "minLengthRoutine": "La routine doit durer au moins {number} semaines",
-    "maxLengthRoutine": "La routine peut durer au maximum {number} semaines"
+    "maxLengthRoutine": "La routine peut durer au maximum {number} semaines",
+    "gymModeLogScope": "Journaux précédents",
+    "gymModeLogScopeHelp": "Quels journaux afficher comme référence pendant l'entraînement",
+    "gymModeLogScopeCurrentRoutine": "Routine actuelle",
+    "gymModeLogScopeWeeks": "{weeks} dernières semaines",
+    "gymModeDistinctLogs": "Masquer les valeurs en double"
 }

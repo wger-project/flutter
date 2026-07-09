@@ -457,7 +457,7 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
 //           ),
 //           Row(
 //             children: [
-//               Text(i18n.gymModeDistinctLogsShort, style: theme.textTheme.bodySmall),
+//               Text(i18n.gymModeDistinctLogs, style: theme.textTheme.bodySmall),
 //               Switch.adaptive(
 //                 value: gymState.showDistinctLogs,
 //                 onChanged: (v) => gymNotifier.setShowDistinctLogs(v),
