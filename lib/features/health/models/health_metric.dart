@@ -17,13 +17,13 @@
  */
 
 import 'package:health/health.dart';
+import 'package:wger/features/measurements/models/measurement_category.dart';
 
 /// A body metric that can be imported from Apple Health / Health Connect into a
 /// measurement category.
 ///
-/// [metricType] mirrors the server's planned `metric_type` enum and is stored
-/// on the created category; it drives the mapping back to a category on the
-/// next import.
+/// [metricType] is stored on the created category; it drives the mapping back
+/// to a category on the next import.
 class HealthMetric {
   const HealthMetric({
     required this.metricType,
@@ -35,15 +35,15 @@ class HealthMetric {
     this.disabledReason,
   });
 
-  /// Value of the server `metric_type` enum, e.g. `body_fat`.
-  final String metricType;
+  /// Metric type stored on the category, e.g. [MetricType.bodyFat].
+  final MetricType metricType;
 
   /// Health platform type this metric reads.
   final HealthDataType dataType;
 
   /// Stable, non-localized category name. Used to find-or-create the category,
-  /// and as the fallback match after a sync round-trip nulls [metricType]
-  /// (the server does not persist it yet).
+  /// and as the fallback match for a category the user already created by hand
+  /// (which carries [MetricType.custom], not this metric's type).
   final String canonicalName;
 
   /// Unit the value is stored in on the category.
@@ -79,7 +79,7 @@ double _identity(double raw) => raw;
 /// its [HealthMetric.disabledReason].
 const List<HealthMetric> healthMetrics = [
   HealthMetric(
-    metricType: 'body_fat',
+    metricType: MetricType.bodyFat,
     dataType: HealthDataType.BODY_FAT_PERCENTAGE,
     canonicalName: 'Body fat',
     unit: '%',
@@ -87,7 +87,7 @@ const List<HealthMetric> healthMetrics = [
     enabled: true,
   ),
   HealthMetric(
-    metricType: 'height',
+    metricType: MetricType.height,
     dataType: HealthDataType.HEIGHT,
     canonicalName: 'Height',
     unit: 'cm',
@@ -95,7 +95,7 @@ const List<HealthMetric> healthMetrics = [
     enabled: true,
   ),
   HealthMetric(
-    metricType: 'body_weight',
+    metricType: MetricType.bodyWeight,
     dataType: HealthDataType.WEIGHT,
     canonicalName: 'Weight',
     unit: 'kg',
@@ -105,7 +105,7 @@ const List<HealthMetric> healthMetrics = [
         'weight/measurements merge (metric_type=body_weight).',
   ),
   HealthMetric(
-    metricType: 'blood_pressure',
+    metricType: MetricType.bloodPressure,
     dataType: HealthDataType.BLOOD_PRESSURE_SYSTOLIC,
     canonicalName: 'Blood pressure',
     unit: 'mmHg',
@@ -113,7 +113,7 @@ const List<HealthMetric> healthMetrics = [
     disabledReason: 'Needs measurement grouping to pair systolic/diastolic.',
   ),
   HealthMetric(
-    metricType: 'heart_rate',
+    metricType: MetricType.heartRate,
     dataType: HealthDataType.HEART_RATE,
     canonicalName: 'Heart rate',
     unit: 'bpm',
@@ -121,7 +121,7 @@ const List<HealthMetric> healthMetrics = [
     disabledReason: 'High-frequency; needs a per-day aggregation strategy.',
   ),
   HealthMetric(
-    metricType: 'steps',
+    metricType: MetricType.steps,
     dataType: HealthDataType.STEPS,
     canonicalName: 'Steps',
     unit: 'count',

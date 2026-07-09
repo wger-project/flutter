@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wger/features/measurements/measurements.dart';
+import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/widgets/charts.dart';
 import 'package:wger/features/nutrition/models/nutritional_plan.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -9,8 +10,9 @@ List<Widget> getOverviewWidgets(
   List<MeasurementChartEntry> raw,
   List<MeasurementChartEntry> avg,
   String unit,
-  BuildContext context,
-) {
+  BuildContext context, {
+  MetricType metricType = MetricType.custom,
+}) {
   return [
     Text(
       title,
@@ -29,7 +31,7 @@ List<Widget> getOverviewWidgets(
                 ),
               ),
             )
-          : MeasurementChartWidgetFl(raw, unit, avgs: avg),
+          : buildChartForMetricType(metricType, raw, avg, unit),
     ),
     if (avg.isNotEmpty) MeasurementOverallChangeWidget(avg.first, avg.last, unit),
     const SizedBox(height: 8),
@@ -42,8 +44,9 @@ List<Widget> getOverviewWidgetsSeries(
   List<MeasurementChartEntry> entries7dAvg,
   List<NutritionalPlan> plans,
   String unit,
-  BuildContext context,
-) {
+  BuildContext context, {
+  MetricType metricType = MetricType.custom,
+}) {
   final monthAgo = DateTime.now().subtract(const Duration(days: 30));
   return [
     ...getOverviewWidgets(
@@ -52,6 +55,7 @@ List<Widget> getOverviewWidgetsSeries(
       entries7dAvg,
       unit,
       context,
+      metricType: metricType,
     ),
     // Show overview widgets for each plan in plans
     for (final plan in plans)
@@ -61,6 +65,7 @@ List<Widget> getOverviewWidgetsSeries(
         entries7dAvg.whereDateWithInterpolation(plan.startDate, plan.endDate),
         unit,
         context,
+        metricType: metricType,
       ),
     // if all time is significantly longer than 30 days (let's say > 75 days)
     // then let's show a separate chart just focusing on the last 30 days,
@@ -74,6 +79,7 @@ List<Widget> getOverviewWidgetsSeries(
         entries7dAvg.whereDateWithInterpolation(monthAgo, null),
         unit,
         context,
+        metricType: metricType,
       ),
     // legend
     Row(
@@ -89,6 +95,12 @@ List<Widget> getOverviewWidgetsSeries(
           text: AppLocalizations.of(context).indicatorAvg,
           isSquare: true,
         ),
+        if (!metricType.isSummedPerDay)
+          Indicator(
+            color: Theme.of(context).colorScheme.secondary,
+            text: AppLocalizations.of(context).indicatorTrend,
+            isSquare: true,
+          ),
       ],
     ),
   ];
@@ -119,4 +131,24 @@ List<Widget> getOverviewWidgetsSeries(
     );
   }
   return (entriesAll, entries7dAvg);
+}
+
+Widget buildChartForMetricType(
+  MetricType metricType,
+  List<MeasurementChartEntry> raw,
+  List<MeasurementChartEntry> avg,
+  String unit,
+) {
+  if (metricType.isSummedPerDay) {
+    return MeasurementBarChartWidgetFl(aggregatePerDay(raw), unit);
+  }
+  // if (metricType.isRangeType) {
+  //   return buildRangeChartForMetricType(metricType, raw, unit);
+  // }
+  return MeasurementChartWidgetFl(
+    raw,
+    unit,
+    avgs: avg,
+    trend: smoothedTrendline(raw),
+  );
 }

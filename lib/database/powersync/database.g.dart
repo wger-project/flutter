@@ -4880,17 +4880,17 @@ class $MeasurementCategoryTableTable extends MeasurementCategoryTable
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _metricTypeMeta = const VerificationMeta(
-    'metricType',
-  );
   @override
-  late final GeneratedColumn<String> metricType = GeneratedColumn<String>(
-    'metric_type',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-  );
+  late final GeneratedColumnWithTypeConverter<MetricType, String> metricType =
+      GeneratedColumn<String>(
+        'metric_type',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<MetricType>(
+        $MeasurementCategoryTableTable.$convertermetricType,
+      );
   @override
   List<GeneratedColumn> get $columns => [id, name, unit, metricType];
   @override
@@ -4924,12 +4924,6 @@ class $MeasurementCategoryTableTable extends MeasurementCategoryTable
     } else if (isInserting) {
       context.missing(_unitMeta);
     }
-    if (data.containsKey('metric_type')) {
-      context.handle(
-        _metricTypeMeta,
-        metricType.isAcceptableOrUnknown(data['metric_type']!, _metricTypeMeta),
-      );
-    }
     return context;
   }
 
@@ -4951,9 +4945,11 @@ class $MeasurementCategoryTableTable extends MeasurementCategoryTable
         DriftSqlType.string,
         data['${effectivePrefix}unit'],
       )!,
-      metricType: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}metric_type'],
+      metricType: $MeasurementCategoryTableTable.$convertermetricType.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}metric_type'],
+        )!,
       ),
     );
   }
@@ -4962,13 +4958,16 @@ class $MeasurementCategoryTableTable extends MeasurementCategoryTable
   $MeasurementCategoryTableTable createAlias(String alias) {
     return $MeasurementCategoryTableTable(attachedDatabase, alias);
   }
+
+  static TypeConverter<MetricType, String> $convertermetricType =
+      const MeasurementMetricTypeConverter();
 }
 
 class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCategory> {
   final Value<String> id;
   final Value<String> name;
   final Value<String> unit;
-  final Value<String?> metricType;
+  final Value<MetricType> metricType;
   final Value<int> rowid;
   const MeasurementCategoryTableCompanion({
     this.id = const Value.absent(),
@@ -4981,10 +4980,11 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
     this.id = const Value.absent(),
     required String name,
     required String unit,
-    this.metricType = const Value.absent(),
+    required MetricType metricType,
     this.rowid = const Value.absent(),
   }) : name = Value(name),
-       unit = Value(unit);
+       unit = Value(unit),
+       metricType = Value(metricType);
   static Insertable<MeasurementCategory> custom({
     Expression<String>? id,
     Expression<String>? name,
@@ -5005,7 +5005,7 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
     Value<String>? id,
     Value<String>? name,
     Value<String>? unit,
-    Value<String?>? metricType,
+    Value<MetricType>? metricType,
     Value<int>? rowid,
   }) {
     return MeasurementCategoryTableCompanion(
@@ -5030,7 +5030,11 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
       map['unit'] = Variable<String>(unit.value);
     }
     if (metricType.present) {
-      map['metric_type'] = Variable<String>(metricType.value);
+      map['metric_type'] = Variable<String>(
+        $MeasurementCategoryTableTable.$convertermetricType.toSql(
+          metricType.value,
+        ),
+      );
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -16471,7 +16475,7 @@ typedef $$MeasurementCategoryTableTableCreateCompanionBuilder =
       Value<String> id,
       required String name,
       required String unit,
-      Value<String?> metricType,
+      required MetricType metricType,
       Value<int> rowid,
     });
 typedef $$MeasurementCategoryTableTableUpdateCompanionBuilder =
@@ -16479,7 +16483,7 @@ typedef $$MeasurementCategoryTableTableUpdateCompanionBuilder =
       Value<String> id,
       Value<String> name,
       Value<String> unit,
-      Value<String?> metricType,
+      Value<MetricType> metricType,
       Value<int> rowid,
     });
 
@@ -16541,10 +16545,11 @@ class $$MeasurementCategoryTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get metricType => $composableBuilder(
-    column: $table.metricType,
-    builder: (column) => ColumnFilters(column),
-  );
+  ColumnWithTypeConverterFilters<MetricType, MetricType, String> get metricType =>
+      $composableBuilder(
+        column: $table.metricType,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
 
   Expression<bool> measurementEntryTableRefs(
     Expression<bool> Function($$MeasurementEntryTableTableFilterComposer f) f,
@@ -16619,7 +16624,7 @@ class $$MeasurementCategoryTableTableAnnotationComposer
   GeneratedColumn<String> get unit =>
       $composableBuilder(column: $table.unit, builder: (column) => column);
 
-  GeneratedColumn<String> get metricType => $composableBuilder(
+  GeneratedColumnWithTypeConverter<MetricType, String> get metricType => $composableBuilder(
     column: $table.metricType,
     builder: (column) => column,
   );
@@ -16688,7 +16693,7 @@ class $$MeasurementCategoryTableTableTableManager
                 Value<String> id = const Value.absent(),
                 Value<String> name = const Value.absent(),
                 Value<String> unit = const Value.absent(),
-                Value<String?> metricType = const Value.absent(),
+                Value<MetricType> metricType = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => MeasurementCategoryTableCompanion(
                 id: id,
@@ -16702,7 +16707,7 @@ class $$MeasurementCategoryTableTableTableManager
                 Value<String> id = const Value.absent(),
                 required String name,
                 required String unit,
-                Value<String?> metricType = const Value.absent(),
+                required MetricType metricType,
                 Value<int> rowid = const Value.absent(),
               }) => MeasurementCategoryTableCompanion.insert(
                 id: id,

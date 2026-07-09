@@ -16,8 +16,8 @@ mixin _$MeasurementCategory {
 
 /// Client-generated UUID, is `null` only before the first persist
  String? get id; String get name; String get unit; List<MeasurementEntry> get entries;/// Drives the health-platform mapping (and, later, default unit/aggregation/
-/// chart). `null` for plain user-created ("custom") categories.
- String? get metricType;
+/// chart). [MetricType.custom] for plain user-created categories.
+ MetricType get metricType;
 /// Create a copy of MeasurementCategory
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $MeasurementCategoryCopyWith<$Res>  {
   factory $MeasurementCategoryCopyWith(MeasurementCategory value, $Res Function(MeasurementCategory) _then) = _$MeasurementCategoryCopyWithImpl;
 @useResult
 $Res call({
- String? id, String name, String unit, List<MeasurementEntry> entries, String? metricType
+ String? id, String name, String unit, List<MeasurementEntry> entries, MetricType metricType
 });
 
 
@@ -65,14 +65,14 @@ class _$MeasurementCategoryCopyWithImpl<$Res>
 
 /// Create a copy of MeasurementCategory
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? name = null,Object? unit = null,Object? entries = null,Object? metricType = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? name = null,Object? unit = null,Object? entries = null,Object? metricType = null,}) {
   return _then(MeasurementCategory(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String?,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,unit: null == unit ? _self.unit : unit // ignore: cast_nullable_to_non_nullable
 as String,entries: null == entries ? _self.entries : entries // ignore: cast_nullable_to_non_nullable
-as List<MeasurementEntry>,metricType: freezed == metricType ? _self.metricType : metricType // ignore: cast_nullable_to_non_nullable
-as String?,
+as List<MeasurementEntry>,metricType: null == metricType ? _self.metricType : metricType // ignore: cast_nullable_to_non_nullable
+as MetricType,
   ));
 }
 

@@ -55,9 +55,10 @@ String weightUnit(bool isMetric, BuildContext context) {
 class MeasurementChartWidgetFl extends StatefulWidget {
   final List<MeasurementChartEntry> _entries;
   final List<MeasurementChartEntry>? avgs;
+  final List<MeasurementChartEntry>? trend;
   final String _unit;
 
-  const MeasurementChartWidgetFl(this._entries, this._unit, {this.avgs});
+  const MeasurementChartWidgetFl(this._entries, this._unit, {this.avgs, this.trend});
 
   @override
   State<MeasurementChartWidgetFl> createState() => _MeasurementChartWidgetFlState();
@@ -210,6 +211,17 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
             barWidth: 1,
             dotData: const FlDotData(show: false),
           ),
+        if (widget.trend != null && widget.trend!.isNotEmpty)
+          LineChartBarData(
+            spots: widget.trend!
+                .map((e) => FlSpot(e.date.millisecondsSinceEpoch.toDouble(), e.value.toDouble()))
+                .toList(),
+            isCurved: true,
+            curveSmoothness: 0.4,
+            color: Theme.of(context).colorScheme.secondary,
+            barWidth: 3,
+            dotData: const FlDotData(show: false),
+          ),
       ],
     );
   }
@@ -247,6 +259,168 @@ List<MeasurementChartEntry> moving7dAverage(List<MeasurementChartEntry> vals) {
 
     end++;
   }
+  return out;
+}
+
+/// Sums entries per calendar day. Used for metric types where individual
+/// samples aren't meaningful on their own (steps, distance, energy, sleep) —
+/// see MeasurementMetricType.isSummedPerDay.
+List<MeasurementChartEntry> aggregatePerDay(List<MeasurementChartEntry> vals) {
+  if (vals.isEmpty) {
+    return [];
+  }
+
+  // Bucket by the day component only (strip time-of-day).
+  final Map<DateTime, num> sums = {};
+  for (final e in vals) {
+    final day = DateTime(e.date.year, e.date.month, e.date.day);
+    sums.update(day, (existing) => existing + e.value, ifAbsent: () => e.value);
+  }
+
+  final out = sums.entries.map((e) => MeasurementChartEntry(e.value, e.key)).toList()
+    ..sort((a, b) => a.date.compareTo(b.date));
+  return out;
+}
+
+class MeasurementBarChartWidgetFl extends StatefulWidget {
+  final List<MeasurementChartEntry> _entries;
+  final String _unit;
+
+  const MeasurementBarChartWidgetFl(this._entries, this._unit);
+
+  @override
+  State<MeasurementBarChartWidgetFl> createState() => _MeasurementBarChartWidgetFlState();
+}
+
+class _MeasurementBarChartWidgetFlState extends State<MeasurementBarChartWidgetFl> {
+  @override
+  Widget build(BuildContext context) {
+    return AspectRatio(
+      aspectRatio: 1.70,
+      child: Padding(
+        padding: const EdgeInsets.all(4),
+        child: BarChart(mainData()),
+      ),
+    );
+  }
+
+  BarTouchData tooltipData() {
+    return BarTouchData(
+      touchTooltipData: BarTouchTooltipData(
+        getTooltipColor: (group) => Theme.of(context).colorScheme.primaryContainer,
+        getTooltipItem: (group, groupIndex, rod, rodIndex) {
+          final numberFormat = NumberFormat.decimalPattern(
+            Localizations.localeOf(context).toString(),
+          );
+          final DateTime date = DateTime.fromMillisecondsSinceEpoch(group.x);
+          final dateStr = DateFormat.Md(Localizations.localeOf(context).languageCode).format(date);
+
+          return BarTooltipItem(
+            '$dateStr: ${numberFormat.format(rod.toY)} ${widget._unit}',
+            TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer),
+          );
+        },
+      ),
+    );
+  }
+
+  BarChartData mainData() {
+    final String locale = Localizations.localeOf(context).toString();
+    final NumberFormat numberFormat = NumberFormat.decimalPattern(locale);
+    return BarChartData(
+      barTouchData: tooltipData(),
+      gridData: FlGridData(
+        show: true,
+        drawVerticalLine: false,
+        getDrawingHorizontalLine: (value) {
+          return FlLine(color: Theme.of(context).colorScheme.primaryContainer, strokeWidth: 1);
+        },
+      ),
+      titlesData: FlTitlesData(
+        show: true,
+        rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+        topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+        bottomTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: true,
+            getTitlesWidget: (value, meta) {
+              // avoid label overlap with the axis edges
+              if (value == meta.min || value == meta.max) {
+                return const Text('');
+              }
+              final DateTime date = DateTime.fromMillisecondsSinceEpoch(value.toInt());
+              return Text(DateFormat.Md(Localizations.localeOf(context).languageCode).format(date));
+            },
+            interval: widget._entries.isNotEmpty
+                ? chartGetInterval(widget._entries.last.date, widget._entries.first.date)
+                : CHART_MILLISECOND_FACTOR,
+          ),
+        ),
+        leftTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: true,
+            reservedSize: 65,
+            getTitlesWidget: (value, meta) {
+              if (value == meta.min || value == meta.max) {
+                return const Text('');
+              }
+              return Text('${numberFormat.format(value)} ${widget._unit}');
+            },
+          ),
+        ),
+      ),
+      borderData: FlBorderData(
+        show: true,
+        border: Border.all(color: Theme.of(context).colorScheme.primaryContainer),
+      ),
+      barGroups: widget._entries
+          .map(
+            (e) => BarChartGroupData(
+              x: e.date.millisecondsSinceEpoch,
+              barRods: [
+                BarChartRodData(
+                  toY: e.value.toDouble(),
+                  color: Theme.of(context).colorScheme.primary,
+                  width: 12,
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(2)),
+                ),
+              ],
+            ),
+          )
+          .toList(),
+    );
+  }
+}
+
+/// Produces a smoothed trendline via an Exponential Moving Average (EMA),
+/// seeded with the first data point. A larger [period] tracks the raw values
+/// more loosely (smoother, more lag).
+List<MeasurementChartEntry> smoothedTrendline(
+  List<MeasurementChartEntry> vals, {
+  int period = 10,
+}) {
+  if (vals.isEmpty) {
+    return [];
+  }
+
+  final sorted = [...vals]..sort((a, b) => a.date.compareTo(b.date));
+  final List<MeasurementChartEntry> out = [];
+
+  // Seed the initialization layer with the first data point value
+  double currentEma = sorted[0].value.toDouble();
+  final double smoothing = 2 / (period + 1);
+
+  for (int i = 0; i < sorted.length; i++) {
+    final point = sorted[i];
+
+    if (i > 0) {
+      // EMA equation: point.weight * smoothing + ema * (1 - smoothing)
+      currentEma = (point.value * smoothing) + (currentEma * (1 - smoothing));
+    }
+
+    out.add(MeasurementChartEntry(currentEma, point.date));
+  }
+
   return out;
 }
 

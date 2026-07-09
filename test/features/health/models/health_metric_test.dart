@@ -19,15 +19,16 @@
 import 'package:collection/collection.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wger/features/health/models/health_metric.dart';
+import 'package:wger/features/measurements/models/measurement_category.dart';
 
-HealthMetric _metric(String type) => healthMetrics.firstWhere((m) => m.metricType == type);
+HealthMetric _metric(MetricType type) => healthMetrics.firstWhere((m) => m.metricType == type);
 
 void main() {
   group('Enabled metric set', () {
     test('only body fat and height are imported in V1', () {
       expect(
         enabledHealthMetrics.map((m) => m.metricType),
-        containsAll(['body_fat', 'height']),
+        containsAll([MetricType.bodyFat, MetricType.height]),
       );
       expect(enabledHealthMetrics.length, 2);
     });
@@ -45,7 +46,7 @@ void main() {
   });
 
   group('Body fat conversion', () {
-    final bodyFat = _metric('body_fat');
+    final bodyFat = _metric(MetricType.bodyFat);
 
     test('iOS fraction is scaled to a percentage', () {
       expect(bodyFat.toCategoryValue(0.15), closeTo(15, 0.001));
@@ -57,7 +58,7 @@ void main() {
   });
 
   group('Height conversion', () {
-    final height = _metric('height');
+    final height = _metric(MetricType.height);
 
     test('meters are converted to centimeters', () {
       expect(height.toCategoryValue(1.75), closeTo(175, 0.001));
@@ -74,6 +75,6 @@ void main() {
       healthMetrics.where((m) => m.enabled).toList(),
     );
     // sanity: the disabled ones really are excluded
-    expect(enabledHealthMetrics.firstWhereOrNull((m) => m.metricType == 'steps'), isNull);
+    expect(enabledHealthMetrics.firstWhereOrNull((m) => m.metricType == MetricType.steps), isNull);
   });
 }

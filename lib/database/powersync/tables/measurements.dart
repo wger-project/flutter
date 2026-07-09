@@ -18,6 +18,7 @@
 
 import 'package:drift/drift.dart';
 import 'package:powersync/powersync.dart' as ps;
+import 'package:wger/database/converters/measurement_metric_type_converter.dart';
 import 'package:wger/database/converters/utc_datetime_converter.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/measurement_entry.dart';
@@ -31,18 +32,13 @@ class MeasurementCategoryTable extends Table {
 
   TextColumn get name => text()();
   TextColumn get unit => text()();
-
-  /// `null` for plain user-created ("custom") categories.
-  TextColumn get metricType => text().named('metric_type').nullable()();
+  TextColumn get metricType =>
+      text().named('metric_type').map(const MeasurementMetricTypeConverter())();
 }
 
 const PowersyncMeasurementCategoryTable = ps.Table(
   'measurements_category',
-  [
-    ps.Column.text('name'),
-    ps.Column.text('unit'),
-    ps.Column.text('metric_type'),
-  ],
+  [ps.Column.text('name'), ps.Column.text('unit'), ps.Column.text('metric_type')],
 );
 
 @UseRowClass(MeasurementEntry)

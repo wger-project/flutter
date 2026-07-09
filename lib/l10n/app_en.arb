@@ -542,6 +542,50 @@
   },
   "measurementCategoriesHelpText": "Measurement category, such as 'biceps' or 'body fat'",
   "@measurementCategoriesHelpText": {},
+  "metricType": "Metric Type",
+  "@metricType": {
+    "description": "Metric type for a measurement category"
+  },
+  "metricCustom": "Custom",
+  "@metricCustom": {
+    "description": "Label for custom metric type"
+  },
+  "metricBodyWeight": "Body weight",
+  "@metricBodyWeight": {
+    "description": "Label for body weight measurement"
+  },
+  "metricBodyFat": "Body fat",
+  "@metricBodyFat": {
+    "description": "Label for body fat percentage measurement"
+  },
+  "metricHeight": "Height",
+  "@metricHeight": {
+    "description": "Label for height measurement"
+  },
+  "metricBloodPressure": "Blood pressure",
+  "@metricBloodPressure": {
+    "description": "Label for blood pressure measurement"
+  },
+  "metricHeartRate": "Heart rate",
+  "@metricHeartRate": {
+    "description": "Label for heart rate measurement"
+  },
+  "metricSteps": "Steps",
+  "@metricSteps": {
+    "description": "Label for step count measurement"
+  },
+  "metricDistance": "Distance",
+  "@metricDistance": {
+    "description": "Label for distance measurement"
+  },
+  "metricEnergy": "Energy",
+  "@metricEnergy": {
+    "description": "Label for energy/calories burned measurement"
+  },
+  "metricSleep": "Sleep",
+  "@metricSleep": {
+    "description": "Label for sleep duration measurement"
+  },
   "measurementEntriesHelpText": "The unit used to measure the category such as 'cm' or '%'",
   "@measurementEntriesHelpText": {},
   "date": "Date",
@@ -1273,6 +1317,10 @@
   "indicatorAvg": "avg",
   "@indicatorAvg": {
     "description": "added for localization of Class Indicator's field text"
+  },
+  "indicatorTrend": "trend",
+  "@indicatorTrend": {
+    "description": "Legend label for the smoothed trendline on measurement charts"
   },
   "endWorkout": "End workout",
   "@endWorkout": {
