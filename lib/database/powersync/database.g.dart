@@ -6388,6 +6388,12 @@ class $WorkoutSessionTableTable extends WorkoutSessionTable
         DriftSqlType.int,
         data['${effectivePrefix}routine_id'],
       ),
+      date: $WorkoutSessionTableTable.$converterdate.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}date'],
+        )!,
+      ),
       impression: $WorkoutSessionTableTable.$converterimpression.fromSql(
         attachedDatabase.typeMapping.read(
           DriftSqlType.string,
@@ -6409,12 +6415,6 @@ class $WorkoutSessionTableTable extends WorkoutSessionTable
           DriftSqlType.string,
           data['${effectivePrefix}time_end'],
         ),
-      ),
-      date: $WorkoutSessionTableTable.$converterdate.fromSql(
-        attachedDatabase.typeMapping.read(
-          DriftSqlType.string,
-          data['${effectivePrefix}date'],
-        )!,
       ),
     );
   }

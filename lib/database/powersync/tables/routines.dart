@@ -22,11 +22,11 @@ import 'package:wger/database/converters/date_only_text_converter.dart';
 import 'package:wger/database/converters/time_of_day_converter.dart';
 import 'package:wger/database/converters/utc_datetime_converter.dart';
 import 'package:wger/database/converters/workout_impression_converter.dart';
-import 'package:wger/models/workouts/log.dart';
-import 'package:wger/models/workouts/repetition_unit.dart';
-import 'package:wger/models/workouts/routine.dart';
-import 'package:wger/models/workouts/session.dart';
-import 'package:wger/models/workouts/weight_unit.dart';
+import 'package:wger/features/routines/models/log.dart';
+import 'package:wger/features/routines/models/repetition_unit.dart';
+import 'package:wger/features/routines/models/routine.dart';
+import 'package:wger/features/routines/models/session.dart';
+import 'package:wger/features/routines/models/weight_unit.dart';
 
 @UseRowClass(Routine)
 class RoutineTable extends Table {

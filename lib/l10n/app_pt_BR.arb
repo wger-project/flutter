@@ -1297,5 +1297,8 @@
     "otherLogs": "Outros registros",
     "@otherLogs": {
         "description": "Other unassigned logs. Label for the pseudo-meal section that groups all nutritional diary entries not assigned to a specific meal"
-    }
+    },
+    "endBeforeStart": "O valor final não pode ser anterior ao inicial",
+    "minLengthRoutine": "A rotina precisa durar pelo menos {number} semanas",
+    "maxLengthRoutine": "A rotina pode durar no máximo {number} semanas"
 }

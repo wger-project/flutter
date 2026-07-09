@@ -1198,5 +1198,8 @@
     "viewDocumentation": "Documentatie bekijken",
     "@viewDocumentation": {
         "description": "Button label to open the documentation about server configuration"
-    }
+    },
+    "endBeforeStart": "De eindwaarde mag niet vóór de beginwaarde liggen",
+    "minLengthRoutine": "De routine moet minimaal {number} weken duren",
+    "maxLengthRoutine": "De routine kan maximaal {number} weken duren"
 }

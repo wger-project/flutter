@@ -18,7 +18,7 @@
 
 import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
-import 'package:wger/helpers/json.dart';
+import 'package:wger/core/json.dart';
 
 class TimeOfDayConverter extends TypeConverter<TimeOfDay, String> {
   const TimeOfDayConverter();

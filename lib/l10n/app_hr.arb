@@ -1389,5 +1389,8 @@
     "@refreshTokenHelperText": {
         "description": "Helper text on the refresh-token paste field"
     },
-    "powerSyncUnreachableContent": "Tvoj je wger server dostupan, ali (zasebna) usluga koja obrađuje izvanmrežnu sinkronizaciju ne odgovara. Ako pokrećeš vlastiti hosting za wger, provjeri konfiguraciju i provjeri je li PowerSync usluga ispravno radi."
+    "powerSyncUnreachableContent": "Tvoj je wger server dostupan, ali (zasebna) usluga koja obrađuje izvanmrežnu sinkronizaciju ne odgovara. Ako pokrećeš vlastiti hosting za wger, provjeri konfiguraciju i provjeri je li PowerSync usluga ispravno radi.",
+    "endBeforeStart": "Vrijednost kraja ne može biti prije vrijednosti početka",
+    "minLengthRoutine": "Rutina mora trajati najmanje {number} tjedna",
+    "maxLengthRoutine": "Rutina mora trajati najviše {number} tjedna"
 }

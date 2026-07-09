@@ -32,13 +32,13 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  app_links: ^7.1.2
+  app_links: ^7.2.0
   carousel_slider: ^5.1.2
   clock: ^1.1.2
   collection: ^1.19.1
   cupertino_icons: ^1.0.9
   drift: ^2.34.0
-  equatable: ^2.0.8
+  equatable: ^2.1.0
   extended_image: ^10.0.1
   fl_chart: ^1.2.0
   flex_color_scheme: ^8.4.0
@@ -57,7 +57,7 @@ dependencies:
   json_annotation: ^4.12.0
   markdown: ^7.3.1
   multi_select_flutter: ^4.1.3
-  package_info_plus: ^10.1.0
+  package_info_plus: ^10.2.0
   path: ^1.9.1
   path_provider: ^2.1.6
   shared_preferences: ^2.5.5
@@ -71,8 +71,8 @@ dependencies:
   drift_sqlite_async: ^0.3.1
   stream_transform: ^2.1.1
   state_notifier: ^1.0.0
-  connectivity_plus: ^7.1.1
-  powersync: ^2.3.0
+  connectivity_plus: ^7.2.0
+  powersync: ^2.3.1
 
 dev_dependencies:
   flutter_test:

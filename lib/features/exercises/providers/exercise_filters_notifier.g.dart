@@ -1,0 +1,75 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of 'exercise_filters_notifier.dart';
+
+// **************************************************************************
+// RiverpodGenerator
+// **************************************************************************
+
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+/// Holds the *UI-side* state for the exercises catalogue screen:
+/// search term, selected categories/equipment, and the resulting
+/// [ExerciseFilterState.filteredExercises] list.
+
+@ProviderFor(ExerciseListFiltersNotifier)
+final exerciseListFiltersProvider = ExerciseListFiltersNotifierProvider._();
+
+/// Holds the *UI-side* state for the exercises catalogue screen:
+/// search term, selected categories/equipment, and the resulting
+/// [ExerciseFilterState.filteredExercises] list.
+final class ExerciseListFiltersNotifierProvider
+    extends $NotifierProvider<ExerciseListFiltersNotifier, ExerciseFilterState> {
+  /// Holds the *UI-side* state for the exercises catalogue screen:
+  /// search term, selected categories/equipment, and the resulting
+  /// [ExerciseFilterState.filteredExercises] list.
+  ExerciseListFiltersNotifierProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'exerciseListFiltersProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$exerciseListFiltersNotifierHash();
+
+  @$internal
+  @override
+  ExerciseListFiltersNotifier create() => ExerciseListFiltersNotifier();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(ExerciseFilterState value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<ExerciseFilterState>(value),
+    );
+  }
+}
+
+String _$exerciseListFiltersNotifierHash() => r'960fd73689d5e34150a7e923aa33bfdb82dd6be5';
+
+/// Holds the *UI-side* state for the exercises catalogue screen:
+/// search term, selected categories/equipment, and the resulting
+/// [ExerciseFilterState.filteredExercises] list.
+
+abstract class _$ExerciseListFiltersNotifier extends $Notifier<ExerciseFilterState> {
+  ExerciseFilterState build();
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref = this.ref as $Ref<ExerciseFilterState, ExerciseFilterState>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<ExerciseFilterState, ExerciseFilterState>,
+              ExerciseFilterState,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, build);
+  }
+}

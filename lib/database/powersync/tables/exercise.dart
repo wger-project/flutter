@@ -19,13 +19,13 @@
 import 'package:drift/drift.dart';
 import 'package:powersync/powersync.dart' as ps;
 import 'package:wger/database/converters/exercise_image_style_converter.dart';
-import 'package:wger/models/exercises/alias.dart';
-import 'package:wger/models/exercises/category.dart';
-import 'package:wger/models/exercises/comment.dart';
-import 'package:wger/models/exercises/equipment.dart';
-import 'package:wger/models/exercises/image.dart';
-import 'package:wger/models/exercises/muscle.dart';
-import 'package:wger/models/exercises/video.dart';
+import 'package:wger/features/exercises/models/alias.dart';
+import 'package:wger/features/exercises/models/category.dart';
+import 'package:wger/features/exercises/models/comment.dart';
+import 'package:wger/features/exercises/models/equipment.dart';
+import 'package:wger/features/exercises/models/image.dart';
+import 'package:wger/features/exercises/models/muscle.dart';
+import 'package:wger/features/exercises/models/video.dart';
 
 import 'language.dart';
 

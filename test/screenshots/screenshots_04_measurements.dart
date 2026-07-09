@@ -20,10 +20,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:wger/features/measurements/models/measurement_category.dart';
+import 'package:wger/features/measurements/providers/measurement_repository.dart';
+import 'package:wger/features/measurements/screens/measurement_categories_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/measurements/measurement_category.dart';
-import 'package:wger/providers/measurement_repository.dart';
-import 'package:wger/screens/measurement_categories_screen.dart';
 import 'package:wger/theme/theme.dart';
 
 import '../../test_data/measurements.dart';

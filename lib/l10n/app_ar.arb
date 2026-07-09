@@ -1188,5 +1188,8 @@
     "webHandoffLinkSubtitle": "تسجيل الدخول عبر وسائل التواصل الاجتماعي، مفتاح المرور، تسجيل الدخول المُوحّد",
     "slotEntryTypeMyo": "ميو",
     "slotEntryTypeWarmup": "التحمية",
-    "preview": "عرض مبدئي"
+    "preview": "عرض مبدئي",
+    "endBeforeStart": "قيمة النهاية لا يمكن ان تكون قبل البداية",
+    "minLengthRoutine": "يجب أن يستمر الروتين لمدة لا تقل عن {number} أسبوعًا",
+    "maxLengthRoutine": "يمكن أن يستمر الروتين لمدة أقصاها {number} أسبوعًا"
 }

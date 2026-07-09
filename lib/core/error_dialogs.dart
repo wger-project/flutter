@@ -23,10 +23,10 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:logging/logging.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:wger/core/errors.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/core/keys.dart';
-import 'package:wger/helpers/errors.dart';
-import 'package:wger/helpers/logs.dart';
+import 'package:wger/core/logs.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 /// Whether an error dialog is currently on screen.

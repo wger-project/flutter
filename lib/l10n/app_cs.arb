@@ -910,5 +910,6 @@
     "yourCurrentNutritionPlanHasNoMealsDefinedYet": "Váš aktuální stravovací plán neobsahuje žádná jídla",
     "@yourCurrentNutritionPlanHasNoMealsDefinedYet": {
         "description": "Message shown when a nutrition plan doesn't have any meals"
-    }
+    },
+    "endBeforeStart": "Konečná hodnota nemůže být předcházející počáteční hodnotě"
 }
