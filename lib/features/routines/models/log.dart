@@ -45,7 +45,7 @@ class Log {
   late int exerciseId;
   late Exercise exerciseObj;
 
-  late int routineId;
+  int? routineId;
   String? sessionId;
   int? iteration;
   int? slotEntryId;
@@ -69,7 +69,7 @@ class Log {
     required this.exerciseId,
     this.iteration,
     this.slotEntryId,
-    required this.routineId,
+    this.routineId,
     this.sessionId,
     this.repetitions,
     this.repetitionsTarget,
@@ -166,7 +166,7 @@ class Log {
     return WorkoutLogTableCompanion(
       id: id != null ? drift.Value(id!) : const drift.Value.absent(),
       exerciseId: drift.Value(exerciseId),
-      routineId: drift.Value(routineId),
+      routineId: routineId != null ? drift.Value(routineId) : const drift.Value.absent(),
       sessionId: sessionId != null ? drift.Value(sessionId) : const drift.Value.absent(),
       iteration: iteration != null ? drift.Value(iteration) : const drift.Value.absent(),
       slotEntryId: slotEntryId != null ? drift.Value(slotEntryId) : const drift.Value.absent(),
