@@ -890,5 +890,6 @@
     "@volume": {
         "description": "The volume of a workout or set, i.e. weight x reps"
     },
-    "workoutCompleted": "Trening skończony"
+    "workoutCompleted": "Trening skończony",
+    "endBeforeStart": "Wartość końcowa nie może być przed rozpoczęciem"
 }

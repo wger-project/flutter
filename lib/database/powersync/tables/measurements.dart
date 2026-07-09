@@ -20,8 +20,8 @@ import 'package:drift/drift.dart';
 import 'package:powersync/powersync.dart' as ps;
 import 'package:wger/database/converters/measurement_metric_type_converter.dart';
 import 'package:wger/database/converters/utc_datetime_converter.dart';
-import 'package:wger/models/measurements/measurement_category.dart';
-import 'package:wger/models/measurements/measurement_entry.dart';
+import 'package:wger/features/measurements/models/measurement_category.dart';
+import 'package:wger/features/measurements/models/measurement_entry.dart';
 
 @UseRowClass(MeasurementCategory)
 class MeasurementCategoryTable extends Table {
@@ -32,7 +32,8 @@ class MeasurementCategoryTable extends Table {
 
   TextColumn get name => text()();
   TextColumn get unit => text()();
-  TextColumn get metricType => text().map(const MeasurementMetricTypeConverter())();
+  TextColumn get metricType =>
+      text().named('metric_type').nullable().map(const MeasurementMetricTypeConverter())();
 }
 
 const PowersyncMeasurementCategoryTable = ps.Table(
@@ -52,6 +53,14 @@ class MeasurementEntryTable extends Table {
   DateTimeColumn get date => dateTime().map(const UtcDateTimeConverter())();
   RealColumn get value => real()();
   TextColumn get notes => text()();
+
+  /// Where the reading came from: `manual` or a health platform
+  /// (`apple_health`, `health_connect`).
+  TextColumn get source => text().withDefault(const Constant('manual'))();
+
+  /// Platform record UUID, used to deduplicate re-imports. `null` for manual
+  /// entries.
+  TextColumn get externalId => text().named('external_id').nullable()();
 }
 
 const PowersyncMeasurementEntryTable = ps.Table(
@@ -61,8 +70,11 @@ const PowersyncMeasurementEntryTable = ps.Table(
     ps.Column.text('date'),
     ps.Column.real('value'),
     ps.Column.text('notes'),
+    ps.Column.text('source'),
+    ps.Column.text('external_id'),
   ],
   indexes: [
     ps.Index('category_idx', [ps.IndexedColumn('category_id')]),
+    ps.Index('external_id_idx', [ps.IndexedColumn('external_id')]),
   ],
 );

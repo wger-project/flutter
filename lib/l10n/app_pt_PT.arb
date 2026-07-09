@@ -933,5 +933,8 @@
     "dayTypeEdt": "Treino de densidade crescente",
     "dayTypeRft": "Rondas por tempo",
     "dayTypeAfap": "O mais rápido possível",
-    "slotEntryTypeNormal": "Normal"
+    "slotEntryTypeNormal": "Normal",
+    "endBeforeStart": "O valor final não pode ser anterior ao inicial",
+    "minLengthRoutine": "A rotina tem de ter pelo menos {number} semanas",
+    "maxLengthRoutine": "A rotina pode ter no máximo {number} semanas"
 }

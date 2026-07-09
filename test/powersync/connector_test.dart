@@ -73,6 +73,16 @@ void main() {
       expect(out.containsKey('routine_id'), isFalse);
     });
 
+    test('keeps `external_id`, which is a value column and not a foreign key', () {
+      final out = connector.genericTransform(
+        'measurements_measurement',
+        {'external_id': 'abc-123', 'category_id': 5},
+        '1',
+      );
+      expect(out['external_id'], 'abc-123');
+      expect(out['category'], 5);
+    });
+
     test('handles null opData (delete events)', () {
       final out = connector.genericTransform('manager_routine', null, '99');
       expect(out, {'id': '99'});

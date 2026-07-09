@@ -17,7 +17,7 @@
  */
 
 import 'package:drift/drift.dart';
-import 'package:wger/models/exercises/image.dart';
+import 'package:wger/features/exercises/models/image.dart';
 
 /// Maps an [ExerciseImageStyle] to and from the Django wire format
 /// (`'1'`–`'5'`).

@@ -6,9 +6,9 @@
 import 'dart:async' as _i3;
 
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:wger/models/measurements/measurement_category.dart' as _i4;
-import 'package:wger/models/measurements/measurement_entry.dart' as _i5;
-import 'package:wger/providers/measurement_repository.dart' as _i2;
+import 'package:wger/features/measurements/models/measurement_category.dart' as _i4;
+import 'package:wger/features/measurements/models/measurement_entry.dart' as _i5;
+import 'package:wger/features/measurements/providers/measurement_repository.dart' as _i2;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -50,6 +50,16 @@ class MockMeasurementRepository extends _i1.Mock implements _i2.MeasurementRepos
             returnValue: _i3.Stream<_i4.MeasurementCategory?>.empty(),
           )
           as _i3.Stream<_i4.MeasurementCategory?>);
+
+  @override
+  _i3.Future<List<_i4.MeasurementCategory>> getAllOnce() =>
+      (super.noSuchMethod(
+            Invocation.method(#getAllOnce, []),
+            returnValue: _i3.Future<List<_i4.MeasurementCategory>>.value(
+              <_i4.MeasurementCategory>[],
+            ),
+          )
+          as _i3.Future<List<_i4.MeasurementCategory>>);
 
   @override
   _i3.Future<void> deleteLocalDrift(String? id) =>

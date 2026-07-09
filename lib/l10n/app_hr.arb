@@ -1192,5 +1192,8 @@
     "appLanguageSystem": "Standardne vrijednosti sustava",
     "@appLanguageSystem": {
         "description": "Dropdown entry that follows the device system language"
-    }
+    },
+    "endBeforeStart": "Vrijednost kraja ne može biti prije vrijednosti početka",
+    "minLengthRoutine": "Rutina mora trajati najmanje {number} tjedna",
+    "maxLengthRoutine": "Rutina mora trajati najviše {number} tjedna"
 }

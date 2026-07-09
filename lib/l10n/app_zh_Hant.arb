@@ -1129,5 +1129,8 @@
     "@toAddMealsToThePlanGoToNutritionalPlanDetails": {
         "description": "Message shown to guide users to the nutritional plan details page to add meals"
     },
-    "applicationLogs": "應用程式紀錄"
+    "applicationLogs": "應用程式紀錄",
+    "endBeforeStart": "結束值不得小於起始值",
+    "minLengthRoutine": "訓練計畫至少需持續 {number} 週",
+    "maxLengthRoutine": "訓練計畫最多只能持續 {number} 週"
 }
