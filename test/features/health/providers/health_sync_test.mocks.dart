@@ -147,6 +147,17 @@ class MockMeasurementRepository extends _i1.Mock implements _i7.MeasurementRepos
           as _i4.Future<void>);
 
   @override
+  _i4.Future<void> addLocalDriftGroupEntries(
+    List<_i9.MeasurementEntry>? entries,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#addLocalDriftGroupEntries, [entries]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
   _i4.Future<void> deleteLocalDriftCategory(String? id) =>
       (super.noSuchMethod(
             Invocation.method(#deleteLocalDriftCategory, [id]),

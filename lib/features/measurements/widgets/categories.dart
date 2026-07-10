@@ -31,11 +31,17 @@ class CategoriesList extends ConsumerWidget {
     return AsyncValueWidget<List<MeasurementCategory>>(
       value: ref.watch(measurementProvider),
       loggerName: 'CategoriesList',
-      data: (categoriesList) => ListView.builder(
-        padding: const EdgeInsets.all(10.0),
-        itemCount: categoriesList.length,
-        itemBuilder: (context, index) => CategoriesCard(categoriesList[index]),
-      ),
+      data: (categoriesList) {
+        // Children of multi-value groups are rendered inside their parent's
+        // card, not as own list items
+        final topLevel = categoriesList.where((c) => c.parentId == null).toList();
+
+        return ListView.builder(
+          padding: const EdgeInsets.all(10.0),
+          itemCount: topLevel.length,
+          itemBuilder: (context, index) => CategoriesCard(topLevel[index]),
+        );
+      },
     );
   }
 }

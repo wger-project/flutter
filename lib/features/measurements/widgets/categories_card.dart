@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:wger/core/form_screen.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
@@ -34,6 +35,10 @@ class CategoriesCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (currentCategory.isGroup) {
+      return _buildGroupCard(context);
+    }
+
     // sensibleRange() operates on raw (pre-aggregation) entries
     final (entriesAll, entries7dAvg) = sensibleRange(
       currentCategory.entries.map((e) => MeasurementChartEntry(e.value, e.date)).toList(),
@@ -112,6 +117,64 @@ class CategoriesCard extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  /// Card for a multi-value group (e.g. blood pressure): one row per
+  /// component with its latest reading; new readings are entered for all
+  /// components at once.
+  Widget _buildGroupCard(BuildContext context) {
+    return Card(
+      elevation: elevation,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            child: Text(
+              currentCategory.name,
+              style: Theme.of(context).textTheme.titleLarge,
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          ...currentCategory.children.map((child) {
+            // Entries arrive sorted by date descending, so first is the latest
+            final latest = child.entries.firstOrNull;
+            return ListTile(
+              dense: true,
+              title: Text(child.name),
+              trailing: Text(
+                latest != null ? '${latest.value} ${child.unit}' : '—',
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+              onTap: () => Navigator.pushNamed(
+                context,
+                MeasurementEntriesScreen.routeName,
+                arguments: child.id,
+              ),
+            );
+          }),
+          const Divider(),
+          Align(
+            alignment: Alignment.centerRight,
+            child: IconButton(
+              onPressed: () async {
+                await Navigator.pushNamed(
+                  context,
+                  FormScreen.routeName,
+                  arguments: FormScreenArguments(
+                    AppLocalizations.of(context).newEntry,
+                    GroupMeasurementEntryForm(currentCategory),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.add),
+            ),
+          ),
+        ],
       ),
     );
   }

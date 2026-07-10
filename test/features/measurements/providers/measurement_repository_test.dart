@@ -222,4 +222,69 @@ void main() {
       expect(emitted.map((c) => c.id), ['c2']);
     });
   });
+
+  group('multi-value groups', () {
+    Future<void> seedBloodPressureGroup() async {
+      await repo.addLocalDriftCategory(
+        MeasurementCategory(id: 'bp', name: 'Blood pressure', unit: 'mmHg'),
+      );
+      await repo.addLocalDriftCategory(
+        MeasurementCategory(id: 'sys', name: 'Systolic', unit: 'mmHg', parentId: 'bp', order: 0),
+      );
+      await repo.addLocalDriftCategory(
+        MeasurementCategory(id: 'dia', name: 'Diastolic', unit: 'mmHg', parentId: 'bp', order: 1),
+      );
+    }
+
+    test('watchAll attaches children to their parent in group order', () async {
+      await seedBloodPressureGroup();
+
+      final emitted = await repo.watchAll().first;
+
+      final parent = emitted.firstWhere((c) => c.id == 'bp');
+      expect(parent.isGroup, isTrue);
+      expect(parent.children.map((c) => c.id), ['sys', 'dia']);
+    });
+
+    test('watchAll sorts categories by order before name', () async {
+      await repo.addLocalDriftCategory(
+        MeasurementCategory(id: 'c1', name: 'Aaa', unit: 'cm', order: 5),
+      );
+      await repo.addLocalDriftCategory(
+        MeasurementCategory(id: 'c2', name: 'Zzz', unit: 'cm', order: 1),
+      );
+
+      final emitted = await repo.watchAll().first;
+
+      expect(emitted.map((c) => c.id), ['c2', 'c1']);
+    });
+
+    test('addLocalDriftGroupEntries inserts one entry per component', () async {
+      await seedBloodPressureGroup();
+      final date = DateTime.utc(2026, 7, 10, 14, 32);
+
+      await repo.addLocalDriftGroupEntries([
+        MeasurementEntry(id: 'e1', categoryId: 'sys', date: date, value: 120, notes: ''),
+        MeasurementEntry(id: 'e2', categoryId: 'dia', date: date, value: 80, notes: ''),
+      ]);
+
+      final emitted = await repo.watchAll().first;
+      final parent = emitted.firstWhere((c) => c.id == 'bp');
+      expect(parent.children.first.entries.single.value, 120);
+      expect(parent.children.last.entries.single.value, 80);
+      expect(
+        parent.children.first.entries.single.date,
+        parent.children.last.entries.single.date,
+      );
+    });
+
+    test('deleteLocalDriftCategory removes children along with the parent', () async {
+      await seedBloodPressureGroup();
+
+      await repo.deleteLocalDriftCategory('bp');
+
+      final emitted = await repo.watchAll().first;
+      expect(emitted, isEmpty);
+    });
+  });
 }

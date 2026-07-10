@@ -103,13 +103,35 @@ class MeasurementCategory with _$MeasurementCategory {
   @override
   final MetricType metricType;
 
+  /// Multi-value groups (e.g. blood pressure): id of the parent category, one
+  /// child per component. Max. one level of nesting; only leaf categories
+  /// (no children) carry entries.
+  @override
+  final String? parentId;
+
+  /// Position in the category list; for children, the position within the group
+  @override
+  final int order;
+
+  /// Child categories (components) of this group. Populated by the repository
+  /// for display, never persisted directly.
+  @override
+  final List<MeasurementCategory> children;
+
   MeasurementCategory({
     this.id,
     this.name = '',
     this.unit = '',
     this.entries = const [],
     this.metricType = MetricType.custom,
+    this.parentId,
+    this.order = 0,
+    this.children = const [],
   });
+
+  /// `true` for group parents (blood pressure etc.), which hold no entries of
+  /// their own
+  bool get isGroup => children.isNotEmpty;
 
   MeasurementEntry findEntryById(String id) {
     return entries.firstWhere(
@@ -125,6 +147,8 @@ class MeasurementCategory with _$MeasurementCategory {
       name: Value(name),
       unit: Value(unit),
       metricType: Value(metricType),
+      parentId: Value(parentId),
+      order: Value(order),
     );
   }
 }

@@ -111,6 +111,53 @@ class _MeasurementCategoryFormState extends ConsumerState<MeasurementCategoryFor
               }
             },
           ),
+
+          // Parent group (multi-value measurements, e.g. blood pressure).
+          // Mirrors the server rules: only top-level, entry-free categories
+          // can be parents, and a category with children cannot be nested.
+          Builder(
+            builder: (context) {
+              final categories = ref.watch(measurementProvider).asData?.value ?? [];
+
+              final hasChildren =
+                  _draft.id != null && categories.any((c) => c.parentId == _draft.id);
+              if (hasChildren) {
+                return const SizedBox.shrink();
+              }
+
+              final candidates = categories
+                  .where((c) => c.parentId == null && c.id != _draft.id && c.entries.isEmpty)
+                  .toList();
+              if (candidates.isEmpty) {
+                return const SizedBox.shrink();
+              }
+
+              final initialParent = candidates.any((c) => c.id == _draft.parentId)
+                  ? _draft.parentId
+                  : null;
+
+              return DropdownButtonFormField<String?>(
+                initialValue: initialParent,
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context).partOfGroup,
+                ),
+                items: [
+                  DropdownMenuItem<String?>(
+                    value: null,
+                    child: Text(AppLocalizations.of(context).noGroup),
+                  ),
+                  ...candidates.map(
+                    (c) => DropdownMenuItem<String?>(value: c.id, child: Text(c.name)),
+                  ),
+                ],
+                onChanged: (value) {
+                  setState(() {
+                    _draft = _draft.copyWith(parentId: value);
+                  });
+                },
+              );
+            },
+          ),
           FormSubmitButton(
             label: AppLocalizations.of(context).save,
             onPressed: () async {
@@ -285,6 +332,100 @@ class _MeasurementEntryFormState extends ConsumerState<MeasurementEntryForm> {
           ),
         );
       },
+    );
+  }
+}
+
+/// Entry form for a multi-value group (e.g. blood pressure): one value field
+/// per component, saved as one entry per component with a shared timestamp.
+class GroupMeasurementEntryForm extends ConsumerStatefulWidget {
+  final MeasurementCategory _group;
+
+  const GroupMeasurementEntryForm(this._group);
+
+  @override
+  ConsumerState<GroupMeasurementEntryForm> createState() => _GroupMeasurementEntryFormState();
+}
+
+class _GroupMeasurementEntryFormState extends ConsumerState<GroupMeasurementEntryForm> {
+  final _form = GlobalKey<FormState>();
+
+  DateTime _date = DateTime.now();
+  late final Map<String, num?> _values = {
+    for (final child in widget._group.children) child.id!: null,
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: _form,
+      child: Column(
+        children: [
+          // Date and time are shared by all components of the reading
+          DateInputWidget(
+            value: _date,
+            labelText: AppLocalizations.of(context).date,
+            firstDate: DateTime(DateTime.now().year - 10),
+            lastDate: DateTime.now(),
+            onChanged: (date) {
+              _date = _date.copyWith(
+                year: date.year,
+                month: date.month,
+                day: date.day,
+              );
+            },
+          ),
+          TimeInputWidget(
+            value: TimeOfDay.fromDateTime(_date),
+            labelText: AppLocalizations.of(context).time,
+            onChanged: (time) {
+              _date = _date.copyWith(
+                hour: time.hour,
+                minute: time.minute,
+                second: 0,
+              );
+            },
+          ),
+
+          // One value field per component
+          for (final child in widget._group.children)
+            DecimalInputWidget(
+              value: _values[child.id],
+              labelText: child.name,
+              suffixText: child.unit.isNotEmpty ? child.unit : widget._group.unit,
+              isRequired: true,
+              min: MeasurementEntry.minValue,
+              max: MeasurementEntry.maxValue,
+              onChanged: (value) => _values[child.id!] = value,
+            ),
+
+          FormSubmitButton(
+            label: AppLocalizations.of(context).save,
+            onPressed: () async {
+              if (!_form.currentState!.validate()) {
+                return;
+              }
+              _form.currentState!.save();
+
+              final entries = widget._group.children
+                  .map(
+                    (child) => MeasurementEntry(
+                      categoryId: child.id!,
+                      date: _date,
+                      value: _values[child.id]!,
+                      notes: '',
+                    ),
+                  )
+                  .toList();
+              await ref.read(measurementProvider.notifier).addGroupEntries(entries);
+
+              if (context.mounted) {
+                Navigator.of(context).pop();
+              }
+            },
+          ),
+        ],
+      ),
     );
   }
 }
