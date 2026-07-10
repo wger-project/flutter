@@ -5192,7 +5192,7 @@ class $MeasurementEntryTableTable extends MeasurementEntryTable
     false,
     type: DriftSqlType.string,
     requiredDuringInsert: false,
-    defaultValue: const Constant('manual'),
+    defaultValue: const Constant('user'),
   );
   static const VerificationMeta _externalIdMeta = const VerificationMeta(
     'externalId',

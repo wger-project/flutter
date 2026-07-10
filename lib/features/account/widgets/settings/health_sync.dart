@@ -47,7 +47,8 @@ class _HealthSyncSettingsTileState extends ConsumerState<HealthSyncSettingsTile>
 
   @override
   Widget build(BuildContext context) {
-    // Hide entirely if platform check hasn't completed or is unavailable
+    // Hide entirely (including the section header) if the platform check
+    // hasn't completed or no health platform is available
     if (_isAvailable != true) {
       return const SizedBox.shrink();
     }
@@ -56,27 +57,34 @@ class _HealthSyncSettingsTileState extends ConsumerState<HealthSyncSettingsTile>
 
     final i18n = AppLocalizations.of(context);
 
-    return SwitchListTile(
-      title: Text(i18n.healthSync),
-      subtitle: Text(i18n.healthSyncDescription),
-      value: syncState.isEnabled,
-      onChanged: syncState.isSyncing
-          ? null
-          : (enabled) async {
-              final notifier = ref.read(healthSyncProvider.notifier);
-              if (enabled) {
-                final count = await notifier.enableSync();
-                // Imported entries land in the local Drift DB and surface through
-                // the measurement stream automatically, so no manual refresh is needed.
-                if (context.mounted && count > 0) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(i18n.healthSyncSuccess(count))),
-                  );
-                }
-              } else {
-                await notifier.disableSync();
-              }
-            },
+    return Column(
+      children: [
+        ListTile(
+          title: Text(i18n.health, style: Theme.of(context).textTheme.headlineSmall),
+        ),
+        SwitchListTile(
+          title: Text(i18n.healthSync),
+          subtitle: Text(i18n.healthSyncDescription),
+          value: syncState.isEnabled,
+          onChanged: syncState.isSyncing
+              ? null
+              : (enabled) async {
+                  final notifier = ref.read(healthSyncProvider.notifier);
+                  if (enabled) {
+                    final count = await notifier.enableSync();
+                    // Imported entries land in the local Drift DB and surface through
+                    // the measurement stream automatically, so no manual refresh is needed.
+                    if (context.mounted && count > 0) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(i18n.healthSyncSuccess(count))),
+                      );
+                    }
+                  } else {
+                    await notifier.disableSync();
+                  }
+                },
+        ),
+      ],
     );
   }
 }

@@ -71,9 +71,9 @@ class MeasurementEntryTable extends Table {
   RealColumn get value => real()();
   TextColumn get notes => text()();
 
-  /// Where the reading came from: `manual` or a health platform
-  /// (`apple_health`, `health_connect`).
-  TextColumn get source => text().withDefault(const Constant('manual'))();
+  /// Where the reading came from; one of the server's `source` values:
+  /// `user` for manual entries or a health platform (`apple`, `google`).
+  TextColumn get source => text().withDefault(const Constant('user'))();
 
   /// Platform record UUID, used to deduplicate re-imports. `null` for manual
   /// entries.
