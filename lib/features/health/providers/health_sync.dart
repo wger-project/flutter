@@ -57,6 +57,10 @@ class HealthSyncState {
 /// platform record UUID).
 @Riverpod(keepAlive: true)
 class HealthSyncNotifier extends _$HealthSyncNotifier {
+  /// How far the read window reaches back before the last-sync watermark, to
+  /// pick up records that arrived late with a past date.
+  static const _syncOverlap = Duration(days: 30);
+
   final _logger = Logger('HealthSyncNotifier');
   late final HealthRepository _health;
   late final MeasurementRepository _measurements;
@@ -118,8 +122,13 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
         return 0;
       }
 
+      // Health records can arrive late with past dates (e.g. a scale that
+      // only syncs days after the measurement), so the read window reaches
+      // back beyond the watermark; re-reads are deduplicated via externalId.
       final lastSyncStr = await prefs.getLastHealthSyncTimestamp();
-      final startTime = lastSyncStr != null ? DateTime.parse(lastSyncStr) : DateTime(2000);
+      final startTime = lastSyncStr != null
+          ? DateTime.parse(lastSyncStr).subtract(_syncOverlap)
+          : DateTime(2000);
       final endTime = DateTime.now();
       _logger.info('Syncing health data from $startTime to $endTime');
 

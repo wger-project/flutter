@@ -175,6 +175,27 @@ void main() {
       expect(entries.single.externalId, 'bf-2');
     });
 
+    test('reads with an overlap window before the stored watermark', () async {
+      await PreferenceHelper.instance.setLastHealthSyncTimestamp('2026-06-01T12:00:00.000');
+      when(measurements.getAllOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
+      stubReadings([]);
+
+      await createNotifier().syncOnAppOpen();
+
+      final start =
+          verify(
+                health.read(
+                  types: anyNamed('types'),
+                  start: captureAnyNamed('start'),
+                  end: anyNamed('end'),
+                ),
+              ).captured.single
+              as DateTime;
+      // 30 days before the watermark, so late-arriving backdated records
+      // (e.g. a scale syncing days after the measurement) are still picked up
+      expect(start, DateTime(2026, 5, 2, 12));
+    });
+
     test('does nothing when sync is disabled', () async {
       await PreferenceHelper.instance.setHealthSyncEnabled(false);
 
