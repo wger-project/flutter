@@ -20,7 +20,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
 
@@ -105,11 +104,11 @@ void main() {
   });
 
   group('setCategoryOrder', () {
-    // Body fat ('1') and Biceps ('2') from the shared test data plus a third
-    // top-level category.
+    // Three top-level categories: Body fat ('1'), Biceps ('2') and the blood
+    // pressure group parent ('bp'), whose children must stay untouched.
     final categories = [
       ...getMeasurementCategories(),
-      MeasurementCategory(id: '3', name: 'Waist', unit: 'cm'),
+      ...getBloodPressureGroup(),
     ];
 
     setUp(() {
@@ -128,29 +127,30 @@ void main() {
       final notifier = await loadedNotifier();
 
       await notifier.setCategoryOrder(0, 2);
-      verify(mockRepo.reorderCategories(['2', '3', '1'])).called(1);
+      verify(mockRepo.reorderCategories(['2', 'bp', '1'])).called(1);
     });
 
     test('moves an item up', () async {
       final notifier = await loadedNotifier();
 
       await notifier.setCategoryOrder(2, 0);
-      verify(mockRepo.reorderCategories(['3', '1', '2'])).called(1);
+      verify(mockRepo.reorderCategories(['bp', '1', '2'])).called(1);
     });
 
     test('excludes children of multi-value groups', () async {
+      // Children interleaved between the top-level categories.
       when(mockRepo.watchAll()).thenAnswer(
         (_) => Stream.value([
-          categories[0],
-          MeasurementCategory(id: '2a', name: 'Left', unit: 'cm', parentId: '2'),
-          categories[1],
-          categories[2],
+          testMeasurementCategorySystolic,
+          ...getMeasurementCategories(),
+          testMeasurementCategoryDiastolic,
+          testMeasurementCategoryBloodPressure,
         ]),
       );
       final notifier = await loadedNotifier();
 
       await notifier.setCategoryOrder(0, 1);
-      verify(mockRepo.reorderCategories(['2', '1', '3'])).called(1);
+      verify(mockRepo.reorderCategories(['2', '1', 'bp'])).called(1);
     });
 
     test('does nothing while the list is still loading', () async {

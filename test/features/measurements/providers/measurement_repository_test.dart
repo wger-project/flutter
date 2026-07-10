@@ -225,15 +225,9 @@ void main() {
 
   group('multi-value groups', () {
     Future<void> seedBloodPressureGroup() async {
-      await repo.addLocalDriftCategory(
-        MeasurementCategory(id: 'bp', name: 'Blood pressure', unit: 'mmHg'),
-      );
-      await repo.addLocalDriftCategory(
-        MeasurementCategory(id: 'sys', name: 'Systolic', unit: 'mmHg', parentId: 'bp', order: 0),
-      );
-      await repo.addLocalDriftCategory(
-        MeasurementCategory(id: 'dia', name: 'Diastolic', unit: 'mmHg', parentId: 'bp', order: 1),
-      );
+      for (final category in getBloodPressureGroup()) {
+        await repo.addLocalDriftCategory(category);
+      }
     }
 
     test('watchAll attaches children to their parent in group order', () async {
@@ -302,15 +296,9 @@ void main() {
     });
 
     test('keeps the in-group order of children', () async {
-      await repo.addLocalDriftCategory(
-        MeasurementCategory(id: 'bp', name: 'Blood pressure', unit: 'mmHg'),
-      );
-      await repo.addLocalDriftCategory(
-        MeasurementCategory(id: 'sys', name: 'Systolic', unit: 'mmHg', parentId: 'bp', order: 0),
-      );
-      await repo.addLocalDriftCategory(
-        MeasurementCategory(id: 'dia', name: 'Diastolic', unit: 'mmHg', parentId: 'bp', order: 1),
-      );
+      for (final category in getBloodPressureGroup()) {
+        await repo.addLocalDriftCategory(category);
+      }
       await repo.addLocalDriftCategory(
         MeasurementCategory(id: 'c1', name: 'Waist', unit: 'cm', order: 1),
       );

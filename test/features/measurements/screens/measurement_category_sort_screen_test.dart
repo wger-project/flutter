@@ -21,7 +21,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
 import 'package:wger/features/measurements/screens/measurement_category_sort_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -33,12 +32,11 @@ import 'measurement_category_sort_screen_test.mocks.dart';
 void main() {
   late MockMeasurementRepository mockRepo;
 
-  // Body fat ('1') and Biceps ('2') from the shared test data plus a third
-  // top-level category and a group child.
+  // Three top-level categories: Body fat ('1'), Biceps ('2') and the blood
+  // pressure group parent ('bp'); its children must not be listed.
   final categories = [
     ...getMeasurementCategories(),
-    MeasurementCategory(id: '2a', name: 'Left', unit: 'cm', parentId: '2'),
-    MeasurementCategory(id: '3', name: 'Waist', unit: 'cm'),
+    ...getBloodPressureGroup(),
   ];
 
   setUp(() {
@@ -66,8 +64,9 @@ void main() {
 
     expect(find.text('Body fat'), findsOneWidget);
     expect(find.text('Biceps'), findsOneWidget);
-    expect(find.text('Waist'), findsOneWidget);
-    expect(find.text('Left'), findsNothing);
+    expect(find.text('Blood pressure'), findsOneWidget);
+    expect(find.text('Systolic'), findsNothing);
+    expect(find.text('Diastolic'), findsNothing);
     expect(find.byIcon(Icons.drag_handle), findsNWidgets(3));
   });
 
@@ -84,6 +83,6 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    verify(mockRepo.reorderCategories(['2', '3', '1'])).called(1);
+    verify(mockRepo.reorderCategories(['2', 'bp', '1'])).called(1);
   });
 }

@@ -78,6 +78,40 @@ final testMeasurementEntry8 = MeasurementEntry(
   notes: '',
 );
 
+/// Multi-value group: blood pressure with systolic/diastolic components.
+final testMeasurementCategoryBloodPressure = MeasurementCategory(
+  id: 'bp',
+  name: 'Blood pressure',
+  unit: 'mmHg',
+  metricType: MetricType.bloodPressure,
+);
+
+final testMeasurementCategorySystolic = MeasurementCategory(
+  id: 'sys',
+  name: 'Systolic',
+  unit: 'mmHg',
+  parentId: 'bp',
+  order: 0,
+);
+
+final testMeasurementCategoryDiastolic = MeasurementCategory(
+  id: 'dia',
+  name: 'Diastolic',
+  unit: 'mmHg',
+  parentId: 'bp',
+  order: 1,
+);
+
+/// The blood pressure group as a flat list (parent first), as stored in the
+/// database. Not included in [getMeasurementCategories].
+List<MeasurementCategory> getBloodPressureGroup() {
+  return [
+    testMeasurementCategoryBloodPressure,
+    testMeasurementCategorySystolic,
+    testMeasurementCategoryDiastolic,
+  ];
+}
+
 List<MeasurementCategory> getMeasurementCategories() {
   return [
     MeasurementCategory(
