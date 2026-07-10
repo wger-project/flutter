@@ -17,6 +17,7 @@
  */
 
 import 'package:collection/collection.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:health_bridge/health.dart';
 import 'package:logging/logging.dart';
 import 'package:powersync/powersync.dart' as ps;
@@ -28,26 +29,16 @@ import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/measurement_entry.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
 
+part 'health_sync.freezed.dart';
 part 'health_sync.g.dart';
 
-class HealthSyncState {
-  final bool isEnabled;
-  final bool isSyncing;
-  final int lastSyncCount;
-
-  const HealthSyncState({
-    this.isEnabled = false,
-    this.isSyncing = false,
-    this.lastSyncCount = 0,
-  });
-
-  HealthSyncState copyWith({bool? isEnabled, bool? isSyncing, int? lastSyncCount}) {
-    return HealthSyncState(
-      isEnabled: isEnabled ?? this.isEnabled,
-      isSyncing: isSyncing ?? this.isSyncing,
-      lastSyncCount: lastSyncCount ?? this.lastSyncCount,
-    );
-  }
+@freezed
+sealed class HealthSyncState with _$HealthSyncState {
+  const factory HealthSyncState({
+    @Default(false) bool isEnabled,
+    @Default(false) bool isSyncing,
+    @Default(0) int lastSyncCount,
+  }) = _HealthSyncState;
 }
 
 /// Imports body metrics from Apple Health / Health Connect into measurement

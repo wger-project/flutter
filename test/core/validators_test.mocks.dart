@@ -4735,6 +4735,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get healthSyncPermissionDenied =>
+      (super.noSuchMethod(
+            Invocation.getter(#healthSyncPermissionDenied),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#healthSyncPermissionDenied),
+            ),
+          )
+          as String);
+
+  @override
   String get health =>
       (super.noSuchMethod(
             Invocation.getter(#health),
