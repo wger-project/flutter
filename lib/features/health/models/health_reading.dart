@@ -53,7 +53,10 @@ class HealthReading {
       type: point.type,
       value: value.numericValue.toDouble(),
       date: point.dateFrom,
-      externalId: point.uuid.isEmpty ? null : point.uuid,
+      // HealthKit reports UUIDs in uppercase, but the server's UUIDField
+      // normalizes to lowercase. Lowercase here so the dedup key stays stable
+      // once the entry round-trips through the server.
+      externalId: point.uuid.isEmpty ? null : point.uuid.toLowerCase(),
     );
   }
 }

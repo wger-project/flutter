@@ -100,7 +100,10 @@ void main() {
         ),
         HealthReading(
           type: HealthDataType.HEIGHT,
-          value: 1.8,
+          // 1.803 * 100 is 180.29999999999998 in double arithmetic; the
+          // server's Decimal(2) validation requires the stored value to be
+          // rounded to exactly 180.3
+          value: 1.803,
           date: DateTime(2026, 1, 2),
           externalId: 'h-1',
         ),
@@ -126,7 +129,7 @@ void main() {
       expect(bodyFat.source, 'apple');
 
       final height = entries.firstWhere((e) => e.externalId == 'h-1');
-      expect(height.value, closeTo(180, 0.001)); // meters -> cm
+      expect(height.value, 180.3); // meters -> cm, rounded to two decimals
     });
 
     test('skips readings already imported (dedup by externalId)', () async {

@@ -153,11 +153,16 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
             continue;
           }
 
+          // The server stores values as Decimal with 2 places and rejects
+          // anything more precise, so round away unit-conversion float noise
+          // (1.803 m * 100 = 180.29999999999998).
+          final value = (metric.toCategoryValue(reading.value) * 100).roundToDouble() / 100;
+
           await _measurements.addLocalDrift(
             MeasurementEntry(
               categoryId: category.id!,
               date: reading.date,
-              value: metric.toCategoryValue(reading.value),
+              value: value,
               notes: '',
               source: source,
               externalId: uuid,
