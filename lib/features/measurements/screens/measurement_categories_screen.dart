@@ -37,7 +37,7 @@ class MeasurementCategoriesScreen extends StatelessWidget {
         title: Text(AppLocalizations.of(context).measurements),
         actions: [
           IconButton(
-            icon: Icon(Icons.sort),
+            icon: const Icon(Icons.sort),
             tooltip: i18n.reorderCategories,
             onPressed: () =>
                 Navigator.of(context).pushNamed(MeasurementCategorySortScreen.routeName),

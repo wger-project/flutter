@@ -56,7 +56,7 @@ class MeasurementRepository {
         ])..orderBy([
           OrderingTerm(expression: _db.measurementCategoryTable.order),
           OrderingTerm(expression: _db.measurementCategoryTable.name),
-          // OrderingTerm(expression: _db.measurementEntryTable.date, mode: OrderingMode.desc),
+          OrderingTerm(expression: _db.measurementEntryTable.date, mode: OrderingMode.desc),
         ]);
 
     return joined.watch().map((rows) {
@@ -147,11 +147,17 @@ class MeasurementRepository {
     await _db.into(_db.measurementCategoryTable).insert(category.toCompanion());
   }
 
-  Future<void> reorderCategory(String id, int newOrder) async {
-    _logger.finer('Reording category id $id to order $newOrder');
-    final stmt = _db.update(_db.measurementCategoryTable)..where((t) => t.id.equals(id));
-    await stmt.write(
-      MeasurementCategoryTableCompanion(order: Value(newOrder)),
-    );
+  /// Persists the given display order: each category gets its list index as
+  /// [MeasurementCategory.order]. Categories whose order is unchanged are not
+  /// written, so no sync upload is queued for them.
+  Future<void> reorderCategories(List<String> orderedIds) async {
+    _logger.finer('Reordering ${orderedIds.length} categories');
+    await _db.transaction(() async {
+      for (var i = 0; i < orderedIds.length; i++) {
+        final stmt = _db.update(_db.measurementCategoryTable)
+          ..where((t) => t.id.equals(orderedIds[i]) & t.order.equals(i).not());
+        await stmt.write(MeasurementCategoryTableCompanion(order: Value(i)));
+      }
+    });
   }
 }

@@ -548,6 +548,15 @@ class MockMeasurementRepository extends _i1.Mock implements _i23.MeasurementRepo
             returnValueForMissingStub: _i10.Future<void>.value(),
           )
           as _i10.Future<void>);
+
+  @override
+  _i10.Future<void> reorderCategories(List<String>? orderedIds) =>
+      (super.noSuchMethod(
+            Invocation.method(#reorderCategories, [orderedIds]),
+            returnValue: _i10.Future<void>.value(),
+            returnValueForMissingStub: _i10.Future<void>.value(),
+          )
+          as _i10.Future<void>);
 }
 
 /// A class which mocks [UserProfileRepository].

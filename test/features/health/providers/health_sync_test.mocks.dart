@@ -185,4 +185,13 @@ class MockMeasurementRepository extends _i1.Mock implements _i7.MeasurementRepos
             returnValueForMissingStub: _i4.Future<void>.value(),
           )
           as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> reorderCategories(List<String>? orderedIds) =>
+      (super.noSuchMethod(
+            Invocation.method(#reorderCategories, [orderedIds]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
 }

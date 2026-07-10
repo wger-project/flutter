@@ -91,17 +91,21 @@ final class MeasurementNotifier extends _$MeasurementNotifier {
     await _repo.addLocalDriftCategory(category);
   }
 
+  /// Moves the top-level category at [oldIndex] to [newIndex] and renumbers
+  /// all top-level categories accordingly.
+  ///
+  /// Indices refer to the top-level list only (children of multi-value groups
+  /// keep their in-group order).
   Future<void> setCategoryOrder(int oldIndex, int newIndex) async {
     final categories = state.asData?.value;
-    if (categories == null) return;
-    if (oldIndex < newIndex) newIndex -= 1;
+    if (categories == null) {
+      return;
+    }
 
-    final reordered = List<MeasurementCategory>.from(categories);
+    final reordered = categories.where((c) => c.parentId == null).toList();
     final moved = reordered.removeAt(oldIndex);
     reordered.insert(newIndex, moved);
 
-    for (int i = 0; i < reordered.length; i++) {
-      await _repo.reorderCategory(reordered[i].id!, i);
-    }
+    await _repo.reorderCategories([for (final c in reordered) c.id!]);
   }
 }
