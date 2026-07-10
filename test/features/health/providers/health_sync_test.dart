@@ -35,6 +35,42 @@ import 'health_sync_test.mocks.dart';
 
 @GenerateMocks([HealthRepository, MeasurementRepository])
 void main() {
+  late MockHealthRepository health;
+  late MockMeasurementRepository measurements;
+
+  setUp(() async {
+    SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+    await PreferenceHelper.instance.setHealthSyncEnabled(true);
+
+    health = MockHealthRepository();
+    measurements = MockMeasurementRepository();
+
+    when(health.ensureAuthorized(any)).thenAnswer((_) async => true);
+    when(health.sourceName).thenReturn('apple');
+    when(measurements.addLocalDrift(any)).thenAnswer((_) async {});
+    when(measurements.addLocalDriftCategory(any)).thenAnswer((_) async {});
+  });
+
+  HealthSyncNotifier createNotifier() {
+    final container = ProviderContainer.test(
+      overrides: [
+        healthRepositoryProvider.overrideWithValue(health),
+        measurementRepositoryProvider.overrideWithValue(measurements),
+      ],
+    );
+    return container.read(healthSyncProvider.notifier);
+  }
+
+  void stubReadings(List<HealthReading> readings) {
+    when(
+      health.read(
+        types: anyNamed('types'),
+        start: anyNamed('start'),
+        end: anyNamed('end'),
+      ),
+    ).thenAnswer((_) async => readings);
+  }
+
   group('HealthSyncState', () {
     test('default state has sync disabled', () {
       const state = HealthSyncState();
@@ -52,43 +88,40 @@ void main() {
     });
   });
 
-  group('syncOnAppOpen', () {
-    late MockHealthRepository health;
-    late MockMeasurementRepository measurements;
+  group('enableSync', () {
+    test('returns null and stays disabled when permissions are denied', () async {
+      await PreferenceHelper.instance.setHealthSyncEnabled(false);
+      when(health.ensureAuthorized(any)).thenAnswer((_) async => false);
 
-    setUp(() async {
-      SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
-      await PreferenceHelper.instance.setHealthSyncEnabled(true);
+      final count = await createNotifier().enableSync();
 
-      health = MockHealthRepository();
-      measurements = MockMeasurementRepository();
-
-      when(health.ensureAuthorized(any)).thenAnswer((_) async => true);
-      when(health.sourceName).thenReturn('apple');
-      when(measurements.addLocalDrift(any)).thenAnswer((_) async {});
-      when(measurements.addLocalDriftCategory(any)).thenAnswer((_) async {});
+      expect(count, isNull);
+      expect(await PreferenceHelper.instance.getHealthSyncEnabled(), isFalse);
+      verifyNever(
+        health.read(types: anyNamed('types'), start: anyNamed('start'), end: anyNamed('end')),
+      );
     });
 
-    HealthSyncNotifier createNotifier() {
-      final container = ProviderContainer.test(
-        overrides: [
-          healthRepositoryProvider.overrideWithValue(health),
-          measurementRepositoryProvider.overrideWithValue(measurements),
-        ],
-      );
-      return container.read(healthSyncProvider.notifier);
-    }
-
-    void stubReadings(List<HealthReading> readings) {
-      when(
-        health.read(
-          types: anyNamed('types'),
-          start: anyNamed('start'),
-          end: anyNamed('end'),
+    test('persists the preference and runs an initial import', () async {
+      await PreferenceHelper.instance.setHealthSyncEnabled(false);
+      when(measurements.getAllOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
+      stubReadings([
+        HealthReading(
+          type: HealthDataType.HEIGHT,
+          value: 1.8,
+          date: DateTime(2026, 1, 2),
+          externalId: 'h-1',
         ),
-      ).thenAnswer((_) async => readings);
-    }
+      ]);
 
+      final count = await createNotifier().enableSync();
+
+      expect(count, 1);
+      expect(await PreferenceHelper.instance.getHealthSyncEnabled(), isTrue);
+    });
+  });
+
+  group('syncOnAppOpen', () {
     test('imports enabled metrics into new categories with converted values', () async {
       when(measurements.getAllOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
       stubReadings([

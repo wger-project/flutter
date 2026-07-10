@@ -85,10 +85,13 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
   Future<bool> isAvailable() => _health.isAvailable();
 
   /// Requests permissions, persists the preference, and runs an initial import.
-  Future<int> enableSync() async {
+  ///
+  /// Returns the number of imported entries, or `null` when the platform
+  /// permissions were not granted (sync stays disabled).
+  Future<int?> enableSync() async {
     _logger.info('Enabling health sync');
     if (!await _health.ensureAuthorized(_types)) {
-      return 0;
+      return null;
     }
     await PreferenceHelper.instance.setHealthSyncEnabled(true);
     state = state.copyWith(isEnabled: true);

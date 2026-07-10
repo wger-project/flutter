@@ -71,10 +71,18 @@ class _HealthSyncSettingsTileState extends ConsumerState<HealthSyncSettingsTile>
               : (enabled) async {
                   final notifier = ref.read(healthSyncProvider.notifier);
                   if (enabled) {
+                    // null means the platform permissions were not granted
                     final count = await notifier.enableSync();
-                    // Imported entries land in the local Drift DB and surface through
-                    // the measurement stream automatically, so no manual refresh is needed.
-                    if (context.mounted && count > 0) {
+                    if (!context.mounted) {
+                      return;
+                    }
+                    if (count == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(i18n.healthSyncPermissionDenied)),
+                      );
+                    } else if (count > 0) {
+                      // Imported entries land in the local Drift DB and surface through
+                      // the measurement stream automatically, so no manual refresh is needed.
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text(i18n.healthSyncSuccess(count))),
                       );

@@ -1512,6 +1512,10 @@
       }
     }
   },
+  "healthSyncPermissionDenied": "Access to health data was not granted",
+  "@healthSyncPermissionDenied": {
+    "description": "Snackbar shown when enabling health sync fails because the platform permissions were denied"
+  },
   "health": "Health",
   "@health": {
     "description": "Section header for health-related settings"
