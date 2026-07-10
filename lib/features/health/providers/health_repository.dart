@@ -19,7 +19,7 @@
 import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:health/health.dart';
+import 'package:health_bridge/health.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/features/health/models/health_reading.dart';
 

@@ -17,7 +17,7 @@
  */
 
 import 'package:collection/collection.dart';
-import 'package:health/health.dart';
+import 'package:health_bridge/health.dart';
 import 'package:logging/logging.dart';
 import 'package:powersync/powersync.dart' as ps;
 import 'package:riverpod_annotation/riverpod_annotation.dart';

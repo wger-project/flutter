@@ -193,14 +193,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.1.2"
-  carp_serializable:
-    dependency: transitive
-    description:
-      name: carp_serializable
-      sha256: f039f8ea22e9437aef13fe7e9743c3761c76d401288dcb702eadd273c3e4dcef
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.1"
   change:
     dependency: transitive
     description:
@@ -743,14 +735,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.0"
-  health:
+  health_bridge:
     dependency: "direct main"
     description:
-      name: health
-      sha256: "2d9e119f3a1d281139f93149b41032b9f80b759960875bc784c5a25dd3c17524"
-      url: "https://pub.dev"
-    source: hosted
-    version: "13.3.1"
+      path: "."
+      ref: "51a567db9a97ccb15a9c1138aa4bcbdaf3d6c7b1"
+      resolved-ref: "51a567db9a97ccb15a9c1138aa4bcbdaf3d6c7b1"
+      url: "https://github.com/ytsni/health_bridge.git"
+    source: git
+    version: "1.0.0"
   hooks:
     dependency: transitive
     description:
