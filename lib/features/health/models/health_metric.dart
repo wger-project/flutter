@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:health/health.dart';
+import 'package:health_bridge/health.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 
 /// A body metric that can be imported from Apple Health / Health Connect into a

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:health/health.dart';
+import 'package:health_bridge/health.dart';
 
 /// A single reading pulled from a health platform, reduced to the fields the
 /// importer needs. Keeps the `health` package's [HealthDataPoint] out of the

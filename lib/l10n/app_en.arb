@@ -592,6 +592,14 @@
   },
   "measurementEntriesHelpText": "The unit used to measure the category such as 'cm' or '%'",
   "@measurementEntriesHelpText": {},
+  "partOfGroup": "Part of group",
+  "@partOfGroup": {
+    "description": "Dropdown label: makes a measurement category a component of a multi-value group (e.g. blood pressure)"
+  },
+  "noGroup": "No group",
+  "@noGroup": {
+    "description": "Dropdown option for a measurement category that is not part of any group"
+  },
   "date": "Date",
   "@date": {
     "description": "The date of a workout log or body weight entry"

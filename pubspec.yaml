@@ -51,7 +51,15 @@ dependencies:
   flutter_zxing: ^2.3.0
   font_awesome_flutter: ^11.0.0
   freezed_annotation: ^3.1.0
-  health: ^13.3.1
+  # Temporarily swap `health` with a fork with Swift Package Manager support.
+  # Once that is available on upstream (see e.g. https://github.com/carp-dk/carp-health-flutter/issues/480 )
+  # we can switch back. Note that if this doesn't happen in the near future we
+  # can just re-activate the cocoapods infrastructure.
+  # health: ^13.3.1
+  health_bridge:
+    git:
+      url: https://github.com/ytsni/health_bridge.git
+      ref: 51a567db9a97ccb15a9c1138aa4bcbdaf3d6c7b1
   http: ^1.6.0
   image_picker: ^1.2.2
   intl: ^0.20.2

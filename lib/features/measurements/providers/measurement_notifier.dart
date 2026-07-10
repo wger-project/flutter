@@ -72,6 +72,12 @@ final class MeasurementNotifier extends _$MeasurementNotifier {
     await _repo.addLocalDrift(entry);
   }
 
+  /// Adds one reading of a multi-value group (one entry per component,
+  /// persisted atomically).
+  Future<void> addGroupEntries(List<MeasurementEntry> entries) async {
+    await _repo.addLocalDriftGroupEntries(entries);
+  }
+
   // --- MeasurementCategory operations (delegated to repository) ---
   Future<void> deleteCategory(String id) async {
     await _repo.deleteLocalDriftCategory(id);

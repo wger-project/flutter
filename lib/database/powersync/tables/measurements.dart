@@ -34,7 +34,14 @@ class MeasurementCategoryTable extends Table {
   TextColumn get unit => text()();
   TextColumn get metricType =>
       text().named('metric_type').map(const MeasurementMetricTypeConverter())();
-  IntColumn get order => integer().nullable()();
+
+  /// Multi-value groups: parent category id (max. one level of nesting; only
+  /// leaf categories carry entries).
+  TextColumn get parentId =>
+      text().named('parent_id').nullable().references(MeasurementCategoryTable, #id)();
+
+  /// Position in the category list; for children, the position within the group
+  IntColumn get order => integer().withDefault(const Constant(0))();
 }
 
 const PowersyncMeasurementCategoryTable = ps.Table(
@@ -43,7 +50,11 @@ const PowersyncMeasurementCategoryTable = ps.Table(
     ps.Column.text('name'),
     ps.Column.text('unit'),
     ps.Column.text('metric_type'),
+    ps.Column.text('parent_id'),
     ps.Column.integer('order'),
+  ],
+  indexes: [
+    ps.Index('parent_idx', [ps.IndexedColumn('parent_id')]),
   ],
 );
 

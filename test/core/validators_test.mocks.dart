@@ -2152,6 +2152,28 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get partOfGroup =>
+      (super.noSuchMethod(
+            Invocation.getter(#partOfGroup),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#partOfGroup),
+            ),
+          )
+          as String);
+
+  @override
+  String get noGroup =>
+      (super.noSuchMethod(
+            Invocation.getter(#noGroup),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#noGroup),
+            ),
+          )
+          as String);
+
+  @override
   String get date =>
       (super.noSuchMethod(
             Invocation.getter(#date),

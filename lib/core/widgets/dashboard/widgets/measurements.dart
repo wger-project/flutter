@@ -45,7 +45,10 @@ class _DashboardMeasurementWidgetState extends ConsumerState<DashboardMeasuremen
     return AsyncValueWidget<List<MeasurementCategory>>(
       value: ref.watch(measurementProvider),
       loggerName: 'DashboardMeasurementWidget',
-      data: (categoriesList) {
+      data: (allCategories) {
+        // Children of multi-value groups are shown inside their parent's card
+        final categoriesList = allCategories.where((c) => c.parentId == null).toList();
+
         if (categoriesList.isEmpty) {
           return NothingFound(
             AppLocalizations.of(context).moreMeasurementEntries,

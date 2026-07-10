@@ -39,7 +39,11 @@ class MeasurementRepository {
 
   MeasurementRepository(this._db);
 
-  /// Watches all categories, populated with their appropriate entries
+  /// Watches all categories, populated with their appropriate entries.
+  ///
+  /// The list is flat (children of multi-value groups appear as regular items
+  /// with a non-null `parentId`), but group parents additionally get their
+  /// [MeasurementCategory.children] attached, sorted by their in-group order.
   Stream<List<MeasurementCategory>> watchAll() {
     _logger.finer('Watching all measurement categories with entries');
 
@@ -72,9 +76,16 @@ class MeasurementRepository {
         }
       }
 
-      return map.values
+      final categories = map.values
           .map((c) => c.copyWith(entries: List<MeasurementEntry>.from(c.entries)))
           .toList();
+
+      // Attach children to their group parents (rows are already sorted by
+      // order/name, so insertion order is the display order).
+      return categories.map((c) {
+        final children = categories.where((other) => other.parentId == c.id).toList();
+        return children.isEmpty ? c : c.copyWith(children: children);
+      }).toList();
     });
   }
 
@@ -103,10 +114,26 @@ class MeasurementRepository {
     await _db.into(_db.measurementEntryTable).insert(entry.toCompanion());
   }
 
+  /// Inserts one reading of a multi-value group: one entry per component,
+  /// written in a single transaction so a reading is never half-persisted.
+  Future<void> addLocalDriftGroupEntries(List<MeasurementEntry> entries) async {
+    _logger.finer('Adding ${entries.length} local measurement entries for a group reading');
+    await _db.transaction(() async {
+      for (final entry in entries) {
+        await _db.into(_db.measurementEntryTable).insert(entry.toCompanion());
+      }
+    });
+  }
+
   // Categories
   Future<void> deleteLocalDriftCategory(String id) async {
     _logger.finer('Deleting local measurement category $id');
-    await (_db.delete(_db.measurementCategoryTable)..where((t) => t.id.equals(id))).go();
+    await _db.transaction(() async {
+      // Children of a multi-value group are meaningless without their parent;
+      // the server cascades the same way.
+      await (_db.delete(_db.measurementCategoryTable)..where((t) => t.parentId.equals(id))).go();
+      await (_db.delete(_db.measurementCategoryTable)..where((t) => t.id.equals(id))).go();
+    });
   }
 
   Future<void> updateLocalDriftCategory(MeasurementCategory category) async {
