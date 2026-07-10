@@ -84,4 +84,18 @@ final class MeasurementNotifier extends _$MeasurementNotifier {
   Future<void> addCategory(MeasurementCategory category) async {
     await _repo.addLocalDriftCategory(category);
   }
+
+  Future<void> setCategoryOrder(int oldIndex, int newIndex) async {
+    final categories = state.asData?.value;
+    if (categories == null) return;
+    if (oldIndex < newIndex) newIndex -= 1;
+
+    final reordered = List<MeasurementCategory>.from(categories);
+    final moved = reordered.removeAt(oldIndex);
+    reordered.insert(newIndex, moved);
+
+    for (int i = 0; i < reordered.length; i++) {
+      await _repo.reorderCategory(reordered[i].id!, i);
+    }
+  }
 }

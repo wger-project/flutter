@@ -103,12 +103,16 @@ class MeasurementCategory with _$MeasurementCategory {
   @override
   final MetricType metricType;
 
+  @override
+  final int order;
+
   MeasurementCategory({
     this.id,
     this.name = '',
     this.unit = '',
     this.entries = const [],
     this.metricType = MetricType.custom,
+    this.order = 0,
   });
 
   MeasurementEntry findEntryById(String id) {
@@ -125,6 +129,7 @@ class MeasurementCategory with _$MeasurementCategory {
       name: Value(name),
       unit: Value(unit),
       metricType: Value(metricType),
+      order: Value(order),
     );
   }
 }

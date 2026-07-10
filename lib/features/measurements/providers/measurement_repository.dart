@@ -50,8 +50,9 @@ class MeasurementRepository {
             _db.measurementEntryTable.categoryId.equalsExp(_db.measurementCategoryTable.id),
           ),
         ])..orderBy([
+          OrderingTerm(expression: _db.measurementCategoryTable.order),
           OrderingTerm(expression: _db.measurementCategoryTable.name),
-          OrderingTerm(expression: _db.measurementEntryTable.date, mode: OrderingMode.desc),
+          // OrderingTerm(expression: _db.measurementEntryTable.date, mode: OrderingMode.desc),
         ]);
 
     return joined.watch().map((rows) {
@@ -117,5 +118,13 @@ class MeasurementRepository {
   Future<void> addLocalDriftCategory(MeasurementCategory category) async {
     _logger.finer('Adding local measurement category ${category.name}');
     await _db.into(_db.measurementCategoryTable).insert(category.toCompanion());
+  }
+
+  Future<void> reorderCategory(String id, int newOrder) async {
+    _logger.finer('Reording category id $id to order $newOrder');
+    final stmt = _db.update(_db.measurementCategoryTable)..where((t) => t.id.equals(id));
+    await stmt.write(
+      MeasurementCategoryTableCompanion(order: Value(newOrder)),
+    );
   }
 }

@@ -34,11 +34,17 @@ class MeasurementCategoryTable extends Table {
   TextColumn get unit => text()();
   TextColumn get metricType =>
       text().named('metric_type').map(const MeasurementMetricTypeConverter())();
+  IntColumn get order => integer().nullable()();
 }
 
 const PowersyncMeasurementCategoryTable = ps.Table(
   'measurements_category',
-  [ps.Column.text('name'), ps.Column.text('unit'), ps.Column.text('metric_type')],
+  [
+    ps.Column.text('name'),
+    ps.Column.text('unit'),
+    ps.Column.text('metric_type'),
+    ps.Column.integer('order'),
+  ],
 );
 
 @UseRowClass(MeasurementEntry)
