@@ -225,15 +225,9 @@ void main() {
 
   group('multi-value groups', () {
     Future<void> seedBloodPressureGroup() async {
-      await repo.addLocalDriftCategory(
-        MeasurementCategory(id: 'bp', name: 'Blood pressure', unit: 'mmHg'),
-      );
-      await repo.addLocalDriftCategory(
-        MeasurementCategory(id: 'sys', name: 'Systolic', unit: 'mmHg', parentId: 'bp', order: 0),
-      );
-      await repo.addLocalDriftCategory(
-        MeasurementCategory(id: 'dia', name: 'Diastolic', unit: 'mmHg', parentId: 'bp', order: 1),
-      );
+      for (final category in getBloodPressureGroup()) {
+        await repo.addLocalDriftCategory(category);
+      }
     }
 
     test('watchAll attaches children to their parent in group order', () async {
@@ -285,6 +279,36 @@ void main() {
 
       final emitted = await repo.watchAll().first;
       expect(emitted, isEmpty);
+    });
+  });
+
+  group('reorderCategories', () {
+    test('persists the list positions as order', () async {
+      await repo.addLocalDriftCategory(MeasurementCategory(id: 'c1', name: 'Aaa', unit: 'cm'));
+      await repo.addLocalDriftCategory(MeasurementCategory(id: 'c2', name: 'Bbb', unit: 'cm'));
+      await repo.addLocalDriftCategory(MeasurementCategory(id: 'c3', name: 'Ccc', unit: 'cm'));
+
+      await repo.reorderCategories(['c3', 'c1', 'c2']);
+
+      final emitted = await repo.watchAll().first;
+      expect(emitted.map((c) => c.id), ['c3', 'c1', 'c2']);
+      expect(emitted.map((c) => c.order), [0, 1, 2]);
+    });
+
+    test('keeps the in-group order of children', () async {
+      for (final category in getBloodPressureGroup()) {
+        await repo.addLocalDriftCategory(category);
+      }
+      await repo.addLocalDriftCategory(
+        MeasurementCategory(id: 'c1', name: 'Waist', unit: 'cm', order: 1),
+      );
+
+      await repo.reorderCategories(['c1', 'bp']);
+
+      final emitted = await repo.watchAll().first;
+      final parent = emitted.firstWhere((c) => c.id == 'bp');
+      expect(parent.order, 1);
+      expect(parent.children.map((c) => c.id), ['sys', 'dia']);
     });
   });
 }

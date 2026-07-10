@@ -546,6 +546,10 @@
   "@metricType": {
     "description": "Metric type for a measurement category"
   },
+  "reorderCategories": "Reorder categories",
+  "@reorderCategories": {
+    "description": "measurement categories reordering"
+  },
   "metricCustom": "Custom",
   "@metricCustom": {
     "description": "Label for custom metric type"

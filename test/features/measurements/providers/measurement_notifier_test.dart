@@ -102,4 +102,63 @@ void main() {
       verify(mockRepo.watchAll()).called(1);
     });
   });
+
+  group('setCategoryOrder', () {
+    // Three top-level categories: Body fat ('1'), Biceps ('2') and the blood
+    // pressure group parent ('bp'), whose children must stay untouched.
+    final categories = [
+      ...getMeasurementCategories(),
+      ...getBloodPressureGroup(),
+    ];
+
+    setUp(() {
+      when(mockRepo.watchAll()).thenAnswer((_) => Stream.value(categories));
+      when(mockRepo.reorderCategories(any)).thenAnswer((_) async {});
+    });
+
+    // Loads the notifier with its state resolved from the watchAll stream.
+    Future<MeasurementNotifier> loadedNotifier() async {
+      container.listen(measurementProvider, (_, _) {});
+      await pumpEventQueue();
+      return container.read(measurementProvider.notifier);
+    }
+
+    test('moves an item down (newIndex already adjusted, onReorderItem semantics)', () async {
+      final notifier = await loadedNotifier();
+
+      await notifier.setCategoryOrder(0, 2);
+      verify(mockRepo.reorderCategories(['2', 'bp', '1'])).called(1);
+    });
+
+    test('moves an item up', () async {
+      final notifier = await loadedNotifier();
+
+      await notifier.setCategoryOrder(2, 0);
+      verify(mockRepo.reorderCategories(['bp', '1', '2'])).called(1);
+    });
+
+    test('excludes children of multi-value groups', () async {
+      // Children interleaved between the top-level categories.
+      when(mockRepo.watchAll()).thenAnswer(
+        (_) => Stream.value([
+          testMeasurementCategorySystolic,
+          ...getMeasurementCategories(),
+          testMeasurementCategoryDiastolic,
+          testMeasurementCategoryBloodPressure,
+        ]),
+      );
+      final notifier = await loadedNotifier();
+
+      await notifier.setCategoryOrder(0, 1);
+      verify(mockRepo.reorderCategories(['2', '1', 'bp'])).called(1);
+    });
+
+    test('does nothing while the list is still loading', () async {
+      when(mockRepo.watchAll()).thenAnswer((_) => const Stream.empty());
+      final notifier = await loadedNotifier();
+
+      await notifier.setCategoryOrder(0, 1);
+      verifyNever(mockRepo.reorderCategories(any));
+    });
+  });
 }

@@ -146,4 +146,18 @@ class MeasurementRepository {
     _logger.finer('Adding local measurement category ${category.name}');
     await _db.into(_db.measurementCategoryTable).insert(category.toCompanion());
   }
+
+  /// Persists the given display order: each category gets its list index as
+  /// [MeasurementCategory.order]. Categories whose order is unchanged are not
+  /// written, so no sync upload is queued for them.
+  Future<void> reorderCategories(List<String> orderedIds) async {
+    _logger.finer('Reordering ${orderedIds.length} categories');
+    await _db.transaction(() async {
+      for (var i = 0; i < orderedIds.length; i++) {
+        final stmt = _db.update(_db.measurementCategoryTable)
+          ..where((t) => t.id.equals(orderedIds[i]) & t.order.equals(i).not());
+        await stmt.write(MeasurementCategoryTableCompanion(order: Value(i)));
+      }
+    });
+  }
 }
