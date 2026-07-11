@@ -87,7 +87,7 @@
 		<key>NSCameraUsageDescription</key>
 		<string>Workout photos</string>
 		<key>NSHealthShareUsageDescription</key>
-		<string>wger uses your health data to automatically sync weight measurements from your smart scale</string>
+		<string>wger reads your health data to automatically import body measurements such as body fat and height</string>
 		<key>UIApplicationSceneManifest</key>
 		<dict>
 			<key>UIApplicationSupportsMultipleScenes</key>
