@@ -51,8 +51,10 @@ void main() {
     when(measurements.addLocalDriftCategory(any)).thenAnswer((_) async {});
   });
 
+  late ProviderContainer container;
+
   HealthSyncNotifier createNotifier() {
-    final container = ProviderContainer.test(
+    container = ProviderContainer.test(
       overrides: [
         healthRepositoryProvider.overrideWithValue(health),
         measurementRepositoryProvider.overrideWithValue(measurements),
@@ -121,6 +123,22 @@ void main() {
     });
   });
 
+  group('disableSync', () {
+    test('clears the preferences and resets the state', () async {
+      await PreferenceHelper.instance.setLastHealthSyncTimestamp('2026-06-01T12:00:00.000');
+      final notifier = createNotifier();
+      // let _loadPersistedState finish so it cannot re-enable the state later
+      await pumpEventQueue();
+      expect(container.read(healthSyncProvider).isEnabled, isTrue);
+
+      await notifier.disableSync();
+
+      expect(await PreferenceHelper.instance.getHealthSyncEnabled(), isFalse);
+      expect(await PreferenceHelper.instance.getLastHealthSyncTimestamp(), isNull);
+      expect(container.read(healthSyncProvider).isEnabled, isFalse);
+    });
+  });
+
   group('syncOnAppOpen', () {
     test('imports enabled metrics into new categories with converted values', () async {
       when(measurements.getAllOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
@@ -163,6 +181,12 @@ void main() {
 
       final height = entries.firstWhere((e) => e.externalId == 'h-1');
       expect(height.value, 180.3); // meters -> cm, rounded to two decimals
+
+      // The newest imported reading date becomes the next sync watermark
+      expect(
+        await PreferenceHelper.instance.getLastHealthSyncTimestamp(),
+        DateTime(2026, 1, 2).toIso8601String(),
+      );
     });
 
     test('skips readings already imported (dedup by externalId)', () async {
