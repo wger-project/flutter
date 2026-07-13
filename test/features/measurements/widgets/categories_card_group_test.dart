@@ -23,6 +23,8 @@ import 'package:wger/features/measurements/models/measurement_entry.dart';
 import 'package:wger/features/measurements/widgets/categories_card.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
+import '../../../../test_data/measurements.dart';
+
 Widget _wrap(Widget child) => MaterialApp(
   localizationsDelegates: AppLocalizations.localizationsDelegates,
   supportedLocales: AppLocalizations.supportedLocales,
@@ -33,53 +35,12 @@ Widget _wrap(Widget child) => MaterialApp(
 );
 
 MeasurementCategory _bpGroup({bool withEntries = false}) {
-  final sysEntries = withEntries
-      ? [
-          MeasurementEntry(
-            id: 'e1',
-            categoryId: 'sys',
-            date: DateTime(2026, 1, 1),
-            value: 120,
-            notes: '',
-          ),
-        ]
-      : <MeasurementEntry>[];
-  final diaEntries = withEntries
-      ? [
-          MeasurementEntry(
-            id: 'e2',
-            categoryId: 'dia',
-            date: DateTime(2026, 1, 1),
-            value: 80,
-            notes: '',
-          ),
-        ]
-      : <MeasurementEntry>[];
+  final sysEntries = withEntries ? [testNeasurementEntry9] : <MeasurementEntry>[];
+  final diaEntries = withEntries ? [testNeasurementEntry10] : <MeasurementEntry>[];
+  final sys = testMeasurementCategorySystolic.copyWith(entries: sysEntries);
+  final dia = testMeasurementCategoryDiastolic.copyWith(entries: diaEntries);
 
-  final sys = MeasurementCategory(
-    id: 'sys',
-    name: 'Systolic',
-    unit: 'mmHg',
-    parentId: 'bp',
-    order: 0,
-    entries: sysEntries,
-  );
-  final dia = MeasurementCategory(
-    id: 'dia',
-    name: 'Diastolic',
-    unit: 'mmHg',
-    parentId: 'bp',
-    order: 1,
-    entries: diaEntries,
-  );
-
-  return MeasurementCategory(
-    id: 'bp',
-    name: 'Blood pressure',
-    unit: 'mmHg',
-    metricType: MetricType.bloodPressure,
-    children: [sys, dia],
-  );
+  return testMeasurementCategoryBloodPressure.copyWith(children: [sys, dia]);
 }
 
 void main() {

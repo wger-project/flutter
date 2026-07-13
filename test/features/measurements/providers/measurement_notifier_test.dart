@@ -40,6 +40,8 @@ void main() {
     when(mockRepo.updateLocalDrift(any)).thenAnswer((_) async {});
     when(mockRepo.addLocalDrift(any)).thenAnswer((_) async {});
 
+    when(mockRepo.addLocalDriftGroupEntries(any)).thenAnswer((_) async {});
+
     when(mockRepo.deleteLocalDriftCategory(any)).thenAnswer((_) async {});
     when(mockRepo.updateLocalDriftCategory(any)).thenAnswer((_) async {});
     when(mockRepo.addLocalDriftCategory(any)).thenAnswer((_) async {});
@@ -100,6 +102,23 @@ void main() {
       container.read(measurementProvider);
 
       verify(mockRepo.watchAll()).called(1);
+    });
+  });
+
+  group('addGroupEntries', () {
+    test('addGroupEntries calls repository', () async {
+      final notifier = container.read(measurementProvider.notifier);
+      final entries = [testNeasurementEntry9, testNeasurementEntry10];
+
+      await notifier.addGroupEntries(entries);
+      verify(mockRepo.addLocalDriftGroupEntries(entries)).called(1);
+    });
+
+    test('addGroupEntries forwards empty list to repository', () async {
+      final notifier = container.read(measurementProvider.notifier);
+
+      await notifier.addGroupEntries([]);
+      verify(mockRepo.addLocalDriftGroupEntries([])).called(1);
     });
   });
 
