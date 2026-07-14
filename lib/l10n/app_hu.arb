@@ -1,80 +1,134 @@
 {
-  "login": "Bejelentkezés",
-  "@login": {
-    "description": "Text for login button"
-  },
-  "invalidEmail": "Nem megfelelő e-mail cím",
-  "@invalidEmail": {
-    "description": "Error message when the user enters an invalid email"
-  },
-  "customServerHint": "Add meg a saját szervered címét, máskülönben az alapértelmezettet használjuk",
-  "@customServerHint": {
-    "description": "Hint text for the form where the users can enter their own wger instance"
-  },
-  "userProfile": "Profil",
-  "@userProfile": {},
-  "logout": "Kijelentkezés",
-  "@logout": {
-    "description": "Text for logout button"
-  },
-  "register": "Regisztráció",
-  "@register": {
-    "description": "Text for registration button"
-  },
-  "useDefaultServer": "Alapértelmezett szerver",
-  "@useDefaultServer": {
-    "description": "Toggle button allowing users to switch between the default and a custom wger server"
-  },
-  "useCustomServer": "Egyedi szerver",
-  "@useCustomServer": {
-    "description": "Toggle button allowing users to switch between the default and a custom wger server"
-  },
-  "invalidUrl": "Nem megfelelő URL",
-  "@invalidUrl": {
-    "description": "Error message when the user enters an invalid URL, e.g. in the login form"
-  },
-  "password": "Jelszó",
-  "@password": {},
-  "passwordTooShort": "A jelszó túl rövid",
-  "@passwordTooShort": {
-    "description": "Error message when the user a password that is too short"
-  },
-  "usernameValidChars": "A felhasználónév csak betűket, számokat és @, +, ., -, és _ karaktereket tartalmazhat",
-  "@usernameValidChars": {
-    "description": "Error message when the user tries to register a username with forbidden characters"
-  },
-  "passwordsDontMatch": "A jelszavak nem egyeznek",
-  "@passwordsDontMatch": {
-    "description": "Error message when the user enters two different passwords during registration"
-  },
-  "labelBottomNavNutrition": "Táplálkozás",
-  "@labelBottomNavNutrition": {
-    "description": "Label used in bottom navigation, use a short word"
-  },
-  "username": "Felhasználónév",
-  "@username": {},
-  "email": "E-mail cím",
-  "@email": {},
-  "confirmPassword": "Jelszó újra",
-  "@confirmPassword": {},
-  "invalidUsername": "Nem megfelelő felhasználónév",
-  "@invalidUsername": {
-    "description": "Error message when the user enters an invalid username"
-  },
-  "customServerUrl": "A wger szerver URL-je",
-  "@customServerUrl": {
-    "description": "Label in the form where the users can enter their own wger instance"
-  },
-  "reset": "Visszaállítás",
-  "@reset": {
-    "description": "Button text allowing the user to reset the entered values to the default"
-  },
-  "registerInstead": "Nincs fiókod? Regisztrálj most",
-  "@registerInstead": {},
-  "loginInstead": "Már van fiókod? Bejelentkezés",
-  "@loginInstead": {},
-  "labelBottomNavWorkout": "Edzés",
-  "@labelBottomNavWorkout": {
-    "description": "Label used in bottom navigation, use a short word"
-  }
+    "login": "Bejelentkezés",
+    "@login": {
+        "description": "Text for login button"
+    },
+    "invalidEmail": "Nem érvényes e-mail cím",
+    "@invalidEmail": {
+        "description": "Error message when the user enters an invalid email"
+    },
+    "customServerHint": "Add meg a saját szervered címét, máskülönben az alapértelmezettet használjuk",
+    "@customServerHint": {
+        "description": "Hint text for the form where the users can enter their own wger instance"
+    },
+    "userProfile": "Profil",
+    "logout": "Kijelentkezés",
+    "@logout": {
+        "description": "Text for logout button"
+    },
+    "register": "Regisztráció",
+    "@register": {
+        "description": "Text for registration button"
+    },
+    "useDefaultServer": "Alapértelmezett szerver",
+    "@useDefaultServer": {
+        "description": "Toggle button allowing users to switch between the default and a custom wger server"
+    },
+    "useCustomServer": "Egyedi szerver",
+    "@useCustomServer": {
+        "description": "Toggle button allowing users to switch between the default and a custom wger server"
+    },
+    "invalidUrl": "Adj meg érvényes URL-t",
+    "@invalidUrl": {
+        "description": "Error message when the user enters an invalid URL, e.g. in the login form"
+    },
+    "password": "Jelszó",
+    "passwordTooShort": "A jelszó túl rövid",
+    "@passwordTooShort": {
+        "description": "Error message when the user a password that is too short"
+    },
+    "usernameValidChars": "A felhasználónév csak betűket, számokat és @, +, ., -, és _ karaktereket tartalmazhat",
+    "@usernameValidChars": {
+        "description": "Error message when the user tries to register a username with forbidden characters"
+    },
+    "passwordsDontMatch": "A jelszavak nem egyeznek",
+    "@passwordsDontMatch": {
+        "description": "Error message when the user enters two different passwords during registration"
+    },
+    "labelBottomNavNutrition": "Táplálkozás",
+    "@labelBottomNavNutrition": {
+        "description": "Label used in bottom navigation, use a short word"
+    },
+    "username": "Felhasználónév",
+    "email": "E-mail cím",
+    "confirmPassword": "Jelszó megerősítése",
+    "invalidUsername": "Nem megfelelő felhasználónév",
+    "@invalidUsername": {
+        "description": "Error message when the user enters an invalid username"
+    },
+    "customServerUrl": "A wger szerver URL-je",
+    "@customServerUrl": {
+        "description": "Label in the form where the users can enter their own wger instance"
+    },
+    "reset": "Visszaállítás",
+    "@reset": {
+        "description": "Button text allowing the user to reset the entered values to the default"
+    },
+    "registerInstead": "Nincs fiókod? Regisztrálj most",
+    "loginInstead": "Már van fiókod? Bejelentkezés",
+    "labelBottomNavWorkout": "Edzés",
+    "@labelBottomNavWorkout": {
+        "description": "Label used in bottom navigation, use a short word"
+    },
+    "next": "Következő",
+    "kg": "kg",
+    "@kg": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "selectAvailablePlates": "Elérhető súlytárcsák kiválasztása",
+    "barWeight": "Rúd súlya",
+    "useColors": "Színek használata",
+    "refreshToken": "Frissítési token",
+    "invalidRefreshToken": "Adj meg egy érvényes frissítési tokent",
+    "@invalidRefreshToken": {
+        "description": "Error message when the user enters an invalid refresh token"
+    },
+    "refreshTokenValidChars": "A frissítési token három, ponttal elválasztott részből áll (fejléc.adattartalom.aláírás), amelyek mindegyike betűket, számjegyeket, valamint „-” és „_” karaktereket tartalmaz",
+    "@refreshTokenValidChars": {
+        "description": "Error message when the user pastes a string that does not match the JWT shape"
+    },
+    "refreshTokenHelperText": "Hozz létre egy JWT-frissítési tokent a wger weboldalán, majd illeszd be ide. Akkor hasznos, ha a szervered hitelesítési proxy mögött működik, vagy ki szeretnéd hagyni a szokásos bejelentkezési folyamatot.",
+    "@refreshTokenHelperText": {
+        "description": "Helper text on the refresh-token paste field"
+    },
+    "mfaChallengeTitle": "Kétfaktoros hitelesítés",
+    "@mfaChallengeTitle": {
+        "description": "App bar title on the 2FA challenge screen"
+    },
+    "mfaChallengeTotpPrompt": "Írd be a hitelesítő alkalmazásban megjelenő 6 jegyű kódot",
+    "@mfaChallengeTotpPrompt": {
+        "description": "Helper text above the TOTP input field"
+    },
+    "mfaChallengeRecoveryPrompt": "Írd be az egyik helyreállítási kódodat",
+    "@mfaChallengeRecoveryPrompt": {
+        "description": "Helper text above the recovery-code input field"
+    },
+    "mfaCodeLabel": "Kód",
+    "@mfaCodeLabel": {
+        "description": "Label on the 2FA code input field"
+    },
+    "mfaInvalidCode": "Kérlek adj meg egy kódot",
+    "@mfaInvalidCode": {
+        "description": "Validation error when the 2FA code field is empty"
+    },
+    "mfaUseRecoveryCode": "Helyreállítási kód használata",
+    "@mfaUseRecoveryCode": {
+        "description": "Button that switches the 2FA challenge to recovery-code mode"
+    },
+    "mfaUseTotpCode": "Hitelesítő alkalmazás kódjának használata",
+    "@mfaUseTotpCode": {
+        "description": "Button that switches the 2FA challenge back to TOTP mode"
+    },
+    "mfaSubmit": "Jóváhagyás",
+    "@mfaSubmit": {
+        "description": "Submit button on the 2FA challenge screen"
+    },
+    "mfaUnsupportedFactor": "A fiókodhoz olyan második hitelesítési tényező van beállítva, amelyet ez az alkalmazás még nem támogat. Kérjük, jelentkezz be a webhelyen.",
+    "@mfaUnsupportedFactor": {
+        "description": "Shown when the server reports only factor types the app cannot handle (e.g. webauthn)"
+    },
+    "manageAccountOnWeb": "Profil kezelése a webes felületen",
+    "@manageAccountOnWeb": {
+        "description": "Label on a button that opens the user's preferences page on the wger website"
+    }
 }
