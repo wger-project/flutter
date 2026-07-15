@@ -130,5 +130,22 @@
     "manageAccountOnWeb": "Profil kezelése a webes felületen",
     "@manageAccountOnWeb": {
         "description": "Label on a button that opens the user's preferences page on the wger website"
-    }
+    },
+    "plateCalculator": "Súlytárcsák",
+    "@plateCalculator": {
+        "description": "Label used for the plate calculator in the gym mode"
+    },
+    "plateCalculatorNotDivisible": "Nem lehet a súlyt elérni az elérhető tárcsákkal",
+    "@plateCalculatorNotDivisible": {
+        "description": "Error message when the current weight is not reachable with plates (e.g. 33.1 kg)"
+    },
+    "pause": "Szüneteltet",
+    "@pause": {
+        "description": "Noun, not an imperative! Label used for the pause when using the gym mode"
+    },
+    "jumpTo": "Ugrás a",
+    "@jumpTo": {
+        "description": "Imperative. Label used in popup allowing the user to jump to a specific exercise while in the gym mode"
+    },
+    "todaysWorkout": "Mai edzésed"
 }
