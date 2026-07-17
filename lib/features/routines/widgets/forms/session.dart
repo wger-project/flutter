@@ -30,7 +30,7 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 
 class SessionForm extends ConsumerStatefulWidget {
   final _logger = Logger('SessionForm');
-  final int _routineId;
+  final int? _routineId;
   final int? _dayId;
 
   /// The session to edit, or null to create a new one.

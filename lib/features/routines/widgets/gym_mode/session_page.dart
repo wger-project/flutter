@@ -75,7 +75,7 @@ class _SessionPageState extends ConsumerState<SessionPage> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 15),
                     child: SessionForm(
-                      gymState.routine.id!,
+                      gymState.routine.id,
                       onSaved: () => widget._controller.nextPage(
                         duration: DEFAULT_ANIMATION_DURATION,
                         curve: DEFAULT_ANIMATION_CURVE,

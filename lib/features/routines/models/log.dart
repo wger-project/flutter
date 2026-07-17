@@ -84,7 +84,7 @@ class Log {
     DateTime? date,
   }) : date = date ?? DateTime.now();
 
-  Log.fromSetConfigData(SetConfigData setConfig, {int? routineId, this.iteration}) {
+  Log.fromSetConfigData(SetConfigData setConfig, {this.routineId, this.iteration}) {
     date = DateTime.now();
     sessionId = null;
 
@@ -103,10 +103,6 @@ class Log {
 
     rir = setConfig.rir;
     rirTarget = setConfig.rir;
-
-    if (routineId != null) {
-      this.routineId = routineId;
-    }
   }
 
   Log copyWith({
@@ -166,7 +162,7 @@ class Log {
     return WorkoutLogTableCompanion(
       id: id != null ? drift.Value(id!) : const drift.Value.absent(),
       exerciseId: drift.Value(exerciseId),
-      routineId: routineId != null ? drift.Value(routineId) : const drift.Value.absent(),
+      routineId: drift.Value(routineId),
       sessionId: sessionId != null ? drift.Value(sessionId) : const drift.Value.absent(),
       iteration: iteration != null ? drift.Value(iteration) : const drift.Value.absent(),
       slotEntryId: slotEntryId != null ? drift.Value(slotEntryId) : const drift.Value.absent(),

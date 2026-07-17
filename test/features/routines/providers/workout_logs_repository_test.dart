@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2026 wger Team
+ * Copyright (c) 2026 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -39,7 +39,7 @@ void main() {
 
   Log makeLog({
     int exerciseId = 1,
-    int routineId = 100,
+    int? routineId = 100,
     String? sessionId,
     DateTime? date,
     num weight = 50,
@@ -151,6 +151,44 @@ void main() {
 
       expect(await readSessions(), hasLength(2));
     });
+
+    test('creates a session without a routine for a log without a routine', () async {
+      final log = makeLog(routineId: null, date: DateTime.utc(2026, 4, 15, 18));
+
+      await repo.addLocalDrift(log);
+
+      final sessions = await readSessions();
+      expect(sessions, hasLength(1));
+      expect(sessions.single.routineId, isNull);
+      expect(log.sessionId, sessions.single.id);
+    });
+
+    test('reuses an existing session without a routine for a log without a routine', () async {
+      final existingSession = WorkoutSession(
+        id: 'free-session',
+        routineId: null,
+        date: DateTime.utc(2026, 4, 15),
+      );
+      await db.into(db.workoutSessionTable).insert(existingSession.toCompanion());
+
+      final log = makeLog(routineId: null, date: DateTime.utc(2026, 4, 15, 18));
+      await repo.addLocalDrift(log);
+
+      expect(await readSessions(), hasLength(1));
+      expect(log.sessionId, existingSession.id);
+    });
+
+    test('does not attach a log without a routine to a session with one', () async {
+      await db
+          .into(db.workoutSessionTable)
+          .insert(
+            WorkoutSession(routineId: 100, date: DateTime.utc(2026, 4, 15)).toCompanion(),
+          );
+
+      await repo.addLocalDrift(makeLog(routineId: null, date: DateTime.utc(2026, 4, 15)));
+
+      expect(await readSessions(), hasLength(2));
+    });
   });
 
   group('updateLocalDrift', () {
@@ -240,6 +278,21 @@ void main() {
 
       expect(logs.single.repetitionsUnitObj?.name, 'Repetitions');
       expect(logs.single.weightUnitObj?.name, 'kg');
+    });
+
+    test('returns logs without a routine, e.g. free logging on the server', () async {
+      // The server allows logs without a routine. Such a row arrives via
+      // PowerSync with routine_id = NULL and must map cleanly
+      await seedUnits();
+      await db.customStatement(
+        'INSERT INTO manager_workoutlog (id, exercise_id, routine_id, weight, date) '
+        "VALUES ('free-log', 1, NULL, 50.0, '2026-04-15T10:30:00.000Z')",
+      );
+
+      final logs = await repo.watchLogsByExerciseDrift(exerciseId: 1).first;
+
+      expect(logs, hasLength(1));
+      expect(logs.single.routineId, isNull);
     });
 
     test('returns the logs of every routine when no routine is given', () async {

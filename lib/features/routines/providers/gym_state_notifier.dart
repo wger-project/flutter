@@ -300,9 +300,11 @@ class GymStateNotifier extends _$GymStateNotifier {
       return;
     }
 
-    final log = Log.fromSetConfigData(slotEntryPage.setConfigData!);
-    log.routineId = state.routine.id!;
-    log.iteration = state.iteration;
+    final log = Log.fromSetConfigData(
+      slotEntryPage.setConfigData!,
+      routineId: state.routine.id,
+      iteration: state.iteration,
+    );
     ref.read(gymLogProvider.notifier).setLog(log);
   }
 

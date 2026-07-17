@@ -5973,7 +5973,7 @@ class $WorkoutLogTableTable extends WorkoutLogTable with TableInfo<$WorkoutLogTa
       routineId: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}routine_id'],
-      )!,
+      ),
       sessionId: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}session_id'],
@@ -6122,7 +6122,7 @@ class WorkoutLogTableCompanion extends UpdateCompanion<Log> {
   WorkoutLogTableCompanion copyWith({
     Value<String>? id,
     Value<int>? exerciseId,
-    Value<int>? routineId,
+    Value<int?>? routineId,
     Value<String?>? sessionId,
     Value<int?>? iteration,
     Value<int?>? slotEntryId,
