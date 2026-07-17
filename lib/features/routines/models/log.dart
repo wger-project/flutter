@@ -45,7 +45,7 @@ class Log {
   late int exerciseId;
   late Exercise exerciseObj;
 
-  late int routineId;
+  int? routineId;
   String? sessionId;
   int? iteration;
   int? slotEntryId;
@@ -69,7 +69,7 @@ class Log {
     required this.exerciseId,
     this.iteration,
     this.slotEntryId,
-    required this.routineId,
+    this.routineId,
     this.sessionId,
     this.repetitions,
     this.repetitionsTarget,
@@ -84,7 +84,7 @@ class Log {
     DateTime? date,
   }) : date = date ?? DateTime.now();
 
-  Log.fromSetConfigData(SetConfigData setConfig, {int? routineId, this.iteration}) {
+  Log.fromSetConfigData(SetConfigData setConfig, {this.routineId, this.iteration}) {
     date = DateTime.now();
     sessionId = null;
 
@@ -103,10 +103,6 @@ class Log {
 
     rir = setConfig.rir;
     rirTarget = setConfig.rir;
-
-    if (routineId != null) {
-      this.routineId = routineId;
-    }
   }
 
   Log copyWith({
