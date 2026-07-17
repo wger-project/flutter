@@ -16,11 +16,45 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wger/features/measurements/widgets/charts.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
+
+Widget _wrap(Widget child) => MaterialApp(
+  localizationsDelegates: AppLocalizations.localizationsDelegates,
+  supportedLocales: AppLocalizations.supportedLocales,
+  home: Scaffold(
+    body: SizedBox(width: 400, height: 300, child: child),
+  ),
+);
 
 void main() {
   MeasurementChartEntry entry(num value, DateTime date) => MeasurementChartEntry(value, date);
+
+  group('MeasurementBarChartWidgetFl', () {
+    testWidgets('renders without error for empty entries', (tester) async {
+      await tester.pumpWidget(
+        _wrap(const MeasurementBarChartWidgetFl([], 'steps')),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byType(MeasurementBarChartWidgetFl), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('BarChart is present for non-empty entries', (tester) async {
+      final entries = [
+        entry(1000, DateTime(2026, 1, 1)),
+        entry(2000, DateTime(2026, 1, 2)),
+        entry(1500, DateTime(2026, 1, 3)),
+      ];
+      await tester.pumpWidget(_wrap(MeasurementBarChartWidgetFl(entries, 'steps')));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(BarChart), findsOneWidget);
+    });
+  });
 
   group('aggregatePerDay', () {
     test('returns an empty list for no entries', () {
