@@ -119,8 +119,9 @@ final testMeasurementCategoryDiastolic = MeasurementCategory(
   order: 1,
 );
 
-/// The blood pressure group as a flat list (parent first), as stored in the
-/// database. Not included in [getMeasurementCategories].
+/// The blood pressure group as a flat list (parent first) with the children
+/// attached to the parent, matching the shape the repository's watchAll()
+/// returns. Not included in [getMeasurementCategories].
 List<MeasurementCategory> getBloodPressureGroup() {
   return [
     testMeasurementCategoryBloodPressure,

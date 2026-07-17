@@ -19,78 +19,68 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:wger/core/widgets/decimal_input.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
-import 'package:wger/features/measurements/widgets/forms.dart';
+import 'package:wger/features/measurements/widgets/categories.dart';
+import 'package:wger/features/measurements/widgets/categories_card.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 import '../../../../test_data/measurements.dart';
-import '../providers/measurement_notifier_test.mocks.dart';
+import 'categories_test.mocks.dart';
 
 Widget _wrap(MockMeasurementRepository mockRepo) {
   return ProviderScope(
     overrides: [
       measurementRepositoryProvider.overrideWithValue(mockRepo),
     ],
-    child: MaterialApp(
+    child: const MaterialApp(
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      home: Scaffold(
-        body: SingleChildScrollView(
-          child: GroupMeasurementEntryForm(testMeasurementCategoryBloodPressure),
-        ),
-      ),
+      home: Scaffold(body: CategoriesList()),
     ),
   );
 }
 
+@GenerateMocks([MeasurementRepository])
 void main() {
   late MockMeasurementRepository mockRepo;
 
   setUp(() {
     mockRepo = MockMeasurementRepository();
-    when(mockRepo.watchAll()).thenAnswer((_) => Stream.value([]));
-    when(mockRepo.addLocalDriftGroupEntries(any)).thenAnswer((_) async {});
   });
 
-  group('GroupMeasurementEntryForm', () {
-    testWidgets('renders one DecimalInputWidget per child component', (tester) async {
+  group('CategoriesList', () {
+    testWidgets('two top-level categories render two CategoriesCard widgets', (tester) async {
+      when(mockRepo.watchAll()).thenAnswer((_) => Stream.value(getMeasurementCategories()));
+
       await tester.pumpWidget(_wrap(mockRepo));
       await tester.pumpAndSettle();
 
-      expect(find.byType(DecimalInputWidget), findsNWidgets(2));
+      expect(find.byType(CategoriesCard), findsNWidgets(2));
     });
 
-    testWidgets('empty value fields fail validation', (tester) async {
+    testWidgets('children of multi-value groups are not rendered as own list items', (
+      tester,
+    ) async {
+      // Only 'bp' should produce a CategoriesCard; children stay inside it.
+      when(mockRepo.watchAll()).thenAnswer((_) => Stream.value(getBloodPressureGroup()));
+
       await tester.pumpWidget(_wrap(mockRepo));
       await tester.pumpAndSettle();
 
-      // Tap save without entering values
-      await tester.tap(find.byType(ElevatedButton));
-      await tester.pumpAndSettle();
-
-      // Form doesnot pop
-      expect(find.byType(GroupMeasurementEntryForm), findsOneWidget);
+      expect(find.byType(CategoriesCard), findsOneWidget);
+      expect(find.text('Systolic'), findsOneWidget);
+      expect(find.text('Diastolic'), findsOneWidget);
     });
 
-    testWidgets('valid submission calls addGroupEntries with correct count', (tester) async {
+    testWidgets('empty list renders no CategoriesCard', (tester) async {
+      when(mockRepo.watchAll()).thenAnswer((_) => Stream.value([]));
+
       await tester.pumpWidget(_wrap(mockRepo));
       await tester.pumpAndSettle();
 
-      final fields = find.byType(TextFormField);
-      // Fields : Date, Time, Systolic value, Diastolic value
-      await tester.enterText(fields.at(2), '120');
-      await tester.enterText(fields.at(3), '80');
-
-      await tester.tap(find.byType(ElevatedButton));
-      await tester.pumpAndSettle();
-
-      verify(
-        mockRepo.addLocalDriftGroupEntries(
-          argThat(hasLength(2)),
-        ),
-      ).called(1);
+      expect(find.byType(CategoriesCard), findsNothing);
     });
   });
 }

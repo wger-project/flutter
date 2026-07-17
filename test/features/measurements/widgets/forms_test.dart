@@ -19,41 +19,46 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:wger/core/widgets/decimal_input.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
+import 'package:wger/features/measurements/models/measurement_entry.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
 import 'package:wger/features/measurements/widgets/forms.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 import '../../../../test_data/measurements.dart';
-import '../providers/measurement_notifier_test.mocks.dart';
+import 'forms_test.mocks.dart';
 
-Widget _wrap(Widget child, MockMeasurementRepository mockRepo) {
-  return ProviderScope(
-    overrides: [
-      measurementRepositoryProvider.overrideWithValue(mockRepo),
-    ],
-    child: MaterialApp(
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      home: Scaffold(
-        body: SingleChildScrollView(child: child),
-      ),
-    ),
-  );
-}
-
+@GenerateMocks([MeasurementRepository])
 void main() {
   late MockMeasurementRepository mockRepo;
 
   setUp(() {
     mockRepo = MockMeasurementRepository();
     when(mockRepo.watchAll()).thenAnswer((_) => Stream.value([]));
+    when(mockRepo.addLocalDriftGroupEntries(any)).thenAnswer((_) async {});
   });
+
+  Widget wrap(Widget child) {
+    return ProviderScope(
+      overrides: [
+        measurementRepositoryProvider.overrideWithValue(mockRepo),
+      ],
+      child: MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Scaffold(
+          body: SingleChildScrollView(child: child),
+        ),
+      ),
+    );
+  }
 
   group('MeasurementCategoryForm validation', () {
     testWidgets('empty name fails validation', (tester) async {
-      await tester.pumpWidget(_wrap(const MeasurementCategoryForm(), mockRepo));
+      await tester.pumpWidget(wrap(const MeasurementCategoryForm()));
       await tester.pumpAndSettle();
 
       // Tap save without entering any text
@@ -71,7 +76,7 @@ void main() {
     });
 
     testWidgets('empty unit field fails validation', (tester) async {
-      await tester.pumpWidget(_wrap(const MeasurementCategoryForm(), mockRepo));
+      await tester.pumpWidget(wrap(const MeasurementCategoryForm()));
       await tester.pumpAndSettle();
 
       // Fill name but leave unit empty
@@ -84,17 +89,15 @@ void main() {
     });
 
     testWidgets('metricType dropdown renders all MetricType values', (tester) async {
-      await tester.pumpWidget(_wrap(const MeasurementCategoryForm(), mockRepo));
+      await tester.pumpWidget(wrap(const MeasurementCategoryForm()));
       await tester.pumpAndSettle();
 
       // Open the dropdown
       await tester.tap(find.byType(DropdownButtonFormField<MetricType>));
       await tester.pumpAndSettle();
 
-      // We expect N + 1 items here because when the dropdown is opened:
-      // 1. The initialValue is still displayed on the form background as a DropdownMenuItem.
-      // 2. The opened menu overlay displays all 6 total MetricType options.
-      // Total = 1 (background label) + 6 (popup menu options) = 7 widgets.
+      // The initialValue stays visible on the form behind the opened menu
+      // overlay, which shows every MetricType option once.
       expect(
         find.byType(DropdownMenuItem<MetricType>),
         findsNWidgets(MetricType.values.length + 1),
@@ -104,11 +107,58 @@ void main() {
     testWidgets('editing existing category pre-fills name and unit', (tester) async {
       final existing = getMeasurementCategories()[1];
 
-      await tester.pumpWidget(_wrap(MeasurementCategoryForm(existing), mockRepo));
+      await tester.pumpWidget(wrap(MeasurementCategoryForm(existing)));
       await tester.pumpAndSettle();
 
       expect(find.widgetWithText(TextFormField, 'Biceps'), findsOneWidget);
       expect(find.widgetWithText(TextFormField, 'cm'), findsOneWidget);
+    });
+  });
+
+  group('GroupMeasurementEntryForm', () {
+    testWidgets('renders one DecimalInputWidget per child component', (tester) async {
+      await tester.pumpWidget(
+        wrap(GroupMeasurementEntryForm(testMeasurementCategoryBloodPressure)),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.byType(DecimalInputWidget), findsNWidgets(2));
+    });
+
+    testWidgets('empty value fields fail validation', (tester) async {
+      await tester.pumpWidget(
+        wrap(GroupMeasurementEntryForm(testMeasurementCategoryBloodPressure)),
+      );
+      await tester.pumpAndSettle();
+
+      // Tap save without entering values
+      await tester.tap(find.byType(ElevatedButton));
+      await tester.pumpAndSettle();
+
+      // Form does not pop
+      expect(find.byType(GroupMeasurementEntryForm), findsOneWidget);
+      verifyNever(mockRepo.addLocalDriftGroupEntries(any));
+    });
+
+    testWidgets('valid submission adds one entry per component, sharing the date', (tester) async {
+      await tester.pumpWidget(
+        wrap(GroupMeasurementEntryForm(testMeasurementCategoryBloodPressure)),
+      );
+      await tester.pumpAndSettle();
+
+      final fields = find.byType(TextFormField);
+      // Fields: date, time, systolic value, diastolic value
+      await tester.enterText(fields.at(2), '120');
+      await tester.enterText(fields.at(3), '80');
+
+      await tester.tap(find.byType(ElevatedButton));
+      await tester.pumpAndSettle();
+
+      final entries =
+          verify(mockRepo.addLocalDriftGroupEntries(captureAny)).captured.single
+              as List<MeasurementEntry>;
+      expect(entries.map((e) => (e.categoryId, e.value)), [('sys', 120), ('dia', 80)]);
+      expect(entries.first.date, entries.last.date);
     });
   });
 }

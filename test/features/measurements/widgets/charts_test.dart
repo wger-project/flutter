@@ -43,7 +43,6 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    // T-24
     testWidgets('BarChart is present for non-empty entries', (tester) async {
       final entries = [
         entry(1000, DateTime(2026, 1, 1)),
@@ -55,12 +54,14 @@ void main() {
 
       expect(find.byType(BarChart), findsOneWidget);
     });
+  });
 
-    test('aggregatePerDay returns an empty list for no entries', () {
+  group('aggregatePerDay', () {
+    test('returns an empty list for no entries', () {
       expect(aggregatePerDay([]), isEmpty);
     });
 
-    test('aggregatePerDay sums entries sharing a calendar day into one point', () {
+    test('sums entries sharing a calendar day into one point', () {
       final result = aggregatePerDay([
         entry(1000, DateTime(2026, 1, 1, 8)),
         entry(2500, DateTime(2026, 1, 1, 20)),
