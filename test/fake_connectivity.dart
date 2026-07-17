@@ -17,6 +17,7 @@
  */
 
 import 'package:connectivity_plus_platform_interface/connectivity_plus_platform_interface.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:wger/core/network/network_provider.dart';
 
@@ -36,6 +37,8 @@ import 'package:wger/core/network/network_provider.dart';
 /// Call once per test file (top of `main()` is fine, the static swaps stick
 /// for the entire file).
 void installFakeConnectivity() {
+  // NetworkStatus registers an AppLifecycleListener, which needs a binding.
+  TestWidgetsFlutterBinding.ensureInitialized();
   ConnectivityPlatform.instance = _FakeConnectivityPlatform();
   reachabilityCheck = (_, _, _) async => true;
 }

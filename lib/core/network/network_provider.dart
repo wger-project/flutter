@@ -20,7 +20,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -91,6 +91,7 @@ class NetworkStatus extends _$NetworkStatus {
 
   StreamSubscription<List<ConnectivityResult>>? _sub;
   Timer? _probeTimer;
+  AppLifecycleListener? _lifecycleListener;
 
   @override
   bool build() {
@@ -102,11 +103,15 @@ class NetworkStatus extends _$NetworkStatus {
   }
 
   void _init() {
-    check();
+    check(optimistic: true);
 
     _sub = Connectivity().onConnectivityChanged.listen((conn) async {
-      state = await _hasConnectionAndInternet(conn);
+      await _update(conn, optimistic: true);
     });
+
+    // A stale offline state from the background shouldn't stick until the
+    // next timer tick, so re-check optimistically on resume.
+    _lifecycleListener = AppLifecycleListener(onResume: () => check(optimistic: true));
 
     // Connectivity events only fire on adapter changes, so an active re-probe
     // is needed to notice a backend that goes down (or comes back) while the
@@ -119,30 +124,47 @@ class NetworkStatus extends _$NetworkStatus {
     ref.onDispose(() {
       _sub?.cancel();
       _probeTimer?.cancel();
+      _lifecycleListener?.dispose();
     });
   }
 
-  Future<bool> check({Duration timeout = const Duration(seconds: 1)}) async {
+  /// Re-checks connectivity and backend reachability, updates the state and
+  /// returns it.
+  ///
+  /// With [optimistic] the state flips to online as soon as a network adapter
+  /// is available and a failed probe only downgrades it afterwards; without it
+  /// the state changes only once the probe has answered. The periodic re-probe
+  /// stays pessimistic so a dead backend doesn't flash "online" every tick.
+  Future<bool> check({
+    Duration timeout = const Duration(seconds: 1),
+    bool optimistic = false,
+  }) async {
     final conn = await Connectivity().checkConnectivity();
-    final ok = await _hasConnectionAndInternet(conn, timeout: timeout);
-    state = ok;
-    return ok;
+    return _update(conn, timeout: timeout, optimistic: optimistic);
   }
 
-  Future<bool> _hasConnectionAndInternet(
+  Future<bool> _update(
     List<ConnectivityResult> conn, {
     Duration timeout = const Duration(seconds: 1),
+    bool optimistic = false,
   }) async {
     // Only short-circuit when there's clearly no network adapter at all. Any
     // other connectivity type (wifi, ethernet, mobile, vpn, other, ...) still
     // has to prove real reachability via the probe below. An empty list
     // counts as "no connection" too.
     if (conn.every((c) => c == ConnectivityResult.none)) {
+      state = false;
       return false;
+    }
+
+    if (optimistic) {
+      state = true;
     }
 
     final base = ref.read(wgerBaseProvider);
     final probeUri = base.serverUrl != null ? base.makeUrl('version') : null;
-    return reachabilityCheck(probeUri, base.getAppNameHeaderValue(), timeout);
+    final ok = await reachabilityCheck(probeUri, base.getAppNameHeaderValue(), timeout);
+    state = ok;
+    return ok;
   }
 }
