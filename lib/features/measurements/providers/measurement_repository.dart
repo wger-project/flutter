@@ -39,7 +39,11 @@ class MeasurementRepository {
 
   MeasurementRepository(this._db);
 
-  /// Watches all categories, populated with their appropriate entries
+  /// Watches all categories, populated with their appropriate entries.
+  ///
+  /// The list is flat (children of multi-value groups appear as regular items
+  /// with a non-null `parentId`), but group parents additionally get their
+  /// [MeasurementCategory.children] attached, sorted by their in-group order.
   Stream<List<MeasurementCategory>> watchAll() {
     _logger.finer('Watching all measurement categories with entries');
 
@@ -50,6 +54,7 @@ class MeasurementRepository {
             _db.measurementEntryTable.categoryId.equalsExp(_db.measurementCategoryTable.id),
           ),
         ])..orderBy([
+          OrderingTerm(expression: _db.measurementCategoryTable.order),
           OrderingTerm(expression: _db.measurementCategoryTable.name),
           OrderingTerm(expression: _db.measurementEntryTable.date, mode: OrderingMode.desc),
         ]);
@@ -71,9 +76,16 @@ class MeasurementRepository {
         }
       }
 
-      return map.values
+      final categories = map.values
           .map((c) => c.copyWith(entries: List<MeasurementEntry>.from(c.entries)))
           .toList();
+
+      // Attach children to their group parents (rows are already sorted by
+      // order/name, so insertion order is the display order).
+      return categories.map((c) {
+        final children = categories.where((other) => other.parentId == c.id).toList();
+        return children.isEmpty ? c : c.copyWith(children: children);
+      }).toList();
     });
   }
 
@@ -81,6 +93,9 @@ class MeasurementRepository {
     _logger.finer('Watching local measurement category $id');
     return watchAll().map((categories) => categories.firstWhereOrNull((c) => c.id == id));
   }
+
+  /// One-shot snapshot of all categories with their entries.
+  Future<List<MeasurementCategory>> getAllOnce() => watchAll().first;
 
   // Entries
   Future<void> deleteLocalDrift(String id) async {
@@ -99,10 +114,26 @@ class MeasurementRepository {
     await _db.into(_db.measurementEntryTable).insert(entry.toCompanion());
   }
 
+  /// Inserts one reading of a multi-value group: one entry per component,
+  /// written in a single transaction so a reading is never half-persisted.
+  Future<void> addLocalDriftGroupEntries(List<MeasurementEntry> entries) async {
+    _logger.finer('Adding ${entries.length} local measurement entries for a group reading');
+    await _db.transaction(() async {
+      for (final entry in entries) {
+        await _db.into(_db.measurementEntryTable).insert(entry.toCompanion());
+      }
+    });
+  }
+
   // Categories
   Future<void> deleteLocalDriftCategory(String id) async {
     _logger.finer('Deleting local measurement category $id');
-    await (_db.delete(_db.measurementCategoryTable)..where((t) => t.id.equals(id))).go();
+    await _db.transaction(() async {
+      // Children of a multi-value group are meaningless without their parent;
+      // the server cascades the same way.
+      await (_db.delete(_db.measurementCategoryTable)..where((t) => t.parentId.equals(id))).go();
+      await (_db.delete(_db.measurementCategoryTable)..where((t) => t.id.equals(id))).go();
+    });
   }
 
   Future<void> updateLocalDriftCategory(MeasurementCategory category) async {
@@ -114,5 +145,19 @@ class MeasurementRepository {
   Future<void> addLocalDriftCategory(MeasurementCategory category) async {
     _logger.finer('Adding local measurement category ${category.name}');
     await _db.into(_db.measurementCategoryTable).insert(category.toCompanion());
+  }
+
+  /// Persists the given display order: each category gets its list index as
+  /// [MeasurementCategory.order]. Categories whose order is unchanged are not
+  /// written, so no sync upload is queued for them.
+  Future<void> reorderCategories(List<String> orderedIds) async {
+    _logger.finer('Reordering ${orderedIds.length} categories');
+    await _db.transaction(() async {
+      for (var i = 0; i < orderedIds.length; i++) {
+        final stmt = _db.update(_db.measurementCategoryTable)
+          ..where((t) => t.id.equals(orderedIds[i]) & t.order.equals(i).not());
+        await stmt.write(MeasurementCategoryTableCompanion(order: Value(i)));
+      }
+    });
   }
 }

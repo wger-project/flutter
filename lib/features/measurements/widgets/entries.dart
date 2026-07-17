@@ -57,6 +57,7 @@ class EntriesList extends ConsumerWidget {
           plans,
           _category.unit,
           context,
+          metricType: _category.metricType,
         ),
         SizedBox(
           height: 300,

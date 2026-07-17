@@ -473,6 +473,16 @@ class MockMeasurementRepository extends _i1.Mock implements _i23.MeasurementRepo
           as _i10.Stream<_i24.MeasurementCategory?>);
 
   @override
+  _i10.Future<List<_i24.MeasurementCategory>> getAllOnce() =>
+      (super.noSuchMethod(
+            Invocation.method(#getAllOnce, []),
+            returnValue: _i10.Future<List<_i24.MeasurementCategory>>.value(
+              <_i24.MeasurementCategory>[],
+            ),
+          )
+          as _i10.Future<List<_i24.MeasurementCategory>>);
+
+  @override
   _i10.Future<void> deleteLocalDrift(String? id) =>
       (super.noSuchMethod(
             Invocation.method(#deleteLocalDrift, [id]),
@@ -494,6 +504,17 @@ class MockMeasurementRepository extends _i1.Mock implements _i23.MeasurementRepo
   _i10.Future<void> addLocalDrift(_i25.MeasurementEntry? entry) =>
       (super.noSuchMethod(
             Invocation.method(#addLocalDrift, [entry]),
+            returnValue: _i10.Future<void>.value(),
+            returnValueForMissingStub: _i10.Future<void>.value(),
+          )
+          as _i10.Future<void>);
+
+  @override
+  _i10.Future<void> addLocalDriftGroupEntries(
+    List<_i25.MeasurementEntry>? entries,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#addLocalDriftGroupEntries, [entries]),
             returnValue: _i10.Future<void>.value(),
             returnValueForMissingStub: _i10.Future<void>.value(),
           )
@@ -523,6 +544,15 @@ class MockMeasurementRepository extends _i1.Mock implements _i23.MeasurementRepo
   _i10.Future<void> addLocalDriftCategory(_i24.MeasurementCategory? category) =>
       (super.noSuchMethod(
             Invocation.method(#addLocalDriftCategory, [category]),
+            returnValue: _i10.Future<void>.value(),
+            returnValueForMissingStub: _i10.Future<void>.value(),
+          )
+          as _i10.Future<void>);
+
+  @override
+  _i10.Future<void> reorderCategories(List<String>? orderedIds) =>
+      (super.noSuchMethod(
+            Invocation.method(#reorderCategories, [orderedIds]),
             returnValue: _i10.Future<void>.value(),
             returnValueForMissingStub: _i10.Future<void>.value(),
           )

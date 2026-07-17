@@ -761,6 +761,7 @@
     "@indicatorAvg": {
         "description": "added for localization of Class Indicator's field text"
     },
+    "indicatorTrend": "tendance",
     "resistance_band": "Bande de résistance",
     "@resistance_band": {
         "description": "Generated entry for translation for server strings"

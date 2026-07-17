@@ -43,12 +43,24 @@ class MeasurementEntry with _$MeasurementEntry {
   @override
   final String notes;
 
+  /// Origin of the reading; one of the server's `source` values
+  /// (`user`, `google`, `apple`).
+  @override
+  final String source;
+
+  /// Platform record UUID, used to deduplicate re-imports. `null` for manual
+  /// entries.
+  @override
+  final String? externalId;
+
   MeasurementEntry({
     this.id,
     required this.categoryId,
     required this.date,
     required this.value,
     required this.notes,
+    this.source = 'user',
+    this.externalId,
   });
 
   // Boilerplate
@@ -59,6 +71,8 @@ class MeasurementEntry with _$MeasurementEntry {
       date: Value(date),
       value: Value(value.toDouble()),
       notes: Value(notes),
+      source: Value(source),
+      externalId: Value(externalId),
     );
   }
 }

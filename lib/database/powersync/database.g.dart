@@ -4881,7 +4881,49 @@ class $MeasurementCategoryTableTable extends MeasurementCategoryTable
     requiredDuringInsert: true,
   );
   @override
-  List<GeneratedColumn> get $columns => [id, name, unit];
+  late final GeneratedColumnWithTypeConverter<MetricType, String> metricType =
+      GeneratedColumn<String>(
+        'metric_type',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<MetricType>(
+        $MeasurementCategoryTableTable.$convertermetricType,
+      );
+  static const VerificationMeta _parentIdMeta = const VerificationMeta(
+    'parentId',
+  );
+  @override
+  late final GeneratedColumn<String> parentId = GeneratedColumn<String>(
+    'parent_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES measurements_category (id)',
+    ),
+  );
+  static const VerificationMeta _orderMeta = const VerificationMeta('order');
+  @override
+  late final GeneratedColumn<int> order = GeneratedColumn<int>(
+    'order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    name,
+    unit,
+    metricType,
+    parentId,
+    order,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -4913,6 +4955,18 @@ class $MeasurementCategoryTableTable extends MeasurementCategoryTable
     } else if (isInserting) {
       context.missing(_unitMeta);
     }
+    if (data.containsKey('parent_id')) {
+      context.handle(
+        _parentIdMeta,
+        parentId.isAcceptableOrUnknown(data['parent_id']!, _parentIdMeta),
+      );
+    }
+    if (data.containsKey('order')) {
+      context.handle(
+        _orderMeta,
+        order.isAcceptableOrUnknown(data['order']!, _orderMeta),
+      );
+    }
     return context;
   }
 
@@ -4934,6 +4988,20 @@ class $MeasurementCategoryTableTable extends MeasurementCategoryTable
         DriftSqlType.string,
         data['${effectivePrefix}unit'],
       )!,
+      metricType: $MeasurementCategoryTableTable.$convertermetricType.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}metric_type'],
+        )!,
+      ),
+      parentId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}parent_id'],
+      ),
+      order: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}order'],
+      )!,
     );
   }
 
@@ -4941,36 +5009,55 @@ class $MeasurementCategoryTableTable extends MeasurementCategoryTable
   $MeasurementCategoryTableTable createAlias(String alias) {
     return $MeasurementCategoryTableTable(attachedDatabase, alias);
   }
+
+  static TypeConverter<MetricType, String> $convertermetricType =
+      const MeasurementMetricTypeConverter();
 }
 
 class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCategory> {
   final Value<String> id;
   final Value<String> name;
   final Value<String> unit;
+  final Value<MetricType> metricType;
+  final Value<String?> parentId;
+  final Value<int> order;
   final Value<int> rowid;
   const MeasurementCategoryTableCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.unit = const Value.absent(),
+    this.metricType = const Value.absent(),
+    this.parentId = const Value.absent(),
+    this.order = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   MeasurementCategoryTableCompanion.insert({
     this.id = const Value.absent(),
     required String name,
     required String unit,
+    required MetricType metricType,
+    this.parentId = const Value.absent(),
+    this.order = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : name = Value(name),
-       unit = Value(unit);
+       unit = Value(unit),
+       metricType = Value(metricType);
   static Insertable<MeasurementCategory> custom({
     Expression<String>? id,
     Expression<String>? name,
     Expression<String>? unit,
+    Expression<String>? metricType,
+    Expression<String>? parentId,
+    Expression<int>? order,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (unit != null) 'unit': unit,
+      if (metricType != null) 'metric_type': metricType,
+      if (parentId != null) 'parent_id': parentId,
+      if (order != null) 'order': order,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -4979,12 +5066,18 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
     Value<String>? id,
     Value<String>? name,
     Value<String>? unit,
+    Value<MetricType>? metricType,
+    Value<String?>? parentId,
+    Value<int>? order,
     Value<int>? rowid,
   }) {
     return MeasurementCategoryTableCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
       unit: unit ?? this.unit,
+      metricType: metricType ?? this.metricType,
+      parentId: parentId ?? this.parentId,
+      order: order ?? this.order,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -5001,6 +5094,19 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
     if (unit.present) {
       map['unit'] = Variable<String>(unit.value);
     }
+    if (metricType.present) {
+      map['metric_type'] = Variable<String>(
+        $MeasurementCategoryTableTable.$convertermetricType.toSql(
+          metricType.value,
+        ),
+      );
+    }
+    if (parentId.present) {
+      map['parent_id'] = Variable<String>(parentId.value);
+    }
+    if (order.present) {
+      map['order'] = Variable<int>(order.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -5013,6 +5119,9 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('unit: $unit, ')
+          ..write('metricType: $metricType, ')
+          ..write('parentId: $parentId, ')
+          ..write('order: $order, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -5075,8 +5184,37 @@ class $MeasurementEntryTableTable extends MeasurementEntryTable
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _sourceMeta = const VerificationMeta('source');
   @override
-  List<GeneratedColumn> get $columns => [id, categoryId, date, value, notes];
+  late final GeneratedColumn<String> source = GeneratedColumn<String>(
+    'source',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('manual'),
+  );
+  static const VerificationMeta _externalIdMeta = const VerificationMeta(
+    'externalId',
+  );
+  @override
+  late final GeneratedColumn<String> externalId = GeneratedColumn<String>(
+    'external_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    categoryId,
+    date,
+    value,
+    notes,
+    source,
+    externalId,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -5116,6 +5254,18 @@ class $MeasurementEntryTableTable extends MeasurementEntryTable
     } else if (isInserting) {
       context.missing(_notesMeta);
     }
+    if (data.containsKey('source')) {
+      context.handle(
+        _sourceMeta,
+        source.isAcceptableOrUnknown(data['source']!, _sourceMeta),
+      );
+    }
+    if (data.containsKey('external_id')) {
+      context.handle(
+        _externalIdMeta,
+        externalId.isAcceptableOrUnknown(data['external_id']!, _externalIdMeta),
+      );
+    }
     return context;
   }
 
@@ -5147,6 +5297,14 @@ class $MeasurementEntryTableTable extends MeasurementEntryTable
         DriftSqlType.string,
         data['${effectivePrefix}notes'],
       )!,
+      source: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source'],
+      )!,
+      externalId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}external_id'],
+      ),
     );
   }
 
@@ -5164,6 +5322,8 @@ class MeasurementEntryTableCompanion extends UpdateCompanion<MeasurementEntry> {
   final Value<DateTime> date;
   final Value<double> value;
   final Value<String> notes;
+  final Value<String> source;
+  final Value<String?> externalId;
   final Value<int> rowid;
   const MeasurementEntryTableCompanion({
     this.id = const Value.absent(),
@@ -5171,6 +5331,8 @@ class MeasurementEntryTableCompanion extends UpdateCompanion<MeasurementEntry> {
     this.date = const Value.absent(),
     this.value = const Value.absent(),
     this.notes = const Value.absent(),
+    this.source = const Value.absent(),
+    this.externalId = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   MeasurementEntryTableCompanion.insert({
@@ -5179,6 +5341,8 @@ class MeasurementEntryTableCompanion extends UpdateCompanion<MeasurementEntry> {
     required DateTime date,
     required double value,
     required String notes,
+    this.source = const Value.absent(),
+    this.externalId = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : categoryId = Value(categoryId),
        date = Value(date),
@@ -5190,6 +5354,8 @@ class MeasurementEntryTableCompanion extends UpdateCompanion<MeasurementEntry> {
     Expression<DateTime>? date,
     Expression<double>? value,
     Expression<String>? notes,
+    Expression<String>? source,
+    Expression<String>? externalId,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -5198,6 +5364,8 @@ class MeasurementEntryTableCompanion extends UpdateCompanion<MeasurementEntry> {
       if (date != null) 'date': date,
       if (value != null) 'value': value,
       if (notes != null) 'notes': notes,
+      if (source != null) 'source': source,
+      if (externalId != null) 'external_id': externalId,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -5208,6 +5376,8 @@ class MeasurementEntryTableCompanion extends UpdateCompanion<MeasurementEntry> {
     Value<DateTime>? date,
     Value<double>? value,
     Value<String>? notes,
+    Value<String>? source,
+    Value<String?>? externalId,
     Value<int>? rowid,
   }) {
     return MeasurementEntryTableCompanion(
@@ -5216,6 +5386,8 @@ class MeasurementEntryTableCompanion extends UpdateCompanion<MeasurementEntry> {
       date: date ?? this.date,
       value: value ?? this.value,
       notes: notes ?? this.notes,
+      source: source ?? this.source,
+      externalId: externalId ?? this.externalId,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -5240,6 +5412,12 @@ class MeasurementEntryTableCompanion extends UpdateCompanion<MeasurementEntry> {
     if (notes.present) {
       map['notes'] = Variable<String>(notes.value);
     }
+    if (source.present) {
+      map['source'] = Variable<String>(source.value);
+    }
+    if (externalId.present) {
+      map['external_id'] = Variable<String>(externalId.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -5254,6 +5432,8 @@ class MeasurementEntryTableCompanion extends UpdateCompanion<MeasurementEntry> {
           ..write('date: $date, ')
           ..write('value: $value, ')
           ..write('notes: $notes, ')
+          ..write('source: $source, ')
+          ..write('externalId: $externalId, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -16368,6 +16548,9 @@ typedef $$MeasurementCategoryTableTableCreateCompanionBuilder =
       Value<String> id,
       required String name,
       required String unit,
+      required MetricType metricType,
+      Value<String?> parentId,
+      Value<int> order,
       Value<int> rowid,
     });
 typedef $$MeasurementCategoryTableTableUpdateCompanionBuilder =
@@ -16375,6 +16558,9 @@ typedef $$MeasurementCategoryTableTableUpdateCompanionBuilder =
       Value<String> id,
       Value<String> name,
       Value<String> unit,
+      Value<MetricType> metricType,
+      Value<String?> parentId,
+      Value<int> order,
       Value<int> rowid,
     });
 
@@ -16390,6 +16576,26 @@ final class $$MeasurementCategoryTableTableReferences
     super.$_table,
     super.$_typedResult,
   );
+
+  static $MeasurementCategoryTableTable _parentIdTable(
+    _$DriftPowersyncDatabase db,
+  ) => db.measurementCategoryTable.createAlias(
+    'measurements_category__parent_id__measurements_category__id',
+  );
+
+  $$MeasurementCategoryTableTableProcessedTableManager? get parentId {
+    final $_column = $_itemColumn<String>('parent_id');
+    if ($_column == null) return null;
+    final manager = $$MeasurementCategoryTableTableTableManager(
+      $_db,
+      $_db.measurementCategoryTable,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_parentIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
 
   static MultiTypedResultKey<$MeasurementEntryTableTable, List<MeasurementEntry>>
   _measurementEntryTableRefsTable(_$DriftPowersyncDatabase db) => MultiTypedResultKey.fromTable(
@@ -16435,6 +16641,39 @@ class $$MeasurementCategoryTableTableFilterComposer
     column: $table.unit,
     builder: (column) => ColumnFilters(column),
   );
+
+  ColumnWithTypeConverterFilters<MetricType, MetricType, String> get metricType =>
+      $composableBuilder(
+        column: $table.metricType,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
+
+  ColumnFilters<int> get order => $composableBuilder(
+    column: $table.order,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$MeasurementCategoryTableTableFilterComposer get parentId {
+    final $$MeasurementCategoryTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.parentId,
+      referencedTable: $db.measurementCategoryTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MeasurementCategoryTableTableFilterComposer(
+            $db: $db,
+            $table: $db.measurementCategoryTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 
   Expression<bool> measurementEntryTableRefs(
     Expression<bool> Function($$MeasurementEntryTableTableFilterComposer f) f,
@@ -16484,6 +16723,38 @@ class $$MeasurementCategoryTableTableOrderingComposer
     column: $table.unit,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get metricType => $composableBuilder(
+    column: $table.metricType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get order => $composableBuilder(
+    column: $table.order,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$MeasurementCategoryTableTableOrderingComposer get parentId {
+    final $$MeasurementCategoryTableTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.parentId,
+      referencedTable: $db.measurementCategoryTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MeasurementCategoryTableTableOrderingComposer(
+            $db: $db,
+            $table: $db.measurementCategoryTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 }
 
 class $$MeasurementCategoryTableTableAnnotationComposer
@@ -16503,6 +16774,36 @@ class $$MeasurementCategoryTableTableAnnotationComposer
 
   GeneratedColumn<String> get unit =>
       $composableBuilder(column: $table.unit, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<MetricType, String> get metricType => $composableBuilder(
+    column: $table.metricType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get order =>
+      $composableBuilder(column: $table.order, builder: (column) => column);
+
+  $$MeasurementCategoryTableTableAnnotationComposer get parentId {
+    final $$MeasurementCategoryTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.parentId,
+      referencedTable: $db.measurementCategoryTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MeasurementCategoryTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.measurementCategoryTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer: $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 
   Expression<T> measurementEntryTableRefs<T extends Object>(
     Expression<T> Function($$MeasurementEntryTableTableAnnotationComposer a) f,
@@ -16542,7 +16843,10 @@ class $$MeasurementCategoryTableTableTableManager
           $$MeasurementCategoryTableTableUpdateCompanionBuilder,
           (MeasurementCategory, $$MeasurementCategoryTableTableReferences),
           MeasurementCategory,
-          PrefetchHooks Function({bool measurementEntryTableRefs})
+          PrefetchHooks Function({
+            bool parentId,
+            bool measurementEntryTableRefs,
+          })
         > {
   $$MeasurementCategoryTableTableTableManager(
     _$DriftPowersyncDatabase db,
@@ -16568,11 +16872,17 @@ class $$MeasurementCategoryTableTableTableManager
                 Value<String> id = const Value.absent(),
                 Value<String> name = const Value.absent(),
                 Value<String> unit = const Value.absent(),
+                Value<MetricType> metricType = const Value.absent(),
+                Value<String?> parentId = const Value.absent(),
+                Value<int> order = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => MeasurementCategoryTableCompanion(
                 id: id,
                 name: name,
                 unit: unit,
+                metricType: metricType,
+                parentId: parentId,
+                order: order,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -16580,11 +16890,17 @@ class $$MeasurementCategoryTableTableTableManager
                 Value<String> id = const Value.absent(),
                 required String name,
                 required String unit,
+                required MetricType metricType,
+                Value<String?> parentId = const Value.absent(),
+                Value<int> order = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => MeasurementCategoryTableCompanion.insert(
                 id: id,
                 name: name,
                 unit: unit,
+                metricType: metricType,
+                parentId: parentId,
+                order: order,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -16595,13 +16911,44 @@ class $$MeasurementCategoryTableTableTableManager
                 ),
               )
               .toList(),
-          prefetchHooksCallback: ({measurementEntryTableRefs = false}) {
+          prefetchHooksCallback: ({parentId = false, measurementEntryTableRefs = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
                 if (measurementEntryTableRefs) db.measurementEntryTable,
               ],
-              addJoins: null,
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (parentId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.parentId,
+                                referencedTable: $$MeasurementCategoryTableTableReferences
+                                    ._parentIdTable(db),
+                                referencedColumn: $$MeasurementCategoryTableTableReferences
+                                    ._parentIdTable(db)
+                                    .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (measurementEntryTableRefs)
@@ -16619,7 +16966,9 @@ class $$MeasurementCategoryTableTableTableManager
                         p0,
                       ).measurementEntryTableRefs,
                       referencedItemsForCurrentItem: (item, referencedItems) =>
-                          referencedItems.where((e) => e.categoryId == item.id),
+                          referencedItems.where(
+                            (e) => e.categoryId == item.id,
+                          ),
                       typedResults: items,
                     ),
                 ];
@@ -16642,7 +16991,7 @@ typedef $$MeasurementCategoryTableTableProcessedTableManager =
       $$MeasurementCategoryTableTableUpdateCompanionBuilder,
       (MeasurementCategory, $$MeasurementCategoryTableTableReferences),
       MeasurementCategory,
-      PrefetchHooks Function({bool measurementEntryTableRefs})
+      PrefetchHooks Function({bool parentId, bool measurementEntryTableRefs})
     >;
 typedef $$MeasurementEntryTableTableCreateCompanionBuilder =
     MeasurementEntryTableCompanion Function({
@@ -16651,6 +17000,8 @@ typedef $$MeasurementEntryTableTableCreateCompanionBuilder =
       required DateTime date,
       required double value,
       required String notes,
+      Value<String> source,
+      Value<String?> externalId,
       Value<int> rowid,
     });
 typedef $$MeasurementEntryTableTableUpdateCompanionBuilder =
@@ -16660,6 +17011,8 @@ typedef $$MeasurementEntryTableTableUpdateCompanionBuilder =
       Value<DateTime> date,
       Value<double> value,
       Value<String> notes,
+      Value<String> source,
+      Value<String?> externalId,
       Value<int> rowid,
     });
 
@@ -16722,6 +17075,16 @@ class $$MeasurementEntryTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<String> get source => $composableBuilder(
+    column: $table.source,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get externalId => $composableBuilder(
+    column: $table.externalId,
+    builder: (column) => ColumnFilters(column),
+  );
+
   $$MeasurementCategoryTableTableFilterComposer get categoryId {
     final $$MeasurementCategoryTableTableFilterComposer composer = $composerBuilder(
       composer: this,
@@ -16774,6 +17137,16 @@ class $$MeasurementEntryTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get source => $composableBuilder(
+    column: $table.source,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get externalId => $composableBuilder(
+    column: $table.externalId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   $$MeasurementCategoryTableTableOrderingComposer get categoryId {
     final $$MeasurementCategoryTableTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -16817,6 +17190,14 @@ class $$MeasurementEntryTableTableAnnotationComposer
 
   GeneratedColumn<String> get notes =>
       $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumn<String> get source =>
+      $composableBuilder(column: $table.source, builder: (column) => column);
+
+  GeneratedColumn<String> get externalId => $composableBuilder(
+    column: $table.externalId,
+    builder: (column) => column,
+  );
 
   $$MeasurementCategoryTableTableAnnotationComposer get categoryId {
     final $$MeasurementCategoryTableTableAnnotationComposer composer = $composerBuilder(
@@ -16882,6 +17263,8 @@ class $$MeasurementEntryTableTableTableManager
                 Value<DateTime> date = const Value.absent(),
                 Value<double> value = const Value.absent(),
                 Value<String> notes = const Value.absent(),
+                Value<String> source = const Value.absent(),
+                Value<String?> externalId = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => MeasurementEntryTableCompanion(
                 id: id,
@@ -16889,6 +17272,8 @@ class $$MeasurementEntryTableTableTableManager
                 date: date,
                 value: value,
                 notes: notes,
+                source: source,
+                externalId: externalId,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -16898,6 +17283,8 @@ class $$MeasurementEntryTableTableTableManager
                 required DateTime date,
                 required double value,
                 required String notes,
+                Value<String> source = const Value.absent(),
+                Value<String?> externalId = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => MeasurementEntryTableCompanion.insert(
                 id: id,
@@ -16905,6 +17292,8 @@ class $$MeasurementEntryTableTableTableManager
                 date: date,
                 value: value,
                 notes: notes,
+                source: source,
+                externalId: externalId,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

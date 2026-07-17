@@ -22,6 +22,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:wger/core/dashboard.dart';
 import 'package:wger/core/material.dart';
 import 'package:wger/features/gallery/screens/gallery_screen.dart';
+import 'package:wger/features/health/providers/health_sync.dart';
 import 'package:wger/features/nutrition/screens/nutritional_plans_screen.dart';
 import 'package:wger/features/routines/screens/routine_list_screen.dart';
 import 'package:wger/features/weight/screens/weight_screen.dart';
@@ -40,6 +41,20 @@ class _HomeTabsScreenState extends ConsumerState<HomeTabsScreen>
     with SingleTickerProviderStateMixin {
   int _selectedIndex = 0;
   bool _isWideScreen = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Pull any new readings from Apple Health / Health Connect once the app is
+    // open. The sync is a no-op unless the user enabled it in the settings.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+      ref.read(healthSyncProvider.notifier).syncOnAppOpen();
+    });
+  }
 
   @override
   void didChangeDependencies() {

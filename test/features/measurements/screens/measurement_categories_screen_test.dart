@@ -36,7 +36,12 @@ void main() {
     final mockRepo = MockMeasurementRepository();
     when(
       mockRepo.watchAll(),
-    ).thenAnswer((_) => Stream<List<MeasurementCategory>>.value(getMeasurementCategories()));
+    ).thenAnswer(
+      (_) => Stream<List<MeasurementCategory>>.value([
+        ...getMeasurementCategories(),
+        ...getBloodPressureGroup(),
+      ]),
+    );
 
     return ProviderScope(
       overrides: [
@@ -52,13 +57,19 @@ void main() {
   }
 
   testWidgets('Test the widgets on the measurement category screen', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(800, 2200);
+    tester.view.devicePixelRatio = 1.0;
+
     await tester.pumpWidget(createMeasurementScreen());
     await tester.pumpAndSettle();
 
     expect(find.text('Measurements'), findsOneWidget);
     expect(find.text('Body fat'), findsOneWidget);
     expect(find.text('Biceps'), findsOneWidget);
-    expect(find.byType(Card), findsNWidgets(2));
-    expect(find.byType(MeasurementChartWidgetFl), findsNWidgets(2));
+    expect(find.text('Blood pressure'), findsOneWidget);
+    expect(find.text('Systolic'), findsOneWidget);
+    expect(find.text('Diastolic'), findsOneWidget);
+    expect(find.byType(ListTile), findsNWidgets(2)); // Systolic , Diastolic
+    expect(find.byType(MeasurementChartWidgetFl), findsNWidgets(2)); // Body fat, Biceps
   });
 }

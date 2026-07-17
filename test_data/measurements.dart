@@ -78,6 +78,58 @@ final testMeasurementEntry8 = MeasurementEntry(
   notes: '',
 );
 
+final testNeasurementEntry9 = MeasurementEntry(
+  id: 'e1',
+  categoryId: 'sys',
+  date: DateTime(2026, 1, 1),
+  value: 120,
+  notes: '',
+);
+
+final testNeasurementEntry10 = MeasurementEntry(
+  id: 'e2',
+  categoryId: 'dia',
+  date: DateTime(2026, 1, 1),
+  value: 80,
+  notes: '',
+);
+
+/// Multi-value group: blood pressure with systolic/diastolic components.
+final testMeasurementCategoryBloodPressure = MeasurementCategory(
+  id: 'bp',
+  name: 'Blood pressure',
+  unit: 'mmHg',
+  metricType: MetricType.bloodPressure,
+  children: [testMeasurementCategorySystolic, testMeasurementCategoryDiastolic],
+);
+
+final testMeasurementCategorySystolic = MeasurementCategory(
+  id: 'sys',
+  name: 'Systolic',
+  unit: 'mmHg',
+  parentId: 'bp',
+  order: 0,
+);
+
+final testMeasurementCategoryDiastolic = MeasurementCategory(
+  id: 'dia',
+  name: 'Diastolic',
+  unit: 'mmHg',
+  parentId: 'bp',
+  order: 1,
+);
+
+/// The blood pressure group as a flat list (parent first) with the children
+/// attached to the parent, matching the shape the repository's watchAll()
+/// returns. Not included in [getMeasurementCategories].
+List<MeasurementCategory> getBloodPressureGroup() {
+  return [
+    testMeasurementCategoryBloodPressure,
+    testMeasurementCategorySystolic,
+    testMeasurementCategoryDiastolic,
+  ];
+}
+
 List<MeasurementCategory> getMeasurementCategories() {
   return [
     MeasurementCategory(

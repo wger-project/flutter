@@ -157,7 +157,10 @@ class DjangoConnector extends PowerSyncBackendConnector {
       if (k == 'id') {
         return;
       }
-      final key = k.endsWith('_id') ? k.substring(0, k.length - 3) : k;
+      // Trailing `_id` marks a foreign key, which Django exposes without the
+      // suffix (`category_id` -> `category`). `external_id` is a plain value
+      // column, not an FK, so it keeps its name.
+      final key = (k.endsWith('_id') && k != 'external_id') ? k.substring(0, k.length - 3) : k;
       out[key] = (dateFields.contains(key) && v is String && v.length >= 10)
           ? v.substring(0, 10)
           : v;

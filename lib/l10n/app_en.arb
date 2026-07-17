@@ -553,8 +553,64 @@
   },
   "measurementCategoriesHelpText": "Measurement category, such as 'biceps' or 'body fat'",
   "@measurementCategoriesHelpText": {},
+  "metricType": "Metric Type",
+  "@metricType": {
+    "description": "Metric type for a measurement category"
+  },
+  "reorderCategories": "Reorder categories",
+  "@reorderCategories": {
+    "description": "measurement categories reordering"
+  },
+  "metricCustom": "Custom",
+  "@metricCustom": {
+    "description": "Label for custom metric type"
+  },
+  "metricBodyWeight": "Body weight",
+  "@metricBodyWeight": {
+    "description": "Label for body weight measurement"
+  },
+  "metricBodyFat": "Body fat",
+  "@metricBodyFat": {
+    "description": "Label for body fat percentage measurement"
+  },
+  "metricHeight": "Height",
+  "@metricHeight": {
+    "description": "Label for height measurement"
+  },
+  "metricBloodPressure": "Blood pressure",
+  "@metricBloodPressure": {
+    "description": "Label for blood pressure measurement"
+  },
+  "metricHeartRate": "Heart rate",
+  "@metricHeartRate": {
+    "description": "Label for heart rate measurement"
+  },
+  "metricSteps": "Steps",
+  "@metricSteps": {
+    "description": "Label for step count measurement"
+  },
+  "metricDistance": "Distance",
+  "@metricDistance": {
+    "description": "Label for distance measurement"
+  },
+  "metricEnergy": "Energy",
+  "@metricEnergy": {
+    "description": "Label for energy/calories burned measurement"
+  },
+  "metricSleep": "Sleep",
+  "@metricSleep": {
+    "description": "Label for sleep duration measurement"
+  },
   "measurementEntriesHelpText": "The unit used to measure the category such as 'cm' or '%'",
   "@measurementEntriesHelpText": {},
+  "partOfGroup": "Part of group",
+  "@partOfGroup": {
+    "description": "Dropdown label: makes a measurement category a component of a multi-value group (e.g. blood pressure)"
+  },
+  "noGroup": "No group",
+  "@noGroup": {
+    "description": "Dropdown option for a measurement category that is not part of any group"
+  },
   "date": "Date",
   "@date": {
     "description": "The date of a workout log or body weight entry"
@@ -1285,6 +1341,10 @@
   "@indicatorAvg": {
     "description": "added for localization of Class Indicator's field text"
   },
+  "indicatorTrend": "trend",
+  "@indicatorTrend": {
+    "description": "Legend label for the smoothed trendline on measurement charts"
+  },
   "endWorkout": "End workout",
   "@endWorkout": {
     "description": "Use the imperative, label on button to finish the current workout in gym mode"
@@ -1445,5 +1505,26 @@
   "timeStartEndBothOrNeither": "Either set both start and end time or leave both empty",
   "@timeStartEndBothOrNeither": {
     "description": "Validation error when only one of start/end time is set on a workout session"
+  },
+  "healthSync": "Health sync",
+  "@healthSync": {
+    "description": "Title for the health platform sync setting"
+  },
+  "healthSyncDescription": "Import body measurements from Apple Health or Health Connect",
+  "@healthSyncDescription": {
+    "description": "Subtitle for the health platform sync setting"
+  },
+  "healthSyncSuccess": "Imported {count} measurements from Health",
+  "@healthSyncSuccess": {
+    "description": "Snackbar message after successful health sync",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "health": "Health",
+  "@health": {
+    "description": "Section header for health-related settings"
   }
 }

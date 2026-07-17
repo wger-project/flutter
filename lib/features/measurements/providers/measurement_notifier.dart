@@ -72,6 +72,12 @@ final class MeasurementNotifier extends _$MeasurementNotifier {
     await _repo.addLocalDrift(entry);
   }
 
+  /// Adds one reading of a multi-value group (one entry per component,
+  /// persisted atomically).
+  Future<void> addGroupEntries(List<MeasurementEntry> entries) async {
+    await _repo.addLocalDriftGroupEntries(entries);
+  }
+
   // --- MeasurementCategory operations (delegated to repository) ---
   Future<void> deleteCategory(String id) async {
     await _repo.deleteLocalDriftCategory(id);
@@ -83,5 +89,23 @@ final class MeasurementNotifier extends _$MeasurementNotifier {
 
   Future<void> addCategory(MeasurementCategory category) async {
     await _repo.addLocalDriftCategory(category);
+  }
+
+  /// Moves the top-level category at [oldIndex] to [newIndex] and renumbers
+  /// all top-level categories accordingly.
+  ///
+  /// Indices refer to the top-level list only (children of multi-value groups
+  /// keep their in-group order).
+  Future<void> setCategoryOrder(int oldIndex, int newIndex) async {
+    final categories = state.asData?.value;
+    if (categories == null) {
+      return;
+    }
+
+    final reordered = categories.where((c) => c.parentId == null).toList();
+    final moved = reordered.removeAt(oldIndex);
+    reordered.insert(newIndex, moved);
+
+    await _repo.reorderCategories([for (final c in reordered) c.id!]);
   }
 }
