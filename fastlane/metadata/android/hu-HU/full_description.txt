@@ -1,0 +1,39 @@
+Fitneszrajongóktól fitneszrajongóknak – rendszerezd az egészségeddel kapcsolatos adatokat a WGERrel, a saját edzéskezelőddel!
+
+Már megtaláltad az első számú fitneszalkalmazásodat, és szereted saját magad összeállítani az edzésprogramjaidat? Nem számít, milyen sportőrült vagy – egyvalami mindannyiunkban közös: szeretjük nyomon követni az egészségügyi adatainkat <3
+
+Nem ítélünk el azért, ha még mindig a praktikus kis edzésnaplófüzetedben vezeted a fejlődésedet, de üdv 2026-ban!
+
+Kifejlesztettünk neked egy 100%-ban ingyenes, digitális egészség- és fitneszkövető alkalmazást, amely csak a legfontosabb funkciókat tartalmazza, hogy egyszerűbbé tegye az életedet. Kezdd el, folytasd az edzést, és ünnepeld a fejlődésedet!
+
+A wger egy nyílt forráskódú projekt, amelynek középpontjában a következők állnak:
+* A tested
+* Az edzéseid
+* A fejlődésed
+* Az adataid
+
+A tested:
+Nem kell rákeresned kedvenc ételeid összetevőire – válaszd ki napi étkezéseidet több mint 78 000 termék közül, és tekintsd meg azok tápértékadatait. Add hozzá az étkezéseket a táplálkozási tervedhez, és kövesd nyomon étrendedet a naptárban.
+
+Az edzéseid:
+Te tudod a legjobban, mi tesz jót a testednek. Állítsd össze saját edzéseidet a több mint 200 különböző gyakorlatot tartalmazó, folyamatosan bővülő kínálatból. Ezután használd az Edzőtermi módot, amely végigvezet az edzésen, miközben egyetlen koppintással rögzítheted a használt súlyokat.
+
+A fejlődésed:
+Soha ne téveszd szem elől a céljaidat. Kövesd nyomon a testsúlyodat, és tekintsd meg a statisztikáidat.
+
+Az adataid:
+A wger a személyre szabott fitnesznaplód – az adataid azonban a te tulajdonodban maradnak. A REST API segítségével hozzáférhetsz az adataidhoz, és nagyszerű dolgokat valósíthatsz meg velük.
+
+Kérjük, vedd figyelembe: ez az ingyenes alkalmazás nem részesül külső finanszírozásban, és adományt sem kérünk. A wger egy folyamatosan fejlődő közösségi projekt, ezért bármikor új funkciók jelenhetnek meg!
+
+#NyíltForráskód – mit jelent ez?
+
+A nyílt forráskód azt jelenti, hogy az alkalmazás és a hozzá kapcsolódó szerver teljes forráskódja ingyenesen és bárki számára elérhető:
+* Saját szervereden szeretnéd futtatni a wgert magadnak vagy a helyi edzőtermed számára? Rajta!
+* Hiányzik egy funkció, és szeretnéd megvalósítani? Kezdd el most!
+* Ellenőrizni szeretnéd, hogy az alkalmazás nem küld-e adatokat illetéktelen helyre? Megteheted!
+
+Csatlakozz közösségünkhöz, és légy része a világ minden tájáról érkező sportrajongók és informatikai megszállottak csapatának. Folyamatosan dolgozunk az alkalmazás saját igényeinkhez igazított fejlesztésén és optimalizálásán. Örömmel fogadjuk a visszajelzéseidet, ezért bármikor csatlakozhatsz, és megoszthatod velünk kívánságaidat és ötleteidet!
+
+-> A forráskódot itt találod: https://github.com/wger-project
+-> Tedd fel kérdéseidet, vagy csak köszönj be Discord-szerverünkön: https://discord.gg/rPWFv6W
