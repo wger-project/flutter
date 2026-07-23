@@ -275,13 +275,14 @@ class StartPage extends ConsumerWidget {
         FilledButton(
           child: Text(AppLocalizations.of(context).start),
           onPressed: () {
+            ref.read(gymStateProvider.notifier).startWorkout();
             _controller.nextPage(
               duration: const Duration(milliseconds: 200),
               curve: Curves.bounceIn,
             );
           },
         ),
-        NavigationFooter(_controller, showPrevious: false),
+        NavigationFooter(_controller, showPrevious: false, showElapsedTime: false),
       ],
     );
   }

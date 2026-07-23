@@ -453,6 +453,12 @@ class GymStateNotifier extends _$GymStateNotifier {
     recalculateIndices();
   }
 
+  /// Resets the workout start time to now, e.g. when the user taps "start"
+  void startWorkout() {
+    _logger.fine('Setting workout start time');
+    state = state.copyWith(workoutStart: clock.now());
+  }
+
   void clear() {
     _logger.fine('Clearing state');
     state = state.copyWith(
@@ -461,7 +467,7 @@ class GymStateNotifier extends _$GymStateNotifier {
       currentPage: 0,
 
       validUntil: clock.now().add(DEFAULT_DURATION),
-      startTime: null,
+      workoutStart: clock.now(),
     );
   }
 }

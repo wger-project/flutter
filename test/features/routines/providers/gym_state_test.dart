@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:clock/clock.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
@@ -304,6 +306,37 @@ void main() {
       // Assert
       expect(notifier.state.logScopeWeeks, isNull);
       expect(await PreferenceHelper.asyncPref.getInt(PREFS_LOG_SCOPE_WEEKS), isNull);
+    });
+  });
+
+  group('GymStateNotifier.startWorkout', () {
+    test('Resets the workout start time to now', () {
+      // Arrange
+      notifier.state = notifier.state.copyWith(workoutStart: DateTime(2024, 5, 1, 10, 0));
+
+      // Act
+      withClock(Clock.fixed(DateTime(2024, 5, 1, 17, 30, 21)), () {
+        notifier.startWorkout();
+      });
+
+      // Assert
+      expect(notifier.state.workoutStart, DateTime(2024, 5, 1, 17, 30, 21));
+      expect(notifier.state.startTime, const TimeOfDay(hour: 17, minute: 30));
+    });
+  });
+
+  group('GymStateNotifier.clear', () {
+    test('Resets the workout start time', () {
+      // Arrange
+      notifier.state = notifier.state.copyWith(workoutStart: DateTime(2024, 5, 1, 10, 0));
+
+      // Act
+      withClock(Clock.fixed(DateTime(2024, 5, 2, 9, 15)), () {
+        notifier.clear();
+      });
+
+      // Assert
+      expect(notifier.state.workoutStart, DateTime(2024, 5, 2, 9, 15));
     });
   });
 
