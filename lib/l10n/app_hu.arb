@@ -1,80 +1,1403 @@
 {
-  "login": "Bejelentkezés",
-  "@login": {
-    "description": "Text for login button"
-  },
-  "invalidEmail": "Nem megfelelő e-mail cím",
-  "@invalidEmail": {
-    "description": "Error message when the user enters an invalid email"
-  },
-  "customServerHint": "Add meg a saját szervered címét, máskülönben az alapértelmezettet használjuk",
-  "@customServerHint": {
-    "description": "Hint text for the form where the users can enter their own wger instance"
-  },
-  "userProfile": "Profil",
-  "@userProfile": {},
-  "logout": "Kijelentkezés",
-  "@logout": {
-    "description": "Text for logout button"
-  },
-  "register": "Regisztráció",
-  "@register": {
-    "description": "Text for registration button"
-  },
-  "useDefaultServer": "Alapértelmezett szerver",
-  "@useDefaultServer": {
-    "description": "Toggle button allowing users to switch between the default and a custom wger server"
-  },
-  "useCustomServer": "Egyedi szerver",
-  "@useCustomServer": {
-    "description": "Toggle button allowing users to switch between the default and a custom wger server"
-  },
-  "invalidUrl": "Nem megfelelő URL",
-  "@invalidUrl": {
-    "description": "Error message when the user enters an invalid URL, e.g. in the login form"
-  },
-  "password": "Jelszó",
-  "@password": {},
-  "passwordTooShort": "A jelszó túl rövid",
-  "@passwordTooShort": {
-    "description": "Error message when the user a password that is too short"
-  },
-  "usernameValidChars": "A felhasználónév csak betűket, számokat és @, +, ., -, és _ karaktereket tartalmazhat",
-  "@usernameValidChars": {
-    "description": "Error message when the user tries to register a username with forbidden characters"
-  },
-  "passwordsDontMatch": "A jelszavak nem egyeznek",
-  "@passwordsDontMatch": {
-    "description": "Error message when the user enters two different passwords during registration"
-  },
-  "labelBottomNavNutrition": "Táplálkozás",
-  "@labelBottomNavNutrition": {
-    "description": "Label used in bottom navigation, use a short word"
-  },
-  "username": "Felhasználónév",
-  "@username": {},
-  "email": "E-mail cím",
-  "@email": {},
-  "confirmPassword": "Jelszó újra",
-  "@confirmPassword": {},
-  "invalidUsername": "Nem megfelelő felhasználónév",
-  "@invalidUsername": {
-    "description": "Error message when the user enters an invalid username"
-  },
-  "customServerUrl": "A wger szerver URL-je",
-  "@customServerUrl": {
-    "description": "Label in the form where the users can enter their own wger instance"
-  },
-  "reset": "Visszaállítás",
-  "@reset": {
-    "description": "Button text allowing the user to reset the entered values to the default"
-  },
-  "registerInstead": "Nincs fiókod? Regisztrálj most",
-  "@registerInstead": {},
-  "loginInstead": "Már van fiókod? Bejelentkezés",
-  "@loginInstead": {},
-  "labelBottomNavWorkout": "Edzés",
-  "@labelBottomNavWorkout": {
-    "description": "Label used in bottom navigation, use a short word"
-  }
+    "login": "Bejelentkezés",
+    "@login": {
+        "description": "Text for login button"
+    },
+    "invalidEmail": "Nem érvényes e-mail cím",
+    "@invalidEmail": {
+        "description": "Error message when the user enters an invalid email"
+    },
+    "customServerHint": "Add meg a saját szervered címét, máskülönben az alapértelmezettet használjuk",
+    "@customServerHint": {
+        "description": "Hint text for the form where the users can enter their own wger instance"
+    },
+    "userProfile": "Profil",
+    "logout": "Kijelentkezés",
+    "@logout": {
+        "description": "Text for logout button"
+    },
+    "register": "Regisztráció",
+    "@register": {
+        "description": "Text for registration button"
+    },
+    "useDefaultServer": "Alapértelmezett szerver",
+    "@useDefaultServer": {
+        "description": "Toggle button allowing users to switch between the default and a custom wger server"
+    },
+    "useCustomServer": "Egyedi szerver",
+    "@useCustomServer": {
+        "description": "Toggle button allowing users to switch between the default and a custom wger server"
+    },
+    "invalidUrl": "Adj meg érvényes URL-t",
+    "@invalidUrl": {
+        "description": "Error message when the user enters an invalid URL, e.g. in the login form"
+    },
+    "password": "Jelszó",
+    "passwordTooShort": "A jelszó túl rövid",
+    "@passwordTooShort": {
+        "description": "Error message when the user a password that is too short"
+    },
+    "usernameValidChars": "A felhasználónév csak betűket, számokat és @, +, ., -, és _ karaktereket tartalmazhat",
+    "@usernameValidChars": {
+        "description": "Error message when the user tries to register a username with forbidden characters"
+    },
+    "passwordsDontMatch": "A jelszavak nem egyeznek",
+    "@passwordsDontMatch": {
+        "description": "Error message when the user enters two different passwords during registration"
+    },
+    "labelBottomNavNutrition": "Táplálkozás",
+    "@labelBottomNavNutrition": {
+        "description": "Label used in bottom navigation, use a short word"
+    },
+    "username": "Felhasználónév",
+    "email": "E-mail cím",
+    "confirmPassword": "Jelszó megerősítése",
+    "invalidUsername": "Nem megfelelő felhasználónév",
+    "@invalidUsername": {
+        "description": "Error message when the user enters an invalid username"
+    },
+    "customServerUrl": "A wger szerver URL-je",
+    "@customServerUrl": {
+        "description": "Label in the form where the users can enter their own wger instance"
+    },
+    "reset": "Visszaállítás",
+    "@reset": {
+        "description": "Button text allowing the user to reset the entered values to the default"
+    },
+    "registerInstead": "Nincs fiókod? Regisztrálj most",
+    "loginInstead": "Már van fiókod? Bejelentkezés",
+    "labelBottomNavWorkout": "Edzés",
+    "@labelBottomNavWorkout": {
+        "description": "Label used in bottom navigation, use a short word"
+    },
+    "next": "Következő",
+    "kg": "kg",
+    "@kg": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "selectAvailablePlates": "Elérhető súlytárcsák kiválasztása",
+    "barWeight": "Rúd súlya",
+    "useColors": "Színek használata",
+    "refreshToken": "Frissítési token",
+    "invalidRefreshToken": "Adj meg egy érvényes frissítési tokent",
+    "@invalidRefreshToken": {
+        "description": "Error message when the user enters an invalid refresh token"
+    },
+    "refreshTokenValidChars": "A frissítési token három, ponttal elválasztott részből áll (fejléc.adattartalom.aláírás), amelyek mindegyike betűket, számjegyeket, valamint „-” és „_” karaktereket tartalmaz",
+    "@refreshTokenValidChars": {
+        "description": "Error message when the user pastes a string that does not match the JWT shape"
+    },
+    "refreshTokenHelperText": "Hozz létre egy JWT-frissítési tokent a wger weboldalán, majd illeszd be ide. Akkor hasznos, ha a szervered hitelesítési proxy mögött működik, vagy ki szeretnéd hagyni a szokásos bejelentkezési folyamatot.",
+    "@refreshTokenHelperText": {
+        "description": "Helper text on the refresh-token paste field"
+    },
+    "mfaChallengeTitle": "Kétfaktoros hitelesítés",
+    "@mfaChallengeTitle": {
+        "description": "App bar title on the 2FA challenge screen"
+    },
+    "mfaChallengeTotpPrompt": "Írd be a hitelesítő alkalmazásban megjelenő 6 jegyű kódot",
+    "@mfaChallengeTotpPrompt": {
+        "description": "Helper text above the TOTP input field"
+    },
+    "mfaChallengeRecoveryPrompt": "Írd be az egyik helyreállítási kódodat",
+    "@mfaChallengeRecoveryPrompt": {
+        "description": "Helper text above the recovery-code input field"
+    },
+    "mfaCodeLabel": "Kód",
+    "@mfaCodeLabel": {
+        "description": "Label on the 2FA code input field"
+    },
+    "mfaInvalidCode": "Kérlek adj meg egy kódot",
+    "@mfaInvalidCode": {
+        "description": "Validation error when the 2FA code field is empty"
+    },
+    "mfaUseRecoveryCode": "Helyreállítási kód használata",
+    "@mfaUseRecoveryCode": {
+        "description": "Button that switches the 2FA challenge to recovery-code mode"
+    },
+    "mfaUseTotpCode": "Hitelesítő alkalmazás kódjának használata",
+    "@mfaUseTotpCode": {
+        "description": "Button that switches the 2FA challenge back to TOTP mode"
+    },
+    "mfaSubmit": "Jóváhagyás",
+    "@mfaSubmit": {
+        "description": "Submit button on the 2FA challenge screen"
+    },
+    "mfaUnsupportedFactor": "A fiókodhoz olyan második hitelesítési tényező van beállítva, amelyet ez az alkalmazás még nem támogat. Kérjük, jelentkezz be a webhelyen.",
+    "@mfaUnsupportedFactor": {
+        "description": "Shown when the server reports only factor types the app cannot handle (e.g. webauthn)"
+    },
+    "manageAccountOnWeb": "Profil kezelése a webes felületen",
+    "@manageAccountOnWeb": {
+        "description": "Label on a button that opens the user's preferences page on the wger website"
+    },
+    "plateCalculator": "Súlytárcsák",
+    "@plateCalculator": {
+        "description": "Label used for the plate calculator in the gym mode"
+    },
+    "plateCalculatorNotDivisible": "Nem lehet a súlyt elérni az elérhető tárcsákkal",
+    "@plateCalculatorNotDivisible": {
+        "description": "Error message when the current weight is not reachable with plates (e.g. 33.1 kg)"
+    },
+    "pause": "Szüneteltet",
+    "@pause": {
+        "description": "Noun, not an imperative! Label used for the pause when using the gym mode"
+    },
+    "jumpTo": "Ugrás a",
+    "@jumpTo": {
+        "description": "Imperative. Label used in popup allowing the user to jump to a specific exercise while in the gym mode"
+    },
+    "todaysWorkout": "Mai edzésed",
+    "weight": "Testsúly",
+    "@weight": {
+        "description": "The weight of a workout log or body weight entry"
+    },
+    "date": "Dátum",
+    "@date": {
+        "description": "The date of a workout log or body weight entry"
+    },
+    "edit": "Módosítás",
+    "preview": "Előnézet",
+    "delete": "Törlés",
+    "close": "Bezárás",
+    "@close": {
+        "description": "Translation for close"
+    },
+    "difference": "Különbség",
+    "start": "Kezdés",
+    "@start": {
+        "description": "Label on button to start the gym mode (i.e., an imperative)"
+    },
+    "comment": "Megjegyzés",
+    "@comment": {
+        "description": "Comment, additional information"
+    },
+    "nutritionalPlan": "Táplálkozási terv",
+    "notes": "Megjegyzések",
+    "@notes": {
+        "description": "Personal notes, e.g. for a workout session"
+    },
+    "value": "Érték",
+    "@value": {
+        "description": "The value of a measurement entry"
+    },
+    "unit": "Egység",
+    "@unit": {
+        "description": "The unit used for a repetition (kg, time, etc.)"
+    },
+    "copyToClipboard": "Másolás a vágólapra",
+    "total": "Összesen",
+    "@total": {
+        "description": "Label used for total sums of e.g. calories or similar"
+    },
+    "description": "Leírás",
+    "translation": "Fordítás",
+    "images": "Képek",
+    "overview": "Áttekintés",
+    "language": "Nyelv",
+    "name": "Név",
+    "@name": {
+        "description": "Name for a workout or nutritional plan"
+    },
+    "category": "Kategória",
+    "@category": {
+        "description": "Category for an exercise, ingredient, etc."
+    },
+    "save": "Mentés",
+    "min": "Min.",
+    "max": "Max.",
+    "calendar": "Naptár",
+    "manageAccountOnWebSubtitle": "Módosítsd a jelszavadat, állíts be kétlépcsős hitelesítést, kezeld az API-tokeneket, vagy töröld a fiókodat.",
+    "@manageAccountOnWebSubtitle": {
+        "description": "Helper text below the 'Manage account on the web' button listing what is configurable there"
+    },
+    "advanced": "Speciális",
+    "advancedSubtitle": "Szerver- és hitelesítési beállítások",
+    "serverSectionLabel": "Szerver",
+    "signInMethodSectionLabel": "Bejelentkezési mód",
+    "serverOptionDefaultDetail": "A hivatalos szerver",
+    "serverOptionSelfHostedTitle": "Saját üzemeltetésű",
+    "serverOptionSelfHostedDetail": "Kapcsolódás a saját példányodhoz",
+    "authOptionPasswordTitle": "Felhasználónév és jelszó",
+    "signInWithToken": "Bejelentkezés tokennel",
+    "tokenSubtitle": "Hozz létre egyet a wger webhelyén",
+    "newToWger": "Új vagy a wgerben?",
+    "alreadyHaveAccount": "Már van fiókod?",
+    "tokenLabel": "Token",
+    "webHandoffLinkLabel": "További bejelentkezési lehetőségek",
+    "webHandoffLinkSubtitle": "Közösségi bejelentkezés, jelkulcs, SSO",
+    "labelWorkoutLogs": "Edzésnaplók",
+    "@labelWorkoutLogs": {
+        "description": "(Workout) logs"
+    },
+    "labelWorkoutPlan": "Edzésterv",
+    "@labelWorkoutPlan": {
+        "description": "Title for screen workout plan"
+    },
+    "dashboardWidgets": "Vezérlőpult-widgetek",
+    "labelDashboard": "Vezérlőpult",
+    "@labelDashboard": {
+        "description": "Title for screen dashboard"
+    },
+    "success": "Sikeres",
+    "@success": {
+        "description": "Message when an action completed successfully, usually used as a heading"
+    },
+    "successfullyDeleted": "Törölve",
+    "@successfullyDeleted": {
+        "description": "Message when an item was successfully deleted"
+    },
+    "successfullySaved": "Mentve",
+    "@successfullySaved": {
+        "description": "Message when an item was successfully saved"
+    },
+    "exerciseList": "Gyakorlatlista",
+    "exercise": "Gyakorlat",
+    "@exercise": {
+        "description": "An exercise for a workout"
+    },
+    "exercises": "Gyakorlatok",
+    "@exercises": {
+        "description": "Multiple exercises for a workout"
+    },
+    "exerciseName": "Gyakorlat neve",
+    "@exerciseName": {
+        "description": "Label for the name of a workout exercise"
+    },
+    "searchExercise": "Hozzáadandó gyakorlat keresése",
+    "@searchExercise": {
+        "description": "Label on set form. Selected exercises are added to the set"
+    },
+    "noIngredientsDefined": "Még nincs megadva összetevő",
+    "noMatchingExerciseFound": "Nem található megfelelő gyakorlat",
+    "@noMatchingExerciseFound": {
+        "description": "Message returned if no exercises match the searched string"
+    },
+    "equipment": "Felszerelés",
+    "@equipment": {
+        "description": "Equipment needed to perform an exercise"
+    },
+    "muscles": "Izmok",
+    "@muscles": {
+        "description": "(main) muscles trained by an exercise"
+    },
+    "musclesSecondary": "Másodlagos izmok",
+    "@musclesSecondary": {
+        "description": "secondary muscles trained by an exercise"
+    },
+    "startDate": "Kezdési dátum",
+    "@startDate": {
+        "description": "The start date of a nutritional plan or routine"
+    },
+    "dayTypeCustom": "Egyéni",
+    "dayTypeEnom": "Minden perc kezdetén",
+    "dayTypeAmrap": "A lehető legtöbb kör",
+    "dayTypeHiit": "Magas intenzitású intervallumos edzés",
+    "dayTypeTabata": "Tabata",
+    "dayTypeEdt": "Fokozódó sűrűségű edzés",
+    "dayTypeRft": "Körök időre",
+    "dayTypeAfap": "A lehető leggyorsabban",
+    "slotEntryTypeNormal": "Normál",
+    "slotEntryTypeDropset": "Csökkenő sorozat",
+    "slotEntryTypeMyo": "Myo",
+    "slotEntryTypeWarmup": "Bemelegítés",
+    "slotEntryTypePartial": "Részismétléses",
+    "slotEntryTypeForced": "Erőltetett",
+    "slotEntryTypeTut": "Feszülés alatti idő",
+    "slotEntryTypeIso": "Izometrikus kitartás",
+    "slotEntryTypeJump": "Ugrás",
+    "trophies": "Trófeák",
+    "routines": "Gyakorlatsorok",
+    "newRoutine": "Új gyakorlatsor",
+    "noRoutines": "Nincs gyakorlatsorod",
+    "reps": "Ismétlés",
+    "@reps": {
+        "description": "Shorthand for repetitions, used when space constraints are tighter"
+    },
+    "restTime": "Pihenőidő",
+    "sets": "Sorozatok",
+    "@sets": {
+        "description": "The number of sets to be done for one exercise"
+    },
+    "rir": "Tartalék Ismétlések",
+    "@rir": {
+        "description": "Shorthand for Repetitions In Reserve"
+    },
+    "rirNotUsed": "Tartalék ismétlések nincs használatban",
+    "@rirNotUsed": {
+        "description": "Label used in RiR slider when the RiR value is not used/saved for the current setting or log"
+    },
+    "useMetric": "Metrikus mértékegységek használata a testsúlyhoz",
+    "weightUnit": "Súlyegység",
+    "repetitionUnit": "Ismétlési egység",
+    "set": "Sorozat",
+    "@set": {
+        "description": "A set in a workout plan"
+    },
+    "dayDescriptionHelp": "Annak leírása, hogy mit végzel ezen a napon (például „húzó nap”), vagy mely testrészeket edzed (például „mell és váll”)",
+    "exerciseNr": "{nr}. gyakorlat",
+    "@exerciseNr": {
+        "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Set Nr. xy'.",
+        "type": "text",
+        "placeholders": {
+            "nr": {
+                "type": "String"
+            }
+        }
+    },
+    "supersetNr": "{nr}. szuperszett",
+    "@supersetNr": {
+        "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Superset Nr. xy'.",
+        "type": "text",
+        "placeholders": {
+            "nr": {
+                "type": "String"
+            }
+        }
+    },
+    "setNr": "{nr}. sorozat",
+    "@setNr": {
+        "description": "Header in form indicating the number of the current set within a group of same exercises.",
+        "type": "text",
+        "placeholders": {
+            "nr": {
+                "type": "String"
+            }
+        }
+    },
+    "topSet": "Csúcssorozat: {value}",
+    "@topSet": {
+        "description": "Value is a representation of the set, like '10 x 80kg'",
+        "type": "text",
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    },
+    "impressionGood": "Jó",
+    "impressionNeutral": "Semleges",
+    "impressionBad": "Rossz",
+    "impression": "Értékelés",
+    "@impression": {
+        "description": "General impression (e.g. for a workout session) such as good, bad, etc."
+    },
+    "workoutSession": "Edzésalkalom",
+    "@workoutSession": {
+        "description": "A (logged) workout session"
+    },
+    "restDay": "Pihenőnap",
+    "isRestDay": "Pihenőnap",
+    "isRestDayHelp": "Vedd figyelembe, hogy a nap pihenőnappá jelölésekor az összes sorozat és gyakorlat törlődik.",
+    "needsLogsToAdvance": "A továbblépéshez naplóbejegyzés szükséges",
+    "needsLogsToAdvanceHelp": "Jelöld be, ha azt szeretnéd, hogy a gyakorlatsor csak akkor lépjen tovább a következő ütemezett napra, ha az adott naphoz edzést naplóztál",
+    "routineDays": "A gyakorlatsor napjai",
+    "resultingRoutine": "Eredményül kapott gyakorlatsor",
+    "newDay": "Új nap",
+    "newSet": "Új sorozat",
+    "@newSet": {
+        "description": "Header when adding a new set to a workout day"
+    },
+    "personalRecords": "Egyéni rekordok",
+    "gymMode": "Edzőtermi mód",
+    "@gymMode": {
+        "description": "Label when starting the gym mode"
+    },
+    "gymModeShowExercises": "Gyakorlat-áttekintő oldalak megjelenítése",
+    "gymModeShowTimer": "Időzítő megjelenítése a sorozatok között",
+    "gymModeTimerType": "Időzítő típusa",
+    "gymModeTimerTypeHelText": "Ha egy sorozathoz pihenőidő tartozik, a rendszer mindig visszaszámlálást használ.",
+    "countdown": "Visszaszámláló",
+    "stopwatch": "Stopperóra",
+    "gymModeDefaultCountdownTime": "Alapértelmezett visszaszámlálási idő másodpercben",
+    "gymModeNotifyOnCountdownFinish": "Értesítés a visszaszámlálás végén",
+    "duration": "Időtartam",
+    "durationHoursMinutes": "{hours} ó {minutes} p",
+    "@durationHoursMinutes": {
+        "description": "A duration, in hours and minutes",
+        "type": "text",
+        "placeholders": {
+            "hours": {
+                "type": "int"
+            },
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "volume": "Edzésvolumen",
+    "@volume": {
+        "description": "The volume of a workout or set, i.e. weight x reps"
+    },
+    "workoutCompleted": "Edzés befejezve",
+    "logHelpEntries": "Ha egy napon több bejegyzés tartalmaz azonos ismétlésszámot, de eltérő súlyt, a diagramon csak a nagyobb súlyú bejegyzés jelenik meg.",
+    "logHelpEntriesUnits": "Vedd figyelembe, hogy csak a súlyegységet (kg vagy lb) és ismétlésszámot tartalmazó bejegyzések jelennek meg a diagramon. Az egyéb kombinációkat, például az időt vagy a bukásig végzett sorozatot, a rendszer itt figyelmen kívül hagyja.",
+    "verify": "Megerősítés",
+    "addSet": "Sorozat hozzáadása",
+    "@addSet": {
+        "description": "Label for the button that adds a set (to a workout day)"
+    },
+    "gymModeLogScope": "Korábbi naplóbejegyzések",
+    "gymModeLogScopeHelp": "Mely naplóbejegyzések jelenjenek meg viszonyítási alapként edzés közben",
+    "gymModeLogScopeCurrentRoutine": "Aktuális gyakorlatsor",
+    "gymModeLogScopeWeeks": "Elmúlt {weeks} hét",
+    "@gymModeLogScopeWeeks": {
+        "placeholders": {
+            "weeks": {
+                "type": "int"
+            }
+        }
+    },
+    "gymModeDistinctLogs": "Ismétlődő értékek elrejtése",
+    "addMeal": "Étkezés hozzáadása",
+    "mealLogged": "Az étkezést naplóztuk",
+    "ingredientLogged": "Az összetevőt naplóztuk",
+    "logMeal": "Étkezés naplózása a táplálkozási naplóba",
+    "addIngredient": "Összetevő hozzáadása",
+    "logIngredient": "Összetevő naplózása a táplálkozási naplóba",
+    "searchIngredient": "Összetevő keresése",
+    "@searchIngredient": {
+        "description": "Label (or Hint text) on ingredient search form"
+    },
+    "nutritionalDiary": "Táplálkozási napló",
+    "nutritionalPlans": "Táplálkozási tervek",
+    "noNutritionalPlans": "Nincs táplálkozási terved",
+    "@noNutritionalPlans": {
+        "description": "Message shown when the user has no nutritional plans"
+    },
+    "clearSearchTerm": "Keresőkifejezés törlése",
+    "@clearSearchTerm": {
+        "description": "Tooltip for the icon-button that clears the ingredient search text field"
+    },
+    "ingredients": "Összetevők",
+    "@ingredients": {
+        "description": "Plural title for the ingredients overview screen"
+    },
+    "onlyLogging": "Csak a kalóriák követése",
+    "onlyLoggingHelpText": "Jelöld be, ha kizárólag a kalóriabeviteledet szeretnéd naplózni, és nem akarsz konkrét étkezéseket tartalmazó részletes táplálkozási tervet összeállítani",
+    "goalMacro": "Makrotápanyag-célok",
+    "@goalMacro": {
+        "description": "The goal for macronutrients"
+    },
+    "selectMealToLog": "Válaszd ki a naplózandó étkezést",
+    "yourCurrentNutritionPlanHasNoMealsDefinedYet": "Az aktuális táplálkozási tervedben még nincsenek étkezések",
+    "@yourCurrentNutritionPlanHasNoMealsDefinedYet": {
+        "description": "Message shown when a nutrition plan doesn't have any meals"
+    },
+    "toAddMealsToThePlanGoToNutritionalPlanDetails": "Étkezések hozzáadásához nyisd meg a táplálkozási terv részleteit",
+    "@toAddMealsToThePlanGoToNutritionalPlanDetails": {
+        "description": "Message shown to guide users to the nutritional plan details page to add meals"
+    },
+    "planDateRange": "{startDate} és {endDate} között",
+    "@planDateRange": {
+        "description": "Label for the start and end date range of a plan",
+        "placeholders": {
+            "startDate": {
+                "type": "String"
+            },
+            "endDate": {
+                "type": "String"
+            }
+        }
+    },
+    "planStartDate": "{startDate} dátumtól",
+    "@planStartDate": {
+        "description": "Label for the start date of a plan",
+        "placeholders": {
+            "startDate": {
+                "type": "String"
+            }
+        }
+    },
+    "otherLogs": "Egyéb naplóbejegyzések",
+    "@otherLogs": {
+        "description": "Other unassigned logs. Label for the pseudo-meal section that groups all nutritional diary entries not assigned to a specific meal"
+    },
+    "goalEnergy": "Energiacél",
+    "goalProtein": "Fehérjecél",
+    "goalCarbohydrates": "Szénhidrátcél",
+    "goalFat": "Zsírcél",
+    "goalFiber": "Rostcél",
+    "anErrorOccurred": "Hiba történt!",
+    "errorRawSource": "Nyers",
+    "@errorRawSource": {
+        "description": "Tab label for showing an HTML error response in its raw (unrendered) form, opposite of 'Preview'."
+    },
+    "errorInfoDescription": "Sajnáljuk, de valami hiba történt. A GitHubon bejelentheted a problémát, és ezzel segíthetsz a kijavításában.",
+    "errorInfoDescription2": "Továbbra is használhatod az alkalmazást, de előfordulhat, hogy egyes funkciók nem működnek.",
+    "errorViewDetails": "Technikai részletek",
+    "applicationLogs": "Alkalmazásnaplók",
+    "errorCouldNotConnectToServer": "Nem sikerült kapcsolódni a szerverhez",
+    "chartAllTimeTitle": "{name} – teljes időszak",
+    "@chartAllTimeTitle": {
+        "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+        "type": "text",
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "chart30DaysTitle": "{name} – elmúlt 30 nap",
+    "@chart30DaysTitle": {
+        "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+        "type": "text",
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "chartDuringPlanTitle": "{chartName} a(z) {planName} táplálkozási terv időszakában",
+    "@chartDuringPlanTitle": {
+        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
+        "type": "text",
+        "placeholders": {
+            "chartName": {
+                "type": "String"
+            },
+            "planName": {
+                "type": "String"
+            }
+        }
+    },
+    "measurement": "Mérés",
+    "measurements": "Mérések",
+    "@measurements": {
+        "description": "Categories for the measurements such as biceps size, body fat, etc."
+    },
+    "measurementCategoriesHelpText": "Mérési kategória, például „bicepsz” vagy „testzsír”",
+    "measurementEntriesHelpText": "A kategória méréséhez használt mértékegység, például „cm” vagy „%”",
+    "endDate": "Befejezési dátum",
+    "@endDate": {
+        "description": "The End date of a nutritional plan or routine"
+    },
+    "endBeforeStart": "A befejezési érték nem lehet korábbi a kezdőértéknél",
+    "@endBeforeStart": {
+        "description": "Validation error shown when a plan or routine end date is before its start date"
+    },
+    "minLengthRoutine": "A gyakorlatsornak legalább {number} hetesnek kell lennie",
+    "@minLengthRoutine": {
+        "description": "Validation error when a routine is shorter than the minimum allowed duration",
+        "placeholders": {
+            "number": {
+                "type": "int"
+            }
+        }
+    },
+    "maxLengthRoutine": "A gyakorlatsor legfeljebb {number} hetes lehet",
+    "@maxLengthRoutine": {
+        "description": "Validation error when a routine is longer than the maximum allowed duration",
+        "placeholders": {
+            "number": {
+                "type": "int"
+            }
+        }
+    },
+    "openEnded": "Határozatlan idejű",
+    "@openEnded": {
+        "description": "When a nutrition plan has no pre-defined end date"
+    },
+    "time": "Idő",
+    "@time": {
+        "description": "The time of a meal or workout"
+    },
+    "timeStart": "Kezdési idő",
+    "@timeStart": {
+        "description": "The starting time of a workout"
+    },
+    "timeEnd": "Befejezési idő",
+    "@timeEnd": {
+        "description": "The end time of a workout"
+    },
+    "timeStartAhead": "A kezdési idő nem lehet későbbi a befejezési időnél",
+    "ingredient": "Összetevő",
+    "@ingredient": {
+        "description": "Singular label for an ingredient"
+    },
+    "energy": "Energia",
+    "@energy": {
+        "description": "Energy in a meal, ingredient etc. e.g. in kJ"
+    },
+    "energyShort": "E",
+    "@energyShort": {
+        "description": "The first letter or short name of the word 'Energy', used in overviews"
+    },
+    "dietaryInformation": "Táplálkozási információk",
+    "macronutrients": "Makrotápanyagok",
+    "planned": "Tervezett",
+    "@planned": {
+        "description": "Header for the column of 'planned' nutritional values, i.e. what should be eaten"
+    },
+    "logged": "Naplózott",
+    "@logged": {
+        "description": "Header for the column of 'logged' nutritional values, i.e. what was eaten"
+    },
+    "today": "Ma",
+    "loggedToday": "Ma naplózva",
+    "weekAverage": "7 napos átlag",
+    "@weekAverage": {
+        "description": "Header for the column of '7 day average' nutritional values, i.e. what was logged last week"
+    },
+    "surplus": "többlet",
+    "@surplus": {
+        "description": "Caloric surplus (either planned or unplanned)"
+    },
+    "deficit": "hiány",
+    "@deficit": {
+        "description": "Caloric deficit (either planned or unplanned)"
+    },
+    "percentEnergy": "Az energia százalékos aránya",
+    "gPerBodyKg": "g/testsúly-kg",
+    "@gPerBodyKg": {
+        "description": "Label used for total sums of e.g. calories or similar in grams per Kg of body weight"
+    },
+    "kcal": "kcal",
+    "@kcal": {
+        "description": "Energy in a meal in kilocalories, kcal"
+    },
+    "kcalValue": "{value} kcal",
+    "@kcalValue": {
+        "description": "A value in kcal, e.g. 500 kcal",
+        "type": "text",
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    },
+    "kJ": "kJ",
+    "@kJ": {
+        "description": "Energy in a meal in kilo joules, kJ"
+    },
+    "g": "g",
+    "@g": {
+        "description": "Abbreviation for gram"
+    },
+    "gValue": "{value} g",
+    "@gValue": {
+        "description": "A value in grams, e.g. 5 g",
+        "type": "text",
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    },
+    "percentValue": "{value} %",
+    "@percentValue": {
+        "description": "A value in percent, e.g. 10 %",
+        "type": "text",
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    },
+    "protein": "Fehérje",
+    "proteinShort": "F",
+    "@proteinShort": {
+        "description": "The first letter or short name of the word 'Protein', used in overviews"
+    },
+    "carbohydrates": "Szénhidrát",
+    "carbohydratesShort": "Sz",
+    "@carbohydratesShort": {
+        "description": "The first letter or short name of the word 'Carbohydrates', used in overviews"
+    },
+    "sugars": "Cukrok",
+    "fat": "Zsír",
+    "fatShort": "Z",
+    "@fatShort": {
+        "description": "The first letter or short name of the word 'Fat', used in overviews"
+    },
+    "saturatedFat": "Telített zsír",
+    "fiber": "Rost",
+    "sodium": "Nátrium",
+    "carbohydratesSugar": "Cukor (szénhidrát)",
+    "@carbohydratesSugar": {
+        "description": "Label for the carbohydrates sugar"
+    },
+    "amount": "Mennyiség",
+    "@amount": {
+        "description": "The amount (e.g. in grams) of an ingredient in a meal"
+    },
+    "newEntry": "Új bejegyzés",
+    "@newEntry": {
+        "description": "Title when adding a new entry such as a weight or log entry"
+    },
+    "noTrophies": "Még nincs trófeád",
+    "noWeightEntries": "Nincs testsúlybejegyzésed",
+    "@noWeightEntries": {
+        "description": "Message shown when the user has no logged weight entries"
+    },
+    "moreMeasurementEntries": "Új mérés hozzáadása",
+    "@moreMeasurementEntries": {
+        "description": "Message shown when the user wants to add new measurement"
+    },
+    "confirmDelete": "Biztosan törölni szeretnéd ezt: '{toDelete}'?",
+    "@confirmDelete": {
+        "description": "Confirmation text before the user deletes an object",
+        "type": "text",
+        "placeholders": {
+            "toDelete": {
+                "type": "String"
+            }
+        }
+    },
+    "newNutritionalPlan": "Új táplálkozási terv",
+    "toggleDetails": "Részletek megjelenítése vagy elrejtése",
+    "@toggleDetails": {
+        "description": "Switch to toggle detail / overview"
+    },
+    "goToDetailPage": "Ugrás a részletek oldalára",
+    "aboutWhySupportTitle": "Nyílt forráskódú és ingyenesen használható ❤️",
+    "aboutDescription": "Köszönjük, hogy a wgert használod! A wger egy együttműködésen alapuló, nyílt forráskódú projekt, amelyet a világ minden tájáról érkező fitneszrajongók készítenek.",
+    "@aboutDescription": {
+        "description": "Text in the about dialog"
+    },
+    "aboutDonateTitle": "Adományozz",
+    "aboutDonateText": "Bár a projekt ingyenes, és mindig az is marad, a szerver üzemeltetése nem az! A fejlesztés emellett jelentős időt és munkát igényel az önkéntesektől. Hozzájárulásod közvetlenül támogatja ezeket a költségeket, és segít megőrizni a szolgáltatás megbízhatóságát.",
+    "aboutContributeTitle": "Közreműködés",
+    "aboutContributeText": "Mindenféle közreműködést örömmel fogadunk. Legyél fejlesztő, fordító vagy egyszerűen a fitnesz lelkes híve, minden segítséget nagyra értékelünk!",
+    "aboutBugsListTitle": "Probléma bejelentése vagy új funkció javaslata",
+    "aboutTranslationListTitle": "Fordítsd le az alkalmazást",
+    "aboutSourceListTitle": "Forráskód megtekintése",
+    "aboutJoinCommunityTitle": "Csatlakozás a közösséghez",
+    "aboutMastodonTitle": "Mastodon",
+    "aboutDiscordTitle": "Discord",
+    "aboutViewDocsTitle": "Dokumentáció megnyitása",
+    "aboutViewLicensesTitle": "Licencek megtekintése",
+    "others": "Egyéb",
+    "enterValue": "Adj meg egy értéket",
+    "@enterValue": {
+        "description": "Error message when the user hasn't entered a value on a required field"
+    },
+    "selectEntry": "Válassz ki egy bejegyzést",
+    "selectExercise": "Válassz ki egy gyakorlatot",
+    "@selectExercise": {
+        "description": "Error message when the user hasn't selected an exercise in the form"
+    },
+    "enterCharacters": "Adj meg {min} és {max} közötti számú karaktert",
+    "@enterCharacters": {
+        "description": "Error message when the user hasn't entered the correct number of characters in a form",
+        "type": "text",
+        "placeholders": {
+            "min": {
+                "type": "String"
+            },
+            "max": {
+                "type": "String"
+            }
+        }
+    },
+    "formMinMaxValues": "Adj meg egy {min} és {max} közötti értéket",
+    "@formMinMaxValues": {
+        "description": "Error message when the user needs to enter a value between min and max",
+        "type": "text",
+        "placeholders": {
+            "min": {
+                "type": "int"
+            },
+            "max": {
+                "type": "int"
+            }
+        }
+    },
+    "enterMinCharacters": "Adj meg legalább {min} karaktert",
+    "@enterMinCharacters": {
+        "description": "Error message when the user hasn't entered the minimum amount characters in a form",
+        "type": "text",
+        "placeholders": {
+            "min": {
+                "type": "String"
+            }
+        }
+    },
+    "enterMaxCharacters": "Adj meg legfeljebb {max} karaktert",
+    "@enterMaxCharacters": {
+        "description": "Error message when the user has entered more than the allowed amount of characters in a form",
+        "type": "text",
+        "placeholders": {
+            "max": {
+                "type": "String"
+            }
+        }
+    },
+    "baseNameEnglish": "Minden gyakorlathoz meg kell adni egy angol alapnevet",
+    "nrOfSets": "Sorozatok száma gyakorlatonként: {nrOfSets}",
+    "@nrOfSets": {
+        "description": "Label shown on the slider where the user selects the nr of sets",
+        "type": "text",
+        "placeholders": {
+            "nrOfSets": {
+                "type": "String"
+            }
+        }
+    },
+    "enterValidNumber": "Adj meg egy érvényes számot",
+    "@enterValidNumber": {
+        "description": "Error message when the user has submitted an invalid number (e.g. '3,.,.,.')"
+    },
+    "selectIngredient": "Válassz ki egy összetevőt",
+    "@selectIngredient": {
+        "description": "Error message when the user hasn't selected an ingredient from the autocompleter"
+    },
+    "recentlyUsedIngredients": "Nemrég hozzáadott összetevők",
+    "@recentlyUsedIngredients": {
+        "description": "A message when a user adds a new ingredient to a meal."
+    },
+    "selectImage": "Válassz ki egy képet",
+    "@selectImage": {
+        "description": "Label and error message when the user hasn't selected an image to save"
+    },
+    "optionsLabel": "Beállítások",
+    "@optionsLabel": {
+        "description": "Label for the popup with general app options"
+    },
+    "takePicture": "Fénykép készítése",
+    "chooseFromLibrary": "Kiválasztás a fényképtárból",
+    "gallery": "Galéria",
+    "addImage": "Kép hozzáadása",
+    "dataCopied": "Az adatokat átmásoltuk az új bejegyzésbe",
+    "@dataCopied": {
+        "description": "Snackbar message to show on copying data to a new log entry"
+    },
+    "appUpdateTitle": "Frissítés szükséges",
+    "appUpdateContent": "Az alkalmazás ezen verziója nem kompatibilis a szerverrel. Frissítsd az alkalmazást.",
+    "serverUpdateTitle": "A szerver frissítése szükséges",
+    "serverUpdateContent": "A kapcsolódó szerver túl régi az alkalmazás ezen verziójához. Kérd meg a szerver rendszergazdáját, hogy frissítse legalább a(z) {minVersion} verzióra.",
+    "@serverUpdateContent": {
+        "description": "Message shown when the server version is too old. minVersion is the minimum required server version string.",
+        "type": "text",
+        "placeholders": {
+            "minVersion": {
+                "type": "String"
+            }
+        }
+    },
+    "powerSyncUnreachableTitle": "A szinkronizálási szolgáltatás nem érhető el",
+    "powerSyncUnreachableContent": "A wger-szerver elérhető, de az offline szinkronizálást kezelő külön szolgáltatás nem válaszol. Ha saját magad üzemelteted a wgert, ellenőrizd a konfigurációt, és győződj meg arról, hogy a PowerSync szolgáltatás megfelelően működik.",
+    "serverUnreachableRetry": "Próbáld újra",
+    "@serverUnreachableRetry": {
+        "description": "Button that re-runs the auto-login attempt against the saved server."
+    },
+    "productFound": "Termék található",
+    "@productFound": {
+        "description": "Header label for dialog when product is found with barcode"
+    },
+    "productFoundDescription": "A vonalkód ehhez a termékhez tartozik: {productName}. Szeretnéd folytatni?",
+    "@productFoundDescription": {
+        "description": "Dialog info when product is found with barcode",
+        "type": "text",
+        "placeholders": {
+            "productName": {
+                "type": "String"
+            }
+        }
+    },
+    "productNotFound": "A termék nem található",
+    "@productNotFound": {
+        "description": "Header label for dialog when product is not found with barcode"
+    },
+    "productNotFoundDescription": "A beolvasott {barcode} vonalkódhoz tartozó termék nem található a wger adatbázisában",
+    "@productNotFoundDescription": {
+        "description": "Dialog info when product is not found with barcode",
+        "type": "text",
+        "placeholders": {
+            "barcode": {
+                "type": "String"
+            }
+        }
+    },
+    "scanBarcode": "Vonalkód beolvasása",
+    "@scanBarcode": {
+        "description": "Label for scan barcode button"
+    },
+    "identicalExercisePleaseDiscard": "Ha olyan gyakorlatot találsz, amely megegyezik az általad hozzáadottal, töröld a piszkozatot, és inkább azt a gyakorlatot szerkeszd.",
+    "checkInformationBeforeSubmitting": "A gyakorlat beküldése előtt ellenőrizd, hogy helyesek-e a megadott adatok",
+    "add_exercise_image_license": "A képeknek kompatibilisnek kell lenniük a CC BY-SA licenccel. Ha bizonytalan vagy, csak saját készítésű fényképeket tölts fel.",
+    "imageDetailsTitle": "Kép részletei",
+    "@imageDetailsTitle": {
+        "description": "Title for image details form"
+    },
+    "imageDetailsLicenseTitle": "Cím",
+    "@imageDetailsLicenseTitle": {
+        "description": "Label for image title field"
+    },
+    "imageDetailsLicenseTitleHint": "Add meg a kép címét",
+    "@imageDetailsLicenseTitleHint": {
+        "description": "Hint text for image title field"
+    },
+    "imageDetailsSourceLink": "Hivatkozás a forrás webhelyére",
+    "@imageDetailsSourceLink": {
+        "description": "Label for source link field"
+    },
+    "author": "Szerző(k)",
+    "authorHint": "Add meg a szerző nevét",
+    "@authorHint": {
+        "description": "Hint text for author field"
+    },
+    "imageDetailsAuthorLink": "Hivatkozás a szerző webhelyére vagy profiljára",
+    "@imageDetailsAuthorLink": {
+        "description": "Label for author link field"
+    },
+    "imageDetailsDerivativeSource": "Hivatkozás az eredeti forrásra, ha ez származékos mű",
+    "@imageDetailsDerivativeSource": {
+        "description": "Label for derivative source field"
+    },
+    "imageDetailsDerivativeHelp": "A származékos mű egy korábbi művön alapul, de elegendő új, kreatív tartalmat tartalmaz ahhoz, hogy önálló szerzői jogi védelemben részesüljön.",
+    "@imageDetailsDerivativeHelp": {
+        "description": "Helper text explaining derivative works"
+    },
+    "imageDetailsImageType": "Kép típusa",
+    "@imageDetailsImageType": {
+        "description": "Label for image type selector"
+    },
+    "imageDetailsLicenseNotice": "A kép beküldésével hozzájárulsz ahhoz, hogy az a CC-BY-SA-4 licenc alatt jelenjen meg. A képnek saját alkotásodnak kell lennie, vagy a szerzőnek ezzel kompatibilis licenc alatt kell közzétennie.",
+    "imageDetailsLicenseNoticeLinkToLicense": "Licencszöveg megtekintése.",
+    "imageFormatNotSupported": "A(z) {imageFormat} formátum nem támogatott",
+    "@imageFormatNotSupported": {
+        "description": "Label shown on the error container when image format is not supported",
+        "type": "text",
+        "placeholders": {
+            "imageFormat": {
+                "type": "String"
+            }
+        }
+    },
+    "imageFormatNotSupportedDetail": "A(z) {imageFormat} formátumú képek még nem támogatottak.",
+    "@imageFormatNotSupportedDetail": {
+        "description": "Label shown on the image preview container when image format is not supported",
+        "type": "text",
+        "placeholders": {
+            "imageFormat": {
+                "type": "String"
+            }
+        }
+    },
+    "add": "Hozzáadás",
+    "@add": {
+        "description": "Add button text"
+    },
+    "increase": "Növelés",
+    "@increase": {
+        "description": "Tooltip / screen-reader label for a button that increases a numeric input by one step"
+    },
+    "decrease": "Csökkentés",
+    "@decrease": {
+        "description": "Tooltip / screen-reader label for a button that decreases a numeric input by one step"
+    },
+    "variations": "Változatok",
+    "@variations": {
+        "description": "Variations of one exercise (e.g. benchpress and benchpress narrow)"
+    },
+    "alsoKnownAs": "Más néven: {aliases}",
+    "@alsoKnownAs": {
+        "placeholders": {
+            "aliases": {
+                "type": "String"
+            }
+        },
+        "description": "List of alternative names for an exercise"
+    },
+    "verifiedEmail": "Megerősített e-mail",
+    "unVerifiedEmail": "Nem megerősített e-mail",
+    "verifiedEmailInfo": "Megerősítő e-mailt küldtünk erre a címre: {email}",
+    "@verifiedEmailInfo": {
+        "placeholders": {
+            "email": {
+                "type": "String"
+            }
+        }
+    },
+    "alternativeNames": "Alternatív nevek",
+    "oneNamePerLine": "Soronként egy név",
+    "whatVariationsExist": "Milyen változatai léteznek ennek a gyakorlatnak, ha vannak?",
+    "previous": "Előző",
+    "addExercise": "Gyakorlat hozzáadása",
+    "fitInWeek": "Rögzített heti ütemezés",
+    "fitInWeekHelp": "Ha engedélyezed, a napok heti ciklusban ismétlődnek; ellenkező esetben egymás után következnek, az új hét kezdetétől függetlenül.",
+    "addSuperset": "Szuperszett hozzáadása",
+    "superset": "Szuperszett",
+    "setHasNoExercises": "Ez a sorozat még nem tartalmaz gyakorlatokat!",
+    "contributeExercise": "Gyakorlat beküldése",
+    "translateExercise": "Gyakorlat lefordítása most",
+    "baseData": "Alapadatok angolul",
+    "@baseData": {
+        "description": "The base data for an exercise such as category, trained muscles, etc."
+    },
+    "useBasicMarkdown": "A szöveg formázásához alapvető Markdown-jelöléseket használhatsz",
+    "editorBold": "Félkövér",
+    "@editorBold": {
+        "description": "Label for bold formatting"
+    },
+    "editorItalic": "Dőlt",
+    "editorList": "Lista",
+    "enterTextInLanguage": "A szöveget a megfelelő nyelven add meg!",
+    "settingsTitle": "Beállítások",
+    "settingsCacheTitle": "Gyorsítótár",
+    "settingsImageCacheDescription": "Kép-gyorsítótár",
+    "settingsCacheDeletedSnackbar": "A gyorsítótárat sikeresen töröltük",
+    "settingsDataTitle": "Adatvédelem",
+    "settingsKeepDataOnLogout": "Adatok megőrzése kijelentkezéskor",
+    "settingsKeepDataOnLogoutDescription": "A helyi adatbázis az eszközödön marad, amíg egy másik fiókkal be nem jelentkeznek.",
+    "aboutPageTitle": "Rólunk és támogatás",
+    "contributeExerciseWarning": "Csak akkor küldhetsz be gyakorlatokat, ha a fiókod {days} napnál régebbi, és megerősítetted az e-mail-címedet",
+    "@contributeExerciseWarning": {
+        "description": "Number of days before which a person can add exercise",
+        "placeholders": {
+            "days": {
+                "type": "String",
+                "example": "14"
+            }
+        }
+    },
+    "simpleMode": "Egyszerű mód",
+    "simpleModeHelp": "A gyakorlatok szerkesztésekor elrejti a speciálisabb beállítások egy részét",
+    "progressionRules": "Ehhez a gyakorlathoz progressziós szabályok tartoznak, ezért a mobilalkalmazásban nem szerkeszthető. A szerkesztéshez használd a webalkalmazást.",
+    "cacheWarning": "A gyorsítótárazás miatt eltarthat egy ideig, amíg a módosítások az alkalmazás minden részén megjelennek.",
+    "textPromptTitle": "Készen állsz a kezdésre?",
+    "textPromptSubheading": "A kezdéshez nyomd meg a műveletgombot",
+    "abs": "Hasizmok",
+    "@abs": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "arms": "Karok",
+    "@arms": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "back": "Hát",
+    "@back": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "barbell": "Súlyzórúd",
+    "@barbell": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "bench": "Pad",
+    "@bench": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "biceps": "Bicepsz",
+    "@biceps": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "body_weight": "Testsúly",
+    "@body_weight": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "calves": "Vádliizmok",
+    "@calves": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "cardio": "Kardió",
+    "@cardio": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "chest": "Mellkas",
+    "@chest": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "dumbbell": "Kézisúlyzó",
+    "@dumbbell": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "glutes": "Farizmok",
+    "@glutes": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "gym_mat": "Edzőmatrac",
+    "@gym_mat": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "hamstrings": "Combhajlító izmok",
+    "@hamstrings": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "incline_bench": "Ferdepad",
+    "@incline_bench": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "kettlebell": "Gömbsúlyzó",
+    "@kettlebell": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "kilometers": "Kilométer",
+    "@kilometers": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "kilometers_per_hour": "Kilométer per óra",
+    "@kilometers_per_hour": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "lats": "Széles hátizmok",
+    "@lats": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "legs": "Láb",
+    "@legs": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "lower_back": "Alsó hát",
+    "@lower_back": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "max_reps": "Max. ismétlésszám",
+    "@max_reps": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "miles": "Mérföld",
+    "@miles": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "miles_per_hour": "Mérföld per óra",
+    "@miles_per_hour": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "minutes": "Perc",
+    "@minutes": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "plates": "Súlytárcsák",
+    "@plates": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "pull_up_bar": "Húzódzkodórúd",
+    "@pull_up_bar": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "quads": "Négyfejű combizmok",
+    "@quads": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "repetitions": "Ismétlések",
+    "@repetitions": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "resistance_band": "Ellenállás-szalag",
+    "@resistance_band": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "sz_bar": "EZ-rúd",
+    "@sz_bar": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "seconds": "Másodperc",
+    "@seconds": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "shoulders": "Vállak",
+    "@shoulders": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "swiss_ball": "Fitneszlabda",
+    "@swiss_ball": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "triceps": "Tricepsz",
+    "@triceps": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "until_failure": "Bukásig",
+    "@until_failure": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "lb": "font",
+    "@lb": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "none__bodyweight_exercise_": "nincs (saját testsúlyos gyakorlat)",
+    "@none__bodyweight_exercise_": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "log": "Naplózás",
+    "@log": {
+        "description": "Log a specific meal (imperative form)"
+    },
+    "done": "Kész",
+    "overallChangeWeight": "Teljes változás",
+    "@overallChangeWeight": {
+        "description": "Overall change in weight, added for localization"
+    },
+    "goalTypeMeals": "Étkezések alapján",
+    "@goalTypeMeals": {
+        "description": "added for localization of Class GoalType's filed meals"
+    },
+    "goalTypeBasic": "Alapérték",
+    "@goalTypeBasic": {
+        "description": "added for localization of Class GoalType's filed basic"
+    },
+    "goalTypeAdvanced": "Speciális",
+    "@goalTypeAdvanced": {
+        "description": "added for localization of Class GoalType's filed advanced"
+    },
+    "indicatorRaw": "nyers",
+    "@indicatorRaw": {
+        "description": "added for localization of Class Indicator's field text"
+    },
+    "indicatorAvg": "átl.",
+    "@indicatorAvg": {
+        "description": "added for localization of Class Indicator's field text"
+    },
+    "endWorkout": "Edzés befejezése",
+    "@endWorkout": {
+        "description": "Use the imperative, label on button to finish the current workout in gym mode"
+    },
+    "themeMode": "Megjelenési mód",
+    "darkMode": "Mindig sötét mód",
+    "lightMode": "Mindig világos mód",
+    "systemMode": "Rendszerbeállítások",
+    "youAreOffline": "Offline módban vagy",
+    "appLanguage": "Alkalmazás nyelve",
+    "@appLanguage": {
+        "description": "Label for the in-app language selector in settings"
+    },
+    "appLanguageSystem": "Rendszer alapértelmezése",
+    "@appLanguageSystem": {
+        "description": "Dropdown entry that follows the device system language"
+    },
+    "productNotFoundOpenFoodFacts": "A közösség támogatásához hozzáadhatod ezt a terméket az Open Food Factshoz!",
+    "@productNotFoundOpenFoodFacts": {
+        "description": "Label shown when product is not found to encourage users to go on Open Food Facts and add it themselves"
+    },
+    "addToOpenFoodFacts": "Hozzáadás az Open Food Factshoz",
+    "@addToOpenFoodFacts": {
+        "description": "Label shown as the clickable link to go on Open Food Facts"
+    },
+    "isVegan": "Vegán",
+    "@isVegan": {
+        "description": "Label for vegan toggle"
+    },
+    "isVegetarian": "Vegetáriánus",
+    "@isVegetarian": {
+        "description": "Label for vegetarian toggle"
+    },
+    "filter": "Szűrő",
+    "@filter": {
+        "description": "Label for filter button"
+    },
+    "searchLanguageCurrent": "Csak az aktuális nyelven ({lang})",
+    "@searchLanguageCurrent": {
+        "type": "text",
+        "placeholders": {
+            "lang": {
+                "type": "String"
+            }
+        }
+    },
+    "searchLanguageEnglish": "Aktuális nyelv ({lang}) és angol",
+    "@searchLanguageEnglish": {
+        "type": "text",
+        "placeholders": {
+            "lang": {
+                "type": "String"
+            }
+        }
+    },
+    "searchLanguageAll": "Minden nyelv",
+    "@searchLanguageAll": {
+        "description": "Label used in the language selector to indicate no specific language filter is applied"
+    },
+    "exerciseSearchMode": "Keresési mód",
+    "@exerciseSearchMode": {
+        "description": "Heading above the segmented control that lets the user pick between fuzzy and exact name matching"
+    },
+    "searchModeFuzzy": "Közelítő",
+    "@searchModeFuzzy": {
+        "description": "Label for the search mode that performs a fuzzy/substring search on exercise names"
+    },
+    "searchModeExact": "Pontos",
+    "@searchModeExact": {
+        "description": "Label for the search mode that only matches exercises with this exact name"
+    },
+    "syncStatusConnected": "Kapcsolódva",
+    "@syncStatusConnected": {
+        "description": "Tooltip on the sync icon when the app is online and idle (no upload or download in progress)"
+    },
+    "syncStatusConnecting": "Kapcsolódás",
+    "@syncStatusConnecting": {
+        "description": "Tooltip on the sync icon while the app is establishing a connection to the sync service"
+    },
+    "syncStatusDisconnected": "Nincs kapcsolat",
+    "@syncStatusDisconnected": {
+        "description": "Tooltip on the sync icon when the app has no active connection to the sync service"
+    },
+    "syncStatusUploading": "Feltöltés",
+    "@syncStatusUploading": {
+        "description": "Tooltip on the sync icon while local changes are being uploaded to the server"
+    },
+    "syncStatusDownloading": "Letöltés",
+    "@syncStatusDownloading": {
+        "description": "Tooltip on the sync icon while remote changes are being downloaded from the server"
+    },
+    "syncStatusSyncing": "Szinkronizálás",
+    "@syncStatusSyncing": {
+        "description": "Tooltip on the sync icon when the app is uploading and downloading at the same time"
+    },
+    "syncStatusError": "Szinkronizálási hiba",
+    "@syncStatusError": {
+        "description": "Status label shown in the sync status dialog when the latest sync attempt failed"
+    },
+    "syncStatusDialogTitle": "Szinkronizálás állapota",
+    "@syncStatusDialogTitle": {
+        "description": "Title of the dialog opened by tapping the sync icon in the app bar"
+    },
+    "syncStatusLastSynced": "Utolsó szinkronizálás",
+    "@syncStatusLastSynced": {
+        "description": "Label in the sync status dialog above the timestamp of the last successful sync"
+    },
+    "syncStatusErrorDetails": "Hiba részletei",
+    "@syncStatusErrorDetails": {
+        "description": "Header of the expandable section in the sync status dialog that reveals the raw error message"
+    },
+    "filterNutriscore": "Nutri-Score-szűrő",
+    "@filterNutriscore": {
+        "description": "Heading for the Nutri-Score slider in the ingredient search filter dialog"
+    },
+    "filterNutriscoreOff": "Ki",
+    "@filterNutriscoreOff": {
+        "description": "Label for the first slider stop, which disables the Nutri-Score filter"
+    },
+    "filterNutriscoreNoFilter": "Nincs szűrés",
+    "@filterNutriscoreNoFilter": {
+        "description": "Helper text shown under the Nutri-Score slider when it is at the Off position"
+    },
+    "filterNutriscoreOrBetter": "{grade} vagy jobb",
+    "@filterNutriscoreOrBetter": {
+        "description": "Helper text shown under the Nutri-Score slider when a grade is selected (e.g. 'C or better')",
+        "placeholders": {
+            "grade": {
+                "type": "String",
+                "example": "C"
+            }
+        }
+    },
+    "serverConfigIssueTitle": "Szerverkonfigurációs probléma",
+    "@serverConfigIssueTitle": {
+        "description": "Title of the dialog shown when server misconfiguration is detected"
+    },
+    "serverConfigIssueMessage": "Hibás szerverkonfiguráció észlelhető: a fejlécek továbbítása nem megfelelő. Tekintsd meg a dokumentációt.",
+    "@serverConfigIssueMessage": {
+        "description": "Message explaining server misconfiguration and linking to documentation"
+    },
+    "understand": "Értem",
+    "@understand": {
+        "description": "Button label to acknowledge and dismiss the server configuration warning"
+    },
+    "viewDocumentation": "Dokumentáció megtekintése",
+    "@viewDocumentation": {
+        "description": "Button label to open the documentation about server configuration"
+    },
+    "sessionExpired": "A munkameneted lejárt. Jelentkezz be újra",
+    "@sessionExpired": {
+        "description": "Snackbar message shown when the saved login token is no longer valid"
+    },
+    "weightOrRepsRequired": "Adj meg súlyt, ismétlésszámot vagy mindkettőt",
+    "@weightOrRepsRequired": {
+        "description": "Validation error when both weight and repetitions are empty in a workout log"
+    },
+    "timeStartEndBothOrNeither": "Add meg a kezdési és a befejezési időt is, vagy hagyd mindkettőt üresen",
+    "@timeStartEndBothOrNeither": {
+        "description": "Validation error when only one of start/end time is set on a workout session"
+    }
 }
