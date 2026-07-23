@@ -17,9 +17,11 @@
  */
 
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
+import 'package:logging/logging.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:powersync/powersync.dart';
@@ -218,6 +220,96 @@ void main() {
       ).thenThrow(http.ClientException('Connection refused'));
 
       expect(await connector.fetchCredentials(), isNull);
+    });
+
+    test('anchors expiresAt to the local clock via the token lifetime', () async {
+      final mockApi = MockApiClient();
+      final connector = DjangoConnector(baseUrl: 'http://example.invalid', apiClient: mockApi);
+      // iat/exp lie far in the past; only their 600 s difference may matter.
+      final jwt = makeJwt({'sub': 'u', 'iat': 1700000000, 'exp': 1700000600});
+      when(mockApi.getPowersyncToken()).thenAnswer(
+        (_) async => {'token': jwt, 'powersync_url': 'https://ps.example.com'},
+      );
+
+      final creds = await connector.fetchCredentials();
+
+      final expected = DateTime.now().toUtc().add(const Duration(seconds: 600));
+      expect(creds!.expiresAt!.difference(expected).abs(), lessThan(const Duration(seconds: 5)));
+    });
+
+    group('unreachable-backend logging', () {
+      late MockApiClient mockApi;
+      late DjangoConnector connector;
+      late List<LogRecord> records;
+
+      setUp(() {
+        mockApi = MockApiClient();
+        connector = DjangoConnector(baseUrl: 'http://example.invalid', apiClient: mockApi);
+        records = [];
+        final sub = Logger.root.onRecord.listen(records.add);
+        addTearDown(sub.cancel);
+      });
+
+      Iterable<LogRecord> infoLines(String needle) =>
+          records.where((r) => r.level == Level.INFO && r.message.contains(needle));
+
+      test('logs the outage at INFO once, not per retry', () async {
+        when(
+          mockApi.getPowersyncToken(),
+        ).thenThrow(http.ClientException('Connection refused'));
+
+        await connector.fetchCredentials();
+        await connector.fetchCredentials();
+        await connector.fetchCredentials();
+
+        expect(infoLines('backend unreachable'), hasLength(1));
+      });
+
+      test('logs recovery once the fetch succeeds again', () async {
+        when(
+          mockApi.getPowersyncToken(),
+        ).thenThrow(const SocketException('Network is unreachable'));
+        await connector.fetchCredentials();
+
+        final jwt = makeJwt({'sub': 'u', 'iat': 1700000000, 'exp': 1700000600});
+        when(mockApi.getPowersyncToken()).thenAnswer(
+          (_) async => {'token': jwt, 'powersync_url': 'https://ps.example.com'},
+        );
+        await connector.fetchCredentials();
+
+        expect(infoLines('reachable again'), hasLength(1));
+      });
+
+      test('a new outage after recovery is logged immediately again', () async {
+        when(
+          mockApi.getPowersyncToken(),
+        ).thenThrow(http.ClientException('Connection refused'));
+        await connector.fetchCredentials();
+
+        final jwt = makeJwt({'sub': 'u', 'iat': 1700000000, 'exp': 1700000600});
+        when(mockApi.getPowersyncToken()).thenAnswer(
+          (_) async => {'token': jwt, 'powersync_url': 'https://ps.example.com'},
+        );
+        await connector.fetchCredentials();
+
+        when(
+          mockApi.getPowersyncToken(),
+        ).thenThrow(http.ClientException('Connection refused'));
+        await connector.fetchCredentials();
+
+        expect(infoLines('backend unreachable'), hasLength(2));
+      });
+
+      test('does not log recovery when there was no outage', () async {
+        final jwt = makeJwt({'sub': 'u', 'iat': 1700000000, 'exp': 1700000600});
+        when(mockApi.getPowersyncToken()).thenAnswer(
+          (_) async => {'token': jwt, 'powersync_url': 'https://ps.example.com'},
+        );
+
+        await connector.fetchCredentials();
+
+        expect(infoLines('reachable again'), isEmpty);
+      });
     });
   });
 

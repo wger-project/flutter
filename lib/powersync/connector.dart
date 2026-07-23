@@ -76,6 +76,15 @@ class DjangoConnector extends PowerSyncBackendConnector {
   /// Resets on app restart.
   final Set<String> _reportedFailedOps = {};
 
+  /// Spacing between repeated "backend unreachable" log lines while the
+  /// credential fetch keeps failing, so PowerSync's retry loop doesn't
+  /// flood the app logs during a longer outage.
+  static const unreachableLogInterval = Duration(minutes: 5);
+
+  /// When the current outage was last logged; null while the backend is
+  /// reachable.
+  DateTime? _lastUnreachableLogAt;
+
   DjangoConnector({required this.baseUrl, required this.apiClient});
 
   /// Get a token to authenticate against the PowerSync instance.
@@ -90,12 +99,13 @@ class DjangoConnector extends PowerSyncBackendConnector {
       // Backend unreachable (offline). Returning null skips this attempt;
       // PowerSync retries on its own schedule. Without this, the raw
       // SocketException stack trace floods the logs on every retry.
-      logger.fine('PowerSync credential fetch skipped, backend unreachable: ${e.message}');
+      _logUnreachable(e.message);
       return null;
     } on SocketException catch (e) {
-      logger.fine('PowerSync credential fetch skipped, backend unreachable: ${e.message}');
+      _logUnreachable(e.message);
       return null;
     }
+    _logReachableAgain();
 
     final token = session['token'] as String;
     final payload = decodeJwtPayload(token);
@@ -103,8 +113,27 @@ class DjangoConnector extends PowerSyncBackendConnector {
       endpoint: session['powersync_url'],
       token: token,
       userId: payload?['sub']?.toString(),
-      expiresAt: jwtExp(payload),
+      expiresAt: jwtExpOnLocalClock(payload),
     );
+  }
+
+  /// Logs a skipped credential fetch at INFO, throttled to once per [unreachableLogInterval]
+  /// per outage.
+  void _logUnreachable(String message) {
+    final now = DateTime.now();
+    final last = _lastUnreachableLogAt;
+    if (last == null || now.difference(last) >= unreachableLogInterval) {
+      logger.info('PowerSync credential fetch skipped, backend unreachable: $message');
+      _lastUnreachableLogAt = now;
+    }
+  }
+
+  /// Closes an outage announced by [_logUnreachable], if any.
+  void _logReachableAgain() {
+    if (_lastUnreachableLogAt != null) {
+      logger.info('Backend reachable again, PowerSync credential fetch succeeded');
+      _lastUnreachableLogAt = null;
+    }
   }
 
   /// Date-only fields per table.

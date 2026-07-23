@@ -53,3 +53,20 @@ DateTime? jwtExp(Map<String, dynamic>? payload) {
   }
   return DateTime.fromMillisecondsSinceEpoch(exp.toInt() * 1000, isUtc: true);
 }
+
+/// Projects the token lifetime (`exp - iat`) onto the local clock.
+///
+/// The absolute `exp` claim is server time; comparing it against the device
+/// clock (as consumers of an expiry timestamp do) breaks expiry scheduling
+/// when that clock is off. Taking only the lifetime from the server keeps
+/// the schedule correct regardless of clock skew.
+///
+/// Falls back to the absolute `exp` when `iat` is missing or not numeric.
+DateTime? jwtExpOnLocalClock(Map<String, dynamic>? payload) {
+  final iat = payload?['iat'];
+  final exp = payload?['exp'];
+  if (iat is! num || exp is! num) {
+    return jwtExp(payload);
+  }
+  return DateTime.now().toUtc().add(Duration(seconds: (exp - iat).toInt()));
+}
