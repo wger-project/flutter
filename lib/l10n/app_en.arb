@@ -1396,6 +1396,10 @@
   "@syncStatusErrorDetails": {
     "description": "Header of the expandable section in the sync status dialog that reveals the raw error message"
   },
+  "syncStatusStalledHint": "The connection to the sync service seems to be blocked. A VPN, ad blocker, antivirus or firewall on this network may be interfering.",
+  "@syncStatusStalledHint": {
+    "description": "Hint shown in the sync status dialog when the app keeps connecting but never receives any sync data, which usually means something on the network is blocking the connection"
+  },
   "filterNutriscore": "Nutri-Score filter",
   "@filterNutriscore": {
     "description": "Heading for the Nutri-Score slider in the ingredient search filter dialog"

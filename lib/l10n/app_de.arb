@@ -1148,6 +1148,7 @@
     "syncStatusDialogTitle": "Synchronisierungsstatus",
     "syncStatusLastSynced": "Letzte Synchronisierung",
     "syncStatusErrorDetails": "Fehlerdetails",
+    "syncStatusStalledHint": "Die Verbindung zum Synchronisierungsdienst scheint blockiert zu werden. Möglicherweise stört ein VPN, Werbeblocker, Virenscanner oder eine Firewall in diesem Netzwerk.",
     "sessionExpired": "Deine Sitzung ist abgelaufen, bitte melde dich erneut an",
     "endBeforeStart": "Der Endwert darf nicht vor dem Startwert liegen",
     "minLengthRoutine": "Die Routine muss mindestens {number} Wochen lang sein",

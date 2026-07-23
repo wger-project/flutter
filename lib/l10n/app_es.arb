@@ -1185,6 +1185,7 @@
     "syncStatusDialogTitle": "Estado de sincronización",
     "syncStatusLastSynced": "Última sincronización",
     "syncStatusErrorDetails": "Detalles del error",
+    "syncStatusStalledHint": "La conexión con el servicio de sincronización parece estar bloqueada. Es posible que una VPN, un bloqueador de anuncios, un antivirus o un cortafuegos de esta red estén interfiriendo.",
     "sessionExpired": "Tu sesión ha expirado, inicia sesión de nuevo",
     "weightOrRepsRequired": "Introduce un peso, repeticiones o ambos",
     "timeStartEndBothOrNeither": "Indica la hora de inicio y de fin, o deja ambas vacías",

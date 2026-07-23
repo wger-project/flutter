@@ -143,6 +143,38 @@ void main() {
       expect(find.text(i18n.syncStatusErrorDetails), findsNothing);
     });
 
+    testWidgets('shows the blocked-connection hint when stalled without an error', (tester) async {
+      await tester.pumpWidget(
+        _wrap(const SyncStatusDialog(SyncStatus(connecting: true), stalled: true)),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text(i18n.syncStatusStalledHint), findsOneWidget);
+      expect(find.text(i18n.applicationLogs), findsOneWidget);
+    });
+
+    testWidgets('omits the stalled hint when not stalled', (tester) async {
+      await _pumpDialog(tester, const SyncStatus(connecting: true));
+
+      expect(find.text(i18n.syncStatusStalledHint), findsNothing);
+      expect(find.text(i18n.applicationLogs), findsNothing);
+    });
+
+    testWidgets('prefers the real error over the stalled hint', (tester) async {
+      await tester.pumpWidget(
+        _wrap(
+          SyncStatusDialog(
+            SyncStatus(connecting: true, downloadError: Exception('boom')),
+            stalled: true,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text(i18n.syncStatusStalledHint), findsNothing);
+      expect(find.text(i18n.syncStatusError), findsOneWidget);
+    });
+
     testWidgets('renders the expander with the raw error message when present', (tester) async {
       await _pumpDialog(
         tester,
