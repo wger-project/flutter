@@ -1372,6 +1372,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get gymModeShowWorkoutDuration =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeShowWorkoutDuration),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeShowWorkoutDuration),
+            ),
+          )
+          as String);
+
+  @override
   String get gymModeTimerType =>
       (super.noSuchMethod(
             Invocation.getter(#gymModeTimerType),

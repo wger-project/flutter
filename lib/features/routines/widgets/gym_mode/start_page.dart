@@ -81,13 +81,19 @@ class _GymModeOptionsState extends ConsumerState<GymModeOptions> {
                         onChanged: (value) => gymNotifier.setShowExercisePages(value),
                       ),
                       SwitchListTile(
+                        key: const ValueKey('gym-mode-option-show-workout-duration'),
+                        title: Text(i18n.gymModeShowWorkoutDuration),
+                        value: gymState.showWorkoutDuration,
+                        onChanged: (value) => gymNotifier.setShowWorkoutDuration(value),
+                      ),
+
+                      const Divider(),
+                      SwitchListTile(
                         key: const ValueKey('gym-mode-option-show-timer'),
                         title: Text(i18n.gymModeShowTimer),
                         value: gymState.showTimerPages,
                         onChanged: (value) => gymNotifier.setShowTimerPages(value),
                       ),
-
-                      const Divider(),
                       ListTile(
                         key: const ValueKey('gym-mode-timer-type'),
                         enabled: gymState.showTimerPages,
@@ -275,13 +281,14 @@ class StartPage extends ConsumerWidget {
         FilledButton(
           child: Text(AppLocalizations.of(context).start),
           onPressed: () {
+            ref.read(gymStateProvider.notifier).startWorkout();
             _controller.nextPage(
               duration: const Duration(milliseconds: 200),
               curve: Curves.bounceIn,
             );
           },
         ),
-        NavigationFooter(_controller, showPrevious: false),
+        NavigationFooter(_controller, showPrevious: false, showElapsedTime: false),
       ],
     );
   }

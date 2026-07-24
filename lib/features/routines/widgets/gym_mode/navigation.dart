@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/features/routines/providers/gym_state_notifier.dart';
+import 'package:wger/features/routines/widgets/gym_mode/elapsed_time.dart';
 import 'package:wger/features/routines/widgets/gym_mode/workout_menu.dart';
 import 'package:wger/theme/theme.dart';
 
@@ -73,11 +74,13 @@ class NavigationFooter extends ConsumerWidget {
   final PageController _controller;
   final bool showPrevious;
   final bool showNext;
+  final bool showElapsedTime;
 
   const NavigationFooter(
     this._controller, {
     this.showPrevious = true,
     this.showNext = true,
+    this.showElapsedTime = true,
   });
 
   @override
@@ -98,6 +101,10 @@ class NavigationFooter extends ConsumerWidget {
           )
         else
           const SizedBox(width: 48),
+        if (showElapsedTime && gymState.showWorkoutDuration) ...[
+          const ElapsedWorkoutTimer(),
+          const SizedBox(width: 8),
+        ],
         Expanded(
           child: GestureDetector(
             onTap: () => showDialog(

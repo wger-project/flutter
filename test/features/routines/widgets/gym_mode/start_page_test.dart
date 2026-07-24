@@ -107,10 +107,17 @@ void main() {
     await tester.tap(showTimerSwitch);
     await tester.pump();
 
+    // Toggle show workout duration
+    final durationSwitch = find.byKey(const ValueKey('gym-mode-option-show-workout-duration'));
+    expect(durationSwitch, findsOneWidget);
+    await tester.tap(durationSwitch);
+    await tester.pump();
+
     final notifier = container.read(gymStateProvider.notifier);
     expect(notifier.state.showExercisePages, isFalse);
     expect(notifier.state.showTimerPages, isFalse);
     expect(notifier.state.alertOnCountdownEnd, isTrue);
+    expect(notifier.state.showWorkoutDuration, isFalse);
   });
 
   testWidgets('Dropdown, text field and refresh button update notifier state', (tester) async {

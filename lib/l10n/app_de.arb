@@ -1157,5 +1157,6 @@
     "gymModeLogScopeHelp": "Welche Protokolle beim Training als Referenz angezeigt werden",
     "gymModeLogScopeCurrentRoutine": "Aktuelle Routine",
     "gymModeLogScopeWeeks": "Letzte {weeks} Wochen",
-    "gymModeDistinctLogs": "Doppelte Werte ausblenden"
+    "gymModeDistinctLogs": "Doppelte Werte ausblenden",
+    "gymModeShowWorkoutDuration": "Trainingsdauer anzeigen"
 }
