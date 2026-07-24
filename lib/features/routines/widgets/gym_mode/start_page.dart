@@ -81,13 +81,19 @@ class _GymModeOptionsState extends ConsumerState<GymModeOptions> {
                         onChanged: (value) => gymNotifier.setShowExercisePages(value),
                       ),
                       SwitchListTile(
+                        key: const ValueKey('gym-mode-option-show-workout-duration'),
+                        title: Text(i18n.gymModeShowWorkoutDuration),
+                        value: gymState.showWorkoutDuration,
+                        onChanged: (value) => gymNotifier.setShowWorkoutDuration(value),
+                      ),
+
+                      const Divider(),
+                      SwitchListTile(
                         key: const ValueKey('gym-mode-option-show-timer'),
                         title: Text(i18n.gymModeShowTimer),
                         value: gymState.showTimerPages,
                         onChanged: (value) => gymNotifier.setShowTimerPages(value),
                       ),
-
-                      const Divider(),
                       ListTile(
                         key: const ValueKey('gym-mode-timer-type'),
                         enabled: gymState.showTimerPages,

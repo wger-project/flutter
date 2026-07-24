@@ -1195,5 +1195,6 @@
     "gymModeLogScopeHelp": "Qué registros mostrar como referencia durante el entrenamiento",
     "gymModeLogScopeCurrentRoutine": "Rutina actual",
     "gymModeLogScopeWeeks": "Últimas {weeks} semanas",
-    "gymModeDistinctLogs": "Ocultar valores duplicados"
+    "gymModeDistinctLogs": "Ocultar valores duplicados",
+    "gymModeShowWorkoutDuration": "Mostrar la duración del entrenamiento"
 }

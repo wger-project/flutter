@@ -1166,5 +1166,6 @@
     "gymModeLogScopeHelp": "Quels journaux afficher comme référence pendant l'entraînement",
     "gymModeLogScopeCurrentRoutine": "Routine actuelle",
     "gymModeLogScopeWeeks": "{weeks} dernières semaines",
-    "gymModeDistinctLogs": "Masquer les valeurs en double"
+    "gymModeDistinctLogs": "Masquer les valeurs en double",
+    "gymModeShowWorkoutDuration": "Afficher la durée de l'entraînement"
 }

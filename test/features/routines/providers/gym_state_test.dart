@@ -309,6 +309,18 @@ void main() {
     });
   });
 
+  group('GymStateNotifier.setShowWorkoutDuration', () {
+    test('Sets the flag and persists it', () async {
+      // Act
+      notifier.setShowWorkoutDuration(false);
+      await pumpEventQueue();
+
+      // Assert
+      expect(notifier.state.showWorkoutDuration, false);
+      expect(await PreferenceHelper.asyncPref.getBool(PREFS_SHOW_WORKOUT_DURATION), false);
+    });
+  });
+
   group('GymStateNotifier.startWorkout', () {
     test('Resets the workout start time to now', () {
       // Arrange

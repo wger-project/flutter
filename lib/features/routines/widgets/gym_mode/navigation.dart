@@ -101,7 +101,7 @@ class NavigationFooter extends ConsumerWidget {
           )
         else
           const SizedBox(width: 48),
-        if (showElapsedTime) ...[
+        if (showElapsedTime && gymState.showWorkoutDuration) ...[
           const ElapsedWorkoutTimer(),
           const SizedBox(width: 8),
         ],

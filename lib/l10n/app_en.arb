@@ -351,6 +351,7 @@
   },
   "gymModeShowExercises": "Show exercise overview pages",
   "gymModeShowTimer": "Show timer between sets",
+  "gymModeShowWorkoutDuration": "Show workout duration",
   "gymModeTimerType": "Timer type",
   "gymModeTimerTypeHelText": "If a set has pause time, a countdown is always used.",
   "countdown": "Countdown",
