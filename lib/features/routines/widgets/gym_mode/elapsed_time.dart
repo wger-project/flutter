@@ -50,15 +50,14 @@ class ElapsedWorkoutTimer extends ConsumerStatefulWidget {
 
 class _ElapsedWorkoutTimerState extends ConsumerState<ElapsedWorkoutTimer> {
   late Timer _uiTimer;
+  late DateTime _now;
 
   @override
   void initState() {
     super.initState();
+    _now = clock.now();
     _uiTimer = Timer.periodic(const Duration(seconds: 1), (_) {
-      // ignore: no-empty-block, avoid-empty-setstate
-      if (mounted) {
-        setState(() {});
-      }
+      setState(() => _now = clock.now());
     });
   }
 
@@ -71,7 +70,7 @@ class _ElapsedWorkoutTimerState extends ConsumerState<ElapsedWorkoutTimer> {
   @override
   Widget build(BuildContext context) {
     final workoutStart = ref.watch(gymStateProvider).workoutStart;
-    final elapsed = clock.now().difference(workoutStart);
+    final elapsed = _now.difference(workoutStart);
     final style = Theme.of(context).textTheme.bodySmall;
 
     return Row(

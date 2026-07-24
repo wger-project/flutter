@@ -340,6 +340,38 @@ void main() {
     });
   });
 
+  group('GymStateNotifier.initData', () {
+    test('Resets the workout start time when the state is reset', () {
+      // Arrange
+      notifier.state = notifier.state.copyWith(
+        isInitialized: false,
+        workoutStart: DateTime(2024, 5, 1, 10, 0),
+      );
+
+      // Act
+      withClock(Clock.fixed(DateTime(2024, 5, 2, 18, 0)), () {
+        notifier.initData(getTestRoutine(), 1, 1);
+      });
+
+      // Assert
+      expect(notifier.state.workoutStart, DateTime(2024, 5, 2, 18, 0));
+    });
+
+    test('Keeps the workout start time when the state is not reset', () {
+      // Arrange
+      notifier.state = notifier.state.copyWith(
+        isInitialized: true,
+        workoutStart: DateTime(2024, 5, 1, 10, 0),
+      );
+
+      // Act
+      notifier.initData(getTestRoutine(), 1, 1);
+
+      // Assert
+      expect(notifier.state.workoutStart, DateTime(2024, 5, 1, 10, 0));
+    });
+  });
+
   group('GymModeState.copyWith', () {
     test('Keeps the log scope when it is not passed', () {
       final state = notifier.state.copyWith(logScopeWeeks: 8);

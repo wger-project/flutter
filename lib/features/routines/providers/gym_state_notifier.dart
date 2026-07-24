@@ -278,6 +278,8 @@ class GymStateNotifier extends _$GymStateNotifier {
       routine: routine,
       iteration: iteration,
       currentPage: initialPage,
+      // A fresh workout also restarts the elapsed timer
+      workoutStart: shouldReset ? clock.now() : null,
     );
 
     // Calculate the pages.
