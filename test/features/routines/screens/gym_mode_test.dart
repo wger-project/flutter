@@ -493,9 +493,30 @@ void main() {
     semanticsEnabled: false,
   );
 
+  /// Puts the preferences gym mode reads on open into a known state
+  ///
+  /// Installing a fresh in-memory store in setUp does not isolate the tests in
+  /// this file from one another, what one test writes is still visible in the
+  /// next. Both of these decide what is on screen after opening gym mode: a
+  /// workout left in the middle is continued where it stopped, and the exercise
+  /// pages setting decides which page follows the start page.
+  ///
+  /// This runs through [runAsync] because the notifier does not await its
+  /// writes, and a pending one uses real timers, which the fake clock of the
+  /// test binding never fires.
+  Future<void> resetGymModePrefs(WidgetTester tester) async {
+    await tester.runAsync(() async {
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+      await PreferenceHelper.asyncPref.remove(PREFS_WORKOUT_PROGRESS);
+      await PreferenceHelper.asyncPref.setBool(PREFS_SHOW_EXERCISES, true);
+    });
+  }
+
   /// Opens gym mode and advances past the start page, so that a workout counts
   /// as in progress
   Future<void> enterRunningWorkout(WidgetTester tester) async {
+    await resetGymModePrefs(tester);
+
     await tester.pumpWidget(renderGymMode());
     await tester.pumpAndSettle();
     await tester.tap(find.byType(TextButton));
@@ -515,6 +536,8 @@ void main() {
       // Nothing has happened yet on the start page, so there is nothing to
       // protect and closing stays a single tap.
       await withClock(Clock.fixed(DateTime(2025, 3, 29, 14, 33)), () async {
+        await resetGymModePrefs(tester);
+
         await tester.pumpWidget(renderGymMode());
         await tester.pumpAndSettle();
         await tester.tap(find.byType(TextButton));

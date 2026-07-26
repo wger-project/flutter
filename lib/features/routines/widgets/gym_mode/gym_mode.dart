@@ -103,7 +103,11 @@ class _GymModeState extends ConsumerState<GymMode> {
     await gymViewModel.loadPrefs();
     gymViewModel.calculatePages();
 
-    return initialPage;
+    // A workout the OS interrupted (app killed while in the background)
+    // continues where it stopped, the pages have to be calculated by now
+    final restoredPage = await gymViewModel.restoreProgress();
+
+    return restoredPage ?? initialPage;
   }
 
   List<Widget> _getContent(GymModeState state) {
