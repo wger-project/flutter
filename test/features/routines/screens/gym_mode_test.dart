@@ -492,4 +492,114 @@ void main() {
     },
     semanticsEnabled: false,
   );
+
+  /// Opens gym mode and advances past the start page, so that a workout counts
+  /// as in progress
+  Future<void> enterRunningWorkout(WidgetTester tester) async {
+    await tester.pumpWidget(renderGymMode());
+    await tester.pumpAndSettle();
+    await tester.tap(find.byType(TextButton));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(StartPage), findsOneWidget);
+
+    await tester.tap(find.byIcon(Icons.chevron_right));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(ExerciseOverview), findsOneWidget);
+  }
+
+  testWidgets(
+    'the close button leaves the start page without asking',
+    (WidgetTester tester) async {
+      // Nothing has happened yet on the start page, so there is nothing to
+      // protect and closing stays a single tap.
+      await withClock(Clock.fixed(DateTime(2025, 3, 29, 14, 33)), () async {
+        await tester.pumpWidget(renderGymMode());
+        await tester.pumpAndSettle();
+        await tester.tap(find.byType(TextButton));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(StartPage), findsOneWidget);
+
+        await tester.tap(find.byIcon(Icons.close));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Leave the workout?'), findsNothing);
+        expect(find.byType(GymModeScreen), findsNothing);
+      });
+    },
+    semanticsEnabled: false,
+  );
+
+  testWidgets(
+    'the close button asks for confirmation during a workout',
+    (WidgetTester tester) async {
+      await withClock(Clock.fixed(DateTime(2025, 3, 29, 14, 33)), () async {
+        await enterRunningWorkout(tester);
+
+        await tester.tap(find.byIcon(Icons.close));
+        await tester.pumpAndSettle();
+        expect(find.text('Leave the workout?'), findsOneWidget);
+
+        // Cancelling keeps the user on the very page they were on
+        await tester.tap(find.byKey(const ValueKey('keep-training-button')));
+        await tester.pumpAndSettle();
+        expect(find.text('Leave the workout?'), findsNothing);
+        expect(find.byType(ExerciseOverview), findsOneWidget);
+
+        // Confirming leaves gym mode
+        await tester.tap(find.byIcon(Icons.close));
+        await tester.pumpAndSettle();
+        await tester.tap(find.byKey(const ValueKey('leave-workout-button')));
+        await tester.pumpAndSettle();
+        expect(find.byType(GymModeScreen), findsNothing);
+      });
+    },
+    semanticsEnabled: false,
+  );
+
+  testWidgets(
+    'the system back gesture asks for confirmation during a workout',
+    (WidgetTester tester) async {
+      // This is the accident the guard is really about: the iOS back swipe and
+      // the Android back gesture both arrive here as a pop request.
+      await withClock(Clock.fixed(DateTime(2025, 3, 29, 14, 33)), () async {
+        await enterRunningWorkout(tester);
+
+        await tester.binding.handlePopRoute();
+        await tester.pumpAndSettle();
+
+        expect(find.text('Leave the workout?'), findsOneWidget);
+        expect(find.byType(ExerciseOverview), findsOneWidget);
+
+        await tester.tap(find.byKey(const ValueKey('keep-training-button')));
+        await tester.pumpAndSettle();
+        expect(find.byType(ExerciseOverview), findsOneWidget);
+      });
+    },
+    semanticsEnabled: false,
+  );
+
+  testWidgets(
+    'dismissing the confirmation keeps the workout',
+    (WidgetTester tester) async {
+      // A dialog dismissed without an answer (tap outside) must not be read as
+      // a confirmation, otherwise a stray tap leaves the workout after all.
+      await withClock(Clock.fixed(DateTime(2025, 3, 29, 14, 33)), () async {
+        await enterRunningWorkout(tester);
+
+        await tester.tap(find.byIcon(Icons.close));
+        await tester.pumpAndSettle();
+        expect(find.text('Leave the workout?'), findsOneWidget);
+
+        await tester.tapAt(const Offset(10, 10));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Leave the workout?'), findsNothing);
+        expect(find.byType(ExerciseOverview), findsOneWidget);
+      });
+    },
+    semanticsEnabled: false,
+  );
 }

@@ -326,6 +326,12 @@ class GymModeState {
     return null;
   }
 
+  /// Whether the user is currently inside a running workout
+  ///
+  /// True from the moment the start page is left until the summary page is
+  /// reached, i.e. exactly while there is progress that leaving would discard.
+  bool get isWorkoutInProgress => isInitialized && currentPage > 0 && currentPage < totalPages - 1;
+
   double get ratioCompleted {
     if (totalPages == 0) {
       return 0.0;
