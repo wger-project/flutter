@@ -365,10 +365,10 @@ packages:
     dependency: "direct main"
     description:
       name: drift
-      sha256: "6cc0b623c0e83f7080524d8396e9301b1d78b9c66a4fdceeb0f798211303254c"
+      sha256: "84688491040b0ceb26575709a84d701c84ad4df4d8aff020adf6d85f155fb0dd"
       url: "https://pub.dev"
     source: hosted
-    version: "2.34.0"
+    version: "2.34.2"
   drift_dev:
     dependency: "direct dev"
     description:
@@ -1429,10 +1429,10 @@ packages:
     dependency: transitive
     description:
       name: sqlite3
-      sha256: "37356bcb56ce0d9404d602c41e4bdb7765e7e9732a3e47adb3d98c556a6abdad"
+      sha256: c73fd75df1332d76a6257f4823ae4df9c791f522b97e4a60cbcad214de1becf4
       url: "https://pub.dev"
     source: hosted
-    version: "3.3.3"
+    version: "3.5.0"
   sqlite3_connection_pool:
     dependency: transitive
     description:
