@@ -18,7 +18,7 @@
 
 import 'package:drift/drift.dart';
 import 'package:powersync/powersync.dart' as ps;
-import 'package:wger/models/core/license.dart';
+import 'package:wger/core/license.dart';
 
 @UseRowClass(License)
 class LicenseTable extends Table {

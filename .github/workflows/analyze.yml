@@ -30,13 +30,10 @@ jobs:
     name: Run analyzer
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Common flutter setup
         uses: ./.github/actions/flutter-common
-
-      - name: Install dependencies
-        run: flutter pub get
 
       - name: Analyze
         run: flutter analyze

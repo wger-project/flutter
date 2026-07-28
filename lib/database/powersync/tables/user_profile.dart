@@ -18,7 +18,7 @@
 
 import 'package:drift/drift.dart';
 import 'package:powersync/powersync.dart' as ps;
-import 'package:wger/models/user/user_profile.dart';
+import 'package:wger/features/account/models/user_profile.dart';
 
 @UseRowClass(UserProfile)
 class UserProfileTable extends Table {

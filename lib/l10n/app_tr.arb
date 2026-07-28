@@ -846,5 +846,8 @@
         "type": "String"
       }
     }
-  }
+  },
+  "endBeforeStart": "Son değer, başlangıç değerinden önce olamaz",
+  "minLengthRoutine": "Program en az {number} hafta sürmelidir",
+  "maxLengthRoutine": "Bu program en fazla {number} hafta sürebilir"
 }

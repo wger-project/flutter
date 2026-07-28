@@ -19,7 +19,7 @@
 import 'package:drift/drift.dart';
 import 'package:powersync/powersync.dart' as ps;
 import 'package:wger/database/converters/utc_datetime_converter.dart';
-import 'package:wger/models/body_weight/weight_entry.dart';
+import 'package:wger/features/weight/models/weight_entry.dart';
 
 @UseRowClass(WeightEntry)
 class WeightEntryTable extends Table {

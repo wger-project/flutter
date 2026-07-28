@@ -44,7 +44,7 @@ jobs:
         #   runner: ubuntu-24.04-arm
     steps:
       - name: Checkout application
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           ref: ${{ inputs.ref }}
 
@@ -83,26 +83,20 @@ jobs:
 
     steps:
       - name: Checkout flatpak-flathub repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: wger-project/de.wger.flutter
+          ssh-key: ${{ secrets.SSH_DEPLOY_KEY }}
 
       - name: Bump version and update manifest
         run: |
-          git clone https://github.com/TheAppgineer/flatpak-flutter.git --branch 0.14.1 ../flatpak-flutter
+          git clone https://github.com/TheAppgineer/flatpak-flutter.git --branch 0.15.0 ../flatpak-flutter
           pip install -r ../flatpak-flutter/requirements.txt
           python bump-versions.py ${{ inputs.ref }} ${{ needs.build_linux.outputs.flutter_sdk_version }}
           ../flatpak-flutter/flatpak-flutter.py --app-module wger flatpak-flutter.yml
 
       - name: Push updated config to flathub repository
-        env:
-          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         run: |
-          mkdir -p ~/.ssh
-          echo "$SSH_DEPLOY_KEY" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan github.com >> ~/.ssh/known_hosts
-
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git checkout -b release-${{ inputs.ref }}
