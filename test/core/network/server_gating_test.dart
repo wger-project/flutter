@@ -16,14 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:convert';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:version/version.dart';
 import 'package:wger/core/consts.dart';
+import 'package:wger/core/network/auth_credential.dart';
 import 'package:wger/core/network/auth_credentials_storage.dart';
 import 'package:wger/core/network/secure_token_storage.dart';
 import 'package:wger/core/network/server_gating.dart';
+
+import '../../fake_auth_environment.dart';
 
 /// The version gates don't touch storage; this stand-in satisfies the
 /// constructor without pulling in secure-storage plumbing.
@@ -35,6 +40,9 @@ ServerGating _gatingReturning(http.Response response) => ServerGating(
 );
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+  installFakeAuthEnvironment();
+
   group('min server version check', () {
     final minVersion = Version.parse(MIN_SERVER_VERSION);
     final aboveMin = Version(minVersion.major, minVersion.minor + 1, 0).toString();
@@ -127,6 +135,90 @@ void main() {
     test('applicationUpdateRequired: true when the server demands a newer build', () async {
       final gating = _gatingReturning(http.Response('"99.0.0"', 200));
       expect(await gating.applicationUpdateRequired(serverUrl, '1.0.0'), true);
+    });
+  });
+
+  group('isPowerSyncReachable', () {
+    const serverUrl = 'https://wger.example.com';
+    const credential = AuthCredential.legacy('abc123');
+
+    /// Gating whose token endpoint answers [tokenBody] and whose liveness
+    /// probes answer 200 only for [liveUrl]. Every requested URL is
+    /// recorded in [requested].
+    ServerGating gatingWithTokenResponse(
+      Map<String, dynamic> tokenBody,
+      String liveUrl,
+      List<String> requested,
+    ) => ServerGating(
+      MockClient((request) async {
+        requested.add(request.url.toString());
+        if (request.url.path.endsWith('/powersync-token')) {
+          return http.Response(json.encode(tokenBody), 200);
+        }
+        if (request.url.toString() == liveUrl) {
+          return http.Response('{"ready":true}', 200);
+        }
+        return http.Response('not found', 404);
+      }),
+      AuthCredentialsStorage(_FakeSecureTokenStorage()),
+    );
+
+    test('probes the server-provided powersync_url', () async {
+      final requested = <String>[];
+      final gating = gatingWithTokenResponse(
+        {'token': 't', 'powersync_url': 'https://ps.example.com'},
+        'https://ps.example.com/probes/liveness',
+        requested,
+      );
+
+      expect(
+        await gating.isPowerSyncReachable(serverUrl: serverUrl, credential: credential),
+        true,
+      );
+      expect(requested, contains('https://ps.example.com/probes/liveness'));
+    });
+
+    test('falls back to <serverUrl>/ps/ when powersync_url points at loopback', () async {
+      final requested = <String>[];
+      final gating = gatingWithTokenResponse(
+        {'token': 't', 'powersync_url': 'http://localhost/ps/'},
+        '$serverUrl/ps/probes/liveness',
+        requested,
+      );
+
+      expect(
+        await gating.isPowerSyncReachable(serverUrl: serverUrl, credential: credential),
+        true,
+      );
+      expect(requested, contains('$serverUrl/ps/probes/liveness'));
+    });
+
+    test('falls back to <serverUrl>/ps/ when powersync_url is missing', () async {
+      final requested = <String>[];
+      final gating = gatingWithTokenResponse(
+        {'token': 't'},
+        '$serverUrl/ps/probes/liveness',
+        requested,
+      );
+
+      expect(
+        await gating.isPowerSyncReachable(serverUrl: serverUrl, credential: credential),
+        true,
+      );
+      expect(requested, contains('$serverUrl/ps/probes/liveness'));
+    });
+
+    test('returns false when the resolved URL does not answer the probe', () async {
+      final gating = gatingWithTokenResponse(
+        {'token': 't', 'powersync_url': 'https://ps.example.com'},
+        'https://somewhere-else.example.com/probes/liveness',
+        <String>[],
+      );
+
+      expect(
+        await gating.isPowerSyncReachable(serverUrl: serverUrl, credential: credential),
+        false,
+      );
     });
   });
 }

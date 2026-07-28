@@ -26,6 +26,7 @@ import 'package:logging/logging.dart';
 import 'package:powersync/powersync.dart';
 import 'package:wger/core/error_dialogs.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
+import 'package:wger/core/helpers.dart';
 import 'package:wger/core/network/jwt.dart';
 import 'package:wger/powersync/api_client.dart';
 
@@ -67,6 +68,9 @@ class DjangoConnector extends PowerSyncBackendConnector {
   final String baseUrl;
   final ApiClient apiClient;
 
+  /// Client for the endpoint liveness probes in [fetchCredentials].
+  final http.Client _probeClient;
+
   /// IDs of CRUD operations that already triggered a user-facing
   /// rejection dialog this session. Without this gate the same
   /// permanent-failure op would re-pop the dialog on every sync tick
@@ -85,7 +89,26 @@ class DjangoConnector extends PowerSyncBackendConnector {
   /// reachable.
   DateTime? _lastUnreachableLogAt;
 
-  DjangoConnector({required this.baseUrl, required this.apiClient});
+  /// Endpoint last announced in the logs. [fetchCredentials] runs on every
+  /// token refresh, so the endpoint is only logged when it changes.
+  String? _lastLoggedEndpoint;
+
+  /// When "no live PowerSync endpoint" was last logged; null while an
+  /// endpoint resolves. Throttled like [_logUnreachable], since PowerSync
+  /// re-drives [fetchCredentials] on its retry schedule.
+  DateTime? _lastNoEndpointLogAt;
+
+  /// The `powersync_url` from the last token response and the endpoint it
+  /// resolved to. While the server keeps advertising the same URL, the cached
+  /// resolution is reused instead of re-probing on every token refresh (a dead
+  /// advertised URL would otherwise cost a probe timeout each time). A failed
+  /// resolution is never cached, so retries keep probing. Cleared on app
+  /// restart with the connector.
+  String? _lastProvidedUrl;
+  String? _lastResolvedEndpoint;
+
+  DjangoConnector({required this.baseUrl, required this.apiClient, http.Client? client})
+    : _probeClient = client ?? http.Client();
 
   /// Get a token to authenticate against the PowerSync instance.
   @override
@@ -109,8 +132,35 @@ class DjangoConnector extends PowerSyncBackendConnector {
 
     final token = session['token'] as String;
     final payload = decodeJwtPayload(token);
+    final provided = session['powersync_url'] as String?;
+    String? endpoint;
+    if (provided == _lastProvidedUrl && _lastResolvedEndpoint != null) {
+      endpoint = _lastResolvedEndpoint;
+    } else {
+      endpoint = await findLivePowerSyncUrl(
+        client: _probeClient,
+        serverUrl: baseUrl,
+        provided: provided,
+      );
+      if (endpoint != null) {
+        _lastProvidedUrl = provided;
+        _lastResolvedEndpoint = endpoint;
+      }
+    }
+    if (endpoint == null) {
+      // The wger backend answered (the token fetch above succeeded), so this
+      // is a bad or down sync service, not the device being offline.
+      // Returning null skips the attempt; PowerSync retries on its own.
+      _logNoEndpoint();
+      return null;
+    }
+    _lastNoEndpointLogAt = null;
+    if (endpoint != _lastLoggedEndpoint) {
+      logger.info('Connecting to PowerSync endpoint $endpoint');
+      _lastLoggedEndpoint = endpoint;
+    }
     return PowerSyncCredentials(
-      endpoint: session['powersync_url'],
+      endpoint: endpoint,
       token: token,
       userId: payload?['sub']?.toString(),
       expiresAt: jwtExpOnLocalClock(payload),
@@ -125,6 +175,17 @@ class DjangoConnector extends PowerSyncBackendConnector {
     if (last == null || now.difference(last) >= unreachableLogInterval) {
       logger.info('PowerSync credential fetch skipped, backend unreachable: $message');
       _lastUnreachableLogAt = now;
+    }
+  }
+
+  /// Logs an unresolved PowerSync endpoint at WARNING, throttled to once per
+  /// [unreachableLogInterval] per outage.
+  void _logNoEndpoint() {
+    final now = DateTime.now();
+    final last = _lastNoEndpointLogAt;
+    if (last == null || now.difference(last) >= unreachableLogInterval) {
+      logger.warning('No PowerSync endpoint answered its liveness probe, skipping credentials');
+      _lastNoEndpointLogAt = now;
     }
   }
 
