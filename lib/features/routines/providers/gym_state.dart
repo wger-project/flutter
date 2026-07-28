@@ -326,6 +326,21 @@ class GymModeState {
     return null;
   }
 
+  /// Returns the next log page after the slot page at [pageIndex], i.e. the
+  /// set that will be performed once the current rest timer ends.
+  ///
+  /// This deliberately returns the next *set*, which may belong to the same
+  /// exercise (e.g. when progressing weights within an exercise) or to the
+  /// next one. Returns null when the workout has no further sets.
+  SlotPageEntry? getNextLogPage(int pageIndex) {
+    for (final slotPage in pages.expand((p) => p.slotPages)) {
+      if (slotPage.pageIndex > pageIndex && slotPage.type == SlotPageType.log) {
+        return slotPage;
+      }
+    }
+    return null;
+  }
+
   double get ratioCompleted {
     if (totalPages == 0) {
       return 0.0;

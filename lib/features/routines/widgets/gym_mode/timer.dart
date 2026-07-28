@@ -21,6 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:wger/features/routines/providers/gym_state.dart';
 import 'package:wger/features/routines/providers/gym_state_notifier.dart';
 import 'package:wger/features/routines/widgets/gym_mode/navigation.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -28,7 +29,12 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 class TimerWidget extends StatefulWidget {
   final PageController _controller;
 
-  const TimerWidget(this._controller);
+  /// Identifies which slot page this widget renders, so it shows its own
+  /// up-next information instead of whatever the globally-current page
+  /// happens to be.
+  final String slotUuid;
+
+  const TimerWidget(this._controller, this.slotUuid);
 
   @override
   _TimerWidgetState createState() => _TimerWidgetState();
@@ -71,13 +77,18 @@ class _TimerWidgetState extends State<TimerWidget> {
           widget._controller,
         ),
         Expanded(
-          child: Center(
-            child: Text(
-              DateFormat('m:ss').format(displayTime),
-              style: Theme.of(
-                context,
-              ).textTheme.displayLarge!.copyWith(color: Theme.of(context).colorScheme.primary),
-            ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                DateFormat('m:ss').format(displayTime),
+                style: Theme.of(
+                  context,
+                ).textTheme.displayLarge!.copyWith(color: Theme.of(context).colorScheme.primary),
+              ),
+              const SizedBox(height: 16),
+              UpNextWidget(widget.slotUuid),
+            ],
           ),
         ),
         NavigationFooter(widget._controller),
@@ -90,9 +101,15 @@ class TimerCountdownWidget extends ConsumerStatefulWidget {
   final PageController _controller;
   final int _seconds;
 
+  /// Identifies which slot page this widget renders, so it shows its own
+  /// up-next information instead of whatever the globally-current page
+  /// happens to be.
+  final String slotUuid;
+
   const TimerCountdownWidget(
     this._controller,
     this._seconds,
+    this.slotUuid,
   );
 
   @override
@@ -161,10 +178,69 @@ class _TimerCountdownWidgetState extends ConsumerState<TimerCountdownWidget> {
                 ).textTheme.displayLarge!.copyWith(color: Theme.of(context).colorScheme.primary),
               ),
               const SizedBox(height: 16),
+              UpNextWidget(widget.slotUuid),
             ],
           ),
         ),
         NavigationFooter(widget._controller),
+      ],
+    );
+  }
+}
+
+/// Shows the set that will be performed once the rest timer on the slot page
+/// identified by [slotUuid] ends. This can be the next set of the same
+/// exercise (e.g. when progressing weights within an exercise) or the first
+/// set of the next exercise. Renders nothing for the last rest of the day.
+class UpNextWidget extends ConsumerWidget {
+  final String slotUuid;
+
+  const UpNextWidget(this.slotUuid, {super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final gymState = ref.watch(gymStateProvider);
+
+    final currentSlotPage = gymState.getSlotPageByUUID(slotUuid);
+    final nextSlotPage = currentSlotPage == null
+        ? null
+        : gymState.getNextLogPage(currentSlotPage.pageIndex);
+    if (nextSlotPage == null) {
+      return const SizedBox.shrink();
+    }
+
+    final setConfigData = nextSlotPage.setConfigData!;
+    final exerciseName = setConfigData.exercise
+        .getTranslation(Localizations.localeOf(context).languageCode)
+        .name;
+    final nrOfLogPages = gymState
+        .getPageByIndex(nextSlotPage.pageIndex)
+        ?.slotPages
+        .where((e) => e.type == SlotPageType.log)
+        .length;
+
+    return Column(
+      children: [
+        Text(
+          AppLocalizations.of(context).upNext,
+          style: theme.textTheme.titleMedium,
+        ),
+        Text(
+          exerciseName,
+          textAlign: TextAlign.center,
+          style: theme.textTheme.headlineSmall,
+        ),
+        Text(
+          setConfigData.textReprWithType,
+          textAlign: TextAlign.center,
+          style: theme.textTheme.titleLarge?.copyWith(color: theme.colorScheme.primary),
+        ),
+        if (nrOfLogPages != null)
+          Text(
+            '${nextSlotPage.setIndex + 1} / $nrOfLogPages',
+            style: theme.textTheme.bodyLarge,
+          ),
       ],
     );
   }
