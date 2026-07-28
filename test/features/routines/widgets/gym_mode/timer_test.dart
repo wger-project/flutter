@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -99,6 +100,32 @@ void main() {
       await pumpTimer(tester, 14);
 
       expect(find.text('Up next'), findsNothing);
+    });
+
+    testWidgets('countdown continues when the page is disposed and re-created', (tester) async {
+      final t0 = DateTime(2024, 5, 2, 12);
+
+      await withClock(Clock.fixed(t0), () async {
+        await pumpTimer(tester, 3);
+        expect(find.text('1:30'), findsOneWidget);
+      });
+
+      // 30s later the countdown kept running (re-pumping forces a rebuild,
+      // in the app the periodic UI timer does this every second)
+      await withClock(Clock.fixed(t0.add(const Duration(seconds: 30))), () async {
+        await pumpTimer(tester, 3);
+        expect(find.text('1:00'), findsOneWidget);
+      });
+
+      // Leaving the page disposes the widget ...
+      await withClock(Clock.fixed(t0.add(const Duration(seconds: 45))), () async {
+        await tester.pumpWidget(const SizedBox());
+        await tester.pump();
+
+        // ... and coming back must not restart the countdown
+        await pumpTimer(tester, 3);
+        expect(find.text('0:45'), findsOneWidget);
+      });
     });
   });
 }

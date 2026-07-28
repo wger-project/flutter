@@ -314,6 +314,15 @@ class GymStateNotifier extends _$GymStateNotifier {
       return;
     }
 
+    // Re-visiting a page that was already logged in this workout: seed the
+    // form with the saved entry (keeping its id and session) so saving
+    // updates the row instead of inserting a duplicate.
+    final loggedEntry = slotEntryPage.loggedEntry;
+    if (loggedEntry != null) {
+      ref.read(gymLogProvider.notifier).editLog(loggedEntry);
+      return;
+    }
+
     final log = Log.fromSetConfigData(
       slotEntryPage.setConfigData!,
       routineId: state.routine.id,
@@ -365,15 +374,8 @@ class GymStateNotifier extends _$GymStateNotifier {
     _savePrefs();
   }
 
-  void markSlotPageAsDone(String uuid, {required bool isDone}) {
-    final slotPage = state.getSlotPageByUUID(uuid);
-    if (slotPage == null) {
-      _logger.warning('No slot page found for UUID $uuid');
-      return;
-    }
-
-    final updatedSlotPage = slotPage.copyWith(logDone: isDone);
-
+  /// Replaces the slot page with [uuid] by [updatedSlotPage] in the state.
+  void _updateSlotPage(String uuid, SlotPageEntry updatedSlotPage) {
     final updatedPages = state.pages.map((page) {
       if (page.type != PageType.set) {
         return page;
@@ -390,6 +392,41 @@ class GymStateNotifier extends _$GymStateNotifier {
     }).toList();
 
     state = state.copyWith(pages: updatedPages);
+  }
+
+  /// Starts the timer of the slot page with [uuid], unless it is already
+  /// running.
+  ///
+  /// The start time lives in the gym state (not the timer widget) so the
+  /// countdown continues when the page is disposed and re-created while
+  /// navigating, e.g. when going back to correct a logged set during the
+  /// rest period.
+  void startTimerIfNeeded(String uuid) {
+    final slotPage = state.getSlotPageByUUID(uuid);
+    if (slotPage == null) {
+      _logger.warning('No slot page found for UUID $uuid');
+      return;
+    }
+    if (slotPage.timerStartedAt != null) {
+      return;
+    }
+
+    _updateSlotPage(uuid, slotPage.copyWith(timerStartedAt: clock.now()));
+    _logger.fine('Started timer for slot page UUID $uuid');
+  }
+
+  /// [log] is the entry saved from this page during the current workout. It
+  /// is kept on the slot page so revisiting the page pre-fills the form with
+  /// the saved values and saving updates the row instead of inserting a
+  /// duplicate.
+  void markSlotPageAsDone(String uuid, {required bool isDone, Log? log}) {
+    final slotPage = state.getSlotPageByUUID(uuid);
+    if (slotPage == null) {
+      _logger.warning('No slot page found for UUID $uuid');
+      return;
+    }
+
+    _updateSlotPage(uuid, slotPage.copyWith(logDone: isDone, loggedEntry: log));
     _logger.fine('Set logDone=$isDone for slot page UUID $uuid');
   }
 

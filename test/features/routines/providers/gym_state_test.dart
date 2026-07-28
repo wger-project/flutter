@@ -30,9 +30,11 @@ import 'package:wger/features/account/providers/user_profile_repository.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/routines/models/day.dart';
 import 'package:wger/features/routines/models/day_data.dart';
+import 'package:wger/features/routines/models/log.dart';
 import 'package:wger/features/routines/models/routine.dart';
 import 'package:wger/features/routines/models/set_config_data.dart';
 import 'package:wger/features/routines/models/slot_data.dart';
+import 'package:wger/features/routines/providers/gym_log_notifier.dart';
 import 'package:wger/features/routines/providers/gym_state.dart';
 import 'package:wger/features/routines/providers/gym_state_notifier.dart';
 import 'package:wger/features/routines/providers/routines_notifier.dart';
@@ -85,6 +87,80 @@ void main() {
           }
         }
       }
+    });
+
+    test('Stores the logged entry on the slot page', () {
+      // Arrange
+      final slotPage = notifier.state.pages[1].slotPages[1];
+      expect(slotPage.type, SlotPageType.log);
+      final log = Log.fromSetConfigData(slotPage.setConfigData!, routineId: 1, iteration: 1)
+        ..id = 'log-1';
+
+      // Act
+      notifier.markSlotPageAsDone(slotPage.uuid, isDone: true, log: log);
+
+      // Assert
+      expect(notifier.state.getSlotPageByUUID(slotPage.uuid)!.loggedEntry, same(log));
+    });
+  });
+
+  group('GymStateNotifier.setCurrentPage', () {
+    test('Seeds the gym log from the saved entry when re-visiting a logged page', () {
+      // Arrange
+      final slotPage = notifier.state.pages[1].slotPages[1];
+      expect(slotPage.type, SlotPageType.log);
+      final log = Log.fromSetConfigData(slotPage.setConfigData!, routineId: 1, iteration: 1)
+        ..id = 'log-1'
+        ..sessionId = 'session-1';
+      notifier.markSlotPageAsDone(slotPage.uuid, isDone: true, log: log);
+
+      // Act
+      notifier.setCurrentPage(slotPage.pageIndex);
+
+      // Assert: the id and session are kept so saving updates the row
+      // instead of inserting a duplicate
+      final gymLog = container.read(gymLogProvider);
+      expect(gymLog, same(log));
+      expect(gymLog!.id, 'log-1');
+      expect(gymLog.sessionId, 'session-1');
+    });
+
+    test('Seeds a fresh template for a page without a saved entry', () {
+      // Act
+      notifier.setCurrentPage(2);
+
+      // Assert
+      expect(container.read(gymLogProvider)!.id, isNull);
+    });
+  });
+
+  group('GymStateNotifier.startTimerIfNeeded', () {
+    test('Sets the start time only once', () {
+      // Arrange
+      final timerPage = notifier.state.pages[1].slotPages[2];
+      expect(timerPage.type, SlotPageType.timer);
+
+      // Act
+      withClock(Clock.fixed(DateTime(2024, 5, 2, 12)), () {
+        notifier.startTimerIfNeeded(timerPage.uuid);
+      });
+
+      // Assert
+      expect(
+        notifier.state.getSlotPageByUUID(timerPage.uuid)!.timerStartedAt,
+        DateTime(2024, 5, 2, 12),
+      );
+
+      // Act: starting again does not restart the timer
+      withClock(Clock.fixed(DateTime(2024, 5, 2, 12, 5)), () {
+        notifier.startTimerIfNeeded(timerPage.uuid);
+      });
+
+      // Assert
+      expect(
+        notifier.state.getSlotPageByUUID(timerPage.uuid)!.timerStartedAt,
+        DateTime(2024, 5, 2, 12),
+      );
     });
   });
 
