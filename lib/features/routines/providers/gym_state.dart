@@ -21,6 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:wger/core/uuid.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/routines/models/day_data.dart';
+import 'package:wger/features/routines/models/log.dart';
 import 'package:wger/features/routines/models/routine.dart';
 import 'package:wger/features/routines/models/set_config_data.dart';
 
@@ -34,6 +35,7 @@ const PREFS_COUNTDOWN_DURATION = 'countdownDurationSecondsPrefs';
 const PREFS_LOG_SCOPE_WEEKS = 'logScopeWeeksPrefs';
 const PREFS_SHOW_DISTINCT_LOGS = 'showDistinctLogsPrefs';
 const PREFS_SHOW_WORKOUT_DURATION = 'showWorkoutDurationPrefs';
+const PREFS_STICKY_SET_VALUES = 'stickySetValuesPrefs';
 
 /// In seconds
 const DEFAULT_COUNTDOWN_DURATION = 180;
@@ -186,6 +188,15 @@ class GymModeState {
   final bool showDistinctLogs;
   final bool showWorkoutDuration;
 
+  /// Whether the log form of a set is pre-filled with the values last
+  /// logged for the same exercise during this workout, instead of the
+  /// planned ones. Disabled by default.
+  final bool stickySetValues;
+
+  /// The values last logged per exercise during this workout, used to
+  /// pre-fill the log form when [stickySetValues] is enabled.
+  final Map<int, Log> lastLoggedValues;
+
   // Routine data
   late final int dayId;
   late final int iteration;
@@ -204,6 +215,8 @@ class GymModeState {
     this.logScopeWeeks,
     this.showDistinctLogs = true,
     this.showWorkoutDuration = true,
+    this.stickySetValues = false,
+    this.lastLoggedValues = const {},
     int? dayId,
     int? iteration,
     Routine? routine,
@@ -248,6 +261,8 @@ class GymModeState {
     bool clearLogScopeWeeks = false,
     bool? showDistinctLogs,
     bool? showWorkoutDuration,
+    bool? stickySetValues,
+    Map<int, Log>? lastLoggedValues,
   }) {
     return GymModeState(
       isInitialized: isInitialized ?? this.isInitialized,
@@ -270,6 +285,8 @@ class GymModeState {
       logScopeWeeks: clearLogScopeWeeks ? null : (logScopeWeeks ?? this.logScopeWeeks),
       showDistinctLogs: showDistinctLogs ?? this.showDistinctLogs,
       showWorkoutDuration: showWorkoutDuration ?? this.showWorkoutDuration,
+      stickySetValues: stickySetValues ?? this.stickySetValues,
+      lastLoggedValues: lastLoggedValues ?? this.lastLoggedValues,
     );
   }
 
