@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:powersync/powersync.dart'
     show CredentialsException, PowerSyncProtocolException, SyncResponseException, SyncStatus;
 import 'package:wger/core/formatting/formatting.dart';
+import 'package:wger/core/widgets/log_overview.dart' show LogOverviewPage;
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/powersync/connector.dart' show RetryableUploadException;
 
@@ -94,7 +95,12 @@ String? _categoriseSyncError(Object error) {
 class SyncStatusDialog extends StatelessWidget {
   final SyncStatus _status;
 
-  const SyncStatusDialog(this._status, {super.key});
+  /// True when the sync stream keeps reconnecting without ever receiving
+  /// data (see SyncStreamWatchdog). There is no error to show in that
+  /// case, so the dialog adds a hint about likely network-side blockers.
+  final bool stalled;
+
+  const SyncStatusDialog(this._status, {this.stalled = false, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -133,6 +139,15 @@ class SyncStatusDialog extends StatelessWidget {
               ),
             ],
           ),
+          if (stalled && _status.anyError == null) ...[
+            const SizedBox(height: 8),
+            Text(
+              i18n.syncStatusStalledHint,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ],
           const SizedBox(height: 16),
 
           // Last sync timestamp if available
@@ -172,6 +187,17 @@ class SyncStatusDialog extends StatelessWidget {
         ],
       ),
       actions: [
+        // The stalled hint and the WARNING land in the application logs;
+        // give the user a direct path to them.
+        if (stalled && _status.anyError == null)
+          TextButton(
+            onPressed: () {
+              final navigator = Navigator.of(context);
+              navigator.pop();
+              navigator.pushNamed(LogOverviewPage.routeName);
+            },
+            child: Text(i18n.applicationLogs),
+          ),
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
           child: Text(MaterialLocalizations.of(context).closeButtonLabel),

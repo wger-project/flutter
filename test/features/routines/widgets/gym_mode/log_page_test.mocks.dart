@@ -34,13 +34,15 @@ class MockWorkoutLogRepository extends _i1.Mock implements _i2.WorkoutLogReposit
 
   @override
   _i3.Stream<List<_i4.Log>> watchLogsByExerciseDrift({
-    required int? routineId,
+    int? routineId,
     required int? exerciseId,
+    DateTime? since,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#watchLogsByExerciseDrift, [], {
               #routineId: routineId,
               #exerciseId: exerciseId,
+              #since: since,
             }),
             returnValue: _i3.Stream<List<_i4.Log>>.empty(),
           )

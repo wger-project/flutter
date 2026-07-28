@@ -334,6 +334,10 @@ void main() {
       await tester.pumpAndSettle();
 
       // Act
+      // The card overflows the default 800x600 test surface and clips the
+      // ADVANCED footer at the bottom, so scroll it into view before tapping.
+      await tester.ensureVisible(find.byKey(const Key('advancedButton')));
+      await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('advancedButton')));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Refresh token'));
@@ -382,6 +386,10 @@ void main() {
       await tester.pumpAndSettle();
 
       // Act
+      // The card overflows the default 800x600 test surface and clips the
+      // ADVANCED footer at the bottom, so scroll it into view before tapping.
+      await tester.ensureVisible(find.byKey(const Key('advancedButton')));
+      await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('advancedButton')));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Refresh token'));

@@ -43,9 +43,27 @@ class Log {
   String? id;
 
   late int exerciseId;
-  late Exercise exerciseObj;
 
-  late int routineId;
+  Exercise? _exerciseObj;
+
+  /// The exercise this log belongs to, throws if it was never hydrated
+  ///
+  /// Logs read from the database only carry [exerciseId], joining the whole
+  /// exercise with its translations, images and muscles would be wasteful for
+  /// a value most callers don't need. Use [exerciseObjOrNull] for those.
+  Exercise get exerciseObj {
+    if (_exerciseObj == null) {
+      throw StateError('Log $id has no hydrated exercise (exercise ID $exerciseId)');
+    }
+    return _exerciseObj!;
+  }
+
+  set exerciseObj(Exercise value) => _exerciseObj = value;
+
+  /// Like [exerciseObj] but returns null instead of throwing
+  Exercise? get exerciseObjOrNull => _exerciseObj;
+
+  int? routineId;
   String? sessionId;
   int? iteration;
   int? slotEntryId;
@@ -69,7 +87,7 @@ class Log {
     required this.exerciseId,
     this.iteration,
     this.slotEntryId,
-    required this.routineId,
+    this.routineId,
     this.sessionId,
     this.repetitions,
     this.repetitionsTarget,
@@ -84,7 +102,7 @@ class Log {
     DateTime? date,
   }) : date = date ?? DateTime.now();
 
-  Log.fromSetConfigData(SetConfigData setConfig, {int? routineId, this.iteration}) {
+  Log.fromSetConfigData(SetConfigData setConfig, {this.routineId, this.iteration}) {
     date = DateTime.now();
     sessionId = null;
 
@@ -103,10 +121,6 @@ class Log {
 
     rir = setConfig.rir;
     rirTarget = setConfig.rir;
-
-    if (routineId != null) {
-      this.routineId = routineId;
-    }
   }
 
   Log copyWith({
@@ -157,7 +171,11 @@ class Log {
       out.weightUnitObj = weightUnitObj;
       out.weightUnitId = weightUnitObj.id;
     }
-    out.exerciseObj = exerciseObj;
+
+    // Logs read from the database have no exercise, so only copy an existing one
+    if (_exerciseObj != null) {
+      out.exerciseObj = _exerciseObj!;
+    }
 
     return out;
   }

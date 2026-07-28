@@ -24,6 +24,7 @@ import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/core/snackbar.dart';
 import 'package:wger/core/widgets/core.dart';
 import 'package:wger/core/widgets/error.dart';
+import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/routines/models/log.dart';
 import 'package:wger/features/routines/models/set_config_data.dart';
 import 'package:wger/features/routines/models/slot_entry.dart';
@@ -79,6 +80,8 @@ class LogPage extends ConsumerWidget {
       pastExerciseLogsProvider(
         routineId: gymState.routine.id!,
         exerciseId: setConfigData.exerciseId,
+        weeksBack: gymState.logScopeWeeks,
+        distinct: gymState.showDistinctLogs,
       ),
     );
 
@@ -136,7 +139,11 @@ class LogPage extends ConsumerWidget {
         if (slotEntryPage.setConfigData!.comment.isNotEmpty)
           Text(slotEntryPage.setConfigData!.comment, textAlign: TextAlign.center),
         const SizedBox(height: 10),
-        Expanded(child: _buildPastLogs(pastLogs)),
+
+        // Overriding the log scope from here is handled in a follow-up, the
+        // settings currently only live in the gym mode options.
+        // _LogScopeControls(gymState: gymState),
+        Expanded(child: _buildPastLogs(pastLogs, setConfigData.exercise)),
 
         Padding(
           padding: const EdgeInsets.all(10),
@@ -159,7 +166,7 @@ class LogPage extends ConsumerWidget {
   }
 
   /// Renders the previous logs for this exercise
-  Widget _buildPastLogs(AsyncValue<List<Log>> pastLogs) {
+  Widget _buildPastLogs(AsyncValue<List<Log>> pastLogs, Exercise exercise) {
     if (pastLogs.hasError) {
       _logger.warning('Could not load past logs', pastLogs.error, pastLogs.stackTrace);
       // Scroll-wrap so the indicator fits this slim slot instead of overflowing.
@@ -168,7 +175,9 @@ class LogPage extends ConsumerWidget {
       );
     }
     final logs = pastLogs.value ?? const <Log>[];
-    return logs.isEmpty ? const SizedBox.shrink() : LogsPastLogsWidget(pastLogs: logs);
+    return logs.isEmpty
+        ? const SizedBox.shrink()
+        : LogsPastLogsWidget(pastLogs: logs, exercise: exercise);
   }
 }
 
@@ -229,9 +238,13 @@ class LogsPlatesWidget extends ConsumerWidget {
 class LogsPastLogsWidget extends ConsumerWidget {
   final List<Log> pastLogs;
 
+  /// The exercise the logs belong to, they only carry its ID
+  final Exercise exercise;
+
   const LogsPastLogsWidget({
     super.key,
     required this.pastLogs,
+    required this.exercise,
   });
 
   @override
@@ -255,7 +268,7 @@ class LogsPastLogsWidget extends ConsumerWidget {
               subtitle: Text(dateFormat.format(pastLog.date)),
               trailing: const Icon(Icons.copy),
               onTap: () {
-                logProvider.setLog(pastLog);
+                logProvider.setLog(pastLog, exercise: exercise);
                 ScaffoldMessenger.of(context).hideCurrentSnackBar();
                 showSnackbar(context, AppLocalizations.of(context).dataCopied);
               },
@@ -404,3 +417,63 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
     );
   }
 }
+
+// Compact inline controls for overriding the global log-scope settings. Kept
+// around for the follow-up that lets the scope be changed from the log page.
+//
+// class _LogScopeControls extends ConsumerWidget {
+//   final GymModeState gymState;
+//
+//   const _LogScopeControls({required this.gymState});
+//
+//   @override
+//   Widget build(BuildContext context, WidgetRef ref) {
+//     final gymNotifier = ref.read(gymStateProvider.notifier);
+//     final i18n = AppLocalizations.of(context);
+//     final theme = Theme.of(context);
+//
+//     return Padding(
+//       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+//       child: Row(
+//         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//         children: [
+//           Row(
+//             children: [
+//               Icon(Icons.history, size: 18, color: theme.colorScheme.primary),
+//               const SizedBox(width: 4),
+//               DropdownButton<int?>(
+//                 value: gymState.logScopeWeeks,
+//                 isDense: true,
+//                 underline: const SizedBox.shrink(),
+//                 style: theme.textTheme.bodySmall,
+//                 onChanged: (value) => gymNotifier.setLogScopeWeeks(value),
+//                 items: [
+//                   DropdownMenuItem<int?>(
+//                     value: null,
+//                     child: Text(i18n.gymModeLogScopeCurrentRoutine),
+//                   ),
+//                   ...[8, 12, 25, 50].map(
+//                     (w) => DropdownMenuItem<int?>(
+//                       value: w,
+//                       child: Text(i18n.gymModeLogScopeWeeks(w)),
+//                     ),
+//                   ),
+//                 ],
+//               ),
+//             ],
+//           ),
+//           Row(
+//             children: [
+//               Text(i18n.gymModeDistinctLogs, style: theme.textTheme.bodySmall),
+//               Switch.adaptive(
+//                 value: gymState.showDistinctLogs,
+//                 onChanged: (v) => gymNotifier.setShowDistinctLogs(v),
+//                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+//               ),
+//             ],
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }

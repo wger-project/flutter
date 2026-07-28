@@ -4,11 +4,11 @@
     "@login": {
         "description": "Text for login button"
     },
-    "logout": "تسجيل خروج",
+    "logout": "تسجيل الخروج",
     "@logout": {
         "description": "Text for logout button"
     },
-    "invalidUrl": "أدخل رابط صحيح من فضلك",
+    "invalidUrl": "الرجاء إدخال رابط صالح",
     "@invalidUrl": {
         "description": "Error message when the user enters an invalid URL, e.g. in the login form"
     },
@@ -22,7 +22,7 @@
         "description": "Error message when the user hasn't selected an ingredient from the autocompleter"
     },
     "logIngredient": "حفظ في مذكرة التغذيةسجل المكونات في دفتر التغذية",
-    "equipment": "الادوات",
+    "equipment": "المعدات",
     "@equipment": {
         "description": "Equipment needed to perform an exercise"
     },
@@ -88,7 +88,7 @@
     "@calves": {
         "description": "Generated entry for translation for server strings"
     },
-    "labelBottomNavWorkout": "تمرين",
+    "labelBottomNavWorkout": "التمرين",
     "@labelBottomNavWorkout": {
         "description": "Label used in bottom navigation, use a short word"
     },
@@ -104,7 +104,7 @@
     "noMeasurementEntries": "لا يوجد إدخالات قياس",
     "password": "كلمة المرور",
     "nutritionalPlan": "الخطة الغذائية",
-    "invalidUsername": "الرجاء كتابة اسم مستخدم صحيح",
+    "invalidUsername": "الرجاء إدخال اسم مستخدم صحيح",
     "@invalidUsername": {
         "description": "Error message when the user enters an invalid username"
     },
@@ -135,7 +135,7 @@
             }
         }
     },
-    "setNr": "مجموعة {nr}",
+    "setNr": "المجموعة {nr}",
     "@setNr": {
         "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
         "type": "text",
@@ -169,7 +169,7 @@
     "@total": {
         "description": "Label used for total sums of e.g. calories or similar"
     },
-    "dayDescriptionHelp": "وصف لما يتم القيام به في هذا اليوم (مثال، \"يوم السحب\") أو ما هي أجزاء الجسم التي سيتم تدريبها (مثال، \"الصدر والكتفين\")",
+    "dayDescriptionHelp": "وصف لما يتم القيام به في هذا اليوم (على سبيل المثال ’يوم السحب‘) أو ما هي أجزاء الجسم التي يتم تدريبها (على سبيل المثال ’الصدر والكتفين‘)",
     "gymMode": "وضع النادي",
     "@gymMode": {
         "description": "Label when starting the gym mode"
@@ -192,17 +192,17 @@
         "description": "Noun, not an imperative! Label used for the pause when using the gym mode"
     },
     "textPromptTitle": "مستعد للبدء ؟",
-    "success": "بنجاح",
+    "success": "نجاح",
     "@success": {
         "description": "Message when an action completed successfully, usually used as a heading"
     },
-    "passwordTooShort": "كلمة المرور قصيرة",
+    "passwordTooShort": "كلمة المرور قصيرة جدًّا",
     "@passwordTooShort": {
         "description": "Error message when the user a password that is too short"
     },
-    "repetitionUnit": "عدد التكرارات المتبقية",
+    "repetitionUnit": "وحدة التكرار",
     "weightUnit": "وحدة الوزن",
-    "email": "البريد الإلكتروني",
+    "email": "عنوان البريد الإلكتروني",
     "searchIngredient": "ابحث عن عنصر",
     "@searchIngredient": {
         "description": "Label on ingredient search form"
@@ -285,11 +285,11 @@
     "@value": {
         "description": "The value of a measurement entry"
     },
-    "exercise": "تمرين",
+    "exercise": "التمرين",
     "@exercise": {
         "description": "An exercise for a workout"
     },
-    "customServerHint": "ادخل عنوان الخادم خاصتك أو سيستخدم الخادم الافتراضي",
+    "customServerHint": "أدخل عنوان ملقّمك الخاص، وإلّا سيتم استخدام العنوان الافتراضي",
     "@customServerHint": {
         "description": "Hint text for the form where the users can enter their own wger instance"
     },
@@ -343,7 +343,7 @@
         "description": "Imperative. Label used in popup allowing the user to jump to a specific exercise while in the gym mode"
     },
     "difference": "الفرق",
-    "register": "تسجيل",
+    "register": "التسجيل",
     "@register": {
         "description": "Text for registration button"
     },
@@ -369,7 +369,7 @@
     "@searchExercise": {
         "description": "Label on set form. Selected exercises are added to the set"
     },
-    "noMatchingExerciseFound": "لم نجد تمرين بهذا الأسم",
+    "noMatchingExerciseFound": "لم يُعثر على تمارين مطابقة",
     "@noMatchingExerciseFound": {
         "description": "Message returned if no exercise match the searched string"
     },
@@ -383,7 +383,7 @@
     "@moreMeasurementEntries": {
         "description": "Message shown when the user wants to add new measurement"
     },
-    "usernameValidChars": "يجب أن يحتوي اسم المستخدم على كلاً من : أحرف، أرقام، رموز مثل @ ، + ، . ، - ، _",
+    "usernameValidChars": "لا يجوز أن يحتوي اسم المستخدم إلّا على أحرف وأرقام والرموز التالية: @، +، .، -، و _",
     "@usernameValidChars": {
         "description": "Error message when the user tries to register a username with forbidden characters"
     },
@@ -426,7 +426,7 @@
         "description": "Generated entry for translation for server strings"
     },
     "goToDetailPage": "الذهاب لصفحة التفاصيل",
-    "labelWorkoutLogs": "سجلات التمرين",
+    "labelWorkoutLogs": "سجلّات التمرين",
     "@labelWorkoutLogs": {
         "description": "(Workout) logs"
     },
@@ -436,7 +436,7 @@
     "@miles": {
         "description": "Generated entry for translation for server strings"
     },
-    "rirNotUsed": "عدد التكرارات المتبقية غير موجود",
+    "rirNotUsed": "لم يتم استخدام التكرارات في الاحتياط",
     "@rirNotUsed": {
         "description": "Label used in RiR slider when the RiR value is not used/saved for the current setting or log"
     },
@@ -493,7 +493,7 @@
     "@miles_per_hour": {
         "description": "Generated entry for translation for server strings"
     },
-    "labelDashboard": "لوحة العمليات",
+    "labelDashboard": "لوحة التحكم",
     "@labelDashboard": {
         "description": "Title for screen dashboard"
     },
@@ -545,7 +545,7 @@
     },
     "measurementEntriesHelpText": "الوحدة المستخدمة لقياس الفئة مثل \"سم\" أو \"%\"",
     "sugars": "سكريات",
-    "customServerUrl": "رابط عنصر wger",
+    "customServerUrl": "رابط مثيل wger",
     "@customServerUrl": {
         "description": "Label in the form where the users can enter their own wger instance"
     },
@@ -558,7 +558,7 @@
     "@measurements": {
         "description": "Categories for the measurements such as biceps size, body fat, etc."
     },
-    "reps": "التكرارات الفعالة",
+    "reps": "التكرارات",
     "@reps": {
         "description": "Shorthand for repetitions, used when space constraints are tighter"
     },
@@ -628,7 +628,7 @@
     "@weekAverage": {
         "description": "Header for the column of '7 day average' nutritional values, i.e. what was logged last week"
     },
-    "invalidEmail": "الرجاء كتابة بريد إلكتروني صحيح",
+    "invalidEmail": "الرجاء إدخال عنوان بريد إلكتروني صالح",
     "@invalidEmail": {
         "description": "Error message when the user enters an invalid email"
     },
@@ -662,7 +662,7 @@
     "@category": {
         "description": "Category for an exercise, ingredient, etc."
     },
-    "rir": "عدد التكرارات المتبقية",
+    "rir": "التكرارات في الاحتياط",
     "@rir": {
         "description": "Shorthand for Repetitions In Reserve"
     },
@@ -714,9 +714,9 @@
         "description": "Error message when the user enters an invalid API key"
     },
     "useUsernameAndPassword": "استخدم اسم المستخدم وكلمة المرور",
-    "selectAvailablePlates": "اختر من الاطباق المتوفرة",
+    "selectAvailablePlates": "اختر الأطباق المُتاحة",
     "barWeight": "وزن القضيب الحديدي",
-    "useColors": "استخدم الالوان",
+    "useColors": "استخدام الألوان",
     "apiTokenValidChars": "إن مفتاح ال API لا يمكن أن يحتوي غير الأحرف من a-f، أرقام من 0-9، ويحب أن تكون 40 محرف تماما",
     "@apiTokenValidChars": {
         "description": "Error message when the user tries to input a API key with forbidden characters"
@@ -768,38 +768,38 @@
     "@toAddMealsToThePlanGoToNutritionalPlanDetails": {
         "description": "Message shown to guide users to the nutritional plan details page to add meals"
     },
-    "dashboardWidgets": "بطاقات اللوحة الرئيسية",
-    "noIngredientsDefined": "لم يتم تحديد المكونات بعد",
+    "dashboardWidgets": "عناصر لوحة التحكم",
+    "noIngredientsDefined": "لم يتم تحديد المكوّنات بعد",
     "startDate": "تاريخ البدء",
     "@startDate": {
         "description": "The start date of a nutritional plan or routine"
     },
-    "dayTypeCustom": "مخصص",
+    "dayTypeCustom": "مُخصّص",
     "dayTypeEnom": "كل دقيقة في رأس الساعة",
     "dayTypeAmrap": "أكبر عدد ممكن من الجولات",
-    "dayTypeHiit": "التدريب المتقطع عالي الكثافة",
+    "dayTypeHiit": "التدريب المتقطّع عالي الكثافة",
     "dayTypeTabata": "تاباتا",
     "dayTypeEdt": "التدريب على الكثافة المتزايدة",
-    "dayTypeRft": "جولات الوقت",
-    "dayTypeAfap": "ابعد ما يمكن",
-    "slotEntryTypeNormal": "اعتيادي",
-    "slotEntryTypeDropset": "مجموعة إسقاط",
+    "dayTypeRft": "جولات للوقت",
+    "dayTypeAfap": "بأسرع ما يمكن",
+    "slotEntryTypeNormal": "عادي",
+    "slotEntryTypeDropset": "المجموعة التنازلية",
     "slotEntryTypePartial": "جزئي",
     "slotEntryTypeForced": "قسري",
-    "slotEntryTypeTut": "وقت تحت التوتر",
-    "slotEntryTypeIso": "الثبات المتساوي",
-    "slotEntryTypeJump": "قفز",
-    "trophies": "الجوائز و الكؤوس",
+    "slotEntryTypeTut": "الوقت تحت الضغط",
+    "slotEntryTypeIso": "الثبات المتساوي القياس",
+    "slotEntryTypeJump": "القفز",
+    "trophies": "الجوائز",
     "routines": "الروتينات",
     "newRoutine": "روتين جديد",
-    "noRoutines": "ليس لديك روتينات",
-    "restTime": "وقت راحة",
-    "sets": "المجموات",
+    "noRoutines": "ليس لديك أي روتين",
+    "restTime": "وقت الراحة",
+    "sets": "المجموعات",
     "@sets": {
         "description": "The number of sets to be done for one exercise"
     },
-    "useMetric": "استخدم الوحدات المترية (كيلو جرام) لوزن الجسم",
-    "exerciseNr": "تمرين {nr}",
+    "useMetric": "استخدام الوحدات المترية لوزن الجسم",
+    "exerciseNr": "التمرين {nr}",
     "@exerciseNr": {
         "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Set Nr. xy'.",
         "type": "text",
@@ -809,7 +809,7 @@
             }
         }
     },
-    "supersetNr": "تمرين خارق {nr}",
+    "supersetNr": "التمرين الخارق {nr}",
     "@supersetNr": {
         "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Superset Nr. xy'.",
         "type": "text",
@@ -1114,6 +1114,81 @@
         }
     },
     "searchLanguageAll": "كافة اللغات",
+    "refreshToken": "رمز التحديث",
+    "invalidRefreshToken": "الرجاء إدخال رمز تحديث صالح",
+    "@invalidRefreshToken": {
+        "description": "Error message when the user enters an invalid refresh token"
+    },
+    "refreshTokenValidChars": "يحتوي رمز التحديث على ثلاثة أجزاء مفصولة بنقاط (ترويسة.حمولة.توقيع)، كل منها يتكوّن من أحرف وأرقام و’-‘ و’_‘.",
+    "@refreshTokenValidChars": {
+        "description": "Error message when the user pastes a string that does not match the JWT shape"
+    },
+    "refreshTokenHelperText": "أنشئ رمز تحديث JWT على موقع wger الإلكتروني والصقه هنا. يفيد هذا عندما يكون ملقّمك خلف وكيل مصادقة أو عندما ترغب في تخطي عملية تسجيل الدخول المعتادة.",
+    "@refreshTokenHelperText": {
+        "description": "Helper text on the refresh-token paste field"
+    },
+    "mfaChallengeTitle": "المصادقة الثنائية",
+    "@mfaChallengeTitle": {
+        "description": "App bar title on the 2FA challenge screen"
+    },
+    "mfaChallengeTotpPrompt": "أدخل الرمز المكوّن من ٦ أرقام من تطبيق المصادقة الخاص بك",
+    "@mfaChallengeTotpPrompt": {
+        "description": "Helper text above the TOTP input field"
+    },
+    "mfaChallengeRecoveryPrompt": "أدخل أحد رموز الاسترداد الخاصة بك",
+    "@mfaChallengeRecoveryPrompt": {
+        "description": "Helper text above the recovery-code input field"
+    },
+    "mfaCodeLabel": "الرمز",
+    "@mfaCodeLabel": {
+        "description": "Label on the 2FA code input field"
+    },
+    "mfaInvalidCode": "الرجاء إدخال رمز",
+    "@mfaInvalidCode": {
+        "description": "Validation error when the 2FA code field is empty"
+    },
+    "mfaUseRecoveryCode": "استخدام رمز استردادٍ بدلًا من ذلك",
+    "@mfaUseRecoveryCode": {
+        "description": "Button that switches the 2FA challenge to recovery-code mode"
+    },
+    "mfaUseTotpCode": "استخدام رمز تطبيق مصادقة",
+    "@mfaUseTotpCode": {
+        "description": "Button that switches the 2FA challenge back to TOTP mode"
+    },
+    "mfaSubmit": "تحقُّق",
+    "@mfaSubmit": {
+        "description": "Submit button on the 2FA challenge screen"
+    },
+    "mfaUnsupportedFactor": "تم إعداد حسابك باستخدام عامل مصادقة ثانٍ لا يدعمه هذا التطبيق حاليًّا. يُرجى تسجيل الدخول عبر الموقع الإلكتروني.",
+    "@mfaUnsupportedFactor": {
+        "description": "Shown when the server reports only factor types the app cannot handle (e.g. webauthn)"
+    },
+    "manageAccountOnWeb": "إدارة الحساب على الويب",
+    "@manageAccountOnWeb": {
+        "description": "Label on a button that opens the user's preferences page on the wger website"
+    },
+    "manageAccountOnWebSubtitle": "غيّر كلمة مرورك، أو أعدّ المصادقة الثنائية، أو أدر رموز واجهة برمجة التطبيقات (API)، أو احذف حسابك.",
+    "@manageAccountOnWebSubtitle": {
+        "description": "Helper text below the 'Manage account on the web' button listing what is configurable there"
+    },
+    "advanced": "متقدّم",
+    "advancedSubtitle": "خيارات الملقّم والمصادقة",
+    "serverSectionLabel": "الملقّم",
+    "signInMethodSectionLabel": "طريقة تسجيل الدخول",
+    "serverOptionDefaultDetail": "الملقّم الرسمي",
+    "serverOptionSelfHostedTitle": "مُستضاف ذاتيًّا",
+    "serverOptionSelfHostedDetail": "اتصل بمثيلك الخاص",
+    "authOptionPasswordTitle": "اسم المستخدم وكلمة المرور",
+    "signInWithToken": "تسجيل الدخول باستخدام الرمز",
+    "tokenSubtitle": "أنشئ واحدًا على موقع wger الإلكتروني",
+    "newToWger": "هل أنت جديد على wger؟",
+    "alreadyHaveAccount": "هل لديك حساب بالفعل؟",
+    "tokenLabel": "الرمز",
+    "webHandoffLinkLabel": "خيارات تسجيل دخول أخرى",
+    "webHandoffLinkSubtitle": "تسجيل الدخول عبر وسائل التواصل الاجتماعي، مفتاح المرور، تسجيل الدخول المُوحّد",
+    "slotEntryTypeMyo": "ميو",
+    "slotEntryTypeWarmup": "التحمية",
+    "preview": "عرض مبدئي",
     "endBeforeStart": "قيمة النهاية لا يمكن ان تكون قبل البداية",
     "minLengthRoutine": "يجب أن يستمر الروتين لمدة لا تقل عن {number} أسبوعًا",
     "maxLengthRoutine": "يمكن أن يستمر الروتين لمدة أقصاها {number} أسبوعًا"

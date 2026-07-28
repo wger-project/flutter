@@ -20,6 +20,8 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show ProviderListenable;
+import 'package:http/http.dart' as http;
+import 'package:logging/logging.dart';
 
 /// Awaits the first value of `provider` by explicitly subscribing via
 /// [Ref.listen]. Use this in notifier methods (outside of `build()`)
@@ -100,6 +102,64 @@ Uri makeHeadlessUri(String serverUrl, String path) {
     port: uriServer.port,
     path: [uriServer.path, 'allauth', 'app', 'v1', path].join('/'),
   );
+}
+
+final _probeLogger = Logger('powersync-probe');
+
+/// Builds `<serverUrl>/ps/`, the default path under which wger's reverse
+/// proxy exposes the PowerSync service.
+String _defaultPowerSyncUrl(String serverUrl) {
+  final server = Uri.parse(serverUrl);
+  final basePath = server.path.endsWith('/')
+      ? server.path.substring(0, server.path.length - 1)
+      : server.path;
+  return Uri(
+    scheme: server.scheme,
+    host: server.host,
+    port: server.port,
+    path: '$basePath/ps/',
+  ).toString();
+}
+
+/// Returns the first PowerSync endpoint that answers its liveness probe with
+/// a 200, or null when none does.
+///
+/// The `powersync_url` [provided] by the server's token endpoint is tried
+/// first, then `<serverUrl>/ps/` as a fallback. Probing instead of trusting
+/// [provided] rescues servers whose `SITE_URL` doesn't match the URL the app
+/// reaches them under (e.g. left at its `http://localhost` default): that
+/// value is unreachable from the device, while the reverse proxy usually
+/// still exposes the service under the default path.
+Future<String?> findLivePowerSyncUrl({
+  required http.Client client,
+  required String serverUrl,
+  required String? provided,
+  Duration probeTimeout = const Duration(seconds: 5),
+}) async {
+  final parsed = provided == null ? null : Uri.tryParse(provided);
+  final candidates = {
+    if (parsed != null && parsed.hasScheme && parsed.host.isNotEmpty) provided!,
+    _defaultPowerSyncUrl(serverUrl),
+  };
+
+  for (final candidate in candidates) {
+    final probeUri = Uri.parse(
+      '$candidate${candidate.endsWith('/') ? '' : '/'}probes/liveness',
+    );
+
+    // Log failed probes
+    try {
+      final response = await client.get(probeUri).timeout(probeTimeout);
+      if (response.statusCode == 200) {
+        return candidate;
+      }
+      _probeLogger.info('PowerSync probe: $probeUri returned ${response.statusCode}');
+    } on Exception catch (e) {
+      // Unreachable or timed out: try the next candidate.
+      _probeLogger.info('PowerSync probe: $probeUri failed: $e');
+    }
+  }
+  return null;
 }
 
 /// Builds the absolute URL for a server-side media file given its

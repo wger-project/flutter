@@ -53,6 +53,7 @@ class AuthScreen extends StatelessWidget {
                   const Image(
                     image: AssetImage('assets/images/logo-white.png'),
                     width: 85,
+                    height: 85,
                   ),
                   Container(
                     margin: const EdgeInsets.only(bottom: 20.0),

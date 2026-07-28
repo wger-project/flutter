@@ -115,23 +115,24 @@ void main() {
 
     notifier.state = notifier.state.copyWith(
       routine: testRoutine,
-      startTime: const TimeOfDay(hour: 13, minute: 35),
+      workoutStart: DateTime(2021, 5, 1, 13, 35),
     );
     notifier.calculatePages();
 
-    await tester.pumpWidget(renderSessionPage());
-    await tester.pumpAndSettle();
+    await withClock(Clock.fixed(DateTime(2021, 5, 1, 15, 23)), () async {
+      await tester.pumpWidget(renderSessionPage());
+      await tester.pumpAndSettle();
 
-    final timeNow = TimeOfDay.now().format(tester.element(find.byType(TextFormField).first));
-    expect(find.text('1:35 PM'), findsOneWidget);
-    expect(find.text(timeNow), findsOneWidget);
+      expect(find.text('1:35 PM'), findsOneWidget);
+      expect(find.text('3:23 PM'), findsOneWidget);
+    });
   });
 
   testWidgets('Test correct default data (no existing session)', (WidgetTester tester) async {
     // Arrange
     testRoutine.sessions = [];
     notifier.state = notifier.state.copyWith(
-      startTime: const TimeOfDay(hour: 13, minute: 35),
+      workoutStart: DateTime(2021, 5, 1, 13, 35),
     );
 
     // Act

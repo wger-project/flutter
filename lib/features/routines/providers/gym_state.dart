@@ -31,6 +31,9 @@ const PREFS_SHOW_TIMER = 'showTimerPrefs';
 const PREFS_ALERT_COUNTDOWN = 'alertCountdownPrefs';
 const PREFS_USE_COUNTDOWN_BETWEEN_SETS = 'useCountdownBetweenSetsPrefs';
 const PREFS_COUNTDOWN_DURATION = 'countdownDurationSecondsPrefs';
+const PREFS_LOG_SCOPE_WEEKS = 'logScopeWeeksPrefs';
+const PREFS_SHOW_DISTINCT_LOGS = 'showDistinctLogsPrefs';
+const PREFS_SHOW_WORKOUT_DURATION = 'showWorkoutDurationPrefs';
 
 /// In seconds
 const DEFAULT_COUNTDOWN_DURATION = 180;
@@ -168,7 +171,9 @@ class GymModeState {
   final List<PageEntry> pages;
   final int currentPage;
 
-  final TimeOfDay startTime;
+  /// Moment the workout was started, with full seconds precision. Set when
+  /// gym mode is opened and reset when the user taps "start".
+  final DateTime workoutStart;
   final DateTime validUntil;
 
   // User settings
@@ -177,6 +182,9 @@ class GymModeState {
   final bool alertOnCountdownEnd;
   final bool useCountdownBetweenSets;
   final Duration countdownDuration;
+  final int? logScopeWeeks;
+  final bool showDistinctLogs;
+  final bool showWorkoutDuration;
 
   // Routine data
   late final int dayId;
@@ -193,15 +201,17 @@ class GymModeState {
     this.alertOnCountdownEnd = true,
     this.useCountdownBetweenSets = false,
     this.countdownDuration = const Duration(seconds: DEFAULT_COUNTDOWN_DURATION),
-
+    this.logScopeWeeks,
+    this.showDistinctLogs = true,
+    this.showWorkoutDuration = true,
     int? dayId,
     int? iteration,
     Routine? routine,
 
     DateTime? validUntil,
-    TimeOfDay? startTime,
+    DateTime? workoutStart,
   }) : validUntil = validUntil ?? clock.now().add(DEFAULT_DURATION),
-       startTime = startTime ?? TimeOfDay.fromDateTime(clock.now()) {
+       workoutStart = workoutStart ?? clock.now() {
     if (dayId != null) {
       this.dayId = dayId;
     }
@@ -225,7 +235,7 @@ class GymModeState {
     int? dayId,
     int? iteration,
     DateTime? validUntil,
-    TimeOfDay? startTime,
+    DateTime? workoutStart,
     Routine? routine,
 
     // User settings
@@ -234,6 +244,10 @@ class GymModeState {
     bool? alertOnCountdownEnd,
     bool? useCountdownBetweenSets,
     int? countdownDuration,
+    int? logScopeWeeks,
+    bool clearLogScopeWeeks = false,
+    bool? showDistinctLogs,
+    bool? showWorkoutDuration,
   }) {
     return GymModeState(
       isInitialized: isInitialized ?? this.isInitialized,
@@ -243,7 +257,7 @@ class GymModeState {
       dayId: dayId ?? this.dayId,
       iteration: iteration ?? this.iteration,
       validUntil: validUntil ?? this.validUntil,
-      startTime: startTime ?? this.startTime,
+      workoutStart: workoutStart ?? this.workoutStart,
       routine: routine ?? this.routine,
 
       showExercisePages: showExercisePages ?? this.showExercisePages,
@@ -253,8 +267,14 @@ class GymModeState {
       countdownDuration: Duration(
         seconds: countdownDuration ?? this.countdownDuration.inSeconds,
       ),
+      logScopeWeeks: clearLogScopeWeeks ? null : (logScopeWeeks ?? this.logScopeWeeks),
+      showDistinctLogs: showDistinctLogs ?? this.showDistinctLogs,
+      showWorkoutDuration: showWorkoutDuration ?? this.showWorkoutDuration,
     );
   }
+
+  /// The start of the workout as a [TimeOfDay], e.g. for the session form
+  TimeOfDay get startTime => TimeOfDay.fromDateTime(workoutStart);
 
   int get totalPages {
     // Main pages (start, session, etc.)
@@ -320,7 +340,7 @@ class GymModeState {
     return 'GymState('
         'currentPage: $currentPage, '
         'validUntil: $validUntil '
-        'startTime: $startTime, '
+        'workoutStart: $workoutStart, '
         'showExercisePages: $showExercisePages, '
         'showTimerPages: $showTimerPages, '
         ')';

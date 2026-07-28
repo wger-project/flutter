@@ -1149,6 +1149,7 @@
     "syncStatusDialogTitle": "Synchronisierungsstatus",
     "syncStatusLastSynced": "Letzte Synchronisierung",
     "syncStatusErrorDetails": "Fehlerdetails",
+    "syncStatusStalledHint": "Die Verbindung zum Synchronisierungsdienst scheint blockiert zu werden. Möglicherweise stört ein VPN, Werbeblocker, Virenscanner oder eine Firewall in diesem Netzwerk.",
     "sessionExpired": "Deine Sitzung ist abgelaufen, bitte melde dich erneut an",
     "endBeforeStart": "Der Endwert darf nicht vor dem Startwert liegen",
     "minLengthRoutine": "Die Routine muss mindestens {number} Wochen lang sein",
@@ -1171,5 +1172,11 @@
     "healthSyncDescription": "Importiert Körpermesswerte aus Apple Health oder Health Connect",
     "healthSyncSuccess": "{count} Messwerte aus Health importiert",
     "health": "Gesundheit",
-    "healthSyncPermissionDenied": "Zugriff auf die Gesundheitsdaten wurde nicht gewährt"
+    "healthSyncPermissionDenied": "Zugriff auf die Gesundheitsdaten wurde nicht gewährt",
+    "gymModeLogScope": "Frühere Protokolle",
+    "gymModeLogScopeHelp": "Welche Protokolle beim Training als Referenz angezeigt werden",
+    "gymModeLogScopeCurrentRoutine": "Aktuelle Routine",
+    "gymModeLogScopeWeeks": "Letzte {weeks} Wochen",
+    "gymModeDistinctLogs": "Doppelte Werte ausblenden",
+    "gymModeShowWorkoutDuration": "Trainingsdauer anzeigen"
 }

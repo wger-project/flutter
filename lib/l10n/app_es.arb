@@ -1186,6 +1186,7 @@
     "syncStatusDialogTitle": "Estado de sincronización",
     "syncStatusLastSynced": "Última sincronización",
     "syncStatusErrorDetails": "Detalles del error",
+    "syncStatusStalledHint": "La conexión con el servicio de sincronización parece estar bloqueada. Es posible que una VPN, un bloqueador de anuncios, un antivirus o un cortafuegos de esta red estén interfiriendo.",
     "sessionExpired": "Tu sesión ha expirado, inicia sesión de nuevo",
     "weightOrRepsRequired": "Introduce un peso, repeticiones o ambos",
     "timeStartEndBothOrNeither": "Indica la hora de inicio y de fin, o deja ambas vacías",
@@ -1210,5 +1211,11 @@
     "healthSyncDescription": "Importa medidas corporales desde Apple Health o Health Connect",
     "healthSyncSuccess": "Se importaron {count} medidas de salud",
     "health": "Salud",
-    "healthSyncPermissionDenied": "No se concedió el acceso a los datos de salud"
+    "healthSyncPermissionDenied": "No se concedió el acceso a los datos de salud",
+    "gymModeLogScope": "Registros anteriores",
+    "gymModeLogScopeHelp": "Qué registros mostrar como referencia durante el entrenamiento",
+    "gymModeLogScopeCurrentRoutine": "Rutina actual",
+    "gymModeLogScopeWeeks": "Últimas {weeks} semanas",
+    "gymModeDistinctLogs": "Ocultar valores duplicados",
+    "gymModeShowWorkoutDuration": "Mostrar la duración del entrenamiento"
 }

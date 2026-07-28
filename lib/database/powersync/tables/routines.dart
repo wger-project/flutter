@@ -65,7 +65,7 @@ class WorkoutLogTable extends Table {
 
   TextColumn get id => text().clientDefault(() => ps.uuid.v7())();
   IntColumn get exerciseId => integer().named('exercise_id')();
-  IntColumn get routineId => integer().named('routine_id')();
+  IntColumn get routineId => integer().named('routine_id').nullable()();
   TextColumn get sessionId => text().named('session_id').nullable()();
   IntColumn get iteration => integer().nullable()();
   IntColumn get slotEntryId => integer().named('slot_entry_id').nullable()();

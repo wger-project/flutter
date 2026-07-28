@@ -82,4 +82,33 @@ void main() {
       expect(jwtExp({'exp': 'soon'}), isNull);
     });
   });
+
+  group('jwtExpOnLocalClock', () {
+    test('anchors the token lifetime to the local clock', () {
+      // iat/exp lie far in the past; only their 600 s difference may matter.
+      final result = jwtExpOnLocalClock({'iat': 1700000000, 'exp': 1700000600});
+
+      final expected = DateTime.now().toUtc().add(const Duration(seconds: 600));
+      expect(result!.difference(expected).abs(), lessThan(const Duration(seconds: 5)));
+    });
+
+    test('falls back to the absolute exp when iat is missing', () {
+      expect(
+        jwtExpOnLocalClock({'exp': 1700000000}),
+        DateTime.utc(2023, 11, 14, 22, 13, 20),
+      );
+    });
+
+    test('falls back to the absolute exp when iat is not numeric', () {
+      expect(
+        jwtExpOnLocalClock({'iat': 'yesterday', 'exp': 1700000000}),
+        DateTime.utc(2023, 11, 14, 22, 13, 20),
+      );
+    });
+
+    test('returns null when payload is null or exp is missing', () {
+      expect(jwtExpOnLocalClock(null), isNull);
+      expect(jwtExpOnLocalClock({'iat': 1700000000}), isNull);
+    });
+  });
 }

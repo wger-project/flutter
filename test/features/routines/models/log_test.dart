@@ -23,6 +23,8 @@ import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/routines/models/log.dart';
 import 'package:wger/features/routines/models/set_config_data.dart';
 
+import '../../../../test_data/exercises.dart';
+
 void main() {
   group('Log.volume', () {
     test('returns weight * repetitions for metric (kg) and repetition unit', () {
@@ -196,6 +198,40 @@ void main() {
       expect(log.repetitionsTarget, 12);
       expect(log.rir, 2);
       expect(log.rirTarget, 2);
+    });
+  });
+
+  group('Log exercise hydration', () {
+    /// A log as it comes out of the database, with only the exercise ID set
+    Log makeDriftLog() => Log(
+      id: 'log-1',
+      exerciseId: 1,
+      routineId: 100,
+      weight: 20,
+      repetitions: 10,
+      date: DateTime(2026, 1, 1),
+    );
+
+    test('copies a log whose exercise was never hydrated', () {
+      final copy = makeDriftLog().copyWith(date: DateTime(2026, 2, 2));
+
+      expect(copy.exerciseObjOrNull, isNull);
+    });
+
+    test('reading an unhydrated exercise throws a descriptive error', () {
+      expect(
+        () => makeDriftLog().exerciseObj,
+        throwsA(isA<StateError>().having((e) => e.message, 'message', contains('log-1'))),
+      );
+    });
+
+    test('propagates the exercise when it is hydrated', () {
+      final log = makeDriftLog()..exercise = testBenchPress;
+
+      final copy = log.copyWith(weight: 30);
+
+      expect(copy.exerciseObj.id, testBenchPress.id);
+      expect(copy.exerciseId, testBenchPress.id);
     });
   });
 

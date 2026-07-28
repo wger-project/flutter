@@ -1193,6 +1193,111 @@
     "@appLanguageSystem": {
         "description": "Dropdown entry that follows the device system language"
     },
+    "refreshToken": "Token de atualização",
+    "invalidRefreshToken": "Por favor, insira um token de atualização válido",
+    "@invalidRefreshToken": {
+        "description": "Error message when the user enters an invalid refresh token"
+    },
+    "refreshTokenValidChars": "Um token de atualização possui três segmentos separados por pontos (cabeçalho.carga útil.assinatura), cada um composto por letras, dígitos, '-' e '_'",
+    "@refreshTokenValidChars": {
+        "description": "Error message when the user pastes a string that does not match the JWT shape"
+    },
+    "refreshTokenHelperText": "Gere um token de atualização JWT no site da wger e cole-o aqui. Isso é útil quando seu servidor está atrás de um proxy de autenticação ou quando você deseja ignorar o fluxo de login normal.",
+    "@refreshTokenHelperText": {
+        "description": "Helper text on the refresh-token paste field"
+    },
+    "mfaChallengeTitle": "Autenticação de dois fatores",
+    "@mfaChallengeTitle": {
+        "description": "App bar title on the 2FA challenge screen"
+    },
+    "mfaChallengeTotpPrompt": "Insira o código de 6 dígitos do seu aplicativo autenticador",
+    "@mfaChallengeTotpPrompt": {
+        "description": "Helper text above the TOTP input field"
+    },
+    "mfaChallengeRecoveryPrompt": "Digite um dos seus códigos de recuperação",
+    "@mfaChallengeRecoveryPrompt": {
+        "description": "Helper text above the recovery-code input field"
+    },
+    "mfaCodeLabel": "Código",
+    "@mfaCodeLabel": {
+        "description": "Label on the 2FA code input field"
+    },
+    "mfaInvalidCode": "Por favor, insira um código",
+    "@mfaInvalidCode": {
+        "description": "Validation error when the 2FA code field is empty"
+    },
+    "mfaUseRecoveryCode": "Use um código de recuperação em vez disso",
+    "@mfaUseRecoveryCode": {
+        "description": "Button that switches the 2FA challenge to recovery-code mode"
+    },
+    "mfaUseTotpCode": "Use um código de aplicativo autenticador",
+    "@mfaUseTotpCode": {
+        "description": "Button that switches the 2FA challenge back to TOTP mode"
+    },
+    "mfaSubmit": "Verificar",
+    "@mfaSubmit": {
+        "description": "Submit button on the 2FA challenge screen"
+    },
+    "mfaUnsupportedFactor": "Sua conta está configurada com um segundo fator que este aplicativo ainda não suporta. Por favor faça login no site.",
+    "@mfaUnsupportedFactor": {
+        "description": "Shown when the server reports only factor types the app cannot handle (e.g. webauthn)"
+    },
+    "manageAccountOnWeb": "Gerenciar conta na web",
+    "@manageAccountOnWeb": {
+        "description": "Label on a button that opens the user's preferences page on the wger website"
+    },
+    "manageAccountOnWebSubtitle": "Altere sua senha, configure a autenticação de dois fatores, gerencie tokens de API ou exclua sua conta.",
+    "@manageAccountOnWebSubtitle": {
+        "description": "Helper text below the 'Manage account on the web' button listing what is configurable there"
+    },
+    "advanced": "Avançado",
+    "advancedSubtitle": "Opções de servidor e autenticação",
+    "serverSectionLabel": "Servidor",
+    "signInMethodSectionLabel": "Método de login",
+    "serverOptionDefaultDetail": "O servidor oficial",
+    "serverOptionSelfHostedTitle": "Autohospedado",
+    "serverOptionSelfHostedDetail": "Conecte-se à sua própria instância",
+    "authOptionPasswordTitle": "Nome de usuário e senha",
+    "signInWithToken": "Entrar com token",
+    "tokenSubtitle": "Gere um no site wger",
+    "newToWger": "É novo no wger?",
+    "alreadyHaveAccount": "Já tem uma conta?",
+    "tokenLabel": "Token",
+    "webHandoffLinkLabel": "Outras opções de login",
+    "webHandoffLinkSubtitle": "Login social, senha ou SSO",
+    "clearSearchTerm": "Limpar termo de pesquisa (texto)",
+    "@clearSearchTerm": {
+        "description": "Tooltip for the icon-button that clears the ingredient search text field"
+    },
+    "ingredients": "Ingredientes",
+    "@ingredients": {
+        "description": "Plural title for the ingredients overview screen"
+    },
+    "planDateRange": "De {startDate} a {endDate}",
+    "@planDateRange": {
+        "description": "Label for the start and end date range of a plan",
+        "placeholders": {
+            "startDate": {
+                "type": "String"
+            },
+            "endDate": {
+                "type": "String"
+            }
+        }
+    },
+    "planStartDate": "A partir de {startDate}",
+    "@planStartDate": {
+        "description": "Label for the start date of a plan",
+        "placeholders": {
+            "startDate": {
+                "type": "String"
+            }
+        }
+    },
+    "otherLogs": "Outros registros",
+    "@otherLogs": {
+        "description": "Other unassigned logs. Label for the pseudo-meal section that groups all nutritional diary entries not assigned to a specific meal"
+    },
     "endBeforeStart": "O valor final não pode ser anterior ao inicial",
     "minLengthRoutine": "A rotina precisa durar pelo menos {number} semanas",
     "maxLengthRoutine": "A rotina pode durar no máximo {number} semanas"

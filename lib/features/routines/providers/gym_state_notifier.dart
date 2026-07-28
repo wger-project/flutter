@@ -72,13 +72,31 @@ class GymStateNotifier extends _$GymStateNotifier {
       );
     }
 
+    final logScopeWeeks = await prefs.getInt(PREFS_LOG_SCOPE_WEEKS);
+    if (logScopeWeeks != null && logScopeWeeks != state.logScopeWeeks) {
+      state = state.copyWith(logScopeWeeks: logScopeWeeks);
+    }
+
+    final showDistinctLogs = await prefs.getBool(PREFS_SHOW_DISTINCT_LOGS);
+    if (showDistinctLogs != null && showDistinctLogs != state.showDistinctLogs) {
+      state = state.copyWith(showDistinctLogs: showDistinctLogs);
+    }
+
+    final showWorkoutDuration = await prefs.getBool(PREFS_SHOW_WORKOUT_DURATION);
+    if (showWorkoutDuration != null && showWorkoutDuration != state.showWorkoutDuration) {
+      state = state.copyWith(showWorkoutDuration: showWorkoutDuration);
+    }
+
     _logger.finer(
       'Loaded saved preferences: '
       'showExercise=$showExercise '
       'showTimer=$showTimer '
       'alertOnCountdownEnd=$alertOnCountdownEnd '
       'useCountdownBetweenSets=$useCountdownBetweenSets '
-      'defaultCountdownDurationSeconds=$defaultCountdownDurationSeconds',
+      'defaultCountdownDurationSeconds=$defaultCountdownDurationSeconds'
+      'logScopeWeeks=$logScopeWeeks '
+      'showDistinctLogs=$showDistinctLogs '
+      'showWorkoutDuration=$showWorkoutDuration ',
     );
   }
 
@@ -92,13 +110,24 @@ class GymStateNotifier extends _$GymStateNotifier {
       PREFS_COUNTDOWN_DURATION,
       state.countdownDuration.inSeconds,
     );
+    if (state.logScopeWeeks != null) {
+      await prefs.setInt(PREFS_LOG_SCOPE_WEEKS, state.logScopeWeeks!);
+    } else {
+      await prefs.remove(PREFS_LOG_SCOPE_WEEKS);
+    }
+    await prefs.setBool(PREFS_SHOW_DISTINCT_LOGS, state.showDistinctLogs);
+    await prefs.setBool(PREFS_SHOW_WORKOUT_DURATION, state.showWorkoutDuration);
+
     _logger.finer(
       'Saved preferences: '
       'showExercise=${state.showExercisePages} '
       'showTimer=${state.showTimerPages} '
       'alertOnCountdownEnd=${state.alertOnCountdownEnd} '
       'useCountdownBetweenSets=${state.useCountdownBetweenSets} '
-      'defaultCountdownDuration=${state.countdownDuration.inSeconds}',
+      'defaultCountdownDuration=${state.countdownDuration.inSeconds}'
+      'logScopeWeeks=${state.logScopeWeeks} '
+      'showDistinctLogs=${state.showDistinctLogs} '
+      'showWorkoutDuration=${state.showWorkoutDuration} ',
     );
   }
 
@@ -257,6 +286,8 @@ class GymStateNotifier extends _$GymStateNotifier {
       routine: routine,
       iteration: iteration,
       currentPage: initialPage,
+      // A fresh workout also restarts the elapsed timer
+      workoutStart: shouldReset ? clock.now() : null,
     );
 
     // Calculate the pages.
@@ -279,9 +310,11 @@ class GymStateNotifier extends _$GymStateNotifier {
       return;
     }
 
-    final log = Log.fromSetConfigData(slotEntryPage.setConfigData!);
-    log.routineId = state.routine.id!;
-    log.iteration = state.iteration;
+    final log = Log.fromSetConfigData(
+      slotEntryPage.setConfigData!,
+      routineId: state.routine.id,
+      iteration: state.iteration,
+    );
     ref.read(gymLogProvider.notifier).setLog(log);
   }
 
@@ -309,6 +342,22 @@ class GymStateNotifier extends _$GymStateNotifier {
 
   void setCountdownDuration(int duration) {
     state = state.copyWith(countdownDuration: duration);
+    _savePrefs();
+  }
+
+  /// Passing null resets the scope to the current routine
+  void setLogScopeWeeks(int? weeks) {
+    state = state.copyWith(logScopeWeeks: weeks, clearLogScopeWeeks: weeks == null);
+    _savePrefs();
+  }
+
+  void setShowDistinctLogs(bool value) {
+    state = state.copyWith(showDistinctLogs: value);
+    _savePrefs();
+  }
+
+  void setShowWorkoutDuration(bool value) {
+    state = state.copyWith(showWorkoutDuration: value);
     _savePrefs();
   }
 
@@ -419,6 +468,12 @@ class GymStateNotifier extends _$GymStateNotifier {
     recalculateIndices();
   }
 
+  /// Resets the workout start time to now, e.g. when the user taps "start"
+  void startWorkout() {
+    _logger.fine('Setting workout start time');
+    state = state.copyWith(workoutStart: clock.now());
+  }
+
   void clear() {
     _logger.fine('Clearing state');
     state = state.copyWith(
@@ -427,7 +482,7 @@ class GymStateNotifier extends _$GymStateNotifier {
       currentPage: 0,
 
       validUntil: clock.now().add(DEFAULT_DURATION),
-      startTime: null,
+      workoutStart: clock.now(),
     );
   }
 }

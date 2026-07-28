@@ -19,6 +19,7 @@
 import 'dart:async';
 
 import 'package:connectivity_plus_platform_interface/connectivity_plus_platform_interface.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
@@ -178,6 +179,62 @@ void main() {
     await pumpEventQueue();
 
     expect(container.read(networkStatusProvider), isFalse);
+  });
+
+  test('goes online immediately on a connectivity change, offline only after the probe', () async {
+    reachabilityCheck = (_, _, _) async => false;
+    final container = makeContainer(serverUrl: 'https://wger.example');
+    await container.read(networkStatusProvider.notifier).check();
+    expect(container.read(networkStatusProvider), isFalse);
+
+    // An adapter appears: optimistically online while the probe is pending.
+    final probeCompleter = Completer<bool>();
+    reachabilityCheck = (_, _, _) => probeCompleter.future;
+    connectivity.emit([ConnectivityResult.wifi]);
+    await pumpEventQueue();
+    expect(container.read(networkStatusProvider), isTrue);
+
+    // The failed probe downgrades the optimistic state again.
+    probeCompleter.complete(false);
+    await pumpEventQueue();
+    expect(container.read(networkStatusProvider), isFalse);
+  });
+
+  test('goes online optimistically when the app resumes from the background', () async {
+    reachabilityCheck = (_, _, _) async => false;
+    final container = makeContainer(serverUrl: 'https://wger.example');
+    await container.read(networkStatusProvider.notifier).check();
+    expect(container.read(networkStatusProvider), isFalse);
+
+    final probeCompleter = Completer<bool>();
+    reachabilityCheck = (_, _, _) => probeCompleter.future;
+    final binding = TestWidgetsFlutterBinding.instance;
+    binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
+    binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    await pumpEventQueue();
+    expect(container.read(networkStatusProvider), isTrue);
+
+    probeCompleter.complete(false);
+    await pumpEventQueue();
+    expect(container.read(networkStatusProvider), isFalse);
+  });
+
+  test('plain check stays pessimistic while the probe is pending', () async {
+    reachabilityCheck = (_, _, _) async => false;
+    final container = makeContainer(serverUrl: 'https://wger.example');
+    await container.read(networkStatusProvider.notifier).check();
+    expect(container.read(networkStatusProvider), isFalse);
+
+    // The periodic re-probe must not flash "online" while the backend is down.
+    final probeCompleter = Completer<bool>();
+    reachabilityCheck = (_, _, _) => probeCompleter.future;
+    final pending = container.read(networkStatusProvider.notifier).check();
+    await pumpEventQueue();
+    expect(container.read(networkStatusProvider), isFalse);
+
+    probeCompleter.complete(true);
+    expect(await pending, isTrue);
+    expect(container.read(networkStatusProvider), isTrue);
   });
 
   test('re-probes when invalidated (e.g. after login)', () async {

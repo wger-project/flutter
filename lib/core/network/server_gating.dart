@@ -164,22 +164,27 @@ class ServerGating {
         return false;
       }
       final body = json.decode(tokenResponse.body) as Map<String, dynamic>;
-      final powerSyncUrl = body['powersync_url'] as String?;
-      if (powerSyncUrl == null || powerSyncUrl.isEmpty) {
-        _logger.warning('PowerSync probe: empty powersync_url in token response');
+      final providedUrl = body['powersync_url'] as String?;
+      final powerSyncUrl = await findLivePowerSyncUrl(
+        client: _client,
+        serverUrl: serverUrl,
+        provided: providedUrl,
+      );
+      if (powerSyncUrl == null) {
+        _logger.warning(
+          'PowerSync probe: no endpoint answered the liveness probe '
+          '(server-provided powersync_url: "$providedUrl")',
+        );
         return false;
       }
-
-      final probeUri = Uri.parse(
-        '$powerSyncUrl${powerSyncUrl.endsWith('/') ? '' : '/'}probes/liveness',
-      );
-      final probeResponse = await _client.get(probeUri);
-      if (probeResponse.statusCode == 200) {
-        await _storage.markEverSynced();
-        return true;
+      if (powerSyncUrl != providedUrl) {
+        _logger.warning(
+          'PowerSync probe: server-provided powersync_url "$providedUrl" is '
+          'unreachable, using $powerSyncUrl instead',
+        );
       }
-      _logger.warning('PowerSync probe: liveness returned ${probeResponse.statusCode}');
-      return false;
+      await _storage.markEverSynced();
+      return true;
     } on Exception catch (e, s) {
       _logger.warning('PowerSync probe failed: $e', e, s);
       return false;

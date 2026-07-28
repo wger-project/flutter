@@ -107,10 +107,17 @@ void main() {
     await tester.tap(showTimerSwitch);
     await tester.pump();
 
+    // Toggle show workout duration
+    final durationSwitch = find.byKey(const ValueKey('gym-mode-option-show-workout-duration'));
+    expect(durationSwitch, findsOneWidget);
+    await tester.tap(durationSwitch);
+    await tester.pump();
+
     final notifier = container.read(gymStateProvider.notifier);
     expect(notifier.state.showExercisePages, isFalse);
     expect(notifier.state.showTimerPages, isFalse);
     expect(notifier.state.alertOnCountdownEnd, isTrue);
+    expect(notifier.state.showWorkoutDuration, isFalse);
   });
 
   testWidgets('Dropdown, text field and refresh button update notifier state', (tester) async {
@@ -168,5 +175,46 @@ void main() {
     await tester.pump();
 
     expect(notifier.state.countdownDuration.inSeconds, DEFAULT_COUNTDOWN_DURATION);
+  });
+
+  testWidgets('Log history options update notifier state', (tester) async {
+    await pumpGymModeOptions(tester);
+    await tester.tap(find.byKey(const ValueKey('gym-mode-options-tile')));
+    await tester.pumpAndSettle();
+
+    final notifier = container.read(gymStateProvider.notifier);
+    expect(notifier.state.logScopeWeeks, isNull, reason: 'Defaults to the current routine');
+    expect(notifier.state.showDistinctLogs, isTrue);
+
+    // The tiles sit at the bottom of the scrollable options card
+    final scopeDropdown = find.byKey(const ValueKey('log-scope-dropdown'));
+    await tester.ensureVisible(scopeDropdown);
+    await tester.pumpAndSettle();
+
+    // Limit the scope to the last 12 weeks
+    await tester.tap(scopeDropdown);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Last 12 weeks').last);
+    await tester.pumpAndSettle();
+
+    expect(notifier.state.logScopeWeeks, 12);
+
+    // And back to the current routine
+    await tester.ensureVisible(scopeDropdown);
+    await tester.pumpAndSettle();
+    await tester.tap(scopeDropdown);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Current routine').last);
+    await tester.pumpAndSettle();
+
+    expect(notifier.state.logScopeWeeks, isNull);
+
+    final distinctSwitch = find.byKey(const ValueKey('gym-mode-distinct-logs'));
+    await tester.ensureVisible(distinctSwitch);
+    await tester.pumpAndSettle();
+    await tester.tap(distinctSwitch);
+    await tester.pump();
+
+    expect(notifier.state.showDistinctLogs, isFalse);
   });
 }

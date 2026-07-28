@@ -5865,9 +5865,9 @@ class $WorkoutLogTableTable extends WorkoutLogTable with TableInfo<$WorkoutLogTa
   late final GeneratedColumn<int> routineId = GeneratedColumn<int>(
     'routine_id',
     aliasedName,
-    false,
+    true,
     type: DriftSqlType.int,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
   );
   static const VerificationMeta _sessionIdMeta = const VerificationMeta(
     'sessionId',
@@ -6040,8 +6040,6 @@ class $WorkoutLogTableTable extends WorkoutLogTable with TableInfo<$WorkoutLogTa
         _routineIdMeta,
         routineId.isAcceptableOrUnknown(data['routine_id']!, _routineIdMeta),
       );
-    } else if (isInserting) {
-      context.missing(_routineIdMeta);
     }
     if (data.containsKey('session_id')) {
       context.handle(
@@ -6155,7 +6153,7 @@ class $WorkoutLogTableTable extends WorkoutLogTable with TableInfo<$WorkoutLogTa
       routineId: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}routine_id'],
-      )!,
+      ),
       sessionId: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}session_id'],
@@ -6212,7 +6210,7 @@ class $WorkoutLogTableTable extends WorkoutLogTable with TableInfo<$WorkoutLogTa
 class WorkoutLogTableCompanion extends UpdateCompanion<Log> {
   final Value<String> id;
   final Value<int> exerciseId;
-  final Value<int> routineId;
+  final Value<int?> routineId;
   final Value<String?> sessionId;
   final Value<int?> iteration;
   final Value<int?> slotEntryId;
@@ -6247,7 +6245,7 @@ class WorkoutLogTableCompanion extends UpdateCompanion<Log> {
   WorkoutLogTableCompanion.insert({
     this.id = const Value.absent(),
     required int exerciseId,
-    required int routineId,
+    this.routineId = const Value.absent(),
     this.sessionId = const Value.absent(),
     this.iteration = const Value.absent(),
     this.slotEntryId = const Value.absent(),
@@ -6262,7 +6260,6 @@ class WorkoutLogTableCompanion extends UpdateCompanion<Log> {
     required DateTime date,
     this.rowid = const Value.absent(),
   }) : exerciseId = Value(exerciseId),
-       routineId = Value(routineId),
        date = Value(date);
   static Insertable<Log> custom({
     Expression<String>? id,
@@ -6305,7 +6302,7 @@ class WorkoutLogTableCompanion extends UpdateCompanion<Log> {
   WorkoutLogTableCompanion copyWith({
     Value<String>? id,
     Value<int>? exerciseId,
-    Value<int>? routineId,
+    Value<int?>? routineId,
     Value<String?>? sessionId,
     Value<int?>? iteration,
     Value<int?>? slotEntryId,
@@ -17645,7 +17642,7 @@ typedef $$WorkoutLogTableTableCreateCompanionBuilder =
     WorkoutLogTableCompanion Function({
       Value<String> id,
       required int exerciseId,
-      required int routineId,
+      Value<int?> routineId,
       Value<String?> sessionId,
       Value<int?> iteration,
       Value<int?> slotEntryId,
@@ -17664,7 +17661,7 @@ typedef $$WorkoutLogTableTableUpdateCompanionBuilder =
     WorkoutLogTableCompanion Function({
       Value<String> id,
       Value<int> exerciseId,
-      Value<int> routineId,
+      Value<int?> routineId,
       Value<String?> sessionId,
       Value<int?> iteration,
       Value<int?> slotEntryId,
@@ -17954,7 +17951,7 @@ class $$WorkoutLogTableTableTableManager
               ({
                 Value<String> id = const Value.absent(),
                 Value<int> exerciseId = const Value.absent(),
-                Value<int> routineId = const Value.absent(),
+                Value<int?> routineId = const Value.absent(),
                 Value<String?> sessionId = const Value.absent(),
                 Value<int?> iteration = const Value.absent(),
                 Value<int?> slotEntryId = const Value.absent(),
@@ -17990,7 +17987,7 @@ class $$WorkoutLogTableTableTableManager
               ({
                 Value<String> id = const Value.absent(),
                 required int exerciseId,
-                required int routineId,
+                Value<int?> routineId = const Value.absent(),
                 Value<String?> sessionId = const Value.absent(),
                 Value<int?> iteration = const Value.absent(),
                 Value<int?> slotEntryId = const Value.absent(),

@@ -41,8 +41,6 @@ void main() {
     num repetitions = 10,
     DateTime? date,
   }) {
-    // Log.copyWith reads exerciseObj internally, so it must be set before
-    // setLog (which calls copyWith) is invoked.
     return Log(
       id: id ?? 'log-1',
       exerciseId: exerciseId,
@@ -50,11 +48,27 @@ void main() {
       weight: weight,
       repetitions: repetitions,
       date: date ?? DateTime.utc(2020, 1, 1),
-    )..exerciseObj = testBenchPress;
+    );
   }
 
   test('initial state is null', () {
     expect(container.read(gymLogProvider), isNull);
+  });
+
+  test('setLog accepts a log with no exercise, as read from the database', () {
+    container.read(gymLogProvider.notifier).setLog(makeLog());
+
+    final state = container.read(gymLogProvider)!;
+    expect(state.exerciseId, 1);
+    expect(state.exerciseObjOrNull, isNull);
+  });
+
+  test('setLog hydrates the exercise when the caller passes one', () {
+    container.read(gymLogProvider.notifier).setLog(makeLog(), exercise: testBenchPress);
+
+    final state = container.read(gymLogProvider)!;
+    expect(state.exerciseObj.id, testBenchPress.id);
+    expect(state.exerciseId, testBenchPress.id);
   });
 
   test('setLog stores a copy with cleared id/sessionId and the current clock as date', () {
