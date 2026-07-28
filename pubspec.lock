@@ -1184,10 +1184,10 @@ packages:
     dependency: "direct main"
     description:
       name: powersync
-      sha256: fd497501e9adbfcafb65870311c6c2b48f6146cbf67bb4e2d92f3f8da23bd9ab
+      sha256: "11a43bd499ad9fe8b573e93a0f2702fe695f4f3c3d20c40306468c7d985a90ae"
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.1"
+    version: "2.3.2"
   powersync_flutter_libs:
     dependency: transitive
     description:
@@ -1437,10 +1437,10 @@ packages:
     dependency: transitive
     description:
       name: sqlite3_connection_pool
-      sha256: "9d2b3b398b03c96743fd071521fc665be73c33c9cd5c56d87196baff8d8b4398"
+      sha256: ad51972d37bdf82929888e4c85e722bd9a0b5ff8ad389f89b1b00d19603c0d2d
       url: "https://pub.dev"
     source: hosted
-    version: "0.2.6"
+    version: "0.2.7"
   sqlite3_flutter_libs:
     dependency: transitive
     description:
@@ -1453,18 +1453,18 @@ packages:
     dependency: transitive
     description:
       name: sqlite3_web
-      sha256: "183cd6e1523dd4c9097c0f8e8e3e92da2d852f9c680df441c53626444d6d8dce"
+      sha256: aa6af15ef8bf8551d3a84203e3cbc022990567372e46ef98f91bdb2018fcfb0e
       url: "https://pub.dev"
     source: hosted
-    version: "0.9.0"
+    version: "0.9.4"
   sqlite_async:
     dependency: transitive
     description:
       name: sqlite_async
-      sha256: "17176f00a10e5b8ba6e0205e42de1c15a94ff8762745fed19750b44b6bbd5649"
+      sha256: "83aff15d2bb3b296d35e15419a85c3207df3baca62b64b778958a59eb291502d"
       url: "https://pub.dev"
     source: hosted
-    version: "0.14.3"
+    version: "0.14.4"
   sqlparser:
     dependency: transitive
     description:
