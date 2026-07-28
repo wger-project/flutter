@@ -46,11 +46,12 @@ List<Widget> getOverviewWidgetsSeries(
   String unit,
   BuildContext context, {
   MetricType metricType = MetricType.custom,
+  String? mainChartTitle,
 }) {
   final monthAgo = DateTime.now().subtract(const Duration(days: 30));
   return [
     ...getOverviewWidgets(
-      AppLocalizations.of(context).chartAllTimeTitle(name),
+      mainChartTitle ?? AppLocalizations.of(context).chartAllTimeTitle(name),
       entriesAll,
       entries7dAvg,
       unit,
