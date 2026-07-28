@@ -16,9 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// SyncStatus constructor is marked as @internal
-// ignore_for_file: invalid_use_of_internal_member
-
 import 'dart:io' show SocketException;
 
 import 'package:flutter/material.dart';
@@ -34,6 +31,8 @@ import 'package:wger/core/widgets/sync_status_dialog.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/l10n/generated/app_localizations_en.dart';
 import 'package:wger/powersync/connector.dart' show RetryableUploadException;
+
+import '../../helpers/sync_status.dart';
 
 Widget _wrap(Widget child) {
   return MaterialApp(
@@ -55,26 +54,26 @@ void main() {
 
   group('syncStatusIconAndLabel', () {
     test('idle, online → Connected + cloud_done', () {
-      final r = syncStatusIconAndLabel(const SyncStatus(connected: true), i18n);
+      final r = syncStatusIconAndLabel(buildSyncStatus(connected: true), i18n);
       expect(r.icon, Icons.cloud_done_outlined);
       expect(r.label, i18n.syncStatusConnected);
     });
 
     test('connecting → Connecting + cloud_queue', () {
-      final r = syncStatusIconAndLabel(const SyncStatus(connecting: true), i18n);
+      final r = syncStatusIconAndLabel(buildSyncStatus(connecting: true), i18n);
       expect(r.icon, Icons.cloud_queue);
       expect(r.label, i18n.syncStatusConnecting);
     });
 
     test('disconnected → Disconnected + cloud_off', () {
-      final r = syncStatusIconAndLabel(const SyncStatus(), i18n);
+      final r = syncStatusIconAndLabel(buildSyncStatus(), i18n);
       expect(r.icon, Icons.cloud_off);
       expect(r.label, i18n.syncStatusDisconnected);
     });
 
     test('uploading only → Uploading + cloud_upload', () {
       final r = syncStatusIconAndLabel(
-        const SyncStatus(connected: true, uploading: true),
+        buildSyncStatus(connected: true, uploading: true),
         i18n,
       );
       expect(r.icon, Icons.cloud_upload_outlined);
@@ -83,7 +82,7 @@ void main() {
 
     test('downloading only → Downloading + cloud_download', () {
       final r = syncStatusIconAndLabel(
-        const SyncStatus(connected: true, downloading: true),
+        buildSyncStatus(connected: true, downloading: true),
         i18n,
       );
       expect(r.icon, Icons.cloud_download_outlined);
@@ -92,7 +91,7 @@ void main() {
 
     test('uploading + downloading → Synchronizing + cloud_sync', () {
       final r = syncStatusIconAndLabel(
-        const SyncStatus(connected: true, uploading: true, downloading: true),
+        buildSyncStatus(connected: true, uploading: true, downloading: true),
         i18n,
       );
       expect(r.icon, Icons.cloud_sync_outlined);
@@ -101,7 +100,7 @@ void main() {
 
     test('error while connected → Sync error + sync_problem', () {
       final r = syncStatusIconAndLabel(
-        SyncStatus(connected: true, downloadError: Exception('boom')),
+        buildSyncStatus(connected: true, downloadError: Exception('boom')),
         i18n,
       );
       expect(r.icon, Icons.sync_problem);
@@ -110,7 +109,7 @@ void main() {
 
     test('error while disconnected → Sync error + cloud_off', () {
       final r = syncStatusIconAndLabel(
-        SyncStatus(downloadError: Exception('boom')),
+        buildSyncStatus(downloadError: Exception('boom')),
         i18n,
       );
       expect(r.icon, Icons.cloud_off);
@@ -120,7 +119,7 @@ void main() {
 
   group('SyncStatusDialog rendering', () {
     testWidgets('renders title, status label, and "never synced" placeholder', (tester) async {
-      await _pumpDialog(tester, const SyncStatus(connected: true));
+      await _pumpDialog(tester, buildSyncStatus(connected: true));
 
       expect(find.text(i18n.syncStatusDialogTitle), findsOneWidget);
       expect(find.text(i18n.syncStatusConnected), findsOneWidget);
@@ -130,14 +129,14 @@ void main() {
 
     testWidgets('formats the last-sync timestamp when set', (tester) async {
       final lastSync = DateTime.utc(2025, 1, 15, 9, 30, 45);
-      await _pumpDialog(tester, SyncStatus(connected: true, lastSyncedAt: lastSync));
+      await _pumpDialog(tester, buildSyncStatus(connected: true, lastSyncedAt: lastSync));
 
       expect(find.text('-/-'), findsNothing);
       expect(find.textContaining('2025'), findsOneWidget);
     });
 
     testWidgets('omits the error expander when there is no error', (tester) async {
-      await _pumpDialog(tester, const SyncStatus(connected: true));
+      await _pumpDialog(tester, buildSyncStatus(connected: true));
 
       expect(find.byType(ExpansionTile), findsNothing);
       expect(find.text(i18n.syncStatusErrorDetails), findsNothing);
@@ -145,7 +144,7 @@ void main() {
 
     testWidgets('shows the blocked-connection hint when stalled without an error', (tester) async {
       await tester.pumpWidget(
-        _wrap(const SyncStatusDialog(SyncStatus(connecting: true), stalled: true)),
+        _wrap(SyncStatusDialog(buildSyncStatus(connecting: true), stalled: true)),
       );
       await tester.pumpAndSettle();
 
@@ -154,7 +153,7 @@ void main() {
     });
 
     testWidgets('omits the stalled hint when not stalled', (tester) async {
-      await _pumpDialog(tester, const SyncStatus(connecting: true));
+      await _pumpDialog(tester, buildSyncStatus(connecting: true));
 
       expect(find.text(i18n.syncStatusStalledHint), findsNothing);
       expect(find.text(i18n.applicationLogs), findsNothing);
@@ -164,7 +163,7 @@ void main() {
       await tester.pumpWidget(
         _wrap(
           SyncStatusDialog(
-            SyncStatus(connecting: true, downloadError: Exception('boom')),
+            buildSyncStatus(connecting: true, downloadError: Exception('boom')),
             stalled: true,
           ),
         ),
@@ -178,7 +177,7 @@ void main() {
     testWidgets('renders the expander with the raw error message when present', (tester) async {
       await _pumpDialog(
         tester,
-        SyncStatus(connected: true, downloadError: Exception('disk-on-fire')),
+        buildSyncStatus(connected: true, downloadError: Exception('disk-on-fire')),
       );
 
       expect(find.byType(ExpansionTile), findsOneWidget);
@@ -193,7 +192,7 @@ void main() {
 
   group('SyncStatusDialog error categorisation', () {
     Future<void> expectCategory(WidgetTester tester, Object error, String? category) async {
-      await _pumpDialog(tester, SyncStatus(connected: true, downloadError: error));
+      await _pumpDialog(tester, buildSyncStatus(connected: true, downloadError: error));
       if (category == null) {
         for (final candidate in const [
           'Authentication error',

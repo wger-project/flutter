@@ -16,14 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// SyncStatus constructor is marked as @internal
-// ignore_for_file: invalid_use_of_internal_member
-
 import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:logging/logging.dart';
-import 'package:powersync/powersync.dart' show SyncStatus;
 import 'package:wger/powersync/sync_watchdog.dart';
+
+import '../helpers/sync_status.dart';
 
 void main() {
   late SyncStreamWatchdog watchdog;
@@ -42,7 +40,7 @@ void main() {
 
   test('flags a connection that never delivers a checkpoint', () {
     fakeAsync((async) {
-      watchdog.onStatus(const SyncStatus(connecting: true));
+      watchdog.onStatus(buildSyncStatus(connecting: true));
 
       async.elapse(watchdog.timeout - const Duration(seconds: 1));
       expect(watchdog.stalled.value, isFalse);
@@ -58,9 +56,9 @@ void main() {
       // Mimic the status flapping of an iteration that starts, ends cleanly
       // and retries: connecting toggles, lastSyncedAt never moves.
       for (var i = 0; i < 20; i++) {
-        watchdog.onStatus(const SyncStatus(connecting: true));
+        watchdog.onStatus(buildSyncStatus(connecting: true));
         async.elapse(const Duration(seconds: 5));
-        watchdog.onStatus(const SyncStatus());
+        watchdog.onStatus(buildSyncStatus());
         async.elapse(const Duration(seconds: 5));
       }
 
@@ -71,9 +69,9 @@ void main() {
 
   test('a checkpoint disarms the watchdog, idle time does not re-trigger it', () {
     fakeAsync((async) {
-      watchdog.onStatus(const SyncStatus(connecting: true));
+      watchdog.onStatus(buildSyncStatus(connecting: true));
       async.elapse(const Duration(seconds: 10));
-      watchdog.onStatus(SyncStatus(connected: true, lastSyncedAt: DateTime(2026, 7, 23)));
+      watchdog.onStatus(buildSyncStatus(connected: true, lastSyncedAt: DateTime(2026, 7, 23)));
 
       // A healthy connection can sit idle without new status events for far
       // longer than the timeout.
@@ -86,7 +84,7 @@ void main() {
 
   test('an active download holds the watchdog off', () {
     fakeAsync((async) {
-      watchdog.onStatus(const SyncStatus(connected: true, downloading: true));
+      watchdog.onStatus(buildSyncStatus(connected: true, downloading: true));
       async.elapse(watchdog.timeout * 2);
 
       expect(watchdog.stalled.value, isFalse);
@@ -95,7 +93,7 @@ void main() {
 
   test('a surfaced sync error holds the watchdog off', () {
     fakeAsync((async) {
-      watchdog.onStatus(SyncStatus(connecting: true, downloadError: Exception('boom')));
+      watchdog.onStatus(buildSyncStatus(connecting: true, downloadError: Exception('boom')));
       async.elapse(watchdog.timeout * 2);
 
       expect(watchdog.stalled.value, isFalse);
@@ -104,11 +102,11 @@ void main() {
 
   test('recovers and logs once when a checkpoint finally arrives', () {
     fakeAsync((async) {
-      watchdog.onStatus(const SyncStatus(connecting: true));
+      watchdog.onStatus(buildSyncStatus(connecting: true));
       async.elapse(watchdog.timeout);
       expect(watchdog.stalled.value, isTrue);
 
-      watchdog.onStatus(SyncStatus(connected: true, lastSyncedAt: DateTime(2026, 7, 23)));
+      watchdog.onStatus(buildSyncStatus(connected: true, lastSyncedAt: DateTime(2026, 7, 23)));
 
       expect(watchdog.stalled.value, isFalse);
       expect(logLines(Level.INFO, 'recovered'), hasLength(1));
@@ -117,7 +115,7 @@ void main() {
 
   test('reset() clears the pending timer and the stalled flag', () {
     fakeAsync((async) {
-      watchdog.onStatus(const SyncStatus(connecting: true));
+      watchdog.onStatus(buildSyncStatus(connecting: true));
       async.elapse(watchdog.timeout);
       expect(watchdog.stalled.value, isTrue);
 
@@ -132,10 +130,10 @@ void main() {
 
   test('re-arms after reset() for the next connection epoch', () {
     fakeAsync((async) {
-      watchdog.onStatus(SyncStatus(connected: true, lastSyncedAt: DateTime(2026, 7, 23)));
+      watchdog.onStatus(buildSyncStatus(connected: true, lastSyncedAt: DateTime(2026, 7, 23)));
       watchdog.reset();
 
-      watchdog.onStatus(const SyncStatus(connecting: true));
+      watchdog.onStatus(buildSyncStatus(connecting: true));
       async.elapse(watchdog.timeout);
 
       expect(watchdog.stalled.value, isTrue);
