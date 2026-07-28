@@ -17,6 +17,7 @@
  */
 
 import 'package:clock/clock.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:wger/core/uuid.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
@@ -91,7 +92,10 @@ class PageEntry {
   List<Exercise> get exercises {
     final exerciseSet = <Exercise>{};
     for (final entry in slotPages) {
-      exerciseSet.add(entry.setConfigData!.exercise);
+      final exercise = entry.setConfigData?.exercise;
+      if (exercise != null) {
+        exerciseSet.add(exercise);
+      }
     }
     return exerciseSet.toList();
   }
@@ -313,6 +317,45 @@ class GymModeState {
       if (slotPage.pageIndex == index) {
         return slotPage;
       }
+    }
+    return null;
+  }
+
+  /// Maps a model [pageIndex] to its index within the gym-mode `PageView`.
+  ///
+  /// The model assigns a [pageIndex] to every slot page (including
+  /// exercise-overview and rest-timer pages), but the `PageView` renders only
+  /// the start page, **one page per exercise** (set [PageEntry]), and the
+  /// session + summary pages. This translation keeps navigation (queue jumps,
+  /// auto-advance, finish) landing on the correct rendered page.
+  int renderIndexFor(int pageIndex) {
+    final setPages = pages.where((p) => p.type == PageType.set).toList();
+    final session = pages.firstWhereOrNull((p) => p.type == PageType.session);
+
+    for (var i = 0; i < setPages.length; i++) {
+      final start = setPages[i].pageIndex;
+      final end = (i + 1 < setPages.length)
+          ? setPages[i + 1].pageIndex
+          : (session?.pageIndex ?? (1 << 30));
+      if (pageIndex >= start && pageIndex < end) {
+        return i + 1; // index 0 is the start page
+      }
+    }
+
+    // Past the last exercise: the session page comes first, then the summary.
+    if (session != null && pageIndex > session.pageIndex) {
+      return setPages.length + 2; // summary
+    }
+    return setPages.length + 1; // session
+  }
+
+  /// The set [PageEntry] rendered at PageView index [renderIndex], or null if
+  /// that index is the start, session or summary page (which have no exercise
+  /// queue / header chrome). See [renderIndexFor] for the index mapping.
+  PageEntry? setPageForRenderIndex(int renderIndex) {
+    final setPages = pages.where((p) => p.type == PageType.set).toList();
+    if (renderIndex >= 1 && renderIndex <= setPages.length) {
+      return setPages[renderIndex - 1];
     }
     return null;
   }

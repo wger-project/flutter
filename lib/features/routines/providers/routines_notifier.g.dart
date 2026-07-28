@@ -111,7 +111,7 @@ final class RoutinesRiverpodProvider
   RoutinesRiverpod create() => RoutinesRiverpod();
 }
 
-String _$routinesRiverpodHash() => r'32b35ad1f9f0caa96b4503bbb6c0e28c8bb8492c';
+String _$routinesRiverpodHash() => r'c463887f6340afcdc75495b1d3afa25cae1fa507';
 
 abstract class _$RoutinesRiverpod extends $StreamNotifier<RoutinesState> {
   Stream<RoutinesState> build();

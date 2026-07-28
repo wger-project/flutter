@@ -31,6 +31,67 @@ const Color wgerSecondaryColor = Color(0xffe63946);
 const Color wgerSecondaryColorLight = Color(0xffF6B4BA);
 const Color wgerTertiaryColor = Color(0xFF6CA450);
 
+/// Semantic colours that Material 3's [ColorScheme] does not provide, defined
+/// per brightness so they stay legible in both light and dark themes. Access
+/// via `Theme.of(context).extension<WgerColors>()!`.
+@immutable
+class WgerColors extends ThemeExtension<WgerColors> {
+  /// Affirmative "success / done / completed" colour (e.g. a logged set).
+  final Color success;
+  final Color onSuccess;
+  final Color successContainer;
+  final Color onSuccessContainer;
+
+  const WgerColors({
+    required this.success,
+    required this.onSuccess,
+    required this.successContainer,
+    required this.onSuccessContainer,
+  });
+
+  static const WgerColors light = WgerColors(
+    success: Color(0xFF477030),
+    onSuccess: Color(0xFFFFFFFF),
+    successContainer: Color(0xFFCDEBC2),
+    onSuccessContainer: Color(0xFF14521A),
+  );
+
+  static const WgerColors dark = WgerColors(
+    success: Color(0xFF8AD173),
+    onSuccess: Color(0xFF0A3900),
+    successContainer: Color(0xFF2C4A24),
+    onSuccessContainer: Color(0xFFC6F0B5),
+  );
+
+  @override
+  WgerColors copyWith({
+    Color? success,
+    Color? onSuccess,
+    Color? successContainer,
+    Color? onSuccessContainer,
+  }) {
+    return WgerColors(
+      success: success ?? this.success,
+      onSuccess: onSuccess ?? this.onSuccess,
+      successContainer: successContainer ?? this.successContainer,
+      onSuccessContainer: onSuccessContainer ?? this.onSuccessContainer,
+    );
+  }
+
+  @override
+  WgerColors lerp(ThemeExtension<WgerColors>? other, double t) {
+    if (other is! WgerColors) {
+      return this;
+    }
+    return WgerColors(
+      success: Color.lerp(success, other.success, t)!,
+      onSuccess: Color.lerp(onSuccess, other.onSuccess, t)!,
+      successContainer: Color.lerp(successContainer, other.successContainer, t)!,
+      onSuccessContainer: Color.lerp(onSuccessContainer, other.onSuccessContainer, t)!,
+    );
+  }
+}
+
 const FlexSubThemesData wgerSubThemeData = FlexSubThemesData(
   fabSchemeColor: SchemeColor.secondary,
   inputDecoratorBorderType: FlexInputBorderType.underline,
@@ -127,6 +188,7 @@ final wgerLightTheme = FlexThemeData.light(
   appBarStyle: FlexAppBarStyle.primary,
   subThemesData: wgerSubThemeData,
   textTheme: wgerTextTheme,
+  extensions: const [WgerColors.light],
 );
 
 final wgerDarkTheme = FlexThemeData.dark(
@@ -134,6 +196,7 @@ final wgerDarkTheme = FlexThemeData.dark(
   useMaterial3: true,
   subThemesData: wgerSubThemeData,
   textTheme: wgerTextTheme,
+  extensions: const [WgerColors.dark],
 );
 
 final wgerLightThemeHc = FlexThemeData.light(
@@ -142,6 +205,7 @@ final wgerLightThemeHc = FlexThemeData.light(
   appBarStyle: FlexAppBarStyle.primary,
   subThemesData: wgerSubThemeData,
   textTheme: wgerTextTheme,
+  extensions: const [WgerColors.light],
 );
 
 final wgerDarkThemeHc = FlexThemeData.dark(
@@ -149,6 +213,7 @@ final wgerDarkThemeHc = FlexThemeData.dark(
   useMaterial3: true,
   subThemesData: wgerSubThemeData,
   textTheme: wgerTextTheme,
+  extensions: const [WgerColors.dark],
 );
 
 CalendarStyle getWgerCalendarStyle(ThemeData theme) {

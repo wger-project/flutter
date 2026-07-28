@@ -143,16 +143,24 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
 
     routine.sessions = sessions.where((s) => s.routineId == routine.id).toList();
 
-    if (exerciseState != null) {
-      for (final session in routine.sessions) {
-        for (final log in session.logs) {
-          // Fall back gracefully if the referenced exercise hasn't been
-          // synced yet (rare but possible on a cold start).
+    for (final session in routine.sessions) {
+      for (final log in session.logs) {
+        // Fall back gracefully if the referenced exercise hasn't been
+        // synced yet (rare but possible on a cold start).
+        if (exerciseState != null) {
           final exercise = exerciseState.getByIdOrNull(log.exerciseId);
           if (exercise != null) {
             log.exerciseObj = exercise;
           }
         }
+        // Hydrate the unit objects so log.repText() can render the correct
+        // weight / repetition unit labels (e.g. in the gym-mode history sheet).
+        log.repetitionsUnitObj ??= repetitionUnits.firstWhereOrNull(
+          (u) => u.id == log.repetitionsUnitId,
+        );
+        log.weightUnitObj ??= weightUnits.firstWhereOrNull(
+          (u) => u.id == log.weightUnitId,
+        );
       }
     }
 
