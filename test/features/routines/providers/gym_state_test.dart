@@ -449,4 +449,32 @@ void main() {
       expect(state.copyWith(clearLogScopeWeeks: true).logScopeWeeks, isNull);
     });
   });
+
+  group('GymModeState.getNextLogPage', () {
+    // Page structure of the test routine (exercise + timer pages enabled):
+    //   start(0)
+    //   slot 1 (exercise 1): overview(1), log(2), timer(3), log(4), timer(5), log(6), timer(7)
+    //   slot 2 (exercise 6): overview(8), log(9), timer(10), log(11), timer(12), log(13), timer(14)
+    //   session(15), summary(16)
+
+    test('Returns the next set of the same exercise for a rest between sets', () {
+      final next = notifier.state.getNextLogPage(3);
+
+      expect(next!.type, SlotPageType.log);
+      expect(next.pageIndex, 4);
+      expect(next.setConfigData!.exerciseId, getTestExercises()[0].id);
+    });
+
+    test('Returns the first set of the next exercise after the final rest of an exercise', () {
+      final next = notifier.state.getNextLogPage(7);
+
+      expect(next!.type, SlotPageType.log);
+      expect(next.pageIndex, 9);
+      expect(next.setConfigData!.exerciseId, getTestExercises()[5].id);
+    });
+
+    test('Returns null after the last set of the day', () {
+      expect(notifier.state.getNextLogPage(14), isNull);
+    });
+  });
 }
