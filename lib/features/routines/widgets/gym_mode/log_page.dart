@@ -24,6 +24,7 @@ import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/core/snackbar.dart';
 import 'package:wger/core/widgets/core.dart';
 import 'package:wger/core/widgets/error.dart';
+import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/routines/models/log.dart';
 import 'package:wger/features/routines/models/set_config_data.dart';
 import 'package:wger/features/routines/models/slot_entry.dart';
@@ -142,7 +143,7 @@ class LogPage extends ConsumerWidget {
         // Overriding the log scope from here is handled in a follow-up, the
         // settings currently only live in the gym mode options.
         // _LogScopeControls(gymState: gymState),
-        Expanded(child: _buildPastLogs(pastLogs)),
+        Expanded(child: _buildPastLogs(pastLogs, setConfigData.exercise)),
 
         Padding(
           padding: const EdgeInsets.all(10),
@@ -165,7 +166,7 @@ class LogPage extends ConsumerWidget {
   }
 
   /// Renders the previous logs for this exercise
-  Widget _buildPastLogs(AsyncValue<List<Log>> pastLogs) {
+  Widget _buildPastLogs(AsyncValue<List<Log>> pastLogs, Exercise exercise) {
     if (pastLogs.hasError) {
       _logger.warning('Could not load past logs', pastLogs.error, pastLogs.stackTrace);
       // Scroll-wrap so the indicator fits this slim slot instead of overflowing.
@@ -174,7 +175,9 @@ class LogPage extends ConsumerWidget {
       );
     }
     final logs = pastLogs.value ?? const <Log>[];
-    return logs.isEmpty ? const SizedBox.shrink() : LogsPastLogsWidget(pastLogs: logs);
+    return logs.isEmpty
+        ? const SizedBox.shrink()
+        : LogsPastLogsWidget(pastLogs: logs, exercise: exercise);
   }
 }
 
@@ -235,9 +238,13 @@ class LogsPlatesWidget extends ConsumerWidget {
 class LogsPastLogsWidget extends ConsumerWidget {
   final List<Log> pastLogs;
 
+  /// The exercise the logs belong to, they only carry its ID
+  final Exercise exercise;
+
   const LogsPastLogsWidget({
     super.key,
     required this.pastLogs,
+    required this.exercise,
   });
 
   @override
@@ -261,7 +268,7 @@ class LogsPastLogsWidget extends ConsumerWidget {
               subtitle: Text(dateFormat.format(pastLog.date)),
               trailing: const Icon(Icons.copy),
               onTap: () {
-                logProvider.setLog(pastLog);
+                logProvider.setLog(pastLog, exercise: exercise);
                 ScaffoldMessenger.of(context).hideCurrentSnackBar();
                 showSnackbar(context, AppLocalizations.of(context).dataCopied);
               },

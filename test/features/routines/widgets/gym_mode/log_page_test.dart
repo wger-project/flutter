@@ -42,6 +42,23 @@ import '../../../../../test_data/exercises.dart';
 import '../../../../../test_data/routines.dart' as testdata;
 import 'log_page_test.mocks.dart';
 
+/// Strips the exercise off a fixture log, watchLogsByExerciseDrift only joins the units
+Log asDriftLog(Log log) =>
+    Log(
+        id: log.id,
+        exerciseId: log.exerciseId,
+        iteration: log.iteration,
+        slotEntryId: log.slotEntryId,
+        routineId: log.routineId,
+        sessionId: log.sessionId,
+        repetitions: log.repetitions,
+        rir: log.rir,
+        weight: log.weight,
+        date: log.date,
+      )
+      ..repetitionUnit = log.repetitionsUnitObj
+      ..weightUnit = log.weightUnitObj;
+
 @GenerateMocks([WorkoutLogRepository])
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -65,7 +82,9 @@ void main() {
         ),
       ).thenAnswer((invocation) {
         final exerciseId = invocation.namedArguments[#exerciseId] as int;
-        return Stream.value(testdata.getTestRoutine().filterLogsByExercise(exerciseId));
+        return Stream.value(
+          testdata.getTestRoutine().filterLogsByExercise(exerciseId).map(asDriftLog).toList(),
+        );
       });
       container = ProviderContainer.test(
         overrides: [workoutLogRepositoryProvider.overrideWithValue(mockWorkoutLogRepo)],

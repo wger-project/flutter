@@ -43,7 +43,25 @@ class Log {
   String? id;
 
   late int exerciseId;
-  late Exercise exerciseObj;
+
+  Exercise? _exerciseObj;
+
+  /// The exercise this log belongs to, throws if it was never hydrated
+  ///
+  /// Logs read from the database only carry [exerciseId], joining the whole
+  /// exercise with its translations, images and muscles would be wasteful for
+  /// a value most callers don't need. Use [exerciseObjOrNull] for those.
+  Exercise get exerciseObj {
+    if (_exerciseObj == null) {
+      throw StateError('Log $id has no hydrated exercise (exercise ID $exerciseId)');
+    }
+    return _exerciseObj!;
+  }
+
+  set exerciseObj(Exercise value) => _exerciseObj = value;
+
+  /// Like [exerciseObj] but returns null instead of throwing
+  Exercise? get exerciseObjOrNull => _exerciseObj;
 
   int? routineId;
   String? sessionId;
@@ -153,7 +171,11 @@ class Log {
       out.weightUnitObj = weightUnitObj;
       out.weightUnitId = weightUnitObj.id;
     }
-    out.exerciseObj = exerciseObj;
+
+    // Logs read from the database have no exercise, so only copy an existing one
+    if (_exerciseObj != null) {
+      out.exerciseObj = _exerciseObj!;
+    }
 
     return out;
   }
