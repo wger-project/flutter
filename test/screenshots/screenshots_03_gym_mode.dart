@@ -19,17 +19,17 @@
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
+import 'package:wger/features/exercises/providers/exercise_filter_state.dart';
+import 'package:wger/features/exercises/providers/exercise_filters_notifier.dart';
+import 'package:wger/features/routines/models/routine.dart';
+import 'package:wger/features/routines/providers/gym_state.dart';
+import 'package:wger/features/routines/providers/gym_state_notifier.dart';
+import 'package:wger/features/routines/providers/routines_notifier.dart';
+import 'package:wger/features/routines/screens/gym_mode.dart';
+import 'package:wger/features/routines/screens/routine_screen.dart';
+import 'package:wger/features/routines/widgets/gym_mode/summary.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/models/workouts/routine.dart';
-import 'package:wger/providers/exercise_filter_state.dart';
-import 'package:wger/providers/exercise_filters_notifier.dart';
-import 'package:wger/providers/gym_state.dart';
-import 'package:wger/providers/gym_state_notifier.dart';
-import 'package:wger/providers/routines_notifier.dart';
-import 'package:wger/screens/gym_mode.dart';
-import 'package:wger/screens/routine_screen.dart';
 import 'package:wger/theme/theme.dart';
-import 'package:wger/widgets/routines/gym_mode/summary.dart';
 
 import '../../test_data/exercises.dart';
 import '../../test_data/routines.dart';
@@ -100,7 +100,7 @@ Widget createGymModeResultsScreen({Locale? locale}) {
 
   final key = GlobalKey<NavigatorState>();
   final routine = getTestRoutine(exercises: getScreenshotExercises());
-  routine.sessions.first.date = clock.now();
+  routine.sessions[0] = routine.sessions.first.copyWith(date: clock.now());
 
   return riverpod.UncontrolledProviderScope(
     container: riverpod.ProviderContainer.test(

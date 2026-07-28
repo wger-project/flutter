@@ -27,12 +27,13 @@ import 'package:path_provider/path_provider.dart';
 import 'package:powersync/powersync.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:stream_transform/stream_transform.dart';
+import 'package:wger/core/network/auth_http_client.dart';
+import 'package:wger/core/network/network_provider.dart';
+import 'package:wger/core/network/wger_base.dart';
 import 'package:wger/powersync/api_client.dart';
 import 'package:wger/powersync/connector.dart';
 import 'package:wger/powersync/schema.dart';
-import 'package:wger/providers/auth_http_client.dart';
-import 'package:wger/providers/network_provider.dart';
-import 'package:wger/providers/wger_base.dart';
+import 'package:wger/powersync/sync_watchdog.dart';
 
 part 'powersync.g.dart';
 
@@ -50,6 +51,16 @@ PowerSyncDatabase? _builtInstance;
 /// those paths need.
 PowerSyncDatabase? get builtPowerSyncInstance => _builtInstance;
 
+/// Watches the sync status for a stream that keeps reconnecting without ever
+/// delivering data (e.g. blocked by a VPN or firewall) and flags it, see
+/// [SyncStreamWatchdog]. Fed from the DB's status stream by
+/// [powerSyncInstanceProvider].
+final syncWatchdogProvider = Provider<SyncStreamWatchdog>((ref) {
+  final watchdog = SyncStreamWatchdog();
+  ref.onDispose(watchdog.dispose);
+  return watchdog;
+});
+
 @Riverpod(keepAlive: true)
 Future<PowerSyncDatabase> powerSyncInstance(Ref ref) async {
   final db = PowerSyncDatabase(
@@ -62,6 +73,8 @@ Future<PowerSyncDatabase> powerSyncInstance(Ref ref) async {
   _builtInstance = db;
 
   final client = ref.read(authenticatedHttpClientProvider);
+  final watchdog = ref.read(syncWatchdogProvider);
+  final statusSubscription = db.statusStream.listen(watchdog.onStatus);
 
   // Connect to the sync service only while the device is online. PowerSync's
   // own retry loop would otherwise log a credential error on every iteration
@@ -74,6 +87,8 @@ Future<PowerSyncDatabase> powerSyncInstance(Ref ref) async {
       }
     } else {
       db.disconnect();
+      // Deliberate disconnect: an offline device is not a blocked stream.
+      watchdog.reset();
     }
   }
 
@@ -82,6 +97,8 @@ Future<PowerSyncDatabase> powerSyncInstance(Ref ref) async {
 
   ref.onDispose(() {
     _builtInstance = null;
+    statusSubscription.cancel();
+    watchdog.reset();
     db.close();
   });
 
@@ -170,6 +187,7 @@ void connectPowerSync(PowerSyncDatabase db, String baseUrl, http.Client client) 
     connector: DjangoConnector(
       baseUrl: baseUrl,
       apiClient: ApiClient(baseUrl, client: client),
+      client: client,
     ),
   );
 }

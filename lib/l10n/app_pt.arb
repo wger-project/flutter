@@ -1106,5 +1106,8 @@
     "appLanguageSystem": "Predefinição do sistema",
     "@appLanguageSystem": {
         "description": "Dropdown entry that follows the device system language"
-    }
+    },
+    "endBeforeStart": "O valor de fim não pode anteceder o início",
+    "minLengthRoutine": "A rotina tem de ser, pelo menos, de {number} semanas",
+    "maxLengthRoutine": "A rotina pode ser, no máximo, de {number} semanas"
 }

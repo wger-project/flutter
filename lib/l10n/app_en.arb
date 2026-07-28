@@ -351,6 +351,7 @@
   },
   "gymModeShowExercises": "Show exercise overview pages",
   "gymModeShowTimer": "Show timer between sets",
+  "gymModeShowWorkoutDuration": "Show workout duration",
   "gymModeTimerType": "Timer type",
   "gymModeTimerTypeHelText": "If a set has pause time, a countdown is always used.",
   "countdown": "Countdown",
@@ -412,6 +413,17 @@
   "@addSet": {
     "description": "Label for the button that adds a set (to a workout day)"
   },
+  
+"gymModeLogScope": "Previous logs",
+"gymModeLogScopeHelp": "Which logs to show as reference while training",
+"gymModeLogScopeCurrentRoutine": "Current routine",
+"gymModeLogScopeWeeks": "Last {weeks} weeks",
+"@gymModeLogScopeWeeks": {
+  "placeholders": {
+    "weeks": { "type": "int" }
+  }
+},
+"gymModeDistinctLogs": "Hide duplicate values",
   "addMeal": "Add meal",
   "@addMeal": {},
   "mealLogged": "Meal logged to diary",
@@ -551,6 +563,24 @@
   "endDate": "End date",
   "@endDate": {
     "description": "The End date of a nutritional plan or routine"
+  },
+  "endBeforeStart": "The end value cannot be before the start",
+  "@endBeforeStart": {
+    "description": "Validation error shown when a plan or routine end date is before its start date"
+  },
+  "minLengthRoutine": "The routine needs to be at least {number} weeks long",
+  "@minLengthRoutine": {
+    "description": "Validation error when a routine is shorter than the minimum allowed duration",
+    "placeholders": {
+      "number": { "type": "int" }
+    }
+  },
+  "maxLengthRoutine": "The routine can be at most {number} weeks long",
+  "@maxLengthRoutine": {
+    "description": "Validation error when a routine is longer than the maximum allowed duration",
+    "placeholders": {
+      "number": { "type": "int" }
+    }
   },
   "openEnded": "Open ended",
   "@openEnded": {
@@ -1368,6 +1398,10 @@
   "syncStatusErrorDetails": "Error details",
   "@syncStatusErrorDetails": {
     "description": "Header of the expandable section in the sync status dialog that reveals the raw error message"
+  },
+  "syncStatusStalledHint": "The connection to the sync service seems to be blocked. A VPN, ad blocker, antivirus or firewall on this network may be interfering.",
+  "@syncStatusStalledHint": {
+    "description": "Hint shown in the sync status dialog when the app keeps connecting but never receives any sync data, which usually means something on the network is blocking the connection"
   },
   "filterNutriscore": "Nutri-Score filter",
   "@filterNutriscore": {

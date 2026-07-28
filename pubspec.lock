@@ -37,10 +37,10 @@ packages:
     dependency: "direct main"
     description:
       name: app_links
-      sha256: "4ec328cd9fd51fd0e7eb8870a9612c1fde0f091901932238c4f4e60b5f7f1315"
+      sha256: f8db46d2ea9ff6f3a37191a7fd5b7813da1253ace8c32c1b9eadace41d1188ea
       url: "https://pub.dev"
     source: hosted
-    version: "7.1.2"
+    version: "7.2.1"
   app_links_linux:
     dependency: transitive
     description:
@@ -53,10 +53,10 @@ packages:
     dependency: transitive
     description:
       name: app_links_platform_interface
-      sha256: "78a18580eecac98108d1eef52a7db668bc317714f5205e616973363326efe333"
+      sha256: "7546f09a6e93f4a2df2fe2bd40a5c6c64310ac461b036d82b43033be7a59f809"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.3"
+    version: "2.0.4"
   app_links_web:
     dependency: transitive
     description:
@@ -101,10 +101,10 @@ packages:
     dependency: transitive
     description:
       name: build
-      sha256: a156715e7cd728130c592f30552575908aae5b100005fbc1f0fb16b3c03a3d10
+      sha256: "45d14a0fb23e018d8287c32fc98d726ce466b231928ed9b9200f29bd3ccd39ae"
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.6"
+    version: "4.0.7"
   build_config:
     dependency: transitive
     description:
@@ -125,10 +125,10 @@ packages:
     dependency: "direct dev"
     description:
       name: build_runner
-      sha256: "1523ce62448ebac2c15a8ba5fbad8acac169788658a7dd2a1c2d9c2a9318b9a6"
+      sha256: "5367e521935b102bdf1e735d2aab461e36b2edca6517662d088dd04cc39f8d16"
       url: "https://pub.dev"
     source: hosted
-    version: "2.15.0"
+    version: "2.15.1"
   built_collection:
     dependency: transitive
     description:
@@ -285,10 +285,10 @@ packages:
     dependency: "direct main"
     description:
       name: connectivity_plus
-      sha256: "62ffa266d9a23b79fb3fcbc206afc00bb979417ba57b1324c546b5aab95ba057"
+      sha256: "762c99f890ca8bf87f7337236f99edd42793843bc6c3631da294a76653a54bd0"
       url: "https://pub.dev"
     source: hosted
-    version: "7.1.1"
+    version: "7.3.1"
   connectivity_plus_platform_interface:
     dependency: "direct dev"
     description:
@@ -365,10 +365,10 @@ packages:
     dependency: "direct main"
     description:
       name: drift
-      sha256: "6cc0b623c0e83f7080524d8396e9301b1d78b9c66a4fdceeb0f798211303254c"
+      sha256: "84688491040b0ceb26575709a84d701c84ad4df4d8aff020adf6d85f155fb0dd"
       url: "https://pub.dev"
     source: hosted
-    version: "2.34.0"
+    version: "2.34.2"
   drift_dev:
     dependency: "direct dev"
     description:
@@ -389,10 +389,10 @@ packages:
     dependency: "direct main"
     description:
       name: equatable
-      sha256: "3e0141505477fd8ad55d6eb4e7776d3fe8430be8e497ccb1521370c3f21a3e2b"
+      sha256: "3bce007a596ff8b3119c45d68aaef631272537c03d30e5d4534dd24bf4c5eaa2"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.8"
+    version: "2.1.0"
   extended_image:
     dependency: "direct main"
     description:
@@ -410,7 +410,7 @@ packages:
     source: hosted
     version: "5.0.1"
   fake_async:
-    dependency: transitive
+    dependency: "direct dev"
     description:
       name: fake_async
       sha256: "5368f224a74523e8d2e7399ea1638b37aecfca824a3cc4dfdf77bf1fa905ac44"
@@ -779,10 +779,10 @@ packages:
     dependency: "direct main"
     description:
       name: image_picker
-      sha256: "91c025426c2881c551100bce834e201c835a170151545f58d17da5180ca7d9ac"
+      sha256: d8402284df184bc05f4a2210c6c23983b0720f4cd87cbd05c5390a78af602667
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.2"
+    version: "1.2.3"
   image_picker_android:
     dependency: transitive
     description:
@@ -1064,10 +1064,10 @@ packages:
     dependency: "direct main"
     description:
       name: package_info_plus
-      sha256: "4bf625947f6c7713ee242296a682e23e44823c09cf9d79e4f1238923c92db852"
+      sha256: "127e1751e37ffb2ff4658beeaca77bad0c27bf5f932bd3a501c2296926d4b481"
       url: "https://pub.dev"
     source: hosted
-    version: "10.1.0"
+    version: "10.2.1"
   package_info_plus_platform_interface:
     dependency: transitive
     description:
@@ -1184,10 +1184,10 @@ packages:
     dependency: "direct main"
     description:
       name: powersync
-      sha256: "6c1ab4bf50ea4e93f5c33863d37e69c7d6cf7342338e95c30a9dd24210b1e501"
+      sha256: fd497501e9adbfcafb65870311c6c2b48f6146cbf67bb4e2d92f3f8da23bd9ab
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.0"
+    version: "2.3.1"
   powersync_flutter_libs:
     dependency: transitive
     description:
@@ -1429,10 +1429,10 @@ packages:
     dependency: transitive
     description:
       name: sqlite3
-      sha256: "37356bcb56ce0d9404d602c41e4bdb7765e7e9732a3e47adb3d98c556a6abdad"
+      sha256: c73fd75df1332d76a6257f4823ae4df9c791f522b97e4a60cbcad214de1becf4
       url: "https://pub.dev"
     source: hosted
-    version: "3.3.3"
+    version: "3.5.0"
   sqlite3_connection_pool:
     dependency: transitive
     description:
@@ -1701,34 +1701,34 @@ packages:
     dependency: "direct main"
     description:
       name: video_player
-      sha256: "48a7bdaa38a3d50ec10c78627abdbfad863fdf6f0d6e08c7c3c040cfd80ae36f"
+      sha256: "20ef311160e2ced020a62f38e4cc399a1bf289e722fc5fe37c9d7b18e44c9e8d"
       url: "https://pub.dev"
     source: hosted
-    version: "2.11.1"
+    version: "2.13.0"
   video_player_android:
     dependency: transitive
     description:
       name: video_player_android
-      sha256: "5d18d04084cc0cfc7afde39d0a308d4041e8ae6e9d5255bc086c263998dd1201"
+      sha256: "5121de08444d00363efdda630a69ad4d27a208a9f7586482d4909a44a1cdbc63"
       url: "https://pub.dev"
     source: hosted
-    version: "2.9.6"
+    version: "2.11.0"
   video_player_avfoundation:
     dependency: transitive
     description:
       name: video_player_avfoundation
-      sha256: "9338f3ec22774f88146b22f13273a446719b1da010fd200c4d1d97802156ac58"
+      sha256: c238f5f0a26845cd0bcc2956049b63065a4d3c40ddfc22c3414cd170bef7fff9
       url: "https://pub.dev"
     source: hosted
-    version: "2.9.7"
+    version: "2.11.0"
   video_player_platform_interface:
     dependency: transitive
     description:
       name: video_player_platform_interface
-      sha256: "16eaed5268c571c31840dc58ef8da5f0cd4db2a98490c3b8f1cf70122546c6e0"
+      sha256: "92c0fbabe20c788e71fd10d26cea998d0d253282e65d145aed0818731cf593ce"
       url: "https://pub.dev"
     source: hosted
-    version: "6.7.0"
+    version: "6.9.0"
   video_player_web:
     dependency: transitive
     description:

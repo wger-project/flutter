@@ -1372,6 +1372,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get gymModeShowWorkoutDuration =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeShowWorkoutDuration),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeShowWorkoutDuration),
+            ),
+          )
+          as String);
+
+  @override
   String get gymModeTimerType =>
       (super.noSuchMethod(
             Invocation.getter(#gymModeTimerType),
@@ -1597,6 +1608,50 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get gymModeLogScope =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeLogScope),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeLogScope),
+            ),
+          )
+          as String);
+
+  @override
+  String get gymModeLogScopeHelp =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeLogScopeHelp),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeLogScopeHelp),
+            ),
+          )
+          as String);
+
+  @override
+  String get gymModeLogScopeCurrentRoutine =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeLogScopeCurrentRoutine),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeLogScopeCurrentRoutine),
+            ),
+          )
+          as String);
+
+  @override
+  String get gymModeDistinctLogs =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeDistinctLogs),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeDistinctLogs),
+            ),
+          )
+          as String);
+
+  @override
   String get addMeal =>
       (super.noSuchMethod(
             Invocation.getter(#addMeal),
@@ -1801,6 +1856,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.getter(#toAddMealsToThePlanGoToNutritionalPlanDetails),
+            ),
+          )
+          as String);
+
+  @override
+  String get otherLogs =>
+      (super.noSuchMethod(
+            Invocation.getter(#otherLogs),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#otherLogs),
             ),
           )
           as String);
@@ -2034,6 +2100,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.getter(#endDate),
+            ),
+          )
+          as String);
+
+  @override
+  String get endBeforeStart =>
+      (super.noSuchMethod(
+            Invocation.getter(#endBeforeStart),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#endBeforeStart),
             ),
           )
           as String);
@@ -2415,6 +2492,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.getter(#sodium),
+            ),
+          )
+          as String);
+
+  @override
+  String get carbohydratesSugar =>
+      (super.noSuchMethod(
+            Invocation.getter(#carbohydratesSugar),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#carbohydratesSugar),
             ),
           )
           as String);
@@ -3305,6 +3393,28 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.getter(#addExercise),
+            ),
+          )
+          as String);
+
+  @override
+  String get removeExercise =>
+      (super.noSuchMethod(
+            Invocation.getter(#removeExercise),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#removeExercise),
+            ),
+          )
+          as String);
+
+  @override
+  String get gymModeRemoveExerciseConfirm =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeRemoveExerciseConfirm),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeRemoveExerciseConfirm),
             ),
           )
           as String);
@@ -4405,6 +4515,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get syncStatusStalledHint =>
+      (super.noSuchMethod(
+            Invocation.getter(#syncStatusStalledHint),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#syncStatusStalledHint),
+            ),
+          )
+          as String);
+
+  @override
   String get filterNutriscore =>
       (super.noSuchMethod(
             Invocation.getter(#filterNutriscore),
@@ -4515,6 +4636,325 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get cancel =>
+      (super.noSuchMethod(
+            Invocation.getter(#cancel),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#cancel),
+            ),
+          )
+          as String);
+
+  @override
+  String get gymModeFinish =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeFinish),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeFinish),
+            ),
+          )
+          as String);
+
+  @override
+  String get gymModeLastSession =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeLastSession),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeLastSession),
+            ),
+          )
+          as String);
+
+  @override
+  String get gymModeSetsLogged =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeSetsLogged),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeSetsLogged),
+            ),
+          )
+          as String);
+
+  @override
+  String get gymModeSetOrderNote =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeSetOrderNote),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeSetOrderNote),
+            ),
+          )
+          as String);
+
+  @override
+  String get gymModeSetType =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeSetType),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeSetType),
+            ),
+          )
+          as String);
+
+  @override
+  String get gymModeSetTypeHelp =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeSetTypeHelp),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeSetTypeHelp),
+            ),
+          )
+          as String);
+
+  @override
+  String get gymModeRemoveSet =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeRemoveSet),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeRemoveSet),
+            ),
+          )
+          as String);
+
+  @override
+  String get gymModeAddAnotherSet =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeAddAnotherSet),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeAddAnotherSet),
+            ),
+          )
+          as String);
+
+  @override
+  String get gymModeSaveChanges =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeSaveChanges),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeSaveChanges),
+            ),
+          )
+          as String);
+
+  @override
+  String get gymModeExerciseInfo =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeExerciseInfo),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeExerciseInfo),
+            ),
+          )
+          as String);
+
+  @override
+  String get gymModeNothingLoggedYet =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeNothingLoggedYet),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeNothingLoggedYet),
+            ),
+          )
+          as String);
+
+  @override
+  String get gymModeSwap =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeSwap),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeSwap),
+            ),
+          )
+          as String);
+
+  @override
+  String get gymModeStatusNow =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeStatusNow),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeStatusNow),
+            ),
+          )
+          as String);
+
+  @override
+  String get gymModeSetTypeBadgeNormal =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeSetTypeBadgeNormal),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeSetTypeBadgeNormal),
+            ),
+          )
+          as String);
+
+  @override
+  String get gymModeSetTypeBadgeWarmup =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeSetTypeBadgeWarmup),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeSetTypeBadgeWarmup),
+            ),
+          )
+          as String);
+
+  @override
+  String get gymModeSetTypeBadgeDropset =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeSetTypeBadgeDropset),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeSetTypeBadgeDropset),
+            ),
+          )
+          as String);
+
+  @override
+  String get gymModeSetTypeBadgeMyo =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeSetTypeBadgeMyo),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeSetTypeBadgeMyo),
+            ),
+          )
+          as String);
+
+  @override
+  String get gymModeSetTypeBadgePartial =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeSetTypeBadgePartial),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeSetTypeBadgePartial),
+            ),
+          )
+          as String);
+
+  @override
+  String get gymModeSetTypeBadgeForced =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeSetTypeBadgeForced),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeSetTypeBadgeForced),
+            ),
+          )
+          as String);
+
+  @override
+  String get gymModeSetTypeBadgeTut =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeSetTypeBadgeTut),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeSetTypeBadgeTut),
+            ),
+          )
+          as String);
+
+  @override
+  String get gymModeSetTypeBadgeIso =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeSetTypeBadgeIso),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeSetTypeBadgeIso),
+            ),
+          )
+          as String);
+
+  @override
+  String get gymModeSetTypeBadgeJump =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeSetTypeBadgeJump),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeSetTypeBadgeJump),
+            ),
+          )
+          as String);
+
+  @override
+  String get gymModeSetTypeNormal =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeSetTypeNormal),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeSetTypeNormal),
+            ),
+          )
+          as String);
+
+  @override
+  String get gymModeSetTypeNormalDesc =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeSetTypeNormalDesc),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeSetTypeNormalDesc),
+            ),
+          )
+          as String);
+
+  @override
+  String get gymModeSetTypeWarmupDesc =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeSetTypeWarmupDesc),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeSetTypeWarmupDesc),
+            ),
+          )
+          as String);
+
+  @override
+  String get gymModeSetTypeDropsetDesc =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeSetTypeDropsetDesc),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeSetTypeDropsetDesc),
+            ),
+          )
+          as String);
+
+  @override
+  String get gymModeSetTypeMyo =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeSetTypeMyo),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeSetTypeMyo),
+            ),
+          )
+          as String);
+
+  @override
+  String get gymModeSetTypeMyo_desc =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeSetTypeMyo_desc),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeSetTypeMyo_desc),
+            ),
+          )
+          as String);
+
+  @override
   String exerciseNr(String? nr) =>
       (super.noSuchMethod(
             Invocation.method(#exerciseNr, [nr]),
@@ -4570,6 +5010,39 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String gymModeLogScopeWeeks(int? weeks) =>
+      (super.noSuchMethod(
+            Invocation.method(#gymModeLogScopeWeeks, [weeks]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#gymModeLogScopeWeeks, [weeks]),
+            ),
+          )
+          as String);
+
+  @override
+  String planDateRange(String? startDate, String? endDate) =>
+      (super.noSuchMethod(
+            Invocation.method(#planDateRange, [startDate, endDate]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#planDateRange, [startDate, endDate]),
+            ),
+          )
+          as String);
+
+  @override
+  String planStartDate(String? startDate) =>
+      (super.noSuchMethod(
+            Invocation.method(#planStartDate, [startDate]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#planStartDate, [startDate]),
+            ),
+          )
+          as String);
+
+  @override
   String chartAllTimeTitle(String? name) =>
       (super.noSuchMethod(
             Invocation.method(#chartAllTimeTitle, [name]),
@@ -4598,6 +5071,28 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.method(#chartDuringPlanTitle, [chartName, planName]),
+            ),
+          )
+          as String);
+
+  @override
+  String minLengthRoutine(int? number) =>
+      (super.noSuchMethod(
+            Invocation.method(#minLengthRoutine, [number]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#minLengthRoutine, [number]),
+            ),
+          )
+          as String);
+
+  @override
+  String maxLengthRoutine(int? number) =>
+      (super.noSuchMethod(
+            Invocation.method(#maxLengthRoutine, [number]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#maxLengthRoutine, [number]),
             ),
           )
           as String);
@@ -4818,6 +5313,61 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.method(#filterNutriscoreOrBetter, [grade]),
+            ),
+          )
+          as String);
+
+  @override
+  String gymModeWeekOf(int? iteration, int? totalWeeks) =>
+      (super.noSuchMethod(
+            Invocation.method(#gymModeWeekOf, [iteration, totalWeeks]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#gymModeWeekOf, [iteration, totalWeeks]),
+            ),
+          )
+          as String);
+
+  @override
+  String gymModeLastSessionDate(String? date) =>
+      (super.noSuchMethod(
+            Invocation.method(#gymModeLastSessionDate, [date]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#gymModeLastSessionDate, [date]),
+            ),
+          )
+          as String);
+
+  @override
+  String gymModeEditingSet(int? nr) =>
+      (super.noSuchMethod(
+            Invocation.method(#gymModeEditingSet, [nr]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#gymModeEditingSet, [nr]),
+            ),
+          )
+          as String);
+
+  @override
+  String gymModeLogSet(int? nr) =>
+      (super.noSuchMethod(
+            Invocation.method(#gymModeLogSet, [nr]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#gymModeLogSet, [nr]),
+            ),
+          )
+          as String);
+
+  @override
+  String gymModeWeightUnit(String? unit) =>
+      (super.noSuchMethod(
+            Invocation.method(#gymModeWeightUnit, [unit]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#gymModeWeightUnit, [unit]),
             ),
           )
           as String);

@@ -1086,5 +1086,8 @@
     "addToOpenFoodFacts": "Adaugă pe Open Food Facts",
     "@addToOpenFoodFacts": {
         "description": "Label shown as the clickable link to go on Open Food Facts"
-    }
+    },
+    "endBeforeStart": "Valoarea de sfârșit nu poate fi înaintea celei de început",
+    "minLengthRoutine": "Rutina trebuie să dureze cel puțin {number} săptămâni",
+    "maxLengthRoutine": "Rutina poate dura cel mult {number} săptămâni"
 }
