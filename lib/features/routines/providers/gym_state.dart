@@ -21,6 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:wger/core/uuid.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/routines/models/day_data.dart';
+import 'package:wger/features/routines/models/log.dart';
 import 'package:wger/features/routines/models/routine.dart';
 import 'package:wger/features/routines/models/set_config_data.dart';
 
@@ -118,6 +119,16 @@ class SlotPageEntry {
   /// Whether the log page has been marked as done
   final bool logDone;
 
+  /// The log saved from this page during the current workout, if any. Kept
+  /// so revisiting the page pre-fills the form with the saved values and
+  /// saving updates the row instead of inserting a duplicate.
+  final Log? loggedEntry;
+
+  /// When the timer of this page was started. Lives in the state (not the
+  /// timer widget) so the countdown continues when the user navigates away
+  /// and back.
+  final DateTime? timerStartedAt;
+
   /// The associated SetConfigData
   final SetConfigData? setConfigData;
 
@@ -127,6 +138,8 @@ class SlotPageEntry {
     required this.setIndex,
     this.setConfigData,
     this.logDone = false,
+    this.loggedEntry,
+    this.timerStartedAt,
     String? uuid,
   }) : assert(
          type != SlotPageType.log || setConfigData != null,
@@ -142,6 +155,8 @@ class SlotPageEntry {
     int? pageIndex,
     SetConfigData? setConfigData,
     bool? logDone,
+    Log? loggedEntry,
+    DateTime? timerStartedAt,
   }) {
     return SlotPageEntry(
       uuid: uuid ?? this.uuid,
@@ -150,6 +165,8 @@ class SlotPageEntry {
       pageIndex: pageIndex ?? this.pageIndex,
       setConfigData: setConfigData ?? this.setConfigData,
       logDone: logDone ?? this.logDone,
+      loggedEntry: loggedEntry ?? this.loggedEntry,
+      timerStartedAt: timerStartedAt ?? this.timerStartedAt,
     );
   }
 

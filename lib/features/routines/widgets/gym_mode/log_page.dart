@@ -393,12 +393,24 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
 
               // A failed write is intentionally left to propagate to the global
               // error handler; the success path below is then skipped.
-              await logProvider.addEntry(log);
+              //
+              // Re-saving a page that was already logged in this workout
+              // updates the existing row instead of inserting a duplicate.
+              // The id/session can be missing on the form log, e.g. after
+              // copying values from a past log, so restore them first.
+              final existingEntry = page.loggedEntry;
+              if (existingEntry == null) {
+                await logProvider.addEntry(log);
+              } else {
+                log.id = existingEntry.id;
+                log.sessionId = existingEntry.sessionId;
+                await logProvider.updateEntry(log);
+              }
               if (!context.mounted) {
                 return;
               }
 
-              gymProvider.markSlotPageAsDone(page.uuid, isDone: true);
+              gymProvider.markSlotPageAsDone(page.uuid, isDone: true, log: log);
               showSnackbar(
                 context,
                 i18n.successfullySaved,

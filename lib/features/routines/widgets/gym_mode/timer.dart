@@ -17,6 +17,8 @@
  */
 import 'dart:async';
 
+import 'package:clock/clock.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -27,7 +29,7 @@ import 'package:wger/features/routines/widgets/gym_mode/navigation.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/theme/theme.dart';
 
-class TimerWidget extends StatefulWidget {
+class TimerWidget extends ConsumerStatefulWidget {
   final PageController _controller;
 
   /// Identifies which slot page this widget renders, so it shows its own
@@ -41,15 +43,22 @@ class TimerWidget extends StatefulWidget {
   _TimerWidgetState createState() => _TimerWidgetState();
 }
 
-class _TimerWidgetState extends State<TimerWidget> {
-  late DateTime _startTime;
+class _TimerWidgetState extends ConsumerState<TimerWidget> {
   final _maxSeconds = 600;
   late Timer _uiTimer;
 
   @override
   void initState() {
     super.initState();
-    _startTime = DateTime.now();
+
+    // The start time lives in the gym state so the timer continues when the
+    // page is disposed and re-created while navigating. Deferred because a
+    // provider can't be modified during the widget life-cycle.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        ref.read(gymStateProvider.notifier).startTimerIfNeeded(widget.slotUuid);
+      }
+    });
 
     _uiTimer = Timer.periodic(const Duration(seconds: 1), (_) {
       // ignore: no-empty-block, avoid-empty-setstate
@@ -67,7 +76,11 @@ class _TimerWidgetState extends State<TimerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final elapsed = DateTime.now().difference(_startTime).inSeconds;
+    final startTime = ref
+        .watch(gymStateProvider)
+        .getSlotPageByUUID(widget.slotUuid)
+        ?.timerStartedAt;
+    final elapsed = clock.now().difference(startTime ?? clock.now()).inSeconds;
     final displaySeconds = elapsed > _maxSeconds ? _maxSeconds : elapsed;
     final displayTime = DateTime(2000, 1, 1, 0, 0, 0).add(Duration(seconds: displaySeconds));
 
@@ -116,15 +129,36 @@ class TimerCountdownWidget extends ConsumerStatefulWidget {
 }
 
 class _TimerCountdownWidgetState extends ConsumerState<TimerCountdownWidget> {
-  late DateTime _endTime;
   late Timer _uiTimer;
 
   bool _hasNotified = false;
 
+  /// The moment the countdown ends. The start time lives in the gym state so
+  /// the countdown continues when the page is disposed and re-created while
+  /// navigating; until the state is updated, fall back to starting now.
+  DateTime _endTime(GymModeState gymState) {
+    final startedAt = gymState.getSlotPageByUUID(widget.slotUuid)?.timerStartedAt;
+    return (startedAt ?? clock.now()).add(Duration(seconds: widget._seconds));
+  }
+
   @override
   void initState() {
     super.initState();
-    _endTime = DateTime.now().add(Duration(seconds: widget._seconds));
+
+    // Deferred because a provider can't be modified during the widget
+    // life-cycle.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+      ref.read(gymStateProvider.notifier).startTimerIfNeeded(widget.slotUuid);
+
+      // Don't notify when returning to a countdown that already expired while
+      // the user was on another page.
+      if (_endTime(ref.read(gymStateProvider)).isBefore(clock.now())) {
+        _hasNotified = true;
+      }
+    });
 
     _uiTimer = Timer.periodic(const Duration(seconds: 1), (_) {
       // ignore: no-empty-block, avoid-empty-setstate
@@ -142,10 +176,10 @@ class _TimerCountdownWidgetState extends ConsumerState<TimerCountdownWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final remaining = _endTime.difference(DateTime.now());
+    final gymState = ref.watch(gymStateProvider);
+    final remaining = _endTime(gymState).difference(clock.now());
     final remainingSeconds = remaining.inSeconds <= 0 ? 0 : remaining.inSeconds;
     final displayTime = DateTime(2000, 1, 1, 0, 0, 0).add(Duration(seconds: remainingSeconds));
-    final gymState = ref.watch(gymStateProvider);
 
     //  When countdown finishes, notify ONCE, and respect settings
     if (remainingSeconds == 0 && !_hasNotified) {
