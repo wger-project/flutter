@@ -21,6 +21,7 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
+import 'package:http/testing.dart';
 import 'package:logging/logging.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -167,9 +168,28 @@ void main() {
   });
 
   group('fetchCredentials', () {
+    /// Probe client answering 200 for any liveness probe, so the endpoint
+    /// resolution keeps whatever URL the token response advertised.
+    MockClient anyLivenessOk() => MockClient(
+      (request) async => request.url.path.endsWith('/probes/liveness')
+          ? http.Response('{"ready":true}', 200)
+          : http.Response('not found', 404),
+    );
+
+    /// Probe client answering 200 only for [probeUrl].
+    MockClient liveOnlyAt(String probeUrl) => MockClient(
+      (request) async => request.url.toString() == probeUrl
+          ? http.Response('{"ready":true}', 200)
+          : http.Response('not found', 404),
+    );
+
     test('builds PowerSyncCredentials with userId from sub and expiresAt from exp', () async {
       final mockApi = MockApiClient();
-      final connector = DjangoConnector(baseUrl: 'http://example.invalid', apiClient: mockApi);
+      final connector = DjangoConnector(
+        baseUrl: 'http://example.invalid',
+        apiClient: mockApi,
+        client: anyLivenessOk(),
+      );
       final jwt = makeJwt({'sub': 'user-42', 'exp': 1700000000});
       when(mockApi.getPowersyncToken()).thenAnswer(
         (_) async => {'token': jwt, 'powersync_url': 'https://ps.example.com'},
@@ -186,7 +206,11 @@ void main() {
 
     test('coerces a numeric sub into a String (Django sends ints)', () async {
       final mockApi = MockApiClient();
-      final connector = DjangoConnector(baseUrl: 'http://example.invalid', apiClient: mockApi);
+      final connector = DjangoConnector(
+        baseUrl: 'http://example.invalid',
+        apiClient: mockApi,
+        client: anyLivenessOk(),
+      );
       final jwt = makeJwt({'sub': 42, 'exp': 1700000000});
       when(mockApi.getPowersyncToken()).thenAnswer(
         (_) async => {'token': jwt, 'powersync_url': 'https://ps.example.com'},
@@ -199,7 +223,11 @@ void main() {
 
     test('still produces credentials when JWT is opaque (userId/expiresAt null)', () async {
       final mockApi = MockApiClient();
-      final connector = DjangoConnector(baseUrl: 'http://example.invalid', apiClient: mockApi);
+      final connector = DjangoConnector(
+        baseUrl: 'http://example.invalid',
+        apiClient: mockApi,
+        client: anyLivenessOk(),
+      );
       when(mockApi.getPowersyncToken()).thenAnswer(
         (_) async => {'token': 'not.a.jwt', 'powersync_url': 'https://ps.example.com'},
       );
@@ -210,6 +238,92 @@ void main() {
       expect(creds.token, 'not.a.jwt');
       expect(creds.userId, isNull);
       expect(creds.expiresAt, isNull);
+    });
+
+    test('falls back to <baseUrl>/ps/ when powersync_url does not answer the probe', () async {
+      final mockApi = MockApiClient();
+      final connector = DjangoConnector(
+        baseUrl: 'http://example.invalid',
+        apiClient: mockApi,
+        client: liveOnlyAt('http://example.invalid/ps/probes/liveness'),
+      );
+      final jwt = makeJwt({'sub': 'user-42', 'exp': 1700000000});
+      when(mockApi.getPowersyncToken()).thenAnswer(
+        (_) async => {'token': jwt, 'powersync_url': 'http://localhost/ps/'},
+      );
+
+      final creds = await connector.fetchCredentials();
+
+      expect(creds!.endpoint, 'http://example.invalid/ps/');
+    });
+
+    test('falls back to <baseUrl>/ps/ when powersync_url is missing', () async {
+      final mockApi = MockApiClient();
+      final connector = DjangoConnector(
+        baseUrl: 'http://example.invalid',
+        apiClient: mockApi,
+        client: liveOnlyAt('http://example.invalid/ps/probes/liveness'),
+      );
+      final jwt = makeJwt({'sub': 'user-42', 'exp': 1700000000});
+      when(mockApi.getPowersyncToken()).thenAnswer(
+        (_) async => {'token': jwt},
+      );
+
+      final creds = await connector.fetchCredentials();
+
+      expect(creds!.endpoint, 'http://example.invalid/ps/');
+    });
+
+    test('probes once per powersync_url value, again when it changes', () async {
+      final probes = <String>[];
+      final mockApi = MockApiClient();
+      final connector = DjangoConnector(
+        baseUrl: 'http://example.invalid',
+        apiClient: mockApi,
+        client: MockClient((request) async {
+          probes.add(request.url.toString());
+          return http.Response('{"ready":true}', 200);
+        }),
+      );
+      final jwt = makeJwt({'sub': 'u', 'exp': 1700000000});
+      when(mockApi.getPowersyncToken()).thenAnswer(
+        (_) async => {'token': jwt, 'powersync_url': 'https://ps.example.com'},
+      );
+
+      await connector.fetchCredentials();
+      await connector.fetchCredentials();
+      expect(probes, ['https://ps.example.com/probes/liveness']);
+
+      when(mockApi.getPowersyncToken()).thenAnswer(
+        (_) async => {'token': jwt, 'powersync_url': 'https://other.example.com'},
+      );
+      final creds = await connector.fetchCredentials();
+
+      expect(probes, hasLength(2));
+      expect(creds!.endpoint, 'https://other.example.com');
+    });
+
+    test('does not cache a failed resolution', () async {
+      final probes = <String>[];
+      final mockApi = MockApiClient();
+      final connector = DjangoConnector(
+        baseUrl: 'http://example.invalid',
+        apiClient: mockApi,
+        client: MockClient((request) async {
+          probes.add(request.url.toString());
+          return http.Response('not found', 404);
+        }),
+      );
+      final jwt = makeJwt({'sub': 'u', 'exp': 1700000000});
+      when(mockApi.getPowersyncToken()).thenAnswer(
+        (_) async => {'token': jwt, 'powersync_url': 'https://ps.example.com'},
+      );
+
+      expect(await connector.fetchCredentials(), isNull);
+      expect(await connector.fetchCredentials(), isNull);
+
+      // Both candidates probed on both attempts: no negative caching.
+      expect(probes, hasLength(4));
     });
 
     test('returns null when the backend is unreachable', () async {
@@ -224,7 +338,11 @@ void main() {
 
     test('anchors expiresAt to the local clock via the token lifetime', () async {
       final mockApi = MockApiClient();
-      final connector = DjangoConnector(baseUrl: 'http://example.invalid', apiClient: mockApi);
+      final connector = DjangoConnector(
+        baseUrl: 'http://example.invalid',
+        apiClient: mockApi,
+        client: anyLivenessOk(),
+      );
       // iat/exp lie far in the past; only their 600 s difference may matter.
       final jwt = makeJwt({'sub': 'u', 'iat': 1700000000, 'exp': 1700000600});
       when(mockApi.getPowersyncToken()).thenAnswer(
@@ -244,7 +362,11 @@ void main() {
 
       setUp(() {
         mockApi = MockApiClient();
-        connector = DjangoConnector(baseUrl: 'http://example.invalid', apiClient: mockApi);
+        connector = DjangoConnector(
+          baseUrl: 'http://example.invalid',
+          apiClient: mockApi,
+          client: anyLivenessOk(),
+        );
         records = [];
         final sub = Logger.root.onRecord.listen(records.add);
         addTearDown(sub.cancel);
@@ -298,6 +420,23 @@ void main() {
         await connector.fetchCredentials();
 
         expect(infoLines('backend unreachable'), hasLength(2));
+      });
+
+      test('logs the endpoint once, again only when it changes', () async {
+        final jwt = makeJwt({'sub': 'u', 'iat': 1700000000, 'exp': 1700000600});
+        when(mockApi.getPowersyncToken()).thenAnswer(
+          (_) async => {'token': jwt, 'powersync_url': 'https://ps.example.com'},
+        );
+        await connector.fetchCredentials();
+        await connector.fetchCredentials();
+
+        when(mockApi.getPowersyncToken()).thenAnswer(
+          (_) async => {'token': jwt, 'powersync_url': 'https://other.example.com'},
+        );
+        await connector.fetchCredentials();
+
+        expect(infoLines('endpoint https://ps.example.com'), hasLength(1));
+        expect(infoLines('endpoint https://other.example.com'), hasLength(1));
       });
 
       test('does not log recovery when there was no outage', () async {

@@ -187,6 +187,7 @@ void connectPowerSync(PowerSyncDatabase db, String baseUrl, http.Client client) 
     connector: DjangoConnector(
       baseUrl: baseUrl,
       apiClient: ApiClient(baseUrl, client: client),
+      client: client,
     ),
   );
 }

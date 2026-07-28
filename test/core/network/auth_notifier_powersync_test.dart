@@ -78,6 +78,7 @@ void main() {
   final tMinAppVersion = Uri.parse('$serverUrl/api/v2/min-app-version/');
   final tPowerSyncToken = Uri.parse('$serverUrl/api/v2/powersync-token');
   final tLiveness = Uri.parse('${powerSyncUrl}probes/liveness');
+  final tFallbackLiveness = Uri.parse('$serverUrl/ps/probes/liveness');
   final tIssueRefresh = Uri.parse('$serverUrl/api/v2/issue-refresh-token');
   final tHeadlessRefresh = Uri.parse('$serverUrl/allauth/app/v1/tokens/refresh');
 
@@ -157,6 +158,10 @@ void main() {
     );
 
     when(mockClient.get(tLiveness)).thenAnswer((_) async => Response('OK', 200));
+    // When the advertised URL fails its probe, the resolution falls back to
+    // <serverUrl>/ps/. A 404 keeps the "unreachable" scenarios unreachable;
+    // fallback-specific tests override this.
+    when(mockClient.get(tFallbackLiveness)).thenAnswer((_) async => Response('not found', 404));
 
     // Default: the legacy-DRF → JWT migration POST silently fails as
     // "offline" so existing tests that seed PREFS_USER fall through to the
@@ -447,10 +452,23 @@ void main() {
         final state = await container.read(authProvider.future);
 
         expect(state.status, AuthStatus.powerSyncUnreachable);
-        // Probe should never run if we can't resolve the URL.
+        // The unusable advertised URL is never probed; only the
+        // <serverUrl>/ps/ fallback is (dead here via the setUp default).
         verifyNever(mockClient.get(tLiveness));
+        verify(mockClient.get(tFallbackLiveness)).called(1);
       },
     );
+
+    test('dead advertised URL but live <serverUrl>/ps/ fallback → loggedIn', () async {
+      when(mockClient.get(tLiveness)).thenAnswer((_) async => Response('Bad Gateway', 502));
+      when(mockClient.get(tFallbackLiveness)).thenAnswer((_) async => Response('OK', 200));
+
+      final container = makeContainer();
+      final state = await container.read(authProvider.future);
+
+      expect(state.status, AuthStatus.loggedIn);
+      expect(await PreferenceHelper.asyncPref.getBool(PREFS_HAS_EVER_SYNCED), true);
+    });
 
     test('token endpoint returns 500 → powerSyncUnreachable', () async {
       when(
