@@ -17,6 +17,9 @@
  */
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/testing.dart';
+import 'package:logging/logging.dart';
 import 'package:wger/core/helpers.dart';
 
 void main() {
@@ -175,6 +178,156 @@ void main() {
           cdn,
         );
       });
+    });
+  });
+
+  group('findLivePowerSyncUrl', () {
+    const serverUrl = 'https://wger.example.com';
+
+    /// Client answering 200 only for the liveness probe of [liveEndpoint]
+    /// (with or without its trailing slash); records every requested URL.
+    MockClient liveOnlyAt(String liveEndpoint, [List<String>? requested]) {
+      final probe = '$liveEndpoint${liveEndpoint.endsWith('/') ? '' : '/'}probes/liveness';
+      return MockClient((request) async {
+        requested?.add(request.url.toString());
+        return request.url.toString() == probe
+            ? http.Response('{"ready":true}', 200)
+            : http.Response('not found', 404);
+      });
+    }
+
+    test('uses the server-provided URL when it answers the probe', () async {
+      final requested = <String>[];
+      final client = liveOnlyAt('https://ps.example.com', requested);
+
+      expect(
+        await findLivePowerSyncUrl(
+          client: client,
+          serverUrl: serverUrl,
+          provided: 'https://ps.example.com',
+        ),
+        'https://ps.example.com',
+      );
+      expect(requested, ['https://ps.example.com/probes/liveness']);
+    });
+
+    test('falls back to <serverUrl>/ps/ when the provided URL does not answer', () async {
+      // The #2432 shape: SITE_URL left at its localhost default, so the
+      // advertised URL points at the device itself.
+      expect(
+        await findLivePowerSyncUrl(
+          client: liveOnlyAt('$serverUrl/ps/'),
+          serverUrl: serverUrl,
+          provided: 'http://localhost/ps/',
+        ),
+        '$serverUrl/ps/',
+      );
+    });
+
+    test('falls back when probing the provided URL throws', () async {
+      final client = MockClient((request) async {
+        if (request.url.host == 'ps.example.com') {
+          throw http.ClientException('Connection refused');
+        }
+        return http.Response('{"ready":true}', 200);
+      });
+
+      expect(
+        await findLivePowerSyncUrl(
+          client: client,
+          serverUrl: serverUrl,
+          provided: 'https://ps.example.com',
+        ),
+        '$serverUrl/ps/',
+      );
+    });
+
+    test('probes only the fallback for a missing URL', () async {
+      final requested = <String>[];
+      final client = liveOnlyAt('$serverUrl/ps/', requested);
+
+      expect(
+        await findLivePowerSyncUrl(client: client, serverUrl: serverUrl, provided: null),
+        '$serverUrl/ps/',
+      );
+      expect(requested, ['$serverUrl/ps/probes/liveness']);
+    });
+
+    test('skips a URL without a scheme', () async {
+      final requested = <String>[];
+      final client = liveOnlyAt('$serverUrl/ps/', requested);
+
+      expect(
+        await findLivePowerSyncUrl(
+          client: client,
+          serverUrl: serverUrl,
+          provided: 'wger.example.com/ps/',
+        ),
+        '$serverUrl/ps/',
+      );
+      expect(requested, ['$serverUrl/ps/probes/liveness']);
+    });
+
+    test('returns null when no candidate answers', () async {
+      expect(
+        await findLivePowerSyncUrl(
+          client: MockClient((_) async => http.Response('not found', 404)),
+          serverUrl: serverUrl,
+          provided: 'https://ps.example.com',
+        ),
+        isNull,
+      );
+    });
+
+    test('logs failed probes at INFO with status code or exception', () async {
+      final records = <LogRecord>[];
+      final sub = Logger.root.onRecord.listen(records.add);
+      addTearDown(sub.cancel);
+
+      final client = MockClient((request) async {
+        if (request.url.host == 'ps.example.com') {
+          throw http.ClientException('Connection refused');
+        }
+        return http.Response('bad gateway', 502);
+      });
+      await findLivePowerSyncUrl(
+        client: client,
+        serverUrl: serverUrl,
+        provided: 'https://ps.example.com',
+      );
+
+      final messages = records.where((r) => r.level == Level.INFO).map((r) => r.message);
+      expect(
+        messages,
+        contains('PowerSync probe: https://ps.example.com/probes/liveness failed: '
+            'ClientException: Connection refused'),
+      );
+      expect(
+        messages,
+        contains('PowerSync probe: $serverUrl/ps/probes/liveness returned 502'),
+      );
+    });
+
+    test('keeps a sub-directory installation path in the fallback', () async {
+      expect(
+        await findLivePowerSyncUrl(
+          client: liveOnlyAt('https://example.com/wger/ps/'),
+          serverUrl: 'https://example.com/wger',
+          provided: null,
+        ),
+        'https://example.com/wger/ps/',
+      );
+    });
+
+    test('handles a trailing slash on the server URL', () async {
+      expect(
+        await findLivePowerSyncUrl(
+          client: liveOnlyAt('$serverUrl/ps/'),
+          serverUrl: '$serverUrl/',
+          provided: null,
+        ),
+        '$serverUrl/ps/',
+      );
     });
   });
 }
