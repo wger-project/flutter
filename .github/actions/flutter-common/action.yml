@@ -16,7 +16,7 @@ runs:
       run: flutter pub get
       shell: bash
 
-    - name: Install Flutter dependencies
+    - name: Show versions
       run: |
         dart --version
         flutter --version
