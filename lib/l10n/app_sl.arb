@@ -1,1 +1,578 @@
-{}
+{
+    "userProfile": "Vaš profil",
+    "login": "Prijava",
+    "@login": {
+        "description": "Text for login button"
+    },
+    "logout": "Odjava",
+    "@logout": {
+        "description": "Text for logout button"
+    },
+    "register": "Vpis",
+    "@register": {
+        "description": "Text for registration button"
+    },
+    "invalidUrl": "Vnesite veljavno lokacijo",
+    "@invalidUrl": {
+        "description": "Error message when the user enters an invalid URL, e.g. in the login form"
+    },
+    "usernameValidChars": "Uporabniško ime lahko vsebuje le črke, števke, in znake @, +, ., -, _",
+    "@usernameValidChars": {
+        "description": "Error message when the user tries to register a username with forbidden characters"
+    },
+    "passwordsDontMatch": "Gesli nista enaki",
+    "@passwordsDontMatch": {
+        "description": "Error message when the user enters two different passwords during registration"
+    },
+    "passwordTooShort": "Geslo je prekratko",
+    "@passwordTooShort": {
+        "description": "Error message when the user a password that is too short"
+    },
+    "selectAvailablePlates": "Izberite razpoložljive plošče",
+    "barWeight": "Teža palice",
+    "useColors": "Uporabi barve",
+    "password": "Geslo",
+    "confirmPassword": "Potrdite geslo",
+    "invalidEmail": "Vnesite veljaven naslov elektronske pošte",
+    "@invalidEmail": {
+        "description": "Error message when the user enters an invalid email"
+    },
+    "email": "E-poštni naslov",
+    "username": "Uporabniško ime",
+    "invalidUsername": "Vnesite veljavno uporabniško ime",
+    "@invalidUsername": {
+        "description": "Error message when the user enters an invalid username"
+    },
+    "refreshToken": "Žeton za osveževanje",
+    "invalidRefreshToken": "Vnesite veljaven žeton za osveževanje",
+    "@invalidRefreshToken": {
+        "description": "Error message when the user enters an invalid refresh token"
+    },
+    "refreshTokenValidChars": "Žeton za osveževanje ima tri dele, ločene s piko (glava.vsebina.podpis). Vsak del je iz črk, števk »-« in »_«.",
+    "@refreshTokenValidChars": {
+        "description": "Error message when the user pastes a string that does not match the JWT shape"
+    },
+    "refreshTokenHelperText": "Na spletni strani wger ustvarite žeton za osveževanje JWT in ga prilepite sem. Uporabno, ko je strežnik za overitvenim posrednikom ali ko želite preskočiti običajen postopek prijave.",
+    "@refreshTokenHelperText": {
+        "description": "Helper text on the refresh-token paste field"
+    },
+    "mfaChallengeTitle": "Dvo-delno overjanje",
+    "@mfaChallengeTitle": {
+        "description": "App bar title on the 2FA challenge screen"
+    },
+    "mfaChallengeTotpPrompt": "Vnesite 6-mestno številsko kodo iz aplikacije za overjanje",
+    "@mfaChallengeTotpPrompt": {
+        "description": "Helper text above the TOTP input field"
+    },
+    "mfaChallengeRecoveryPrompt": "Vnesite eno izmed vaših kod za obnavljanje",
+    "@mfaChallengeRecoveryPrompt": {
+        "description": "Helper text above the recovery-code input field"
+    },
+    "mfaCodeLabel": "Koda",
+    "@mfaCodeLabel": {
+        "description": "Label on the 2FA code input field"
+    },
+    "mfaInvalidCode": "Vnesite kodo",
+    "@mfaInvalidCode": {
+        "description": "Validation error when the 2FA code field is empty"
+    },
+    "mfaUseRecoveryCode": "Namesto tega uporabi kodo za obnavljanje",
+    "@mfaUseRecoveryCode": {
+        "description": "Button that switches the 2FA challenge to recovery-code mode"
+    },
+    "mfaUseTotpCode": "Uporabi kodo iz aplikacije za overjanje",
+    "@mfaUseTotpCode": {
+        "description": "Button that switches the 2FA challenge back to TOTP mode"
+    },
+    "mfaSubmit": "Potrdi",
+    "@mfaSubmit": {
+        "description": "Submit button on the 2FA challenge screen"
+    },
+    "mfaUnsupportedFactor": "Vaš račun je nastavljen z dvo-delnim overjanjem, ki ga ta aplikacija še ne podpira. Prijavite se na spletni strani.",
+    "@mfaUnsupportedFactor": {
+        "description": "Shown when the server reports only factor types the app cannot handle (e.g. webauthn)"
+    },
+    "manageAccountOnWeb": "Upravljaj račun na spletni strani",
+    "@manageAccountOnWeb": {
+        "description": "Label on a button that opens the user's preferences page on the wger website"
+    },
+    "manageAccountOnWebSubtitle": "Spremenite svoje geslo, nastavite dvo-delno overjanje, upravljajte žetone za programski vmesnik ali izbrišite svoj rčaun.",
+    "@manageAccountOnWebSubtitle": {
+        "description": "Helper text below the 'Manage account on the web' button listing what is configurable there"
+    },
+    "customServerUrl": "Lokacija strežnika wger",
+    "@customServerUrl": {
+        "description": "Label in the form where the users can enter their own wger instance"
+    },
+    "customServerHint": "Vnesite naslov strežnika. Če pustite prazno bo uporabljen privzeti strežnik.",
+    "@customServerHint": {
+        "description": "Hint text for the form where the users can enter their own wger instance"
+    },
+    "reset": "Ponastavi",
+    "@reset": {
+        "description": "Button text allowing the user to reset the entered values to the default"
+    },
+    "advanced": "Napredno",
+    "advancedSubtitle": "Možnosti strežnika in overjanja",
+    "serverSectionLabel": "Strežnik",
+    "signInMethodSectionLabel": "Način prijave",
+    "serverOptionDefaultDetail": "Uradni strežnik",
+    "serverOptionSelfHostedTitle": "Lastni strežnik",
+    "serverOptionSelfHostedDetail": "Povežite se na svoj lastni strežnik",
+    "authOptionPasswordTitle": "Uporabniško ime in geslo",
+    "signInWithToken": "Prijavi se z žetonom",
+    "tokenSubtitle": "Ustvarite ga na spletni strani wger",
+    "newToWger": "Ali prvič uporabljate wger?",
+    "alreadyHaveAccount": "Ali že imate račun?",
+    "tokenLabel": "Žeton",
+    "webHandoffLinkLabel": "Druge možnosti prijave",
+    "webHandoffLinkSubtitle": "Prijava prek družbenih omrežij, PassKey, enojna prijava (SSO)",
+    "labelBottomNavWorkout": "Trening",
+    "@labelBottomNavWorkout": {
+        "description": "Label used in bottom navigation, use a short word"
+    },
+    "labelBottomNavNutrition": "Prehrana",
+    "@labelBottomNavNutrition": {
+        "description": "Label used in bottom navigation, use a short word"
+    },
+    "labelWorkoutLogs": "Dnevniki treningov",
+    "@labelWorkoutLogs": {
+        "description": "(Workout) logs"
+    },
+    "labelWorkoutPlan": "Načrt treninga",
+    "@labelWorkoutPlan": {
+        "description": "Title for screen workout plan"
+    },
+    "dashboardWidgets": "Gradniki preglednega pulta",
+    "labelDashboard": "Pregledni pult",
+    "@labelDashboard": {
+        "description": "Title for screen dashboard"
+    },
+    "success": "Uspeh",
+    "@success": {
+        "description": "Message when an action completed successfully, usually used as a heading"
+    },
+    "successfullyDeleted": "Izbrisano",
+    "@successfullyDeleted": {
+        "description": "Message when an item was successfully deleted"
+    },
+    "successfullySaved": "Shranjeno",
+    "@successfullySaved": {
+        "description": "Message when an item was successfully saved"
+    },
+    "exerciseList": "Seznam vaj",
+    "exercise": "Vaja",
+    "@exercise": {
+        "description": "An exercise for a workout"
+    },
+    "exercises": "Vaje",
+    "@exercises": {
+        "description": "Multiple exercises for a workout"
+    },
+    "exerciseName": "Ime vaje",
+    "@exerciseName": {
+        "description": "Label for the name of a workout exercise"
+    },
+    "searchExercise": "Poiščite vaje za dodajanje",
+    "@searchExercise": {
+        "description": "Label on set form. Selected exercises are added to the set"
+    },
+    "noIngredientsDefined": "Določene še ni nobene sestavine",
+    "noMatchingExerciseFound": "Najdena ni bila nobena ustrezna vaja",
+    "@noMatchingExerciseFound": {
+        "description": "Message returned if no exercises match the searched string"
+    },
+    "equipment": "Oprema",
+    "@equipment": {
+        "description": "Equipment needed to perform an exercise"
+    },
+    "muscles": "Mišice",
+    "@muscles": {
+        "description": "(main) muscles trained by an exercise"
+    },
+    "musclesSecondary": "Sekundarne mišice",
+    "@musclesSecondary": {
+        "description": "secondary muscles trained by an exercise"
+    },
+    "category": "Kategorija",
+    "@category": {
+        "description": "Category for an exercise, ingredient, etc."
+    },
+    "startDate": "Začetek",
+    "@startDate": {
+        "description": "The start date of a nutritional plan or routine"
+    },
+    "dayTypeCustom": "Po meri",
+    "dayTypeEnom": "Vsako minuto na minuto",
+    "dayTypeAmrap": "Kolikor krogov/ponovitev je mogoče",
+    "dayTypeHiit": "Trening z intervali visoke intenzivnosti",
+    "dayTypeTabata": "Tabata",
+    "dayTypeEdt": "Trening s povečevanjem gostote",
+    "dayTypeRft": "Krogi za čas",
+    "dayTypeAfap": "Kakor hitro je mogoče",
+    "slotEntryTypeNormal": "Normalni",
+    "slotEntryTypeDropset": "Lažji niz",
+    "slotEntryTypeMyo": "Myo",
+    "slotEntryTypeWarmup": "Ogrevanje",
+    "slotEntryTypePartial": "Delni",
+    "slotEntryTypeForced": "Prisiljeni",
+    "slotEntryTypeTut": "Čas pod napetostjo",
+    "slotEntryTypeIso": "Izometrično držanje",
+    "slotEntryTypeJump": "Skok",
+    "trophies": "Trofeje",
+    "routines": "Rutine",
+    "newRoutine": "Nova rutina",
+    "noRoutines": "Nimate še nobene rutine",
+    "reps": "Ponov.",
+    "@reps": {
+        "description": "Shorthand for repetitions, used when space constraints are tighter"
+    },
+    "restTime": "Čas počitka",
+    "sets": "Nizi",
+    "@sets": {
+        "description": "The number of sets to be done for one exercise"
+    },
+    "rir": "PvR",
+    "@rir": {
+        "description": "Shorthand for Repetitions In Reserve"
+    },
+    "rirNotUsed": "PvR se ne uporabljajo",
+    "@rirNotUsed": {
+        "description": "Label used in RiR slider when the RiR value is not used/saved for the current setting or log"
+    },
+    "useMetric": "Za telesno težo uporabi metrične enote",
+    "weightUnit": "Enota teže",
+    "repetitionUnit": "Enota ponovitve",
+    "set": "Niz",
+    "@set": {
+        "description": "A set in a workout plan"
+    },
+    "dayDescriptionHelp": "Opis, kaj delate ta dan (npr. »Dan za vleko«) ali katere dele telesa trenirate (npr. »Prsni koš in ramena«)",
+    "exerciseNr": "{nr}. vaja",
+    "@exerciseNr": {
+        "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Set Nr. xy'.",
+        "type": "text",
+        "placeholders": {
+            "nr": {
+                "type": "String"
+            }
+        }
+    },
+    "supersetNr": "{nr}. superniz",
+    "@supersetNr": {
+        "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Superset Nr. xy'.",
+        "type": "text",
+        "placeholders": {
+            "nr": {
+                "type": "String"
+            }
+        }
+    },
+    "setNr": "{nr}. niz",
+    "@setNr": {
+        "description": "Header in form indicating the number of the current set within a group of same exercises.",
+        "type": "text",
+        "placeholders": {
+            "nr": {
+                "type": "String"
+            }
+        }
+    },
+    "comment": "Komentar",
+    "@comment": {
+        "description": "Comment, additional information"
+    },
+    "topSet": "Najboljši niz: {value}",
+    "@topSet": {
+        "description": "Value is a representation of the set, like '10 x 80kg'",
+        "type": "text",
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    },
+    "impressionGood": "Dober",
+    "impressionNeutral": "Nevtralen",
+    "impressionBad": "Slab",
+    "impression": "Vtis",
+    "@impression": {
+        "description": "General impression (e.g. for a workout session) such as good, bad, etc."
+    },
+    "notes": "Opombe",
+    "@notes": {
+        "description": "Personal notes, e.g. for a workout session"
+    },
+    "workoutSession": "Seja treninga",
+    "@workoutSession": {
+        "description": "A (logged) workout session"
+    },
+    "restDay": "Dan počitka",
+    "isRestDay": "Je dan počitka",
+    "isRestDayHelp": "Upoštevajte, da bodo vsi nizi in vaje odstranjeni, ko označite dan kot dan počitka.",
+    "needsLogsToAdvance": "Za napredovanje potrebuje dnevnike",
+    "needsLogsToAdvanceHelp": "Izberite, če želite da rutina napreduje na naslednji dan v razporedu, samo če ste v dnevnik vnesli trening za ta dan",
+    "routineDays": "Dnevi v rutini",
+    "resultingRoutine": "Končna rutina",
+    "newDay": "Nov dan",
+    "newSet": "Nov niz",
+    "@newSet": {
+        "description": "Header when adding a new set to a workout day"
+    },
+    "personalRecords": "Osebni rekordi",
+    "gymMode": "Način telovadbe",
+    "@gymMode": {
+        "description": "Label when starting the gym mode"
+    },
+    "gymModeShowExercises": "Prikaži strani pregleda vaj",
+    "gymModeShowTimer": "Prikaži časomer med nizi",
+    "gymModeShowWorkoutDuration": "Prikaži trajanje treninga",
+    "gymModeTimerType": "Vrsta časomera",
+    "gymModeTimerTypeHelText": "Če ima niz čas premora, se vedno uporabi odštevanje.",
+    "countdown": "Odštevanje",
+    "stopwatch": "Štoparica",
+    "gymModeDefaultCountdownTime": "Privzeti čas za odštevanje, v sekundah",
+    "gymModeNotifyOnCountdownFinish": "Opomnik ob koncu odštevanja",
+    "duration": "Trajanje",
+    "durationHoursMinutes": "{hours} h  {minutes} min",
+    "@durationHoursMinutes": {
+        "description": "A duration, in hours and minutes",
+        "type": "text",
+        "placeholders": {
+            "hours": {
+                "type": "int"
+            },
+            "minutes": {
+                "type": "int"
+            }
+        }
+    },
+    "volume": "Volumen",
+    "@volume": {
+        "description": "The volume of a workout or set, i.e. weight x reps"
+    },
+    "workoutCompleted": "Trening zaključen",
+    "plateCalculator": "Plošče",
+    "@plateCalculator": {
+        "description": "Label used for the plate calculator in the gym mode"
+    },
+    "plateCalculatorNotDivisible": "Z razpoložljivimi ploščami ni moč doseči želene teže",
+    "@plateCalculatorNotDivisible": {
+        "description": "Error message when the current weight is not reachable with plates (e.g. 33.1 kg)"
+    },
+    "pause": "Premor",
+    "@pause": {
+        "description": "Noun, not an imperative! Label used for the pause when using the gym mode"
+    },
+    "jumpTo": "Skoči na",
+    "@jumpTo": {
+        "description": "Imperative. Label used in popup allowing the user to jump to a specific exercise while in the gym mode"
+    },
+    "todaysWorkout": "Vaš današnji trening",
+    "logHelpEntries": "Če je v enem dnevu več vnosov z enakim številom ponovitev a drugimi utežmi, je v diagramu prikazan samo vnos z višjo težo.",
+    "logHelpEntriesUnits": "Vedite, da je so prikazani samo vnosi z enoto teže (kg ali lb) in ponovitvami. Druge kombinacije (kot sta čas in do neuspeha) so tu prezrte.",
+    "description": "Opis",
+    "name": "Ime",
+    "@name": {
+        "description": "Name for a workout or nutritional plan"
+    },
+    "save": "Shrani",
+    "verify": "Potrdi",
+    "addSet": "Dodaj niz",
+    "@addSet": {
+        "description": "Label for the button that adds a set (to a workout day)"
+    },
+    "gymModeLogScope": "Prejšnji dnevniki",
+    "gymModeLogScopeHelp": "Kateri dnevniki naj bodo med treningom prikazani kot referenčni",
+    "gymModeLogScopeCurrentRoutine": "Trenutna rutina",
+    "gymModeLogScopeWeeks": "Zadnjih {weeks} tednov",
+    "@gymModeLogScopeWeeks": {
+        "placeholders": {
+            "weeks": {
+                "type": "int"
+            }
+        }
+    },
+    "gymModeDistinctLogs": "Skrij podvojene vrednosti",
+    "addMeal": "Dodaj obrok",
+    "mealLogged": "Obrok zabeležen v dnevnik",
+    "ingredientLogged": "Sestavina zabeležena v dnevnik",
+    "logMeal": "Zabeleži obrok v dnevnik prehrane",
+    "addIngredient": "Dodaj sestavino",
+    "logIngredient": "Zabeleži sestavino v dnevnik prehrane",
+    "searchIngredient": "Poišči sestavino",
+    "@searchIngredient": {
+        "description": "Label (or Hint text) on ingredient search form"
+    },
+    "nutritionalPlan": "Prehranski načrt",
+    "nutritionalDiary": "Dnevnik prehrane",
+    "nutritionalPlans": "Prehranski načrti",
+    "noNutritionalPlans": "Nimate še nobenega prehranskega načrta",
+    "@noNutritionalPlans": {
+        "description": "Message shown when the user has no nutritional plans"
+    },
+    "clearSearchTerm": "Počisti iskalni niz (besedilo)",
+    "@clearSearchTerm": {
+        "description": "Tooltip for the icon-button that clears the ingredient search text field"
+    },
+    "ingredients": "Sestavine",
+    "@ingredients": {
+        "description": "Plural title for the ingredients overview screen"
+    },
+    "onlyLogging": "Sledi samo kalorijam",
+    "onlyLoggingHelpText": "Označite polje, če želite beležiti samo kalorije in ne želite nastaviti podrobnega prehranskega načrta s posameznimi obroki",
+    "goalMacro": "Makro cilji",
+    "@goalMacro": {
+        "description": "The goal for macronutrients"
+    },
+    "selectMealToLog": "Izberite obrok za zapis v dnevnik",
+    "yourCurrentNutritionPlanHasNoMealsDefinedYet": "Vaš trenutni prehranski načrt še nima določenega nobenega obroka",
+    "@yourCurrentNutritionPlanHasNoMealsDefinedYet": {
+        "description": "Message shown when a nutrition plan doesn't have any meals"
+    },
+    "toAddMealsToThePlanGoToNutritionalPlanDetails": "Da v načrt dodate obroke, odprite podrobnosti prehranskega načrta",
+    "@toAddMealsToThePlanGoToNutritionalPlanDetails": {
+        "description": "Message shown to guide users to the nutritional plan details page to add meals"
+    },
+    "planDateRange": "od {startDate} do {endDate}",
+    "@planDateRange": {
+        "description": "Label for the start and end date range of a plan",
+        "placeholders": {
+            "startDate": {
+                "type": "String"
+            },
+            "endDate": {
+                "type": "String"
+            }
+        }
+    },
+    "planStartDate": "od {startDate}",
+    "@planStartDate": {
+        "description": "Label for the start date of a plan",
+        "placeholders": {
+            "startDate": {
+                "type": "String"
+            }
+        }
+    },
+    "otherLogs": "Drugi dnevniki",
+    "@otherLogs": {
+        "description": "Other unassigned logs. Label for the pseudo-meal section that groups all nutritional diary entries not assigned to a specific meal"
+    },
+    "goalEnergy": "Cilj vnesene energije",
+    "goalProtein": "Cilj beljakovin",
+    "goalCarbohydrates": "Cilj ogljikovih hidratov",
+    "goalFat": "Cilj maščob",
+    "goalFiber": "Cilj vlaknin",
+    "anErrorOccurred": "Prišlo je do napake!",
+    "errorRawSource": "Izvorno",
+    "@errorRawSource": {
+        "description": "Tab label for showing an HTML error response in its raw (unrendered) form, opposite of 'Preview'."
+    },
+    "errorInfoDescription": "Se opravičujemo, a nekaj je šlo narobe. Napako nam lahko pomagate odpraviti, s tem, da jo vnesete na spletno stran GitHub.",
+    "errorInfoDescription2": "Lahko nadaljujete z uporabo aplikacije, vendar nekatere možnosti morda ne bodo delovale.",
+    "errorViewDetails": "Tehnične podrobnosti",
+    "applicationLogs": "Dnevniki aplikacije",
+    "errorCouldNotConnectToServer": "Ni se bilo moč povezati na strežnik",
+    "copyToClipboard": "Skopiraj na odložišče",
+    "weight": "Teža",
+    "@weight": {
+        "description": "The weight of a workout log or body weight entry"
+    },
+    "min": "Min.",
+    "max": "Maks.",
+    "chartAllTimeTitle": "{name} – ves čas",
+    "@chartAllTimeTitle": {
+        "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+        "type": "text",
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "chart30DaysTitle": "{name} – zadnjih 30 dni",
+    "@chart30DaysTitle": {
+        "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+        "type": "text",
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "chartDuringPlanTitle": "{chartName} – med prehranskim načrtom {planName}",
+    "@chartDuringPlanTitle": {
+        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
+        "type": "text",
+        "placeholders": {
+            "chartName": {
+                "type": "String"
+            },
+            "planName": {
+                "type": "String"
+            }
+        }
+    },
+    "measurement": "Meritve",
+    "measurements": "Meritve",
+    "@measurements": {
+        "description": "Categories for the measurements such as biceps size, body fat, etc."
+    },
+    "measurementCategoriesHelpText": "Kategorija meritev, npr »biceps« ali »telesna maščoba«",
+    "measurementEntriesHelpText": "Enota za meritve znotraj kategorije, npr. »cm« ali »%«",
+    "date": "Datum",
+    "@date": {
+        "description": "The date of a workout log or body weight entry"
+    },
+    "endDate": "Končni datum",
+    "@endDate": {
+        "description": "The End date of a nutritional plan or routine"
+    },
+    "endBeforeStart": "Končna vrednost ne more biti pred začetkom",
+    "@endBeforeStart": {
+        "description": "Validation error shown when a plan or routine end date is before its start date"
+    },
+    "minLengthRoutine": "Rutina mora trajati vsaj {number} tednov",
+    "@minLengthRoutine": {
+        "description": "Validation error when a routine is shorter than the minimum allowed duration",
+        "placeholders": {
+            "number": {
+                "type": "int"
+            }
+        }
+    },
+    "maxLengthRoutine": "Rutina lahko traja največ {number} tednov",
+    "@maxLengthRoutine": {
+        "description": "Validation error when a routine is longer than the maximum allowed duration",
+        "placeholders": {
+            "number": {
+                "type": "int"
+            }
+        }
+    },
+    "openEnded": "Nima konca",
+    "@openEnded": {
+        "description": "When a nutrition plan has no pre-defined end date"
+    },
+    "value": "Vrednost",
+    "@value": {
+        "description": "The value of a measurement entry"
+    },
+    "start": "Začetek",
+    "@start": {
+        "description": "Label on button to start the gym mode (i.e., an imperative)"
+    },
+    "time": "Čas",
+    "@time": {
+        "description": "The time of a meal or workout"
+    },
+    "timeStart": "Začetni čas",
+    "@timeStart": {
+        "description": "The starting time of a workout"
+    },
+    "timeEnd": "Končni čas",
+    "@timeEnd": {
+        "description": "The end time of a workout"
+    }
+}
