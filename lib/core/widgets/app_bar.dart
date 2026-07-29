@@ -58,8 +58,9 @@ class MainAppBar extends ConsumerWidget implements PreferredSizeWidget {
             context: context,
             // The dialog watches the sync state itself; only the server URL
             // and the offline gate are snapshots taken when it opens.
-            // No reconnect action while offline: the app deliberately
-            // disconnects there (see powerSyncInstance)
+            // No reconnect while offline: the app deliberately disconnects
+            // there (see powerSyncInstance). The tap-time check covers the
+            // network dropping while the dialog is open
             builder: (_) => SyncStatusDialog(
               serverUrl: ref.read(wgerBaseProvider).serverUrl,
               onReconnect: !ref.read(networkStatusProvider)
@@ -67,7 +68,7 @@ class MainAppBar extends ConsumerWidget implements PreferredSizeWidget {
                   : () {
                       final db = builtPowerSyncInstance;
                       final serverUrl = ref.read(wgerBaseProvider).serverUrl;
-                      if (db == null || serverUrl == null) {
+                      if (db == null || serverUrl == null || !ref.read(networkStatusProvider)) {
                         return;
                       }
                       ref.read(syncWatchdogProvider).reset();

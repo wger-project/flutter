@@ -16,11 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:logging/logging.dart';
 import 'package:powersync/powersync.dart'
     show CredentialsException, PowerSyncProtocolException, SyncResponseException, SyncStatus;
 import 'package:wger/core/consts.dart';
 import 'package:wger/database/powersync/powersync.dart' show builtPowerSyncInstance;
 import 'package:wger/powersync/connector.dart' show RetryableUploadException;
+
+final _logger = Logger('sync_diagnostics');
 
 /// Maps an HTTP status code to a short English category label.
 String _categoriseHttpStatus(int statusCode) {
@@ -106,15 +109,24 @@ String formatSyncDiagnostics(
 
 /// Snapshot of the current sync state for bug reports, or null when the
 /// PowerSync database has not been initialised.
+///
+/// Never throws: this runs on report paths where the app may already be in
+/// a broken state (e.g. the DB is closing down), and a missing sync section
+/// must not prevent the report itself.
 Future<String?> collectSyncDiagnostics({String? serverUrl}) async {
   final db = builtPowerSyncInstance;
   if (db == null) {
     return null;
   }
-  final queue = await db.getUploadQueueStats();
-  return formatSyncDiagnostics(
-    db.currentStatus,
-    pendingUploads: queue.count,
-    server: serverCategory(serverUrl),
-  );
+  try {
+    final queue = await db.getUploadQueueStats();
+    return formatSyncDiagnostics(
+      db.currentStatus,
+      pendingUploads: queue.count,
+      server: serverCategory(serverUrl),
+    );
+  } catch (e) {
+    _logger.warning('Could not collect sync diagnostics: $e');
+    return null;
+  }
 }
