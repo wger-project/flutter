@@ -1405,6 +1405,19 @@
   "@syncStatusReconnect": {
     "description": "Button in the sync status dialog that drops the stuck connection to the sync service and opens a fresh one"
   },
+  "syncStatusPendingUploads": "{count, plural, =1{One local change waiting for upload} other{{count} local changes waiting for upload}}",
+  "@syncStatusPendingUploads": {
+    "description": "Line in the sync status dialog showing how many local changes have not reached the server yet",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "syncStatusNeverSynced": "Not yet synchronised",
+  "@syncStatusNeverSynced": {
+    "description": "Shown in the sync status dialog instead of the last-sync timestamp when this device has never completed a synchronisation"
+  },
   "filterNutriscore": "Nutri-Score filter",
   "@filterNutriscore": {
     "description": "Heading for the Nutri-Score slider in the ingredient search filter dialog"

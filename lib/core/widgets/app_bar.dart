@@ -56,12 +56,12 @@ class MainAppBar extends ConsumerWidget implements PreferredSizeWidget {
           icon: Icon(status.icon),
           onPressed: () => showDialog<void>(
             context: context,
-            // Like syncState, the stalled and offline flags are snapshots
-            // taken when the dialog opens. No reconnect action while offline:
-            // the app deliberately disconnects there (see powerSyncInstance)
+            // The dialog watches the sync state itself; only the server URL
+            // and the offline gate are snapshots taken when it opens.
+            // No reconnect action while offline: the app deliberately
+            // disconnects there (see powerSyncInstance)
             builder: (_) => SyncStatusDialog(
-              syncState,
-              stalled: ref.read(syncWatchdogProvider).stalled.value,
+              serverUrl: ref.read(wgerBaseProvider).serverUrl,
               onReconnect: !ref.read(networkStatusProvider)
                   ? null
                   : () {

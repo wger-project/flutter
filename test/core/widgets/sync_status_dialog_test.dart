@@ -16,9 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
 import 'dart:io' show SocketException;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:powersync/powersync.dart'
     show
@@ -28,24 +30,43 @@ import 'package:powersync/powersync.dart'
         SyncStatus,
         UpdateType;
 import 'package:wger/core/widgets/sync_status_dialog.dart';
+import 'package:wger/database/powersync/powersync.dart'
+    show pendingUploadCountProvider, syncStatus, syncWatchdogProvider;
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/l10n/generated/app_localizations_en.dart';
 import 'package:wger/powersync/connector.dart' show RetryableUploadException;
+import 'package:wger/powersync/sync_watchdog.dart';
 
 import '../../helpers/sync_status.dart';
 
-Widget _wrap(Widget child) {
-  return MaterialApp(
-    localizationsDelegates: AppLocalizations.localizationsDelegates,
-    supportedLocales: AppLocalizations.supportedLocales,
-    locale: const Locale('en'),
-    home: Scaffold(body: child),
+/// Wraps [child] in a MaterialApp with the providers the dialog watches
+/// overridden to fixed test values.
+Widget _wrap(
+  Widget child, {
+  required SyncStatus status,
+  bool stalled = false,
+  Stream<int>? pendingUploads,
+}) {
+  final watchdog = SyncStreamWatchdog();
+  watchdog.stalled.value = stalled;
+  return ProviderScope(
+    overrides: [
+      syncStatus.overrideWithValue(status),
+      syncWatchdogProvider.overrideWithValue(watchdog),
+      pendingUploadCountProvider.overrideWith((ref) => pendingUploads ?? const Stream.empty()),
+    ],
+    child: MaterialApp(
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      locale: const Locale('en'),
+      home: Scaffold(body: child),
+    ),
   );
 }
 
-/// Renders [SyncStatusDialog] inside a minimal MaterialApp + Scaffold.
+/// Renders a plain [SyncStatusDialog] for the given status.
 Future<void> _pumpDialog(WidgetTester tester, SyncStatus status) async {
-  await tester.pumpWidget(_wrap(SyncStatusDialog(status)));
+  await tester.pumpWidget(_wrap(const SyncStatusDialog(), status: status));
   await tester.pumpAndSettle();
 }
 
@@ -118,13 +139,83 @@ void main() {
   });
 
   group('SyncStatusDialog rendering', () {
-    testWidgets('renders title, status label, and "never synced" placeholder', (tester) async {
+    testWidgets('renders title, status label, and the never-synced text', (tester) async {
+      // Without a lastSyncedAt the status derives hasSynced == false
       await _pumpDialog(tester, buildSyncStatus(connected: true));
 
       expect(find.text(i18n.syncStatusDialogTitle), findsOneWidget);
       expect(find.text(i18n.syncStatusConnected), findsOneWidget);
       expect(find.text(i18n.syncStatusLastSynced), findsOneWidget);
+      expect(find.text(i18n.syncStatusNeverSynced), findsOneWidget);
+      expect(find.byType(LinearProgressIndicator), findsNothing);
+    });
+
+    testWidgets('renders the placeholder while the sync state is still unknown', (tester) async {
+      await _pumpDialog(tester, buildUninitializedSyncStatus());
+
       expect(find.text('-/-'), findsOneWidget);
+      expect(find.text(i18n.syncStatusNeverSynced), findsNothing);
+    });
+
+    testWidgets('shows the pending-upload count when changes are waiting', (tester) async {
+      await tester.pumpWidget(
+        _wrap(
+          const SyncStatusDialog(),
+          status: buildSyncStatus(connected: true),
+          pendingUploads: Stream.value(3),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text(i18n.syncStatusPendingUploads(3)), findsOneWidget);
+    });
+
+    testWidgets('omits the pending-upload line when the queue is empty', (tester) async {
+      await tester.pumpWidget(
+        _wrap(
+          const SyncStatusDialog(),
+          status: buildSyncStatus(connected: true),
+          pendingUploads: Stream.value(0),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('upload'), findsNothing);
+    });
+
+    testWidgets('updates the pending-upload count while the dialog is open', (tester) async {
+      final queue = StreamController<int>();
+      addTearDown(queue.close);
+      await tester.pumpWidget(
+        _wrap(
+          const SyncStatusDialog(),
+          status: buildSyncStatus(connected: true),
+          pendingUploads: queue.stream,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      queue.add(2);
+      await tester.pumpAndSettle();
+      expect(find.text(i18n.syncStatusPendingUploads(2)), findsOneWidget);
+
+      // The queue drained: the line disappears without reopening the dialog
+      queue.add(0);
+      await tester.pumpAndSettle();
+      expect(find.textContaining('upload'), findsNothing);
+    });
+
+    testWidgets('shows the server URL when provided', (tester) async {
+      await tester.pumpWidget(
+        _wrap(
+          const SyncStatusDialog(serverUrl: 'https://wger.example'),
+          status: buildSyncStatus(connected: true),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text(i18n.serverSectionLabel), findsOneWidget);
+      expect(find.text('https://wger.example'), findsOneWidget);
     });
 
     testWidgets('formats the last-sync timestamp when set', (tester) async {
@@ -144,7 +235,7 @@ void main() {
 
     testWidgets('shows the blocked-connection hint when stalled without an error', (tester) async {
       await tester.pumpWidget(
-        _wrap(SyncStatusDialog(buildSyncStatus(connecting: true), stalled: true)),
+        _wrap(const SyncStatusDialog(), status: buildSyncStatus(connecting: true), stalled: true),
       );
       await tester.pumpAndSettle();
 
@@ -162,10 +253,9 @@ void main() {
     testWidgets('prefers the real error over the stalled hint', (tester) async {
       await tester.pumpWidget(
         _wrap(
-          SyncStatusDialog(
-            buildSyncStatus(connecting: true, downloadError: Exception('boom')),
-            stalled: true,
-          ),
+          const SyncStatusDialog(),
+          status: buildSyncStatus(connecting: true, downloadError: Exception('boom')),
+          stalled: true,
         ),
       );
       await tester.pumpAndSettle();
@@ -178,10 +268,8 @@ void main() {
       var reconnected = false;
       await tester.pumpWidget(
         _wrap(
-          SyncStatusDialog(
-            buildSyncStatus(connected: true, downloadError: Exception('boom')),
-            onReconnect: () => reconnected = true,
-          ),
+          SyncStatusDialog(onReconnect: () => reconnected = true),
+          status: buildSyncStatus(connected: true, downloadError: Exception('boom')),
         ),
       );
       await tester.pumpAndSettle();
@@ -193,7 +281,7 @@ void main() {
 
     testWidgets('shows the reconnect action even while the sync looks healthy', (tester) async {
       await tester.pumpWidget(
-        _wrap(SyncStatusDialog(buildSyncStatus(connected: true), onReconnect: () {})),
+        _wrap(SyncStatusDialog(onReconnect: () {}), status: buildSyncStatus(connected: true)),
       );
       await tester.pumpAndSettle();
 
