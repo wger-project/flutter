@@ -161,8 +161,10 @@ const GITHUB_ISSUES_URL = '$GITHUB_REPO_URL/issues/new/choose';
 const GITHUB_ISSUES_BUG_URL = '$GITHUB_REPO_URL/issues/new?template=1_bug.yml';
 const GITHUB_SPONSORS_URL = 'https://github.com/sponsors/wger-project';
 
-/// Maximum length for a pre-filled GitHub issue URL
-const GITHUB_ISSUES_MAX_URL_LENGTH = 8000;
+/// Maximum length for a pre-filled GitHub issue URL. GitHub starts answering
+/// issues/new with an error page at roughly 7050 characters (measured 2026-07),
+/// so stay well below that.
+const GITHUB_ISSUES_MAX_URL_LENGTH = 6500;
 const DISCORD_URL = 'https://discord.gg/rPWFv6W';
 const MASTODON_URL = 'https://fosstodon.org/@wger';
 const READTHEDOCS_URL = 'https://wger.readthedocs.io';

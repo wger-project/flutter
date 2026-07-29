@@ -192,6 +192,15 @@ void connectPowerSync(PowerSyncDatabase db, String baseUrl, http.Client client) 
   );
 }
 
+/// Number of local changes still waiting in the upload queue. Emits again
+/// whenever the queue changes, so consumers can show a live count.
+final pendingUploadCountProvider = StreamProvider.autoDispose<int>((ref) async* {
+  final db = await ref.watch(powerSyncInstanceProvider.future);
+  yield* db
+      .watch('SELECT count(*) AS count FROM ps_crud', triggerOnTables: ['ps_crud'])
+      .map((rows) => rows.first['count'] as int);
+});
+
 final _syncStatusInternal = StreamProvider<SyncStatus?>((ref) {
   return Stream.fromFuture(
     ref.watch(powerSyncInstanceProvider.future),

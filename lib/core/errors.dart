@@ -67,40 +67,61 @@ bool isNetworkError(Object e) {
 
 /// Builds the URL that opens a pre-filled GitHub bug report.
 ///
-/// The error details are passed to GitHub as query parameters and since
-/// GitHub rejects URLs longer than [GITHUB_ISSUES_MAX_URL_LENGTH], when
-/// the report would exceed that limit, the oldest log entries are pruned
-/// until the URL fits.
+/// All error-related parameters are optional so user-initiated reports (no
+/// crash, just logs and diagnostics) render without empty error sections.
+/// The details are passed to GitHub as query parameters and since GitHub
+/// rejects URLs longer than [GITHUB_ISSUES_MAX_URL_LENGTH], an oversized
+/// report first drops the oldest log entries and then, if still too long,
+/// trims the stack trace from the bottom until the URL fits.
 String buildGithubIssueUrl({
-  required String issueTitle,
-  required String issueErrorMessage,
-  required String stackTrace,
   required List<String> applicationLogs,
+  String? issueTitle,
+  String? issueErrorMessage,
+  String? stackTrace,
+  String? syncDiagnostics,
 }) {
-  String composeUrl(List<String> logs) {
+  final descriptionPrompt = issueErrorMessage != null
+      ? '[Please describe what you were doing when the error occurred.]'
+      : '[Please describe the problem you are seeing.]';
+
+  String composeUrl(List<String> logs, String? trace) {
     final logText = logs.isEmpty ? '-- No logs available --' : logs.join('\n');
-    final description =
-        '## Description\n\n'
-        '[Please describe what you were doing when the error occurred.]\n\n'
-        '## Error details\n\n'
-        'Error title: $issueTitle\n'
-        'Error message: $issueErrorMessage\n'
-        'Stack trace:\n```\n$stackTrace\n```\n\n'
-        'App logs (last ${logs.length} entries):\n```\n$logText\n```';
+    final errorDetails = issueErrorMessage == null
+        ? null
+        : '## Error details\n\n'
+              '${issueTitle != null ? 'Error title: $issueTitle\n' : ''}'
+              'Error message: $issueErrorMessage'
+              '${trace != null ? '\nStack trace:\n```\n$trace\n```' : ''}';
+    final sections = [
+      '## Description\n\n$descriptionPrompt',
+      ?errorDetails,
+      if (syncDiagnostics != null) 'Sync status:\n```\n$syncDiagnostics\n```',
+      'App logs (last ${logs.length} entries):\n```\n$logText\n```',
+    ];
+    final description = sections.join('\n\n');
     return '$GITHUB_ISSUES_BUG_URL'
-        '&title=${Uri.encodeComponent(issueTitle)}'
+        '${issueTitle != null ? '&title=${Uri.encodeComponent(issueTitle)}' : ''}'
         '&description=${Uri.encodeComponent(description)}';
   }
 
-  // The logs come newest-first, so the oldest entry is the last one. Drop it
-  // and retry until the URL fits within the limit.
+  // The logs come newest-first, so the oldest entry is the last one. Once
+  // all logs are gone, drop stack frames starting from the outermost one;
+  // the top of the trace is where the error actually happened.
   var logs = applicationLogs;
+  var trace = stackTrace;
   while (true) {
-    final url = composeUrl(logs);
-    if (url.length <= GITHUB_ISSUES_MAX_URL_LENGTH || logs.isEmpty) {
+    final url = composeUrl(logs, trace);
+    if (url.length <= GITHUB_ISSUES_MAX_URL_LENGTH) {
       return url;
     }
-    logs = logs.sublist(0, logs.length - 1);
+    if (logs.isNotEmpty) {
+      logs = logs.sublist(0, logs.length - 1);
+    } else if (trace != null && trace.contains('\n')) {
+      trace = trace.substring(0, trace.lastIndexOf('\n'));
+    } else {
+      // Nothing left to trim
+      return url;
+    }
   }
 }
 
