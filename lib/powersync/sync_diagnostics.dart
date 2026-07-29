@@ -125,8 +125,8 @@ Future<String?> collectSyncDiagnostics({String? serverUrl}) async {
       pendingUploads: queue.count,
       server: serverCategory(serverUrl),
     );
-  } catch (e) {
-    _logger.warning('Could not collect sync diagnostics: $e');
+  } catch (e, s) {
+    _logger.warning('Could not collect sync diagnostics', e, s);
     return null;
   }
 }

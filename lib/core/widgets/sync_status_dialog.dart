@@ -230,8 +230,8 @@ class SyncStatusDialog extends ConsumerWidget {
                 );
                 try {
                   await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
-                } catch (e) {
-                  _logger.warning('Error opening issue tracker: $e');
+                } catch (e, s) {
+                  _logger.warning('Error opening issue tracker', e, s);
                 }
               },
               child: const Text('Report issue'),
