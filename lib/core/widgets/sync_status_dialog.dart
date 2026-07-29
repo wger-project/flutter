@@ -100,7 +100,11 @@ class SyncStatusDialog extends StatelessWidget {
   /// case, so the dialog adds a hint about likely network-side blockers.
   final bool stalled;
 
-  const SyncStatusDialog(this._status, {this.stalled = false, super.key});
+  /// Drops the current sync connection and opens a fresh one. When null,
+  /// the reconnect action is not shown.
+  final VoidCallback? onReconnect;
+
+  const SyncStatusDialog(this._status, {this.stalled = false, this.onReconnect, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -197,6 +201,18 @@ class SyncStatusDialog extends StatelessWidget {
               navigator.pushNamed(LogOverviewPage.routeName);
             },
             child: Text(i18n.applicationLogs),
+          ),
+        // A stuck stream (firewall, VPN, flaky DNS) often recovers on a
+        // fresh connection and can look healthy here while hanging, so the
+        // action is not gated on an error. Absent only while offline, where
+        // reconnecting would just spin against an unreachable backend.
+        if (onReconnect != null)
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              onReconnect!();
+            },
+            child: Text(i18n.syncStatusReconnect),
           ),
         TextButton(
           onPressed: () => Navigator.of(context).pop(),

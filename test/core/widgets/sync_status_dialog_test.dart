@@ -174,6 +174,38 @@ void main() {
       expect(find.text(i18n.syncStatusError), findsOneWidget);
     });
 
+    testWidgets('shows the reconnect action on error and fires the callback', (tester) async {
+      var reconnected = false;
+      await tester.pumpWidget(
+        _wrap(
+          SyncStatusDialog(
+            buildSyncStatus(connected: true, downloadError: Exception('boom')),
+            onReconnect: () => reconnected = true,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text(i18n.syncStatusReconnect));
+      await tester.pumpAndSettle();
+      expect(reconnected, isTrue);
+    });
+
+    testWidgets('shows the reconnect action even while the sync looks healthy', (tester) async {
+      await tester.pumpWidget(
+        _wrap(SyncStatusDialog(buildSyncStatus(connected: true), onReconnect: () {})),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text(i18n.syncStatusReconnect), findsOneWidget);
+    });
+
+    testWidgets('omits the reconnect action without a callback', (tester) async {
+      await _pumpDialog(tester, buildSyncStatus(connected: true, downloadError: Exception('boom')));
+
+      expect(find.text(i18n.syncStatusReconnect), findsNothing);
+    });
+
     testWidgets('renders the expander with the raw error message when present', (tester) async {
       await _pumpDialog(
         tester,

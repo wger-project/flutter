@@ -19,12 +19,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/core/form_screen.dart';
+import 'package:wger/core/network/auth_http_client.dart';
 import 'package:wger/core/network/auth_notifier.dart';
 import 'package:wger/core/network/network_provider.dart';
+import 'package:wger/core/network/wger_base.dart';
 import 'package:wger/core/settings_dashboard_widgets_screen.dart';
 import 'package:wger/core/widgets/about.dart';
 import 'package:wger/core/widgets/sync_status_dialog.dart';
-import 'package:wger/database/powersync/powersync.dart' show syncStatus, syncWatchdogProvider;
+import 'package:wger/database/powersync/powersync.dart'
+    show builtPowerSyncInstance, connectPowerSync, syncStatus, syncWatchdogProvider;
 import 'package:wger/features/account/providers/account_notifier.dart';
 import 'package:wger/features/account/widgets/forms.dart';
 import 'package:wger/features/account/widgets/settings.dart';
@@ -53,10 +56,23 @@ class MainAppBar extends ConsumerWidget implements PreferredSizeWidget {
           icon: Icon(status.icon),
           onPressed: () => showDialog<void>(
             context: context,
-            // Like syncState, the stalled flag is a snapshot taken when the dialog opens
+            // Like syncState, the stalled and offline flags are snapshots
+            // taken when the dialog opens. No reconnect action while offline:
+            // the app deliberately disconnects there (see powerSyncInstance)
             builder: (_) => SyncStatusDialog(
               syncState,
               stalled: ref.read(syncWatchdogProvider).stalled.value,
+              onReconnect: !ref.read(networkStatusProvider)
+                  ? null
+                  : () {
+                      final db = builtPowerSyncInstance;
+                      final serverUrl = ref.read(wgerBaseProvider).serverUrl;
+                      if (db == null || serverUrl == null) {
+                        return;
+                      }
+                      ref.read(syncWatchdogProvider).reset();
+                      connectPowerSync(db, serverUrl, ref.read(authenticatedHttpClientProvider));
+                    },
             ),
           ),
         ),
