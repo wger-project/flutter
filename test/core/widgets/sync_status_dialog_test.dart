@@ -288,6 +288,22 @@ void main() {
       expect(find.text(i18n.syncStatusReconnect), findsOneWidget);
     });
 
+    testWidgets('offers the report action on error and when stalled, not while healthy', (
+      tester,
+    ) async {
+      await _pumpDialog(tester, buildSyncStatus(connected: true));
+      expect(find.text('Report issue'), findsNothing);
+
+      await _pumpDialog(tester, buildSyncStatus(connected: true, downloadError: Exception('boom')));
+      expect(find.text('Report issue'), findsOneWidget);
+
+      await tester.pumpWidget(
+        _wrap(const SyncStatusDialog(), status: buildSyncStatus(connecting: true), stalled: true),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Report issue'), findsOneWidget);
+    });
+
     testWidgets('omits the reconnect action without a callback', (tester) async {
       await _pumpDialog(tester, buildSyncStatus(connected: true, downloadError: Exception('boom')));
 

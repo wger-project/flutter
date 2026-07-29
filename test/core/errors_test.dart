@@ -147,6 +147,48 @@ void main() {
       expect(description, contains('log line 1'));
     });
 
+    test('Includes the sync status section when diagnostics are passed', () {
+      final url = buildGithubIssueUrl(
+        issueTitle: 'Sync error',
+        issueErrorMessage: 'boom',
+        applicationLogs: ['log line'],
+        syncDiagnostics: 'connected: false\npending uploads: 3',
+      );
+
+      final description = Uri.parse(url).queryParameters['description']!;
+      expect(description, contains('Sync status:'));
+      expect(description, contains('pending uploads: 3'));
+      // No stack trace was passed, so the section is omitted entirely
+      expect(description, isNot(contains('Stack trace:')));
+    });
+
+    test('Keeps the sync status section and drops logs instead', () {
+      final url = buildGithubIssueUrl(
+        issueTitle: 'Sync error',
+        issueErrorMessage: 'boom',
+        applicationLogs: List.generate(3000, (i) => 'log entry number $i'),
+        syncDiagnostics: 'connected: false\npending uploads: 3',
+      );
+
+      expect(url.length, lessThanOrEqualTo(GITHUB_ISSUES_MAX_URL_LENGTH));
+      final description = Uri.parse(url).queryParameters['description']!;
+      expect(description, contains('pending uploads: 3'));
+      expect(description, isNot(contains('log entry number 2999')));
+    });
+
+    test('Omits the sync status section without diagnostics', () {
+      final url = buildGithubIssueUrl(
+        issueTitle: 'An error occurred',
+        issueErrorMessage: 'boom',
+        stackTrace: 'trace',
+        applicationLogs: ['log line'],
+      );
+
+      final description = Uri.parse(url).queryParameters['description']!;
+      expect(description, isNot(contains('Sync status:')));
+      expect(description, contains('Stack trace:'));
+    });
+
     test('Drops the oldest log entries, keeps the newest', () {
       // Logs come newest-first, so index 0 is the most recent entry.
       final logs = List.generate(3000, (i) => 'log entry $i');

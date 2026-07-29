@@ -18,53 +18,19 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:powersync/powersync.dart'
-    show CredentialsException, PowerSyncProtocolException, SyncResponseException, SyncStatus;
+import 'package:logging/logging.dart';
+import 'package:powersync/powersync.dart' show SyncStatus;
+import 'package:url_launcher/url_launcher.dart';
+import 'package:wger/core/errors.dart' show buildGithubIssueUrl;
 import 'package:wger/core/formatting/formatting.dart';
+import 'package:wger/core/logs.dart';
 import 'package:wger/core/widgets/log_overview.dart' show LogOverviewPage;
 import 'package:wger/database/powersync/powersync.dart'
     show pendingUploadCountProvider, syncStatus, syncWatchdogProvider;
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/powersync/connector.dart' show RetryableUploadException;
+import 'package:wger/powersync/sync_diagnostics.dart';
 
-/// Maps an HTTP status code to a short English category label.
-String _categoriseHttpStatus(int statusCode) {
-  if (statusCode == 401 || statusCode == 403) {
-    return 'Authentication error';
-  }
-  if (statusCode >= 500) {
-    return 'Server error';
-  }
-  return 'HTTP $statusCode';
-}
-
-/// Classifies a sync error into a short English category label
-String? _categoriseSyncError(Object error) {
-  if (error is CredentialsException) {
-    return 'Authentication error';
-  }
-
-  if (error is PowerSyncProtocolException) {
-    return 'Protocol error';
-  }
-
-  if (error is SyncResponseException) {
-    return _categoriseHttpStatus(error.statusCode);
-  }
-  if (error is RetryableUploadException) {
-    return _categoriseHttpStatus(error.statusCode);
-  }
-
-  final typeName = error.runtimeType.toString();
-  if (typeName.endsWith('SocketException') ||
-      typeName == 'WebSocketChannelException' ||
-      typeName == 'ClientException' ||
-      typeName == 'HttpException') {
-    return 'Connection error';
-  }
-
-  return null;
-}
+final _logger = Logger('SyncStatusDialog');
 
 ({IconData icon, String label}) syncStatusIconAndLabel(
   SyncStatus status,
@@ -117,7 +83,7 @@ class SyncStatusDialog extends ConsumerWidget {
     final lastSynced = syncState.lastSyncedAt;
     final errorCategory = syncState.anyError == null
         ? null
-        : _categoriseSyncError(syncState.anyError!);
+        : categoriseSyncError(syncState.anyError!);
 
     // stalled: the sync stream keeps reconnecting without ever receiving
     // data (see SyncStreamWatchdog). There is no error to show in that
@@ -153,6 +119,18 @@ class SyncStatusDialog extends ConsumerWidget {
                 ),
               ],
             ),
+
+            // Stalled or errored sync
+            if (stalled && syncState.anyError == null) ...[
+              const SizedBox(height: 8),
+              Text(
+                i18n.syncStatusStalledHint,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+
             // Progress through the running download, so a long initial sync
             // is visibly moving instead of sitting on a static label.
             if (syncState.downloadProgress case final progress?) ...[
@@ -161,15 +139,6 @@ class SyncStatusDialog extends ConsumerWidget {
               const SizedBox(height: 4),
               Text(
                 '${progress.downloadedOperations} / ${progress.totalOperations}',
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
-              ),
-            ],
-            if (stalled && syncState.anyError == null) ...[
-              const SizedBox(height: 8),
-              Text(
-                i18n.syncStatusStalledHint,
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: theme.colorScheme.onSurfaceVariant,
                 ),
@@ -205,7 +174,6 @@ class SyncStatusDialog extends ConsumerWidget {
 
             // Raw error in an expandable section. Only shown when an error
             // actually exists; otherwise we don't render the tile at all,
-            // so the dialog stays compact in the happy case.
             if (syncState.anyError != null) ...[
               const SizedBox(height: 8),
               Theme(
@@ -241,6 +209,32 @@ class SyncStatusDialog extends ConsumerWidget {
                 navigator.pushNamed(LogOverviewPage.routeName);
               },
               child: Text(i18n.applicationLogs),
+            ),
+          // Pre-filled bug report including the sync snapshot. Sync problems
+          // usually never raise the fatal error dialog, so this is their
+          // report path.
+          if (stalled || syncState.anyError != null)
+            TextButton(
+              onPressed: () async {
+                final url = buildGithubIssueUrl(
+                  issueTitle: 'Sync error',
+                  issueErrorMessage:
+                      syncState.anyError?.toString() ??
+                      'Sync stream stalled (connects but receives no data)',
+                  applicationLogs: InMemoryLogStore().getFormattedLogs(),
+                  syncDiagnostics: formatSyncDiagnostics(
+                    syncState,
+                    pendingUploads: pendingUploads,
+                    server: serverCategory(serverUrl),
+                  ),
+                );
+                try {
+                  await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+                } catch (e) {
+                  _logger.warning('Error opening issue tracker: $e');
+                }
+              },
+              child: const Text('Report issue'),
             ),
           // A stuck stream (firewall, VPN, flaky DNS) often recovers on a
           // fresh connection and can look healthy here while hanging, so the

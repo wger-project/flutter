@@ -74,8 +74,9 @@ bool isNetworkError(Object e) {
 String buildGithubIssueUrl({
   required String issueTitle,
   required String issueErrorMessage,
-  required String stackTrace,
   required List<String> applicationLogs,
+  String? stackTrace,
+  String? syncDiagnostics,
 }) {
   String composeUrl(List<String> logs) {
     final logText = logs.isEmpty ? '-- No logs available --' : logs.join('\n');
@@ -85,7 +86,8 @@ String buildGithubIssueUrl({
         '## Error details\n\n'
         'Error title: $issueTitle\n'
         'Error message: $issueErrorMessage\n'
-        'Stack trace:\n```\n$stackTrace\n```\n\n'
+        '${stackTrace != null ? 'Stack trace:\n```\n$stackTrace\n```\n\n' : ''}'
+        '${syncDiagnostics != null ? 'Sync status:\n```\n$syncDiagnostics\n```\n\n' : ''}'
         'App logs (last ${logs.length} entries):\n```\n$logText\n```';
     return '$GITHUB_ISSUES_BUG_URL'
         '&title=${Uri.encodeComponent(issueTitle)}'
