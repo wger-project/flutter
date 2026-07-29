@@ -147,6 +147,21 @@ void main() {
       expect(description, contains('log line 1'));
     });
 
+    test('Builds a user-initiated report without error sections', () {
+      final url = buildGithubIssueUrl(
+        applicationLogs: ['log line'],
+        syncDiagnostics: 'connected: true',
+      );
+
+      expect(url, startsWith(GITHUB_ISSUES_BUG_URL));
+      expect(url, isNot(contains('&title=')));
+      final description = Uri.parse(url).queryParameters['description']!;
+      expect(description, contains('[Please describe the problem you are seeing.]'));
+      expect(description, isNot(contains('Error details')));
+      expect(description, contains('Sync status:'));
+      expect(description, contains('log line'));
+    });
+
     test('Includes the sync status section when diagnostics are passed', () {
       final url = buildGithubIssueUrl(
         issueTitle: 'Sync error',
@@ -206,7 +221,7 @@ void main() {
       expect(description, isNot(contains('log entry 2999'))); // oldest dropped
     });
 
-    test('Keeps the full stack trace and drops logs instead', () {
+    test('Drops logs first, then trims the stack trace from the bottom', () {
       final longTrace = List.generate(
         80,
         (i) => '#$i SomeClass.someMethod (package:wger/some/file.dart:$i:11)',
@@ -221,9 +236,11 @@ void main() {
 
       expect(url.length, lessThanOrEqualTo(GITHUB_ISSUES_MAX_URL_LENGTH));
       final description = Uri.parse(url).queryParameters['description']!;
-      // The stack trace is never trimmed: first and last frame survive.
+      // The trace alone exceeds the limit here, so the logs are gone and
+      // the outermost frames were dropped; the top of the trace survives.
       expect(description, contains('#0 SomeClass.someMethod'));
-      expect(description, contains('#79 SomeClass.someMethod'));
+      expect(description, isNot(contains('#79 SomeClass.someMethod')));
+      expect(description, isNot(contains('log entry number')));
     });
   });
 
