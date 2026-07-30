@@ -56,6 +56,13 @@ enum MetricType {
     MetricType.steps || MetricType.distance || MetricType.energy || MetricType.sleep => true,
     _ => false,
   };
+
+  /// `true` for metric types that are reserved for the official categories
+  /// the server manages: users cannot create categories of these types.
+  bool get isOfficial => switch (this) {
+    MetricType.bodyWeight => true,
+    _ => false,
+  };
 }
 
 extension MeasurementMetricTypeL10n on MetricType {

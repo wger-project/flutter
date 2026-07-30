@@ -96,11 +96,12 @@ class _MeasurementCategoryFormState extends ConsumerState<MeasurementCategoryFor
             },
           ),
 
-          // metricType
+          // metricType. Official types are reserved for the categories the server manages
           DropdownButtonFormField(
             initialValue: _draft.metricType,
             decoration: InputDecoration(labelText: AppLocalizations.of(context).metricType),
             items: MetricType.values
+                .where((t) => !t.isOfficial || t == _draft.metricType)
                 .map((t) => DropdownMenuItem(value: t, child: Text(t.localized(context))))
                 .toList(),
             onChanged: (value) {

@@ -88,7 +88,9 @@ void main() {
       expect(find.byType(MeasurementCategoryForm), findsOneWidget);
     });
 
-    testWidgets('metricType dropdown renders all MetricType values', (tester) async {
+    testWidgets('metricType dropdown offers all MetricType values except body weight', (
+      tester,
+    ) async {
       await tester.pumpWidget(wrap(const MeasurementCategoryForm()));
       await tester.pumpAndSettle();
 
@@ -97,10 +99,32 @@ void main() {
       await tester.pumpAndSettle();
 
       // The initialValue stays visible on the form behind the opened menu
-      // overlay, which shows every MetricType option once.
+      // overlay, which shows every offered MetricType option once. Body
+      // weight is reserved for the official category and not offered.
       expect(
         find.byType(DropdownMenuItem<MetricType>),
-        findsNWidgets(MetricType.values.length + 1),
+        findsNWidgets(MetricType.values.length),
+      );
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is DropdownMenuItem<MetricType> && w.value == MetricType.bodyWeight,
+        ),
+        findsNothing,
+      );
+    });
+
+    testWidgets('editing a category with the body weight type keeps its value', (tester) async {
+      final lookalike = getMeasurementCategories()[1].copyWith(metricType: MetricType.bodyWeight);
+
+      await tester.pumpWidget(wrap(MeasurementCategoryForm(lookalike)));
+      await tester.pumpAndSettle();
+
+      // The dropdown must contain the pre-existing value or the form crashes
+      expect(
+        find.byWidgetPredicate(
+          (w) => w is DropdownMenuItem<MetricType> && w.value == MetricType.bodyWeight,
+        ),
+        findsOneWidget,
       );
     });
 
