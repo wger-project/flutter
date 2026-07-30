@@ -17,8 +17,8 @@ mixin _$AppSettings {
  ThemeMode get themeMode; List<DashboardItem> get dashboardItems;/// Locale override. Null means the app follows the system locale.
  Locale? get userLocale;/// When true, a manual logout keeps the local database on disk instead
 /// of wiping it, so the same user signing back in resumes incrementally.
- bool get keepDataOnLogout;/// When true, TLS certificate validation is disabled so the app can
-/// connect to self-hosted instances using a self-signed certificate.
+ bool get keepDataOnLogout;/// When true, an invalid TLS certificate is accepted from the self-hosted
+/// server the app is configured for. Never applies to the official servers.
  bool get allowSelfSignedCerts;
 /// Create a copy of AppSettings
 /// with the given fields replaced by the non-null parameter values.
@@ -225,8 +225,8 @@ class _AppSettings implements AppSettings {
 /// When true, a manual logout keeps the local database on disk instead
 /// of wiping it, so the same user signing back in resumes incrementally.
 @override@JsonKey() final  bool keepDataOnLogout;
-/// When true, TLS certificate validation is disabled so the app can
-/// connect to self-hosted instances using a self-signed certificate.
+/// When true, an invalid TLS certificate is accepted from the self-hosted
+/// server the app is configured for. Never applies to the official servers.
 @override@JsonKey() final  bool allowSelfSignedCerts;
 
 /// Create a copy of AppSettings

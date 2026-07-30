@@ -79,10 +79,10 @@ const PREFS_DB_OWNER_USER_ID = 'dbOwnerUserId';
 const PREFS_KEEP_DATA_ON_LOGOUT = 'keepDataOnLogout';
 const KEEP_DATA_ON_LOGOUT_DEFAULT = true;
 
-/// User preference: trust self-signed/invalid TLS certificates so the app can
-/// connect to self-hosted instances behind a self-signed cert. Off by default
-/// since it disables certificate validation. Defaults to
-/// [ALLOW_SELF_SIGNED_CERTS_DEFAULT].
+/// User preference: accept an invalid TLS certificate from the configured
+/// self-hosted server, so the app can reach instances behind a self-signed
+/// cert. Off by default, and never applies to the official servers. Defaults
+/// to [ALLOW_SELF_SIGNED_CERTS_DEFAULT].
 const PREFS_ALLOW_SELF_SIGNED_CERTS = 'allowSelfSignedCerts';
 const ALLOW_SELF_SIGNED_CERTS_DEFAULT = false;
 

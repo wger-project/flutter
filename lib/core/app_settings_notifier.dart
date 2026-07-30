@@ -84,8 +84,8 @@ sealed class AppSettings with _$AppSettings {
     /// of wiping it, so the same user signing back in resumes incrementally.
     @Default(KEEP_DATA_ON_LOGOUT_DEFAULT) bool keepDataOnLogout,
 
-    /// When true, TLS certificate validation is disabled so the app can
-    /// connect to self-hosted instances using a self-signed certificate.
+    /// When true, an invalid TLS certificate is accepted from the self-hosted
+    /// server the app is configured for. Never applies to the official servers.
     @Default(ALLOW_SELF_SIGNED_CERTS_DEFAULT) bool allowSelfSignedCerts,
   }) = _AppSettings;
 }
