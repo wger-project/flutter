@@ -178,6 +178,13 @@ void main() {
       final bodyFat = entries.firstWhere((e) => e.externalId == 'bf-1');
       expect(bodyFat.value, closeTo(20, 0.001)); // fraction -> percent
       expect(bodyFat.source, 'apple');
+      // No unit key (category unit applies), but the conversion provenance
+      // keeps the platform's original value
+      expect(bodyFat.extraData, {
+        'recording_method': 'unknown',
+        'record_type': 'BODY_FAT_PERCENTAGE',
+        'source_value': 0.2,
+      });
 
       final height = entries.firstWhere((e) => e.externalId == 'h-1');
       expect(height.value, 180.3); // meters -> cm, rounded to two decimals
@@ -264,7 +271,69 @@ void main() {
       final entry =
           verify(measurements.addLocalDrift(captureAny)).captured.single as MeasurementEntry;
       expect(entry.categoryId, 'cat-official');
+      // Stored unconverted, with the unit and the recording provenance stamped
       expect(entry.value, 80.5);
+      expect(entry.extraData, {
+        'unit': 'kg',
+        'recording_method': 'unknown',
+        'record_type': 'WEIGHT',
+      });
+    });
+
+    test('converts pound readings to kg and keeps the original', () async {
+      final official = MeasurementCategory(
+        id: 'cat-official',
+        name: 'Weight',
+        unit: 'kg',
+        metricType: MetricType.bodyWeight,
+        isOfficial: true,
+      );
+      when(measurements.getAllOnce()).thenAnswer((_) async => [official]);
+      stubReadings([
+        HealthReading(
+          type: HealthDataType.WEIGHT,
+          value: 177.0,
+          unit: HealthDataUnit.POUND,
+          date: DateTime(2026, 1, 1),
+          externalId: 'w-lb',
+          recordingMethod: RecordingMethod.manual,
+          sourceName: 'Withings Body+',
+        ),
+      ]);
+
+      await createNotifier().syncOnAppOpen();
+
+      final entry =
+          verify(measurements.addLocalDrift(captureAny)).captured.single as MeasurementEntry;
+      // 177 lb * 0.45359237 = 80.29 kg
+      expect(entry.value, 80.29);
+      expect(entry.extraData, {
+        'unit': 'kg',
+        'recording_method': 'manual',
+        'record_type': 'WEIGHT',
+        'source_name': 'Withings Body+',
+        'source_value': 177.0,
+        'source_unit': 'lb',
+      });
+    });
+
+    test('duration records keep their interval end as date_to', () async {
+      when(measurements.getAllOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
+      stubReadings([
+        HealthReading(
+          type: HealthDataType.HEIGHT,
+          value: 180,
+          date: DateTime.utc(2026, 1, 1, 8),
+          dateTo: DateTime.utc(2026, 1, 1, 9),
+          externalId: 'h-interval',
+        ),
+      ]);
+
+      await createNotifier().syncOnAppOpen();
+
+      final entry =
+          verify(measurements.addLocalDrift(captureAny)).captured.single as MeasurementEntry;
+      expect(entry.extraData?['date_to'], '2026-01-01T09:00:00.000Z');
     });
 
     test('skips weight while the official category has not been synced', () async {

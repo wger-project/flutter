@@ -23,6 +23,7 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/core/form_screen.dart';
 import 'package:wger/features/account/providers/user_profile_repository.dart';
+import 'package:wger/features/measurements/models/measurement_entry.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
 import 'package:wger/features/measurements/widgets/charts.dart';
 import 'package:wger/features/nutrition/providers/ingredient_repository.dart';
@@ -147,6 +148,51 @@ void main() {
     await tester.tap(find.byType(FloatingActionButton));
     await tester.pumpAndSettle();
     expect(find.byType(WeightForm), findsOneWidget);
+  });
+
+  testWidgets('Converts mixed-unit entries to the profile unit', (WidgetTester tester) async {
+    // 176.4 lb convert to 80.01 kg for the metric profile; the kg entry stays
+    when(mockMeasurementRepository.watchAll()).thenAnswer(
+      (_) => Stream.value([
+        getBodyWeightCategory([testWeightEntryLb, testWeightEntry1]),
+      ]),
+    );
+
+    await tester.pumpWidget(createWeightScreen());
+    await tester.pumpAndSettle();
+
+    // The converted value can also appear in the chart labels, so only the
+    // absence of the raw lb value is asserted strictly
+    expect(find.text('80.01 kg'), findsWidgets);
+    expect(find.text('80 kg'), findsWidgets);
+    expect(find.text('176.4 lb'), findsNothing);
+    expect(find.textContaining('176.4'), findsNothing);
+  });
+
+  testWidgets('Imported entries show a badge instead of the edit menu', (
+    WidgetTester tester,
+  ) async {
+    final imported = MeasurementEntry(
+      id: 'imp',
+      categoryId: testBodyWeightCategoryId,
+      value: 80.5,
+      date: DateTime.utc(2021, 02, 01, 9, 0),
+      notes: '',
+      source: 'apple',
+      externalId: 'w-1',
+    );
+    when(mockMeasurementRepository.watchAll()).thenAnswer(
+      (_) => Stream.value([
+        getBodyWeightCategory([imported, testWeightEntry1]),
+      ]),
+    );
+
+    await tester.pumpWidget(createWeightScreen());
+    await tester.pumpAndSettle();
+
+    // Only the manual entry has the menu, the imported one carries the badge
+    expect(find.byTooltip('Show menu'), findsOneWidget);
+    expect(find.byIcon(Icons.monitor_heart_outlined), findsOneWidget);
   });
 
   testWidgets('No FAB while the official category has not been synced', (

@@ -49,7 +49,7 @@ class WeightScreen extends ConsumerWidget {
                   FormScreen.routeName,
                   arguments: FormScreenArguments(
                     AppLocalizations.of(context).newEntry,
-                    WeightForm(category.id!),
+                    WeightForm(category),
                   ),
                 );
               },

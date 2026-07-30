@@ -24,7 +24,9 @@ import 'package:wger/core/date.dart';
 import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/core/json.dart';
 import 'package:wger/core/widgets/progress_indicator.dart';
+import 'package:wger/features/account/providers/user_profile_notifier.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
+import 'package:wger/features/measurements/models/unit_conversion.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/nutrition/models/nutritional_plan.dart';
 import 'package:wger/features/nutrition/providers/nutrition_notifier.dart';
@@ -76,6 +78,7 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
   /// Builds the date → events map from already-loaded provider data
   Map<String, List<Event>> _buildEvents({
     required BuildContext context,
+    required bool isMetric,
     required List<MeasurementCategory> categories,
     required List<WorkoutSession> sessions,
     required List<NutritionalPlan> plans,
@@ -86,20 +89,21 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
 
     for (final category in categories) {
       // Body weight entries live in the official category but keep their own
-      // event type (and no category-name prefix)
+      // event type (no category-name prefix) and are shown in the profile's
+      // display unit; other measurements show in the category unit
+      final isBodyWeight = category.isOfficialBodyWeight;
+      final displayUnit = isBodyWeight ? weightDisplayUnit(isMetric) : category.unit;
+
       for (final entry in category.entries) {
         final date = DateFormatLists.format(entry.date);
+        final value = numberFormat.format(
+          entry.valueIn(displayUnit, categoryUnit: category.unit),
+        );
         events.putIfAbsent(date, () => []);
         events[date]!.add(
-          category.isOfficialBodyWeight
-              ? Event(
-                  EventType.weight,
-                  '${numberFormat.format(entry.value)} ${category.unit}',
-                )
-              : Event(
-                  EventType.measurement,
-                  '${category.name}: ${numberFormat.format(entry.value)} ${category.unit}',
-                ),
+          isBodyWeight
+              ? Event(EventType.weight, '$value $displayUnit')
+              : Event(EventType.measurement, '${category.name}: $value $displayUnit'),
         );
       }
     }
@@ -188,15 +192,17 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
     final categories = ref.watch(measurementProvider).value;
     final routinesState = ref.watch(routinesRiverpodProvider).value;
     final nutritionState = ref.watch(nutritionProvider).value;
+    final profile = ref.watch(userProfileProvider).value;
 
     // Show a spinner until every source has produced at least one value. Same
     // pattern as the other dashboard widgets via [AsyncValueWidget].
-    if (categories == null || routinesState == null || nutritionState == null) {
+    if (categories == null || routinesState == null || nutritionState == null || profile == null) {
       return _shell(context, const BoxedProgressIndicator());
     }
 
     final events = _buildEvents(
       context: context,
+      isMetric: profile.isMetric,
       categories: categories,
       sessions: routinesState.sessions,
       plans: nutritionState.plans,

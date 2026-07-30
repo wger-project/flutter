@@ -24,9 +24,11 @@ import 'package:powersync/powersync.dart' as ps;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wger/core/shared_preferences.dart';
 import 'package:wger/features/health/models/health_metric.dart';
+import 'package:wger/features/health/models/health_reading.dart';
 import 'package:wger/features/health/providers/health_repository.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/measurement_entry.dart';
+import 'package:wger/features/measurements/models/unit_conversion.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
 
 part 'health_sync.freezed.dart';
@@ -159,10 +161,20 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
             continue;
           }
 
+          // Body weight is stored in kg. Should a platform report it in
+          // pounds, convert and keep the original for provenance.
+          var raw = reading.value;
+          String? sourceUnit;
+          if (metric.metricType == MetricType.bodyWeight && reading.unit == HealthDataUnit.POUND) {
+            sourceUnit = 'lb';
+            raw = convertWeight(reading.value, from: 'lb', to: 'kg');
+          }
+
+          final converted = metric.toCategoryValue(raw);
           // The server stores values as Decimal with 2 places and rejects
           // anything more precise, so round away unit-conversion float noise
           // (1.803 m * 100 = 180.29999999999998).
-          final value = (metric.toCategoryValue(reading.value) * 100).roundToDouble() / 100;
+          final value = (converted * 100).roundToDouble() / 100;
 
           await _measurements.addLocalDrift(
             MeasurementEntry(
@@ -172,6 +184,12 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
               notes: '',
               source: source,
               externalId: uuid,
+              extraData: _extraDataFor(
+                metric,
+                reading,
+                converted: sourceUnit != null || converted != reading.value,
+                sourceUnit: sourceUnit,
+              ),
             ),
           );
 
@@ -196,6 +214,34 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
       state = state.copyWith(isSyncing: false, lastSyncCount: 0);
       return 0;
     }
+  }
+
+  /// Builds an imported entry's `extra_data` from the reading's provenance.
+  ///
+  /// `unit` is the only key with server semantics (kg|lb, validated for body
+  /// weight); the rest is provenance for debugging and later duplicate
+  /// detection. Keys without a value are omitted, never written as null.
+  /// [converted] marks readings whose stored value differs from the platform
+  /// value; the original is then kept in `source_value` (and `source_unit`
+  /// when the difference is a weight-unit conversion).
+  Map<String, dynamic> _extraDataFor(
+    HealthMetric metric,
+    HealthReading reading, {
+    required bool converted,
+    String? sourceUnit,
+  }) {
+    return {
+      if (metric.metricType == MetricType.bodyWeight) 'unit': 'kg',
+      if (reading.dateTo != null) 'date_to': reading.dateTo!.toIso8601String(),
+      'recording_method': reading.recordingMethod.name,
+      'record_type': reading.type.name,
+      if (reading.sourceName != null) 'source_name': reading.sourceName,
+      if (reading.sourceId != null) 'source_id': reading.sourceId,
+      if (reading.deviceModel != null) 'device_model': reading.deviceModel,
+      if (reading.sourceDeviceId != null) 'source_device_id': reading.sourceDeviceId,
+      if (converted) 'source_value': reading.value,
+      'source_unit': ?sourceUnit,
+    };
   }
 
   /// Finds the category for [metric] (by `metric_type`, falling back to the

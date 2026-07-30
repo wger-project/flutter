@@ -53,6 +53,13 @@ class MeasurementEntry with _$MeasurementEntry {
   @override
   final String? externalId;
 
+  /// Per-entry metadata (server JSONField). The `unit` key holds the unit
+  /// [value] was entered in; without it the category unit applies. Raw values
+  /// are meaningless without their unit, so display and calculations go
+  /// through `valueIn` instead of reading [value] directly.
+  @override
+  final Map<String, dynamic>? extraData;
+
   MeasurementEntry({
     this.id,
     required this.categoryId,
@@ -61,6 +68,7 @@ class MeasurementEntry with _$MeasurementEntry {
     required this.notes,
     this.source = 'user',
     this.externalId,
+    this.extraData,
   });
 
   // Boilerplate
@@ -73,6 +81,7 @@ class MeasurementEntry with _$MeasurementEntry {
       notes: Value(notes),
       source: Value(source),
       externalId: Value(externalId),
+      extraData: Value(extraData),
     );
   }
 }

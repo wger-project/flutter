@@ -22,6 +22,7 @@ import 'package:wger/core/form_screen.dart';
 import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/core/snackbar.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
+import 'package:wger/features/measurements/models/unit_conversion.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/measurements/widgets/charts.dart';
 import 'package:wger/features/measurements/widgets/helpers.dart';
@@ -41,8 +42,15 @@ class EntriesList extends ConsumerWidget {
     final numberFormat = localizedNumberFormat(context);
     final provider = ref.read(measurementProvider.notifier);
 
+    // Values are read through the unit helper; for plain categories without
+    // per-entry units this is a pass-through to the category unit
     final entriesAll = _category.entries
-        .map((e) => MeasurementChartEntry(e.value, e.date))
+        .map(
+          (e) => MeasurementChartEntry(
+            e.valueIn(_category.unit, categoryUnit: _category.unit),
+            e.date,
+          ),
+        )
         .toList();
     final entries7dAvg = moving7dAverage(entriesAll);
 
@@ -69,44 +77,53 @@ class EntriesList extends ConsumerWidget {
 
               return Card(
                 child: ListTile(
-                  title: Text('${numberFormat.format(currentEntry.value)} ${_category.unit}'),
+                  title: Text(
+                    '${numberFormat.format(currentEntry.valueIn(_category.unit, categoryUnit: _category.unit))} ${_category.unit}',
+                  ),
                   subtitle: Text(datetimeFormat.format(currentEntry.date)),
-                  trailing: PopupMenuButton(
-                    itemBuilder: (BuildContext context) {
-                      return [
-                        PopupMenuItem(
-                          child: Text(AppLocalizations.of(context).edit),
-                          onTap: () => Navigator.pushNamed(
-                            context,
-                            FormScreen.routeName,
-                            arguments: FormScreenArguments(
-                              AppLocalizations.of(context).edit,
-                              MeasurementEntryForm(
-                                _category.id!,
-                                currentEntry,
+                  // Imported entries are read-only; changes belong in the
+                  // source app, deletes would reappear on the next import
+                  trailing: currentEntry.source != 'user'
+                      ? Tooltip(
+                          message: AppLocalizations.of(context).importedEntry,
+                          child: const Icon(Icons.monitor_heart_outlined),
+                        )
+                      : PopupMenuButton(
+                          itemBuilder: (BuildContext context) {
+                            return [
+                              PopupMenuItem(
+                                child: Text(AppLocalizations.of(context).edit),
+                                onTap: () => Navigator.pushNamed(
+                                  context,
+                                  FormScreen.routeName,
+                                  arguments: FormScreenArguments(
+                                    AppLocalizations.of(context).edit,
+                                    MeasurementEntryForm(
+                                      _category.id!,
+                                      currentEntry,
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                        ),
-                        PopupMenuItem(
-                          child: Text(AppLocalizations.of(context).delete),
-                          onTap: () async {
-                            // Delete entry from DB
-                            await provider.deleteEntry(currentEntry.id!);
+                              PopupMenuItem(
+                                child: Text(AppLocalizations.of(context).delete),
+                                onTap: () async {
+                                  // Delete entry from DB
+                                  await provider.deleteEntry(currentEntry.id!);
 
-                            // and inform the user
-                            if (context.mounted) {
-                              showSnackbar(
-                                context,
-                                AppLocalizations.of(context).successfullyDeleted,
-                                center: true,
-                              );
-                            }
+                                  // and inform the user
+                                  if (context.mounted) {
+                                    showSnackbar(
+                                      context,
+                                      AppLocalizations.of(context).successfullyDeleted,
+                                      center: true,
+                                    );
+                                  }
+                                },
+                              ),
+                            ];
                           },
                         ),
-                      ];
-                    },
-                  ),
                 ),
               );
             },

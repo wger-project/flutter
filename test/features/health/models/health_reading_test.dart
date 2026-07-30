@@ -37,13 +37,29 @@ HealthDataPoint dataPoint({String uuid = 'abc-123', HealthValue? value}) {
 
 void main() {
   group('fromDataPoint', () {
-    test('extracts the numeric value, type and start date', () {
+    test('extracts the numeric value, type, dates and provenance', () {
       final reading = HealthReading.fromDataPoint(dataPoint())!;
 
       expect(reading.type, HealthDataType.HEIGHT);
       expect(reading.value, 1.8);
       expect(reading.date, DateTime(2026, 1, 1, 8, 30));
       expect(reading.externalId, 'abc-123');
+      expect(reading.unit, HealthDataUnit.METER);
+      // dateTo equal to dateFrom marks a sample, not a duration record
+      expect(reading.dateTo, isNull);
+      expect(reading.recordingMethod, RecordingMethod.unknown);
+      expect(reading.sourceName, 'test');
+      expect(reading.sourceId, 'source');
+      expect(reading.sourceDeviceId, 'device');
+      // Not reported by the fixture, must be null rather than an empty string
+      expect(reading.deviceModel, isNull);
+    });
+
+    test('keeps the interval end for duration records', () {
+      final point = dataPoint();
+      point.dateTo = DateTime(2026, 1, 1, 9, 0);
+
+      expect(HealthReading.fromDataPoint(point)!.dateTo, DateTime(2026, 1, 1, 9, 0));
     });
 
     test('returns null for a non-numeric value', () {

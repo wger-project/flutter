@@ -132,6 +132,7 @@ void main() {
         notes: '',
         source: 'apple',
         externalId: 'platform-uuid',
+        extraData: const {'unit': 'kg'},
       );
 
       await tester.pumpWidget(wrap(MeasurementEntryForm(category.id!, imported)));
@@ -144,6 +145,7 @@ void main() {
           verify(mockRepo.updateLocalDrift(captureAny)).captured.single as MeasurementEntry;
       expect(saved.source, 'apple');
       expect(saved.externalId, 'platform-uuid');
+      expect(saved.extraData, {'unit': 'kg'});
       expect(saved.value, 30);
     });
   });

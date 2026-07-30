@@ -26,6 +26,7 @@ import 'package:wger/core/widgets/progress_indicator.dart';
 import 'package:wger/features/account/models/user_profile.dart';
 import 'package:wger/features/account/providers/user_profile_notifier.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
+import 'package:wger/features/measurements/models/unit_conversion.dart';
 import 'package:wger/features/measurements/widgets/charts.dart';
 import 'package:wger/features/measurements/widgets/helpers.dart';
 import 'package:wger/features/weight/providers/body_weight_provider.dart';
@@ -108,12 +109,21 @@ class DashboardWeightWidget extends ConsumerWidget {
       return NothingFound(
         AppLocalizations.of(context).noWeightEntries,
         AppLocalizations.of(context).newEntry,
-        WeightForm(category.id!),
+        WeightForm(category),
       );
     }
 
+    // Mixed-unit entries (kg/lb) are normalized to the profile's display unit
+    final displayUnit = weightDisplayUnit(profile.isMetric);
     final (entriesAll, entries7dAvg) = sensibleRange(
-      entriesList.map((e) => MeasurementChartEntry(e.value, e.date)).toList(),
+      entriesList
+          .map(
+            (e) => MeasurementChartEntry(
+              e.valueIn(displayUnit, categoryUnit: category.unit),
+              e.date,
+            ),
+          )
+          .toList(),
     );
 
     return Column(
@@ -158,7 +168,7 @@ class DashboardWeightWidget extends ConsumerWidget {
                           FormScreen.routeName,
                           arguments: FormScreenArguments(
                             AppLocalizations.of(context).newEntry,
-                            WeightForm(category.id!),
+                            WeightForm(category),
                           ),
                         );
                       },

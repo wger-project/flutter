@@ -1215,6 +1215,7 @@
     "healthSyncDescription": "Importa medidas corporales desde Apple Health o Health Connect",
     "healthSyncSuccess": "Se importaron {count} medidas de salud",
     "health": "Salud",
+    "importedEntry": "Esta entrada se sincronizó desde una aplicación de salud y solo se puede cambiar allí",
     "healthSyncPermissionDenied": "No se concedió el acceso a los datos de salud",
     "gymModeLogScope": "Registros anteriores",
     "gymModeLogScopeHelp": "Qué registros mostrar como referencia durante el entrenamiento",

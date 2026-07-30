@@ -316,8 +316,9 @@ class _MeasurementEntryFormState extends ConsumerState<MeasurementEntryForm> {
                   }
                   _form.currentState!.save();
 
-                  // Source and external id are not editable; keep the existing
-                  // values so edits to imported entries stay deduplicable
+                  // Source, external id and extra data are not editable; keep
+                  // the existing values so edits to imported entries stay
+                  // deduplicable and the entered unit survives
                   final entry = MeasurementEntry(
                     id: _existingId,
                     categoryId: category.id!,
@@ -326,6 +327,7 @@ class _MeasurementEntryFormState extends ConsumerState<MeasurementEntryForm> {
                     notes: _notes,
                     source: widget._entry?.source ?? 'user',
                     externalId: widget._entry?.externalId,
+                    extraData: widget._entry?.extraData,
                   );
                   if (entry.id == null) {
                     await notifier.addEntry(entry);

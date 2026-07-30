@@ -18,6 +18,7 @@
 
 import 'package:drift/drift.dart';
 import 'package:powersync/powersync.dart' as ps;
+import 'package:wger/database/converters/json_map_converter.dart';
 import 'package:wger/database/converters/measurement_metric_type_converter.dart';
 import 'package:wger/database/converters/utc_datetime_converter.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
@@ -84,6 +85,10 @@ class MeasurementEntryTable extends Table {
   /// Platform record UUID, used to deduplicate re-imports. `null` for manual
   /// entries.
   TextColumn get externalId => text().named('external_id').nullable()();
+
+  /// Per-entry metadata (server JSONField). The `unit` key holds the unit the
+  /// value was entered in; absent, the category unit applies.
+  TextColumn get extraData => text().named('extra_data').map(const JsonMapConverter()).nullable()();
 }
 
 const PowersyncMeasurementEntryTable = ps.Table(
@@ -95,6 +100,8 @@ const PowersyncMeasurementEntryTable = ps.Table(
     ps.Column.text('notes'),
     ps.Column.text('source'),
     ps.Column.text('external_id'),
+    // JSON object, synced and stored as text
+    ps.Column.text('extra_data'),
   ],
   indexes: [
     ps.Index('category_idx', [ps.IndexedColumn('category_id')]),

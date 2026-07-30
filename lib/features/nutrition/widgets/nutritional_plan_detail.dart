@@ -16,10 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:intl/intl.dart';
-import 'package:wger/features/measurements/models/measurement_entry.dart';
+import 'package:wger/features/measurements/models/unit_conversion.dart';
 import 'package:wger/features/nutrition/models/nutritional_plan.dart';
 import 'package:wger/features/nutrition/widgets/charts.dart';
 import 'package:wger/features/nutrition/widgets/macro_nutrients_table.dart';
@@ -36,10 +37,12 @@ class NutritionalPlanDetailWidget extends riverpod.ConsumerWidget {
   @override
   Widget build(BuildContext context, riverpod.WidgetRef ref) {
     final nutritionalGoals = _nutritionalPlan.nutritionalGoals;
-    final entriesList = ref.watch(bodyWeightCategoryProvider).value?.entries ?? [];
-    final MeasurementEntry? lastWeightEntry = entriesList.isNotEmpty ? entriesList.first : null;
+    final category = ref.watch(bodyWeightCategoryProvider).value;
+    final lastWeightEntry = category?.entries.firstOrNull;
+    // Goals are per kilogram, so the weight must be normalized to kg no matter
+    // which unit it was entered in
     final nutritionalGoalsGperKg = lastWeightEntry != null
-        ? nutritionalGoals / lastWeightEntry.value.toDouble()
+        ? nutritionalGoals / lastWeightEntry.valueIn('kg', categoryUnit: category!.unit)
         : null;
 
     final i18n = AppLocalizations.of(context);

@@ -23,6 +23,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/core/consts.dart';
+import 'package:wger/features/account/models/user_profile.dart';
+import 'package:wger/features/account/providers/user_profile_notifier.dart';
+import 'package:wger/features/account/providers/user_profile_repository.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/measurement_entry.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
@@ -30,22 +33,42 @@ import 'package:wger/features/weight/widgets/forms.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 import '../../../../test_data/body_weight.dart';
+import '../../../../test_data/profile.dart';
 import 'forms_test.mocks.dart';
 
-@GenerateMocks([MeasurementRepository])
+@GenerateMocks([MeasurementRepository, UserProfileRepository])
 void main() {
+  late MockMeasurementRepository mockRepo;
+  late MockUserProfileRepository mockProfileRepo;
+
+  setUp(() {
+    mockRepo = MockMeasurementRepository();
+    when(mockRepo.watchAll()).thenAnswer((_) => Stream.value(<MeasurementCategory>[]));
+    when(mockRepo.addLocalDrift(any)).thenAnswer((_) async {});
+    when(mockRepo.updateLocalDrift(any)).thenAnswer((_) async {});
+
+    mockProfileRepo = MockUserProfileRepository();
+    when(mockProfileRepo.watchDrift()).thenAnswer((_) => Stream.value(tUserProfile1));
+  });
+
   Widget createWeightForm({
     locale = 'en',
     MeasurementEntry? entry,
     List<Override> overrides = const [],
   }) {
     return ProviderScope(
-      overrides: overrides,
+      overrides: [
+        measurementRepositoryProvider.overrideWithValue(mockRepo),
+        userProfileRepositoryProvider.overrideWithValue(mockProfileRepo),
+        ...overrides,
+      ],
       child: MaterialApp(
         locale: Locale(locale),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: Scaffold(body: WeightForm(testBodyWeightCategoryId, entry)),
+        home: Scaffold(
+          body: SingleChildScrollView(child: WeightForm(getBodyWeightCategory(const []), entry)),
+        ),
       ),
     );
   }
@@ -115,16 +138,7 @@ void main() {
   });
 
   testWidgets('Saving keeps an afternoon (PM) time intact', (WidgetTester tester) async {
-    final mockRepo = MockMeasurementRepository();
-    when(mockRepo.watchAll()).thenAnswer((_) => Stream.value(<MeasurementCategory>[]));
-    when(mockRepo.updateLocalDrift(any)).thenAnswer((_) async {});
-
-    await tester.pumpWidget(
-      createWeightForm(
-        entry: testWeightEntry1,
-        overrides: [measurementRepositoryProvider.overrideWithValue(mockRepo)],
-      ),
-    );
+    await tester.pumpWidget(createWeightForm(entry: testWeightEntry1));
     await tester.pumpAndSettle();
 
     // The stored 15:30 renders as a PM time in a 12-hour locale
@@ -138,5 +152,84 @@ void main() {
     expect(saved.categoryId, testBodyWeightCategoryId);
     expect(saved.date.hour, 15);
     expect(saved.date.minute, 30);
+  });
+
+  group('units', () {
+    testWidgets('New entries default to the profile unit and stamp it on save', (
+      WidgetTester tester,
+    ) async {
+      when(
+        mockProfileRepo.watchDrift(),
+      ).thenAnswer((_) => Stream.value(UserProfile(id: 1, weightUnitStr: 'lb')));
+
+      // The form reads the profile once on creation, so it must already be
+      // loaded, as it always is when the form is reachable in the app
+      final container = ProviderContainer.test(
+        overrides: [
+          measurementRepositoryProvider.overrideWithValue(mockRepo),
+          userProfileRepositoryProvider.overrideWithValue(mockProfileRepo),
+        ],
+      );
+      container.listen(userProfileProvider, (_, _) {});
+      // pumpEventQueue relies on timers, which testWidgets' fake async only
+      // fires via the tester; run it on the real event loop instead
+      await tester.runAsync(pumpEventQueue);
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: Scaffold(
+              body: SingleChildScrollView(
+                child: WeightForm(getBodyWeightCategory(const [])),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('lb'), findsOneWidget);
+
+      await tester.enterText(find.byKey(const Key('weightInput')), '180');
+      await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
+      await tester.pumpAndSettle();
+
+      final saved = verify(mockRepo.addLocalDrift(captureAny)).captured.single as MeasurementEntry;
+      // The value is stored as entered, in the entered unit
+      expect(saved.value, 180);
+      expect(saved.extraData, {'unit': 'lb'});
+    });
+
+    testWidgets('Editing shows the stored value in its stored unit, unconverted', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(createWeightForm(entry: testWeightEntryLb));
+      await tester.pumpAndSettle();
+
+      expect(find.text('176.4'), findsOneWidget);
+      expect(find.text('lb'), findsOneWidget);
+    });
+
+    testWidgets('Switching the unit stamps the new unit on save', (WidgetTester tester) async {
+      await tester.pumpWidget(createWeightForm(entry: testWeightEntry1));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('unitInput')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('lb').last);
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
+      await tester.pumpAndSettle();
+
+      final saved =
+          verify(mockRepo.updateLocalDrift(captureAny)).captured.single as MeasurementEntry;
+      expect(saved.extraData, {'unit': 'lb'});
+      // The typed value itself is not converted, only re-interpreted
+      expect(saved.value, 80);
+    });
   });
 }

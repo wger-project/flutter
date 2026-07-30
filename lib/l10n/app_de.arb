@@ -1176,6 +1176,7 @@
     "healthSyncDescription": "Importiert Körpermesswerte aus Apple Health oder Health Connect",
     "healthSyncSuccess": "{count} Messwerte aus Health importiert",
     "health": "Gesundheit",
+    "importedEntry": "Dieser Eintrag wurde aus einer Health-App synchronisiert und kann nur dort geändert werden",
     "healthSyncPermissionDenied": "Zugriff auf die Gesundheitsdaten wurde nicht gewährt",
     "gymModeLogScope": "Frühere Protokolle",
     "gymModeLogScopeHelp": "Welche Protokolle beim Training als Referenz angezeigt werden",

@@ -24,6 +24,7 @@ import 'package:wger/core/widgets/confirm_delete_dialog.dart';
 import 'package:wger/core/widgets/text_prompt.dart';
 import 'package:wger/features/account/providers/user_profile_notifier.dart';
 import 'package:wger/features/measurements/measurements.dart';
+import 'package:wger/features/measurements/models/unit_conversion.dart';
 import 'package:wger/features/measurements/widgets/charts.dart';
 import 'package:wger/features/nutrition/providers/nutrition_notifier.dart';
 import 'package:wger/features/nutrition/screens/nutritional_plan_screen.dart';
@@ -40,9 +41,21 @@ class NutritionalPlansList extends riverpod.ConsumerWidget {
     DateTime startDate,
     DateTime? endDate,
   ) {
-    final entriesList = ref.watch(bodyWeightCategoryProvider).value?.entries ?? [];
+    final category = ref.watch(bodyWeightCategoryProvider).value;
+    final profile = ref.watch(userProfileProvider).value;
+    if (category == null || profile == null) {
+      // Not yet loaded, skip the weight-change row entirely. The widget will
+      // rebuild with the value once available.
+      return const SizedBox.shrink();
+    }
 
-    final entriesAll = entriesList.map((e) => MeasurementChartEntry(e.value, e.date)).toList();
+    // Normalize mixed-unit entries to the display unit before averaging
+    final displayUnit = weightDisplayUnit(profile.isMetric);
+    final entriesAll = category.entries
+        .map(
+          (e) => MeasurementChartEntry(e.valueIn(displayUnit, categoryUnit: category.unit), e.date),
+        )
+        .toList();
     final entries7dAvg = moving7dAverage(entriesAll).whereDateWithInterpolation(startDate, endDate);
     if (entries7dAvg.length < 2) {
       return const SizedBox.shrink();
@@ -56,13 +69,6 @@ class NutritionalPlansList extends riverpod.ConsumerWidget {
     // Format the weight change text and determine color
     final String weightChangeText;
     final Color weightChangeColor;
-    final profile = ref.watch(userProfileProvider).value;
-    if (profile == null) {
-      // Profile not yet loaded, skip the weight-change row entirely. The
-      // widget will rebuild with the value once available.
-      return const SizedBox.shrink();
-    }
-
     final unit = weightUnit(profile.isMetric, context);
 
     if (weightDifference > 0) {

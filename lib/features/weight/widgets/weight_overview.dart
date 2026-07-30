@@ -26,6 +26,7 @@ import 'package:wger/core/widgets/progress_indicator.dart';
 import 'package:wger/features/account/providers/user_profile_notifier.dart';
 import 'package:wger/features/measurements/measurements.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
+import 'package:wger/features/measurements/models/unit_conversion.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/measurements/widgets/charts.dart';
 import 'package:wger/features/measurements/widgets/helpers.dart';
@@ -67,7 +68,18 @@ class _WeightOverviewState extends riverpod.ConsumerState<WeightOverview> {
         }
 
         final entriesList = category.entries;
-        final entriesAll = entriesList.map((e) => MeasurementChartEntry(e.value, e.date)).toList();
+
+        // Entries can be stored in mixed units (kg/lb); normalize everything
+        // to the profile's display unit before charting or averaging
+        final displayUnit = weightDisplayUnit(profile.isMetric);
+        final entriesAll = entriesList
+            .map(
+              (e) => MeasurementChartEntry(
+                e.valueIn(displayUnit, categoryUnit: category.unit),
+                e.date,
+              ),
+            )
+            .toList();
         final entries7dAvg = moving7dAverage(entriesAll);
 
         // Restrict the data to the selected range. The average is computed over
@@ -151,45 +163,52 @@ class _WeightOverviewState extends riverpod.ConsumerState<WeightOverview> {
                   return Card(
                     child: ListTile(
                       title: Text(
-                        '${numberFormat.format(currentEntry.value)} ${weightUnit(profile.isMetric, context)}',
+                        '${numberFormat.format(currentEntry.valueIn(displayUnit, categoryUnit: category.unit))} ${weightUnit(profile.isMetric, context)}',
                       ),
                       subtitle: Text(
                         localizedDate(context).add_Hm().format(currentEntry.date),
                       ),
-                      trailing: PopupMenuButton(
-                        itemBuilder: (BuildContext context) {
-                          return [
-                            PopupMenuItem(
-                              child: Text(AppLocalizations.of(context).edit),
-                              onTap: () => Navigator.pushNamed(
-                                context,
-                                FormScreen.routeName,
-                                arguments: FormScreenArguments(
-                                  AppLocalizations.of(context).edit,
-                                  WeightForm(category.id!, currentEntry),
-                                ),
-                              ),
-                            ),
-                            PopupMenuItem(
-                              child: Text(AppLocalizations.of(context).delete),
-                              onTap: () async {
-                                await ref
-                                    .read(measurementProvider.notifier)
-                                    .deleteEntry(currentEntry.id!);
+                      // Imported entries are read-only; changes belong in the
+                      // source app, deletes would reappear on the next import
+                      trailing: currentEntry.source != 'user'
+                          ? Tooltip(
+                              message: AppLocalizations.of(context).importedEntry,
+                              child: const Icon(Icons.monitor_heart_outlined),
+                            )
+                          : PopupMenuButton(
+                              itemBuilder: (BuildContext context) {
+                                return [
+                                  PopupMenuItem(
+                                    child: Text(AppLocalizations.of(context).edit),
+                                    onTap: () => Navigator.pushNamed(
+                                      context,
+                                      FormScreen.routeName,
+                                      arguments: FormScreenArguments(
+                                        AppLocalizations.of(context).edit,
+                                        WeightForm(category, currentEntry),
+                                      ),
+                                    ),
+                                  ),
+                                  PopupMenuItem(
+                                    child: Text(AppLocalizations.of(context).delete),
+                                    onTap: () async {
+                                      await ref
+                                          .read(measurementProvider.notifier)
+                                          .deleteEntry(currentEntry.id!);
 
-                                // and inform the user
-                                if (context.mounted) {
-                                  showSnackbar(
-                                    context,
-                                    AppLocalizations.of(context).successfullyDeleted,
-                                    center: true,
-                                  );
-                                }
+                                      // and inform the user
+                                      if (context.mounted) {
+                                        showSnackbar(
+                                          context,
+                                          AppLocalizations.of(context).successfullyDeleted,
+                                          center: true,
+                                        );
+                                      }
+                                    },
+                                  ),
+                                ];
                               },
                             ),
-                          ];
-                        },
-                      ),
                     ),
                   );
                 },

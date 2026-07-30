@@ -1604,5 +1604,9 @@
   "health": "Health",
   "@health": {
     "description": "Section header for health-related settings"
+  },
+  "importedEntry": "This entry was synced from a health app and can only be changed there",
+  "@importedEntry": {
+    "description": "Tooltip on the badge of a measurement entry imported from Apple Health / Health Connect; such entries cannot be edited or deleted in the app"
   }
 }

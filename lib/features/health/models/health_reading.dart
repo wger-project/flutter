@@ -27,6 +27,13 @@ class HealthReading {
     required this.value,
     required this.date,
     this.externalId,
+    this.unit = HealthDataUnit.NO_UNIT,
+    this.dateTo,
+    this.recordingMethod = RecordingMethod.unknown,
+    this.sourceName,
+    this.sourceId,
+    this.deviceModel,
+    this.sourceDeviceId,
   });
 
   /// The platform type this reading belongs to (matched against
@@ -42,6 +49,28 @@ class HealthReading {
   /// Platform record UUID for deduplication; `null` when the platform gives none.
   final String? externalId;
 
+  /// Unit [value] is reported in by the platform.
+  final HealthDataUnit unit;
+
+  /// End of the reading's interval; `null` when it equals [date] (a sample
+  /// rather than a duration record).
+  final DateTime? dateTo;
+
+  /// How the platform recorded the point (manual entry, automatic, ...).
+  final RecordingMethod recordingMethod;
+
+  /// Human-readable source ("Withings Body+"); `null` when not reported.
+  final String? sourceName;
+
+  /// Bundle id of the app that wrote the point; `null` when not reported.
+  final String? sourceId;
+
+  /// Recording device ("Watch"), iOS only; `null` elsewhere.
+  final String? deviceModel;
+
+  /// Device identifier; `null` when not reported.
+  final String? sourceDeviceId;
+
   /// Builds a reading from a platform data point, or `null` for a non-numeric
   /// point (which the importer cannot store).
   static HealthReading? fromDataPoint(HealthDataPoint point) {
@@ -49,6 +78,8 @@ class HealthReading {
     if (value is! NumericHealthValue) {
       return null;
     }
+    String? nonEmpty(String? s) => (s == null || s.isEmpty) ? null : s;
+
     return HealthReading(
       type: point.type,
       value: value.numericValue.toDouble(),
@@ -57,6 +88,13 @@ class HealthReading {
       // normalizes to lowercase. Lowercase here so the dedup key stays stable
       // once the entry round-trips through the server.
       externalId: point.uuid.isEmpty ? null : point.uuid.toLowerCase(),
+      unit: point.unit,
+      dateTo: point.dateTo == point.dateFrom ? null : point.dateTo,
+      recordingMethod: point.recordingMethod,
+      sourceName: nonEmpty(point.sourceName),
+      sourceId: nonEmpty(point.sourceId),
+      deviceModel: nonEmpty(point.deviceModel),
+      sourceDeviceId: nonEmpty(point.sourceDeviceId),
     );
   }
 }

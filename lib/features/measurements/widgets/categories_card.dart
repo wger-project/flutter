@@ -20,6 +20,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:wger/core/form_screen.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
+import 'package:wger/features/measurements/models/unit_conversion.dart';
 import 'package:wger/features/measurements/screens/measurement_entries_screen.dart';
 import 'package:wger/features/measurements/widgets/helpers.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -41,7 +42,14 @@ class CategoriesCard extends StatelessWidget {
 
     // sensibleRange() operates on raw (pre-aggregation) entries
     final (entriesAll, entries7dAvg) = sensibleRange(
-      currentCategory.entries.map((e) => MeasurementChartEntry(e.value, e.date)).toList(),
+      currentCategory.entries
+          .map(
+            (e) => MeasurementChartEntry(
+              e.valueIn(currentCategory.unit, categoryUnit: currentCategory.unit),
+              e.date,
+            ),
+          )
+          .toList(),
     );
 
     return Card(
@@ -147,7 +155,9 @@ class CategoriesCard extends StatelessWidget {
               dense: true,
               title: Text(child.name),
               trailing: Text(
-                latest != null ? '${latest.value} ${child.unit}' : '—',
+                latest != null
+                    ? '${latest.valueIn(child.unit, categoryUnit: child.unit)} ${child.unit}'
+                    : '—',
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
               onTap: () => Navigator.pushNamed(

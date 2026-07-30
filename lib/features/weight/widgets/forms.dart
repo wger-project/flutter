@@ -24,25 +24,29 @@ import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/core/number_input.dart';
 import 'package:wger/core/widgets/datetime_input.dart';
 import 'package:wger/core/widgets/form_submit_button.dart';
+import 'package:wger/features/account/providers/user_profile_notifier.dart';
+import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/measurement_entry.dart';
+import 'package:wger/features/measurements/models/unit_conversion.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
-/// Sanity bounds and stepper sizes for manual body weight input
-const _minWeight = 30;
-const _maxWeight = 300;
+/// Sanity bounds (in kg) and stepper sizes for manual body weight input
+const _minWeightKg = 30;
+const _maxWeightKg = 300;
 const _stepperSmall = 0.1;
 const _stepperBig = 1;
 
 /// Create/edit form for a body weight entry.
 ///
-/// Entries are measurements in the official body weight category, so the form
-/// needs the category's id for new entries.
+/// Entries are measurements in the official body weight [MeasurementCategory].
+/// The value is shown and edited in the unit it was entered in; the chosen
+/// unit is stamped into the entry's `extra_data`.
 class WeightForm extends riverpod.ConsumerStatefulWidget {
-  final String _categoryId;
+  final MeasurementCategory _category;
   final MeasurementEntry? _entry;
 
-  const WeightForm(this._categoryId, [this._entry]);
+  const WeightForm(this._category, [this._entry]);
 
   @override
   riverpod.ConsumerState<WeightForm> createState() => _WeightFormState();
@@ -58,12 +62,20 @@ class _WeightFormState extends riverpod.ConsumerState<WeightForm> {
 
   late DateTime _date;
   num _weight = 0;
+  late String _unit;
 
   @override
   void initState() {
     super.initState();
     _date = widget._entry?.date ?? DateTime.now();
     _weight = widget._entry?.value ?? 0;
+
+    // Existing entries keep their stored unit (the value is shown exactly as
+    // entered); new entries default to the profile unit
+    final entry = widget._entry;
+    _unit = entry != null
+        ? entry.unitOrFallback(widget._category.unit)
+        : weightDisplayUnit(ref.read(userProfileProvider).value?.isMetric ?? true);
   }
 
   @override
@@ -83,6 +95,12 @@ class _WeightFormState extends riverpod.ConsumerState<WeightForm> {
     super.dispose();
   }
 
+  /// `true` when [value] (in the currently selected unit) is plausible
+  bool _isInRange(num value) {
+    final kg = convertWeight(value, from: _unit, to: 'kg');
+    return kg >= _minWeightKg && kg <= _maxWeightKg;
+  }
+
   /// Adds [delta] to the field's current value, clamped to the valid range
   void _step(num delta) {
     final numberFormat = localizedNumberFormat(context);
@@ -91,7 +109,7 @@ class _WeightFormState extends riverpod.ConsumerState<WeightForm> {
       return;
     }
     final newValue = parsed + delta;
-    if (newValue < _minWeight || newValue > _maxWeight) {
+    if (!_isInRange(newValue)) {
       return;
     }
     _weightController.text = numberFormat.format(newValue);
@@ -183,10 +201,29 @@ class _WeightFormState extends riverpod.ConsumerState<WeightForm> {
               if (parsed == null) {
                 return i18n.enterValidNumber;
               }
-              if (parsed < _minWeight || parsed > _maxWeight) {
-                return i18n.formMinMaxValues(_minWeight, _maxWeight);
+              if (!_isInRange(parsed)) {
+                // The bounds are defined in kg, show them in the entered unit
+                return i18n.formMinMaxValues(
+                  convertWeight(_minWeightKg, from: 'kg', to: _unit).round(),
+                  convertWeight(_maxWeightKg, from: 'kg', to: _unit).round(),
+                );
               }
               return null;
+            },
+          ),
+
+          // Unit the value is entered in, stamped onto the entry when saving
+          DropdownButtonFormField<String>(
+            key: const Key('unitInput'),
+            initialValue: _unit,
+            decoration: InputDecoration(labelText: AppLocalizations.of(context).unit),
+            items: [
+              for (final unit in convertibleUnits) DropdownMenuItem(value: unit, child: Text(unit)),
+            ],
+            onChanged: (value) {
+              if (value != null) {
+                setState(() => _unit = value);
+              }
             },
           ),
           FormSubmitButton(
@@ -200,15 +237,17 @@ class _WeightFormState extends riverpod.ConsumerState<WeightForm> {
               _form.currentState!.save();
 
               // Notes, source and external id are not editable here; keep the
-              // existing values so edits to imported entries stay deduplicable
+              // existing values so edits to imported entries stay deduplicable.
+              // The chosen unit is stamped into extra_data, other keys survive.
               final entry = MeasurementEntry(
                 id: widget._entry?.id,
-                categoryId: widget._categoryId,
+                categoryId: widget._category.id!,
                 date: _date,
                 value: _weight,
                 notes: widget._entry?.notes ?? '',
                 source: widget._entry?.source ?? 'user',
                 externalId: widget._entry?.externalId,
+                extraData: {...?widget._entry?.extraData, 'unit': _unit},
               );
 
               final notifier = ref.read(measurementProvider.notifier);

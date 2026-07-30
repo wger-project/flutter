@@ -6,6 +6,8 @@
 import 'dart:async' as _i3;
 
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:wger/features/account/models/user_profile.dart' as _i7;
+import 'package:wger/features/account/providers/user_profile_repository.dart' as _i6;
 import 'package:wger/features/measurements/models/measurement_category.dart' as _i4;
 import 'package:wger/features/measurements/models/measurement_entry.dart' as _i5;
 import 'package:wger/features/measurements/providers/measurement_repository.dart' as _i2;
@@ -132,6 +134,32 @@ class MockMeasurementRepository extends _i1.Mock implements _i2.MeasurementRepos
   _i3.Future<void> reorderCategories(List<String>? orderedIds) =>
       (super.noSuchMethod(
             Invocation.method(#reorderCategories, [orderedIds]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
+}
+
+/// A class which mocks [UserProfileRepository].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockUserProfileRepository extends _i1.Mock implements _i6.UserProfileRepository {
+  MockUserProfileRepository() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i3.Stream<_i7.UserProfile?> watchDrift() =>
+      (super.noSuchMethod(
+            Invocation.method(#watchDrift, []),
+            returnValue: _i3.Stream<_i7.UserProfile?>.empty(),
+          )
+          as _i3.Stream<_i7.UserProfile?>);
+
+  @override
+  _i3.Future<void> editLocalDrift(_i7.UserProfile? profile) =>
+      (super.noSuchMethod(
+            Invocation.method(#editLocalDrift, [profile]),
             returnValue: _i3.Future<void>.value(),
             returnValueForMissingStub: _i3.Future<void>.value(),
           )

@@ -38,6 +38,16 @@ final testWeightEntry2 = MeasurementEntry(
   notes: '',
 );
 
+/// Entry recorded in pounds (extra_data.unit); 176.4 lb are 80.01 kg
+final testWeightEntryLb = MeasurementEntry(
+  id: '3',
+  categoryId: testBodyWeightCategoryId,
+  value: 176.4,
+  date: DateTime.utc(2021, 01, 20, 8, 0),
+  notes: '',
+  extraData: const {'unit': 'lb'},
+);
+
 /// The official category with [entries] attached. Entries default to the two
 /// test entries, newest first, matching the repository's watchAll() order.
 MeasurementCategory getBodyWeightCategory([List<MeasurementEntry>? entries]) {
