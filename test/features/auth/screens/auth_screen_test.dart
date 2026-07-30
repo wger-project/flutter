@@ -598,6 +598,17 @@ void main() {
         await PreferenceHelper.asyncPref.getBool(PREFS_ALLOW_SELF_SIGNED_CERTS),
         isTrue,
       );
+
+      // Reopening seeds the sheet from the provider, so the earlier opt-in is
+      // still there for a self-hosted server.
+      await tester.tap(find.byKey(const Key('advancedCloseButton')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('advancedButton')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Self-hosted'));
+      await tester.pumpAndSettle();
+
+      expect(tester.widget<SwitchListTile>(toggle).value, isTrue);
     });
 
     testWidgets('Sheet pre-selects Self-hosted for a custom last-used server', (

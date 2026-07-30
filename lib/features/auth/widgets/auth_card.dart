@@ -70,7 +70,6 @@ class _AuthCardState extends ConsumerState<AuthCard> {
   bool _autoValidate = false;
   bool _hideCustomServer = true;
   bool _useUsernameAndPassword = true;
-  bool _allowSelfSignedCerts = ALLOW_SELF_SIGNED_CERTS_DEFAULT;
   var _isLoading = false;
 
   final _usernameController = TextEditingController();
@@ -104,13 +103,6 @@ class _AuthCardState extends ConsumerState<AuthCard> {
           // than the official server counts as a self-hosted instance.
           _hideCustomServer = value == DEFAULT_SERVER_PROD;
         });
-      }
-    });
-
-    // Surface the persisted self-signed-cert preference in the advanced sheet.
-    ref.read(appSettingsProvider.future).then((settings) {
-      if (mounted) {
-        setState(() => _allowSelfSignedCerts = settings.allowSelfSignedCerts);
       }
     });
 
@@ -256,23 +248,25 @@ class _AuthCardState extends ConsumerState<AuthCard> {
   }
 
   /// Opens the advanced bottom sheet (server + sign-in-method selection).
-  void _showAdvancedSheet() {
+  ///
+  /// [allowSelfSignedCerts] is the persisted setting, passed in from `build` so
+  /// the sheet opens on the current value.
+  void _showAdvancedSheet(bool allowSelfSignedCerts) {
     showAdvancedSheet(
       context: context,
       initialHideCustomServer: _hideCustomServer,
       initialUsePassword: _useUsernameAndPassword,
-      initialAllowSelfSignedCerts: _allowSelfSignedCerts,
+      initialAllowSelfSignedCerts: allowSelfSignedCerts,
       loginMode: _authMode == AuthMode.login,
       serverUrlController: _serverUrlController,
-      onChanged: (hideCustomServer, usePassword, allowSelfSignedCerts) {
+      onChanged: (hideCustomServer, usePassword, allowSelfSigned) {
         setState(() {
           _hideCustomServer = hideCustomServer;
           _useUsernameAndPassword = usePassword;
-          _allowSelfSignedCerts = allowSelfSignedCerts;
         });
-        // Persist immediately and install the override so the next login
-        // request (still made from this screen) trusts the self-signed cert.
-        ref.read(appSettingsProvider.notifier).setAllowSelfSignedCerts(allowSelfSignedCerts);
+        // Persist immediately so the next login request, still made from this
+        // screen, already trusts the certificate.
+        ref.read(appSettingsProvider.notifier).setAllowSelfSignedCerts(allowSelfSigned);
       },
     ).then((_) {
       if (mounted) {
@@ -288,6 +282,11 @@ class _AuthCardState extends ConsumerState<AuthCard> {
     // Login/registration both need the server, so disable the action while
     // there is no connectivity.
     final isOnline = ref.watch(networkStatusProvider);
+    final allowSelfSignedCerts = ref.watch(
+      appSettingsProvider.select(
+        (s) => s.value?.allowSelfSignedCerts ?? ALLOW_SELF_SIGNED_CERTS_DEFAULT,
+      ),
+    );
 
     Widget errorMessage = const SizedBox.shrink();
     if (_httpError != null) {
@@ -391,7 +390,7 @@ class _AuthCardState extends ConsumerState<AuthCard> {
                     isCustomServer: !_hideCustomServer,
                     isTokenMode: _authMode == AuthMode.login && !_useUsernameAndPassword,
                     serverUrl: _serverUrlController.text,
-                    onTap: _showAdvancedSheet,
+                    onTap: () => _showAdvancedSheet(allowSelfSignedCerts),
                   ),
                 ],
               ),
