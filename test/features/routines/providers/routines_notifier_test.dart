@@ -366,8 +366,8 @@ void main() {
     });
 
     test('resolves the default weight unit from an imperial profile', () async {
-      // A set config without an explicit weight unit must inherit the unit
-      // implied by the profile: lb (id 2) for an imperial user, not kg.
+      // A slot entry or set config without an explicit weight unit must inherit
+      // the unit implied by the profile: lb (id 2) for an imperial user, not kg.
       overrideStreams(mockExerciseRepo);
       final setConfig = SetConfigData(
         exerciseId: 1,
@@ -376,6 +376,23 @@ void main() {
         // No weightUnit / weightUnitId: the server omits it, the default applies.
       );
       final routine = Routine(id: 101, name: 'Test routine')
+        ..days = [
+          Day(id: 1, routineId: 101, name: 'Test', order: 1)
+            ..slots = [
+              Slot.withData(id: 1, day: 1, order: 1)
+                ..entries.add(
+                  SlotEntry(
+                    id: 1,
+                    slotId: 1,
+                    exerciseId: 1,
+                    repetitionUnitId: 1,
+                    repetitionRounding: null,
+                    weightUnitId: null,
+                    weightRounding: null,
+                  ),
+                ),
+            ],
+        ]
         ..dayDataGym = [
           DayData(
             iteration: 1,
@@ -417,6 +434,8 @@ void main() {
       // testWeightUnit2 has id 2 == WEIGHT_UNIT_LB.
       final hydratedConfig = result.dayDataGym[0].slots[0].setConfigs[0];
       expect(hydratedConfig.weightUnit, testWeightUnit2);
+      final hydratedEntry = result.days[0].slots[0].entries[0];
+      expect(hydratedEntry.weightUnitObj, testWeightUnit2);
     });
   });
 

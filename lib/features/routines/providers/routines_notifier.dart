@@ -147,10 +147,10 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
     final weightUnits = ref.read(routineWeightUnitProvider).value ?? const <WeightUnit>[];
     final profile = ref.read(userProfileProvider).value;
 
-    // Used for set configs that don't carry an explicit weight unit: kg for
-    // metric users, lb otherwise. Defaults to kg while the profile is still
-    // syncing (the profile listener re-hydrates once it arrives).
-    final defaultWeightUnitId = (profile?.isMetric ?? true) ? WEIGHT_UNIT_KG : WEIGHT_UNIT_LB;
+    // Used for slot entries and set configs that don't carry an explicit
+    // weight unit. Defaults to kg while the profile is still syncing (the
+    // profile listener re-hydrates once it arrives).
+    final defaultWeightUnitId = profile?.defaultWeightUnitId ?? WEIGHT_UNIT_KG;
     final defaultWeightUnit = weightUnits.firstWhereOrNull((u) => u.id == defaultWeightUnitId);
 
     routine.sessions = sessions.where((s) => s.routineId == routine.id).toList();
@@ -180,9 +180,9 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
           entry.repetitionUnitObj = repetitionUnits.firstWhereOrNull(
             (u) => u.id == entry.repetitionUnitId,
           );
-          entry.weightUnitObj = weightUnits.firstWhereOrNull(
-            (u) => u.id == entry.weightUnitId,
-          );
+          entry.weightUnitObj = entry.weightUnitId != null
+              ? weightUnits.firstWhereOrNull((u) => u.id == entry.weightUnitId)
+              : defaultWeightUnit;
         }
       }
     }

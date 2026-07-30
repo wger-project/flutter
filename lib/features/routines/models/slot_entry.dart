@@ -130,6 +130,7 @@ class SlotEntry {
   @JsonKey(required: false, name: 'max_repetitions_configs', includeToJson: false)
   late List<BaseConfig> maxRepetitionsConfigs = [];
 
+  /// Null means no explicit unit; the user's profile default (kg/lb) applies.
   @JsonKey(required: true, name: 'weight_unit')
   late int? weightUnitId;
 
@@ -210,7 +211,7 @@ class SlotEntry {
     int? order,
     SlotEntryType? type,
     required Exercise exercise,
-    int? weightUnitId,
+    this.weightUnitId,
     this.weightRounding,
     int? repetitionUnitId,
     this.repetitionRounding,
@@ -221,8 +222,6 @@ class SlotEntry {
     this.type = type ?? SlotEntryType.normal;
     exerciseObj = exercise;
     exerciseId = exercise.id;
-    this.weightUnitId = weightUnitId ?? WEIGHT_UNIT_KG;
-
     this.repetitionUnitId = repetitionUnitId ?? REP_UNIT_REPETITIONS_ID;
   }
 

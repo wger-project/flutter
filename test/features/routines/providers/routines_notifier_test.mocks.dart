@@ -13,8 +13,7 @@ import 'package:wger/features/routines/models/routine.dart' as _i2;
 import 'package:wger/features/routines/models/slot.dart' as _i4;
 import 'package:wger/features/routines/models/slot_entry.dart' as _i5;
 import 'package:wger/features/routines/models/weight_unit.dart' as _i9;
-import 'package:wger/features/routines/providers/routines_repository.dart'
-    as _i7;
+import 'package:wger/features/routines/providers/routines_repository.dart' as _i7;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -32,35 +31,29 @@ import 'package:wger/features/routines/providers/routines_repository.dart'
 // ignore_for_file: invalid_use_of_internal_member
 
 class _FakeRoutine_0 extends _i1.SmartFake implements _i2.Routine {
-  _FakeRoutine_0(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+  _FakeRoutine_0(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeDay_1 extends _i1.SmartFake implements _i3.Day {
-  _FakeDay_1(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+  _FakeDay_1(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeSlot_2 extends _i1.SmartFake implements _i4.Slot {
-  _FakeSlot_2(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+  _FakeSlot_2(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeSlotEntry_3 extends _i1.SmartFake implements _i5.SlotEntry {
-  _FakeSlotEntry_3(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+  _FakeSlotEntry_3(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 class _FakeBaseConfig_4 extends _i1.SmartFake implements _i6.BaseConfig {
-  _FakeBaseConfig_4(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
+  _FakeBaseConfig_4(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
 /// A class which mocks [RoutinesRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockRoutinesRepository extends _i1.Mock
-    implements _i7.RoutinesRepository {
+class MockRoutinesRepository extends _i1.Mock implements _i7.RoutinesRepository {
   MockRoutinesRepository() {
     _i1.throwOnMissingStub(this);
   }

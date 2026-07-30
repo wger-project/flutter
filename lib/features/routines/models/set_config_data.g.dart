@@ -35,9 +35,7 @@ SetConfigData _$SetConfigDataFromJson(Map<String, dynamic> json) {
   return SetConfigData(
     exerciseId: (json['exercise'] as num).toInt(),
     slotEntryId: (json['slot_entry_id'] as num).toInt(),
-    type:
-        $enumDecodeNullable(_$SlotEntryTypeEnumMap, json['type']) ??
-        SlotEntryType.normal,
+    type: $enumDecodeNullable(_$SlotEntryTypeEnumMap, json['type']) ?? SlotEntryType.normal,
     nrOfSets: json['sets'] as num?,
     maxNrOfSets: json['max_sets'] as num?,
     weight: stringToNumNull(json['weight'] as String?),
@@ -46,8 +44,7 @@ SetConfigData _$SetConfigDataFromJson(Map<String, dynamic> json) {
     weightRounding: stringToNumNull(json['weight_rounding'] as String?),
     repetitions: stringToNumNull(json['repetitions'] as String?),
     maxRepetitions: stringToNumNull(json['max_repetitions'] as String?),
-    repetitionsUnitId:
-        (json['repetitions_unit'] as num?)?.toInt() ?? REP_UNIT_REPETITIONS_ID,
+    repetitionsUnitId: (json['repetitions_unit'] as num?)?.toInt() ?? REP_UNIT_REPETITIONS_ID,
     repetitionsRounding: stringToNumNull(
       json['repetitions_rounding'] as String?,
     ),
@@ -61,29 +58,28 @@ SetConfigData _$SetConfigDataFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$SetConfigDataToJson(SetConfigData instance) =>
-    <String, dynamic>{
-      'exercise': instance.exerciseId,
-      'slot_entry_id': instance.slotEntryId,
-      'type': _$SlotEntryTypeEnumMap[instance.type]!,
-      'text_repr': instance.textRepr,
-      'sets': instance.nrOfSets,
-      'max_sets': instance.maxNrOfSets,
-      'weight': instance.weight,
-      'max_weight': instance.maxWeight,
-      'weight_unit': instance.weightUnitId,
-      'weight_rounding': instance.weightRounding,
-      'repetitions': instance.repetitions,
-      'max_repetitions': instance.maxRepetitions,
-      'repetitions_unit': instance.repetitionsUnitId,
-      'repetitions_rounding': instance.repetitionsRounding,
-      'rir': instance.rir,
-      'max_rir': instance.maxRir,
-      'rpe': instance.rpe,
-      'rest': instance.restTime,
-      'max_rest': instance.maxRestTime,
-      'comment': instance.comment,
-    };
+Map<String, dynamic> _$SetConfigDataToJson(SetConfigData instance) => <String, dynamic>{
+  'exercise': instance.exerciseId,
+  'slot_entry_id': instance.slotEntryId,
+  'type': _$SlotEntryTypeEnumMap[instance.type]!,
+  'text_repr': instance.textRepr,
+  'sets': instance.nrOfSets,
+  'max_sets': instance.maxNrOfSets,
+  'weight': instance.weight,
+  'max_weight': instance.maxWeight,
+  'weight_unit': instance.weightUnitId,
+  'weight_rounding': instance.weightRounding,
+  'repetitions': instance.repetitions,
+  'max_repetitions': instance.maxRepetitions,
+  'repetitions_unit': instance.repetitionsUnitId,
+  'repetitions_rounding': instance.repetitionsRounding,
+  'rir': instance.rir,
+  'max_rir': instance.maxRir,
+  'rpe': instance.rpe,
+  'rest': instance.restTime,
+  'max_rest': instance.maxRestTime,
+  'comment': instance.comment,
+};
 
 const _$SlotEntryTypeEnumMap = {
   SlotEntryType.normal: 'normal',

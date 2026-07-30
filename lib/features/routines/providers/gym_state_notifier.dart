@@ -20,13 +20,17 @@ import 'package:clock/clock.dart';
 import 'package:collection/collection.dart';
 import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:wger/core/consts.dart';
 import 'package:wger/core/shared_preferences.dart';
+import 'package:wger/features/account/providers/user_profile_notifier.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/routines/models/log.dart';
 import 'package:wger/features/routines/models/routine.dart';
 import 'package:wger/features/routines/models/set_config_data.dart';
+import 'package:wger/features/routines/models/weight_unit.dart';
 import 'package:wger/features/routines/providers/gym_log_notifier.dart';
 import 'package:wger/features/routines/providers/gym_state.dart';
+import 'package:wger/features/routines/providers/routines_notifier.dart';
 
 part 'gym_state_notifier.g.dart';
 
@@ -431,6 +435,14 @@ class GymStateNotifier extends _$GymStateNotifier {
     String pageEntryUUID, {
     required Exercise newExercise,
   }) {
+    // Ad-hoc set configs bypass routine hydration, so resolve the profile
+    // default weight unit (kg/lb) here; the log draft picks it up from the
+    // unit object.
+    final profile = ref.read(userProfileProvider).value;
+    final weightUnits = ref.read(routineWeightUnitProvider).value ?? const <WeightUnit>[];
+    final defaultWeightUnitId = profile?.defaultWeightUnitId ?? WEIGHT_UNIT_KG;
+    final defaultWeightUnit = weightUnits.firstWhereOrNull((u) => u.id == defaultWeightUnitId);
+
     final List<PageEntry> pages = [];
     for (final page in state.pages) {
       pages.add(page);
@@ -450,6 +462,7 @@ class GymStateNotifier extends _$GymStateNotifier {
                 exerciseId: newExercise.id,
                 exercise: newExercise,
                 slotEntryId: setConfigData.slotEntryId,
+                weightUnit: defaultWeightUnit,
               ),
             ),
           );
