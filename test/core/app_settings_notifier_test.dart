@@ -322,4 +322,41 @@ void main() {
       expect(await prefs.getBool(PREFS_KEEP_DATA_ON_LOGOUT), true);
     });
   });
+
+  group('allow self-signed certs', () {
+    test('defaults to false', () async {
+      final settings = await container.read(appSettingsProvider.future);
+      expect(settings.allowSelfSignedCerts, false);
+    });
+
+    test('loads true from prefs', () async {
+      SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+      final prefs = SharedPreferencesAsync();
+      await prefs.setBool(PREFS_ALLOW_SELF_SIGNED_CERTS, true);
+
+      container.dispose();
+      container = ProviderContainer(
+        overrides: [appSettingsPrefsProvider.overrideWithValue(prefs)],
+      );
+
+      final settings = await container.read(appSettingsProvider.future);
+      expect(settings.allowSelfSignedCerts, true);
+    });
+
+    test('setAllowSelfSignedCerts persists the toggle', () async {
+      SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+      final prefs = SharedPreferencesAsync();
+
+      container.dispose();
+      container = ProviderContainer(
+        overrides: [appSettingsPrefsProvider.overrideWithValue(prefs)],
+      );
+
+      await container.read(appSettingsProvider.future);
+      await container.read(appSettingsProvider.notifier).setAllowSelfSignedCerts(true);
+
+      expect(container.read(appSettingsProvider).requireValue.allowSelfSignedCerts, true);
+      expect(await prefs.getBool(PREFS_ALLOW_SELF_SIGNED_CERTS), true);
+    });
+  });
 }

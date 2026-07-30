@@ -79,6 +79,13 @@ const PREFS_DB_OWNER_USER_ID = 'dbOwnerUserId';
 const PREFS_KEEP_DATA_ON_LOGOUT = 'keepDataOnLogout';
 const KEEP_DATA_ON_LOGOUT_DEFAULT = true;
 
+/// User preference: accept an invalid TLS certificate from the configured
+/// self-hosted server, so the app can reach instances behind a self-signed
+/// cert. Off by default, and never applies to the official servers. Defaults
+/// to [ALLOW_SELF_SIGNED_CERTS_DEFAULT].
+const PREFS_ALLOW_SELF_SIGNED_CERTS = 'allowSelfSignedCerts';
+const ALLOW_SELF_SIGNED_CERTS_DEFAULT = false;
+
 /// Secure-storage key for the headless refresh token.
 const SECURE_STORAGE_REFRESH_TOKEN = 'wger_refresh_token';
 

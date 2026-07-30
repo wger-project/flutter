@@ -25,6 +25,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/core/consts.dart';
+import 'package:wger/core/http_overrides.dart';
 import 'package:wger/core/locale.dart';
 import 'package:wger/core/shared_preferences.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -82,6 +83,10 @@ sealed class AppSettings with _$AppSettings {
     /// When true, a manual logout keeps the local database on disk instead
     /// of wiping it, so the same user signing back in resumes incrementally.
     @Default(KEEP_DATA_ON_LOGOUT_DEFAULT) bool keepDataOnLogout,
+
+    /// When true, an invalid TLS certificate is accepted from the self-hosted
+    /// server the app is configured for. Never applies to the official servers.
+    @Default(ALLOW_SELF_SIGNED_CERTS_DEFAULT) bool allowSelfSignedCerts,
   }) = _AppSettings;
 }
 
@@ -101,11 +106,13 @@ class AppSettingsNotifier extends _$AppSettingsNotifier {
     final userLocale = await _loadUserLocale();
     final items = await _loadDashboardItems();
     final keepDataOnLogout = await _loadKeepDataOnLogout();
+    final allowSelfSignedCerts = await _loadAllowSelfSignedCerts();
     return AppSettings(
       themeMode: themeMode,
       userLocale: userLocale,
       dashboardItems: items,
       keepDataOnLogout: keepDataOnLogout,
+      allowSelfSignedCerts: allowSelfSignedCerts,
     );
   }
 
@@ -189,6 +196,26 @@ class AppSettingsNotifier extends _$AppSettingsNotifier {
     final current = state.asData?.value ?? const AppSettings();
     state = AsyncData(current.copyWith(keepDataOnLogout: value));
     await _prefs.setBool(PREFS_KEEP_DATA_ON_LOGOUT, value);
+  }
+
+  //
+  // Allow self-signed certificates
+  //
+
+  Future<bool> _loadAllowSelfSignedCerts() async {
+    final value =
+        (await _prefs.getBool(PREFS_ALLOW_SELF_SIGNED_CERTS)) ?? ALLOW_SELF_SIGNED_CERTS_DEFAULT;
+    // The override reads a static, so mirror the setting on both load and write
+    // and it can never drift from this provider.
+    WgerHttpOverrides.allowSelfSignedCerts = value;
+    return value;
+  }
+
+  Future<void> setAllowSelfSignedCerts(bool value) async {
+    final current = state.asData?.value ?? const AppSettings();
+    state = AsyncData(current.copyWith(allowSelfSignedCerts: value));
+    WgerHttpOverrides.allowSelfSignedCerts = value;
+    await _prefs.setBool(PREFS_ALLOW_SELF_SIGNED_CERTS, value);
   }
 
   //

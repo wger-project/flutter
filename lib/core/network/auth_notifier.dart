@@ -33,6 +33,7 @@ import 'package:wger/core/errors.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/core/exceptions/mfa_required_exception.dart';
 import 'package:wger/core/helpers.dart';
+import 'package:wger/core/http_overrides.dart';
 import 'package:wger/core/network/auth_credentials_storage.dart';
 import 'package:wger/core/network/auth_http_client.dart';
 import 'package:wger/core/network/auth_state.dart';
@@ -198,6 +199,11 @@ class AuthNotifier extends _$AuthNotifier {
     String serverUrl,
     PackageInfo appVersion,
   ) async {
+    // Narrow the certificate opt-in to the server we are about to talk to. This
+    // is the single point every auth entry point passes through, and it runs
+    // before the first request to that host.
+    WgerHttpOverrides.trustServer(serverUrl);
+
     final gate = await _gating.serverVersionGate(serverUrl);
     if (gate.tooOld) {
       _logger.info('login blocked: server ${gate.version} below $MIN_SERVER_VERSION');

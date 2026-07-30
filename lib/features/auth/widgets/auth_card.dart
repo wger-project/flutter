@@ -21,6 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wger/core/app_link_router.dart';
+import 'package:wger/core/app_settings_notifier.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/error_dialogs.dart';
 import 'package:wger/core/errors.dart';
@@ -247,18 +248,25 @@ class _AuthCardState extends ConsumerState<AuthCard> {
   }
 
   /// Opens the advanced bottom sheet (server + sign-in-method selection).
-  void _showAdvancedSheet() {
+  ///
+  /// [allowSelfSignedCerts] is the persisted setting, passed in from `build` so
+  /// the sheet opens on the current value.
+  void _showAdvancedSheet(bool allowSelfSignedCerts) {
     showAdvancedSheet(
       context: context,
       initialHideCustomServer: _hideCustomServer,
       initialUsePassword: _useUsernameAndPassword,
+      initialAllowSelfSignedCerts: allowSelfSignedCerts,
       loginMode: _authMode == AuthMode.login,
       serverUrlController: _serverUrlController,
-      onChanged: (hideCustomServer, usePassword) {
+      onChanged: (hideCustomServer, usePassword, allowSelfSigned) {
         setState(() {
           _hideCustomServer = hideCustomServer;
           _useUsernameAndPassword = usePassword;
         });
+        // Persist immediately so the next login request, still made from this
+        // screen, already trusts the certificate.
+        ref.read(appSettingsProvider.notifier).setAllowSelfSignedCerts(allowSelfSigned);
       },
     ).then((_) {
       if (mounted) {
@@ -274,6 +282,11 @@ class _AuthCardState extends ConsumerState<AuthCard> {
     // Login/registration both need the server, so disable the action while
     // there is no connectivity.
     final isOnline = ref.watch(networkStatusProvider);
+    final allowSelfSignedCerts = ref.watch(
+      appSettingsProvider.select(
+        (s) => s.value?.allowSelfSignedCerts ?? ALLOW_SELF_SIGNED_CERTS_DEFAULT,
+      ),
+    );
 
     Widget errorMessage = const SizedBox.shrink();
     if (_httpError != null) {
@@ -377,7 +390,7 @@ class _AuthCardState extends ConsumerState<AuthCard> {
                     isCustomServer: !_hideCustomServer,
                     isTokenMode: _authMode == AuthMode.login && !_useUsernameAndPassword,
                     serverUrl: _serverUrlController.text,
-                    onTap: _showAdvancedSheet,
+                    onTap: () => _showAdvancedSheet(allowSelfSignedCerts),
                   ),
                 ],
               ),

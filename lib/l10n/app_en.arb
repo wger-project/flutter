@@ -132,6 +132,24 @@
   "@serverOptionSelfHostedTitle": {},
   "serverOptionSelfHostedDetail": "Connect to your own instance",
   "@serverOptionSelfHostedDetail": {},
+  "allowSelfSignedCertsTitle": "Allow self-signed certificates",
+  "@allowSelfSignedCertsTitle": {},
+  "allowSelfSignedCertsDetail": "Disables TLS certificate validation. Only enable this for a server you trust.",
+  "@allowSelfSignedCertsDetail": {},
+  "certsNotVerifiedTitle": "Certificate validation is off",
+  "@certsNotVerifiedTitle": {
+    "description": "Warning shown in the settings while the app accepts invalid TLS certificates from the server the user is logged into."
+  },
+  "certsNotVerifiedDetail": "Certificates for {host} are not checked. To change this, log out and adjust the option on the login screen.",
+  "@certsNotVerifiedDetail": {
+    "description": "Explains the certificate warning. The option can only be set before logging in, hence the hint to log out.",
+    "type": "text",
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "authOptionPasswordTitle": "Username and password",
   "@authOptionPasswordTitle": {},
   "signInWithToken": "Sign in with token",

@@ -25,11 +25,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/core/app_link_router.dart';
 import 'package:wger/core/app_settings_notifier.dart';
+import 'package:wger/core/consts.dart';
 import 'package:wger/core/dashboard.dart';
 import 'package:wger/core/error_dialogs.dart';
 import 'package:wger/core/errors.dart';
 import 'package:wger/core/form_screen.dart';
 import 'package:wger/core/home_tabs_screen.dart';
+import 'package:wger/core/http_overrides.dart';
 import 'package:wger/core/keys.dart';
 import 'package:wger/core/locale.dart';
 import 'package:wger/core/logs.dart';
@@ -99,6 +101,10 @@ void main() async {
   // Needs to be called before runApp
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Has to happen before anything creates an HttpClient: dart:io only reads
+  // HttpOverrides.current in the client constructor, never again.
+  installHttpOverrides();
+
   // Logger
   _setupLogging();
 
@@ -106,6 +112,13 @@ void main() async {
 
   // SharedPreferences to SharedPreferencesAsync migration function
   await PreferenceHelper.instance.migrationSupportFunctionForSharedPreferences();
+
+  // Seed the certificate opt-in from the prefs so the auto-login probe already
+  // honours it; AppSettingsNotifier keeps it in sync from here on.
+  WgerHttpOverrides.allowSelfSignedCerts =
+      await PreferenceHelper.asyncPref.getBool(PREFS_ALLOW_SELF_SIGNED_CERTS) ??
+      ALLOW_SELF_SIGNED_CERTS_DEFAULT;
+  WgerHttpOverrides.trustServer(await AuthNotifier.getServerUrlFromPrefs());
 
   // Catch errors from Flutter itself (widget build, layout, paint, etc.)
   FlutterError.onError = (FlutterErrorDetails details) {

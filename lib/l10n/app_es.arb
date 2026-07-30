@@ -1201,5 +1201,9 @@
     "gymModeLogScopeCurrentRoutine": "Rutina actual",
     "gymModeLogScopeWeeks": "Últimas {weeks} semanas",
     "gymModeDistinctLogs": "Ocultar valores duplicados",
-    "gymModeShowWorkoutDuration": "Mostrar la duración del entrenamiento"
+    "gymModeShowWorkoutDuration": "Mostrar la duración del entrenamiento",
+    "allowSelfSignedCertsTitle": "Permitir certificados autofirmados",
+    "allowSelfSignedCertsDetail": "Desactiva la validación del certificado TLS. Actívalo solo para un servidor de confianza.",
+    "certsNotVerifiedTitle": "La validación de certificados está desactivada",
+    "certsNotVerifiedDetail": "Los certificados de {host} no se comprueban. Para cambiarlo, cierra la sesión y ajusta la opción en la pantalla de inicio de sesión."
 }
