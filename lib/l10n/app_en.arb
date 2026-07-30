@@ -426,6 +426,8 @@
 "gymModeDistinctLogs": "Hide duplicate values",
   "addMeal": "Add meal",
   "@addMeal": {},
+  "meal": "Meal",
+  "@meal": {},
   "mealLogged": "Meal logged to diary",
   "@mealLogged": {},
   "ingredientLogged": "Ingredient logged to diary",

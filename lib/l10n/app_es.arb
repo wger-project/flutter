@@ -152,6 +152,7 @@
     "logMeal": "Registrar esta comida",
     "mealLogged": "Comida registrada en el diario",
     "addMeal": "Agregar comida",
+    "meal": "Comida",
     "addSet": "Agregar serie",
     "@addSet": {
         "description": "Label for the button that adds a set (to a workout day)"

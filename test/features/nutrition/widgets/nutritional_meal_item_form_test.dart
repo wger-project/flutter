@@ -31,6 +31,7 @@ import 'package:shared_preferences_platform_interface/in_memory_shared_preferenc
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/features/nutrition/models/ingredient.dart';
+import 'package:wger/features/nutrition/models/log.dart';
 import 'package:wger/features/nutrition/models/meal.dart';
 import 'package:wger/features/nutrition/models/meal_item.dart';
 import 'package:wger/features/nutrition/models/nutritional_plan.dart';
@@ -184,6 +185,29 @@ void main() {
     );
   }
 
+  Widget createIngredientLogFormScreen(NutritionalPlan plan, {locale = 'en'}) {
+    final key = GlobalKey<NavigatorState>();
+
+    return UncontrolledProviderScope(
+      container: container,
+      child: MaterialApp(
+        locale: Locale(locale),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        navigatorKey: key,
+        home: Scaffold(
+          body: Scrollable(
+            viewportBuilder: (BuildContext context, ViewportOffset position) =>
+                getIngredientLogForm(plan),
+          ),
+        ),
+        routes: {
+          NutritionalPlanScreen.routeName: (ctx) => const NutritionalPlanScreen(),
+        },
+      ),
+    );
+  }
+
   testWidgets('Test the widgets on the meal item form', (WidgetTester tester) async {
     await tester.pumpWidget(createMealItemFormScreen(meal1, '', true));
     await tester.pumpAndSettle();
@@ -192,8 +216,65 @@ void main() {
     expect(find.byType(TextFormField), findsWidgets);
     expect(find.byKey(const Key('scan-button')), findsOneWidget);
     expect(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)), findsOneWidget);
+    // Adding to a meal has the meal fixed, so no selector is offered
+    expect(find.byKey(const Key('field-meal')), findsNothing);
 
     expect(meal1.mealItems.length, 2);
+  });
+
+  group('Test logging a single ingredient', () {
+    testWidgets('the meal can be selected and is logged with the entry', (
+      WidgetTester tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(1080, 1920));
+      tester.view.devicePixelRatio = 1.0;
+      when(mockRepo.addLogLocalDrift(any)).thenAnswer((_) async => Future.value());
+
+      await tester.pumpWidget(createIngredientLogFormScreen(plan1));
+      await tester.pumpAndSettle();
+
+      // The plan's meals are offered, defaulting to no meal ("other logs")
+      expect(find.byKey(const Key('field-meal')), findsOneWidget);
+      await tester.tap(find.byKey(const Key('field-meal')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Initial Name 2').last);
+      await tester.pumpAndSettle();
+
+      final IngredientFormState formState = tester.state(find.byType(IngredientForm));
+      formState.selectIngredient(ingredient, 50);
+      await tester.enterText(find.byKey(const Key('field-weight')), '50');
+      await mockNetworkImagesFor(() => tester.pumpAndSettle());
+
+      await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
+      await tester.pump();
+
+      final log = verify(mockRepo.addLogLocalDrift(captureAny)).captured.single as LogItem;
+      expect(log.mealId, testMealUuid2);
+      expect(log.ingredientId, ingredient.id);
+      expect(log.amount, 50);
+    });
+
+    testWidgets('without picking a meal the entry is logged without one', (
+      WidgetTester tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(1080, 1920));
+      tester.view.devicePixelRatio = 1.0;
+      when(mockRepo.addLogLocalDrift(any)).thenAnswer((_) async => Future.value());
+
+      await tester.pumpWidget(createIngredientLogFormScreen(plan1));
+      await tester.pumpAndSettle();
+
+      final IngredientFormState formState = tester.state(find.byType(IngredientForm));
+      formState.selectIngredient(ingredient, 50);
+      await tester.enterText(find.byKey(const Key('field-weight')), '50');
+      await mockNetworkImagesFor(() => tester.pumpAndSettle());
+
+      await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
+      await tester.pump();
+
+      final log = verify(mockRepo.addLogLocalDrift(captureAny)).captured.single as LogItem;
+      expect(log.mealId, isNull);
+    });
   });
 
   group('Test the AlertDialogs for scanning result', () {

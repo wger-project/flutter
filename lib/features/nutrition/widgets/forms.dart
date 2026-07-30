@@ -112,7 +112,7 @@ Widget getMealItemForm(
     // The recent list is ephemeral display data, planId isn't used for
     // persistence, so an empty sentinel is fine.
     recent: recent.map((e) => LogItem.fromMealItem(e, '', e.mealId)).toList(),
-    onSave: (BuildContext context, WidgetRef ref, MealItem mealItem, DateTime? dt) {
+    onSave: (BuildContext context, WidgetRef ref, MealItem mealItem, DateTime? dt, String? mealId) {
       mealItem.mealId = meal.id!;
       ref.read(nutritionProvider.notifier).addMealItem(mealItem, meal);
     },
@@ -125,8 +125,9 @@ Widget getMealItemForm(
 Widget getIngredientLogForm(NutritionalPlan plan) {
   return IngredientForm(
     recent: plan.dedupDiaryEntries,
-    onSave: (BuildContext context, WidgetRef ref, MealItem mealItem, DateTime? dt) {
-      ref.read(nutritionProvider.notifier).logIngredientToDiary(mealItem, plan.id!, dt);
+    meals: plan.meals,
+    onSave: (BuildContext context, WidgetRef ref, MealItem mealItem, DateTime? dt, String? mealId) {
+      ref.read(nutritionProvider.notifier).logIngredientToDiary(mealItem, plan.id!, dt, mealId);
       showSnackbar(context, AppLocalizations.of(context).ingredientLogged, center: true);
     },
     withDate: true,
@@ -136,11 +137,21 @@ Widget getIngredientLogForm(NutritionalPlan plan) {
 /// IngredientForm is a form that lets the user pick an ingredient (and amount) to
 /// log to the diary or to add to a meal.
 class IngredientForm extends ConsumerStatefulWidget {
-  final Function(BuildContext context, WidgetRef ref, MealItem mealItem, DateTime? dt) onSave;
+  final Function(
+    BuildContext context,
+    WidgetRef ref,
+    MealItem mealItem,
+    DateTime? dt,
+    String? mealId,
+  )
+  onSave;
   final List<LogItem> recent;
   final bool withDate;
   final String barcode;
   final bool test;
+
+  /// When not empty, the form offers to assign the entry to one of these meals
+  final List<Meal> meals;
 
   const IngredientForm({
     required this.recent,
@@ -148,6 +159,7 @@ class IngredientForm extends ConsumerStatefulWidget {
     required this.withDate,
     this.barcode = '',
     this.test = false,
+    this.meals = const [],
   });
 
   @override
@@ -165,6 +177,7 @@ class IngredientFormState extends ConsumerState<IngredientForm> {
   var _searchQuery = ''; // copy from typeahead. for filtering suggestions
   List<IngredientWeightUnit> _weightUnits = [];
   IngredientWeightUnit? _selectedWeightUnit;
+  String? _selectedMealId;
 
   @override
   void dispose() {
@@ -333,6 +346,27 @@ class IngredientFormState extends ConsumerState<IngredientForm> {
                   ),
               ],
             ),
+            if (widget.meals.isNotEmpty)
+              DropdownButtonFormField<String?>(
+                key: const Key('field-meal'),
+                initialValue: _selectedMealId,
+                decoration: InputDecoration(labelText: i18n.meal),
+                items: [
+                  DropdownMenuItem<String?>(
+                    value: null,
+                    child: Text(i18n.otherLogs),
+                  ),
+                  ...widget.meals.map(
+                    (meal) => DropdownMenuItem<String?>(
+                      value: meal.id,
+                      child: Text(
+                        meal.name.isNotEmpty ? meal.name : meal.time?.format(context) ?? '',
+                      ),
+                    ),
+                  ),
+                ],
+                onChanged: (value) => setState(() => _selectedMealId = value),
+              ),
             if (ingredientIdController.text.isNotEmpty &&
                 _amountController.text.isNotEmpty &&
                 _mealItem.ingredient != null)
@@ -368,7 +402,7 @@ class IngredientFormState extends ConsumerState<IngredientForm> {
                   _time.hour,
                   _time.minute,
                 );
-                widget.onSave(context, ref, _mealItem, loggedDate);
+                widget.onSave(context, ref, _mealItem, loggedDate, _selectedMealId);
 
                 Navigator.of(context).pop();
               },
