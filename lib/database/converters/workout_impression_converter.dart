@@ -17,7 +17,7 @@
  */
 
 import 'package:drift/drift.dart';
-import 'package:wger/models/workouts/session.dart';
+import 'package:wger/features/routines/models/session.dart';
 
 /// Maps a [WorkoutImpression] to and from the Django wire format
 /// (`'1'`, `'2'`, `'3'`).

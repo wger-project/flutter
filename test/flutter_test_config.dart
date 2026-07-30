@@ -19,7 +19,7 @@
 import 'dart:async';
 
 import 'package:drift/drift.dart';
-import 'package:wger/providers/network_provider.dart';
+import 'package:wger/core/network/network_provider.dart';
 
 /// Global setup wrapped around every test file under `test/`.
 ///

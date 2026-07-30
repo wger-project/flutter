@@ -1194,5 +1194,8 @@
     "viewDocumentation": "Visualizza la documentazione",
     "@viewDocumentation": {
         "description": "Button label to open the documentation about server configuration"
-    }
+    },
+    "endBeforeStart": "Il valore finale non può precedere quello iniziale",
+    "minLengthRoutine": "Il programma deve durare almeno {number} settimane",
+    "maxLengthRoutine": "Il programma può durare massimo {number} settimane"
 }

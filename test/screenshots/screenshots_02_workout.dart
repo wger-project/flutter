@@ -20,9 +20,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:wger/features/routines/providers/routines_repository.dart';
+import 'package:wger/features/routines/screens/routine_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/providers/routines_repository.dart';
-import 'package:wger/screens/routine_screen.dart';
 import 'package:wger/theme/theme.dart';
 
 import '../../test_data/exercises.dart';

@@ -53,7 +53,7 @@ flutter run
 This is a regular flutter application, so there's no magic. You will need a backend
 for this, so feel free to use the test server for this (the db is reset daily):
 
-* URL: `https://wger-master.rge.uber.space`
+* URL: `https://dev.wger.de`
 * username: `user`
 * password: `flutteruser`
 

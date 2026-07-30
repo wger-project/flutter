@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:wger/models/body_weight/weight_entry.dart';
+import 'package:wger/features/weight/models/weight_entry.dart';
 
 final testWeightEntry1 = WeightEntry(
   id: '1',

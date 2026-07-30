@@ -73,7 +73,7 @@ jobs:
       - build_linux
     steps:
       - name: Checkout application
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           lfs: true
           ref: ${{ github.event.inputs.version }}
@@ -118,7 +118,7 @@ jobs:
   #      - build_apple
   #    steps:
   #      - name: Checkout application
-  #        uses: actions/checkout@v6
+  #        uses: actions/checkout@v7
   #        with:
   #          ref: feature/build-process
   #        #          ref: ${{ github.event.inputs.version }}

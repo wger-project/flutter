@@ -17,7 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:wger/helpers/material.dart';
+import 'package:wger/core/material.dart';
 
 class WidescreenWrapper extends StatelessWidget {
   final Widget child;
