@@ -132,6 +132,24 @@
   "@serverOptionSelfHostedTitle": {},
   "serverOptionSelfHostedDetail": "Connect to your own instance",
   "@serverOptionSelfHostedDetail": {},
+  "allowSelfSignedCertsTitle": "Allow self-signed certificates",
+  "@allowSelfSignedCertsTitle": {},
+  "allowSelfSignedCertsDetail": "Disables TLS certificate validation. Only enable this for a server you trust.",
+  "@allowSelfSignedCertsDetail": {},
+  "certsNotVerifiedTitle": "Certificate validation is off",
+  "@certsNotVerifiedTitle": {
+    "description": "Warning shown in the settings while the app accepts invalid TLS certificates from the server the user is logged into."
+  },
+  "certsNotVerifiedDetail": "Certificates for {host} are not checked. To change this, log out and adjust the option on the login screen.",
+  "@certsNotVerifiedDetail": {
+    "description": "Explains the certificate warning. The option can only be set before logging in, hence the hint to log out.",
+    "type": "text",
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "authOptionPasswordTitle": "Username and password",
   "@authOptionPasswordTitle": {},
   "signInWithToken": "Sign in with token",
@@ -426,6 +444,8 @@
 "gymModeDistinctLogs": "Hide duplicate values",
   "addMeal": "Add meal",
   "@addMeal": {},
+  "meal": "Meal",
+  "@meal": {},
   "mealLogged": "Meal logged to diary",
   "@mealLogged": {},
   "ingredientLogged": "Ingredient logged to diary",
@@ -1492,6 +1512,23 @@
   "syncStatusStalledHint": "The connection to the sync service seems to be blocked. A VPN, ad blocker, antivirus or firewall on this network may be interfering.",
   "@syncStatusStalledHint": {
     "description": "Hint shown in the sync status dialog when the app keeps connecting but never receives any sync data, which usually means something on the network is blocking the connection"
+  },
+  "syncStatusReconnect": "Reconnect",
+  "@syncStatusReconnect": {
+    "description": "Button in the sync status dialog that drops the stuck connection to the sync service and opens a fresh one"
+  },
+  "syncStatusPendingUploads": "{count, plural, =1{One local change waiting for upload} other{{count} local changes waiting for upload}}",
+  "@syncStatusPendingUploads": {
+    "description": "Line in the sync status dialog showing how many local changes have not reached the server yet",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "syncStatusNeverSynced": "Not yet synchronised",
+  "@syncStatusNeverSynced": {
+    "description": "Shown in the sync status dialog instead of the last-sync timestamp when this device has never completed a synchronisation"
   },
   "filterNutriscore": "Nutri-Score filter",
   "@filterNutriscore": {

@@ -28,6 +28,7 @@ import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/core/keys.dart';
 import 'package:wger/core/logs.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/powersync/sync_diagnostics.dart' show collectSyncDiagnostics;
 
 /// Whether an error dialog is currently on screen.
 ///
@@ -222,6 +223,7 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
                 issueErrorMessage: issueErrorMessage,
                 stackTrace: fullStackTrace,
                 applicationLogs: applicationLogs,
+                syncDiagnostics: await collectSyncDiagnostics(),
               );
               final Uri reportUri = Uri.parse(githubIssueUrl);
 

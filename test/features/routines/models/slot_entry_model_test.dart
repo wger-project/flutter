@@ -22,6 +22,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:wger/features/routines/models/base_config.dart';
 import 'package:wger/features/routines/models/slot_entry.dart';
 
+import '../../../../test_data/exercises.dart';
 import '../../../fixtures/fixture_reader.dart';
 
 void main() {
@@ -30,6 +31,7 @@ void main() {
 
     final slotEntry = SlotEntry.fromJson(json.decode(apiResponse));
     expect(slotEntry.id, 143);
+    expect(slotEntry.exerciseObjOrNull, isNull);
     expect(slotEntry.slotId, 140);
     expect(slotEntry.order, 2);
     expect(slotEntry.config, null);
@@ -60,5 +62,32 @@ void main() {
     slotEntry.weightConfigs.add(BaseConfig.firstIteration(3, 1));
     slotEntry.weightConfigs.add(BaseConfig.firstIteration(4, 1));
     expect(slotEntry.hasProgressionRules, true);
+  });
+
+  group('exercise hydration', () {
+    SlotEntry makeEntry() => SlotEntry(
+      id: 42,
+      slotId: 1,
+      exerciseId: 1,
+      repetitionUnitId: 1,
+      repetitionRounding: 1,
+      weightUnitId: 1,
+      weightRounding: 1.25,
+    );
+
+    test('reading an unhydrated exercise throws a descriptive error', () {
+      expect(
+        () => makeEntry().exerciseObj,
+        throwsA(isA<StateError>().having((e) => e.message, 'message', contains('42'))),
+      );
+    });
+
+    test('setting the exercise hydrates the entry', () {
+      final entry = makeEntry()..exercise = testBenchPress;
+
+      expect(entry.exerciseObj.id, testBenchPress.id);
+      expect(entry.exerciseObjOrNull, isNotNull);
+      expect(entry.exerciseId, testBenchPress.id);
+    });
   });
 }

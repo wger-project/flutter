@@ -22,6 +22,7 @@ import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart' show visibleForTesting;
+import 'package:flutter/widgets.dart' show AppLifecycleListener;
 import 'package:flutter_riverpod/flutter_riverpod.dart' show Provider;
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
@@ -33,6 +34,7 @@ import 'package:wger/core/errors.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/core/exceptions/mfa_required_exception.dart';
 import 'package:wger/core/helpers.dart';
+import 'package:wger/core/http_overrides.dart';
 import 'package:wger/core/network/auth_credentials_storage.dart';
 import 'package:wger/core/network/auth_http_client.dart';
 import 'package:wger/core/network/auth_state.dart';
@@ -198,6 +200,11 @@ class AuthNotifier extends _$AuthNotifier {
     String serverUrl,
     PackageInfo appVersion,
   ) async {
+    // Narrow the certificate opt-in to the server we are about to talk to. This
+    // is the single point every auth entry point passes through, and it runs
+    // before the first request to that host.
+    WgerHttpOverrides.trustServer(serverUrl);
+
     final gate = await _gating.serverVersionGate(serverUrl);
     if (gate.tooOld) {
       _logger.info('login blocked: server ${gate.version} below $MIN_SERVER_VERSION');
@@ -638,6 +645,22 @@ class AuthNotifier extends _$AuthNotifier {
       }
     });
     ref.onDispose(sub.cancel);
+
+    // A warm resume must also revalidate: the process can stay alive in the
+    // background for days, so the tokens may have expired without any cold
+    // start noticing. The app is offline-first, so without this a dead
+    // session would only surface once some server-backed action happens to
+    // run. Gated on needsRefresh so quick app switches stay request-free.
+    final lifecycleListener = AppLifecycleListener(
+      onResume: () {
+        final credential = state.asData?.value.credential;
+        if (credential?.needsRefresh(refreshLeeway) ?? false) {
+          _logger.fine('revalidation: app resumed with stale access token');
+          revalidationDone = _revalidate();
+        }
+      },
+    );
+    ref.onDispose(lifecycleListener.dispose);
   }
 
   /// Revalidates the restored session against the server. Fire-and-forget: it
@@ -881,12 +904,15 @@ class AuthNotifier extends _$AuthNotifier {
   /// Called from refresh-token failures, repeated 401s on the HTTP
   /// client, and revalidation rejections. The UI logout button must use
   /// [logout] instead, which performs a full wipe.
-  Future<void> clearSessionOnly() => _resetSession(wipeLocalData: false);
+  Future<void> clearSessionOnly() => _resetSession(wipeLocalData: false, sessionExpired: true);
 
   /// Shared body for [logout] and [clearSessionOnly]. PowerSync is touched
   /// before the state mutation so a reader observing the post-reset state
   /// can never race ahead and re-attach to a DB we're about to wipe.
-  Future<void> _resetSession({required bool wipeLocalData}) async {
+  ///
+  /// [sessionExpired] marks the reset as involuntary in the published state,
+  /// so the login screen can tell the user why they were logged out.
+  Future<void> _resetSession({required bool wipeLocalData, bool sessionExpired = false}) async {
     _logger.fine(wipeLocalData ? 'logging out' : 'clearing session, keeping local DB');
 
     // A failed wipe still logs the user out, but the data is left on disk: the
@@ -904,7 +930,12 @@ class AuthNotifier extends _$AuthNotifier {
       await _disconnectPowerSyncIfBuilt();
     }
 
-    state = AsyncData(AuthState(applicationVersion: _currentOrBlank().applicationVersion));
+    state = AsyncData(
+      AuthState(
+        applicationVersion: _currentOrBlank().applicationVersion,
+        sessionExpired: sessionExpired,
+      ),
+    );
     if (wipeLocalData) {
       await _storage.clearAll();
       // Drop the marker only when the data was actually removed, keeping the

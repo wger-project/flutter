@@ -18,8 +18,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
+import 'package:wger/core/errors.dart' show buildGithubIssueUrl;
 import 'package:wger/core/logs.dart';
+import 'package:wger/core/misc.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/powersync/sync_diagnostics.dart' show collectSyncDiagnostics;
 
 class LogOverviewPage extends StatelessWidget {
   static String routeName = '/LogOverviewPage';
@@ -32,7 +35,26 @@ class LogOverviewPage extends StatelessWidget {
     final logs = InMemoryLogStore().logs.reversed.toList();
 
     return Scaffold(
-      appBar: AppBar(title: Text(i18n.applicationLogs)),
+      appBar: AppBar(
+        title: Text(i18n.applicationLogs),
+        actions: [
+          // Opens a pre-filled GitHub issue with these logs and the current
+          // sync snapshot
+          IconButton(
+            icon: const Icon(Icons.bug_report),
+            tooltip: 'Report issue',
+            onPressed: () async {
+              final url = buildGithubIssueUrl(
+                applicationLogs: InMemoryLogStore().getFormattedLogs(),
+                syncDiagnostics: await collectSyncDiagnostics(),
+              );
+              if (context.mounted) {
+                launchURL(url, context);
+              }
+            },
+          ),
+        ],
+      ),
       body: logs.isEmpty
           ? const Center(child: Text('No logs available.'))
           : ListView.builder(

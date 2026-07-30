@@ -22,12 +22,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:wger/core/consts.dart';
+import 'package:wger/core/errors.dart' show buildGithubIssueUrl;
+import 'package:wger/core/logs.dart';
 import 'package:wger/core/misc.dart';
 import 'package:wger/core/network/auth_notifier.dart';
 import 'package:wger/core/network/network_provider.dart';
+import 'package:wger/core/network/wger_base.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/features/exercises/screens/add_exercise_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/powersync/sync_diagnostics.dart' show collectSyncDiagnostics;
 
 import 'log_overview.dart';
 
@@ -113,7 +117,20 @@ class AboutPage extends ConsumerWidget {
                 trailing: const Icon(Icons.arrow_outward),
                 title: Text(i18n.aboutBugsListTitle),
                 contentPadding: EdgeInsets.zero,
-                onTap: () => launchURL(GITHUB_ISSUES_URL, context),
+                // Pre-fill the report with the app logs and the sync
+                // snapshot, so user-initiated issues carry the same context
+                // as crash reports
+                onTap: () async {
+                  final url = buildGithubIssueUrl(
+                    applicationLogs: InMemoryLogStore().getFormattedLogs(),
+                    syncDiagnostics: await collectSyncDiagnostics(
+                      serverUrl: ref.read(wgerBaseProvider).serverUrl,
+                    ),
+                  );
+                  if (context.mounted) {
+                    launchURL(url, context);
+                  }
+                },
               ),
               ListTile(
                 leading: const Icon(Icons.translate),

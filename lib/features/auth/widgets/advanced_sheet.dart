@@ -29,9 +29,11 @@ Future<void> showAdvancedSheet({
   required BuildContext context,
   required bool initialHideCustomServer,
   required bool initialUsePassword,
+  required bool initialAllowSelfSignedCerts,
   required bool loginMode,
   required TextEditingController serverUrlController,
-  required void Function(bool hideCustomServer, bool usePassword) onChanged,
+  required void Function(bool hideCustomServer, bool usePassword, bool allowSelfSignedCerts)
+  onChanged,
 }) {
   return showModalBottomSheet<void>(
     context: context,
@@ -40,6 +42,7 @@ Future<void> showAdvancedSheet({
     builder: (_) => AdvancedSheet(
       initialHideCustomServer: initialHideCustomServer,
       initialUsePassword: initialUsePassword,
+      initialAllowSelfSignedCerts: initialAllowSelfSignedCerts,
       loginMode: loginMode,
       serverUrlController: serverUrlController,
       onChanged: onChanged,
@@ -50,13 +53,15 @@ Future<void> showAdvancedSheet({
 class AdvancedSheet extends StatefulWidget {
   final bool initialHideCustomServer;
   final bool initialUsePassword;
+  final bool initialAllowSelfSignedCerts;
   final bool loginMode;
   final TextEditingController serverUrlController;
-  final void Function(bool hideCustomServer, bool usePassword) onChanged;
+  final void Function(bool hideCustomServer, bool usePassword, bool allowSelfSignedCerts) onChanged;
 
   const AdvancedSheet({
     required this.initialHideCustomServer,
     required this.initialUsePassword,
+    required this.initialAllowSelfSignedCerts,
     required this.loginMode,
     required this.serverUrlController,
     required this.onChanged,
@@ -70,6 +75,7 @@ class AdvancedSheet extends StatefulWidget {
 class _AdvancedSheetState extends State<AdvancedSheet> {
   late bool _hideCustomServer;
   late bool _usePassword;
+  late bool _allowSelfSignedCerts;
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -77,11 +83,12 @@ class _AdvancedSheetState extends State<AdvancedSheet> {
     super.initState();
     _hideCustomServer = widget.initialHideCustomServer;
     _usePassword = widget.initialUsePassword;
+    _allowSelfSignedCerts = widget.initialAllowSelfSignedCerts;
   }
 
   void _set(VoidCallback change) {
     setState(change);
-    widget.onChanged(_hideCustomServer, _usePassword);
+    widget.onChanged(_hideCustomServer, _usePassword, _allowSelfSignedCerts);
   }
 
   @override
@@ -151,6 +158,27 @@ class _AdvancedSheetState extends State<AdvancedSheet> {
                   padding: const EdgeInsets.only(top: 2, bottom: 4),
                   child: ServerField(controller: widget.serverUrlController),
                 ),
+              // Stays visible for the official server so the option is
+              // discoverable, but disabled: wger.de has a valid certificate and
+              // is never trusted through this setting. The stored preference is
+              // kept, so switching back to self-hosted restores it.
+              SwitchListTile(
+                key: const Key('allowSelfSignedCertsSwitch'),
+                contentPadding: EdgeInsets.zero,
+                title: Text(i18n.allowSelfSignedCertsTitle),
+                subtitle: Text(
+                  i18n.allowSelfSignedCertsDetail,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: _hideCustomServer
+                        ? theme.colorScheme.onSurfaceVariant
+                        : theme.colorScheme.error,
+                  ),
+                ),
+                value: !_hideCustomServer && _allowSelfSignedCerts,
+                onChanged: _hideCustomServer
+                    ? null
+                    : (value) => _set(() => _allowSelfSignedCerts = value),
+              ),
               if (widget.loginMode) ...[
                 _SectionLabel(text: i18n.signInMethodSectionLabel),
                 _OptionRow(

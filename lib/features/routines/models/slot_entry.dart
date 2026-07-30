@@ -91,8 +91,26 @@ class SlotEntry {
   @JsonKey(required: true)
   late SlotEntryType type;
 
+  Exercise? _exerciseObj;
+
+  /// The exercise of this entry, throws if it was never hydrated
+  ///
+  /// Entries parsed from the API only carry [exerciseId], the exercise is
+  /// attached later from the local exercise list, which may not have synced
+  /// yet. Use [exerciseObjOrNull] for callers that handle that case.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  late Exercise exerciseObj;
+  Exercise get exerciseObj {
+    if (_exerciseObj == null) {
+      throw StateError('Slot entry $id has no hydrated exercise (exercise ID $exerciseId)');
+    }
+    return _exerciseObj!;
+  }
+
+  set exerciseObj(Exercise value) => _exerciseObj = value;
+
+  /// Like [exerciseObj] but returns null instead of throwing
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  Exercise? get exerciseObjOrNull => _exerciseObj;
 
   @JsonKey(required: true, name: 'exercise')
   late int exerciseId;

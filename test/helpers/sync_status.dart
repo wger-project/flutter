@@ -44,3 +44,10 @@ SyncStatus buildSyncStatus({
     streamSubscriptions: null,
   );
 }
+
+/// Builds the status used before the sync state has been loaded from the
+/// database (`hasSynced` still null).
+SyncStatus buildUninitializedSyncStatus() {
+  // ignore: invalid_use_of_internal_member
+  return const SyncStatus.uninitialized();
+}

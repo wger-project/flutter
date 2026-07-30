@@ -67,6 +67,12 @@ sealed class AuthState with _$AuthState {
     String? serverVersion,
     PackageInfo? applicationVersion,
     @Default(false) bool serverConfigWarning,
+
+    /// True when the previous session ended involuntarily (expired or
+    /// revoked tokens). The login screen shows a hint so the user knows
+    /// why they have to log in again. Reset by the next login, which
+    /// builds a fresh state.
+    @Default(false) bool sessionExpired,
   }) = _AuthState;
 
   const AuthState._();

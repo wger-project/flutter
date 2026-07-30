@@ -110,6 +110,7 @@
     "addIngredient": "Ajouter ingrédients",
     "mealLogged": "Repas journalisé",
     "addMeal": "Ajouter un repas",
+    "meal": "Repas",
     "add": "Ajouter",
     "cancel": "Supprimer",
     "save": "Sauvegarder",
@@ -1158,6 +1159,9 @@
     "syncStatusLastSynced": "Dernière synchronisation",
     "syncStatusErrorDetails": "Détails de l'erreur",
     "syncStatusStalledHint": "La connexion au service de synchronisation semble être bloquée. Un VPN, un bloqueur de publicités, un antivirus ou un pare-feu sur ce réseau interfère peut-être.",
+    "syncStatusReconnect": "Reconnecter",
+    "syncStatusPendingUploads": "{count, plural, =1{Une modification locale en attente d'envoi} other{{count} modifications locales en attente d'envoi}}",
+    "syncStatusNeverSynced": "Pas encore synchronisé",
     "sessionExpired": "Votre session a expiré, veuillez vous reconnecter",
     "weightOrRepsRequired": "Veuillez saisir un poids, des répétitions, ou les deux",
     "timeStartEndBothOrNeither": "Indiquez l'heure de début et de fin, ou laissez les deux vides",
@@ -1188,5 +1192,9 @@
     "gymModeLogScopeCurrentRoutine": "Routine actuelle",
     "gymModeLogScopeWeeks": "{weeks} dernières semaines",
     "gymModeDistinctLogs": "Masquer les valeurs en double",
-    "gymModeShowWorkoutDuration": "Afficher la durée de l'entraînement"
+    "gymModeShowWorkoutDuration": "Afficher la durée de l'entraînement",
+    "allowSelfSignedCertsTitle": "Autoriser les certificats auto-signés",
+    "allowSelfSignedCertsDetail": "Désactive la validation du certificat TLS. Ne l'activez que pour un serveur de confiance.",
+    "certsNotVerifiedTitle": "La validation des certificats est désactivée",
+    "certsNotVerifiedDetail": "Les certificats de {host} ne sont pas vérifiés. Pour changer cela, déconnectez-vous et modifiez l'option sur l'écran de connexion."
 }
