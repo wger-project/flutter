@@ -28,6 +28,7 @@ import 'package:shared_preferences_platform_interface/shared_preferences_async_p
 import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/core/shared_preferences.dart';
 import 'package:wger/core/widgets/error.dart';
+import 'package:wger/features/account/providers/user_profile_repository.dart';
 import 'package:wger/features/exercises/providers/exercise_repository.dart';
 import 'package:wger/features/exercises/providers/exercises_notifier.dart';
 import 'package:wger/features/routines/models/repetition_unit.dart';
@@ -61,6 +62,7 @@ import 'gym_mode_test.mocks.dart';
   RoutinesRepository,
   TrophyRepository,
   WorkoutLogRepository,
+  UserProfileRepository,
 ])
 void main() {
   installFakeConnectivity();
@@ -74,9 +76,11 @@ void main() {
   final mockExerciseRepo = MockExerciseRepository();
   final mockRoutinesRepo = MockRoutinesRepository();
   final mockLogRepo = MockWorkoutLogRepository();
+  final mockUserProfileRepo = MockUserProfileRepository();
 
   setUp(() {
     SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+    when(mockUserProfileRepo.watchDrift()).thenAnswer((_) => Stream.value(null));
     when(mockSessionRepo.watchAllDrift()).thenAnswer(
       (_) => Stream<List<WorkoutSession>>.multi((controller) {
         controller.add(testRoutine.sessions);
@@ -123,6 +127,7 @@ void main() {
         exerciseRepositoryProvider.overrideWithValue(mockExerciseRepo),
         workoutSessionRepositoryProvider.overrideWithValue(mockSessionRepo),
         workoutLogRepositoryProvider.overrideWithValue(mockLogRepo),
+        userProfileRepositoryProvider.overrideWithValue(mockUserProfileRepo),
         ...extraOverrides,
         // The repetition + weight unit catalogues are tiny direct-Drift
         // stream providers, overriding them inline is the established

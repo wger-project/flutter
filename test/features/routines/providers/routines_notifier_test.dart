@@ -16,13 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/features/account/models/user_profile.dart';
-import 'package:wger/features/account/providers/user_profile_notifier.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/exercises/providers/exercises_notifier.dart';
 import 'package:wger/features/routines/models/day.dart';
@@ -424,10 +425,6 @@ void main() {
         ],
       );
 
-      // fetchAndSetRoutineFull doesn't await the profile, so keep it alive and
-      // let its stream emit before hydration reads it (post-sync steady state).
-      container.listen(userProfileProvider, (_, _) {});
-      await pumpEventQueue();
       final notifier = container.read(routinesRiverpodProvider.notifier);
       final result = await notifier.fetchAndSetRoutineFull(101);
 
@@ -436,6 +433,66 @@ void main() {
       expect(hydratedConfig.weightUnit, testWeightUnit2);
       final hydratedEntry = result.days[0].slots[0].entries[0];
       expect(hydratedEntry.weightUnitObj, testWeightUnit2);
+    });
+
+    test('waits for the profile before hydrating and re-hydrates when it changes', () async {
+      overrideStreams(mockExerciseRepo);
+      final setConfig = SetConfigData(
+        exerciseId: 1,
+        slotEntryId: 1,
+        exercise: getTestExercises()[0],
+      );
+      final routine = Routine(id: 101, name: 'Test routine')
+        ..dayDataGym = [
+          DayData(
+            iteration: 1,
+            date: DateTime(2024, 11, 1),
+            label: '',
+            day: Day(id: 1, routineId: 101, name: 'Test', order: 1),
+            slots: [
+              SlotData(comment: '', isSuperset: false, exerciseIds: [1], setConfigs: [setConfig]),
+            ],
+          ),
+        ];
+      when(mockRepo.fetchAndSetRoutineFullServer(101)).thenAnswer((_) async => routine);
+
+      final profileController = StreamController<UserProfile?>();
+      addTearDown(profileController.close);
+      final profileRepo = MockUserProfileRepository();
+      when(profileRepo.watchDrift()).thenAnswer((_) => profileController.stream);
+
+      final container = ProviderContainer.test(
+        overrides: [
+          routinesRepositoryProvider.overrideWithValue(mockRepo),
+          ...routineFormAmbientOverrides(
+            exercise: mockExerciseRepo,
+            session: mockSessionRepo,
+            userProfile: profileRepo,
+            repetitionUnits: testRepetitionUnits,
+            weightUnits: testWeightUnits,
+          ),
+        ],
+      );
+      container.listen(routinesRiverpodProvider, (_, _) {});
+
+      // The fetch must park on the profile instead of hydrating with the kg
+      // fallback while the profile row hasn't synced yet. Snapshot the unit
+      // the moment the fetch resolves: later re-hydration mutates the same
+      // routine instance and would mask a too-early completion.
+      final notifier = container.read(routinesRiverpodProvider.notifier);
+      final unitAtFetchCompletion = notifier
+          .fetchAndSetRoutineFull(101)
+          .then((r) => r.dayDataGym[0].slots[0].setConfigs[0].weightUnit);
+      await pumpEventQueue();
+      profileController.add(UserProfile(id: 1, weightUnitStr: 'lb'));
+      expect(await unitAtFetchCompletion, testWeightUnit2);
+
+      // A later profile change (settings switch to metric) re-hydrates in place.
+      profileController.add(UserProfile(id: 1, weightUnitStr: 'kg'));
+      await pumpEventQueue();
+      final routines = container.read(routinesRiverpodProvider).value!.routines;
+      final rehydrated = routines.singleWhere((r) => r.id == 101);
+      expect(rehydrated.dayDataGym[0].slots[0].setConfigs[0].weightUnit, testWeightUnit1);
     });
   });
 

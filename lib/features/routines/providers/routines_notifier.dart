@@ -272,6 +272,7 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
     await ref.awaitFirstValue(routineRepetitionUnitProvider);
     await ref.awaitFirstValue(routineWeightUnitProvider);
     await ref.awaitFirstValue(workoutSessionProvider);
+    await ref.awaitFirstValue(userProfileProvider);
 
     final routine = await repo.fetchAndSetRoutineFullServer(routineId);
     _hydrateRoutine(routine);
