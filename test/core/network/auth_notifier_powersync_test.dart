@@ -22,6 +22,7 @@ import 'dart:io';
 
 import 'package:connectivity_plus_platform_interface/connectivity_plus_platform_interface.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart' show AppLifecycleState;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
@@ -1306,6 +1307,109 @@ void main() {
         mockClient.post(tRefresh, headers: anyNamed('headers'), body: anyNamed('body')),
       ).called(1);
     });
+  });
+
+  group('involuntary logout surfacing', () {
+    String makeJwt(Map<String, dynamic> payload) {
+      String enc(Map<String, dynamic> m) =>
+          base64Url.encode(utf8.encode(jsonEncode(m))).replaceAll('=', '');
+      return '${enc({'alg': 'HS256', 'typ': 'JWT'})}.${enc(payload)}.signature';
+    }
+
+    /// Replaces the legacy seed from setUp with a restored headless-JWT
+    /// session whose access token expires at [expiresAt].
+    Future<void> seedJwtSession({required DateTime expiresAt}) async {
+      final prefs = PreferenceHelper.asyncPref;
+      await prefs.remove(PREFS_USER);
+      await prefs.setString(
+        PREFS_ACCESS_TOKEN,
+        makeJwt({'sub': '42', 'exp': expiresAt.millisecondsSinceEpoch ~/ 1000}),
+      );
+      await prefs.setInt(PREFS_ACCESS_EXPIRES_AT, expiresAt.millisecondsSinceEpoch);
+      await prefs.setString(PREFS_TOKEN_TYPE, AuthTokenType.headlessJwt.name);
+      await prefs.setString(PREFS_SERVER_URL, serverUrl);
+    }
+
+    setUp(() async {
+      await PreferenceHelper.asyncPref.setBool(PREFS_HAS_EVER_SYNCED, true);
+    });
+
+    test('revalidation rejection sets sessionExpired for the login screen', () async {
+      when(
+        mockClient.head(tProbe, headers: anyNamed('headers')),
+      ).thenAnswer((_) async => Response('Unauthorized', 401));
+
+      final container = makeContainer();
+      await container.read(authProvider.future);
+      await container.read(authProvider.notifier).revalidationDone;
+
+      final state = container.read(authProvider).value;
+      expect(state?.status, AuthStatus.loggedOut);
+      expect(state?.sessionExpired, true);
+    });
+
+    test('user-driven logout does not set sessionExpired', () async {
+      final container = makeContainer();
+      await container.read(authProvider.future);
+      await container.read(authProvider.notifier).revalidationDone;
+      await container.read(authProvider.notifier).logout();
+
+      final state = container.read(authProvider).value;
+      expect(state?.status, AuthStatus.loggedOut);
+      expect(state?.sessionExpired, false);
+    });
+
+    test(
+      'app resume with a stale token revalidates; a rejected refresh ends the session',
+      () async {
+        // The access token expires inside the pre-emptive refresh leeway, so
+        // the startup revalidation and the resume hook both treat it as stale.
+        final expiry = DateTime.now().add(const Duration(seconds: 10));
+        await seedJwtSession(expiresAt: expiry);
+        when(mockSecureStorage.readRefreshToken()).thenAnswer((_) async => 'stored-refresh');
+
+        // Startup revalidation refreshes successfully; the minted token is
+        // again short-lived so the resume hook sees it as stale too.
+        final freshJwt = makeJwt({'sub': '42', 'exp': expiry.millisecondsSinceEpoch ~/ 1000});
+        when(
+          mockClient.post(tHeadlessRefresh, headers: anyNamed('headers'), body: anyNamed('body')),
+        ).thenAnswer(
+          (_) async => Response(
+            jsonEncode({
+              'status': 200,
+              'data': {'access_token': freshJwt, 'refresh_token': 'rotated'},
+            }),
+            200,
+          ),
+        );
+
+        final container = makeContainer();
+        await container.read(authProvider.future);
+        await container.read(authProvider.notifier).revalidationDone;
+        expect(container.read(authProvider).value?.status, AuthStatus.loggedIn);
+
+        // The server now rejects the refresh token (expired server-side).
+        when(
+          mockClient.post(tHeadlessRefresh, headers: anyNamed('headers'), body: anyNamed('body')),
+        ).thenAnswer((_) async => Response('{"status": 400}', 400));
+
+        // Background -> foreground transition must trigger the resume hook.
+        // The intermediate states mirror what the engine dispatches; jumping
+        // straight to resumed would violate AppLifecycleListener's asserts.
+        final binding = TestWidgetsFlutterBinding.instance;
+        binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
+        binding.handleAppLifecycleStateChanged(AppLifecycleState.hidden);
+        binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+        binding.handleAppLifecycleStateChanged(AppLifecycleState.hidden);
+        binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
+        binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+        await container.read(authProvider.notifier).revalidationDone;
+
+        final state = container.read(authProvider).value;
+        expect(state?.status, AuthStatus.loggedOut);
+        expect(state?.sessionExpired, true);
+      },
+    );
   });
 }
 
