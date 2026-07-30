@@ -158,20 +158,27 @@ class _AdvancedSheetState extends State<AdvancedSheet> {
                   padding: const EdgeInsets.only(top: 2, bottom: 4),
                   child: ServerField(controller: widget.serverUrlController),
                 ),
-              if (!_hideCustomServer)
-                SwitchListTile(
-                  key: const Key('allowSelfSignedCertsSwitch'),
-                  contentPadding: EdgeInsets.zero,
-                  title: Text(i18n.allowSelfSignedCertsTitle),
-                  subtitle: Text(
-                    i18n.allowSelfSignedCertsDetail,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.colorScheme.error,
-                    ),
+              // Stays visible for the official server so the option is
+              // discoverable, but disabled: wger.de has a valid certificate and
+              // is never trusted through this setting. The stored preference is
+              // kept, so switching back to self-hosted restores it.
+              SwitchListTile(
+                key: const Key('allowSelfSignedCertsSwitch'),
+                contentPadding: EdgeInsets.zero,
+                title: Text(i18n.allowSelfSignedCertsTitle),
+                subtitle: Text(
+                  i18n.allowSelfSignedCertsDetail,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: _hideCustomServer
+                        ? theme.colorScheme.onSurfaceVariant
+                        : theme.colorScheme.error,
                   ),
-                  value: _allowSelfSignedCerts,
-                  onChanged: (value) => _set(() => _allowSelfSignedCerts = value),
                 ),
+                value: !_hideCustomServer && _allowSelfSignedCerts,
+                onChanged: _hideCustomServer
+                    ? null
+                    : (value) => _set(() => _allowSelfSignedCerts = value),
+              ),
               if (widget.loginMode) ...[
                 _SectionLabel(text: i18n.signInMethodSectionLabel),
                 _OptionRow(

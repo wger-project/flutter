@@ -17,7 +17,6 @@
  */
 
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -33,6 +32,7 @@ import 'package:shared_preferences_platform_interface/in_memory_shared_preferenc
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:url_launcher_platform_interface/url_launcher_platform_interface.dart';
 import 'package:wger/core/consts.dart';
+import 'package:wger/core/http_overrides.dart';
 import 'package:wger/core/network/auth_notifier.dart';
 import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/core/network/secure_token_storage.dart';
@@ -556,9 +556,9 @@ void main() {
     testWidgets('Self-hosted exposes the self-signed-cert toggle and persists it', (
       WidgetTester tester,
     ) async {
-      // Toggling the switch installs a global HttpOverrides; undo it so the
-      // override does not leak into later tests in this isolate.
-      addTearDown(() => HttpOverrides.global = null);
+      // Toggling the switch flips a static the override reads; reset it so it
+      // does not leak into later tests in this isolate.
+      addTearDown(() => WgerHttpOverrides.allowSelfSignedCerts = false);
 
       await tester.binding.setSurfaceSize(const Size(1080, 1920));
       tester.view.devicePixelRatio = 1.0;
@@ -568,16 +568,32 @@ void main() {
       await tester.tap(find.byKey(const Key('advancedButton')));
       await tester.pumpAndSettle();
 
-      // The toggle only exists once a self-hosted server is selected.
+      // Visible for the official server, but off and not interactive.
       final toggle = find.byKey(const Key('allowSelfSignedCertsSwitch'));
-      expect(toggle, findsNothing);
+      expect(toggle, findsOneWidget);
+      expect(tester.widget<SwitchListTile>(toggle).onChanged, isNull);
+      expect(tester.widget<SwitchListTile>(toggle).value, isFalse);
+
       await tester.tap(find.text('Self-hosted'));
       await tester.pumpAndSettle();
-      expect(toggle, findsOneWidget);
+      expect(tester.widget<SwitchListTile>(toggle).onChanged, isNotNull);
 
       await tester.tap(toggle);
       await tester.pumpAndSettle();
 
+      expect(
+        await PreferenceHelper.asyncPref.getBool(PREFS_ALLOW_SELF_SIGNED_CERTS),
+        isTrue,
+      );
+      expect(WgerHttpOverrides.allowSelfSignedCerts, isTrue);
+
+      // Back on the official server it reads as off again, while the stored
+      // preference survives for the next self-hosted login.
+      await tester.tap(find.text('wger.de'));
+      await tester.pumpAndSettle();
+
+      expect(tester.widget<SwitchListTile>(toggle).value, isFalse);
+      expect(tester.widget<SwitchListTile>(toggle).onChanged, isNull);
       expect(
         await PreferenceHelper.asyncPref.getBool(PREFS_ALLOW_SELF_SIGNED_CERTS),
         isTrue,

@@ -101,6 +101,10 @@ void main() async {
   // Needs to be called before runApp
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Has to happen before anything creates an HttpClient: dart:io only reads
+  // HttpOverrides.current in the client constructor, never again.
+  installHttpOverrides();
+
   // Logger
   _setupLogging();
 
@@ -109,12 +113,12 @@ void main() async {
   // SharedPreferences to SharedPreferencesAsync migration function
   await PreferenceHelper.instance.migrationSupportFunctionForSharedPreferences();
 
-  // Install the self-signed certificate override before any network request
-  // (e.g. the auto-login probe) is made, based on the persisted preference.
-  final allowSelfSignedCerts =
+  // Seed the certificate opt-in from the prefs so the auto-login probe already
+  // honours it; AppSettingsNotifier keeps it in sync from here on.
+  WgerHttpOverrides.allowSelfSignedCerts =
       await PreferenceHelper.asyncPref.getBool(PREFS_ALLOW_SELF_SIGNED_CERTS) ??
       ALLOW_SELF_SIGNED_CERTS_DEFAULT;
-  applySelfSignedCertOverride(allowSelfSignedCerts);
+  WgerHttpOverrides.trustServer(await AuthNotifier.getServerUrlFromPrefs());
 
   // Catch errors from Flutter itself (widget build, layout, paint, etc.)
   FlutterError.onError = (FlutterErrorDetails details) {

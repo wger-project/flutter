@@ -205,16 +205,16 @@ class AppSettingsNotifier extends _$AppSettingsNotifier {
   Future<bool> _loadAllowSelfSignedCerts() async {
     final value =
         (await _prefs.getBool(PREFS_ALLOW_SELF_SIGNED_CERTS)) ?? ALLOW_SELF_SIGNED_CERTS_DEFAULT;
-    // Keep the global override in sync with the persisted value so the very
-    // first HTTP request after build() honours the setting.
-    applySelfSignedCertOverride(value);
+    // The override reads a static, so mirror the setting on both load and write
+    // and it can never drift from this provider.
+    WgerHttpOverrides.allowSelfSignedCerts = value;
     return value;
   }
 
   Future<void> setAllowSelfSignedCerts(bool value) async {
     final current = state.asData?.value ?? const AppSettings();
     state = AsyncData(current.copyWith(allowSelfSignedCerts: value));
-    applySelfSignedCertOverride(value);
+    WgerHttpOverrides.allowSelfSignedCerts = value;
     await _prefs.setBool(PREFS_ALLOW_SELF_SIGNED_CERTS, value);
   }
 
