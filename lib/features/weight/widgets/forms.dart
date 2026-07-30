@@ -202,10 +202,11 @@ class _WeightFormState extends riverpod.ConsumerState<WeightForm> {
                 return i18n.enterValidNumber;
               }
               if (!_isInRange(parsed)) {
-                // The bounds are defined in kg, show them in the entered unit
+                // The bounds are defined in kg; show them in the entered unit,
+                // rounded inwards so every displayed bound is itself accepted
                 return i18n.formMinMaxValues(
-                  convertWeight(_minWeightKg, from: 'kg', to: _unit).round(),
-                  convertWeight(_maxWeightKg, from: 'kg', to: _unit).round(),
+                  convertWeight(_minWeightKg, from: 'kg', to: _unit).ceil(),
+                  convertWeight(_maxWeightKg, from: 'kg', to: _unit).floor(),
                 );
               }
               return null;
