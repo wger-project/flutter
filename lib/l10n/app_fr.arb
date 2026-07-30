@@ -1172,5 +1172,9 @@
     "gymModeLogScopeCurrentRoutine": "Routine actuelle",
     "gymModeLogScopeWeeks": "{weeks} dernières semaines",
     "gymModeDistinctLogs": "Masquer les valeurs en double",
-    "gymModeShowWorkoutDuration": "Afficher la durée de l'entraînement"
+    "gymModeShowWorkoutDuration": "Afficher la durée de l'entraînement",
+    "allowSelfSignedCertsTitle": "Autoriser les certificats auto-signés",
+    "allowSelfSignedCertsDetail": "Désactive la validation du certificat TLS. Ne l'activez que pour un serveur de confiance.",
+    "certsNotVerifiedTitle": "La validation des certificats est désactivée",
+    "certsNotVerifiedDetail": "Les certificats de {host} ne sont pas vérifiés. Pour changer cela, déconnectez-vous et modifiez l'option sur l'écran de connexion."
 }

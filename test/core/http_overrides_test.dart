@@ -95,6 +95,29 @@ void main() {
     expect(held(cert, 'gym.example.com', 443), isTrue);
   });
 
+  group('exemptHost', () {
+    test('names the host while it is exempt', () {
+      WgerHttpOverrides.allowSelfSignedCerts = true;
+      WgerHttpOverrides.trustServer('https://gym.example.com:8000');
+
+      expect(WgerHttpOverrides.exemptHost('https://gym.example.com:8000'), 'gym.example.com');
+    });
+
+    test('is null whenever the handshake would reject', () {
+      // Same rule as acceptsBadCertificate, so the warning cannot drift from it.
+      WgerHttpOverrides.allowSelfSignedCerts = false;
+      WgerHttpOverrides.trustServer('https://gym.example.com');
+      expect(WgerHttpOverrides.exemptHost('https://gym.example.com'), isNull);
+
+      WgerHttpOverrides.allowSelfSignedCerts = true;
+      expect(WgerHttpOverrides.exemptHost('https://other.example.com'), isNull);
+      expect(WgerHttpOverrides.exemptHost(null), isNull);
+
+      WgerHttpOverrides.trustServer(DEFAULT_SERVER_PROD);
+      expect(WgerHttpOverrides.exemptHost(DEFAULT_SERVER_PROD), isNull);
+    });
+  });
+
   test('trustServer clears the host for a null, empty or hostless URL', () {
     for (final url in [null, '', 'not a url']) {
       WgerHttpOverrides.trustServer(url);

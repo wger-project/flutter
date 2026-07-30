@@ -46,10 +46,7 @@ class WgerHttpOverrides extends HttpOverrides {
 
   /// Narrows [trustedHost] to the host of [serverUrl]. A null, empty or
   /// hostless URL clears it.
-  static void trustServer(String? serverUrl) {
-    final host = serverUrl == null ? null : Uri.tryParse(serverUrl)?.host;
-    trustedHost = (host == null || host.isEmpty) ? null : host;
-  }
+  static void trustServer(String? serverUrl) => trustedHost = _hostOf(serverUrl);
 
   /// Hosts the opt-in can never apply to. The servers we run ourselves have a
   /// valid certificate, so an invalid one there is a genuine problem and not
@@ -59,13 +56,31 @@ class WgerHttpOverrides extends HttpOverrides {
     Uri.parse(DEFAULT_SERVER_TEST).host,
   };
 
+  static String? _hostOf(String? serverUrl) {
+    final host = serverUrl == null ? null : Uri.tryParse(serverUrl)?.host;
+    return (host == null || host.isEmpty) ? null : host;
+  }
+
+  static bool _accepts(String host) =>
+      allowSelfSignedCerts && host == trustedHost && !_officialHosts.contains(host);
+
   /// Whether an invalid certificate presented by [host] is accepted.
   ///
   /// Installed as the `badCertificateCallback` of every client, so it runs per
   /// handshake and sees the current [allowSelfSignedCerts] / [trustedHost]
   /// rather than the values from when the client was built.
-  static bool acceptsBadCertificate(X509Certificate cert, String host, int port) =>
-      allowSelfSignedCerts && host == trustedHost && !_officialHosts.contains(host);
+  static bool acceptsBadCertificate(X509Certificate cert, String host, int port) => _accepts(host);
+
+  /// The host of [serverUrl] while it is exempt from certificate validation,
+  /// null otherwise.
+  ///
+  /// Answers the same question as [acceptsBadCertificate], so a UI built on this
+  /// cannot warn about an exemption that does not exist, or stay silent about
+  /// one that does.
+  static String? exemptHost(String? serverUrl) {
+    final host = _hostOf(serverUrl);
+    return (host != null && _accepts(host)) ? host : null;
+  }
 
   @override
   HttpClient createHttpClient(SecurityContext? context) {

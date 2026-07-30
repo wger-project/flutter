@@ -1162,5 +1162,9 @@
     "gymModeLogScopeCurrentRoutine": "Aktuelle Routine",
     "gymModeLogScopeWeeks": "Letzte {weeks} Wochen",
     "gymModeDistinctLogs": "Doppelte Werte ausblenden",
-    "gymModeShowWorkoutDuration": "Trainingsdauer anzeigen"
+    "gymModeShowWorkoutDuration": "Trainingsdauer anzeigen",
+    "allowSelfSignedCertsTitle": "Selbstsignierte Zertifikate erlauben",
+    "allowSelfSignedCertsDetail": "Deaktiviert die Validierung des TLS-Zertifikats. Aktiviere das nur für einen Server, dem du vertraust.",
+    "certsNotVerifiedTitle": "Zertifikatsvalidierung ist deaktiviert",
+    "certsNotVerifiedDetail": "Zertifikate für {host} werden nicht geprüft. Zum Ändern melde dich ab und passe die Option im Anmeldebildschirm an."
 }

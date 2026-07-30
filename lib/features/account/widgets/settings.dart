@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
+import 'package:wger/features/account/widgets/settings/certs_not_verified.dart';
 import 'package:wger/features/account/widgets/settings/data_privacy.dart';
 import 'package:wger/features/account/widgets/settings/image_cache.dart';
 import 'package:wger/features/account/widgets/settings/language.dart';
@@ -39,6 +40,9 @@ class SettingsPage extends StatelessWidget {
       body: WidescreenWrapper(
         child: ListView(
           children: [
+            // Collapses to nothing unless certificates are actually going
+            // unverified, so it sits above the first section rather than in one.
+            const SettingsCertsNotVerified(),
             ListTile(
               title: Text(
                 i18n.settingsCacheTitle,
