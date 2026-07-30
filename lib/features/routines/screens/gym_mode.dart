@@ -19,7 +19,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
+import 'package:wger/features/routines/providers/gym_state_notifier.dart';
 import 'package:wger/features/routines/widgets/gym_mode/gym_mode.dart';
+import 'package:wger/features/routines/widgets/gym_mode/leave_workout_dialog.dart';
 
 class GymModeArguments {
   final int routineId;
@@ -34,15 +36,39 @@ class GymModeScreen extends ConsumerWidget {
 
   static const routeName = '/gym-mode';
 
+  /// Leaves gym mode, but only if the user confirms it
+  Future<void> _confirmAndLeave(BuildContext context) async {
+    if (await confirmLeaveWorkout(context) && context.mounted) {
+      Navigator.of(context).pop();
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final args = ModalRoute.of(context)!.settings.arguments as GymModeArguments;
+    final workoutInProgress = ref.watch(
+      gymStateProvider.select((state) => state.isWorkoutInProgress),
+    );
 
-    return Scaffold(
-      // backgroundColor: Theme.of(context).cardColor,
-      // primary: false,
-      body: SafeArea(
-        child: WidescreenWrapper(child: GymMode(args)),
+    return PopScope(
+      // While a workout is running, leaving is always an explicit choice: the
+      // iOS back swipe and the Android back gesture are easy to trigger by
+      // accident (e.g. when reaching for a podcast app mid-set), and popping
+      // the route drops the session, the elapsed timer and the progress
+      // through the workout.
+      canPop: !workoutInProgress,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) {
+          return;
+        }
+        _confirmAndLeave(context);
+      },
+      child: Scaffold(
+        // backgroundColor: Theme.of(context).cardColor,
+        // primary: false,
+        body: SafeArea(
+          child: WidescreenWrapper(child: GymMode(args)),
+        ),
       ),
     );
   }

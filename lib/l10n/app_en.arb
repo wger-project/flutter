@@ -1290,6 +1290,18 @@
   "@endWorkout": {
     "description": "Use the imperative, label on button to finish the current workout in gym mode"
   },
+  "leaveWorkoutTitle": "Leave the workout?",
+  "@leaveWorkoutTitle": {
+    "description": "Title of the dialog asking to confirm leaving gym mode while a workout is in progress"
+  },
+  "leaveWorkoutConfirmation": "The workout is still in progress. Sets you already saved are kept.",
+  "@leaveWorkoutConfirmation": {
+    "description": "Body of the dialog asking to confirm leaving gym mode while a workout is in progress"
+  },
+  "leaveWorkout": "Leave",
+  "@leaveWorkout": {
+    "description": "Use the imperative, label on the button that confirms leaving gym mode while a workout is in progress"
+  },
   "themeMode": "Theme mode",
   "darkMode": "Always dark mode",
   "lightMode": "Always light mode",

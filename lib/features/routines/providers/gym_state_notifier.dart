@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:convert';
+
 import 'package:clock/clock.dart';
 import 'package:collection/collection.dart';
 import 'package:logging/logging.dart';
@@ -25,6 +27,7 @@ import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/routines/models/log.dart';
 import 'package:wger/features/routines/models/routine.dart';
 import 'package:wger/features/routines/models/set_config_data.dart';
+import 'package:wger/features/routines/models/workout_progress.dart';
 import 'package:wger/features/routines/providers/gym_log_notifier.dart';
 import 'package:wger/features/routines/providers/gym_state.dart';
 
@@ -129,6 +132,115 @@ class GymStateNotifier extends _$GymStateNotifier {
       'showDistinctLogs=${state.showDistinctLogs} '
       'showWorkoutDuration=${state.showWorkoutDuration} ',
     );
+  }
+
+  /// Absolute page indices of the log pages already marked as done
+  List<int> get _donePageIndices => state.pages
+      .expand((page) => page.slotPages)
+      .where((slotPage) => slotPage.logDone)
+      .map((slotPage) => slotPage.pageIndex)
+      .toList();
+
+  /// Stores the progress through the running workout
+  ///
+  /// Riverpod keeps the state alive for as long as the app is running, but the
+  /// OS can kill a backgrounded app at any point, e.g. while the user switches
+  /// to a music app between two sets. Without this, that loses the session, the
+  /// elapsed time and which sets were already done.
+  Future<void> _saveProgress() async {
+    // Before initData there is no dayId to store the progress under
+    if (!state.isInitialized) {
+      return;
+    }
+
+    final progress = WorkoutProgress(
+      dayId: state.dayId,
+      iteration: state.iteration,
+      currentPage: state.currentPage,
+      workoutStart: state.workoutStart,
+      validUntil: state.validUntil,
+      donePageIndices: _donePageIndices,
+    );
+
+    await PreferenceHelper.asyncPref.setString(
+      PREFS_WORKOUT_PROGRESS,
+      json.encode(progress.toJson()),
+    );
+    _logger.finer('Saved $progress');
+  }
+
+  Future<void> _clearProgress() async {
+    await PreferenceHelper.asyncPref.remove(PREFS_WORKOUT_PROGRESS);
+    _logger.finer('Cleared stored workout progress');
+  }
+
+  /// Continues a workout that was interrupted by the app being killed
+  ///
+  /// Returns the page to continue on, or null when there is nothing to restore.
+  /// Call this after [initData] and [calculatePages], the restored "done" flags
+  /// are matched against the pages as they were just calculated.
+  Future<int?> restoreProgress() async {
+    final stored = await PreferenceHelper.asyncPref.getString(PREFS_WORKOUT_PROGRESS);
+    if (stored == null) {
+      return null;
+    }
+
+    // A workout that is still in memory (the app was not killed, the user only
+    // left gym mode and came back) is more current than what was stored.
+    if (state.currentPage != 0) {
+      return null;
+    }
+
+    final WorkoutProgress progress;
+    try {
+      progress = WorkoutProgress.fromJson(json.decode(stored) as Map<String, dynamic>);
+    } on Exception catch (e) {
+      _logger.warning('Discarding unreadable stored workout progress: $e');
+      await _clearProgress();
+      return null;
+    }
+
+    // Only ever continue the same workout, only while it is plausibly still
+    // running, and only if the routine still has the page it stopped on (it
+    // might have been edited in the meantime).
+    if (progress.dayId != state.dayId ||
+        progress.iteration != state.iteration ||
+        progress.validUntil.isBefore(clock.now()) ||
+        progress.currentPage >= state.totalPages) {
+      _logger.fine('Stored workout progress does not apply any more, discarding it');
+      await _clearProgress();
+      return null;
+    }
+
+    state = state.copyWith(
+      currentPage: progress.currentPage,
+      workoutStart: progress.workoutStart,
+      validUntil: progress.validUntil,
+      pages: _pagesWithLogsDone(progress.donePageIndices),
+    );
+
+    _logger.fine('Restored workout progress on page ${progress.currentPage}');
+
+    return progress.currentPage;
+  }
+
+  /// Copy of the current pages with the log pages in [donePageIndices] done
+  List<PageEntry> _pagesWithLogsDone(List<int> donePageIndices) {
+    return state.pages.map((page) {
+      if (page.type != PageType.set) {
+        return page;
+      }
+
+      return page.copyWith(
+        slotPages: page.slotPages.map((slotPage) {
+          if (slotPage.type != SlotPageType.log) {
+            return slotPage;
+          }
+
+          return slotPage.copyWith(logDone: donePageIndices.contains(slotPage.pageIndex));
+        }).toList(),
+      );
+    }).toList();
   }
 
   /// Calculates the page entries
@@ -303,6 +415,7 @@ class GymStateNotifier extends _$GymStateNotifier {
 
   void setCurrentPage(int page) {
     state = state.copyWith(currentPage: page);
+    _saveProgress();
 
     // Ensure that there is a log entry for the current slot entry
     final slotEntryPage = state.getSlotEntryPageByIndex();
@@ -386,6 +499,7 @@ class GymStateNotifier extends _$GymStateNotifier {
     }).toList();
 
     state = state.copyWith(pages: updatedPages);
+    _saveProgress();
     _logger.fine('Set logDone=$isDone for slot page UUID $uuid');
   }
 
@@ -472,6 +586,7 @@ class GymStateNotifier extends _$GymStateNotifier {
   void startWorkout() {
     _logger.fine('Setting workout start time');
     state = state.copyWith(workoutStart: clock.now());
+    _saveProgress();
   }
 
   void clear() {
@@ -484,5 +599,6 @@ class GymStateNotifier extends _$GymStateNotifier {
       validUntil: clock.now().add(DEFAULT_DURATION),
       workoutStart: clock.now(),
     );
+    _clearProgress();
   }
 }

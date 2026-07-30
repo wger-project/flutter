@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:convert';
+
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -381,6 +383,132 @@ void main() {
 
       // Assert
       expect(notifier.state.workoutStart, DateTime(2024, 5, 1, 10, 0));
+    });
+  });
+
+  group('GymStateNotifier workout progress', () {
+    /// Simulates the app being killed and gym mode being opened again: a new
+    /// container means a new (empty) notifier, while the stored preferences
+    /// survive, exactly as on a real restart.
+    Future<GymStateNotifier> restartedNotifier({int dayId = 1, int iteration = 1}) async {
+      final restartedContainer = ProviderContainer.test();
+      final restarted = restartedContainer.read(gymStateProvider.notifier);
+      restarted.initData(getTestRoutine(), dayId, iteration);
+      restarted.calculatePages();
+
+      return restarted;
+    }
+
+    /// Runs a workout up to [currentPage], with one log page marked as done
+    Future<void> runWorkout({int currentPage = 2}) async {
+      notifier.initData(getTestRoutine(), 1, 1);
+      notifier.calculatePages();
+      notifier.markSlotPageAsDone(notifier.state.pages[1].slotPages[1].uuid, isDone: true);
+      notifier.setCurrentPage(currentPage);
+      await pumpEventQueue();
+    }
+
+    test('Continues an interrupted workout where it stopped', () async {
+      await runWorkout();
+
+      final restarted = await restartedNotifier();
+      final restoredPage = await restarted.restoreProgress();
+
+      expect(restoredPage, 2);
+      expect(restarted.state.currentPage, 2);
+      expect(
+        restarted.state.pages[1].slotPages[1].logDone,
+        isTrue,
+        reason: 'the set that was already logged is still marked as done',
+      );
+    });
+
+    test('Keeps the elapsed time of an interrupted workout', () async {
+      await withClock(Clock.fixed(DateTime(2026, 7, 26, 18, 30)), () async {
+        await runWorkout();
+      });
+
+      // Two minutes later the app is started again
+      await withClock(Clock.fixed(DateTime(2026, 7, 26, 18, 32)), () async {
+        final restarted = await restartedNotifier();
+        await restarted.restoreProgress();
+
+        expect(restarted.state.workoutStart, DateTime(2026, 7, 26, 18, 30));
+      });
+    });
+
+    test('Does not continue the workout of another day', () async {
+      await runWorkout();
+
+      // Rewrite the stored progress to belong to a different day of the
+      // routine, the workout that is opened now is not the one that stopped
+      final stored =
+          json.decode((await PreferenceHelper.asyncPref.getString(PREFS_WORKOUT_PROGRESS))!)
+              as Map<String, dynamic>;
+      stored['dayId'] = 2;
+      await PreferenceHelper.asyncPref.setString(PREFS_WORKOUT_PROGRESS, json.encode(stored));
+
+      final restarted = await restartedNotifier();
+
+      expect(await restarted.restoreProgress(), isNull);
+      expect(restarted.state.currentPage, 0);
+    });
+
+    test('Does not continue a workout that is too old', () async {
+      await withClock(Clock.fixed(DateTime(2026, 7, 26, 18, 30)), () async {
+        await runWorkout();
+      });
+
+      // The next morning the workout is long over
+      await withClock(Clock.fixed(DateTime(2026, 7, 27, 9, 0)), () async {
+        final restarted = await restartedNotifier();
+
+        expect(await restarted.restoreProgress(), isNull);
+        expect(restarted.state.currentPage, 0);
+      });
+    });
+
+    test('Does not continue on a page the routine no longer has', () async {
+      await runWorkout();
+
+      // The routine was edited in the meantime and is now shorter than the
+      // page the workout stopped on
+      final restarted = await restartedNotifier();
+      restarted.state = restarted.state.copyWith(pages: restarted.state.pages.sublist(0, 1));
+
+      expect(await restarted.restoreProgress(), isNull);
+    });
+
+    test('Keeps the workout in memory over the stored one', () async {
+      await runWorkout();
+
+      // Same notifier, i.e. the app kept running and the user only left gym
+      // mode and came back. Nothing to restore, the state is already there.
+      expect(await notifier.restoreProgress(), isNull);
+      expect(notifier.state.currentPage, 2);
+    });
+
+    test('Forgets the workout once it is finished', () async {
+      await runWorkout();
+
+      notifier.clear();
+      await pumpEventQueue();
+
+      final restarted = await restartedNotifier();
+      expect(await restarted.restoreProgress(), isNull);
+    });
+
+    test('Ignores stored progress that can not be read', () async {
+      await PreferenceHelper.asyncPref.setString(PREFS_WORKOUT_PROGRESS, 'not json');
+
+      final restarted = await restartedNotifier();
+
+      expect(await restarted.restoreProgress(), isNull);
+      expect(
+        await PreferenceHelper.asyncPref.getString(PREFS_WORKOUT_PROGRESS),
+        isNull,
+        reason: 'the unreadable value is cleared instead of failing again later',
+      );
     });
   });
 

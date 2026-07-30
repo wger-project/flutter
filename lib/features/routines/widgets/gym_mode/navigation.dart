@@ -42,8 +42,10 @@ class NavigationHeader extends StatelessWidget {
       children: [
         IconButton(
           icon: const Icon(Icons.close),
+          // maybePop instead of pop so that the PopScope guarding gym mode
+          // gets to ask for confirmation while a workout is in progress
           onPressed: () {
-            Navigator.of(context).pop();
+            Navigator.of(context).maybePop();
           },
         ),
         Expanded(

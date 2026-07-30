@@ -34,6 +34,7 @@ const PREFS_COUNTDOWN_DURATION = 'countdownDurationSecondsPrefs';
 const PREFS_LOG_SCOPE_WEEKS = 'logScopeWeeksPrefs';
 const PREFS_SHOW_DISTINCT_LOGS = 'showDistinctLogsPrefs';
 const PREFS_SHOW_WORKOUT_DURATION = 'showWorkoutDurationPrefs';
+const PREFS_WORKOUT_PROGRESS = 'workoutProgressPrefs';
 
 /// In seconds
 const DEFAULT_COUNTDOWN_DURATION = 180;
@@ -325,6 +326,12 @@ class GymModeState {
     }
     return null;
   }
+
+  /// Whether the user is currently inside a running workout
+  ///
+  /// True from the moment the start page is left until the summary page is
+  /// reached, i.e. exactly while there is progress that leaving would discard.
+  bool get isWorkoutInProgress => isInitialized && currentPage > 0 && currentPage < totalPages - 1;
 
   double get ratioCompleted {
     if (totalPages == 0) {
