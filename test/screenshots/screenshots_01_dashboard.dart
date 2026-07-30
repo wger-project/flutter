@@ -33,7 +33,6 @@ import 'package:wger/features/nutrition/providers/nutrition_notifier.dart';
 import 'package:wger/features/nutrition/providers/nutrition_repository.dart';
 import 'package:wger/features/routines/providers/routines_repository.dart';
 import 'package:wger/features/trophies/providers/trophy_repository.dart';
-import 'package:wger/features/weight/providers/body_weight_repository.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/theme/theme.dart';
 
@@ -60,7 +59,6 @@ class _FakeAuthNotifier extends AuthNotifier {
   GalleryRepository,
   NutritionRepository,
   IngredientRepository,
-  BodyWeightRepository,
   MeasurementRepository,
   UserProfileRepository,
   RoutinesRepository,
@@ -76,15 +74,13 @@ Widget createDashboardScreen({Locale? locale}) {
   final mockIngredientRepo = MockIngredientRepository();
   when(mockIngredientRepo.getById(any)).thenAnswer((_) async => null);
 
-  final mockBodyWeightRepository = MockBodyWeightRepository();
-  when(
-    mockBodyWeightRepository.watchAllDrift(),
-  ).thenAnswer((_) => Stream.value(getScreenshotWeightEntries()));
-
   final mockMeasurementRepo = MockMeasurementRepository();
-  when(
-    mockMeasurementRepo.watchAll(),
-  ).thenAnswer((_) => Stream<List<MeasurementCategory>>.value(getMeasurementCategories()));
+  when(mockMeasurementRepo.watchAll()).thenAnswer(
+    (_) => Stream<List<MeasurementCategory>>.value([
+      getScreenshotBodyWeightCategory(),
+      ...getMeasurementCategories(),
+    ]),
+  );
 
   final mockUserProfileRepo = MockUserProfileRepository();
   when(
@@ -120,7 +116,6 @@ Widget createDashboardScreen({Locale? locale}) {
   );
   final container = ProviderContainer.test(
     overrides: [
-      bodyWeightRepositoryProvider.overrideWithValue(mockBodyWeightRepository),
       measurementRepositoryProvider.overrideWithValue(mockMeasurementRepo),
       authProvider.overrideWith(() => _FakeAuthNotifier(loggedInAuth)),
       userProfileRepositoryProvider.overrideWithValue(mockUserProfileRepo),

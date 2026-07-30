@@ -44,7 +44,10 @@ class MeasurementCategorySortScreen extends ConsumerWidget {
         child: AsyncValueWidget<List<MeasurementCategory>>(
           value: ref.watch(measurementProvider),
           loggerName: 'MeasurementCategorySortScreen',
-          data: (categories) => _SortableList(categories.where((c) => c.parentId == null).toList()),
+          // Must match the list setCategoryOrder reorders, or indices drift
+          data: (categories) => _SortableList(
+            categories.where((c) => c.parentId == null && !c.isOfficialBodyWeight).toList(),
+          ),
         ),
       ),
     );

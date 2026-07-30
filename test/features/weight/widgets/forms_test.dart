@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (C) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -23,19 +23,20 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/core/consts.dart';
-import 'package:wger/features/weight/models/weight_entry.dart';
-import 'package:wger/features/weight/providers/body_weight_repository.dart';
+import 'package:wger/features/measurements/models/measurement_category.dart';
+import 'package:wger/features/measurements/models/measurement_entry.dart';
+import 'package:wger/features/measurements/providers/measurement_repository.dart';
 import 'package:wger/features/weight/widgets/forms.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 import '../../../../test_data/body_weight.dart';
 import 'forms_test.mocks.dart';
 
-@GenerateMocks([BodyWeightRepository])
+@GenerateMocks([MeasurementRepository])
 void main() {
   Widget createWeightForm({
     locale = 'en',
-    weightEntry = WeightEntry,
+    MeasurementEntry? entry,
     List<Override> overrides = const [],
   }) {
     return ProviderScope(
@@ -44,13 +45,13 @@ void main() {
         locale: Locale(locale),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: Scaffold(body: WeightForm(weightEntry)),
+        home: Scaffold(body: WeightForm(testBodyWeightCategoryId, entry)),
       ),
     );
   }
 
   testWidgets('Correctly prefills and localizes the data - en', (WidgetTester tester) async {
-    await tester.pumpWidget(createWeightForm(weightEntry: testWeightEntry1));
+    await tester.pumpWidget(createWeightForm(entry: testWeightEntry1));
     await tester.pumpAndSettle();
 
     expect(find.text('1/1/2021'), findsOneWidget);
@@ -59,7 +60,7 @@ void main() {
   });
 
   testWidgets('Correctly prefills and localizes the data - de', (WidgetTester tester) async {
-    await tester.pumpWidget(createWeightForm(weightEntry: testWeightEntry1, locale: 'de'));
+    await tester.pumpWidget(createWeightForm(entry: testWeightEntry1, locale: 'de'));
     await tester.pumpAndSettle();
 
     expect(find.text('1.1.2021'), findsOneWidget);
@@ -68,7 +69,7 @@ void main() {
   });
 
   testWidgets('It is possible to quick-change the weight', (WidgetTester tester) async {
-    await tester.pumpWidget(createWeightForm(weightEntry: testWeightEntry1));
+    await tester.pumpWidget(createWeightForm(entry: testWeightEntry1));
     await tester.pumpAndSettle();
 
     await tester.tap(find.byKey(const Key('quickMinus')));
@@ -85,7 +86,7 @@ void main() {
   });
 
   testWidgets('Non-numeric input never reaches the field', (WidgetTester tester) async {
-    await tester.pumpWidget(createWeightForm(weightEntry: testWeightEntry1));
+    await tester.pumpWidget(createWeightForm(entry: testWeightEntry1));
     await tester.pumpAndSettle();
 
     await tester.enterText(find.byKey(const Key('weightInput')), 'shiba inu');
@@ -99,7 +100,7 @@ void main() {
   });
 
   testWidgets('Accepts a dot as decimal separator in the de locale', (WidgetTester tester) async {
-    await tester.pumpWidget(createWeightForm(weightEntry: null, locale: 'de'));
+    await tester.pumpWidget(createWeightForm(locale: 'de'));
     await tester.pumpAndSettle();
 
     await tester.enterText(find.byKey(const Key('weightInput')), '81.5');
@@ -109,19 +110,19 @@ void main() {
   });
 
   testWidgets('Widget works if there is no last entry', (WidgetTester tester) async {
-    await tester.pumpWidget(createWeightForm(weightEntry: null));
+    await tester.pumpWidget(createWeightForm());
     await tester.pumpAndSettle();
   });
 
   testWidgets('Saving keeps an afternoon (PM) time intact', (WidgetTester tester) async {
-    final mockRepo = MockBodyWeightRepository();
-    when(mockRepo.watchAllDrift()).thenAnswer((_) => Stream.value(<WeightEntry>[]));
+    final mockRepo = MockMeasurementRepository();
+    when(mockRepo.watchAll()).thenAnswer((_) => Stream.value(<MeasurementCategory>[]));
     when(mockRepo.updateLocalDrift(any)).thenAnswer((_) async {});
 
     await tester.pumpWidget(
       createWeightForm(
-        weightEntry: testWeightEntry1,
-        overrides: [bodyWeightRepositoryProvider.overrideWithValue(mockRepo)],
+        entry: testWeightEntry1,
+        overrides: [measurementRepositoryProvider.overrideWithValue(mockRepo)],
       ),
     );
     await tester.pumpAndSettle();
@@ -133,7 +134,8 @@ void main() {
     await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
     await tester.pumpAndSettle();
 
-    final saved = verify(mockRepo.updateLocalDrift(captureAny)).captured.single as WeightEntry;
+    final saved = verify(mockRepo.updateLocalDrift(captureAny)).captured.single as MeasurementEntry;
+    expect(saved.categoryId, testBodyWeightCategoryId);
     expect(saved.date.hour, 15);
     expect(saved.date.minute, 30);
   });

@@ -7,16 +7,16 @@ import 'dart:async' as _i10;
 
 import 'package:image_picker/image_picker.dart' as _i11;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i32;
+import 'package:mockito/src/dummies.dart' as _i30;
 import 'package:wger/core/network/base_provider.dart' as _i8;
 import 'package:wger/core/search_options.dart' as _i20;
-import 'package:wger/features/account/models/user_profile.dart' as _i27;
-import 'package:wger/features/account/providers/user_profile_repository.dart' as _i26;
+import 'package:wger/features/account/models/user_profile.dart' as _i25;
+import 'package:wger/features/account/providers/user_profile_repository.dart' as _i24;
 import 'package:wger/features/gallery/models/image.dart' as _i2;
 import 'package:wger/features/gallery/providers/gallery_repository.dart' as _i9;
-import 'package:wger/features/measurements/models/measurement_category.dart' as _i24;
-import 'package:wger/features/measurements/models/measurement_entry.dart' as _i25;
-import 'package:wger/features/measurements/providers/measurement_repository.dart' as _i23;
+import 'package:wger/features/measurements/models/measurement_category.dart' as _i22;
+import 'package:wger/features/measurements/models/measurement_entry.dart' as _i23;
+import 'package:wger/features/measurements/providers/measurement_repository.dart' as _i21;
 import 'package:wger/features/nutrition/models/ingredient.dart' as _i18;
 import 'package:wger/features/nutrition/models/ingredient_filters.dart' as _i19;
 import 'package:wger/features/nutrition/models/log.dart' as _i16;
@@ -27,18 +27,16 @@ import 'package:wger/features/nutrition/providers/ingredient_repository.dart' as
 import 'package:wger/features/nutrition/providers/nutrition_repository.dart' as _i12;
 import 'package:wger/features/routines/models/base_config.dart' as _i7;
 import 'package:wger/features/routines/models/day.dart' as _i4;
-import 'package:wger/features/routines/models/repetition_unit.dart' as _i30;
+import 'package:wger/features/routines/models/repetition_unit.dart' as _i28;
 import 'package:wger/features/routines/models/routine.dart' as _i3;
 import 'package:wger/features/routines/models/slot.dart' as _i5;
 import 'package:wger/features/routines/models/slot_entry.dart' as _i6;
-import 'package:wger/features/routines/models/weight_unit.dart' as _i29;
-import 'package:wger/features/routines/providers/routines_repository.dart' as _i28;
-import 'package:wger/features/trophies/models/trophy.dart' as _i33;
-import 'package:wger/features/trophies/models/user_trophy.dart' as _i34;
-import 'package:wger/features/trophies/models/user_trophy_progression.dart' as _i35;
-import 'package:wger/features/trophies/providers/trophy_repository.dart' as _i31;
-import 'package:wger/features/weight/models/weight_entry.dart' as _i22;
-import 'package:wger/features/weight/providers/body_weight_repository.dart' as _i21;
+import 'package:wger/features/routines/models/weight_unit.dart' as _i27;
+import 'package:wger/features/routines/providers/routines_repository.dart' as _i26;
+import 'package:wger/features/trophies/models/trophy.dart' as _i31;
+import 'package:wger/features/trophies/models/user_trophy.dart' as _i32;
+import 'package:wger/features/trophies/models/user_trophy_progression.dart' as _i33;
+import 'package:wger/features/trophies/providers/trophy_repository.dart' as _i29;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -402,85 +400,41 @@ class MockIngredientRepository extends _i1.Mock implements _i17.IngredientReposi
           as _i10.Future<_i18.Ingredient?>);
 }
 
-/// A class which mocks [BodyWeightRepository].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockBodyWeightRepository extends _i1.Mock implements _i21.BodyWeightRepository {
-  MockBodyWeightRepository() {
-    _i1.throwOnMissingStub(this);
-  }
-
-  @override
-  _i10.Stream<List<_i22.WeightEntry>> watchAllDrift() =>
-      (super.noSuchMethod(
-            Invocation.method(#watchAllDrift, []),
-            returnValue: _i10.Stream<List<_i22.WeightEntry>>.empty(),
-          )
-          as _i10.Stream<List<_i22.WeightEntry>>);
-
-  @override
-  _i10.Future<void> deleteLocalDrift(String? id) =>
-      (super.noSuchMethod(
-            Invocation.method(#deleteLocalDrift, [id]),
-            returnValue: _i10.Future<void>.value(),
-            returnValueForMissingStub: _i10.Future<void>.value(),
-          )
-          as _i10.Future<void>);
-
-  @override
-  _i10.Future<void> updateLocalDrift(_i22.WeightEntry? entry) =>
-      (super.noSuchMethod(
-            Invocation.method(#updateLocalDrift, [entry]),
-            returnValue: _i10.Future<void>.value(),
-            returnValueForMissingStub: _i10.Future<void>.value(),
-          )
-          as _i10.Future<void>);
-
-  @override
-  _i10.Future<void> addLocalDrift(_i22.WeightEntry? entry) =>
-      (super.noSuchMethod(
-            Invocation.method(#addLocalDrift, [entry]),
-            returnValue: _i10.Future<void>.value(),
-            returnValueForMissingStub: _i10.Future<void>.value(),
-          )
-          as _i10.Future<void>);
-}
-
 /// A class which mocks [MeasurementRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockMeasurementRepository extends _i1.Mock implements _i23.MeasurementRepository {
+class MockMeasurementRepository extends _i1.Mock implements _i21.MeasurementRepository {
   MockMeasurementRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i10.Stream<List<_i24.MeasurementCategory>> watchAll() =>
+  _i10.Stream<List<_i22.MeasurementCategory>> watchAll() =>
       (super.noSuchMethod(
             Invocation.method(#watchAll, []),
-            returnValue: _i10.Stream<List<_i24.MeasurementCategory>>.empty(),
+            returnValue: _i10.Stream<List<_i22.MeasurementCategory>>.empty(),
           )
-          as _i10.Stream<List<_i24.MeasurementCategory>>);
+          as _i10.Stream<List<_i22.MeasurementCategory>>);
 
   @override
-  _i10.Stream<_i24.MeasurementCategory?> watchLocalDriftCategoryById(
+  _i10.Stream<_i22.MeasurementCategory?> watchLocalDriftCategoryById(
     String? id,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#watchLocalDriftCategoryById, [id]),
-            returnValue: _i10.Stream<_i24.MeasurementCategory?>.empty(),
+            returnValue: _i10.Stream<_i22.MeasurementCategory?>.empty(),
           )
-          as _i10.Stream<_i24.MeasurementCategory?>);
+          as _i10.Stream<_i22.MeasurementCategory?>);
 
   @override
-  _i10.Future<List<_i24.MeasurementCategory>> getAllOnce() =>
+  _i10.Future<List<_i22.MeasurementCategory>> getAllOnce() =>
       (super.noSuchMethod(
             Invocation.method(#getAllOnce, []),
-            returnValue: _i10.Future<List<_i24.MeasurementCategory>>.value(
-              <_i24.MeasurementCategory>[],
+            returnValue: _i10.Future<List<_i22.MeasurementCategory>>.value(
+              <_i22.MeasurementCategory>[],
             ),
           )
-          as _i10.Future<List<_i24.MeasurementCategory>>);
+          as _i10.Future<List<_i22.MeasurementCategory>>);
 
   @override
   _i10.Future<void> deleteLocalDrift(String? id) =>
@@ -492,7 +446,7 @@ class MockMeasurementRepository extends _i1.Mock implements _i23.MeasurementRepo
           as _i10.Future<void>);
 
   @override
-  _i10.Future<void> updateLocalDrift(_i25.MeasurementEntry? entry) =>
+  _i10.Future<void> updateLocalDrift(_i23.MeasurementEntry? entry) =>
       (super.noSuchMethod(
             Invocation.method(#updateLocalDrift, [entry]),
             returnValue: _i10.Future<void>.value(),
@@ -501,7 +455,7 @@ class MockMeasurementRepository extends _i1.Mock implements _i23.MeasurementRepo
           as _i10.Future<void>);
 
   @override
-  _i10.Future<void> addLocalDrift(_i25.MeasurementEntry? entry) =>
+  _i10.Future<void> addLocalDrift(_i23.MeasurementEntry? entry) =>
       (super.noSuchMethod(
             Invocation.method(#addLocalDrift, [entry]),
             returnValue: _i10.Future<void>.value(),
@@ -511,7 +465,7 @@ class MockMeasurementRepository extends _i1.Mock implements _i23.MeasurementRepo
 
   @override
   _i10.Future<void> addLocalDriftGroupEntries(
-    List<_i25.MeasurementEntry>? entries,
+    List<_i23.MeasurementEntry>? entries,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#addLocalDriftGroupEntries, [entries]),
@@ -531,7 +485,7 @@ class MockMeasurementRepository extends _i1.Mock implements _i23.MeasurementRepo
 
   @override
   _i10.Future<void> updateLocalDriftCategory(
-    _i24.MeasurementCategory? category,
+    _i22.MeasurementCategory? category,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#updateLocalDriftCategory, [category]),
@@ -541,7 +495,7 @@ class MockMeasurementRepository extends _i1.Mock implements _i23.MeasurementRepo
           as _i10.Future<void>);
 
   @override
-  _i10.Future<void> addLocalDriftCategory(_i24.MeasurementCategory? category) =>
+  _i10.Future<void> addLocalDriftCategory(_i22.MeasurementCategory? category) =>
       (super.noSuchMethod(
             Invocation.method(#addLocalDriftCategory, [category]),
             returnValue: _i10.Future<void>.value(),
@@ -562,21 +516,21 @@ class MockMeasurementRepository extends _i1.Mock implements _i23.MeasurementRepo
 /// A class which mocks [UserProfileRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockUserProfileRepository extends _i1.Mock implements _i26.UserProfileRepository {
+class MockUserProfileRepository extends _i1.Mock implements _i24.UserProfileRepository {
   MockUserProfileRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i10.Stream<_i27.UserProfile?> watchDrift() =>
+  _i10.Stream<_i25.UserProfile?> watchDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchDrift, []),
-            returnValue: _i10.Stream<_i27.UserProfile?>.empty(),
+            returnValue: _i10.Stream<_i25.UserProfile?>.empty(),
           )
-          as _i10.Stream<_i27.UserProfile?>);
+          as _i10.Stream<_i25.UserProfile?>);
 
   @override
-  _i10.Future<void> editLocalDrift(_i27.UserProfile? profile) =>
+  _i10.Future<void> editLocalDrift(_i25.UserProfile? profile) =>
       (super.noSuchMethod(
             Invocation.method(#editLocalDrift, [profile]),
             returnValue: _i10.Future<void>.value(),
@@ -588,7 +542,7 @@ class MockUserProfileRepository extends _i1.Mock implements _i26.UserProfileRepo
 /// A class which mocks [RoutinesRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockRoutinesRepository extends _i1.Mock implements _i28.RoutinesRepository {
+class MockRoutinesRepository extends _i1.Mock implements _i26.RoutinesRepository {
   MockRoutinesRepository() {
     _i1.throwOnMissingStub(this);
   }
@@ -646,20 +600,20 @@ class MockRoutinesRepository extends _i1.Mock implements _i28.RoutinesRepository
           as _i10.Future<void>);
 
   @override
-  _i10.Stream<List<_i29.WeightUnit>> watchWeightUnitsDrift() =>
+  _i10.Stream<List<_i27.WeightUnit>> watchWeightUnitsDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchWeightUnitsDrift, []),
-            returnValue: _i10.Stream<List<_i29.WeightUnit>>.empty(),
+            returnValue: _i10.Stream<List<_i27.WeightUnit>>.empty(),
           )
-          as _i10.Stream<List<_i29.WeightUnit>>);
+          as _i10.Stream<List<_i27.WeightUnit>>);
 
   @override
-  _i10.Stream<List<_i30.RepetitionUnit>> watchRepetitionUnitsDrift() =>
+  _i10.Stream<List<_i28.RepetitionUnit>> watchRepetitionUnitsDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchRepetitionUnitsDrift, []),
-            returnValue: _i10.Stream<List<_i30.RepetitionUnit>>.empty(),
+            returnValue: _i10.Stream<List<_i28.RepetitionUnit>>.empty(),
           )
-          as _i10.Stream<List<_i30.RepetitionUnit>>);
+          as _i10.Stream<List<_i28.RepetitionUnit>>);
 
   @override
   _i10.Future<_i4.Day> addDayServer(_i4.Day? day) =>
@@ -806,7 +760,7 @@ class MockRoutinesRepository extends _i1.Mock implements _i28.RoutinesRepository
 /// A class which mocks [TrophyRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockTrophyRepository extends _i1.Mock implements _i31.TrophyRepository {
+class MockTrophyRepository extends _i1.Mock implements _i29.TrophyRepository {
   MockTrophyRepository() {
     _i1.throwOnMissingStub(this);
   }
@@ -826,7 +780,7 @@ class MockTrophyRepository extends _i1.Mock implements _i31.TrophyRepository {
   String get trophiesPath =>
       (super.noSuchMethod(
             Invocation.getter(#trophiesPath),
-            returnValue: _i32.dummyValue<String>(
+            returnValue: _i30.dummyValue<String>(
               this,
               Invocation.getter(#trophiesPath),
             ),
@@ -837,7 +791,7 @@ class MockTrophyRepository extends _i1.Mock implements _i31.TrophyRepository {
   String get userTrophiesPath =>
       (super.noSuchMethod(
             Invocation.getter(#userTrophiesPath),
-            returnValue: _i32.dummyValue<String>(
+            returnValue: _i30.dummyValue<String>(
               this,
               Invocation.getter(#userTrophiesPath),
             ),
@@ -848,7 +802,7 @@ class MockTrophyRepository extends _i1.Mock implements _i31.TrophyRepository {
   String get userTrophyProgressionPath =>
       (super.noSuchMethod(
             Invocation.getter(#userTrophyProgressionPath),
-            returnValue: _i32.dummyValue<String>(
+            returnValue: _i30.dummyValue<String>(
               this,
               Invocation.getter(#userTrophyProgressionPath),
             ),
@@ -856,15 +810,15 @@ class MockTrophyRepository extends _i1.Mock implements _i31.TrophyRepository {
           as String);
 
   @override
-  _i10.Future<List<_i33.Trophy>> fetchTrophies({String? language}) =>
+  _i10.Future<List<_i31.Trophy>> fetchTrophies({String? language}) =>
       (super.noSuchMethod(
             Invocation.method(#fetchTrophies, [], {#language: language}),
-            returnValue: _i10.Future<List<_i33.Trophy>>.value(<_i33.Trophy>[]),
+            returnValue: _i10.Future<List<_i31.Trophy>>.value(<_i31.Trophy>[]),
           )
-          as _i10.Future<List<_i33.Trophy>>);
+          as _i10.Future<List<_i31.Trophy>>);
 
   @override
-  _i10.Future<List<_i34.UserTrophy>> fetchUserTrophies({
+  _i10.Future<List<_i32.UserTrophy>> fetchUserTrophies({
     Map<String, String>? filterQuery,
     String? language,
   }) =>
@@ -873,14 +827,14 @@ class MockTrophyRepository extends _i1.Mock implements _i31.TrophyRepository {
               #filterQuery: filterQuery,
               #language: language,
             }),
-            returnValue: _i10.Future<List<_i34.UserTrophy>>.value(
-              <_i34.UserTrophy>[],
+            returnValue: _i10.Future<List<_i32.UserTrophy>>.value(
+              <_i32.UserTrophy>[],
             ),
           )
-          as _i10.Future<List<_i34.UserTrophy>>);
+          as _i10.Future<List<_i32.UserTrophy>>);
 
   @override
-  _i10.Future<List<_i35.UserTrophyProgression>> fetchProgression({
+  _i10.Future<List<_i33.UserTrophyProgression>> fetchProgression({
     Map<String, String>? filterQuery,
     String? language,
   }) =>
@@ -889,9 +843,9 @@ class MockTrophyRepository extends _i1.Mock implements _i31.TrophyRepository {
               #filterQuery: filterQuery,
               #language: language,
             }),
-            returnValue: _i10.Future<List<_i35.UserTrophyProgression>>.value(
-              <_i35.UserTrophyProgression>[],
+            returnValue: _i10.Future<List<_i33.UserTrophyProgression>>.value(
+              <_i33.UserTrophyProgression>[],
             ),
           )
-          as _i10.Future<List<_i35.UserTrophyProgression>>);
+          as _i10.Future<List<_i33.UserTrophyProgression>>);
 }

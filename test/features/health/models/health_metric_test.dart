@@ -25,12 +25,12 @@ HealthMetric _metric(MetricType type) => healthMetrics.firstWhere((m) => m.metri
 
 void main() {
   group('Enabled metric set', () {
-    test('only body fat and height are imported in V1', () {
+    test('only body fat, height and body weight are imported in V1', () {
       expect(
         enabledHealthMetrics.map((m) => m.metricType),
-        containsAll([MetricType.bodyFat, MetricType.height]),
+        containsAll([MetricType.bodyFat, MetricType.height, MetricType.bodyWeight]),
       );
-      expect(enabledHealthMetrics.length, 2);
+      expect(enabledHealthMetrics.length, 3);
     });
 
     test('every disabled metric explains why', () {

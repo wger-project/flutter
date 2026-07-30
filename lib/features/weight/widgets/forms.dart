@@ -24,26 +24,82 @@ import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/core/number_input.dart';
 import 'package:wger/core/widgets/datetime_input.dart';
 import 'package:wger/core/widgets/form_submit_button.dart';
-import 'package:wger/features/weight/models/weight_entry.dart';
-import 'package:wger/features/weight/providers/body_weight_notifier.dart';
+import 'package:wger/features/measurements/models/measurement_entry.dart';
+import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
-class WeightForm extends riverpod.ConsumerWidget {
-  final _form = GlobalKey<FormState>();
-  final weightController = TextEditingController(text: '');
+/// Sanity bounds and stepper sizes for manual body weight input
+const _minWeight = 30;
+const _maxWeight = 300;
+const _stepperSmall = 0.1;
+const _stepperBig = 1;
 
-  final WeightEntry _weightEntry;
+/// Create/edit form for a body weight entry.
+///
+/// Entries are measurements in the official body weight category, so the form
+/// needs the category's id for new entries.
+class WeightForm extends riverpod.ConsumerStatefulWidget {
+  final String _categoryId;
+  final MeasurementEntry? _entry;
 
-  WeightForm([WeightEntry? weightEntry])
-    : _weightEntry = weightEntry ?? WeightEntry(date: DateTime.now());
+  const WeightForm(this._categoryId, [this._entry]);
 
   @override
-  Widget build(BuildContext context, riverpod.WidgetRef ref) {
-    final numberFormat = localizedNumberFormat(context);
+  riverpod.ConsumerState<WeightForm> createState() => _WeightFormState();
+}
 
-    if (weightController.text.isEmpty && _weightEntry.weight != 0) {
-      weightController.text = numberFormat.format(_weightEntry.weight);
+class _WeightFormState extends riverpod.ConsumerState<WeightForm> {
+  final _form = GlobalKey<FormState>();
+
+  // Controller instead of initialValue because the quick +/- buttons write
+  // into the field. Seeded in didChangeDependencies (needs the locale).
+  final _weightController = TextEditingController();
+  bool _seeded = false;
+
+  late DateTime _date;
+  num _weight = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _date = widget._entry?.date ?? DateTime.now();
+    _weight = widget._entry?.value ?? 0;
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_seeded) {
+      _seeded = true;
+      if (widget._entry != null) {
+        _weightController.text = localizedNumberFormat(context).format(widget._entry!.value);
+      }
     }
+  }
+
+  @override
+  void dispose() {
+    _weightController.dispose();
+    super.dispose();
+  }
+
+  /// Adds [delta] to the field's current value, clamped to the valid range
+  void _step(num delta) {
+    final numberFormat = localizedNumberFormat(context);
+    final parsed = numberFormat.tryParse(_weightController.text);
+    if (parsed == null) {
+      return;
+    }
+    final newValue = parsed + delta;
+    if (newValue < _minWeight || newValue > _maxWeight) {
+      return;
+    }
+    _weightController.text = numberFormat.format(newValue);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final numberFormat = localizedNumberFormat(context);
 
     return Form(
       key: _form,
@@ -51,12 +107,12 @@ class WeightForm extends riverpod.ConsumerWidget {
         children: [
           DateInputWidget(
             key: const Key('dateInput'),
-            value: _weightEntry.date,
+            value: _date,
             labelText: AppLocalizations.of(context).date,
             firstDate: DateTime(DateTime.now().year - 10),
             lastDate: DateTime.now(),
             onChanged: (date) {
-              _weightEntry.date = _weightEntry.date.copyWith(
+              _date = _date.copyWith(
                 year: date.year,
                 month: date.month,
                 day: date.day,
@@ -65,10 +121,10 @@ class WeightForm extends riverpod.ConsumerWidget {
           ),
           TimeInputWidget(
             key: const Key('timeInput'),
-            value: TimeOfDay.fromDateTime(_weightEntry.date),
+            value: TimeOfDay.fromDateTime(_date),
             labelText: AppLocalizations.of(context).time,
             onChanged: (time) {
-              _weightEntry.date = _weightEntry.date.copyWith(
+              _date = _date.copyWith(
                 hour: time.hour,
                 minute: time.minute,
                 second: 0,
@@ -87,32 +143,12 @@ class WeightForm extends riverpod.ConsumerWidget {
                   IconButton(
                     key: const Key('quickMinus'),
                     icon: const FaIcon(FontAwesomeIcons.circleMinus),
-                    onPressed: () {
-                      final parsed = numberFormat.tryParse(weightController.text);
-                      if (parsed == null) {
-                        return;
-                      }
-                      final newValue = parsed - WeightEntry.stepperBig;
-                      if (newValue < WeightEntry.minValue) {
-                        return;
-                      }
-                      weightController.text = numberFormat.format(newValue);
-                    },
+                    onPressed: () => _step(-_stepperBig),
                   ),
                   IconButton(
                     key: const Key('quickMinusSmall'),
                     icon: const FaIcon(FontAwesomeIcons.minus),
-                    onPressed: () {
-                      final parsed = numberFormat.tryParse(weightController.text);
-                      if (parsed == null) {
-                        return;
-                      }
-                      final newValue = parsed - WeightEntry.stepperSmall;
-                      if (newValue < WeightEntry.minValue) {
-                        return;
-                      }
-                      weightController.text = numberFormat.format(newValue);
-                    },
+                    onPressed: () => _step(-_stepperSmall),
                   ),
                 ],
               ),
@@ -122,41 +158,21 @@ class WeightForm extends riverpod.ConsumerWidget {
                   IconButton(
                     key: const Key('quickPlusSmall'),
                     icon: const FaIcon(FontAwesomeIcons.plus),
-                    onPressed: () {
-                      final parsed = numberFormat.tryParse(weightController.text);
-                      if (parsed == null) {
-                        return;
-                      }
-                      final newValue = parsed + WeightEntry.stepperSmall;
-                      if (newValue > WeightEntry.maxValue) {
-                        return;
-                      }
-                      weightController.text = numberFormat.format(newValue);
-                    },
+                    onPressed: () => _step(_stepperSmall),
                   ),
                   IconButton(
                     key: const Key('quickPlus'),
                     icon: const FaIcon(FontAwesomeIcons.circlePlus),
-                    onPressed: () {
-                      final parsed = numberFormat.tryParse(weightController.text);
-                      if (parsed == null) {
-                        return;
-                      }
-                      final newValue = parsed + WeightEntry.stepperBig;
-                      if (newValue > WeightEntry.maxValue) {
-                        return;
-                      }
-                      weightController.text = numberFormat.format(newValue);
-                    },
+                    onPressed: () => _step(_stepperBig),
                   ),
                 ],
               ),
             ),
-            controller: weightController,
+            controller: _weightController,
             keyboardType: textInputTypeDecimal,
             inputFormatters: [LocalizedDecimalInputFormatter(numberFormat.symbols.DECIMAL_SEP)],
             onSaved: (newValue) {
-              _weightEntry.weight = numberFormat.parse(newValue!);
+              _weight = numberFormat.parse(newValue!);
             },
             validator: (value) {
               final i18n = AppLocalizations.of(context);
@@ -167,8 +183,8 @@ class WeightForm extends riverpod.ConsumerWidget {
               if (parsed == null) {
                 return i18n.enterValidNumber;
               }
-              if (parsed < WeightEntry.minValue || parsed > WeightEntry.maxValue) {
-                return i18n.formMinMaxValues(WeightEntry.minValue, WeightEntry.maxValue);
+              if (parsed < _minWeight || parsed > _maxWeight) {
+                return i18n.formMinMaxValues(_minWeight, _maxWeight);
               }
               return null;
             },
@@ -177,18 +193,26 @@ class WeightForm extends riverpod.ConsumerWidget {
             key: const Key(SUBMIT_BUTTON_KEY_NAME),
             label: AppLocalizations.of(context).save,
             onPressed: () async {
-              // Validate and save the current values to the weightEntry
               final isValid = _form.currentState!.validate();
               if (!isValid) {
                 return;
               }
               _form.currentState!.save();
 
-              // Save the entry on the server
-              final notifier = ref.read(weightEntryProvider.notifier);
-              _weightEntry.id == null
-                  ? await notifier.addEntry(_weightEntry)
-                  : await notifier.updateEntry(_weightEntry);
+              // Notes, source and external id are not editable here; keep the
+              // existing values so edits to imported entries stay deduplicable
+              final entry = MeasurementEntry(
+                id: widget._entry?.id,
+                categoryId: widget._categoryId,
+                date: _date,
+                value: _weight,
+                notes: widget._entry?.notes ?? '',
+                source: widget._entry?.source ?? 'user',
+                externalId: widget._entry?.externalId,
+              );
+
+              final notifier = ref.read(measurementProvider.notifier);
+              entry.id == null ? await notifier.addEntry(entry) : await notifier.updateEntry(entry);
 
               if (context.mounted) {
                 Navigator.of(context).pop();

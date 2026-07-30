@@ -44,6 +44,24 @@ void main() {
     });
   });
 
+  group('isOfficialBodyWeight', () {
+    test('is true only for the official body weight category', () {
+      final official = MeasurementCategory(
+        metricType: MetricType.bodyWeight,
+        isOfficial: true,
+      );
+      expect(official.isOfficialBodyWeight, isTrue);
+
+      // A user-created category with the same metric type is not official
+      expect(MeasurementCategory(metricType: MetricType.bodyWeight).isOfficialBodyWeight, isFalse);
+      // Other official metric types are not body weight
+      expect(
+        MeasurementCategory(metricType: MetricType.height, isOfficial: true).isOfficialBodyWeight,
+        isFalse,
+      );
+    });
+  });
+
   group('MetricType', () {
     test('fromWire maps a known wire value to its enum case', () {
       expect(MetricType.fromWire('body_fat'), MetricType.bodyFat);

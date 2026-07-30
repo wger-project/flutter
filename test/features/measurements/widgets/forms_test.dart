@@ -115,6 +115,39 @@ void main() {
     });
   });
 
+  group('MeasurementEntryForm', () {
+    testWidgets('editing keeps source and externalId of imported entries', (tester) async {
+      final category = getMeasurementCategories()[0];
+      when(mockRepo.watchAll()).thenAnswer((_) => Stream.value([category]));
+      when(
+        mockRepo.watchLocalDriftCategoryById(category.id),
+      ).thenAnswer((_) => Stream.value(category));
+      when(mockRepo.updateLocalDrift(any)).thenAnswer((_) async {});
+
+      final imported = MeasurementEntry(
+        id: 'e-import',
+        categoryId: category.id!,
+        date: DateTime(2026, 1, 1),
+        value: 30,
+        notes: '',
+        source: 'apple',
+        externalId: 'platform-uuid',
+      );
+
+      await tester.pumpWidget(wrap(MeasurementEntryForm(category.id!, imported)));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byType(ElevatedButton));
+      await tester.pumpAndSettle();
+
+      final saved =
+          verify(mockRepo.updateLocalDrift(captureAny)).captured.single as MeasurementEntry;
+      expect(saved.source, 'apple');
+      expect(saved.externalId, 'platform-uuid');
+      expect(saved.value, 30);
+    });
+  });
+
   group('GroupMeasurementEntryForm', () {
     testWidgets('renders one DecimalInputWidget per child component', (tester) async {
       await tester.pumpWidget(

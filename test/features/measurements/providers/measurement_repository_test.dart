@@ -193,6 +193,24 @@ void main() {
       final emitted = await repo.watchAll().first;
       expect(emitted, hasLength(1));
       expect(emitted.single.name, 'Waist');
+      expect(emitted.single.isOfficial, isFalse);
+    });
+
+    test('isOfficial and metricType round-trip through the table', () async {
+      await repo.addLocalDriftCategory(
+        MeasurementCategory(
+          id: 'bw',
+          name: 'Weight',
+          unit: 'kg',
+          metricType: MetricType.bodyWeight,
+          isOfficial: true,
+        ),
+      );
+
+      final emitted = await repo.watchAll().first;
+      expect(emitted.single.isOfficial, isTrue);
+      expect(emitted.single.metricType, MetricType.bodyWeight);
+      expect(emitted.single.isOfficialBodyWeight, isTrue);
     });
 
     test('updateLocalDriftCategory overwrites name and unit', () async {

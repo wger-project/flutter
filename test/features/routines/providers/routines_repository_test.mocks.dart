@@ -140,189 +140,184 @@ class _Fake$ExerciseVideoTableTable_19 extends _i1.SmartFake
     : super(parent, parentInvocation);
 }
 
-class _Fake$WeightEntryTableTable_20 extends _i1.SmartFake implements _i4.$WeightEntryTableTable {
-  _Fake$WeightEntryTableTable_20(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
-}
-
-class _Fake$MeasurementCategoryTableTable_21 extends _i1.SmartFake
+class _Fake$MeasurementCategoryTableTable_20 extends _i1.SmartFake
     implements _i4.$MeasurementCategoryTableTable {
-  _Fake$MeasurementCategoryTableTable_21(
+  _Fake$MeasurementCategoryTableTable_20(
     Object parent,
     Invocation parentInvocation,
   ) : super(parent, parentInvocation);
 }
 
-class _Fake$MeasurementEntryTableTable_22 extends _i1.SmartFake
+class _Fake$MeasurementEntryTableTable_21 extends _i1.SmartFake
     implements _i4.$MeasurementEntryTableTable {
-  _Fake$MeasurementEntryTableTable_22(
+  _Fake$MeasurementEntryTableTable_21(
     Object parent,
     Invocation parentInvocation,
   ) : super(parent, parentInvocation);
 }
 
-class _Fake$RoutineTableTable_23 extends _i1.SmartFake implements _i4.$RoutineTableTable {
-  _Fake$RoutineTableTable_23(Object parent, Invocation parentInvocation)
+class _Fake$RoutineTableTable_22 extends _i1.SmartFake implements _i4.$RoutineTableTable {
+  _Fake$RoutineTableTable_22(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _Fake$WorkoutLogTableTable_24 extends _i1.SmartFake implements _i4.$WorkoutLogTableTable {
-  _Fake$WorkoutLogTableTable_24(Object parent, Invocation parentInvocation)
+class _Fake$WorkoutLogTableTable_23 extends _i1.SmartFake implements _i4.$WorkoutLogTableTable {
+  _Fake$WorkoutLogTableTable_23(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _Fake$WorkoutSessionTableTable_25 extends _i1.SmartFake
+class _Fake$WorkoutSessionTableTable_24 extends _i1.SmartFake
     implements _i4.$WorkoutSessionTableTable {
-  _Fake$WorkoutSessionTableTable_25(Object parent, Invocation parentInvocation)
+  _Fake$WorkoutSessionTableTable_24(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _Fake$RoutineRepetitionUnitTableTable_26 extends _i1.SmartFake
+class _Fake$RoutineRepetitionUnitTableTable_25 extends _i1.SmartFake
     implements _i4.$RoutineRepetitionUnitTableTable {
-  _Fake$RoutineRepetitionUnitTableTable_26(
+  _Fake$RoutineRepetitionUnitTableTable_25(
     Object parent,
     Invocation parentInvocation,
   ) : super(parent, parentInvocation);
 }
 
-class _Fake$RoutineWeightUnitTableTable_27 extends _i1.SmartFake
+class _Fake$RoutineWeightUnitTableTable_26 extends _i1.SmartFake
     implements _i4.$RoutineWeightUnitTableTable {
-  _Fake$RoutineWeightUnitTableTable_27(
+  _Fake$RoutineWeightUnitTableTable_26(
     Object parent,
     Invocation parentInvocation,
   ) : super(parent, parentInvocation);
 }
 
-class _Fake$NutritionalPlanTableTable_28 extends _i1.SmartFake
+class _Fake$NutritionalPlanTableTable_27 extends _i1.SmartFake
     implements _i4.$NutritionalPlanTableTable {
-  _Fake$NutritionalPlanTableTable_28(Object parent, Invocation parentInvocation)
+  _Fake$NutritionalPlanTableTable_27(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _Fake$IngredientTableTable_29 extends _i1.SmartFake implements _i4.$IngredientTableTable {
-  _Fake$IngredientTableTable_29(Object parent, Invocation parentInvocation)
+class _Fake$IngredientTableTable_28 extends _i1.SmartFake implements _i4.$IngredientTableTable {
+  _Fake$IngredientTableTable_28(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _Fake$IngredientImageTableTable_30 extends _i1.SmartFake
+class _Fake$IngredientImageTableTable_29 extends _i1.SmartFake
     implements _i4.$IngredientImageTableTable {
-  _Fake$IngredientImageTableTable_30(Object parent, Invocation parentInvocation)
+  _Fake$IngredientImageTableTable_29(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _Fake$IngredientWeightUnitTableTable_31 extends _i1.SmartFake
+class _Fake$IngredientWeightUnitTableTable_30 extends _i1.SmartFake
     implements _i4.$IngredientWeightUnitTableTable {
-  _Fake$IngredientWeightUnitTableTable_31(
+  _Fake$IngredientWeightUnitTableTable_30(
     Object parent,
     Invocation parentInvocation,
   ) : super(parent, parentInvocation);
 }
 
-class _Fake$MealTableTable_32 extends _i1.SmartFake implements _i4.$MealTableTable {
-  _Fake$MealTableTable_32(Object parent, Invocation parentInvocation)
+class _Fake$MealTableTable_31 extends _i1.SmartFake implements _i4.$MealTableTable {
+  _Fake$MealTableTable_31(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _Fake$MealItemTableTable_33 extends _i1.SmartFake implements _i4.$MealItemTableTable {
-  _Fake$MealItemTableTable_33(Object parent, Invocation parentInvocation)
+class _Fake$MealItemTableTable_32 extends _i1.SmartFake implements _i4.$MealItemTableTable {
+  _Fake$MealItemTableTable_32(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _Fake$LogItemTableTable_34 extends _i1.SmartFake implements _i4.$LogItemTableTable {
-  _Fake$LogItemTableTable_34(Object parent, Invocation parentInvocation)
+class _Fake$LogItemTableTable_33 extends _i1.SmartFake implements _i4.$LogItemTableTable {
+  _Fake$LogItemTableTable_33(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _Fake$GalleryImageTableTable_35 extends _i1.SmartFake implements _i4.$GalleryImageTableTable {
-  _Fake$GalleryImageTableTable_35(Object parent, Invocation parentInvocation)
+class _Fake$GalleryImageTableTable_34 extends _i1.SmartFake implements _i4.$GalleryImageTableTable {
+  _Fake$GalleryImageTableTable_34(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeDriftDatabaseOptions_36 extends _i1.SmartFake implements _i3.DriftDatabaseOptions {
-  _FakeDriftDatabaseOptions_36(Object parent, Invocation parentInvocation)
+class _FakeDriftDatabaseOptions_35 extends _i1.SmartFake implements _i3.DriftDatabaseOptions {
+  _FakeDriftDatabaseOptions_35(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeGeneratedDatabase_37 extends _i1.SmartFake implements _i3.GeneratedDatabase {
-  _FakeGeneratedDatabase_37(Object parent, Invocation parentInvocation)
+class _FakeGeneratedDatabase_36 extends _i1.SmartFake implements _i3.GeneratedDatabase {
+  _FakeGeneratedDatabase_36(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeStreamQueryUpdateRules_38 extends _i1.SmartFake implements _i3.StreamQueryUpdateRules {
-  _FakeStreamQueryUpdateRules_38(Object parent, Invocation parentInvocation)
+class _FakeStreamQueryUpdateRules_37 extends _i1.SmartFake implements _i3.StreamQueryUpdateRules {
+  _FakeStreamQueryUpdateRules_37(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeDatabaseConnection_39 extends _i1.SmartFake implements _i3.DatabaseConnection {
-  _FakeDatabaseConnection_39(Object parent, Invocation parentInvocation)
+class _FakeDatabaseConnection_38 extends _i1.SmartFake implements _i3.DatabaseConnection {
+  _FakeDatabaseConnection_38(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeQueryExecutor_40 extends _i1.SmartFake implements _i3.QueryExecutor {
-  _FakeQueryExecutor_40(Object parent, Invocation parentInvocation)
+class _FakeQueryExecutor_39 extends _i1.SmartFake implements _i3.QueryExecutor {
+  _FakeQueryExecutor_39(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeStreamQueryStore_41 extends _i1.SmartFake implements _i5.StreamQueryStore {
-  _FakeStreamQueryStore_41(Object parent, Invocation parentInvocation)
+class _FakeStreamQueryStore_40 extends _i1.SmartFake implements _i5.StreamQueryStore {
+  _FakeStreamQueryStore_40(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeDatabaseConnectionUser_42 extends _i1.SmartFake implements _i3.DatabaseConnectionUser {
-  _FakeDatabaseConnectionUser_42(Object parent, Invocation parentInvocation)
+class _FakeDatabaseConnectionUser_41 extends _i1.SmartFake implements _i3.DatabaseConnectionUser {
+  _FakeDatabaseConnectionUser_41(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeMigrator_43 extends _i1.SmartFake implements _i3.Migrator {
-  _FakeMigrator_43(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+class _FakeMigrator_42 extends _i1.SmartFake implements _i3.Migrator {
+  _FakeMigrator_42(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
-class _FakeFuture_44<T> extends _i1.SmartFake implements _i6.Future<T> {
-  _FakeFuture_44(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+class _FakeFuture_43<T> extends _i1.SmartFake implements _i6.Future<T> {
+  _FakeFuture_43(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
-class _FakeInsertStatement_45<T1 extends _i3.Table, D1> extends _i1.SmartFake
+class _FakeInsertStatement_44<T1 extends _i3.Table, D1> extends _i1.SmartFake
     implements _i3.InsertStatement<T1, D1> {
-  _FakeInsertStatement_45(Object parent, Invocation parentInvocation)
+  _FakeInsertStatement_44(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeUpdateStatement_46<T extends _i3.Table, D> extends _i1.SmartFake
+class _FakeUpdateStatement_45<T extends _i3.Table, D> extends _i1.SmartFake
     implements _i3.UpdateStatement<T, D> {
-  _FakeUpdateStatement_46(Object parent, Invocation parentInvocation)
+  _FakeUpdateStatement_45(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeSimpleSelectStatement_47<T1 extends _i3.HasResultSet, D> extends _i1.SmartFake
+class _FakeSimpleSelectStatement_46<T1 extends _i3.HasResultSet, D> extends _i1.SmartFake
     implements _i3.SimpleSelectStatement<T1, D> {
-  _FakeSimpleSelectStatement_47(Object parent, Invocation parentInvocation)
+  _FakeSimpleSelectStatement_46(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeJoinedSelectStatement_48<FirstT extends _i3.HasResultSet, FirstD> extends _i1.SmartFake
+class _FakeJoinedSelectStatement_47<FirstT extends _i3.HasResultSet, FirstD> extends _i1.SmartFake
     implements _i3.JoinedSelectStatement<FirstT, FirstD> {
-  _FakeJoinedSelectStatement_48(Object parent, Invocation parentInvocation)
+  _FakeJoinedSelectStatement_47(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeBaseSelectStatement_49<Row> extends _i1.SmartFake
+class _FakeBaseSelectStatement_48<Row> extends _i1.SmartFake
     implements _i3.BaseSelectStatement<Row> {
-  _FakeBaseSelectStatement_49(Object parent, Invocation parentInvocation)
+  _FakeBaseSelectStatement_48(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeDeleteStatement_50<T1 extends _i3.Table, D1> extends _i1.SmartFake
+class _FakeDeleteStatement_49<T1 extends _i3.Table, D1> extends _i1.SmartFake
     implements _i3.DeleteStatement<T1, D1> {
-  _FakeDeleteStatement_50(Object parent, Invocation parentInvocation)
+  _FakeDeleteStatement_49(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeSelectable_51<T> extends _i1.SmartFake implements _i3.Selectable<T> {
-  _FakeSelectable_51(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+class _FakeSelectable_50<T> extends _i1.SmartFake implements _i3.Selectable<T> {
+  _FakeSelectable_50(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
 }
 
-class _FakeGenerationContext_52 extends _i1.SmartFake implements _i3.GenerationContext {
-  _FakeGenerationContext_52(Object parent, Invocation parentInvocation)
+class _FakeGenerationContext_51 extends _i1.SmartFake implements _i3.GenerationContext {
+  _FakeGenerationContext_51(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
@@ -688,21 +683,10 @@ class MockDriftPowersyncDatabase extends _i1.Mock implements _i4.DriftPowersyncD
           as _i4.$ExerciseVideoTableTable);
 
   @override
-  _i4.$WeightEntryTableTable get weightEntryTable =>
-      (super.noSuchMethod(
-            Invocation.getter(#weightEntryTable),
-            returnValue: _Fake$WeightEntryTableTable_20(
-              this,
-              Invocation.getter(#weightEntryTable),
-            ),
-          )
-          as _i4.$WeightEntryTableTable);
-
-  @override
   _i4.$MeasurementCategoryTableTable get measurementCategoryTable =>
       (super.noSuchMethod(
             Invocation.getter(#measurementCategoryTable),
-            returnValue: _Fake$MeasurementCategoryTableTable_21(
+            returnValue: _Fake$MeasurementCategoryTableTable_20(
               this,
               Invocation.getter(#measurementCategoryTable),
             ),
@@ -713,7 +697,7 @@ class MockDriftPowersyncDatabase extends _i1.Mock implements _i4.DriftPowersyncD
   _i4.$MeasurementEntryTableTable get measurementEntryTable =>
       (super.noSuchMethod(
             Invocation.getter(#measurementEntryTable),
-            returnValue: _Fake$MeasurementEntryTableTable_22(
+            returnValue: _Fake$MeasurementEntryTableTable_21(
               this,
               Invocation.getter(#measurementEntryTable),
             ),
@@ -724,7 +708,7 @@ class MockDriftPowersyncDatabase extends _i1.Mock implements _i4.DriftPowersyncD
   _i4.$RoutineTableTable get routineTable =>
       (super.noSuchMethod(
             Invocation.getter(#routineTable),
-            returnValue: _Fake$RoutineTableTable_23(
+            returnValue: _Fake$RoutineTableTable_22(
               this,
               Invocation.getter(#routineTable),
             ),
@@ -735,7 +719,7 @@ class MockDriftPowersyncDatabase extends _i1.Mock implements _i4.DriftPowersyncD
   _i4.$WorkoutLogTableTable get workoutLogTable =>
       (super.noSuchMethod(
             Invocation.getter(#workoutLogTable),
-            returnValue: _Fake$WorkoutLogTableTable_24(
+            returnValue: _Fake$WorkoutLogTableTable_23(
               this,
               Invocation.getter(#workoutLogTable),
             ),
@@ -746,7 +730,7 @@ class MockDriftPowersyncDatabase extends _i1.Mock implements _i4.DriftPowersyncD
   _i4.$WorkoutSessionTableTable get workoutSessionTable =>
       (super.noSuchMethod(
             Invocation.getter(#workoutSessionTable),
-            returnValue: _Fake$WorkoutSessionTableTable_25(
+            returnValue: _Fake$WorkoutSessionTableTable_24(
               this,
               Invocation.getter(#workoutSessionTable),
             ),
@@ -757,7 +741,7 @@ class MockDriftPowersyncDatabase extends _i1.Mock implements _i4.DriftPowersyncD
   _i4.$RoutineRepetitionUnitTableTable get routineRepetitionUnitTable =>
       (super.noSuchMethod(
             Invocation.getter(#routineRepetitionUnitTable),
-            returnValue: _Fake$RoutineRepetitionUnitTableTable_26(
+            returnValue: _Fake$RoutineRepetitionUnitTableTable_25(
               this,
               Invocation.getter(#routineRepetitionUnitTable),
             ),
@@ -768,7 +752,7 @@ class MockDriftPowersyncDatabase extends _i1.Mock implements _i4.DriftPowersyncD
   _i4.$RoutineWeightUnitTableTable get routineWeightUnitTable =>
       (super.noSuchMethod(
             Invocation.getter(#routineWeightUnitTable),
-            returnValue: _Fake$RoutineWeightUnitTableTable_27(
+            returnValue: _Fake$RoutineWeightUnitTableTable_26(
               this,
               Invocation.getter(#routineWeightUnitTable),
             ),
@@ -779,7 +763,7 @@ class MockDriftPowersyncDatabase extends _i1.Mock implements _i4.DriftPowersyncD
   _i4.$NutritionalPlanTableTable get nutritionalPlanTable =>
       (super.noSuchMethod(
             Invocation.getter(#nutritionalPlanTable),
-            returnValue: _Fake$NutritionalPlanTableTable_28(
+            returnValue: _Fake$NutritionalPlanTableTable_27(
               this,
               Invocation.getter(#nutritionalPlanTable),
             ),
@@ -790,7 +774,7 @@ class MockDriftPowersyncDatabase extends _i1.Mock implements _i4.DriftPowersyncD
   _i4.$IngredientTableTable get ingredientTable =>
       (super.noSuchMethod(
             Invocation.getter(#ingredientTable),
-            returnValue: _Fake$IngredientTableTable_29(
+            returnValue: _Fake$IngredientTableTable_28(
               this,
               Invocation.getter(#ingredientTable),
             ),
@@ -801,7 +785,7 @@ class MockDriftPowersyncDatabase extends _i1.Mock implements _i4.DriftPowersyncD
   _i4.$IngredientImageTableTable get ingredientImageTable =>
       (super.noSuchMethod(
             Invocation.getter(#ingredientImageTable),
-            returnValue: _Fake$IngredientImageTableTable_30(
+            returnValue: _Fake$IngredientImageTableTable_29(
               this,
               Invocation.getter(#ingredientImageTable),
             ),
@@ -812,7 +796,7 @@ class MockDriftPowersyncDatabase extends _i1.Mock implements _i4.DriftPowersyncD
   _i4.$IngredientWeightUnitTableTable get ingredientWeightUnitTable =>
       (super.noSuchMethod(
             Invocation.getter(#ingredientWeightUnitTable),
-            returnValue: _Fake$IngredientWeightUnitTableTable_31(
+            returnValue: _Fake$IngredientWeightUnitTableTable_30(
               this,
               Invocation.getter(#ingredientWeightUnitTable),
             ),
@@ -823,7 +807,7 @@ class MockDriftPowersyncDatabase extends _i1.Mock implements _i4.DriftPowersyncD
   _i4.$MealTableTable get mealTable =>
       (super.noSuchMethod(
             Invocation.getter(#mealTable),
-            returnValue: _Fake$MealTableTable_32(
+            returnValue: _Fake$MealTableTable_31(
               this,
               Invocation.getter(#mealTable),
             ),
@@ -834,7 +818,7 @@ class MockDriftPowersyncDatabase extends _i1.Mock implements _i4.DriftPowersyncD
   _i4.$MealItemTableTable get mealItemTable =>
       (super.noSuchMethod(
             Invocation.getter(#mealItemTable),
-            returnValue: _Fake$MealItemTableTable_33(
+            returnValue: _Fake$MealItemTableTable_32(
               this,
               Invocation.getter(#mealItemTable),
             ),
@@ -845,7 +829,7 @@ class MockDriftPowersyncDatabase extends _i1.Mock implements _i4.DriftPowersyncD
   _i4.$LogItemTableTable get logItemTable =>
       (super.noSuchMethod(
             Invocation.getter(#logItemTable),
-            returnValue: _Fake$LogItemTableTable_34(
+            returnValue: _Fake$LogItemTableTable_33(
               this,
               Invocation.getter(#logItemTable),
             ),
@@ -856,7 +840,7 @@ class MockDriftPowersyncDatabase extends _i1.Mock implements _i4.DriftPowersyncD
   _i4.$GalleryImageTableTable get galleryImageTable =>
       (super.noSuchMethod(
             Invocation.getter(#galleryImageTable),
-            returnValue: _Fake$GalleryImageTableTable_35(
+            returnValue: _Fake$GalleryImageTableTable_34(
               this,
               Invocation.getter(#galleryImageTable),
             ),
@@ -883,7 +867,7 @@ class MockDriftPowersyncDatabase extends _i1.Mock implements _i4.DriftPowersyncD
   _i3.DriftDatabaseOptions get options =>
       (super.noSuchMethod(
             Invocation.getter(#options),
-            returnValue: _FakeDriftDatabaseOptions_36(
+            returnValue: _FakeDriftDatabaseOptions_35(
               this,
               Invocation.getter(#options),
             ),
@@ -894,7 +878,7 @@ class MockDriftPowersyncDatabase extends _i1.Mock implements _i4.DriftPowersyncD
   _i3.GeneratedDatabase get attachedDatabase =>
       (super.noSuchMethod(
             Invocation.getter(#attachedDatabase),
-            returnValue: _FakeGeneratedDatabase_37(
+            returnValue: _FakeGeneratedDatabase_36(
               this,
               Invocation.getter(#attachedDatabase),
             ),
@@ -905,7 +889,7 @@ class MockDriftPowersyncDatabase extends _i1.Mock implements _i4.DriftPowersyncD
   _i3.StreamQueryUpdateRules get streamUpdateRules =>
       (super.noSuchMethod(
             Invocation.getter(#streamUpdateRules),
-            returnValue: _FakeStreamQueryUpdateRules_38(
+            returnValue: _FakeStreamQueryUpdateRules_37(
               this,
               Invocation.getter(#streamUpdateRules),
             ),
@@ -916,7 +900,7 @@ class MockDriftPowersyncDatabase extends _i1.Mock implements _i4.DriftPowersyncD
   _i3.DatabaseConnection get connection =>
       (super.noSuchMethod(
             Invocation.getter(#connection),
-            returnValue: _FakeDatabaseConnection_39(
+            returnValue: _FakeDatabaseConnection_38(
               this,
               Invocation.getter(#connection),
             ),
@@ -938,7 +922,7 @@ class MockDriftPowersyncDatabase extends _i1.Mock implements _i4.DriftPowersyncD
   _i3.QueryExecutor get executor =>
       (super.noSuchMethod(
             Invocation.getter(#executor),
-            returnValue: _FakeQueryExecutor_40(
+            returnValue: _FakeQueryExecutor_39(
               this,
               Invocation.getter(#executor),
             ),
@@ -949,7 +933,7 @@ class MockDriftPowersyncDatabase extends _i1.Mock implements _i4.DriftPowersyncD
   _i5.StreamQueryStore get streamQueries =>
       (super.noSuchMethod(
             Invocation.getter(#streamQueries),
-            returnValue: _FakeStreamQueryStore_41(
+            returnValue: _FakeStreamQueryStore_40(
               this,
               Invocation.getter(#streamQueries),
             ),
@@ -960,7 +944,7 @@ class MockDriftPowersyncDatabase extends _i1.Mock implements _i4.DriftPowersyncD
   _i3.DatabaseConnectionUser get resolvedEngine =>
       (super.noSuchMethod(
             Invocation.getter(#resolvedEngine),
-            returnValue: _FakeDatabaseConnectionUser_42(
+            returnValue: _FakeDatabaseConnectionUser_41(
               this,
               Invocation.getter(#resolvedEngine),
             ),
@@ -971,7 +955,7 @@ class MockDriftPowersyncDatabase extends _i1.Mock implements _i4.DriftPowersyncD
   _i3.Migrator createMigrator() =>
       (super.noSuchMethod(
             Invocation.method(#createMigrator, []),
-            returnValue: _FakeMigrator_43(
+            returnValue: _FakeMigrator_42(
               this,
               Invocation.method(#createMigrator, []),
             ),
@@ -1020,7 +1004,7 @@ class MockDriftPowersyncDatabase extends _i1.Mock implements _i4.DriftPowersyncD
                   ),
                   (Ret v) => _i6.Future<Ret>.value(v),
                 ) ??
-                _FakeFuture_44<Ret>(
+                _FakeFuture_43<Ret>(
                   this,
                   Invocation.method(#computeWithDatabase, [], {
                     #computation: computation,
@@ -1087,7 +1071,7 @@ class MockDriftPowersyncDatabase extends _i1.Mock implements _i4.DriftPowersyncD
                   ),
                   (T v) => _i6.Future<T>.value(v),
                 ) ??
-                _FakeFuture_44<T>(this, Invocation.method(#doWhenOpened, [fn])),
+                _FakeFuture_43<T>(this, Invocation.method(#doWhenOpened, [fn])),
           )
           as _i6.Future<T>);
 
@@ -1097,7 +1081,7 @@ class MockDriftPowersyncDatabase extends _i1.Mock implements _i4.DriftPowersyncD
   ) =>
       (super.noSuchMethod(
             Invocation.method(#into, [table]),
-            returnValue: _FakeInsertStatement_45<T, D>(
+            returnValue: _FakeInsertStatement_44<T, D>(
               this,
               Invocation.method(#into, [table]),
             ),
@@ -1110,7 +1094,7 @@ class MockDriftPowersyncDatabase extends _i1.Mock implements _i4.DriftPowersyncD
   ) =>
       (super.noSuchMethod(
             Invocation.method(#update, [table]),
-            returnValue: _FakeUpdateStatement_46<Tbl, R>(
+            returnValue: _FakeUpdateStatement_45<Tbl, R>(
               this,
               Invocation.method(#update, [table]),
             ),
@@ -1124,7 +1108,7 @@ class MockDriftPowersyncDatabase extends _i1.Mock implements _i4.DriftPowersyncD
   }) =>
       (super.noSuchMethod(
             Invocation.method(#select, [table], {#distinct: distinct}),
-            returnValue: _FakeSimpleSelectStatement_47<T, R>(
+            returnValue: _FakeSimpleSelectStatement_46<T, R>(
               this,
               Invocation.method(#select, [table], {#distinct: distinct}),
             ),
@@ -1138,7 +1122,7 @@ class MockDriftPowersyncDatabase extends _i1.Mock implements _i4.DriftPowersyncD
   }) =>
       (super.noSuchMethod(
             Invocation.method(#selectOnly, [table], {#distinct: distinct}),
-            returnValue: _FakeJoinedSelectStatement_48<T, R>(
+            returnValue: _FakeJoinedSelectStatement_47<T, R>(
               this,
               Invocation.method(#selectOnly, [table], {#distinct: distinct}),
             ),
@@ -1151,7 +1135,7 @@ class MockDriftPowersyncDatabase extends _i1.Mock implements _i4.DriftPowersyncD
   ) =>
       (super.noSuchMethod(
             Invocation.method(#selectExpressions, [columns]),
-            returnValue: _FakeBaseSelectStatement_49<_i3.TypedResult>(
+            returnValue: _FakeBaseSelectStatement_48<_i3.TypedResult>(
               this,
               Invocation.method(#selectExpressions, [columns]),
             ),
@@ -1164,7 +1148,7 @@ class MockDriftPowersyncDatabase extends _i1.Mock implements _i4.DriftPowersyncD
   ) =>
       (super.noSuchMethod(
             Invocation.method(#delete, [table]),
-            returnValue: _FakeDeleteStatement_50<T, D>(
+            returnValue: _FakeDeleteStatement_49<T, D>(
               this,
               Invocation.method(#delete, [table]),
             ),
@@ -1241,7 +1225,7 @@ class MockDriftPowersyncDatabase extends _i1.Mock implements _i4.DriftPowersyncD
               [query],
               {#variables: variables, #readsFrom: readsFrom},
             ),
-            returnValue: _FakeSelectable_51<_i3.QueryRow>(
+            returnValue: _FakeSelectable_50<_i3.QueryRow>(
               this,
               Invocation.method(
                 #customSelect,
@@ -1264,7 +1248,7 @@ class MockDriftPowersyncDatabase extends _i1.Mock implements _i4.DriftPowersyncD
               [query],
               {#variables: variables, #readsFrom: readsFrom},
             ),
-            returnValue: _FakeSelectable_51<_i3.QueryRow>(
+            returnValue: _FakeSelectable_50<_i3.QueryRow>(
               this,
               Invocation.method(
                 #customSelectQuery,
@@ -1307,7 +1291,7 @@ class MockDriftPowersyncDatabase extends _i1.Mock implements _i4.DriftPowersyncD
                   ),
                   (T v) => _i6.Future<T>.value(v),
                 ) ??
-                _FakeFuture_44<T>(
+                _FakeFuture_43<T>(
                   this,
                   Invocation.method(
                     #transaction,
@@ -1330,7 +1314,7 @@ class MockDriftPowersyncDatabase extends _i1.Mock implements _i4.DriftPowersyncD
                   ),
                   (T v) => _i6.Future<T>.value(v),
                 ) ??
-                _FakeFuture_44<T>(
+                _FakeFuture_43<T>(
                   this,
                   Invocation.method(#exclusively, [action]),
                 ),
@@ -1369,7 +1353,7 @@ class MockDriftPowersyncDatabase extends _i1.Mock implements _i4.DriftPowersyncD
                   ),
                   (T v) => _i6.Future<T>.value(v),
                 ) ??
-                _FakeFuture_44<T>(
+                _FakeFuture_43<T>(
                   this,
                   Invocation.method(
                     #runWithInterceptor,
@@ -1392,7 +1376,7 @@ class MockDriftPowersyncDatabase extends _i1.Mock implements _i4.DriftPowersyncD
               [component],
               {#hasMultipleTables: hasMultipleTables, #startIndex: startIndex},
             ),
-            returnValue: _FakeGenerationContext_52(
+            returnValue: _FakeGenerationContext_51(
               this,
               Invocation.method(
                 #$write,
@@ -1418,10 +1402,33 @@ class MockDriftPowersyncDatabase extends _i1.Mock implements _i4.DriftPowersyncD
               [table, insertable],
               {#startIndex: startIndex},
             ),
-            returnValue: _FakeGenerationContext_52(
+            returnValue: _FakeGenerationContext_51(
               this,
               Invocation.method(
                 #$writeInsertable,
+                [table, insertable],
+                {#startIndex: startIndex},
+              ),
+            ),
+          )
+          as _i3.GenerationContext);
+
+  @override
+  _i3.GenerationContext $writeUpdateInsertable(
+    _i3.TableInfo<_i3.Table, dynamic>? table,
+    _i3.Insertable<dynamic>? insertable, {
+    int? startIndex,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #$writeUpdateInsertable,
+              [table, insertable],
+              {#startIndex: startIndex},
+            ),
+            returnValue: _FakeGenerationContext_51(
+              this,
+              Invocation.method(
+                #$writeUpdateInsertable,
                 [table, insertable],
                 {#startIndex: startIndex},
               ),

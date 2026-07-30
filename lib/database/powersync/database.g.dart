@@ -4674,178 +4674,6 @@ class ExerciseVideoTableCompanion extends UpdateCompanion<Video> {
   }
 }
 
-class $WeightEntryTableTable extends WeightEntryTable
-    with TableInfo<$WeightEntryTableTable, WeightEntry> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $WeightEntryTableTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<String> id = GeneratedColumn<String>(
-    'id',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-    clientDefault: () => ps.uuid.v7(),
-  );
-  static const VerificationMeta _weightMeta = const VerificationMeta('weight');
-  @override
-  late final GeneratedColumn<double> weight = GeneratedColumn<double>(
-    'weight',
-    aliasedName,
-    false,
-    type: DriftSqlType.double,
-    requiredDuringInsert: true,
-  );
-  @override
-  late final GeneratedColumnWithTypeConverter<DateTime?, DateTime> date = GeneratedColumn<DateTime>(
-    'date',
-    aliasedName,
-    true,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: false,
-  ).withConverter<DateTime?>($WeightEntryTableTable.$converterdaten);
-  @override
-  List<GeneratedColumn> get $columns => [id, weight, date];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'weight_weightentry';
-  @override
-  VerificationContext validateIntegrity(
-    Insertable<WeightEntry> instance, {
-    bool isInserting = false,
-  }) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    }
-    if (data.containsKey('weight')) {
-      context.handle(
-        _weightMeta,
-        weight.isAcceptableOrUnknown(data['weight']!, _weightMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_weightMeta);
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => const {};
-  @override
-  WeightEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return WeightEntry(
-      id: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}id'],
-      )!,
-      weight: attachedDatabase.typeMapping.read(
-        DriftSqlType.double,
-        data['${effectivePrefix}weight'],
-      )!,
-      date: $WeightEntryTableTable.$converterdaten.fromSql(
-        attachedDatabase.typeMapping.read(
-          DriftSqlType.dateTime,
-          data['${effectivePrefix}date'],
-        ),
-      ),
-    );
-  }
-
-  @override
-  $WeightEntryTableTable createAlias(String alias) {
-    return $WeightEntryTableTable(attachedDatabase, alias);
-  }
-
-  static TypeConverter<DateTime, DateTime> $converterdate = const UtcDateTimeConverter();
-  static TypeConverter<DateTime?, DateTime?> $converterdaten = NullAwareTypeConverter.wrap(
-    $converterdate,
-  );
-}
-
-class WeightEntryTableCompanion extends UpdateCompanion<WeightEntry> {
-  final Value<String> id;
-  final Value<double> weight;
-  final Value<DateTime?> date;
-  final Value<int> rowid;
-  const WeightEntryTableCompanion({
-    this.id = const Value.absent(),
-    this.weight = const Value.absent(),
-    this.date = const Value.absent(),
-    this.rowid = const Value.absent(),
-  });
-  WeightEntryTableCompanion.insert({
-    this.id = const Value.absent(),
-    required double weight,
-    this.date = const Value.absent(),
-    this.rowid = const Value.absent(),
-  }) : weight = Value(weight);
-  static Insertable<WeightEntry> custom({
-    Expression<String>? id,
-    Expression<double>? weight,
-    Expression<DateTime>? date,
-    Expression<int>? rowid,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (weight != null) 'weight': weight,
-      if (date != null) 'date': date,
-      if (rowid != null) 'rowid': rowid,
-    });
-  }
-
-  WeightEntryTableCompanion copyWith({
-    Value<String>? id,
-    Value<double>? weight,
-    Value<DateTime?>? date,
-    Value<int>? rowid,
-  }) {
-    return WeightEntryTableCompanion(
-      id: id ?? this.id,
-      weight: weight ?? this.weight,
-      date: date ?? this.date,
-      rowid: rowid ?? this.rowid,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<String>(id.value);
-    }
-    if (weight.present) {
-      map['weight'] = Variable<double>(weight.value);
-    }
-    if (date.present) {
-      map['date'] = Variable<DateTime>(
-        $WeightEntryTableTable.$converterdaten.toSql(date.value),
-      );
-    }
-    if (rowid.present) {
-      map['rowid'] = Variable<int>(rowid.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('WeightEntryTableCompanion(')
-          ..write('id: $id, ')
-          ..write('weight: $weight, ')
-          ..write('date: $date, ')
-          ..write('rowid: $rowid')
-          ..write(')'))
-        .toString();
-  }
-}
-
 class $MeasurementCategoryTableTable extends MeasurementCategoryTable
     with TableInfo<$MeasurementCategoryTableTable, MeasurementCategory> {
   @override
@@ -4915,6 +4743,21 @@ class $MeasurementCategoryTableTable extends MeasurementCategoryTable
     requiredDuringInsert: false,
     defaultValue: const Constant(0),
   );
+  static const VerificationMeta _isOfficialMeta = const VerificationMeta(
+    'isOfficial',
+  );
+  @override
+  late final GeneratedColumn<bool> isOfficial = GeneratedColumn<bool>(
+    'is_official',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_official" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -4923,6 +4766,7 @@ class $MeasurementCategoryTableTable extends MeasurementCategoryTable
     metricType,
     parentId,
     order,
+    isOfficial,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -4967,6 +4811,12 @@ class $MeasurementCategoryTableTable extends MeasurementCategoryTable
         order.isAcceptableOrUnknown(data['order']!, _orderMeta),
       );
     }
+    if (data.containsKey('is_official')) {
+      context.handle(
+        _isOfficialMeta,
+        isOfficial.isAcceptableOrUnknown(data['is_official']!, _isOfficialMeta),
+      );
+    }
     return context;
   }
 
@@ -5002,6 +4852,10 @@ class $MeasurementCategoryTableTable extends MeasurementCategoryTable
         DriftSqlType.int,
         data['${effectivePrefix}order'],
       )!,
+      isOfficial: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_official'],
+      )!,
     );
   }
 
@@ -5021,6 +4875,7 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
   final Value<MetricType> metricType;
   final Value<String?> parentId;
   final Value<int> order;
+  final Value<bool> isOfficial;
   final Value<int> rowid;
   const MeasurementCategoryTableCompanion({
     this.id = const Value.absent(),
@@ -5029,6 +4884,7 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
     this.metricType = const Value.absent(),
     this.parentId = const Value.absent(),
     this.order = const Value.absent(),
+    this.isOfficial = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   MeasurementCategoryTableCompanion.insert({
@@ -5038,6 +4894,7 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
     required MetricType metricType,
     this.parentId = const Value.absent(),
     this.order = const Value.absent(),
+    this.isOfficial = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : name = Value(name),
        unit = Value(unit),
@@ -5049,6 +4906,7 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
     Expression<String>? metricType,
     Expression<String>? parentId,
     Expression<int>? order,
+    Expression<bool>? isOfficial,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -5058,6 +4916,7 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
       if (metricType != null) 'metric_type': metricType,
       if (parentId != null) 'parent_id': parentId,
       if (order != null) 'order': order,
+      if (isOfficial != null) 'is_official': isOfficial,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -5069,6 +4928,7 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
     Value<MetricType>? metricType,
     Value<String?>? parentId,
     Value<int>? order,
+    Value<bool>? isOfficial,
     Value<int>? rowid,
   }) {
     return MeasurementCategoryTableCompanion(
@@ -5078,6 +4938,7 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
       metricType: metricType ?? this.metricType,
       parentId: parentId ?? this.parentId,
       order: order ?? this.order,
+      isOfficial: isOfficial ?? this.isOfficial,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -5107,6 +4968,9 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
     if (order.present) {
       map['order'] = Variable<int>(order.value);
     }
+    if (isOfficial.present) {
+      map['is_official'] = Variable<bool>(isOfficial.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -5122,6 +4986,7 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
           ..write('metricType: $metricType, ')
           ..write('parentId: $parentId, ')
           ..write('order: $order, ')
+          ..write('isOfficial: $isOfficial, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -10334,9 +10199,6 @@ abstract class _$DriftPowersyncDatabase extends GeneratedDatabase {
   late final $ExerciseEquipmentM2NTable exerciseEquipmentM2N = $ExerciseEquipmentM2NTable(this);
   late final $ExerciseImageTableTable exerciseImageTable = $ExerciseImageTableTable(this);
   late final $ExerciseVideoTableTable exerciseVideoTable = $ExerciseVideoTableTable(this);
-  late final $WeightEntryTableTable weightEntryTable = $WeightEntryTableTable(
-    this,
-  );
   late final $MeasurementCategoryTableTable measurementCategoryTable =
       $MeasurementCategoryTableTable(this);
   late final $MeasurementEntryTableTable measurementEntryTable = $MeasurementEntryTableTable(this);
@@ -10381,7 +10243,6 @@ abstract class _$DriftPowersyncDatabase extends GeneratedDatabase {
     exerciseEquipmentM2N,
     exerciseImageTable,
     exerciseVideoTable,
-    weightEntryTable,
     measurementCategoryTable,
     measurementEntryTable,
     routineTable,
@@ -16377,169 +16238,6 @@ typedef $$ExerciseVideoTableTableProcessedTableManager =
       Video,
       PrefetchHooks Function({bool exerciseId})
     >;
-typedef $$WeightEntryTableTableCreateCompanionBuilder =
-    WeightEntryTableCompanion Function({
-      Value<String> id,
-      required double weight,
-      Value<DateTime?> date,
-      Value<int> rowid,
-    });
-typedef $$WeightEntryTableTableUpdateCompanionBuilder =
-    WeightEntryTableCompanion Function({
-      Value<String> id,
-      Value<double> weight,
-      Value<DateTime?> date,
-      Value<int> rowid,
-    });
-
-class $$WeightEntryTableTableFilterComposer
-    extends Composer<_$DriftPowersyncDatabase, $WeightEntryTableTable> {
-  $$WeightEntryTableTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<String> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<double> get weight => $composableBuilder(
-    column: $table.weight,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnWithTypeConverterFilters<DateTime?, DateTime, DateTime> get date => $composableBuilder(
-    column: $table.date,
-    builder: (column) => ColumnWithTypeConverterFilters(column),
-  );
-}
-
-class $$WeightEntryTableTableOrderingComposer
-    extends Composer<_$DriftPowersyncDatabase, $WeightEntryTableTable> {
-  $$WeightEntryTableTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<String> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<double> get weight => $composableBuilder(
-    column: $table.weight,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<DateTime> get date => $composableBuilder(
-    column: $table.date,
-    builder: (column) => ColumnOrderings(column),
-  );
-}
-
-class $$WeightEntryTableTableAnnotationComposer
-    extends Composer<_$DriftPowersyncDatabase, $WeightEntryTableTable> {
-  $$WeightEntryTableTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<String> get id =>
-      $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<double> get weight =>
-      $composableBuilder(column: $table.weight, builder: (column) => column);
-
-  GeneratedColumnWithTypeConverter<DateTime?, DateTime> get date =>
-      $composableBuilder(column: $table.date, builder: (column) => column);
-}
-
-class $$WeightEntryTableTableTableManager
-    extends
-        RootTableManager<
-          _$DriftPowersyncDatabase,
-          $WeightEntryTableTable,
-          WeightEntry,
-          $$WeightEntryTableTableFilterComposer,
-          $$WeightEntryTableTableOrderingComposer,
-          $$WeightEntryTableTableAnnotationComposer,
-          $$WeightEntryTableTableCreateCompanionBuilder,
-          $$WeightEntryTableTableUpdateCompanionBuilder,
-          (
-            WeightEntry,
-            BaseReferences<_$DriftPowersyncDatabase, $WeightEntryTableTable, WeightEntry>,
-          ),
-          WeightEntry,
-          PrefetchHooks Function()
-        > {
-  $$WeightEntryTableTableTableManager(
-    _$DriftPowersyncDatabase db,
-    $WeightEntryTableTable table,
-  ) : super(
-        TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer: () =>
-              $$WeightEntryTableTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$WeightEntryTableTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$WeightEntryTableTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback:
-              ({
-                Value<String> id = const Value.absent(),
-                Value<double> weight = const Value.absent(),
-                Value<DateTime?> date = const Value.absent(),
-                Value<int> rowid = const Value.absent(),
-              }) => WeightEntryTableCompanion(
-                id: id,
-                weight: weight,
-                date: date,
-                rowid: rowid,
-              ),
-          createCompanionCallback:
-              ({
-                Value<String> id = const Value.absent(),
-                required double weight,
-                Value<DateTime?> date = const Value.absent(),
-                Value<int> rowid = const Value.absent(),
-              }) => WeightEntryTableCompanion.insert(
-                id: id,
-                weight: weight,
-                date: date,
-                rowid: rowid,
-              ),
-          withReferenceMapper: (p0) =>
-              p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
-          prefetchHooksCallback: null,
-        ),
-      );
-}
-
-typedef $$WeightEntryTableTableProcessedTableManager =
-    ProcessedTableManager<
-      _$DriftPowersyncDatabase,
-      $WeightEntryTableTable,
-      WeightEntry,
-      $$WeightEntryTableTableFilterComposer,
-      $$WeightEntryTableTableOrderingComposer,
-      $$WeightEntryTableTableAnnotationComposer,
-      $$WeightEntryTableTableCreateCompanionBuilder,
-      $$WeightEntryTableTableUpdateCompanionBuilder,
-      (
-        WeightEntry,
-        BaseReferences<_$DriftPowersyncDatabase, $WeightEntryTableTable, WeightEntry>,
-      ),
-      WeightEntry,
-      PrefetchHooks Function()
-    >;
 typedef $$MeasurementCategoryTableTableCreateCompanionBuilder =
     MeasurementCategoryTableCompanion Function({
       Value<String> id,
@@ -16548,6 +16246,7 @@ typedef $$MeasurementCategoryTableTableCreateCompanionBuilder =
       required MetricType metricType,
       Value<String?> parentId,
       Value<int> order,
+      Value<bool> isOfficial,
       Value<int> rowid,
     });
 typedef $$MeasurementCategoryTableTableUpdateCompanionBuilder =
@@ -16558,6 +16257,7 @@ typedef $$MeasurementCategoryTableTableUpdateCompanionBuilder =
       Value<MetricType> metricType,
       Value<String?> parentId,
       Value<int> order,
+      Value<bool> isOfficial,
       Value<int> rowid,
     });
 
@@ -16650,6 +16350,11 @@ class $$MeasurementCategoryTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<bool> get isOfficial => $composableBuilder(
+    column: $table.isOfficial,
+    builder: (column) => ColumnFilters(column),
+  );
+
   $$MeasurementCategoryTableTableFilterComposer get parentId {
     final $$MeasurementCategoryTableTableFilterComposer composer = $composerBuilder(
       composer: this,
@@ -16731,6 +16436,11 @@ class $$MeasurementCategoryTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<bool> get isOfficial => $composableBuilder(
+    column: $table.isOfficial,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   $$MeasurementCategoryTableTableOrderingComposer get parentId {
     final $$MeasurementCategoryTableTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -16779,6 +16489,11 @@ class $$MeasurementCategoryTableTableAnnotationComposer
 
   GeneratedColumn<int> get order =>
       $composableBuilder(column: $table.order, builder: (column) => column);
+
+  GeneratedColumn<bool> get isOfficial => $composableBuilder(
+    column: $table.isOfficial,
+    builder: (column) => column,
+  );
 
   $$MeasurementCategoryTableTableAnnotationComposer get parentId {
     final $$MeasurementCategoryTableTableAnnotationComposer composer = $composerBuilder(
@@ -16872,6 +16587,7 @@ class $$MeasurementCategoryTableTableTableManager
                 Value<MetricType> metricType = const Value.absent(),
                 Value<String?> parentId = const Value.absent(),
                 Value<int> order = const Value.absent(),
+                Value<bool> isOfficial = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => MeasurementCategoryTableCompanion(
                 id: id,
@@ -16880,6 +16596,7 @@ class $$MeasurementCategoryTableTableTableManager
                 metricType: metricType,
                 parentId: parentId,
                 order: order,
+                isOfficial: isOfficial,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -16890,6 +16607,7 @@ class $$MeasurementCategoryTableTableTableManager
                 required MetricType metricType,
                 Value<String?> parentId = const Value.absent(),
                 Value<int> order = const Value.absent(),
+                Value<bool> isOfficial = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => MeasurementCategoryTableCompanion.insert(
                 id: id,
@@ -16898,6 +16616,7 @@ class $$MeasurementCategoryTableTableTableManager
                 metricType: metricType,
                 parentId: parentId,
                 order: order,
+                isOfficial: isOfficial,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -22435,8 +22154,6 @@ class $DriftPowersyncDatabaseManager {
       $$ExerciseImageTableTableTableManager(_db, _db.exerciseImageTable);
   $$ExerciseVideoTableTableTableManager get exerciseVideoTable =>
       $$ExerciseVideoTableTableTableManager(_db, _db.exerciseVideoTable);
-  $$WeightEntryTableTableTableManager get weightEntryTable =>
-      $$WeightEntryTableTableTableManager(_db, _db.weightEntryTable);
   $$MeasurementCategoryTableTableTableManager get measurementCategoryTable =>
       $$MeasurementCategoryTableTableTableManager(
         _db,

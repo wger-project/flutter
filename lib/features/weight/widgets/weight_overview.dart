@@ -25,11 +25,12 @@ import 'package:wger/core/widgets/async_value_widget.dart';
 import 'package:wger/core/widgets/progress_indicator.dart';
 import 'package:wger/features/account/providers/user_profile_notifier.dart';
 import 'package:wger/features/measurements/measurements.dart';
+import 'package:wger/features/measurements/models/measurement_category.dart';
+import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/measurements/widgets/charts.dart';
 import 'package:wger/features/measurements/widgets/helpers.dart';
 import 'package:wger/features/nutrition/providers/nutrition_notifier.dart';
-import 'package:wger/features/weight/models/weight_entry.dart';
-import 'package:wger/features/weight/providers/body_weight_notifier.dart';
+import 'package:wger/features/weight/providers/body_weight_provider.dart';
 import 'package:wger/features/weight/widgets/forms.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
@@ -53,18 +54,20 @@ class _WeightOverviewState extends riverpod.ConsumerState<WeightOverview> {
     final numberFormat = localizedNumberFormat(context);
     final plans = ref.watch(nutritionProvider).value?.plans ?? const [];
 
-    return AsyncValueWidget<List<WeightEntry>>(
-      value: ref.watch(weightEntryProvider),
+    return AsyncValueWidget<MeasurementCategory?>(
+      value: ref.watch(bodyWeightCategoryProvider),
       loggerName: 'WeightOverview',
-      data: (entriesList) {
+      data: (category) {
         // Profile drives the unit display; show a spinner while it loads
-        // instead of bang-ing on a null value.
+        // instead of bang-ing on a null value. The category is created by the
+        // server, so a null there just means the initial sync is still running.
         final profile = profileAsync.value;
-        if (profile == null) {
+        if (profile == null || category == null) {
           return const BoxedProgressIndicator();
         }
 
-        final entriesAll = entriesList.map((e) => MeasurementChartEntry(e.weight, e.date)).toList();
+        final entriesList = category.entries;
+        final entriesAll = entriesList.map((e) => MeasurementChartEntry(e.value, e.date)).toList();
         final entries7dAvg = moving7dAverage(entriesAll);
 
         // Restrict the data to the selected range. The average is computed over
@@ -82,8 +85,9 @@ class _WeightOverviewState extends riverpod.ConsumerState<WeightOverview> {
           ),
         };
         final entriesRange = cutoff == null ? entriesAll : entriesAll.whereDate(cutoff, null);
-        final entries7dAvgRange =
-            cutoff == null ? entries7dAvg : entries7dAvg.whereDate(cutoff, null);
+        final entries7dAvgRange = cutoff == null
+            ? entries7dAvg
+            : entries7dAvg.whereDate(cutoff, null);
 
         final unit = weightUnit(profile.isMetric, context);
 
@@ -111,8 +115,7 @@ class _WeightOverviewState extends riverpod.ConsumerState<WeightOverview> {
                     ),
                   ],
                   selected: {_range},
-                  onSelectionChanged: (selection) =>
-                      setState(() => _range = selection.first),
+                  onSelectionChanged: (selection) => setState(() => _range = selection.first),
                 ),
               ),
             ),
@@ -148,7 +151,7 @@ class _WeightOverviewState extends riverpod.ConsumerState<WeightOverview> {
                   return Card(
                     child: ListTile(
                       title: Text(
-                        '${numberFormat.format(currentEntry.weight)} ${weightUnit(profile.isMetric, context)}',
+                        '${numberFormat.format(currentEntry.value)} ${weightUnit(profile.isMetric, context)}',
                       ),
                       subtitle: Text(
                         localizedDate(context).add_Hm().format(currentEntry.date),
@@ -163,7 +166,7 @@ class _WeightOverviewState extends riverpod.ConsumerState<WeightOverview> {
                                 FormScreen.routeName,
                                 arguments: FormScreenArguments(
                                   AppLocalizations.of(context).edit,
-                                  WeightForm(currentEntry),
+                                  WeightForm(category.id!, currentEntry),
                                 ),
                               ),
                             ),
@@ -171,7 +174,7 @@ class _WeightOverviewState extends riverpod.ConsumerState<WeightOverview> {
                               child: Text(AppLocalizations.of(context).delete),
                               onTap: () async {
                                 await ref
-                                    .read(weightEntryProvider.notifier)
+                                    .read(measurementProvider.notifier)
                                     .deleteEntry(currentEntry.id!);
 
                                 // and inform the user

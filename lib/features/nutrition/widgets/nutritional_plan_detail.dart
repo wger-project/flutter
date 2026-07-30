@@ -19,13 +19,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:intl/intl.dart';
+import 'package:wger/features/measurements/models/measurement_entry.dart';
 import 'package:wger/features/nutrition/models/nutritional_plan.dart';
 import 'package:wger/features/nutrition/widgets/charts.dart';
 import 'package:wger/features/nutrition/widgets/macro_nutrients_table.dart';
 import 'package:wger/features/nutrition/widgets/meal.dart';
 import 'package:wger/features/nutrition/widgets/nutritional_diary_table.dart';
-import 'package:wger/features/weight/models/weight_entry.dart';
-import 'package:wger/features/weight/providers/body_weight_notifier.dart';
+import 'package:wger/features/weight/providers/body_weight_provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 class NutritionalPlanDetailWidget extends riverpod.ConsumerWidget {
@@ -36,10 +36,10 @@ class NutritionalPlanDetailWidget extends riverpod.ConsumerWidget {
   @override
   Widget build(BuildContext context, riverpod.WidgetRef ref) {
     final nutritionalGoals = _nutritionalPlan.nutritionalGoals;
-    final entriesList = ref.watch(weightEntryProvider).asData?.value ?? [];
-    final WeightEntry? lastWeightEntry = entriesList.isNotEmpty ? entriesList.first : null;
+    final entriesList = ref.watch(bodyWeightCategoryProvider).value?.entries ?? [];
+    final MeasurementEntry? lastWeightEntry = entriesList.isNotEmpty ? entriesList.first : null;
     final nutritionalGoalsGperKg = lastWeightEntry != null
-        ? nutritionalGoals / lastWeightEntry.weight.toDouble()
+        ? nutritionalGoals / lastWeightEntry.value.toDouble()
         : null;
 
     final i18n = AppLocalizations.of(context);

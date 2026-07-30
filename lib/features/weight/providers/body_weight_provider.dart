@@ -16,36 +16,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:logging/logging.dart';
+import 'package:collection/collection.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:wger/features/weight/models/weight_entry.dart';
+import 'package:wger/features/measurements/models/measurement_category.dart';
+import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 
-import 'body_weight_repository.dart';
+part 'body_weight_provider.g.dart';
 
-part 'body_weight_notifier.g.dart';
-
+/// The user's official body weight category, entries sorted newest-first.
+///
+/// The category is created by the server (registration / data migration) and
+/// only arrives via sync; a `null` value means the initial sync has not
+/// delivered it yet. Mutations go through [measurementProvider]'s notifier.
 @riverpod
-final class WeightEntryNotifier extends _$WeightEntryNotifier {
-  final _logger = Logger('WeightEntryNotifier');
-  late BodyWeightRepository _repo;
-
-  @override
-  Stream<List<WeightEntry>> build() {
-    _repo = ref.read(bodyWeightRepositoryProvider);
-    _logger.finer('Building WeightEntryNotifier');
-
-    return _repo.watchAllDrift();
-  }
-
-  Future<void> deleteEntry(String id) async {
-    await _repo.deleteLocalDrift(id);
-  }
-
-  Future<void> updateEntry(WeightEntry entry) async {
-    await _repo.updateLocalDrift(entry);
-  }
-
-  Future<void> addEntry(WeightEntry entry) async {
-    await _repo.addLocalDrift(entry);
-  }
+AsyncValue<MeasurementCategory?> bodyWeightCategory(Ref ref) {
+  return ref
+      .watch(measurementProvider)
+      .whenData((categories) => categories.firstWhereOrNull((c) => c.isOfficialBodyWeight));
 }

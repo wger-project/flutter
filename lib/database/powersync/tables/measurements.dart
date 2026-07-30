@@ -42,6 +42,10 @@ class MeasurementCategoryTable extends Table {
 
   /// Position in the category list; for children, the position within the group
   IntColumn get order => integer().withDefault(const Constant(0))();
+
+  /// Server-managed official category (max. one per metric type and user).
+  /// Body weight entries live in the official `body_weight` category.
+  BoolColumn get isOfficial => boolean().named('is_official').withDefault(const Constant(false))();
 }
 
 const PowersyncMeasurementCategoryTable = ps.Table(
@@ -52,6 +56,8 @@ const PowersyncMeasurementCategoryTable = ps.Table(
     ps.Column.text('metric_type'),
     ps.Column.text('parent_id'),
     ps.Column.integer('order'),
+    // Postgres boolean; integer so the view yields 0/1, not the string '0'
+    ps.Column.integer('is_official'),
   ],
   indexes: [
     ps.Index('parent_idx', [ps.IndexedColumn('parent_id')]),

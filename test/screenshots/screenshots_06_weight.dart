@@ -22,10 +22,10 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/core/form_screen.dart';
 import 'package:wger/features/account/providers/user_profile_repository.dart';
+import 'package:wger/features/measurements/providers/measurement_repository.dart';
 import 'package:wger/features/nutrition/providers/ingredient_repository.dart';
 import 'package:wger/features/nutrition/providers/nutrition_notifier.dart';
 import 'package:wger/features/nutrition/providers/nutrition_repository.dart';
-import 'package:wger/features/weight/providers/body_weight_repository.dart';
 import 'package:wger/features/weight/screens/weight_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/theme/theme.dart';
@@ -36,17 +36,17 @@ import '../../test_data/profile.dart';
 import 'screenshots_06_weight.mocks.dart';
 
 @GenerateMocks([
-  BodyWeightRepository,
+  MeasurementRepository,
   UserProfileRepository,
   NutritionRepository,
   IngredientRepository,
 ])
 Widget createWeightScreen({Locale? locale}) {
   locale ??= const Locale('en');
-  final mockBodyWeightRepository = MockBodyWeightRepository();
+  final mockMeasurementRepository = MockMeasurementRepository();
   when(
-    mockBodyWeightRepository.watchAllDrift(),
-  ).thenAnswer((_) => Stream.value(getScreenshotWeightEntries()));
+    mockMeasurementRepository.watchAll(),
+  ).thenAnswer((_) => Stream.value([getScreenshotBodyWeightCategory()]));
 
   final mockUserProfileRepository = MockUserProfileRepository();
   when(
@@ -59,7 +59,7 @@ Widget createWeightScreen({Locale? locale}) {
 
   final container = ProviderContainer(
     overrides: [
-      bodyWeightRepositoryProvider.overrideWithValue(mockBodyWeightRepository),
+      measurementRepositoryProvider.overrideWithValue(mockMeasurementRepository),
       userProfileRepositoryProvider.overrideWithValue(mockUserProfileRepository),
       nutritionRepositoryProvider.overrideWithValue(mockNutritionRepo),
       ingredientRepositoryProvider.overrideWithValue(mockIngredientRepo),

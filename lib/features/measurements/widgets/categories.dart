@@ -33,8 +33,10 @@ class CategoriesList extends ConsumerWidget {
       loggerName: 'CategoriesList',
       data: (categoriesList) {
         // Children of multi-value groups are rendered inside their parent's
-        // card, not as own list items
-        final topLevel = categoriesList.where((c) => c.parentId == null).toList();
+        // card, not as own list items. Body weight has its own screens.
+        final topLevel = categoriesList
+            .where((c) => c.parentId == null && !c.isOfficialBodyWeight)
+            .toList();
 
         return ListView.builder(
           padding: const EdgeInsets.all(10.0),

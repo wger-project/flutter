@@ -232,6 +232,66 @@ void main() {
       expect(entries.single.externalId, 'bf-2');
     });
 
+    test('imports weight only into the official body weight category', () async {
+      // A user-created lookalike must not receive the readings
+      final lookalike = MeasurementCategory(
+        id: 'cat-custom',
+        name: 'Weight',
+        unit: 'kg',
+        metricType: MetricType.bodyWeight,
+      );
+      final official = MeasurementCategory(
+        id: 'cat-official',
+        name: 'Weight',
+        unit: 'kg',
+        metricType: MetricType.bodyWeight,
+        isOfficial: true,
+      );
+      when(measurements.getAllOnce()).thenAnswer((_) async => [lookalike, official]);
+      stubReadings([
+        HealthReading(
+          type: HealthDataType.WEIGHT,
+          value: 80.5,
+          date: DateTime(2026, 1, 1),
+          externalId: 'w-1',
+        ),
+      ]);
+
+      final count = await createNotifier().syncOnAppOpen();
+      expect(count, 1);
+      verifyNever(measurements.addLocalDriftCategory(any));
+
+      final entry =
+          verify(measurements.addLocalDrift(captureAny)).captured.single as MeasurementEntry;
+      expect(entry.categoryId, 'cat-official');
+      expect(entry.value, 80.5);
+    });
+
+    test('skips weight while the official category has not been synced', () async {
+      await PreferenceHelper.instance.setLastHealthSyncTimestamp('2020-01-01T00:00:00.000');
+      when(measurements.getAllOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
+      stubReadings([
+        HealthReading(
+          type: HealthDataType.WEIGHT,
+          value: 80.5,
+          date: DateTime(2026, 1, 1),
+          externalId: 'w-1',
+        ),
+      ]);
+
+      final count = await createNotifier().syncOnAppOpen();
+
+      // Never creates the official category; the reading stays unimported (no
+      // watermark advance) and is retried on the next sync
+      expect(count, 0);
+      verifyNever(measurements.addLocalDriftCategory(any));
+      verifyNever(measurements.addLocalDrift(any));
+      expect(
+        await PreferenceHelper.instance.getLastHealthSyncTimestamp(),
+        '2020-01-01T00:00:00.000',
+      );
+    });
+
     test('reads with an overlap window before the stored watermark', () async {
       await PreferenceHelper.instance.setLastHealthSyncTimestamp('2026-06-01T12:00:00.000');
       when(measurements.getAllOnce()).thenAnswer((_) async => <MeasurementCategory>[]);

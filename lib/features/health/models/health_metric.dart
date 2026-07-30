@@ -100,9 +100,7 @@ const List<HealthMetric> healthMetrics = [
     canonicalName: 'Weight',
     unit: 'kg',
     toCategoryValue: _identity,
-    disabledReason:
-        'Body weight lives in its own feature until the '
-        'weight/measurements merge (metric_type=body_weight).',
+    enabled: true,
   ),
   HealthMetric(
     metricType: MetricType.bloodPressure,

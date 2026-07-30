@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (C) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,39 +16,65 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:wger/features/weight/models/weight_entry.dart';
+import 'package:wger/features/measurements/models/measurement_category.dart';
+import 'package:wger/features/measurements/models/measurement_entry.dart';
 
-final testWeightEntry1 = WeightEntry(
+/// Body weight entries are measurements in the user's official body weight
+/// category (metric_type=body_weight, is_official=true), created by the server.
+const testBodyWeightCategoryId = 'bw';
+
+final testWeightEntry1 = MeasurementEntry(
   id: '1',
-  weight: 80.0,
+  categoryId: testBodyWeightCategoryId,
+  value: 80.0,
   date: DateTime.utc(2021, 01, 01, 15, 30),
+  notes: '',
 );
-final testWeightEntry2 = WeightEntry(
+final testWeightEntry2 = MeasurementEntry(
   id: '2',
-  weight: 81.0,
+  categoryId: testBodyWeightCategoryId,
+  value: 81.0,
   date: DateTime.utc(2021, 01, 10, 10, 0),
+  notes: '',
 );
 
-List<WeightEntry> getWeightEntries() {
-  return [testWeightEntry1, testWeightEntry2];
+/// The official category with [entries] attached. Entries default to the two
+/// test entries, newest first, matching the repository's watchAll() order.
+MeasurementCategory getBodyWeightCategory([List<MeasurementEntry>? entries]) {
+  return MeasurementCategory(
+    id: testBodyWeightCategoryId,
+    name: 'Weight',
+    unit: 'kg',
+    metricType: MetricType.bodyWeight,
+    isOfficial: true,
+    entries: entries ?? [testWeightEntry2, testWeightEntry1],
+  );
 }
 
-List<WeightEntry> getScreenshotWeightEntries() {
-  return [
-    WeightEntry(id: '1', weight: 86, date: DateTime.utc(2021, 01, 01)),
-    WeightEntry(id: '2', weight: 81, date: DateTime.utc(2021, 01, 10)),
-    WeightEntry(id: '3', weight: 82, date: DateTime.utc(2021, 01, 20)),
-    WeightEntry(id: '4', weight: 83, date: DateTime.utc(2021, 01, 30)),
-    WeightEntry(id: '5', weight: 86, date: DateTime.utc(2021, 02, 20)),
-    WeightEntry(id: '6', weight: 90, date: DateTime.utc(2021, 02, 28)),
-    WeightEntry(id: '7', weight: 91, date: DateTime.utc(2021, 03, 20)),
-    WeightEntry(id: '8', weight: 91.1, date: DateTime.utc(2021, 03, 30)),
-    WeightEntry(id: '9', weight: 90, date: DateTime.utc(2021, 05, 1)),
-    WeightEntry(id: '10', weight: 91, date: DateTime.utc(2021, 6, 5)),
-    WeightEntry(id: '11', weight: 89, date: DateTime.utc(2021, 6, 20)),
-    WeightEntry(id: '12', weight: 88, date: DateTime.utc(2021, 7, 15)),
-    WeightEntry(id: '13', weight: 86, date: DateTime.utc(2021, 7, 20)),
-    WeightEntry(id: '14', weight: 83, date: DateTime.utc(2021, 7, 30)),
-    WeightEntry(id: '15', weight: 80, date: DateTime.utc(2021, 8, 10)),
-  ];
+MeasurementCategory getScreenshotBodyWeightCategory() {
+  MeasurementEntry entry(String id, num value, DateTime date) => MeasurementEntry(
+    id: id,
+    categoryId: testBodyWeightCategoryId,
+    value: value,
+    date: date,
+    notes: '',
+  );
+
+  return getBodyWeightCategory([
+    entry('15', 80, DateTime.utc(2021, 8, 10)),
+    entry('14', 83, DateTime.utc(2021, 7, 30)),
+    entry('13', 86, DateTime.utc(2021, 7, 20)),
+    entry('12', 88, DateTime.utc(2021, 7, 15)),
+    entry('11', 89, DateTime.utc(2021, 6, 20)),
+    entry('10', 91, DateTime.utc(2021, 6, 5)),
+    entry('9', 90, DateTime.utc(2021, 05, 1)),
+    entry('8', 91.1, DateTime.utc(2021, 03, 30)),
+    entry('7', 91, DateTime.utc(2021, 03, 20)),
+    entry('6', 90, DateTime.utc(2021, 02, 28)),
+    entry('5', 86, DateTime.utc(2021, 02, 20)),
+    entry('4', 83, DateTime.utc(2021, 01, 30)),
+    entry('3', 82, DateTime.utc(2021, 01, 20)),
+    entry('2', 81, DateTime.utc(2021, 01, 10)),
+    entry('1', 86, DateTime.utc(2021, 01, 01)),
+  ]);
 }

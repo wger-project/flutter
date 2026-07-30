@@ -30,8 +30,6 @@ import 'package:wger/features/nutrition/models/nutritional_plan.dart';
 import 'package:wger/features/nutrition/providers/nutrition_notifier.dart';
 import 'package:wger/features/routines/models/session.dart';
 import 'package:wger/features/routines/providers/routines_notifier.dart';
-import 'package:wger/features/weight/models/weight_entry.dart';
-import 'package:wger/features/weight/providers/body_weight_notifier.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/theme/theme.dart';
 
@@ -78,7 +76,6 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
   /// Builds the date → events map from already-loaded provider data
   Map<String, List<Event>> _buildEvents({
     required BuildContext context,
-    required List<WeightEntry> entries,
     required List<MeasurementCategory> categories,
     required List<WorkoutSession> sessions,
     required List<NutritionalPlan> plans,
@@ -87,21 +84,22 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
     final i18n = AppLocalizations.of(context);
     final events = <String, List<Event>>{};
 
-    for (final entry in entries) {
-      final date = DateFormatLists.format(entry.date);
-      events.putIfAbsent(date, () => []);
-      events[date]!.add(Event(EventType.weight, '${numberFormat.format(entry.weight)} kg'));
-    }
-
     for (final category in categories) {
+      // Body weight entries live in the official category but keep their own
+      // event type (and no category-name prefix)
       for (final entry in category.entries) {
         final date = DateFormatLists.format(entry.date);
         events.putIfAbsent(date, () => []);
         events[date]!.add(
-          Event(
-            EventType.measurement,
-            '${category.name}: ${numberFormat.format(entry.value)} ${category.unit}',
-          ),
+          category.isOfficialBodyWeight
+              ? Event(
+                  EventType.weight,
+                  '${numberFormat.format(entry.value)} ${category.unit}',
+                )
+              : Event(
+                  EventType.measurement,
+                  '${category.name}: ${numberFormat.format(entry.value)} ${category.unit}',
+                ),
         );
       }
     }
@@ -187,20 +185,18 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
 
   @override
   Widget build(BuildContext context) {
-    final entries = ref.watch(weightEntryProvider).value;
     final categories = ref.watch(measurementProvider).value;
     final routinesState = ref.watch(routinesRiverpodProvider).value;
     final nutritionState = ref.watch(nutritionProvider).value;
 
     // Show a spinner until every source has produced at least one value. Same
     // pattern as the other dashboard widgets via [AsyncValueWidget].
-    if (entries == null || categories == null || routinesState == null || nutritionState == null) {
+    if (categories == null || routinesState == null || nutritionState == null) {
       return _shell(context, const BoxedProgressIndicator());
     }
 
     final events = _buildEvents(
       context: context,
-      entries: entries,
       categories: categories,
       sessions: routinesState.sessions,
       plans: nutritionState.plans,

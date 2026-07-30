@@ -113,6 +113,11 @@ class MeasurementCategory with _$MeasurementCategory {
   @override
   final int order;
 
+  /// Server-managed official category (max. one per metric type and user).
+  /// The app never creates official categories itself.
+  @override
+  final bool isOfficial;
+
   /// Child categories (components) of this group. Populated by the repository
   /// for display, never persisted directly.
   @override
@@ -126,12 +131,17 @@ class MeasurementCategory with _$MeasurementCategory {
     this.metricType = MetricType.custom,
     this.parentId,
     this.order = 0,
+    this.isOfficial = false,
     this.children = const [],
   });
 
   /// `true` for group parents (blood pressure etc.), which hold no entries of
   /// their own
   bool get isGroup => children.isNotEmpty;
+
+  /// The user's body weight category. It has its own screens (weight feature)
+  /// and is hidden from the general measurements UI.
+  bool get isOfficialBodyWeight => isOfficial && metricType == MetricType.bodyWeight;
 
   MeasurementEntry findEntryById(String id) {
     return entries.firstWhere(
@@ -149,6 +159,7 @@ class MeasurementCategory with _$MeasurementCategory {
       metricType: Value(metricType),
       parentId: Value(parentId),
       order: Value(order),
+      isOfficial: Value(isOfficial),
     );
   }
 }

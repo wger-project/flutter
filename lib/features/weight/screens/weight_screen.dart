@@ -21,6 +21,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/core/form_screen.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/core/widgets/app_bar.dart';
+import 'package:wger/features/weight/providers/body_weight_provider.dart';
 import 'package:wger/features/weight/widgets/forms.dart';
 import 'package:wger/features/weight/widgets/weight_overview.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -32,21 +33,27 @@ class WeightScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // New entries need the official category, which the server creates and the
+    // initial sync delivers; hide the FAB until it is there.
+    final category = ref.watch(bodyWeightCategoryProvider).value;
+
     return Scaffold(
       appBar: EmptyAppBar(AppLocalizations.of(context).weight),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add, color: Colors.white),
-        onPressed: () {
-          Navigator.pushNamed(
-            context,
-            FormScreen.routeName,
-            arguments: FormScreenArguments(
-              AppLocalizations.of(context).newEntry,
-              WeightForm(),
+      floatingActionButton: category == null
+          ? null
+          : FloatingActionButton(
+              child: const Icon(Icons.add, color: Colors.white),
+              onPressed: () {
+                Navigator.pushNamed(
+                  context,
+                  FormScreen.routeName,
+                  arguments: FormScreenArguments(
+                    AppLocalizations.of(context).newEntry,
+                    WeightForm(category.id!),
+                  ),
+                );
+              },
             ),
-          );
-        },
-      ),
       body: const WidescreenWrapper(
         child: SingleChildScrollView(
           child: WeightOverview(),

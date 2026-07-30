@@ -52,7 +52,6 @@ import 'package:wger/features/routines/models/repetition_unit.dart';
 import 'package:wger/features/routines/models/routine.dart';
 import 'package:wger/features/routines/models/session.dart';
 import 'package:wger/features/routines/models/weight_unit.dart';
-import 'package:wger/features/weight/models/weight_entry.dart';
 
 import 'powersync.dart';
 import 'tables/exercise.dart';
@@ -64,7 +63,6 @@ import 'tables/measurements.dart';
 import 'tables/nutrition.dart';
 import 'tables/routines.dart';
 import 'tables/user_profile.dart';
-import 'tables/weight.dart';
 
 part 'database.g.dart';
 
@@ -88,9 +86,6 @@ part 'database.g.dart';
     ExerciseCategoryTable,
     ExerciseImageTable,
     ExerciseVideoTable,
-
-    // Body weight
-    WeightEntryTable,
 
     // Measurements
     MeasurementCategoryTable,

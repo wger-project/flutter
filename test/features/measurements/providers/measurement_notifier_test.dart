@@ -23,6 +23,7 @@ import 'package:mockito/mockito.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
 
+import '../../../../test_data/body_weight.dart';
 import '../../../../test_data/measurements.dart';
 import 'measurement_notifier_test.mocks.dart';
 
@@ -170,6 +171,16 @@ void main() {
 
       await notifier.setCategoryOrder(0, 1);
       verify(mockRepo.reorderCategories(['2', '1', 'bp'])).called(1);
+    });
+
+    test('excludes the official body weight category, matching the sort screen', () async {
+      when(mockRepo.watchAll()).thenAnswer(
+        (_) => Stream.value([getBodyWeightCategory(), ...getMeasurementCategories()]),
+      );
+      final notifier = await loadedNotifier();
+
+      await notifier.setCategoryOrder(0, 1);
+      verify(mockRepo.reorderCategories(['2', '1'])).called(1);
     });
 
     test('does nothing while the list is still loading', () async {

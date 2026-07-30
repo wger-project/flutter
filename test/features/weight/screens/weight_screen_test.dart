@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (C) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -23,10 +23,10 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/core/form_screen.dart';
 import 'package:wger/features/account/providers/user_profile_repository.dart';
+import 'package:wger/features/measurements/providers/measurement_repository.dart';
 import 'package:wger/features/measurements/widgets/charts.dart';
 import 'package:wger/features/nutrition/providers/ingredient_repository.dart';
 import 'package:wger/features/nutrition/providers/nutrition_repository.dart';
-import 'package:wger/features/weight/providers/body_weight_repository.dart';
 import 'package:wger/features/weight/screens/weight_screen.dart';
 import 'package:wger/features/weight/widgets/forms.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -38,14 +38,14 @@ import 'weight_screen_test.mocks.dart';
 @GenerateMocks([
   NutritionRepository,
   IngredientRepository,
-  BodyWeightRepository,
+  MeasurementRepository,
   UserProfileRepository,
 ])
 void main() {
   late MockNutritionRepository mockNutritionRepo;
   late MockIngredientRepository mockIngredientRepo;
   late MockUserProfileRepository mockUserProfileRepository;
-  MockBodyWeightRepository mockBodyWeightRepository = MockBodyWeightRepository();
+  late MockMeasurementRepository mockMeasurementRepository;
 
   setUp(() {
     mockNutritionRepo = MockNutritionRepository();
@@ -57,19 +57,19 @@ void main() {
       mockUserProfileRepository.watchDrift(),
     ).thenAnswer((_) => Stream.value(tUserProfile1));
 
-    mockBodyWeightRepository = MockBodyWeightRepository();
+    mockMeasurementRepository = MockMeasurementRepository();
     when(
-      mockBodyWeightRepository.watchAllDrift(),
-    ).thenAnswer((_) => Stream.value(getWeightEntries()));
+      mockMeasurementRepository.watchAll(),
+    ).thenAnswer((_) => Stream.value([getBodyWeightCategory()]));
     when(
-      mockBodyWeightRepository.deleteLocalDrift(any),
+      mockMeasurementRepository.deleteLocalDrift(any),
     ).thenAnswer((_) async => Future.value());
   });
 
   Widget createWeightScreen({locale = 'en'}) {
     return ProviderScope(
       overrides: [
-        bodyWeightRepositoryProvider.overrideWithValue(mockBodyWeightRepository),
+        measurementRepositoryProvider.overrideWithValue(mockMeasurementRepository),
         userProfileRepositoryProvider.overrideWithValue(mockUserProfileRepository),
         nutritionRepositoryProvider.overrideWithValue(mockNutritionRepo),
         ingredientRepositoryProvider.overrideWithValue(mockIngredientRepo),
@@ -135,8 +135,8 @@ void main() {
     await tester.tap(find.text('Delete'));
     await tester.pumpAndSettle();
 
-    // We would delete the entry from the DB
-    verify(mockBodyWeightRepository.deleteLocalDrift('1')).called(1);
+    // We would delete the entry from the DB (the newest entry is listed first)
+    verify(mockMeasurementRepository.deleteLocalDrift('2')).called(1);
   });
 
   testWidgets('Test the form on the body weight screen', (WidgetTester tester) async {
@@ -147,6 +147,19 @@ void main() {
     await tester.tap(find.byType(FloatingActionButton));
     await tester.pumpAndSettle();
     expect(find.byType(WeightForm), findsOneWidget);
+  });
+
+  testWidgets('No FAB while the official category has not been synced', (
+    WidgetTester tester,
+  ) async {
+    when(mockMeasurementRepository.watchAll()).thenAnswer((_) => Stream.value([]));
+
+    await tester.pumpWidget(createWeightScreen());
+    // No pumpAndSettle: the overview shows an endless spinner in this state
+    await tester.pump();
+    await tester.pump();
+
+    expect(find.byType(FloatingActionButton), findsNothing);
   });
 
   testWidgets('Tests the localization of dates - EN', (WidgetTester tester) async {

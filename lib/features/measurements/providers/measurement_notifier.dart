@@ -95,14 +95,17 @@ final class MeasurementNotifier extends _$MeasurementNotifier {
   /// all top-level categories accordingly.
   ///
   /// Indices refer to the top-level list only (children of multi-value groups
-  /// keep their in-group order).
+  /// keep their in-group order). The official body weight category is not
+  /// part of the list, matching the sort screen it is hidden from.
   Future<void> setCategoryOrder(int oldIndex, int newIndex) async {
     final categories = state.asData?.value;
     if (categories == null) {
       return;
     }
 
-    final reordered = categories.where((c) => c.parentId == null).toList();
+    final reordered = categories
+        .where((c) => c.parentId == null && !c.isOfficialBodyWeight)
+        .toList();
     final moved = reordered.removeAt(oldIndex);
     reordered.insert(newIndex, moved);
 

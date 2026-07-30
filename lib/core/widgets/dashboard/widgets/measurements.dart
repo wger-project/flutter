@@ -46,8 +46,11 @@ class _DashboardMeasurementWidgetState extends ConsumerState<DashboardMeasuremen
       value: ref.watch(measurementProvider),
       loggerName: 'DashboardMeasurementWidget',
       data: (allCategories) {
-        // Children of multi-value groups are shown inside their parent's card
-        final categoriesList = allCategories.where((c) => c.parentId == null).toList();
+        // Children of multi-value groups are shown inside their parent's card.
+        // Body weight has its own dashboard widget.
+        final categoriesList = allCategories
+            .where((c) => c.parentId == null && !c.isOfficialBodyWeight)
+            .toList();
 
         if (categoriesList.isEmpty) {
           return NothingFound(

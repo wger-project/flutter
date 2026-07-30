@@ -126,7 +126,13 @@ class _MeasurementCategoryFormState extends ConsumerState<MeasurementCategoryFor
               }
 
               final candidates = categories
-                  .where((c) => c.parentId == null && c.id != _draft.id && c.entries.isEmpty)
+                  .where(
+                    (c) =>
+                        c.parentId == null &&
+                        c.id != _draft.id &&
+                        c.entries.isEmpty &&
+                        !c.isOfficialBodyWeight,
+                  )
                   .toList();
               if (candidates.isEmpty) {
                 return const SizedBox.shrink();
@@ -310,12 +316,16 @@ class _MeasurementEntryFormState extends ConsumerState<MeasurementEntryForm> {
                   }
                   _form.currentState!.save();
 
+                  // Source and external id are not editable; keep the existing
+                  // values so edits to imported entries stay deduplicable
                   final entry = MeasurementEntry(
                     id: _existingId,
                     categoryId: category.id!,
                     date: _date,
                     value: _value!,
                     notes: _notes,
+                    source: widget._entry?.source ?? 'user',
+                    externalId: widget._entry?.externalId,
                   );
                   if (entry.id == null) {
                     await notifier.addEntry(entry);

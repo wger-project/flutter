@@ -145,6 +145,9 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
         }
 
         final category = await _findOrCreateCategory(metric, categories);
+        if (category == null) {
+          continue;
+        }
         final seen = {
           for (final e in category.entries)
             if (e.externalId != null) e.externalId!,
@@ -199,10 +202,23 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
   /// canonical name to reuse a matching category the user created by hand) or
   /// creates it. The created category is appended to [categories] so a later
   /// metric in the same run reuses it.
-  Future<MeasurementCategory> _findOrCreateCategory(
+  ///
+  /// Body weight is the exception: it goes only into the official category,
+  /// which the server creates for every user. It is never created here;
+  /// returns `null` (skip the metric) while the initial sync has not
+  /// delivered it yet.
+  Future<MeasurementCategory?> _findOrCreateCategory(
     HealthMetric metric,
     List<MeasurementCategory> categories,
   ) async {
+    if (metric.metricType == MetricType.bodyWeight) {
+      final official = categories.firstWhereOrNull((c) => c.isOfficialBodyWeight);
+      if (official == null) {
+        _logger.info('Official body weight category not synced yet, skipping weight import');
+      }
+      return official;
+    }
+
     final existing = categories.firstWhereOrNull(
       (c) => c.metricType == metric.metricType || c.name == metric.canonicalName,
     );
