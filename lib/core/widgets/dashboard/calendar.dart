@@ -28,6 +28,7 @@ import 'package:wger/features/account/providers/user_profile_notifier.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/unit_conversion.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
+import 'package:wger/features/measurements/widgets/charts.dart';
 import 'package:wger/features/nutrition/models/nutritional_plan.dart';
 import 'package:wger/features/nutrition/providers/nutrition_notifier.dart';
 import 'package:wger/features/routines/models/session.dart';
@@ -93,6 +94,8 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
       // display unit; other measurements show in the category unit
       final isBodyWeight = category.isOfficialBodyWeight;
       final displayUnit = isBodyWeight ? weightDisplayUnit(isMetric) : category.unit;
+      // the conversion needs the wire unit, the label the localized one
+      final unitLabel = isBodyWeight ? weightUnit(isMetric, context) : category.unit;
 
       for (final entry in category.entries) {
         final date = DateFormatLists.format(entry.date);
@@ -102,8 +105,8 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
         events.putIfAbsent(date, () => []);
         events[date]!.add(
           isBodyWeight
-              ? Event(EventType.weight, '$value $displayUnit')
-              : Event(EventType.measurement, '${category.name}: $value $displayUnit'),
+              ? Event(EventType.weight, '$value $unitLabel')
+              : Event(EventType.measurement, '${category.name}: $value $unitLabel'),
         );
       }
     }

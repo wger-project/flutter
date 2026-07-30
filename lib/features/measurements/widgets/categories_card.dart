@@ -19,6 +19,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:wger/core/form_screen.dart';
+import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/unit_conversion.dart';
 import 'package:wger/features/measurements/screens/measurement_entries_screen.dart';
@@ -156,7 +157,7 @@ class CategoriesCard extends StatelessWidget {
               title: Text(child.name),
               trailing: Text(
                 latest != null
-                    ? '${latest.valueIn(child.unit, categoryUnit: child.unit)} ${child.unit}'
+                    ? '${localizedNumberFormat(context).format(latest.valueIn(child.unit, categoryUnit: child.unit))} ${child.unit}'
                     : '—',
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
