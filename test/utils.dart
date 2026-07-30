@@ -17,7 +17,7 @@
  */
 
 import 'package:http/http.dart' as http;
-import 'package:wger/providers/base_provider.dart';
+import 'package:wger/core/network/base_provider.dart';
 
 /// Builds a [WgerBaseProvider] pre-configured for tests with a fixed server
 /// URL. Pass a mocked [http.Client] to intercept requests. Authentication is

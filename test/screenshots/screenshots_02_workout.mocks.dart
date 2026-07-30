@@ -6,14 +6,14 @@
 import 'dart:async' as _i8;
 
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:wger/models/workouts/base_config.dart' as _i6;
-import 'package:wger/models/workouts/day.dart' as _i3;
-import 'package:wger/models/workouts/repetition_unit.dart' as _i10;
-import 'package:wger/models/workouts/routine.dart' as _i2;
-import 'package:wger/models/workouts/slot.dart' as _i4;
-import 'package:wger/models/workouts/slot_entry.dart' as _i5;
-import 'package:wger/models/workouts/weight_unit.dart' as _i9;
-import 'package:wger/providers/routines_repository.dart' as _i7;
+import 'package:wger/features/routines/models/base_config.dart' as _i6;
+import 'package:wger/features/routines/models/day.dart' as _i3;
+import 'package:wger/features/routines/models/repetition_unit.dart' as _i10;
+import 'package:wger/features/routines/models/routine.dart' as _i2;
+import 'package:wger/features/routines/models/slot.dart' as _i4;
+import 'package:wger/features/routines/models/slot_entry.dart' as _i5;
+import 'package:wger/features/routines/models/weight_unit.dart' as _i9;
+import 'package:wger/features/routines/providers/routines_repository.dart' as _i7;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values

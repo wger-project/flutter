@@ -897,5 +897,8 @@
     "addToOpenFoodFacts": "Open Food Facts-க்குத் தகவலைப் பகிரவும்",
     "@addToOpenFoodFacts": {
         "description": "Label shown as the clickable link to go on Open Food Facts"
-    }
+    },
+    "endBeforeStart": "இறுதி மதிப்பு தொடக்கத்திற்கு முன் இருக்க முடியாது",
+    "minLengthRoutine": "வழக்கம் குறைந்தது {number} வாரங்கள் நீளமாக இருக்க வேண்டும்",
+    "maxLengthRoutine": "வழக்கம் அதிகபட்சம் {number} வாரங்கள் நீளமாக இருக்கலாம்"
 }
