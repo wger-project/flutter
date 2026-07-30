@@ -225,10 +225,7 @@ class _SlotEntryFormState extends ConsumerState<SlotEntryForm> {
           if (!widget.simpleMode)
             WeightUnitInputWidget(
               widget.entry.weightUnitObj,
-              onChanged: (value) {
-                widget.entry.weightUnitObj = null;
-                widget.entry.weightUnitId = null;
-              },
+              onChanged: (value) => widget.entry.weightUnit = value,
             ),
           Row(
             spacing: 10,
@@ -259,10 +256,7 @@ class _SlotEntryFormState extends ConsumerState<SlotEntryForm> {
           if (!widget.simpleMode)
             RepetitionUnitInputWidget(
               widget.entry.repetitionUnitObj,
-              onChanged: (value) {
-                widget.entry.repetitionUnitObj = null;
-                widget.entry.repetitionUnitId = null;
-              },
+              onChanged: (value) => widget.entry.repetitionUnit = value,
             ),
           Row(
             spacing: 10,

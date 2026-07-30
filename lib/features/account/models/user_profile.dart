@@ -17,6 +17,7 @@
  */
 
 import 'package:drift/drift.dart' as drift;
+import 'package:wger/core/consts.dart';
 import 'package:wger/database/powersync/database.dart';
 
 /// The user's editable profile preferences.
@@ -27,6 +28,9 @@ class UserProfile {
   UserProfile({required this.id, required this.weightUnitStr});
 
   bool get isMetric => weightUnitStr == 'kg';
+
+  /// Weight unit implied by the metric preference: kg for metric users, lb otherwise.
+  int get defaultWeightUnitId => isMetric ? WEIGHT_UNIT_KG : WEIGHT_UNIT_LB;
 
   /// Drift companion for local UPDATE writes routed through PowerSync.
   UserProfileTableCompanion toCompanion() {

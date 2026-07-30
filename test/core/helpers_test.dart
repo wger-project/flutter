@@ -299,8 +299,10 @@ void main() {
       final messages = records.where((r) => r.level == Level.INFO).map((r) => r.message);
       expect(
         messages,
-        contains('PowerSync probe: https://ps.example.com/probes/liveness failed: '
-            'ClientException: Connection refused'),
+        contains(
+          'PowerSync probe: https://ps.example.com/probes/liveness failed: '
+          'ClientException: Connection refused',
+        ),
       );
       expect(
         messages,
