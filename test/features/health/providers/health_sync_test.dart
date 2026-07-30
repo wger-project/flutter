@@ -361,6 +361,36 @@ void main() {
       );
     });
 
+    test('keeps the watermark when weight is skipped but other metrics import', () async {
+      await PreferenceHelper.instance.setLastHealthSyncTimestamp('2020-01-01T00:00:00.000');
+      when(measurements.getAllOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
+      stubReadings([
+        HealthReading(
+          type: HealthDataType.WEIGHT,
+          value: 80.5,
+          date: DateTime(2026, 1, 1),
+          externalId: 'w-1',
+        ),
+        HealthReading(
+          type: HealthDataType.HEIGHT,
+          value: 1.8,
+          date: DateTime(2026, 1, 2),
+          externalId: 'h-1',
+        ),
+      ]);
+
+      final count = await createNotifier().syncOnAppOpen();
+
+      // Height imports, but the watermark must not advance past the weight
+      // readings: they would leave the overlap window before the official
+      // category ever syncs and be lost for good
+      expect(count, 1);
+      expect(
+        await PreferenceHelper.instance.getLastHealthSyncTimestamp(),
+        '2020-01-01T00:00:00.000',
+      );
+    });
+
     test('reads with an overlap window before the stored watermark', () async {
       await PreferenceHelper.instance.setLastHealthSyncTimestamp('2026-06-01T12:00:00.000');
       when(measurements.getAllOnce()).thenAnswer((_) async => <MeasurementCategory>[]);

@@ -138,6 +138,7 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
       final categories = await _measurements.getAllOnce();
       final source = _health.sourceName;
       var synced = 0;
+      var skippedMetric = false;
       DateTime? latest;
 
       for (final metric in enabledHealthMetrics) {
@@ -148,6 +149,7 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
 
         final category = await _findOrCreateCategory(metric, categories);
         if (category == null) {
+          skippedMetric = true;
           continue;
         }
         final seen = {
@@ -203,7 +205,10 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
         }
       }
 
-      if (latest != null) {
+      // Advancing the watermark past readings a skipped metric could not
+      // import would push them out of the overlap window for good, so keep
+      // the old one until every metric got its category.
+      if (latest != null && !skippedMetric) {
         await prefs.setLastHealthSyncTimestamp(latest.toIso8601String());
       }
       _logger.info('Imported $synced health measurements');
