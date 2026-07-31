@@ -49,6 +49,18 @@ final _uuidPattern = RegExp(r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[
 String dailyAggregateExternalId(String categoryId, DateTime day) =>
     ps.uuid.v5(categoryId, DateFormatLists.format(day));
 
+/// Why the last sync did not deliver, if it didn't.
+enum HealthSyncIssue {
+  /// The platform refuses to hand over data. Either the permissions were
+  /// declined, or they were never actually granted to this installation
+  /// (see [HealthRepository.isAuthorizationMissing]). Recoverable by asking
+  /// for them again, which needs the user to start it.
+  permissionsMissing,
+
+  /// The import failed for another reason; the details are in the log.
+  failed,
+}
+
 @freezed
 sealed class HealthSyncState with _$HealthSyncState {
   const factory HealthSyncState({
@@ -59,6 +71,9 @@ sealed class HealthSyncState with _$HealthSyncState {
     /// When the last successful sync finished; null until one succeeded in
     /// this session.
     DateTime? lastSyncTime,
+
+    /// What went wrong during the last sync, null when it went through.
+    HealthSyncIssue? issue,
   }) = _HealthSyncState;
 }
 
@@ -132,6 +147,21 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
     return sync();
   }
 
+  /// Asks the platform for the permissions again and retries the import.
+  ///
+  /// For [HealthSyncIssue.permissionsMissing]: this shows the platform dialog,
+  /// so it belongs behind a user action, unlike the automatic [sync].
+  /// Returns the number of imported entries, or `null` when access was again
+  /// not granted.
+  Future<int?> retryWithPermissions() async {
+    _logger.info('Re-requesting health permissions');
+    if (!await _health.ensureAuthorized(_types)) {
+      state = state.copyWith(issue: HealthSyncIssue.permissionsMissing);
+      return null;
+    }
+    return sync();
+  }
+
   /// Clears the preference and disables importing.
   Future<void> disableSync() async {
     _logger.info('Disabling health sync');
@@ -151,13 +181,16 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
     if (state.isSyncing) {
       return 0;
     }
-    state = state.copyWith(isEnabled: true, isSyncing: true);
+    state = state.copyWith(isEnabled: true, isSyncing: true, issue: null);
     _normalizedIdCount = 0;
 
     try {
-      if (!await _health.ensureAuthorized(_types)) {
-        _logger.warning('Health permissions not granted during sync');
-        state = state.copyWith(isSyncing: false);
+      // Checked silently, never requested: this runs on app open and resume,
+      // where a permission dialog would come out of nowhere. Asking again is
+      // the user's call, see [retryWithPermissions].
+      if (await _health.isAuthorizationKnownMissing(_types)) {
+        _logger.warning('Health permissions not granted, skipping sync');
+        state = state.copyWith(isSyncing: false, issue: HealthSyncIssue.permissionsMissing);
         return 0;
       }
 
@@ -182,47 +215,56 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
       final source = _health.sourceName;
       var synced = 0;
       var skippedMetric = false;
+      var failedMetric = false;
       DateTime? latest;
 
       for (final metric in enabledHealthMetrics) {
-        // Pair each target category with the readings it receives: the metric's
-        // own category, or one child per component for a group metric.
-        final List<(MeasurementCategory, Iterable<HealthReading>)> targets;
-        if (metric.components.isEmpty) {
-          final metricReadings = readings.where((r) => r.type == metric.dataType);
-          if (metricReadings.isEmpty) {
-            continue;
+        // One bad metric must not cost the others their import, and the
+        // watermark has to stay put for whatever it could not write
+        try {
+          // Pair each target category with the readings it receives: the metric's
+          // own category, or one child per component for a group metric.
+          final List<(MeasurementCategory, Iterable<HealthReading>)> targets;
+          if (metric.components.isEmpty) {
+            final metricReadings = readings.where((r) => r.type == metric.dataType);
+            if (metricReadings.isEmpty) {
+              continue;
+            }
+            final category = await _findOrCreateCategory(metric, categories);
+            if (category == null) {
+              skippedMetric = true;
+              continue;
+            }
+            targets = [(category, metricReadings)];
+          } else {
+            final byComponent = [
+              for (final component in metric.components)
+                readings.where((r) => r.type == component.dataType),
+            ];
+            if (byComponent.every((r) => r.isEmpty)) {
+              continue;
+            }
+            final children = await _findOrCreateGroupChildren(metric, categories);
+            if (children == null) {
+              skippedMetric = true;
+              continue;
+            }
+            targets = [for (var i = 0; i < children.length; i++) (children[i], byComponent[i])];
           }
-          final category = await _findOrCreateCategory(metric, categories);
-          if (category == null) {
-            skippedMetric = true;
-            continue;
-          }
-          targets = [(category, metricReadings)];
-        } else {
-          final byComponent = [
-            for (final component in metric.components)
-              readings.where((r) => r.type == component.dataType),
-          ];
-          if (byComponent.every((r) => r.isEmpty)) {
-            continue;
-          }
-          final children = await _findOrCreateGroupChildren(metric, categories);
-          if (children == null) {
-            skippedMetric = true;
-            continue;
-          }
-          targets = [for (var i = 0; i < children.length; i++) (children[i], byComponent[i])];
-        }
 
-        for (final (category, metricReadings) in targets) {
-          final (importedCount, newest) = metric.dailyAggregation != null
-              ? await _importDailyAggregates(metric, metricReadings, category, source)
-              : await _importReadings(metric, metricReadings, category, source);
-          synced += importedCount;
-          if (newest != null && (latest == null || newest.isAfter(latest))) {
-            latest = newest;
+          for (final (category, metricReadings) in targets) {
+            final (importedCount, newest) = metric.dailyAggregation != null
+                ? await _importDailyAggregates(metric, metricReadings, category, source)
+                : await _importReadings(metric, metricReadings, category, source);
+            synced += importedCount;
+            if (newest != null && (latest == null || newest.isAfter(latest))) {
+              latest = newest;
+            }
           }
+        } catch (e, s) {
+          _logger.severe('Importing ${metric.metricType.name} failed', e, s);
+          skippedMetric = true;
+          failedMetric = true;
         }
       }
 
@@ -238,11 +280,28 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
         );
       }
       _logger.info('Imported $synced health measurements');
-      state = state.copyWith(isSyncing: false, lastSyncCount: synced, lastSyncTime: DateTime.now());
+      state = state.copyWith(
+        isSyncing: false,
+        lastSyncCount: synced,
+        lastSyncTime: DateTime.now(),
+        issue: failedMetric ? HealthSyncIssue.failed : null,
+      );
       return synced;
-    } catch (e) {
-      _logger.warning('Health sync failed: $e');
-      state = state.copyWith(isSyncing: false, lastSyncCount: 0);
+    } catch (e, s) {
+      // A read the platform refuses for lack of permissions is the one
+      // permission problem iOS reports at all, so it is worth telling apart
+      // from a genuine failure: the user can fix it by granting access again.
+      final missing = HealthRepository.isAuthorizationMissing(e);
+      if (missing) {
+        _logger.warning('Health sync stopped, the platform reports no authorization', e);
+      } else {
+        _logger.severe('Health sync failed', e, s);
+      }
+      state = state.copyWith(
+        isSyncing: false,
+        lastSyncCount: 0,
+        issue: missing ? HealthSyncIssue.permissionsMissing : HealthSyncIssue.failed,
+      );
       return 0;
     }
   }

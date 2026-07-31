@@ -4908,6 +4908,28 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get healthSyncGrantAccess =>
+      (super.noSuchMethod(
+            Invocation.getter(#healthSyncGrantAccess),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#healthSyncGrantAccess),
+            ),
+          )
+          as String);
+
+  @override
+  String get healthSyncFailed =>
+      (super.noSuchMethod(
+            Invocation.getter(#healthSyncFailed),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#healthSyncFailed),
+            ),
+          )
+          as String);
+
+  @override
   String get health =>
       (super.noSuchMethod(
             Invocation.getter(#health),
@@ -5343,6 +5365,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.method(#healthSyncStatus, [count, time]),
+            ),
+          )
+          as String);
+
+  @override
+  String healthSyncPermissionMissing(String? platform) =>
+      (super.noSuchMethod(
+            Invocation.method(#healthSyncPermissionMissing, [platform]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#healthSyncPermissionMissing, [platform]),
             ),
           )
           as String);

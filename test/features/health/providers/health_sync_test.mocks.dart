@@ -57,6 +57,16 @@ class MockHealthRepository extends _i1.Mock implements _i2.HealthRepository {
           as _i4.Future<bool>);
 
   @override
+  _i4.Future<bool> isAuthorizationKnownMissing(
+    List<_i5.HealthDataType>? types,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#isAuthorizationKnownMissing, [types]),
+            returnValue: _i4.Future<bool>.value(false),
+          )
+          as _i4.Future<bool>);
+
+  @override
   _i4.Future<bool> ensureAuthorized(List<_i5.HealthDataType>? types) =>
       (super.noSuchMethod(
             Invocation.method(#ensureAuthorized, [types]),

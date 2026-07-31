@@ -19,6 +19,7 @@
 import 'package:flutter/foundation.dart' show TargetPlatform, defaultTargetPlatform;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:logging/logging.dart';
 import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/features/health/providers/health_sync.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -31,6 +32,7 @@ class HealthSyncSettingsTile extends ConsumerStatefulWidget {
 }
 
 class _HealthSyncSettingsTileState extends ConsumerState<HealthSyncSettingsTile> {
+  final _logger = Logger('HealthSyncSettingsTile');
   bool? _isAvailable;
 
   @override
@@ -73,8 +75,16 @@ class _HealthSyncSettingsTileState extends ConsumerState<HealthSyncSettingsTile>
               : (enabled) async {
                   final notifier = ref.read(healthSyncProvider.notifier);
                   if (enabled) {
-                    // null means the platform permissions were not granted
-                    final count = await notifier.enableSync();
+                    // null means the platform permissions were not granted.
+                    // A platform that refuses the request outright throws, and
+                    // that must not reach the global error dialog: to the user
+                    // it is the same "no access" situation.
+                    int? count;
+                    try {
+                      count = await notifier.enableSync();
+                    } catch (e) {
+                      _logger.warning('Enabling health sync failed', e);
+                    }
                     if (!context.mounted) {
                       return;
                     }
@@ -111,42 +121,65 @@ class _HealthSyncSettingsTileState extends ConsumerState<HealthSyncSettingsTile>
   String get _platformName =>
       defaultTargetPlatform == TargetPlatform.iOS ? 'Apple Health' : 'Health Connect';
 
-  /// Status line under the toggle: what the last sync did, a spinner while
-  /// one is running, and tapping it starts one manually.
+  /// Status line under the toggle: what the last sync did or why it didn't,
+  /// a spinner while one is running, and tapping it syncs (or, when the
+  /// platform withholds the data, asks for access again).
   Widget _statusTile(HealthSyncState syncState, AppLocalizations i18n) {
+    if (syncState.isSyncing) {
+      return ListTile(
+        leading: const SizedBox(
+          width: 24,
+          height: 24,
+          child: CircularProgressIndicator(strokeWidth: 2.5),
+        ),
+        title: Text(i18n.healthSyncSyncing),
+        enabled: false,
+      );
+    }
+
+    final needsPermission = syncState.issue == HealthSyncIssue.permissionsMissing;
+    final colors = Theme.of(context).colorScheme;
     final lastSync = syncState.lastSyncTime;
+
+    final String title;
+    if (needsPermission) {
+      title = i18n.healthSyncPermissionMissing(_platformName);
+    } else if (syncState.issue == HealthSyncIssue.failed) {
+      title = i18n.healthSyncFailed;
+    } else if (lastSync != null) {
+      title = i18n.healthSyncStatus(
+        syncState.lastSyncCount,
+        localizedDate(context).add_Hm().format(lastSync),
+      );
+    } else {
+      title = i18n.healthSyncNow;
+    }
+
     return ListTile(
-      leading: syncState.isSyncing
-          ? const SizedBox(
-              width: 24,
-              height: 24,
-              child: CircularProgressIndicator(strokeWidth: 2.5),
-            )
-          : const Icon(Icons.sync),
-      title: Text(
-        syncState.isSyncing
-            ? i18n.healthSyncSyncing
-            : lastSync != null
-            ? i18n.healthSyncStatus(
-                syncState.lastSyncCount,
-                localizedDate(context).add_Hm().format(lastSync),
-              )
-            : i18n.healthSyncNow,
+      leading: Icon(
+        needsPermission ? Icons.warning_amber : Icons.sync,
+        color: needsPermission ? colors.error : null,
       ),
-      subtitle: syncState.isSyncing || lastSync == null ? null : Text(i18n.healthSyncNow),
-      enabled: !syncState.isSyncing,
-      onTap: syncState.isSyncing
-          ? null
-          : () async {
-              final count = await ref.read(healthSyncProvider.notifier).sync();
-              // The status line already reflects "nothing new"; only actual
-              // imports get a snackbar
-              if (mounted && count > 0) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(i18n.healthSyncSuccess(count))),
-                );
-              }
-            },
+      title: Text(
+        title,
+        style: needsPermission ? TextStyle(color: colors.error) : null,
+      ),
+      subtitle: Text(needsPermission ? i18n.healthSyncGrantAccess : i18n.healthSyncNow),
+      onTap: () async {
+        final notifier = ref.read(healthSyncProvider.notifier);
+        // Asking for the permissions shows the platform dialog, which only
+        // ever happens because the user tapped here
+        final count = needsPermission
+            ? await notifier.retryWithPermissions()
+            : await notifier.sync();
+        // The status line already covers "nothing new" and every failure;
+        // only actual imports get a snackbar
+        if (mounted && count != null && count > 0) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(i18n.healthSyncSuccess(count))),
+          );
+        }
+      },
     );
   }
 }

@@ -29,6 +29,7 @@ class _FakeHealthSyncNotifier extends HealthSyncNotifier {
   final int? enableSyncResult;
   final HealthSyncState initialState;
   int syncCalls = 0;
+  int retryCalls = 0;
 
   _FakeHealthSyncNotifier(this.enableSyncResult, {this.initialState = const HealthSyncState()});
 
@@ -51,6 +52,20 @@ class _FakeHealthSyncNotifier extends HealthSyncNotifier {
     syncCalls++;
     return 0;
   }
+
+  @override
+  Future<int?> retryWithPermissions() async {
+    retryCalls++;
+    return 0;
+  }
+}
+
+/// Throws from [enableSync], the way a platform that refuses the request does.
+class _ThrowingHealthSyncNotifier extends _FakeHealthSyncNotifier {
+  _ThrowingHealthSyncNotifier() : super(null);
+
+  @override
+  Future<int?> enableSync() async => throw Exception('platform refused');
 }
 
 void main() {
@@ -123,6 +138,54 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(fake.syncCalls, 1);
+  });
+
+  testWidgets('missing permissions are shown and retried interactively', (tester) async {
+    final fake = _FakeHealthSyncNotifier(
+      null,
+      initialState: const HealthSyncState(
+        isEnabled: true,
+        issue: HealthSyncIssue.permissionsMissing,
+      ),
+    );
+    await tester.pumpWidget(createTile(fake));
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('is not sharing your data'), findsOneWidget);
+    expect(find.text('Tap to grant access again'), findsOneWidget);
+
+    await tester.tap(find.byIcon(Icons.warning_amber));
+    await tester.pumpAndSettle();
+
+    // Re-requesting prompts, a plain sync would not
+    expect(fake.retryCalls, 1);
+    expect(fake.syncCalls, 0);
+  });
+
+  testWidgets('a failed sync is shown as such', (tester) async {
+    await tester.pumpWidget(
+      createTile(
+        _FakeHealthSyncNotifier(
+          null,
+          initialState: const HealthSyncState(isEnabled: true, issue: HealthSyncIssue.failed),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('The last sync could not be completed'), findsOneWidget);
+  });
+
+  testWidgets('a throwing enableSync stays in the tile', (tester) async {
+    await tester.pumpWidget(createTile(_ThrowingHealthSyncNotifier()));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byType(SwitchListTile));
+    await tester.pumpAndSettle();
+
+    // Treated like a denial instead of bubbling into the global error dialog
+    expect(tester.takeException(), isNull);
+    expect(find.text('Access to health data was not granted'), findsOneWidget);
   });
 
   testWidgets('shows a spinner and blocks interaction while syncing', (tester) async {

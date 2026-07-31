@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:health_bridge/health.dart';
@@ -72,6 +73,7 @@ void main() {
     measurements = MockMeasurementRepository();
 
     when(health.ensureAuthorized(any)).thenAnswer((_) async => true);
+    when(health.isAuthorizationKnownMissing(any)).thenAnswer((_) async => false);
     when(health.sourceName).thenReturn('apple');
     when(measurements.addLocalDrift(any)).thenAnswer((_) async {});
     when(measurements.updateLocalDrift(any)).thenAnswer((_) async {});
@@ -186,6 +188,88 @@ void main() {
   });
 
   group('sync', () {
+    test('never asks for permissions itself, it would prompt out of nowhere', () async {
+      stubReadings([]);
+
+      await createNotifier().sync();
+
+      verify(health.isAuthorizationKnownMissing(any)).called(1);
+      verifyNever(health.ensureAuthorized(any));
+    });
+
+    test('flags missing permissions instead of reading', () async {
+      when(health.isAuthorizationKnownMissing(any)).thenAnswer((_) async => true);
+
+      final count = await createNotifier().sync();
+
+      expect(count, 0);
+      expect(container.read(healthSyncProvider).issue, HealthSyncIssue.permissionsMissing);
+      verifyNever(
+        health.read(types: anyNamed('types'), start: anyNamed('start'), end: anyNamed('end')),
+      );
+    });
+
+    test('a read the platform refuses for authorization is a permission issue', () async {
+      // The one permission problem iOS reports at all, and what a reinstall
+      // leaves behind: the preference says enabled, HealthKit disagrees
+      when(
+        health.read(types: anyNamed('types'), start: anyNamed('start'), end: anyNamed('end')),
+      ).thenThrow(
+        PlatformException(
+          code: 'HEALTH_ERROR',
+          message: 'Error getting health data: Authorization not determined',
+        ),
+      );
+
+      final count = await createNotifier().sync();
+
+      expect(count, 0);
+      expect(container.read(healthSyncProvider).issue, HealthSyncIssue.permissionsMissing);
+    });
+
+    test('any other failure is reported as a plain failure', () async {
+      when(
+        health.read(types: anyNamed('types'), start: anyNamed('start'), end: anyNamed('end')),
+      ).thenThrow(Exception('boom'));
+
+      final count = await createNotifier().sync();
+
+      expect(count, 0);
+      expect(container.read(healthSyncProvider).issue, HealthSyncIssue.failed);
+    });
+
+    test('one failing metric does not cost the others their import', () async {
+      // Writing the body fat entry fails; height must still make it in, and
+      // the watermark must stay put so the lost readings stay in the window
+      when(measurements.getAllOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
+      when(measurements.addLocalDrift(any)).thenAnswer((invocation) async {
+        final entry = invocation.positionalArguments.first as MeasurementEntry;
+        if (entry.value == 20) {
+          throw Exception('write failed');
+        }
+      });
+      stubReadings([
+        HealthReading(
+          type: HealthDataType.BODY_FAT_PERCENTAGE,
+          value: 0.2,
+          date: DateTime(2026, 1, 1),
+          externalId: _idBf1,
+        ),
+        HealthReading(
+          type: HealthDataType.HEIGHT,
+          value: 1.8,
+          date: DateTime(2026, 1, 2),
+          externalId: _idH1,
+        ),
+      ]);
+
+      final count = await createNotifier().sync();
+
+      expect(count, 1);
+      expect(container.read(healthSyncProvider).issue, HealthSyncIssue.failed);
+      expect(await PreferenceHelper.instance.getLastHealthSyncTimestamp(), isNull);
+    });
+
     test('stamps lastSyncTime after a successful run, even an empty one', () async {
       stubReadings([]);
       final notifier = createNotifier();

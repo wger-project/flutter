@@ -1178,5 +1178,8 @@
     "healthSyncNoData": "Aucune donnée de santé n'a été trouvée. Vérifiez dans {platform} que wger peut lire vos données.",
     "healthSyncStatus": "{count, plural, =0{Dernière synchronisation : {time}, aucune nouvelle entrée} one{Dernière synchronisation : {time}, 1 nouvelle entrée} other{Dernière synchronisation : {time}, {count} nouvelles entrées}}",
     "healthSyncSyncing": "Synchronisation des données de santé…",
-    "healthSyncNow": "Synchroniser maintenant"
+    "healthSyncNow": "Synchroniser maintenant",
+    "healthSyncPermissionMissing": "{platform} ne partage pas vos données",
+    "healthSyncGrantAccess": "Appuyez pour autoriser l'accès à nouveau",
+    "healthSyncFailed": "La dernière synchronisation n'a pas pu être terminée"
 }

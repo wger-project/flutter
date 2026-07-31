@@ -18,6 +18,7 @@
 
 import 'dart:io';
 
+import 'package:flutter/services.dart' show PlatformException;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:health_bridge/health.dart';
 import 'package:logging/logging.dart';
@@ -49,8 +50,37 @@ class HealthRepository {
     return Platform.isIOS;
   }
 
+  /// Whether READ access to [types] is known to be missing, without ever
+  /// showing a permission dialog.
+  ///
+  /// Only Android answers this exactly. HealthKit does not disclose read
+  /// access, so iOS always reports `false` (not known to be missing) and a
+  /// denial only shows up when a read fails, see [isAuthorizationMissing].
+  Future<bool> isAuthorizationKnownMissing(List<HealthDataType> types) async {
+    await _health.configure();
+    final granted = await _health.hasPermissions(
+      types,
+      permissions: List.filled(types.length, HealthDataAccess.READ),
+    );
+    return granted == false;
+  }
+
+  /// Whether [error] is the platform refusing a read for lack of permissions.
+  ///
+  /// HealthKit throws this when authorization for a type was never requested
+  /// for the current installation, which is the one permission problem iOS
+  /// does report (a plain denial silently reads as "no data"). Reinstalling
+  /// the app resets the grants while the app's own preferences survive, so a
+  /// sync can hit this even though the user did grant access earlier.
+  static bool isAuthorizationMissing(Object error) =>
+      error is PlatformException &&
+      (error.message ?? '').toLowerCase().contains('authorization not determined');
+
   /// Ensures READ access to [types] (requesting it if needed) and, on Android,
   /// access to historical data. Returns whether access is granted.
+  ///
+  /// Shows the platform's permission dialog, so only call this from a path the
+  /// user started themselves.
   Future<bool> ensureAuthorized(List<HealthDataType> types) async {
     await _health.configure();
     final access = List.filled(types.length, HealthDataAccess.READ);
@@ -72,14 +102,40 @@ class HealthRepository {
 
   /// Reads all [types] between [start] and [end], platform-deduplicated and
   /// reduced to numeric [HealthReading]s.
+  ///
+  /// Types are read one by one: a single type the platform refuses (an
+  /// unauthorized type throws rather than coming back empty) would otherwise
+  /// cost every other type its import too. A failing type is logged by name
+  /// and skipped; only when every type fails does the error propagate, so a
+  /// wholesale denial still surfaces as one.
   Future<List<HealthReading>> read({
     required List<HealthDataType> types,
     required DateTime start,
     required DateTime end,
   }) async {
-    final points = _health.removeDuplicates(
-      await _health.getHealthDataFromTypes(types: types, startTime: start, endTime: end),
-    );
-    return points.map(HealthReading.fromDataPoint).whereType<HealthReading>().toList();
+    final points = <HealthDataPoint>[];
+    Object? firstError;
+    var failed = 0;
+
+    for (final type in types) {
+      try {
+        points.addAll(
+          await _health.getHealthDataFromTypes(types: [type], startTime: start, endTime: end),
+        );
+      } catch (e) {
+        failed++;
+        firstError ??= e;
+        _logger.warning('Reading ${type.name} from the health platform failed: $e');
+      }
+    }
+
+    if (firstError != null && failed == types.length) {
+      throw firstError;
+    }
+    return _health
+        .removeDuplicates(points)
+        .map(HealthReading.fromDataPoint)
+        .whereType<HealthReading>()
+        .toList();
   }
 }

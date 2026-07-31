@@ -1607,6 +1607,24 @@
   "@healthSyncNow": {
     "description": "Label of the manual health sync action in the settings"
   },
+  "healthSyncPermissionMissing": "{platform} is not sharing your data",
+  "@healthSyncPermissionMissing": {
+    "description": "Status line under the health sync toggle when the platform refuses to hand over data",
+    "placeholders": {
+      "platform": {
+        "type": "String",
+        "example": "Apple Health"
+      }
+    }
+  },
+  "healthSyncGrantAccess": "Tap to grant access again",
+  "@healthSyncGrantAccess": {
+    "description": "Action hint below the missing-permission status line"
+  },
+  "healthSyncFailed": "The last sync could not be completed",
+  "@healthSyncFailed": {
+    "description": "Status line under the health sync toggle after a failed sync"
+  },
   "health": "Health",
   "@health": {
     "description": "Section header for health-related settings"
