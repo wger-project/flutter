@@ -74,6 +74,113 @@ void main() {
     });
   });
 
+  group('MeasurementChartEntry', () {
+    test('only counts as a range when both bounds are set', () {
+      expect(entry(60, DateTime(2026, 1, 1)).hasRange, isFalse);
+      expect(MeasurementChartEntry(60, DateTime(2026, 1, 1), min: 50).hasRange, isFalse);
+      expect(
+        MeasurementChartEntry(60, DateTime(2026, 1, 1), min: 50, max: 70).hasRange,
+        isTrue,
+      );
+    });
+  });
+
+  group('MeasurementChartWidgetFl series', () {
+    /// The chart data fl_chart actually receives
+    LineChartData chartData(WidgetTester tester) =>
+        tester.widget<LineChart>(find.byType(LineChart)).data;
+
+    final points = [
+      entry(60, DateTime(2026, 1, 1)),
+      entry(70, DateTime(2026, 1, 2)),
+    ];
+
+    testWidgets('singleMeasurement draws one line per given role', (tester) async {
+      await tester.pumpWidget(
+        _wrap(
+          MeasurementChartWidgetFl.singleMeasurement(
+            points,
+            'kg',
+            avgs: points,
+            trend: points,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(chartData(tester).lineBarsData, hasLength(3));
+      expect(chartData(tester).betweenBarsData, isEmpty);
+    });
+
+    testWidgets('omits the lines it was not given', (tester) async {
+      await tester.pumpWidget(
+        _wrap(MeasurementChartWidgetFl.singleMeasurement(points, 'kg')),
+      );
+      await tester.pumpAndSettle();
+
+      expect(chartData(tester).lineBarsData, hasLength(1));
+    });
+
+    testWidgets('draws one line per component, in distinct colours', (tester) async {
+      await tester.pumpWidget(
+        _wrap(
+          MeasurementChartWidgetFl([
+            MeasurementChartSeries(points, MeasurementSeriesRole.component, label: 'Systolic'),
+            MeasurementChartSeries(points, MeasurementSeriesRole.component, label: 'Diastolic'),
+          ], 'mmHg'),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final bars = chartData(tester).lineBarsData;
+      expect(bars, hasLength(2));
+      expect(bars.first.color, isNot(bars.last.color));
+    });
+
+    testWidgets('a range series adds a band between two invisible bounds', (tester) async {
+      final ranged = [
+        MeasurementChartEntry(60, DateTime(2026, 1, 1), min: 50, max: 80),
+        MeasurementChartEntry(70, DateTime(2026, 1, 2), min: 55, max: 95),
+      ];
+      await tester.pumpWidget(
+        _wrap(
+          MeasurementChartWidgetFl([
+            MeasurementChartSeries(ranged, MeasurementSeriesRole.raw),
+          ], 'bpm'),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final data = chartData(tester);
+      // lower bound, upper bound, and the line itself
+      expect(data.lineBarsData, hasLength(3));
+      expect(data.betweenBarsData, hasLength(1));
+      expect(data.betweenBarsData.single.fromIndex, 0);
+      expect(data.betweenBarsData.single.toIndex, 1);
+      // the bounds carry the range, not the value
+      expect(data.lineBarsData[0].spots.map((s) => s.y), [50, 55]);
+      expect(data.lineBarsData[1].spots.map((s) => s.y), [80, 95]);
+      expect(data.lineBarsData[2].spots.map((s) => s.y), [60, 70]);
+    });
+
+    testWidgets('no band when only some points carry a range', (tester) async {
+      await tester.pumpWidget(
+        _wrap(
+          MeasurementChartWidgetFl([
+            MeasurementChartSeries([
+              MeasurementChartEntry(60, DateTime(2026, 1, 1), min: 50, max: 80),
+              entry(70, DateTime(2026, 1, 2)),
+            ], MeasurementSeriesRole.raw),
+          ], 'bpm'),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(chartData(tester).betweenBarsData, isEmpty);
+      expect(chartData(tester).lineBarsData, hasLength(1));
+    });
+  });
+
   group('aggregatePerDay', () {
     test('returns an empty list for no entries', () {
       expect(aggregatePerDay([]), isEmpty);

@@ -146,7 +146,7 @@ Widget buildChartForMetricType(
   // if (metricType.isRangeType) {
   //   return buildRangeChartForMetricType(metricType, raw, unit);
   // }
-  return MeasurementChartWidgetFl(
+  return MeasurementChartWidgetFl.singleMeasurement(
     raw,
     unit,
     avgs: avg,

@@ -55,15 +55,42 @@ String weightUnit(bool isMetric, BuildContext context) {
 }
 
 class MeasurementChartWidgetFl extends StatefulWidget {
-  final List<MeasurementChartEntry> _entries;
-  final List<MeasurementChartEntry>? avgs;
-  final List<MeasurementChartEntry>? trend;
+  final List<MeasurementChartSeries> _series;
   final String _unit;
 
-  const MeasurementChartWidgetFl(this._entries, this._unit, {this.avgs, this.trend});
+  const MeasurementChartWidgetFl(this._series, this._unit);
+
+  /// The usual single-measurement chart: the values plus their average and
+  /// trend line.
+  MeasurementChartWidgetFl.singleMeasurement(
+    List<MeasurementChartEntry> entries,
+    String unit, {
+    List<MeasurementChartEntry>? avgs,
+    List<MeasurementChartEntry>? trend,
+    super.key,
+  }) : _unit = unit,
+       _series = [
+         MeasurementChartSeries(entries, MeasurementSeriesRole.raw),
+         if (avgs != null) MeasurementChartSeries(avgs, MeasurementSeriesRole.average),
+         if (trend != null && trend.isNotEmpty)
+           MeasurementChartSeries(trend, MeasurementSeriesRole.trend),
+       ];
+
+  /// All points of all series, for the shared axis calculations.
+  List<MeasurementChartEntry> get _allEntries => _series.expand((s) => s.entries).toList();
 
   @override
   State<MeasurementChartWidgetFl> createState() => _MeasurementChartWidgetFlState();
+}
+
+/// A series resolved into what fl_chart needs: the line itself plus, for range
+/// series, the two invisible bounds the band is painted between.
+class _ResolvedSeries {
+  _ResolvedSeries(this.line, this.label, {this.bounds});
+
+  final LineChartBarData line;
+  final String? label;
+  final (LineChartBarData, LineChartBarData)? bounds;
 }
 
 class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
@@ -78,7 +105,102 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
     );
   }
 
-  LineTouchData tooltipData() {
+  /// Colours for [MeasurementSeriesRole.component], by position in the group.
+  List<Color> get _componentColors => [
+    Theme.of(context).colorScheme.primary,
+    Theme.of(context).colorScheme.tertiary,
+    Theme.of(context).colorScheme.secondary,
+    Theme.of(context).colorScheme.error,
+  ];
+
+  List<FlSpot> _spots(
+    List<MeasurementChartEntry> entries, [
+    num Function(MeasurementChartEntry)? y,
+  ]) => entries
+      .map(
+        (e) => FlSpot(
+          e.date.millisecondsSinceEpoch.toDouble(),
+          (y == null ? e.value : y(e)).toDouble(),
+        ),
+      )
+      .toList();
+
+  /// Turns the series into fl_chart lines, styled by their role.
+  List<_ResolvedSeries> _resolveSeries() {
+    final scheme = Theme.of(context).colorScheme;
+    var componentIndex = 0;
+
+    return widget._series.map((series) {
+      final spots = _spots(series.entries);
+      final LineChartBarData line;
+
+      switch (series.role) {
+        case MeasurementSeriesRole.raw:
+          line = LineChartBarData(
+            spots: spots,
+            isCurved: false,
+            color: scheme.primary,
+            barWidth: 0,
+            isStrokeCapRound: true,
+            dotData: const FlDotData(show: true),
+          );
+        case MeasurementSeriesRole.average:
+          line = LineChartBarData(
+            spots: spots,
+            isCurved: false,
+            color: scheme.tertiary,
+            barWidth: 1,
+            dotData: const FlDotData(show: false),
+          );
+        case MeasurementSeriesRole.trend:
+          line = LineChartBarData(
+            spots: spots,
+            isCurved: true,
+            curveSmoothness: 0.4,
+            color: scheme.secondary,
+            barWidth: 3,
+            dotData: const FlDotData(show: false),
+          );
+        case MeasurementSeriesRole.component:
+          line = LineChartBarData(
+            spots: spots,
+            isCurved: false,
+            color: _componentColors[componentIndex++ % _componentColors.length],
+            barWidth: 2,
+            isStrokeCapRound: true,
+            dotData: const FlDotData(show: true),
+          );
+      }
+
+      // Points that summarise a range get a band between their bounds. The
+      // bounds themselves are invisible; only the fill between them shows.
+      final ranged = series.entries.where((e) => e.hasRange).toList();
+      return _ResolvedSeries(
+        line,
+        series.label,
+        bounds: ranged.length == series.entries.length && ranged.isNotEmpty
+            ? (
+                LineChartBarData(
+                  spots: _spots(ranged, (e) => e.min!),
+                  color: Colors.transparent,
+                  barWidth: 0,
+                  dotData: const FlDotData(show: false),
+                ),
+                LineChartBarData(
+                  spots: _spots(ranged, (e) => e.max!),
+                  color: Colors.transparent,
+                  barWidth: 0,
+                  dotData: const FlDotData(show: false),
+                ),
+              )
+            : null,
+      );
+    }).toList();
+  }
+
+  /// [hidden] holds the indices of the invisible band bounds, which must not
+  /// show up as tooltip lines; [labels] names the series that have a name.
+  LineTouchData tooltipData(Set<int> hidden, Map<int, String?> labels) {
     return LineTouchData(
       touchTooltipData: LineTouchTooltipData(
         getTooltipColor: (touchedSpot) => Theme.of(context).colorScheme.primaryContainer,
@@ -86,6 +208,9 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
           final numberFormat = localizedNumberFormat(context);
 
           return touchedSpots.map((touchedSpot) {
+            if (hidden.contains(touchedSpot.barIndex)) {
+              return null;
+            }
             final msSinceEpoch = touchedSpot.x.toInt();
             final DateTime date = DateTime.fromMillisecondsSinceEpoch(touchedSpot.x.toInt());
             final dateStr = DateFormat.Md(
@@ -95,9 +220,12 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
             // Check if this is an interpolated point (milliseconds ending with 123)
             final bool isInterpolated = msSinceEpoch % 1000 == INTERPOLATION_MARKER;
             final String interpolatedMarker = isInterpolated ? ' (interpolated)' : '';
+            final label = labels[touchedSpot.barIndex];
+            final prefix = label == null ? '' : '$label ';
 
             return LineTooltipItem(
-              '$dateStr: ${numberFormat.format(touchedSpot.y)} ${widget._unit}$interpolatedMarker',
+              '$prefix$dateStr: ${numberFormat.format(touchedSpot.y)} '
+              '${widget._unit}$interpolatedMarker',
               TextStyle(color: touchedSpot.bar.color),
             );
           }).toList();
@@ -108,9 +236,39 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
 
   LineChartData mainData() {
     final numberFormat = localizedNumberFormat(context);
+    final allEntries = widget._allEntries;
+    final dates = allEntries.map((e) => e.date).toList()..sort();
+
+    // Flatten the series into fl_chart's flat bar list, remembering which
+    // indices are band bounds (invisible) and which carry a name.
+    final bars = <LineChartBarData>[];
+    final bands = <BetweenBarsData>[];
+    final hidden = <int>{};
+    final labels = <int, String?>{};
+    for (final resolved in _resolveSeries()) {
+      if (resolved.bounds != null) {
+        final lower = bars.length;
+        bars.add(resolved.bounds!.$1);
+        final upper = bars.length;
+        bars.add(resolved.bounds!.$2);
+        hidden
+          ..add(lower)
+          ..add(upper);
+        bands.add(
+          BetweenBarsData(
+            fromIndex: lower,
+            toIndex: upper,
+            color: resolved.line.color?.withValues(alpha: 0.15),
+          ),
+        );
+      }
+      labels[bars.length] = resolved.label;
+      bars.add(resolved.line);
+    }
 
     return LineChartData(
-      lineTouchData: tooltipData(),
+      lineTouchData: tooltipData(hidden, labels),
+      betweenBarsData: bands,
       gridData: FlGridData(
         show: true,
         drawVerticalLine: true,
@@ -153,11 +311,8 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
                 DateFormat.Md(Localizations.localeOf(context).languageCode).format(date),
               );
             },
-            interval: widget._entries.isNotEmpty
-                ? chartGetInterval(
-                    widget._entries.last.date,
-                    widget._entries.first.date,
-                  )
+            interval: dates.isNotEmpty
+                ? chartGetInterval(dates.first, dates.last)
                 : CHART_MILLISECOND_FACTOR,
           ),
         ),
@@ -182,49 +337,7 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
         show: true,
         border: Border.all(color: Theme.of(context).colorScheme.primaryContainer),
       ),
-      lineBarsData: [
-        LineChartBarData(
-          spots: widget._entries
-              .map(
-                (e) => FlSpot(
-                  e.date.millisecondsSinceEpoch.toDouble(),
-                  e.value.toDouble(),
-                ),
-              )
-              .toList(),
-          isCurved: false,
-          color: Theme.of(context).colorScheme.primary,
-          barWidth: 0,
-          isStrokeCapRound: true,
-          dotData: const FlDotData(show: true),
-        ),
-        if (widget.avgs != null)
-          LineChartBarData(
-            spots: widget.avgs!
-                .map(
-                  (e) => FlSpot(
-                    e.date.millisecondsSinceEpoch.toDouble(),
-                    e.value.toDouble(),
-                  ),
-                )
-                .toList(),
-            isCurved: false,
-            color: Theme.of(context).colorScheme.tertiary,
-            barWidth: 1,
-            dotData: const FlDotData(show: false),
-          ),
-        if (widget.trend != null && widget.trend!.isNotEmpty)
-          LineChartBarData(
-            spots: widget.trend!
-                .map((e) => FlSpot(e.date.millisecondsSinceEpoch.toDouble(), e.value.toDouble()))
-                .toList(),
-            isCurved: true,
-            curveSmoothness: 0.4,
-            color: Theme.of(context).colorScheme.secondary,
-            barWidth: 3,
-            dotData: const FlDotData(show: false),
-          ),
-      ],
+      lineBarsData: bars,
     );
   }
 }
@@ -233,7 +346,48 @@ class MeasurementChartEntry {
   num value;
   DateTime date;
 
-  MeasurementChartEntry(this.value, this.date);
+  /// Lower and upper bound of the values [value] summarises. Set for metrics
+  /// stored as a daily aggregate (heart rate min/max); the chart then draws a
+  /// band around the line. Both are null for a plain sample.
+  num? min;
+  num? max;
+
+  MeasurementChartEntry(this.value, this.date, {this.min, this.max});
+
+  /// Whether this point carries a range that can be drawn as a band.
+  bool get hasRange => min != null && max != null;
+}
+
+/// What a series means, which decides how it is drawn. The colours come from
+/// the theme when the chart is built, not from the series itself.
+enum MeasurementSeriesRole {
+  /// The measured values themselves, drawn as dots.
+  raw,
+
+  /// A moving average over [raw].
+  average,
+
+  /// The smoothed trend through [raw].
+  trend,
+
+  /// One component of a multi-value metric (systolic, diastolic, ...). Every
+  /// component gets its own colour and appears in the legend by name.
+  component,
+}
+
+/// One line of a chart: its points and what they mean.
+///
+/// A chart takes a list of these, which is what lets one chart show several
+/// lines (the components of a group) instead of a single measurement.
+class MeasurementChartSeries {
+  const MeasurementChartSeries(this.entries, this.role, {this.label});
+
+  final List<MeasurementChartEntry> entries;
+  final MeasurementSeriesRole role;
+
+  /// Name for the legend and the tooltip. Null for the unnamed series of a
+  /// plain category, where the chart title already says what is shown.
+  final String? label;
 }
 
 // for each point, return the average of all the points in the 7 days preceding it

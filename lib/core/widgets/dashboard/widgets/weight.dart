@@ -130,7 +130,7 @@ class DashboardWeightWidget extends ConsumerWidget {
       children: [
         SizedBox(
           height: 200,
-          child: MeasurementChartWidgetFl(
+          child: MeasurementChartWidgetFl.singleMeasurement(
             entriesAll,
             weightUnit(profile.isMetric, context),
             avgs: entries7dAvg,
