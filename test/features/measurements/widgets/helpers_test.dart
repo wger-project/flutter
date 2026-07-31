@@ -230,6 +230,40 @@ void main() {
     });
   });
 
+  group('getOverviewWidgetsSeries 30-day chart', () {
+    testWidgets('trend is the tail of the full-history trend', (tester) async {
+      // A history long enough to trigger the extra 30-day chart. Its trend
+      // must be the sliced full-history trend, not an EMA restarted (and
+      // seeded) at the window's first point.
+      final history = [
+        for (var i = 0; i < 100; i++)
+          MeasurementChartEntry(
+            60 + (i % 5),
+            DateTime.now().subtract(Duration(days: 99 - i, hours: 1)),
+          ),
+      ];
+      await _pumpWidgetList(
+        tester,
+        (ctx) =>
+            getOverviewWidgetsSeries('Weight', history, moving7dAverage(history), [], 'kg', ctx),
+      );
+
+      final charts = tester.widgetList<LineChart>(find.byType(LineChart)).toList();
+      expect(charts, hasLength(2));
+
+      // series order is raw, average, trend
+      List<FlSpot> trendOf(LineChart chart) => chart.data.lineBarsData[2].spots;
+      final mainTrend = trendOf(charts.first).map((s) => (s.x, s.y)).toSet();
+      final windowTrend = trendOf(charts.last);
+
+      expect(windowTrend, isNotEmpty);
+      expect(windowTrend.length, lessThan(mainTrend.length));
+      for (final spot in windowTrend) {
+        expect(mainTrend, contains((spot.x, spot.y)));
+      }
+    });
+  });
+
   group('getOverviewWidgetsSeries plan periods', () {
     testWidgets('one chart with bands instead of one chart per plan', (tester) async {
       await _pumpWidgetList(

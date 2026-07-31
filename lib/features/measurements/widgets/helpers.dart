@@ -15,6 +15,7 @@ List<Widget> getOverviewWidgets(
   BuildContext context, {
   MetricType metricType = MetricType.custom,
   List<PlanPeriod> planPeriods = const [],
+  List<MeasurementChartEntry>? trend,
 }) {
   return [
     Text(
@@ -34,7 +35,14 @@ List<Widget> getOverviewWidgets(
                 ),
               ),
             )
-          : buildChartForMetricType(metricType, raw, avg, unit, planPeriods: planPeriods),
+          : buildChartForMetricType(
+              metricType,
+              raw,
+              avg,
+              unit,
+              planPeriods: planPeriods,
+              trend: trend,
+            ),
     ),
     if (avg.isNotEmpty) MeasurementOverallChangeWidget(avg.first, avg.last, unit),
     const SizedBox(height: 8),
@@ -76,6 +84,12 @@ List<Widget> getOverviewWidgetsSeries(
         context,
         metricType: metricType,
         planPeriods: planPeriods,
+        // The tail of the full-history trend: recomputing it inside the
+        // window would seed the EMA from the window's (possibly interpolated)
+        // first point and bend it across half the chart
+        trend: metricType.isSummedPerDay
+            ? null
+            : smoothedTrendline(downsample(entriesAll)).whereDate(monthAgo, null),
       ),
     // legend
     Row(
@@ -223,6 +237,7 @@ Widget buildChartForMetricType(
   List<MeasurementChartEntry> avg,
   String unit, {
   List<PlanPeriod> planPeriods = const [],
+  List<MeasurementChartEntry>? trend,
 }) {
   if (metricType.isSummedPerDay) {
     return MeasurementBarChartWidgetFl(aggregatePerDay(raw), unit);
@@ -236,7 +251,7 @@ Widget buildChartForMetricType(
     points,
     unit,
     avgs: downsample(avg),
-    trend: smoothedTrendline(points),
+    trend: trend ?? smoothedTrendline(points),
     planPeriods: planPeriods,
   );
 }
