@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:collection/collection.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -230,6 +231,125 @@ void main() {
       expect(await barWidthFor(5), 12.0);
       expect(await barWidthFor(120), lessThan(4));
       expect(await barWidthFor(120), greaterThanOrEqualTo(1));
+    });
+  });
+
+  group('downsample', () {
+    /// A day of heart-rate-like sampling: every 5 minutes, alternating between
+    /// a resting and an exerting value
+    List<MeasurementChartEntry> samples(int days) => [
+      for (var day = 0; day < days; day++)
+        for (var i = 0; i < 288; i++)
+          entry(
+            i.isEven ? 50 : 150,
+            DateTime(2026, 1, 1).add(Duration(days: day, minutes: i * 5)),
+          ),
+    ];
+
+    test('leaves a series that already fits untouched', () {
+      final input = samples(1).take(50).toList();
+      expect(downsample(input), same(input));
+    });
+
+    test('condenses a season of samples into one point per day', () {
+      // The case from a real import: two months of raw samples must not be
+      // cut into slices that ignore the daily rhythm
+      final result = downsample(samples(61));
+
+      expect(result, hasLength(61));
+      expect(result.first.date, DateTime(2026, 1, 1));
+      expect(result[1].date, DateTime(2026, 1, 2));
+    });
+
+    test('uses the finest unit that fits, hours for a few days', () {
+      final result = downsample(samples(3));
+
+      // 3 days of hours is 72 points, well under the limit, so no need to
+      // drop all the way to whole days
+      expect(result, hasLength(72));
+      expect(result.first.date, DateTime(2026, 1, 1));
+      expect(result[1].date, DateTime(2026, 1, 1, 1));
+    });
+
+    test('falls back to coarser units for long histories', () {
+      final result = downsample(samples(400));
+
+      // days would be 400 points, so it steps up to weeks
+      expect(result.length, lessThanOrEqualTo(200));
+      expect(result.length, greaterThan(50));
+    });
+
+    test('keeps the extremes as a range instead of averaging them away', () {
+      final result = downsample(samples(61));
+
+      expect(result.every((e) => e.hasRange), isTrue);
+      expect(result.first.min, 50);
+      expect(result.first.max, 150);
+      expect(result.first.value, closeTo(100, 1));
+    });
+
+    test('stays in chronological order', () {
+      final dates = downsample(samples(61)).map((e) => e.date).toList();
+      expect(dates.isSorted((a, b) => a.compareTo(b)), isTrue);
+    });
+
+    test('carries the bounds of entries that are already ranges', () {
+      final input = [
+        for (var i = 0; i < 1000; i++)
+          MeasurementChartEntry(
+            100,
+            DateTime(2026, 1, 1).add(Duration(minutes: i)),
+            min: 40,
+            max: 190,
+          ),
+      ];
+
+      final result = downsample(input);
+      // condensing an aggregate must not shrink it to its averages
+      expect(result.first.min, 40);
+      expect(result.first.max, 190);
+    });
+
+    test('condenses entries that all share one timestamp into one point', () {
+      final input = List.generate(500, (i) => entry(i, DateTime(2026, 1, 1)));
+      final result = downsample(input);
+
+      expect(result, hasLength(1));
+      expect(result.single.min, 0);
+      expect(result.single.max, 499);
+    });
+  });
+
+  group('MeasurementChartWidgetFl dot size', () {
+    double dotRadius(WidgetTester tester) {
+      final data = tester.widget<LineChart>(find.byType(LineChart)).data;
+      final painter = data.lineBarsData.first.dotData.getDotPainter(
+        FlSpot.zero,
+        0,
+        data.lineBarsData.first,
+        0,
+      );
+      return (painter as FlDotCirclePainter).radius;
+    }
+
+    Future<double> radiusFor(WidgetTester tester, int count) async {
+      await tester.pumpWidget(
+        _wrap(
+          MeasurementChartWidgetFl.singleMeasurement(
+            List.generate(count, (i) => entry(60, DateTime(2026, 1, 1).add(Duration(days: i)))),
+            'kg',
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      return dotRadius(tester);
+    }
+
+    testWidgets('dots shrink as the points get denser', (tester) async {
+      expect(await radiusFor(tester, 5), 4.0);
+      expect(await radiusFor(tester, 300), lessThan(1.5));
+      // but never vanish
+      expect(await radiusFor(tester, 5000), greaterThanOrEqualTo(0.5));
     });
   });
 

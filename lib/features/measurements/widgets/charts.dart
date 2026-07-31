@@ -18,6 +18,7 @@
 
 import 'dart:math';
 
+import 'package:collection/collection.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -102,14 +103,37 @@ class _ResolvedSeries {
 }
 
 class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
+  /// Radius of a dot on a chart with room to spare
+  static const MAX_DOT_RADIUS = 4.0;
+
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
       aspectRatio: 1.70,
       child: Padding(
         padding: const EdgeInsets.all(4),
-        child: LineChart(mainData()),
+        // Dot size is in pixels, so it has to follow from how many points
+        // share the available space, otherwise they merge into a blob
+        child: LayoutBuilder(
+          builder: (context, constraints) => LineChart(mainData(constraints.maxWidth)),
+        ),
       ),
+    );
+  }
+
+  /// Dots shrink as points get denser, so they stay distinguishable instead of
+  /// overdrawing each other.
+  FlDotData _dotData(double availableWidth) {
+    final count = widget._series.map((s) => s.entries.length).fold(0, max);
+    if (count == 0) {
+      return const FlDotData(show: true);
+    }
+
+    final radius = (availableWidth / count / 2).clamp(0.5, MAX_DOT_RADIUS);
+    return FlDotData(
+      show: true,
+      getDotPainter: (spot, percent, barData, index) =>
+          FlDotCirclePainter(radius: radius, color: barData.color ?? Colors.transparent),
     );
   }
 
@@ -126,8 +150,9 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
       .toList();
 
   /// Turns the series into fl_chart lines, styled by their role.
-  List<_ResolvedSeries> _resolveSeries() {
+  List<_ResolvedSeries> _resolveSeries(double availableWidth) {
     final scheme = Theme.of(context).colorScheme;
+    final dots = _dotData(availableWidth);
     var componentIndex = 0;
 
     return widget._series.map((series) {
@@ -142,7 +167,7 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
             color: scheme.primary,
             barWidth: 0,
             isStrokeCapRound: true,
-            dotData: const FlDotData(show: true),
+            dotData: dots,
           );
         case MeasurementSeriesRole.average:
           line = LineChartBarData(
@@ -168,7 +193,7 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
             color: componentColor(context, componentIndex++),
             barWidth: 2,
             isStrokeCapRound: true,
-            dotData: const FlDotData(show: true),
+            dotData: dots,
           );
       }
 
@@ -234,7 +259,7 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
     );
   }
 
-  LineChartData mainData() {
+  LineChartData mainData(double availableWidth) {
     final numberFormat = localizedNumberFormat(context);
     final allEntries = widget._allEntries;
     final dates = allEntries.map((e) => e.date).toList()..sort();
@@ -245,7 +270,7 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
     final bands = <BetweenBarsData>[];
     final hidden = <int>{};
     final labels = <int, String?>{};
-    for (final resolved in _resolveSeries()) {
+    for (final resolved in _resolveSeries(availableWidth)) {
       if (resolved.bounds != null) {
         final lower = bars.length;
         bars.add(resolved.bounds!.$1);
@@ -416,6 +441,63 @@ List<MeasurementChartEntry> moving7dAverage(List<MeasurementChartEntry> vals) {
     end++;
   }
   return out;
+}
+
+/// Time units a dense series is condensed into, finest first.
+///
+/// Buckets follow the calendar instead of being equal slices of the total
+/// span: these metrics have a daily rhythm (asleep, awake, a workout), so
+/// slices that do not line up with a day each catch a different phase of it,
+/// and the result oscillates at the slice frequency instead of showing the
+/// shape of the data.
+final _bucketUnits = <DateTime Function(DateTime)>[
+  (d) => DateTime(d.year, d.month, d.day, d.hour),
+  (d) => DateTime(d.year, d.month, d.day),
+  (d) => DateTime(d.year, d.month, d.day).subtract(Duration(days: d.weekday - 1)),
+  (d) => DateTime(d.year, d.month),
+];
+
+/// Reduces a dense series to at most [maxPoints], keeping its shape.
+///
+/// Plotting more points than the chart has pixels only overdraws: a season of
+/// raw heart rate samples is tens of thousands of values on a few hundred
+/// pixels, which comes out as a solid block. Entries are therefore condensed
+/// into the finest calendar unit that gets under [maxPoints]; each unit
+/// becomes one point at its mean, carrying its minimum and maximum so the
+/// chart draws the spread as a band. That keeps exactly the information a line
+/// through every single sample buries.
+///
+/// Series that already fit are returned unchanged.
+List<MeasurementChartEntry> downsample(
+  List<MeasurementChartEntry> entries, {
+  int maxPoints = 200,
+}) {
+  if (entries.length <= maxPoints) {
+    return entries;
+  }
+
+  for (final truncate in _bucketUnits) {
+    final grouped = groupBy(entries, (MeasurementChartEntry e) => truncate(e.date));
+    if (grouped.length <= maxPoints || truncate == _bucketUnits.last) {
+      return [
+        for (final start in grouped.keys.toList()..sort()) _summarise(start, grouped[start]!),
+      ];
+    }
+  }
+  return entries;
+}
+
+/// Condenses one bucket into a single point: the mean value at the start of
+/// the bucket, spanning the values it stands for.
+MeasurementChartEntry _summarise(DateTime start, List<MeasurementChartEntry> bucket) {
+  return MeasurementChartEntry(
+    bucket.map((e) => e.value).average,
+    start,
+    // An entry that already carries a range contributes its bounds, not just
+    // its value, so re-condensing an aggregate keeps the true extremes
+    min: bucket.map((e) => e.min ?? e.value).min,
+    max: bucket.map((e) => e.max ?? e.value).max,
+  );
 }
 
 /// Sums entries per calendar day. Used for metric types where individual

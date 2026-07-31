@@ -225,13 +225,15 @@ Widget buildChartForMetricType(
   if (metricType.isSummedPerDay) {
     return MeasurementBarChartWidgetFl(aggregatePerDay(raw), unit);
   }
-  // if (metricType.isRangeType) {
-  //   return buildRangeChartForMetricType(metricType, raw, unit);
-  // }
+
+  // Condense before anything is derived from the points: a trend line over
+  // raw samples follows the swings within a single day instead of the trend
+  // across weeks, and the average is as dense as the values it summarises
+  final points = downsample(raw);
   return MeasurementChartWidgetFl.singleMeasurement(
-    raw,
+    points,
     unit,
-    avgs: avg,
-    trend: smoothedTrendline(raw),
+    avgs: downsample(avg),
+    trend: smoothedTrendline(points),
   );
 }
