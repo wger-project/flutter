@@ -20,9 +20,11 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:wger/core/form_screen.dart';
 import 'package:wger/core/formatting/formatting.dart';
+import 'package:wger/features/measurements/measurements.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/unit_conversion.dart';
 import 'package:wger/features/measurements/screens/measurement_entries_screen.dart';
+import 'package:wger/features/measurements/widgets/chart_range_selector.dart';
 import 'package:wger/features/measurements/widgets/helpers.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
@@ -32,8 +34,13 @@ import 'forms.dart';
 class CategoriesCard extends StatelessWidget {
   final MeasurementCategory currentCategory;
   final double? elevation;
+  final ChartRange range;
 
-  const CategoriesCard(this.currentCategory, {this.elevation});
+  const CategoriesCard(
+    this.currentCategory, {
+    this.elevation,
+    this.range = ChartRange.last3Months,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -41,14 +48,18 @@ class CategoriesCard extends StatelessWidget {
       return _buildGroupCard(context);
     }
 
-    // sensibleRange() operates on raw (pre-aggregation) entries
-    final (entriesAll, entries7dAvg) = sensibleRange(
-      chartEntriesFor(
-        currentCategory.entries,
-        targetUnit: currentCategory.unit,
-        categoryUnit: currentCategory.unit,
-      ),
+    final cutoff = range.cutoff;
+    final allEntries = chartEntriesFor(
+      currentCategory.entries,
+      targetUnit: currentCategory.unit,
+      categoryUnit: currentCategory.unit,
     );
+    // The average is computed over the full history and only then cut, so the
+    // first points of the range average the days before it instead of starting
+    // over at the cutoff
+    final allAvg = moving7dAverage(allEntries);
+    final entriesAll = cutoff == null ? allEntries : allEntries.whereDate(cutoff, null);
+    final entries7dAvg = cutoff == null ? allAvg : allAvg.whereDate(cutoff, null);
 
     return Card(
       elevation: elevation,
@@ -136,13 +147,14 @@ class CategoriesCard extends StatelessWidget {
     // more than two components cannot be a range, and neither can readings
     // that are not paired, which happens once the date of one half is edited
     // apart from the other.
+    final cutoff = range.cutoff;
     final ranges = currentCategory.children.length == 2
-        ? groupRangeEntries(currentCategory)
+        ? groupRangeEntries(currentCategory, cutoff: cutoff)
         : const <MeasurementChartEntry>[];
     final asRange = ranges.isNotEmpty;
     final series = asRange
         ? const <MeasurementChartSeries>[]
-        : groupComponentSeries(currentCategory);
+        : groupComponentSeries(currentCategory, cutoff: cutoff);
     final hasData = asRange || series.any((s) => s.entries.isNotEmpty);
 
     return Card(

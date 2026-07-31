@@ -193,7 +193,9 @@ List<MeasurementChartEntry> chartEntriesFor(
 /// nothing was measured between two readings. Components are paired by their
 /// shared timestamp, which is how both the importer and the group form write
 /// them; an unpaired half-reading is skipped, it has no range.
-List<MeasurementChartEntry> groupRangeEntries(MeasurementCategory group) {
+///
+/// Only readings from [cutoff] on are returned; null covers the full history.
+List<MeasurementChartEntry> groupRangeEntries(MeasurementCategory group, {DateTime? cutoff}) {
   final byDate = <DateTime, List<num>>{};
   for (final child in group.children) {
     for (final entry in child.entries) {
@@ -214,24 +216,23 @@ List<MeasurementChartEntry> groupRangeEntries(MeasurementCategory group) {
         ),
   ]..sort((a, b) => a.date.compareTo(b.date));
 
-  final start = sensibleRangeStart(ranges);
-  return start == null ? ranges : ranges.whereDate(start, null);
+  return cutoff == null ? ranges : ranges.whereDate(cutoff, null);
 }
 
 /// One line per component of a multi-value group, in the children's in-group
 /// order and named after them.
 ///
 /// All components share the same range, so their lines cover the same span
-/// even when one of them has fewer readings.
-List<MeasurementChartSeries> groupComponentSeries(MeasurementCategory group) {
+/// even when one of them has fewer readings. Only readings from [cutoff] on
+/// are returned; null covers the full history.
+List<MeasurementChartSeries> groupComponentSeries(MeasurementCategory group, {DateTime? cutoff}) {
   List<MeasurementChartEntry> pointsOf(MeasurementCategory child) =>
       chartEntriesFor(child.entries, targetUnit: child.unit, categoryUnit: child.unit);
 
-  final start = sensibleRangeStart(group.children.expand(pointsOf).toList());
   return group.children
       .map(
         (child) => MeasurementChartSeries(
-          start == null ? pointsOf(child) : pointsOf(child).whereDate(start, null),
+          cutoff == null ? pointsOf(child) : pointsOf(child).whereDate(cutoff, null),
           MeasurementSeriesRole.component,
           label: child.name,
         ),

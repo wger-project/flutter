@@ -22,6 +22,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/measurement_entry.dart';
 import 'package:wger/features/measurements/widgets/categories_card.dart';
+import 'package:wger/features/measurements/widgets/chart_range_selector.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 import '../../../../test_data/measurements.dart';
@@ -31,6 +32,11 @@ Widget _wrap(Widget child) => MaterialApp(
   supportedLocales: AppLocalizations.supportedLocales,
   home: Scaffold(body: child),
 );
+
+/// The fixtures have fixed dates, so the card charts the full history instead
+/// of the range it defaults to
+Widget _card(MeasurementCategory category) =>
+    _wrap(CategoriesCard(category, range: ChartRange.all));
 
 MeasurementCategory _bpGroup({bool withEntries = false}) {
   final sysEntries = withEntries ? [testNeasurementEntry9] : <MeasurementEntry>[];
@@ -68,7 +74,7 @@ MeasurementCategory _tripleGroup() {
 void main() {
   group('CategoriesCard group card', () {
     testWidgets('shows one ListTile per child with latest reading', (tester) async {
-      await tester.pumpWidget(_wrap(CategoriesCard(_bpGroup(withEntries: true))));
+      await tester.pumpWidget(_card(_bpGroup(withEntries: true)));
       await tester.pumpAndSettle();
 
       expect(find.byType(ListTile), findsNWidgets(2));
@@ -77,7 +83,7 @@ void main() {
     });
 
     testWidgets('shows dash when child has no entries', (tester) async {
-      await tester.pumpWidget(_wrap(CategoriesCard(_bpGroup(withEntries: false))));
+      await tester.pumpWidget(_card(_bpGroup(withEntries: false)));
       await tester.pumpAndSettle();
 
       // Text('—') should appear for both children
@@ -85,7 +91,7 @@ void main() {
     });
 
     testWidgets('draws a reading as one bar spanning its components', (tester) async {
-      await tester.pumpWidget(_wrap(CategoriesCard(_bpGroup(withEntries: true))));
+      await tester.pumpWidget(_card(_bpGroup(withEntries: true)));
       await tester.pumpAndSettle();
 
       // One event, one bar: no line claiming values between two readings
@@ -99,7 +105,7 @@ void main() {
     });
 
     testWidgets('a range needs no per-component colour dots', (tester) async {
-      await tester.pumpWidget(_wrap(CategoriesCard(_bpGroup(withEntries: true))));
+      await tester.pumpWidget(_card(_bpGroup(withEntries: true)));
       await tester.pumpAndSettle();
 
       // The ends of the bar say which is which
@@ -123,7 +129,7 @@ void main() {
       );
       final group = testMeasurementCategoryBloodPressure.copyWith(children: [sys, dia]);
 
-      await tester.pumpWidget(_wrap(CategoriesCard(group)));
+      await tester.pumpWidget(_card(group));
       await tester.pumpAndSettle();
 
       expect(find.byType(BarChart), findsNothing);
@@ -132,7 +138,7 @@ void main() {
     });
 
     testWidgets('renders no chart while no component has readings', (tester) async {
-      await tester.pumpWidget(_wrap(CategoriesCard(_bpGroup(withEntries: false))));
+      await tester.pumpWidget(_card(_bpGroup(withEntries: false)));
       await tester.pumpAndSettle();
 
       expect(find.byType(BarChart), findsNothing);
@@ -141,7 +147,7 @@ void main() {
 
     testWidgets('a group of three keeps one line per component', (tester) async {
       // Only two components form a low/high range; more stay separate lines
-      await tester.pumpWidget(_wrap(CategoriesCard(_tripleGroup())));
+      await tester.pumpWidget(_card(_tripleGroup()));
       await tester.pumpAndSettle();
 
       final data = tester.widget<LineChart>(find.byType(LineChart)).data;
@@ -156,7 +162,7 @@ void main() {
     });
 
     testWidgets('add icon button is present on group card', (tester) async {
-      await tester.pumpWidget(_wrap(CategoriesCard(_bpGroup())));
+      await tester.pumpWidget(_card(_bpGroup()));
       await tester.pumpAndSettle();
 
       expect(find.byIcon(Icons.add), findsOneWidget);
@@ -186,7 +192,7 @@ void main() {
     );
 
     testWidgets('draws the summarised range as a band around the line', (tester) async {
-      await tester.pumpWidget(_wrap(CategoriesCard(heartRate())));
+      await tester.pumpWidget(_card(heartRate()));
       await tester.pumpAndSettle();
 
       final data = tester.widget<LineChart>(find.byType(LineChart)).data;
@@ -199,7 +205,7 @@ void main() {
     });
 
     testWidgets('plain entries get no band', (tester) async {
-      await tester.pumpWidget(_wrap(CategoriesCard(heartRate(withRange: false))));
+      await tester.pumpWidget(_card(heartRate(withRange: false)));
       await tester.pumpAndSettle();
 
       expect(tester.widget<LineChart>(find.byType(LineChart)).data.betweenBarsData, isEmpty);

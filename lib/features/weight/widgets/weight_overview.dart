@@ -28,6 +28,7 @@ import 'package:wger/features/measurements/measurements.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/unit_conversion.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
+import 'package:wger/features/measurements/widgets/chart_range_selector.dart';
 import 'package:wger/features/measurements/widgets/charts.dart';
 import 'package:wger/features/measurements/widgets/helpers.dart';
 import 'package:wger/features/nutrition/models/nutritional_plan.dart';
@@ -35,9 +36,6 @@ import 'package:wger/features/nutrition/providers/nutrition_notifier.dart';
 import 'package:wger/features/weight/providers/body_weight_provider.dart';
 import 'package:wger/features/weight/widgets/forms.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-
-/// Time range the user can pick to limit how far back the weight chart goes.
-enum WeightChartRange { all, lastYear, last3Months }
 
 class WeightOverview extends riverpod.ConsumerStatefulWidget {
   const WeightOverview();
@@ -47,7 +45,7 @@ class WeightOverview extends riverpod.ConsumerStatefulWidget {
 }
 
 class _WeightOverviewState extends riverpod.ConsumerState<WeightOverview> {
-  WeightChartRange _range = WeightChartRange.all;
+  ChartRange _range = ChartRange.last3Months;
 
   @override
   Widget build(BuildContext context) {
@@ -89,17 +87,7 @@ class _WeightOverviewState extends riverpod.ConsumerState<WeightOverview> {
         // Restrict the data to the selected range. The average is computed over
         // the full history first and only filtered afterwards, matching how the
         // per-plan and 30-day sub-charts are built.
-        final (DateTime? cutoff, String? mainChartTitle) = switch (_range) {
-          WeightChartRange.all => (null, null),
-          WeightChartRange.lastYear => (
-            DateTime.now().subtract(const Duration(days: 365)),
-            i18n.chartLastYearTitle(i18n.weight),
-          ),
-          WeightChartRange.last3Months => (
-            DateTime.now().subtract(const Duration(days: 90)),
-            i18n.chartLast3MonthsTitle(i18n.weight),
-          ),
-        };
+        final cutoff = _range.cutoff;
         final entriesRange = cutoff == null ? entriesAll : entriesAll.whereDate(cutoff, null);
         final entries7dAvgRange = cutoff == null
             ? entries7dAvg
@@ -109,31 +97,9 @@ class _WeightOverviewState extends riverpod.ConsumerState<WeightOverview> {
 
         return Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: SegmentedButton<WeightChartRange>(
-                  key: const ValueKey('weightChartRangeSelector'),
-                  showSelectedIcon: false,
-                  segments: [
-                    ButtonSegment(
-                      value: WeightChartRange.all,
-                      label: Text(i18n.chartRangeAll),
-                    ),
-                    ButtonSegment(
-                      value: WeightChartRange.lastYear,
-                      label: Text(i18n.chartRangeLastYear),
-                    ),
-                    ButtonSegment(
-                      value: WeightChartRange.last3Months,
-                      label: Text(i18n.chartRangeLast3Months),
-                    ),
-                  ],
-                  selected: {_range},
-                  onSelectionChanged: (selection) => setState(() => _range = selection.first),
-                ),
-              ),
+            ChartRangeSelector(
+              value: _range,
+              onChanged: (range) => setState(() => _range = range),
             ),
             ...getOverviewWidgetsSeries(
               i18n.weight,
@@ -142,7 +108,7 @@ class _WeightOverviewState extends riverpod.ConsumerState<WeightOverview> {
               planPeriods,
               unit,
               context,
-              mainChartTitle: mainChartTitle,
+              mainChartTitle: _range.chartTitle(i18n, i18n.weight),
             ),
             TextButton(
               onPressed: () => Navigator.pushNamed(

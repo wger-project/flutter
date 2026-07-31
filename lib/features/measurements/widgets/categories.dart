@@ -21,13 +21,24 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/core/widgets/async_value_widget.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
+import 'package:wger/features/measurements/widgets/chart_range_selector.dart';
 
 import 'categories_card.dart';
 
-class CategoriesList extends ConsumerWidget {
+class CategoriesList extends ConsumerStatefulWidget {
   const CategoriesList();
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<CategoriesList> createState() => _CategoriesListState();
+}
+
+class _CategoriesListState extends ConsumerState<CategoriesList> {
+  // One range for all cards: picking it per card would put three buttons on
+  // every entry of the list
+  ChartRange _range = ChartRange.last3Months;
+
+  @override
+  Widget build(BuildContext context) {
     return AsyncValueWidget<List<MeasurementCategory>>(
       value: ref.watch(measurementProvider),
       loggerName: 'CategoriesList',
@@ -38,10 +49,21 @@ class CategoriesList extends ConsumerWidget {
             .where((c) => c.parentId == null && !c.isOfficialBodyWeight)
             .toList();
 
-        return ListView.builder(
-          padding: const EdgeInsets.all(10.0),
-          itemCount: topLevel.length,
-          itemBuilder: (context, index) => CategoriesCard(topLevel[index]),
+        return Column(
+          children: [
+            const SizedBox(height: 10),
+            ChartRangeSelector(
+              value: _range,
+              onChanged: (range) => setState(() => _range = range),
+            ),
+            Expanded(
+              child: ListView.builder(
+                padding: const EdgeInsets.all(10.0),
+                itemCount: topLevel.length,
+                itemBuilder: (context, index) => CategoriesCard(topLevel[index], range: _range),
+              ),
+            ),
+          ],
         );
       },
     );

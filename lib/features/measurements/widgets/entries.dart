@@ -21,9 +21,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/core/form_screen.dart';
 import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/core/snackbar.dart';
+import 'package:wger/features/measurements/measurements.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/unit_conversion.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
+import 'package:wger/features/measurements/widgets/chart_range_selector.dart';
 import 'package:wger/features/measurements/widgets/charts.dart';
 import 'package:wger/features/measurements/widgets/helpers.dart';
 import 'package:wger/features/nutrition/models/nutritional_plan.dart';
@@ -32,17 +34,27 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 
 import 'forms.dart';
 
-class EntriesList extends ConsumerWidget {
-  final MeasurementCategory _category;
+class EntriesList extends ConsumerStatefulWidget {
+  final MeasurementCategory category;
 
-  const EntriesList(this._category);
+  const EntriesList(this.category);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<EntriesList> createState() => _EntriesListState();
+}
+
+class _EntriesListState extends ConsumerState<EntriesList> {
+  ChartRange _range = ChartRange.last3Months;
+
+  @override
+  Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
+    final category = widget.category;
+
     // Plan periods only matter where a nutrition plan can plausibly move the
     // metric; other categories skip the watch, so nutrition edits don't
     // rebuild them
-    final planPeriods = _category.metricType.correlatesWithNutrition
+    final planPeriods = category.metricType.correlatesWithNutrition
         ? [
             for (final plan
                 in ref.watch(nutritionProvider).value?.plans ?? const <NutritionalPlan>[])
@@ -57,38 +69,49 @@ class EntriesList extends ConsumerWidget {
 
     // Values are read through the unit helper; for plain categories without
     // per-entry units this is a pass-through to the category unit
-    final entriesAll = chartEntriesFor(
-      _category.entries,
-      targetUnit: _category.unit,
-      categoryUnit: _category.unit,
+    final allEntries = chartEntriesFor(
+      category.entries,
+      targetUnit: category.unit,
+      categoryUnit: category.unit,
     );
-    final entries7dAvg = moving7dAverage(entriesAll);
+    // The average is computed over the full history and only then cut, so the
+    // first points of the range average the days before it instead of starting
+    // over at the cutoff
+    final allAvg = moving7dAverage(allEntries);
+    final cutoff = _range.cutoff;
+    final entriesAll = cutoff == null ? allEntries : allEntries.whereDate(cutoff, null);
+    final entries7dAvg = cutoff == null ? allAvg : allAvg.whereDate(cutoff, null);
 
     final datetimeFormat = localizedDate(context);
 
     return Column(
       children: [
+        ChartRangeSelector(
+          value: _range,
+          onChanged: (range) => setState(() => _range = range),
+        ),
         ...getOverviewWidgetsSeries(
-          _category.name,
+          category.name,
           entriesAll,
           entries7dAvg,
           planPeriods,
-          _category.unit,
+          category.unit,
           context,
-          metricType: _category.metricType,
+          metricType: category.metricType,
+          mainChartTitle: _range.chartTitle(i18n, category.name),
         ),
         SizedBox(
           height: 300,
           child: ListView.builder(
             padding: const EdgeInsets.all(10.0),
-            itemCount: _category.entries.length,
+            itemCount: category.entries.length,
             itemBuilder: (context, index) {
-              final currentEntry = _category.entries[index];
+              final currentEntry = category.entries[index];
 
               return Card(
                 child: ListTile(
                   title: Text(
-                    '${numberFormat.format(currentEntry.valueIn(_category.unit, categoryUnit: _category.unit))} ${_category.unit}',
+                    '${numberFormat.format(currentEntry.valueIn(category.unit, categoryUnit: category.unit))} ${category.unit}',
                   ),
                   subtitle: Text(datetimeFormat.format(currentEntry.date)),
                   // Imported entries are read-only; changes belong in the
@@ -109,7 +132,7 @@ class EntriesList extends ConsumerWidget {
                                   arguments: FormScreenArguments(
                                     AppLocalizations.of(context).edit,
                                     MeasurementEntryForm(
-                                      _category.id!,
+                                      category.id!,
                                       currentEntry,
                                     ),
                                   ),
