@@ -28,8 +28,8 @@ import 'package:wger/features/nutrition/screens/nutritional_plan_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/theme/theme.dart';
 
-import '../../test_data/body_weight.dart';
-import '../../test_data/nutritional_plans.dart';
+import '../../test_data/screenshots/nutrition.dart';
+import '../../test_data/screenshots/weight.dart';
 import 'screenshots_05_nutritional_plan.mocks.dart';
 
 @GenerateMocks([NutritionRepository, IngredientRepository, MeasurementRepository])

@@ -30,9 +30,8 @@ import 'package:wger/features/weight/screens/weight_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/theme/theme.dart';
 
-import '../../test_data/body_weight.dart';
-import '../../test_data/nutritional_plans.dart';
 import '../../test_data/profile.dart';
+import '../../test_data/screenshots/weight.dart';
 import 'screenshots_06_weight.mocks.dart';
 
 @GenerateMocks([
@@ -65,9 +64,10 @@ Widget createWeightScreen({Locale? locale}) {
       ingredientRepositoryProvider.overrideWithValue(mockIngredientRepo),
     ],
   );
-  // Seed the nutrition notifier with a plan so the weight overview can show it.
+  // Seed the nutrition notifier with the plans behind the weight phases, so
+  // the chart shows their periods as bands.
   container.read(nutritionProvider.notifier).state = AsyncData(
-    NutritionState(plans: [getNutritionalPlan()]),
+    NutritionState(plans: getScreenshotWeightPlans()),
   );
 
   return MediaQuery(

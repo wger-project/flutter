@@ -60,31 +60,3 @@ MeasurementCategory getBodyWeightCategory([List<MeasurementEntry>? entries]) {
     entries: entries ?? [testWeightEntry2, testWeightEntry1],
   );
 }
-
-MeasurementCategory getScreenshotBodyWeightCategory() {
-  MeasurementEntry entry(String id, num value, DateTime date) => MeasurementEntry(
-    id: id,
-    categoryId: testBodyWeightCategoryId,
-    value: value,
-    date: date,
-    notes: '',
-  );
-
-  return getBodyWeightCategory([
-    entry('15', 80, DateTime.utc(2021, 8, 10)),
-    entry('14', 83, DateTime.utc(2021, 7, 30)),
-    entry('13', 86, DateTime.utc(2021, 7, 20)),
-    entry('12', 88, DateTime.utc(2021, 7, 15)),
-    entry('11', 89, DateTime.utc(2021, 6, 20)),
-    entry('10', 91, DateTime.utc(2021, 6, 5)),
-    entry('9', 90, DateTime.utc(2021, 05, 1)),
-    entry('8', 91.1, DateTime.utc(2021, 03, 30)),
-    entry('7', 91, DateTime.utc(2021, 03, 20)),
-    entry('6', 90, DateTime.utc(2021, 02, 28)),
-    entry('5', 86, DateTime.utc(2021, 02, 20)),
-    entry('4', 83, DateTime.utc(2021, 01, 30)),
-    entry('3', 82, DateTime.utc(2021, 01, 20)),
-    entry('2', 81, DateTime.utc(2021, 01, 10)),
-    entry('1', 86, DateTime.utc(2021, 01, 01)),
-  ]);
-}

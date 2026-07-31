@@ -26,7 +26,7 @@ import 'package:wger/features/measurements/screens/measurement_categories_screen
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/theme/theme.dart';
 
-import '../../test_data/measurements.dart';
+import '../../test_data/screenshots/measurements.dart';
 import 'screenshots_04_measurements.mocks.dart';
 
 @GenerateMocks([MeasurementRepository])
@@ -36,7 +36,9 @@ Widget createMeasurementScreen({Locale? locale}) {
   final mockMeasurementRepo = MockMeasurementRepository();
   when(
     mockMeasurementRepo.watchAll(),
-  ).thenAnswer((_) => Stream<List<MeasurementCategory>>.value(getMeasurementCategories()));
+  ).thenAnswer(
+    (_) => Stream<List<MeasurementCategory>>.value(getScreenshotMeasurementCategories()),
+  );
 
   final container = ProviderContainer.test(
     overrides: [

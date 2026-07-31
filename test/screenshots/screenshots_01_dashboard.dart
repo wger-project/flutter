@@ -36,14 +36,13 @@ import 'package:wger/features/trophies/providers/trophy_repository.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/theme/theme.dart';
 
-import '../../test_data/body_weight.dart';
-import '../../test_data/exercises.dart';
 import '../../test_data/gallery.dart';
-import '../../test_data/measurements.dart';
-import '../../test_data/nutritional_plans.dart';
 import '../../test_data/profile.dart';
-import '../../test_data/routines.dart';
-import '../../test_data/trophies.dart';
+import '../../test_data/screenshots/measurements.dart';
+import '../../test_data/screenshots/nutrition.dart';
+import '../../test_data/screenshots/routines.dart';
+import '../../test_data/screenshots/trophies.dart';
+import '../../test_data/screenshots/weight.dart';
 import 'screenshots_01_dashboard.mocks.dart';
 
 class _FakeAuthNotifier extends AuthNotifier {
@@ -78,7 +77,7 @@ Widget createDashboardScreen({Locale? locale}) {
   when(mockMeasurementRepo.watchAll()).thenAnswer(
     (_) => Stream<List<MeasurementCategory>>.value([
       getScreenshotBodyWeightCategory(),
-      ...getMeasurementCategories(),
+      ...getScreenshotMeasurementCategories(),
     ]),
   );
 
@@ -90,7 +89,7 @@ Widget createDashboardScreen({Locale? locale}) {
   final mockRoutinesRepo = MockRoutinesRepository();
   when(
     mockRoutinesRepo.watchAllDrift(),
-  ).thenAnswer((_) => Stream.value([getTestRoutine(exercises: getScreenshotExercises())]));
+  ).thenAnswer((_) => Stream.value([getScreenshotRoutine()]));
 
   final mockTrophyRepo = MockTrophyRepository();
   when(

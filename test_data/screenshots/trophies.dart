@@ -57,7 +57,7 @@ List<UserTrophy> getScreenshotUserTrophies() {
       trophy: trophy(
         2,
         '5000 kg lifted',
-        'Lifted a whole elefant',
+        'Lifted a whole elephant',
         TrophyType.volume,
         'volume/5353989b-adc0-481b-a9bc-64365a9179e8.png',
       ),
