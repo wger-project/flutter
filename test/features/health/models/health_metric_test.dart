@@ -18,6 +18,7 @@
 
 import 'package:collection/collection.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:health_bridge/health.dart';
 import 'package:wger/features/health/models/health_metric.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 
@@ -25,12 +26,26 @@ HealthMetric _metric(MetricType type) => healthMetrics.firstWhere((m) => m.metri
 
 void main() {
   group('Enabled metric set', () {
-    test('only body fat, height and body weight are imported in V1', () {
+    test('only body fat, height, body weight and blood pressure are imported in V1', () {
       expect(
         enabledHealthMetrics.map((m) => m.metricType),
-        containsAll([MetricType.bodyFat, MetricType.height, MetricType.bodyWeight]),
+        containsAll([
+          MetricType.bodyFat,
+          MetricType.height,
+          MetricType.bodyWeight,
+          MetricType.bloodPressure,
+        ]),
       );
-      expect(enabledHealthMetrics.length, 3);
+      expect(enabledHealthMetrics.length, 4);
+    });
+
+    test('blood pressure reads both component types', () {
+      final bp = _metric(MetricType.bloodPressure);
+      expect(bp.dataTypes, [
+        HealthDataType.BLOOD_PRESSURE_SYSTOLIC,
+        HealthDataType.BLOOD_PRESSURE_DIASTOLIC,
+      ]);
+      expect(bp.components.map((c) => c.canonicalName), ['Systolic', 'Diastolic']);
     });
 
     test('every disabled metric explains why', () {

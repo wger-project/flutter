@@ -58,7 +58,7 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
   late final HealthRepository _health;
   late final MeasurementRepository _measurements;
 
-  List<HealthDataType> get _types => enabledHealthMetrics.map((m) => m.dataType).toList();
+  List<HealthDataType> get _types => enabledHealthMetrics.expand((m) => m.dataTypes).toList();
 
   @override
   HealthSyncState build() {
@@ -142,65 +142,46 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
       DateTime? latest;
 
       for (final metric in enabledHealthMetrics) {
-        final metricReadings = readings.where((r) => r.type == metric.dataType);
-        if (metricReadings.isEmpty) {
-          continue;
-        }
-
-        final category = await _findOrCreateCategory(metric, categories);
-        if (category == null) {
-          skippedMetric = true;
-          continue;
-        }
-        final seen = {
-          for (final e in category.entries)
-            if (e.externalId != null) e.externalId!,
-        };
-
-        for (final reading in metricReadings) {
-          final uuid = reading.externalId;
-          if (uuid != null && seen.contains(uuid)) {
+        // Pair each target category with the readings it receives: the metric's
+        // own category, or one child per component for a group metric.
+        final List<(MeasurementCategory, Iterable<HealthReading>)> targets;
+        if (metric.components.isEmpty) {
+          final metricReadings = readings.where((r) => r.type == metric.dataType);
+          if (metricReadings.isEmpty) {
             continue;
           }
-
-          // Body weight is stored in kg. Should a platform report it in
-          // pounds, convert and keep the original for provenance.
-          var raw = reading.value;
-          String? sourceUnit;
-          if (metric.metricType == MetricType.bodyWeight && reading.unit == HealthDataUnit.POUND) {
-            sourceUnit = 'lb';
-            raw = convertWeight(reading.value, from: 'lb', to: 'kg');
+          final category = await _findOrCreateCategory(metric, categories);
+          if (category == null) {
+            skippedMetric = true;
+            continue;
           }
+          targets = [(category, metricReadings)];
+        } else {
+          final byComponent = [
+            for (final component in metric.components)
+              readings.where((r) => r.type == component.dataType),
+          ];
+          if (byComponent.every((r) => r.isEmpty)) {
+            continue;
+          }
+          final children = await _findOrCreateGroupChildren(metric, categories);
+          if (children == null) {
+            skippedMetric = true;
+            continue;
+          }
+          targets = [for (var i = 0; i < children.length; i++) (children[i], byComponent[i])];
+        }
 
-          final converted = metric.toCategoryValue(raw);
-          // The server stores values as Decimal with 2 places and rejects
-          // anything more precise, so round away unit-conversion float noise
-          // (1.803 m * 100 = 180.29999999999998).
-          final value = (converted * 100).roundToDouble() / 100;
-
-          await _measurements.addLocalDrift(
-            MeasurementEntry(
-              categoryId: category.id!,
-              date: reading.date,
-              value: value,
-              notes: '',
-              source: source,
-              externalId: uuid,
-              extraData: _extraDataFor(
-                metric,
-                reading,
-                converted: sourceUnit != null || converted != reading.value,
-                sourceUnit: sourceUnit,
-              ),
-            ),
+        for (final (category, metricReadings) in targets) {
+          final (importedCount, newest) = await _importReadings(
+            metric,
+            metricReadings,
+            category,
+            source,
           );
-
-          if (uuid != null) {
-            seen.add(uuid);
-          }
-          synced++;
-          if (latest == null || reading.date.isAfter(latest)) {
-            latest = reading.date;
+          synced += importedCount;
+          if (newest != null && (latest == null || newest.isAfter(latest))) {
+            latest = newest;
           }
         }
       }
@@ -219,6 +200,71 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
       state = state.copyWith(isSyncing: false, lastSyncCount: 0);
       return 0;
     }
+  }
+
+  /// Imports [metricReadings] into [category], deduplicating against the
+  /// entries already present via their externalId. Returns the number of
+  /// imported entries and the newest imported reading date.
+  Future<(int, DateTime?)> _importReadings(
+    HealthMetric metric,
+    Iterable<HealthReading> metricReadings,
+    MeasurementCategory category,
+    String source,
+  ) async {
+    final seen = {
+      for (final e in category.entries)
+        if (e.externalId != null) e.externalId!,
+    };
+    var synced = 0;
+    DateTime? latest;
+
+    for (final reading in metricReadings) {
+      final uuid = reading.externalId;
+      if (uuid != null && seen.contains(uuid)) {
+        continue;
+      }
+
+      // Body weight is stored in kg. Should a platform report it in
+      // pounds, convert and keep the original for provenance.
+      var raw = reading.value;
+      String? sourceUnit;
+      if (metric.metricType == MetricType.bodyWeight && reading.unit == HealthDataUnit.POUND) {
+        sourceUnit = 'lb';
+        raw = convertWeight(reading.value, from: 'lb', to: 'kg');
+      }
+
+      final converted = metric.toCategoryValue(raw);
+      // The server stores values as Decimal with 2 places and rejects
+      // anything more precise, so round away unit-conversion float noise
+      // (1.803 m * 100 = 180.29999999999998).
+      final value = (converted * 100).roundToDouble() / 100;
+
+      await _measurements.addLocalDrift(
+        MeasurementEntry(
+          categoryId: category.id!,
+          date: reading.date,
+          value: value,
+          notes: '',
+          source: source,
+          externalId: uuid,
+          extraData: _extraDataFor(
+            metric,
+            reading,
+            converted: sourceUnit != null || converted != reading.value,
+            sourceUnit: sourceUnit,
+          ),
+        ),
+      );
+
+      if (uuid != null) {
+        seen.add(uuid);
+      }
+      synced++;
+      if (latest == null || reading.date.isAfter(latest)) {
+        latest = reading.date;
+      }
+    }
+    return (synced, latest);
   }
 
   /// Builds an imported entry's `extra_data` from the reading's provenance.
@@ -286,5 +332,64 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
     await _measurements.addLocalDriftCategory(category);
     categories.add(category);
     return category;
+  }
+
+  /// Finds the child categories a group metric imports into, one per
+  /// component matched by in-group position, creating the group and any
+  /// missing children as needed. Returns `null` (skip the metric) when the
+  /// matching category holds entries itself: the server allows measurements
+  /// only on leaves, so attaching children would make its rows invalid.
+  Future<List<MeasurementCategory>?> _findOrCreateGroupChildren(
+    HealthMetric metric,
+    List<MeasurementCategory> categories,
+  ) async {
+    final existing = categories.firstWhereOrNull(
+      (c) =>
+          c.parentId == null &&
+          (c.metricType == metric.metricType || c.name == metric.canonicalName),
+    );
+    if (existing != null && existing.entries.isNotEmpty) {
+      _logger.warning(
+        'Category "${existing.name}" holds entries itself and cannot become '
+        'a ${metric.metricType.name} group, skipping the import',
+      );
+      return null;
+    }
+
+    final parent =
+        existing ??
+        MeasurementCategory(
+          id: ps.uuid.v7(),
+          name: metric.canonicalName,
+          unit: metric.unit,
+          metricType: metric.metricType,
+        );
+    if (existing == null) {
+      await _measurements.addLocalDriftCategory(parent);
+      categories.add(parent);
+    }
+
+    final children = categories
+        .where((c) => c.parentId == parent.id)
+        .sortedBy<num>((c) => c.order)
+        .toList();
+    final result = <MeasurementCategory>[];
+    for (var i = 0; i < metric.components.length; i++) {
+      if (i < children.length) {
+        result.add(children[i]);
+        continue;
+      }
+      final child = MeasurementCategory(
+        id: ps.uuid.v7(),
+        name: metric.components[i].canonicalName,
+        unit: metric.unit,
+        parentId: parent.id,
+        order: i,
+      );
+      await _measurements.addLocalDriftCategory(child);
+      categories.add(child);
+      result.add(child);
+    }
+    return result;
   }
 }

@@ -31,6 +31,7 @@ class HealthMetric {
     required this.canonicalName,
     required this.unit,
     required this.toCategoryValue,
+    this.components = const [],
     this.enabled = false,
     this.disabledReason,
   });
@@ -52,12 +53,34 @@ class HealthMetric {
   /// Converts the platform's numeric value (in its native unit) into [unit].
   final double Function(double raw) toCategoryValue;
 
+  /// Components of a multi-value metric. Non-empty marks the metric as a
+  /// group: readings go into one child category per component, matched by
+  /// in-group position (this list's order), and the group category itself
+  /// stays measurement-free.
+  final List<HealthMetricComponent> components;
+
   /// Whether V1 imports this metric. Disabled ones are declared for visibility
   /// and blocked on further groundwork (see [disabledReason]).
   final bool enabled;
 
   /// Why a declared metric is not imported yet.
   final String? disabledReason;
+
+  /// All platform types this metric reads (the components' for a group).
+  List<HealthDataType> get dataTypes =>
+      components.isEmpty ? [dataType] : components.map((c) => c.dataType).toList();
+}
+
+/// One component of a multi-value metric (e.g. systolic), imported into its
+/// own child category of the group.
+class HealthMetricComponent {
+  const HealthMetricComponent({required this.dataType, required this.canonicalName});
+
+  /// Health platform type this component reads.
+  final HealthDataType dataType;
+
+  /// Stable, non-localized name of the created child category.
+  final String canonicalName;
 }
 
 /// Apple Health / Health Connect report body fat as a fraction on iOS (0.15)
@@ -108,7 +131,19 @@ const List<HealthMetric> healthMetrics = [
     canonicalName: 'Blood pressure',
     unit: 'mmHg',
     toCategoryValue: _identity,
-    disabledReason: 'Needs measurement grouping to pair systolic/diastolic.',
+    // Both platforms report mmHg; a reading is the systolic/diastolic pair
+    // sharing one timestamp.
+    components: [
+      HealthMetricComponent(
+        dataType: HealthDataType.BLOOD_PRESSURE_SYSTOLIC,
+        canonicalName: 'Systolic',
+      ),
+      HealthMetricComponent(
+        dataType: HealthDataType.BLOOD_PRESSURE_DIASTOLIC,
+        canonicalName: 'Diastolic',
+      ),
+    ],
+    enabled: true,
   ),
   HealthMetric(
     metricType: MetricType.heartRate,

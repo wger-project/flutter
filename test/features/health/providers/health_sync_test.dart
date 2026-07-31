@@ -158,18 +158,45 @@ void main() {
           date: DateTime(2026, 1, 2),
           externalId: 'h-1',
         ),
+        // A blood pressure reading is the systolic/diastolic pair sharing one
+        // timestamp; Health Connect also shares the record uuid between them
+        HealthReading(
+          type: HealthDataType.BLOOD_PRESSURE_SYSTOLIC,
+          value: 120,
+          date: DateTime(2026, 1, 3),
+          externalId: 'bp-1',
+        ),
+        HealthReading(
+          type: HealthDataType.BLOOD_PRESSURE_DIASTOLIC,
+          value: 80,
+          date: DateTime(2026, 1, 3),
+          externalId: 'bp-1',
+        ),
       ]);
 
       final count = await createNotifier().syncOnAppOpen();
-      expect(count, 2);
+      expect(count, 4);
 
       final createdCategories = verify(
         measurements.addLocalDriftCategory(captureAny),
       ).captured.cast<MeasurementCategory>();
       expect(
         createdCategories.map((c) => c.metricType),
-        containsAll([MetricType.bodyFat, MetricType.height]),
+        containsAll([MetricType.bodyFat, MetricType.height, MetricType.bloodPressure]),
       );
+
+      // Blood pressure becomes a group: the typed parent stays entry-free,
+      // the readings go into its ordered children
+      final bloodPressure = createdCategories.firstWhere(
+        (c) => c.metricType == MetricType.bloodPressure,
+      );
+      expect(bloodPressure.parentId, isNull);
+      final systolic = createdCategories.firstWhere((c) => c.name == 'Systolic');
+      final diastolic = createdCategories.firstWhere((c) => c.name == 'Diastolic');
+      expect(systolic.parentId, bloodPressure.id);
+      expect(systolic.order, 0);
+      expect(diastolic.parentId, bloodPressure.id);
+      expect(diastolic.order, 1);
 
       final entries = verify(
         measurements.addLocalDrift(captureAny),
@@ -189,10 +216,20 @@ void main() {
       final height = entries.firstWhere((e) => e.externalId == 'h-1');
       expect(height.value, 180.3); // meters -> cm, rounded to two decimals
 
+      final systolicEntry = entries.firstWhere((e) => e.categoryId == systolic.id);
+      final diastolicEntry = entries.firstWhere((e) => e.categoryId == diastolic.id);
+      expect(systolicEntry.value, 120);
+      expect(diastolicEntry.value, 80);
+      // The pair keeps its shared timestamp and record uuid
+      expect(systolicEntry.date, diastolicEntry.date);
+      expect(systolicEntry.externalId, 'bp-1');
+      expect(diastolicEntry.externalId, 'bp-1');
+      expect(entries, hasLength(4));
+
       // The newest imported reading date becomes the next sync watermark
       expect(
         await PreferenceHelper.instance.getLastHealthSyncTimestamp(),
-        DateTime(2026, 1, 2).toIso8601String(),
+        DateTime(2026, 1, 3).toIso8601String(),
       );
     });
 
@@ -315,6 +352,93 @@ void main() {
         'source_value': 177.0,
         'source_unit': 'lb',
       });
+    });
+
+    test('imports blood pressure into an existing group by in-group order', () async {
+      // The user's own group with different names: components map onto the
+      // children by their in-group position, not by name
+      final parent = MeasurementCategory(
+        id: 'bp',
+        name: 'BP',
+        unit: 'mmHg',
+        metricType: MetricType.bloodPressure,
+      );
+      final upper = MeasurementCategory(id: 'upper', name: 'Upper', unit: 'mmHg', parentId: 'bp');
+      final lower = MeasurementCategory(
+        id: 'lower',
+        name: 'Lower',
+        unit: 'mmHg',
+        parentId: 'bp',
+        order: 1,
+      );
+      when(measurements.getAllOnce()).thenAnswer((_) async => [parent, upper, lower]);
+      stubReadings([
+        HealthReading(
+          type: HealthDataType.BLOOD_PRESSURE_SYSTOLIC,
+          value: 120,
+          date: DateTime(2026, 1, 3),
+          externalId: 'bp-1',
+        ),
+        HealthReading(
+          type: HealthDataType.BLOOD_PRESSURE_DIASTOLIC,
+          value: 80,
+          date: DateTime(2026, 1, 3),
+          externalId: 'bp-1',
+        ),
+      ]);
+
+      final count = await createNotifier().syncOnAppOpen();
+      expect(count, 2);
+      verifyNever(measurements.addLocalDriftCategory(any));
+
+      final entries = verify(
+        measurements.addLocalDrift(captureAny),
+      ).captured.cast<MeasurementEntry>();
+      expect(entries.firstWhere((e) => e.value == 120).categoryId, 'upper');
+      expect(entries.firstWhere((e) => e.value == 80).categoryId, 'lower');
+    });
+
+    test('skips blood pressure when the matching category holds entries', () async {
+      await PreferenceHelper.instance.setLastHealthSyncTimestamp('2020-01-01T00:00:00.000');
+      // A plain leaf category of the blood pressure type: attaching children
+      // would make its entries invalid (measurements only on leaves), so the
+      // import must not touch it
+      final leaf = MeasurementCategory(
+        id: 'bp',
+        name: 'Blood pressure',
+        unit: 'mmHg',
+        metricType: MetricType.bloodPressure,
+        entries: [
+          MeasurementEntry(
+            id: 'e1',
+            categoryId: 'bp',
+            date: DateTime(2026, 1, 1),
+            value: 118,
+            notes: '',
+          ),
+        ],
+      );
+      when(measurements.getAllOnce()).thenAnswer((_) async => [leaf]);
+      stubReadings([
+        HealthReading(
+          type: HealthDataType.BLOOD_PRESSURE_SYSTOLIC,
+          value: 120,
+          date: DateTime(2026, 1, 3),
+          externalId: 'bp-1',
+        ),
+      ]);
+
+      final count = await createNotifier().syncOnAppOpen();
+
+      // Nothing is written and the watermark holds, so the readings are
+      // retried once the conflict is resolved
+      expect(count, 0);
+      verifyNever(measurements.addLocalDriftCategory(any));
+      verifyNever(measurements.addLocalDrift(any));
+      expect(
+        await PreferenceHelper.instance.getLastHealthSyncTimestamp(),
+        '2020-01-01T00:00:00.000',
+      );
     });
 
     test('duration records keep their interval end as date_to', () async {
