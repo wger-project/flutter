@@ -73,6 +73,10 @@ class MeasurementRepository {
 
     return joined.watch().map((rows) {
       final Map<String, MeasurementCategory> map = {};
+      // Guards against the same entry being added twice. Scanning the list
+      // built so far would do, but is quadratic, and a category can hold
+      // thousands of entries.
+      final Map<String, Set<String>> seen = {};
 
       for (final row in rows) {
         final category = row.readTable(_db.measurementCategoryTable);
@@ -83,7 +87,7 @@ class MeasurementRepository {
           () => category.copyWith(entries: []),
         );
 
-        if (entry != null && !current.entries.any((e) => e.id == entry.id)) {
+        if (entry != null && seen.putIfAbsent(category.id!, () => {}).add(entry.id!)) {
           current.entries.add(entry);
         }
       }
