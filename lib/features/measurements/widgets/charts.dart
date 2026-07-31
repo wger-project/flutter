@@ -74,6 +74,22 @@ List<DateTimeRange> clampPeriods(List<DateTimeRange> periods, DateTimeRange boun
       ),
 ];
 
+/// Y-axis tick label that never wraps: a long value+unit combination shrinks
+/// to fit the reserved width instead of breaking into overlapping lines.
+class _YAxisLabel extends StatelessWidget {
+  const _YAxisLabel(this.text);
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      child: Text(text, maxLines: 1),
+    );
+  }
+}
+
 class MeasurementChartWidgetFl extends StatefulWidget {
   final List<MeasurementChartSeries> _series;
   final String _unit;
@@ -432,7 +448,7 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
                 return const Text('');
               }
 
-              return Text('${numberFormat.format(value)} ${widget._unit}');
+              return _YAxisLabel('${numberFormat.format(value)} ${widget._unit}');
             },
           ),
         ),
@@ -734,7 +750,7 @@ class _MeasurementBarChartWidgetFlState extends State<MeasurementBarChartWidgetF
               if (value == meta.min || value == meta.max) {
                 return const Text('');
               }
-              return Text('${numberFormat.format(value)} ${widget._unit}');
+              return _YAxisLabel('${numberFormat.format(value)} ${widget._unit}');
             },
           ),
         ),
