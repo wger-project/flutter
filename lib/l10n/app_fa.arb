@@ -295,19 +295,6 @@
             }
         }
     },
-    "chartDuringPlanTitle": "نمودار {chartName} در برنامه {planName}",
-    "@chartDuringPlanTitle": {
-        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-        "type": "text",
-        "placeholders": {
-            "chartName": {
-                "type": "String"
-            },
-            "planName": {
-                "type": "String"
-            }
-        }
-    },
     "measurement": "اندازه گیری",
     "@measurement": {},
     "measurements": "اندازه گیری ها",

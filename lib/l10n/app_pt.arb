@@ -692,19 +692,6 @@
             }
         }
     },
-    "chartDuringPlanTitle": "{chartName} Durante o plano nutricional {planName}",
-    "@chartDuringPlanTitle": {
-        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-        "type": "text",
-        "placeholders": {
-            "chartName": {
-                "type": "String"
-            },
-            "planName": {
-                "type": "String"
-            }
-        }
-    },
     "loggedToday": "Registrado hoje",
     "chartAllTimeTitle": "{name} de todo o tempo",
     "@chartAllTimeTitle": {

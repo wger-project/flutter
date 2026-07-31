@@ -55,11 +55,36 @@ String weightUnit(bool isMetric, BuildContext context) {
   return isMetric ? AppLocalizations.of(context).kg : AppLocalizations.of(context).lb;
 }
 
+/// A nutrition plan period shown for context: shaded as a vertical band in
+/// the chart, and named in the tooltip of the points it contains.
+typedef PlanPeriod = ({DateTimeRange range, String name});
+
+/// Fill of a plan period band, shared with the legend so its swatch matches.
+Color planBandColor(BuildContext context) =>
+    Theme.of(context).colorScheme.primary.withValues(alpha: 0.15);
+
+/// The parts of [periods] that overlap [bounds], clamped to it. Periods
+/// entirely outside [bounds] are dropped.
+List<DateTimeRange> clampPeriods(List<DateTimeRange> periods, DateTimeRange bounds) => [
+  for (final period in periods)
+    if (period.start.isBefore(bounds.end) && period.end.isAfter(bounds.start))
+      DateTimeRange(
+        start: period.start.isAfter(bounds.start) ? period.start : bounds.start,
+        end: period.end.isBefore(bounds.end) ? period.end : bounds.end,
+      ),
+];
+
 class MeasurementChartWidgetFl extends StatefulWidget {
   final List<MeasurementChartSeries> _series;
   final String _unit;
+  final List<PlanPeriod> _planPeriods;
 
-  const MeasurementChartWidgetFl(this._series, this._unit);
+  const MeasurementChartWidgetFl(
+    this._series,
+    this._unit, {
+    List<PlanPeriod> planPeriods = const [],
+    super.key,
+  }) : _planPeriods = planPeriods;
 
   /// The usual single-measurement chart: the values plus their average and
   /// trend line.
@@ -68,8 +93,10 @@ class MeasurementChartWidgetFl extends StatefulWidget {
     String unit, {
     List<MeasurementChartEntry>? avgs,
     List<MeasurementChartEntry>? trend,
+    List<PlanPeriod> planPeriods = const [],
     super.key,
   }) : _unit = unit,
+       _planPeriods = planPeriods,
        _series = [
          MeasurementChartSeries(entries, MeasurementSeriesRole.raw),
          if (avgs != null) MeasurementChartSeries(avgs, MeasurementSeriesRole.average),
@@ -233,6 +260,32 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
     }).toList();
   }
 
+  /// Names of the plans whose period contains [date].
+  List<String> _planNamesAt(DateTime date) => [
+    for (final p in widget._planPeriods)
+      if (!date.isBefore(p.range.start) && !date.isAfter(p.range.end)) p.name,
+  ];
+
+  /// The plan periods as translucent full-height bands, clamped to the span
+  /// of the data so they never draw outside the axes.
+  RangeAnnotations _planBands(List<DateTime> dates) {
+    if (dates.isEmpty || widget._planPeriods.isEmpty) {
+      return const RangeAnnotations();
+    }
+
+    final bounds = DateTimeRange(start: dates.first, end: dates.last);
+    return RangeAnnotations(
+      verticalRangeAnnotations: [
+        for (final range in clampPeriods([for (final p in widget._planPeriods) p.range], bounds))
+          VerticalRangeAnnotation(
+            x1: range.start.millisecondsSinceEpoch.toDouble(),
+            x2: range.end.millisecondsSinceEpoch.toDouble(),
+            color: planBandColor(context),
+          ),
+      ],
+    );
+  }
+
   /// [hidden] holds the indices of the invisible band bounds, which must not
   /// show up as tooltip lines; [labels] names the series that have a name.
   LineTouchData tooltipData(Set<int> hidden, Map<int, String?> labels) {
@@ -241,6 +294,11 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
         getTooltipColor: (touchedSpot) => Theme.of(context).colorScheme.primaryContainer,
         getTooltipItems: (touchedSpots) {
           final numberFormat = localizedNumberFormat(context);
+          // The plan context belongs to the touched date, not to a series, so
+          // it goes below the last tooltip line instead of onto every line
+          final lastVisible = touchedSpots.lastWhereOrNull(
+            (s) => !hidden.contains(s.barIndex),
+          );
 
           return touchedSpots.map((touchedSpot) {
             if (hidden.contains(touchedSpot.barIndex)) {
@@ -258,10 +316,20 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
             final label = labels[touchedSpot.barIndex];
             final prefix = label == null ? '' : '$label ';
 
+            final planNames = identical(touchedSpot, lastVisible)
+                ? _planNamesAt(date)
+                : const <String>[];
             return LineTooltipItem(
               '$prefix$dateStr: ${numberFormat.format(touchedSpot.y)} '
               '${widget._unit}$interpolatedMarker',
               TextStyle(color: touchedSpot.bar.color),
+              children: [
+                for (final name in planNames)
+                  TextSpan(
+                    text: '\n$name',
+                    style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer),
+                  ),
+              ],
             );
           }).toList();
         },
@@ -304,6 +372,7 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
     return LineChartData(
       lineTouchData: tooltipData(hidden, labels),
       betweenBarsData: bands,
+      rangeAnnotations: _planBands(dates),
       gridData: FlGridData(
         show: true,
         drawVerticalLine: true,

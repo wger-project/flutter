@@ -5,7 +5,6 @@ import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/measurement_entry.dart';
 import 'package:wger/features/measurements/models/unit_conversion.dart';
 import 'package:wger/features/measurements/widgets/charts.dart';
-import 'package:wger/features/nutrition/models/nutritional_plan.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 List<Widget> getOverviewWidgets(
@@ -15,6 +14,7 @@ List<Widget> getOverviewWidgets(
   String unit,
   BuildContext context, {
   MetricType metricType = MetricType.custom,
+  List<PlanPeriod> planPeriods = const [],
 }) {
   return [
     Text(
@@ -34,7 +34,7 @@ List<Widget> getOverviewWidgets(
                 ),
               ),
             )
-          : buildChartForMetricType(metricType, raw, avg, unit),
+          : buildChartForMetricType(metricType, raw, avg, unit, planPeriods: planPeriods),
     ),
     if (avg.isNotEmpty) MeasurementOverallChangeWidget(avg.first, avg.last, unit),
     const SizedBox(height: 8),
@@ -45,7 +45,7 @@ List<Widget> getOverviewWidgetsSeries(
   String name,
   List<MeasurementChartEntry> entriesAll,
   List<MeasurementChartEntry> entries7dAvg,
-  List<NutritionalPlan> plans,
+  List<PlanPeriod> planPeriods,
   String unit,
   BuildContext context, {
   MetricType metricType = MetricType.custom,
@@ -60,17 +60,8 @@ List<Widget> getOverviewWidgetsSeries(
       unit,
       context,
       metricType: metricType,
+      planPeriods: planPeriods,
     ),
-    // Show overview widgets for each plan in plans
-    for (final plan in plans)
-      ...getOverviewWidgets(
-        AppLocalizations.of(context).chartDuringPlanTitle(name, plan.description),
-        entriesAll.whereDateWithInterpolation(plan.startDate, plan.endDate),
-        entries7dAvg.whereDateWithInterpolation(plan.startDate, plan.endDate),
-        unit,
-        context,
-        metricType: metricType,
-      ),
     // if all time is significantly longer than 30 days (let's say > 75 days)
     // then let's show a separate chart just focusing on the last 30 days,
     // if there is data for it.
@@ -84,6 +75,7 @@ List<Widget> getOverviewWidgetsSeries(
         unit,
         context,
         metricType: metricType,
+        planPeriods: planPeriods,
       ),
     // legend
     Row(
@@ -103,6 +95,12 @@ List<Widget> getOverviewWidgetsSeries(
           Indicator(
             color: Theme.of(context).colorScheme.secondary,
             text: AppLocalizations.of(context).indicatorTrend,
+            isSquare: true,
+          ),
+        if (planPeriods.isNotEmpty)
+          Indicator(
+            color: planBandColor(context),
+            text: AppLocalizations.of(context).nutritionalPlan,
             isSquare: true,
           ),
       ],
@@ -223,8 +221,9 @@ Widget buildChartForMetricType(
   MetricType metricType,
   List<MeasurementChartEntry> raw,
   List<MeasurementChartEntry> avg,
-  String unit,
-) {
+  String unit, {
+  List<PlanPeriod> planPeriods = const [],
+}) {
   if (metricType.isSummedPerDay) {
     return MeasurementBarChartWidgetFl(aggregatePerDay(raw), unit);
   }
@@ -238,5 +237,6 @@ Widget buildChartForMetricType(
     unit,
     avgs: downsample(avg),
     trend: smoothedTrendline(points),
+    planPeriods: planPeriods,
   );
 }

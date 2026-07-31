@@ -438,19 +438,6 @@
             }
         }
     },
-    "chartDuringPlanTitle": "{chartName} pe durata planului nutrițional {planName}",
-    "@chartDuringPlanTitle": {
-        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-        "type": "text",
-        "placeholders": {
-            "chartName": {
-                "type": "String"
-            },
-            "planName": {
-                "type": "String"
-            }
-        }
-    },
     "endDate": "Data de sfârșit",
     "@endDate": {
         "description": "The End date of a nutritional plan or routine"

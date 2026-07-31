@@ -206,5 +206,59 @@ void main() {
       // isSummedPerDay -> trend indicator is hidden
       expect(find.byType(Indicator), findsNWidgets(2));
     });
+
+    testWidgets('plan periods add their own indicator', (tester) async {
+      await _pumpWidgetList(
+        tester,
+        (ctx) => getOverviewWidgetsSeries(
+          'Weight',
+          rawEntries,
+          avgEntries,
+          [
+            (
+              range: DateTimeRange(start: DateTime(2026, 1, 2), end: DateTime(2026, 1, 5)),
+              name: 'Cut',
+            ),
+          ],
+          'kg',
+          ctx,
+          metricType: MetricType.custom,
+        ),
+      );
+
+      expect(find.byType(Indicator), findsNWidgets(4));
+    });
+  });
+
+  group('getOverviewWidgetsSeries plan periods', () {
+    testWidgets('one chart with bands instead of one chart per plan', (tester) async {
+      await _pumpWidgetList(
+        tester,
+        (ctx) => getOverviewWidgetsSeries(
+          'Weight',
+          rawEntries,
+          avgEntries,
+          [
+            (
+              range: DateTimeRange(start: DateTime(2026, 1, 2), end: DateTime(2026, 1, 5)),
+              name: 'Cut',
+            ),
+            (
+              range: DateTimeRange(start: DateTime(2026, 2, 1), end: DateTime(2026, 2, 10)),
+              name: 'Bulk',
+            ),
+          ],
+          'kg',
+          ctx,
+          metricType: MetricType.custom,
+        ),
+      );
+
+      // the history is short, so there is no 30-day chart either
+      expect(find.byType(MeasurementChartWidgetFl), findsOneWidget);
+      final data = tester.widget<LineChart>(find.byType(LineChart)).data;
+      // only the february plan misses the data range
+      expect(data.rangeAnnotations.verticalRangeAnnotations, hasLength(1));
+    });
   });
 }

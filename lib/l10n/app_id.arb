@@ -600,19 +600,6 @@
             }
         }
     },
-    "chartDuringPlanTitle": "{chartName} selama rencana nutrisi {planName}",
-    "@chartDuringPlanTitle": {
-        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-        "type": "text",
-        "placeholders": {
-            "chartName": {
-                "type": "String"
-            },
-            "planName": {
-                "type": "String"
-            }
-        }
-    },
     "aboutWhySupportTitle": "Bersifat open source & gratis ❤️",
     "aboutSourceListTitle": "Lihat kode sumber",
     "aboutJoinCommunityTitle": "Gabung komunitas",

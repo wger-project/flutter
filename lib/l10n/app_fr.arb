@@ -774,19 +774,6 @@
     "needsLogsToAdvanceHelp": "Sélectionnez si vous souhaitez que la routine passe au jour programmé suivant uniquement si vous avez enregistré une séance d'entraînement pour la journée",
     "min": "Min",
     "themeMode": "Thème",
-    "chartDuringPlanTitle": "{chartName} pendant le plan nutritionnel {planName}",
-    "@chartDuringPlanTitle": {
-        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-        "type": "text",
-        "placeholders": {
-            "chartName": {
-                "type": "String"
-            },
-            "planName": {
-                "type": "String"
-            }
-        }
-    },
     "fitInWeek": "Planning hebdomadaire fixe",
     "addSuperset": "Ajouter une supersérie",
     "useApiToken": "Utiliser un jeton API",

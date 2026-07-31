@@ -501,19 +501,6 @@
             }
         }
     },
-    "chartDuringPlanTitle": "{chartName} – med prehranskim načrtom {planName}",
-    "@chartDuringPlanTitle": {
-        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-        "type": "text",
-        "placeholders": {
-            "chartName": {
-                "type": "String"
-            },
-            "planName": {
-                "type": "String"
-            }
-        }
-    },
     "measurement": "Meritve",
     "measurements": "Meritve",
     "@measurements": {

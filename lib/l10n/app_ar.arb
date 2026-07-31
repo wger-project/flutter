@@ -880,19 +880,6 @@
     "errorCouldNotConnectToServer": "لم يتمكن التطبيق من الاتصال بالخادم",
     "max": "الاقصى",
     "min": "الادنى",
-    "chartDuringPlanTitle": "{chartName} خلال الخطة الغذائية {planName}",
-    "@chartDuringPlanTitle": {
-        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-        "type": "text",
-        "placeholders": {
-            "chartName": {
-                "type": "String"
-            },
-            "planName": {
-                "type": "String"
-            }
-        }
-    },
     "endDate": "تاريخ الانتهاء",
     "@endDate": {
         "description": "The End date of a nutritional plan or routine"

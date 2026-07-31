@@ -228,19 +228,6 @@
             }
         }
     },
-    "chartDuringPlanTitle": "{chartName} 영양 계획 {planName} 중",
-    "@chartDuringPlanTitle": {
-        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-        "type": "text",
-        "placeholders": {
-            "chartName": {
-                "type": "String"
-            },
-            "planName": {
-                "type": "String"
-            }
-        }
-    },
     "measurements": "측정",
     "@measurements": {
         "description": "Categories for the measurements such as biceps size, body fat, etc."

@@ -692,19 +692,6 @@
             }
         }
     },
-    "chartDuringPlanTitle": "{chartName} під час плану харчування {planName}",
-    "@chartDuringPlanTitle": {
-        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-        "type": "text",
-        "placeholders": {
-            "chartName": {
-                "type": "String"
-            },
-            "planName": {
-                "type": "String"
-            }
-        }
-    },
     "kcalValue": "{value} ккал",
     "@kcalValue": {
         "description": "A value in kcal, e.g. 500 kcal",

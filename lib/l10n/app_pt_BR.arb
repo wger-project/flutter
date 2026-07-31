@@ -795,19 +795,6 @@
             }
         }
     },
-    "chartDuringPlanTitle": "{chartName} durante plano nutricional {planName}",
-    "@chartDuringPlanTitle": {
-        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-        "type": "text",
-        "placeholders": {
-            "chartName": {
-                "type": "String"
-            },
-            "planName": {
-                "type": "String"
-            }
-        }
-    },
     "settingsIngredientCacheDescription": "Cache de Ingredientes",
     "cacheWarning": "Devido ao cache pode demorar algum tempo até que mudanças estejam visíveis na aplicação.",
     "swiss_ball": "Bola Suíça",

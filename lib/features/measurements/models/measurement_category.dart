@@ -64,6 +64,14 @@ enum MetricType {
     MetricType.bodyWeight => true,
     _ => false,
   };
+
+  /// `true` for metric types whose charts show nutrition plan periods for
+  /// context. Custom categories are typically hand-kept body measurements
+  /// (waist, biceps), so they qualify; the typed health metrics do not.
+  bool get correlatesWithNutrition => switch (this) {
+    MetricType.bodyWeight || MetricType.bodyFat || MetricType.custom => true,
+    _ => false,
+  };
 }
 
 extension MeasurementMetricTypeL10n on MetricType {

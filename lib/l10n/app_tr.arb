@@ -834,19 +834,6 @@
       }
     }
   },
-  "chartDuringPlanTitle": "{planName} beslenme planı boyunca {chartName}",
-  "@chartDuringPlanTitle": {
-    "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-    "type": "text",
-    "placeholders": {
-      "chartName": {
-        "type": "String"
-      },
-      "planName": {
-        "type": "String"
-      }
-    }
-  },
   "endBeforeStart": "Son değer, başlangıç değerinden önce olamaz",
   "minLengthRoutine": "Program en az {number} hafta sürmelidir",
   "maxLengthRoutine": "Bu program en fazla {number} hafta sürebilir"

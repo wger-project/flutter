@@ -819,19 +819,6 @@
             }
         }
     },
-    "chartDuringPlanTitle": "營養計劃 {planName} 期間的 {chartName}",
-    "@chartDuringPlanTitle": {
-        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-        "type": "text",
-        "placeholders": {
-            "chartName": {
-                "type": "String"
-            },
-            "planName": {
-                "type": "String"
-            }
-        }
-    },
     "noIngredientsDefined": "尚未定義食材",
     "ingredientLogged": "食材已紀錄到日記",
     "selectMealToLog": "選擇要紀錄到日記的餐點",

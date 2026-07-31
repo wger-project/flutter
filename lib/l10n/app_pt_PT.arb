@@ -315,19 +315,6 @@
             }
         }
     },
-    "chartDuringPlanTitle": "{chartName} durante o plano nutricional {planName}",
-    "@chartDuringPlanTitle": {
-        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-        "type": "text",
-        "placeholders": {
-            "chartName": {
-                "type": "String"
-            },
-            "planName": {
-                "type": "String"
-            }
-        }
-    },
     "measurement": "Medição",
     "measurementCategoriesHelpText": "Categoria de medição, como 'bíceps' ou 'gordura corporal'",
     "measurementEntriesHelpText": "Unidade usada para medir, como 'cm' ou '%'",

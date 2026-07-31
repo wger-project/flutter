@@ -90,5 +90,17 @@ void main() {
       expect(MetricType.bodyWeight.isSummedPerDay, isFalse);
       expect(MetricType.heartRate.isSummedPerDay, isFalse);
     });
+
+    test('correlatesWithNutrition is true for body composition and custom', () {
+      expect(MetricType.bodyWeight.correlatesWithNutrition, isTrue);
+      expect(MetricType.bodyFat.correlatesWithNutrition, isTrue);
+      expect(MetricType.custom.correlatesWithNutrition, isTrue);
+
+      // the typed health metrics don't get nutrition plan context
+      expect(MetricType.heartRate.correlatesWithNutrition, isFalse);
+      expect(MetricType.bloodPressure.correlatesWithNutrition, isFalse);
+      expect(MetricType.steps.correlatesWithNutrition, isFalse);
+      expect(MetricType.sleep.correlatesWithNutrition, isFalse);
+    });
   });
 }

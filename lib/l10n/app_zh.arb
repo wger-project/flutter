@@ -583,19 +583,6 @@
             }
         }
     },
-    "chartDuringPlanTitle": "{chartName} 在计划 \"{planName}\" 期间的改变曲线",
-    "@chartDuringPlanTitle": {
-        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-        "type": "text",
-        "placeholders": {
-            "chartName": {
-                "type": "String"
-            },
-            "planName": {
-                "type": "String"
-            }
-        }
-    },
     "indicatorRaw": "原始值",
     "indicatorAvg": "平均值",
     "textPromptTitle": "准备就绪？",

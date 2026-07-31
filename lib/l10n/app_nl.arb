@@ -378,19 +378,6 @@
             }
         }
     },
-    "chartDuringPlanTitle": "{chartName} tijdens voedingsplan {planName}",
-    "@chartDuringPlanTitle": {
-        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-        "type": "text",
-        "placeholders": {
-            "chartName": {
-                "type": "String"
-            },
-            "planName": {
-                "type": "String"
-            }
-        }
-    },
     "measurement": "Meting",
     "measurements": "Metingen",
     "@measurements": {

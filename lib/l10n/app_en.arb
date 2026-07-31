@@ -553,19 +553,6 @@
       }
     }
   },
-  "chartDuringPlanTitle": "{chartName} during nutritional plan {planName}",
-  "@chartDuringPlanTitle": {
-    "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-    "type": "text",
-    "placeholders": {
-      "chartName": {
-        "type": "String"
-      },
-      "planName": {
-        "type": "String"
-      }
-    }
-  },
   "chartLastYearTitle": "{name} last year",
   "@chartLastYearTitle": {
     "description": "last year chart of 'name' (e.g. 'weight', 'body fat' etc.)",

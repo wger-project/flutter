@@ -204,6 +204,144 @@ void main() {
     });
   });
 
+  group('clampPeriods', () {
+    final bounds = DateTimeRange(start: DateTime(2026, 1, 10), end: DateTime(2026, 1, 20));
+
+    test('keeps a period inside the bounds untouched', () {
+      final period = DateTimeRange(start: DateTime(2026, 1, 12), end: DateTime(2026, 1, 15));
+      expect(clampPeriods([period], bounds), [period]);
+    });
+
+    test('clamps overlapping periods to the bounds', () {
+      final result = clampPeriods([
+        DateTimeRange(start: DateTime(2026, 1, 1), end: DateTime(2026, 1, 12)),
+        DateTimeRange(start: DateTime(2026, 1, 15), end: DateTime(2026, 2, 1)),
+      ], bounds);
+
+      expect(result, [
+        DateTimeRange(start: DateTime(2026, 1, 10), end: DateTime(2026, 1, 12)),
+        DateTimeRange(start: DateTime(2026, 1, 15), end: DateTime(2026, 1, 20)),
+      ]);
+    });
+
+    test('drops periods outside the bounds, including touching ones', () {
+      final result = clampPeriods([
+        DateTimeRange(start: DateTime(2026, 1, 1), end: DateTime(2026, 1, 5)),
+        // ends exactly at the bounds' start: zero width, nothing to draw
+        DateTimeRange(start: DateTime(2026, 1, 1), end: DateTime(2026, 1, 10)),
+        DateTimeRange(start: DateTime(2026, 2, 1), end: DateTime(2026, 2, 5)),
+      ], bounds);
+
+      expect(result, isEmpty);
+    });
+  });
+
+  group('MeasurementChartWidgetFl plan periods', () {
+    LineChartData chartData(WidgetTester tester) =>
+        tester.widget<LineChart>(find.byType(LineChart)).data;
+
+    final points = [
+      entry(60, DateTime(2026, 1, 1)),
+      entry(70, DateTime(2026, 1, 10)),
+    ];
+
+    testWidgets('periods become vertical bands clamped to the data', (tester) async {
+      await tester.pumpWidget(
+        _wrap(
+          MeasurementChartWidgetFl.singleMeasurement(
+            points,
+            'kg',
+            planPeriods: [
+              (
+                range: DateTimeRange(start: DateTime(2025, 12, 20), end: DateTime(2026, 1, 5)),
+                name: 'Cut',
+              ),
+              (
+                range: DateTimeRange(start: DateTime(2026, 2, 1), end: DateTime(2026, 2, 10)),
+                name: 'Bulk',
+              ),
+            ],
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final annotations = chartData(tester).rangeAnnotations.verticalRangeAnnotations;
+      // the february plan does not overlap the data and draws nothing
+      expect(annotations, hasLength(1));
+      expect(annotations.single.x1, DateTime(2026, 1, 1).millisecondsSinceEpoch.toDouble());
+      expect(annotations.single.x2, DateTime(2026, 1, 5).millisecondsSinceEpoch.toDouble());
+    });
+
+    testWidgets('no bands without periods', (tester) async {
+      await tester.pumpWidget(_wrap(MeasurementChartWidgetFl.singleMeasurement(points, 'kg')));
+      await tester.pumpAndSettle();
+
+      expect(chartData(tester).rangeAnnotations.verticalRangeAnnotations, isEmpty);
+    });
+
+    testWidgets('tooltip names the plan once, below the last line', (tester) async {
+      await tester.pumpWidget(
+        _wrap(
+          MeasurementChartWidgetFl.singleMeasurement(
+            points,
+            'kg',
+            avgs: points,
+            trend: points,
+            planPeriods: [
+              (
+                range: DateTimeRange(start: DateTime(2025, 12, 20), end: DateTime(2026, 1, 5)),
+                name: 'Prep Sommer 2026',
+              ),
+            ],
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final data = chartData(tester);
+      // a touch on the first point, which every series has a spot for
+      final touched = [
+        for (final (i, bar) in data.lineBarsData.indexed) LineBarSpot(bar, i, bar.spots.first),
+      ];
+      final items = data.lineTouchData.touchTooltipData.getTooltipItems(touched).nonNulls.toList();
+
+      expect(items, hasLength(3));
+      final mentions = [
+        for (final item in items) ...?item.children,
+      ].whereType<TextSpan>().where((s) => s.text!.contains('Prep Sommer 2026'));
+      expect(mentions, hasLength(1));
+      expect(items.take(2).every((i) => i.children == null || i.children!.isEmpty), isTrue);
+    });
+
+    testWidgets('no plan name for a point outside every period', (tester) async {
+      await tester.pumpWidget(
+        _wrap(
+          MeasurementChartWidgetFl.singleMeasurement(
+            points,
+            'kg',
+            planPeriods: [
+              (
+                range: DateTimeRange(start: DateTime(2025, 12, 20), end: DateTime(2026, 1, 5)),
+                name: 'Cut',
+              ),
+            ],
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final data = chartData(tester);
+      // the second point (january 10th) lies after the period's end
+      final touched = [
+        LineBarSpot(data.lineBarsData.single, 0, data.lineBarsData.single.spots.last),
+      ];
+      final items = data.lineTouchData.touchTooltipData.getTooltipItems(touched).nonNulls.toList();
+
+      expect(items.single.children, anyOf(isNull, isEmpty));
+    });
+  });
+
   group('MeasurementBarChartWidgetFl ranges', () {
     BarChartData chartData(WidgetTester tester) =>
         tester.widget<BarChart>(find.byType(BarChart)).data;

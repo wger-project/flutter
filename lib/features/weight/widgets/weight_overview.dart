@@ -30,6 +30,7 @@ import 'package:wger/features/measurements/models/unit_conversion.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/measurements/widgets/charts.dart';
 import 'package:wger/features/measurements/widgets/helpers.dart';
+import 'package:wger/features/nutrition/models/nutritional_plan.dart';
 import 'package:wger/features/nutrition/providers/nutrition_notifier.dart';
 import 'package:wger/features/weight/providers/body_weight_provider.dart';
 import 'package:wger/features/weight/widgets/forms.dart';
@@ -53,7 +54,13 @@ class _WeightOverviewState extends riverpod.ConsumerState<WeightOverview> {
     final i18n = AppLocalizations.of(context);
     final profileAsync = ref.watch(userProfileProvider);
     final numberFormat = localizedNumberFormat(context);
-    final plans = ref.watch(nutritionProvider).value?.plans ?? const [];
+    final planPeriods = [
+      for (final plan in ref.watch(nutritionProvider).value?.plans ?? const <NutritionalPlan>[])
+        (
+          range: DateTimeRange(start: plan.startDate, end: plan.endDate ?? DateTime.now()),
+          name: plan.getLabel(context),
+        ),
+    ];
 
     return AsyncValueWidget<MeasurementCategory?>(
       value: ref.watch(bodyWeightCategoryProvider),
@@ -132,7 +139,7 @@ class _WeightOverviewState extends riverpod.ConsumerState<WeightOverview> {
               i18n.weight,
               entriesRange,
               entries7dAvgRange,
-              plans,
+              planPeriods,
               unit,
               context,
               mainChartTitle: mainChartTitle,

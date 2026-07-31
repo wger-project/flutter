@@ -722,19 +722,6 @@
     "settingsCacheDeletedSnackbar": "Cache svuotata con successo",
     "done": "Fatto",
     "ingredientLogged": "Ingrediente registrato nel diario",
-    "chartDuringPlanTitle": "{chartName} durante il piano nutrizionale {planName}",
-    "@chartDuringPlanTitle": {
-        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-        "type": "text",
-        "placeholders": {
-            "chartName": {
-                "type": "String"
-            },
-            "planName": {
-                "type": "String"
-            }
-        }
-    },
     "chart30DaysTitle": "{name} ultimi 30 giorni",
     "@chart30DaysTitle": {
         "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",

@@ -26,6 +26,7 @@ import 'package:wger/features/measurements/models/unit_conversion.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/measurements/widgets/charts.dart';
 import 'package:wger/features/measurements/widgets/helpers.dart';
+import 'package:wger/features/nutrition/models/nutritional_plan.dart';
 import 'package:wger/features/nutrition/providers/nutrition_notifier.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
@@ -38,7 +39,19 @@ class EntriesList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final plans = ref.watch(nutritionProvider).value?.plans ?? const [];
+    // Plan periods only matter where a nutrition plan can plausibly move the
+    // metric; other categories skip the watch, so nutrition edits don't
+    // rebuild them
+    final planPeriods = _category.metricType.correlatesWithNutrition
+        ? [
+            for (final plan
+                in ref.watch(nutritionProvider).value?.plans ?? const <NutritionalPlan>[])
+              (
+                range: DateTimeRange(start: plan.startDate, end: plan.endDate ?? DateTime.now()),
+                name: plan.getLabel(context),
+              ),
+          ]
+        : const <PlanPeriod>[];
     final numberFormat = localizedNumberFormat(context);
     final provider = ref.read(measurementProvider.notifier);
 
@@ -59,7 +72,7 @@ class EntriesList extends ConsumerWidget {
           _category.name,
           entriesAll,
           entries7dAvg,
-          plans,
+          planPeriods,
           _category.unit,
           context,
           metricType: _category.metricType,

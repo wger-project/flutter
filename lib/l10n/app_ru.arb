@@ -817,19 +817,6 @@
             }
         }
     },
-    "chartDuringPlanTitle": "{chartName} во время плана питания {planName}",
-    "@chartDuringPlanTitle": {
-        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-        "type": "text",
-        "placeholders": {
-            "chartName": {
-                "type": "String"
-            },
-            "planName": {
-                "type": "String"
-            }
-        }
-    },
     "settingsIngredientCacheDescription": "Кэш ингредиентов",
     "isRestDayHelp": "Пожалуйста, имейте в виду, что если вы отметите этот день как день отдыха, все подходы и упражнения будут удалены.",
     "routines": "Тренировки",

@@ -317,19 +317,6 @@
             }
         }
     },
-    "chartDuringPlanTitle": "{chartName}ஊட்டச்சத்து திட்டத்தின்போது {planName}",
-    "@chartDuringPlanTitle": {
-        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-        "type": "text",
-        "placeholders": {
-            "chartName": {
-                "type": "String"
-            },
-            "planName": {
-                "type": "String"
-            }
-        }
-    },
     "measurementCategoriesHelpText": "'பைசெப்ச்' அல்லது 'உடல் கொழுப்பு' போன்ற அளவீட்டு வகை",
     "measurementEntriesHelpText": "'செ.மீ' அல்லது '%' போன்ற வகையை அளவிட பயன்படுத்தப்படும் அலகு",
     "date": "திகதி",

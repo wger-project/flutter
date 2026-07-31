@@ -743,19 +743,6 @@
             }
         }
     },
-    "chartDuringPlanTitle": "{chartName} durante el plan nutricional {planName}",
-    "@chartDuringPlanTitle": {
-        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-        "type": "text",
-        "placeholders": {
-            "chartName": {
-                "type": "String"
-            },
-            "planName": {
-                "type": "String"
-            }
-        }
-    },
     "today": "Hoy",
     "loggedToday": "Registrado hoy",
     "surplus": "exceso calórico",
