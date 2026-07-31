@@ -35,6 +35,8 @@ import 'package:wger/features/measurements/providers/measurement_repository.dart
 part 'health_sync.freezed.dart';
 part 'health_sync.g.dart';
 
+final _uuidPattern = RegExp(r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$');
+
 /// Stable id identifying the aggregate of [day] within [categoryId].
 ///
 /// Deterministic, so re-reading a day within the overlap window updates the
@@ -69,6 +71,11 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
   final _logger = Logger('HealthSyncNotifier');
   late final HealthRepository _health;
   late final MeasurementRepository _measurements;
+
+  /// Platform record ids folded into a UUID during the running sync, see
+  /// [_externalIdFor]. Expected to stay 0; anything else means a platform
+  /// changed its id format under us.
+  var _normalizedIdCount = 0;
 
   List<HealthDataType> get _types => enabledHealthMetrics.expand((m) => m.dataTypes).toList();
 
@@ -122,6 +129,7 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
       return 0;
     }
     state = state.copyWith(isEnabled: true, isSyncing: true);
+    _normalizedIdCount = 0;
 
     try {
       if (!await _health.ensureAuthorized(_types)) {
@@ -201,6 +209,11 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
       if (latest != null && !skippedMetric) {
         await prefs.setLastHealthSyncTimestamp(latest.toIso8601String());
       }
+      if (_normalizedIdCount > 0) {
+        _logger.warning(
+          'Folded $_normalizedIdCount platform record ids into UUIDs during this sync',
+        );
+      }
       _logger.info('Imported $synced health measurements');
       state = state.copyWith(isSyncing: false, lastSyncCount: synced);
       return synced;
@@ -228,7 +241,7 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
     DateTime? latest;
 
     for (final reading in metricReadings) {
-      final uuid = reading.externalId;
+      final uuid = _externalIdFor(reading.externalId, category.id!);
       if (uuid != null && seen.contains(uuid)) {
         continue;
       }
@@ -261,6 +274,8 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
             reading,
             converted: sourceUnit != null || converted != reading.value,
             sourceUnit: sourceUnit,
+            // Only set when the platform id had to be folded into a UUID
+            sourceRecordId: uuid == reading.externalId ? null : reading.externalId,
           ),
         ),
       );
@@ -368,12 +383,14 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
   /// detection. Keys without a value are omitted, never written as null.
   /// [converted] marks readings whose stored value differs from the platform
   /// value; the original is then kept in `source_value` (and `source_unit`
-  /// when the difference is a weight-unit conversion).
+  /// when the difference is a weight-unit conversion). [sourceRecordId] is the
+  /// platform's own record id, kept when it had to be folded into a UUID.
   Map<String, dynamic> _extraDataFor(
     HealthMetric metric,
     HealthReading reading, {
     required bool converted,
     String? sourceUnit,
+    String? sourceRecordId,
   }) {
     return {
       if (metric.metricType == MetricType.bodyWeight) 'unit': 'kg',
@@ -386,7 +403,31 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
       if (reading.sourceDeviceId != null) 'source_device_id': reading.sourceDeviceId,
       if (converted) 'source_value': reading.value,
       'source_unit': ?sourceUnit,
+      'source_record_id': ?sourceRecordId,
     };
+  }
+
+  /// The id stored in `external_id` for a platform record.
+  ///
+  /// The server's `external_id` is a UUIDField and rejects anything else
+  /// permanently, but Health Connect documents `Metadata.id` only as a
+  /// platform-assigned String. Ids that are not UUIDs are therefore folded
+  /// into one deterministically (same scheme as the daily aggregates, so the
+  /// mapping is stable across syncs and dedup keeps working); the original is
+  /// kept in `extra_data.source_record_id`, which is what a later delete-sync
+  /// via `deleteByUUID` needs.
+  String? _externalIdFor(String? platformId, String categoryId) {
+    if (platformId == null || _uuidPattern.hasMatch(platformId)) {
+      return platformId;
+    }
+    if (_normalizedIdCount == 0) {
+      _logger.warning(
+        'Health platform returned a record id that is not a UUID ("$platformId"). '
+        'Folding it into one so the entry can sync; see extra_data.source_record_id',
+      );
+    }
+    _normalizedIdCount++;
+    return ps.uuid.v5(categoryId, platformId);
   }
 
   /// Finds the category for [metric] (by `metric_type`, falling back to the

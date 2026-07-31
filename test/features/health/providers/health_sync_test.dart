@@ -33,8 +33,25 @@ import 'package:wger/features/measurements/providers/measurement_repository.dart
 
 import 'health_sync_test.mocks.dart';
 
-// Category ids are UUIDs in production, and dailyAggregateExternalId parses
-// them as the v5 namespace, so the fixtures use real ones.
+// Platform record ids are UUIDs in production and only pass through unchanged
+// if they are, so the fixtures use real ones behind readable names.
+const _idBf1 = '00000001-0000-4000-8000-000000000001'; // bf-1
+const _idBf2 = '00000002-0000-4000-8000-000000000002'; // bf-2
+const _idBp1 = '00000003-0000-4000-8000-000000000003'; // bp-1
+const _idH1 = '00000004-0000-4000-8000-000000000004'; // h-1
+const _idHInterval = '00000005-0000-4000-8000-000000000005'; // h-interval
+const _idHr1 = '00000006-0000-4000-8000-000000000006'; // hr-1
+const _idHr2 = '00000007-0000-4000-8000-000000000007'; // hr-2
+const _idHr3 = '00000008-0000-4000-8000-000000000008'; // hr-3
+const _idRhr1 = '00000009-0000-4000-8000-000000000009'; // rhr-1
+const _idS1 = '0000000a-0000-4000-8000-000000000010'; // s-1
+const _idS2 = '0000000b-0000-4000-8000-000000000011'; // s-2
+const _idS3 = '0000000c-0000-4000-8000-000000000012'; // s-3
+const _idW1 = '0000000d-0000-4000-8000-000000000013'; // w-1
+const _idWLb = '0000000e-0000-4000-8000-000000000014'; // w-lb
+
+// Category ids are UUIDs too, and dailyAggregateExternalId parses them as the
+// v5 namespace.
 const _catHrId = 'aaaaaaaa-0000-4000-8000-000000000001';
 const _catSleepId = 'bbbbbbbb-0000-4000-8000-000000000002';
 
@@ -118,7 +135,7 @@ void main() {
           type: HealthDataType.HEIGHT,
           value: 1.8,
           date: DateTime(2026, 1, 2),
-          externalId: 'h-1',
+          externalId: _idH1,
         ),
       ]);
 
@@ -172,7 +189,7 @@ void main() {
           type: HealthDataType.BODY_FAT_PERCENTAGE,
           value: 0.2,
           date: DateTime(2026, 1, 1),
-          externalId: 'bf-1',
+          externalId: _idBf1,
         ),
         HealthReading(
           type: HealthDataType.HEIGHT,
@@ -181,7 +198,7 @@ void main() {
           // rounded to exactly 180.3
           value: 1.803,
           date: DateTime(2026, 1, 2),
-          externalId: 'h-1',
+          externalId: _idH1,
         ),
         // A blood pressure reading is the systolic/diastolic pair sharing one
         // timestamp; Health Connect also shares the record uuid between them
@@ -189,13 +206,13 @@ void main() {
           type: HealthDataType.BLOOD_PRESSURE_SYSTOLIC,
           value: 120,
           date: DateTime(2026, 1, 3),
-          externalId: 'bp-1',
+          externalId: _idBp1,
         ),
         HealthReading(
           type: HealthDataType.BLOOD_PRESSURE_DIASTOLIC,
           value: 80,
           date: DateTime(2026, 1, 3),
-          externalId: 'bp-1',
+          externalId: _idBp1,
         ),
       ]);
 
@@ -227,7 +244,7 @@ void main() {
         measurements.addLocalDrift(captureAny),
       ).captured.cast<MeasurementEntry>();
 
-      final bodyFat = entries.firstWhere((e) => e.externalId == 'bf-1');
+      final bodyFat = entries.firstWhere((e) => e.externalId == _idBf1);
       expect(bodyFat.value, closeTo(20, 0.001)); // fraction -> percent
       expect(bodyFat.source, 'apple');
       // No unit key (category unit applies), but the conversion provenance
@@ -238,7 +255,7 @@ void main() {
         'source_value': 0.2,
       });
 
-      final height = entries.firstWhere((e) => e.externalId == 'h-1');
+      final height = entries.firstWhere((e) => e.externalId == _idH1);
       expect(height.value, 180.3); // meters -> cm, rounded to two decimals
 
       final systolicEntry = entries.firstWhere((e) => e.categoryId == systolic.id);
@@ -247,8 +264,8 @@ void main() {
       expect(diastolicEntry.value, 80);
       // The pair keeps its shared timestamp and record uuid
       expect(systolicEntry.date, diastolicEntry.date);
-      expect(systolicEntry.externalId, 'bp-1');
-      expect(diastolicEntry.externalId, 'bp-1');
+      expect(systolicEntry.externalId, _idBp1);
+      expect(diastolicEntry.externalId, _idBp1);
       expect(entries, hasLength(4));
 
       // The newest imported reading date becomes the next sync watermark
@@ -256,6 +273,94 @@ void main() {
         await PreferenceHelper.instance.getLastHealthSyncTimestamp(),
         DateTime(2026, 1, 3).toIso8601String(),
       );
+    });
+
+    test('folds a non-UUID platform id into a UUID and keeps the original', () async {
+      // Health Connect only documents Metadata.id as a String; a non-UUID would
+      // be rejected permanently by the server's UUIDField
+      when(measurements.getAllOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
+      stubReadings([
+        HealthReading(
+          type: HealthDataType.HEIGHT,
+          value: 1.8,
+          date: DateTime(2026, 1, 2),
+          externalId: 'not-a-uuid-42',
+        ),
+      ]);
+
+      await createNotifier().syncOnAppOpen();
+
+      final entry =
+          verify(measurements.addLocalDrift(captureAny)).captured.single as MeasurementEntry;
+      expect(entry.externalId, matches(RegExp(r'^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$')));
+      // The platform's own id survives for the later delete sync
+      expect(entry.extraData?['source_record_id'], 'not-a-uuid-42');
+    });
+
+    test('passes a valid platform UUID through untouched', () async {
+      when(measurements.getAllOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
+      stubReadings([
+        HealthReading(
+          type: HealthDataType.HEIGHT,
+          value: 1.8,
+          date: DateTime(2026, 1, 2),
+          externalId: '3f2504e0-4f89-41d3-9a0c-0305e82c3301',
+        ),
+      ]);
+
+      await createNotifier().syncOnAppOpen();
+
+      final entry =
+          verify(measurements.addLocalDrift(captureAny)).captured.single as MeasurementEntry;
+      expect(entry.externalId, '3f2504e0-4f89-41d3-9a0c-0305e82c3301');
+      expect(entry.extraData, isNot(contains('source_record_id')));
+    });
+
+    test('dedups folded ids on re-import', () async {
+      // The fold is deterministic, so the second sync recognises the entry
+      final existing = MeasurementCategory(
+        id: _catHrId,
+        name: 'Height',
+        unit: 'cm',
+        metricType: MetricType.height,
+      );
+      when(measurements.getAllOnce()).thenAnswer((_) async => [existing]);
+      stubReadings([
+        HealthReading(
+          type: HealthDataType.HEIGHT,
+          value: 1.8,
+          date: DateTime(2026, 1, 2),
+          externalId: 'not-a-uuid-42',
+        ),
+      ]);
+
+      await createNotifier().syncOnAppOpen();
+      final firstId =
+          (verify(measurements.addLocalDrift(captureAny)).captured.single as MeasurementEntry)
+              .externalId!;
+
+      // Same reading again, with the entry already stored under the folded id
+      when(measurements.getAllOnce()).thenAnswer(
+        (_) async => [
+          existing.copyWith(
+            entries: [
+              MeasurementEntry(
+                id: 'e1',
+                categoryId: _catHrId,
+                date: DateTime(2026, 1, 2),
+                value: 180,
+                notes: '',
+                externalId: firstId,
+              ),
+            ],
+          ),
+        ],
+      );
+
+      final count = await createNotifier().syncOnAppOpen();
+
+      expect(count, 0);
+      verifyNever(measurements.addLocalDrift(any));
     });
 
     test('skips readings already imported (dedup by externalId)', () async {
@@ -271,7 +376,7 @@ void main() {
             date: DateTime(2026, 1, 1),
             value: 20,
             notes: '',
-            externalId: 'bf-1',
+            externalId: _idBf1,
           ),
         ],
       );
@@ -281,13 +386,13 @@ void main() {
           type: HealthDataType.BODY_FAT_PERCENTAGE,
           value: 0.2,
           date: DateTime(2026, 1, 1),
-          externalId: 'bf-1', // already imported
+          externalId: _idBf1, // already imported
         ),
         HealthReading(
           type: HealthDataType.BODY_FAT_PERCENTAGE,
           value: 0.22,
           date: DateTime(2026, 1, 3),
-          externalId: 'bf-2', // new
+          externalId: _idBf2, // new
         ),
       ]);
 
@@ -298,7 +403,7 @@ void main() {
       final entries = verify(
         measurements.addLocalDrift(captureAny),
       ).captured.cast<MeasurementEntry>();
-      expect(entries.single.externalId, 'bf-2');
+      expect(entries.single.externalId, _idBf2);
     });
 
     test('imports weight only into the official body weight category', () async {
@@ -322,7 +427,7 @@ void main() {
           type: HealthDataType.WEIGHT,
           value: 80.5,
           date: DateTime(2026, 1, 1),
-          externalId: 'w-1',
+          externalId: _idW1,
         ),
       ]);
 
@@ -357,7 +462,7 @@ void main() {
           value: 177.0,
           unit: HealthDataUnit.POUND,
           date: DateTime(2026, 1, 1),
-          externalId: 'w-lb',
+          externalId: _idWLb,
           recordingMethod: RecordingMethod.manual,
           sourceName: 'Withings Body+',
         ),
@@ -386,19 +491,19 @@ void main() {
           type: HealthDataType.HEART_RATE,
           value: 60,
           date: DateTime(2026, 1, 1, 8),
-          externalId: 'hr-1',
+          externalId: _idHr1,
         ),
         HealthReading(
           type: HealthDataType.HEART_RATE,
           value: 71,
           date: DateTime(2026, 1, 1, 20),
-          externalId: 'hr-2',
+          externalId: _idHr2,
         ),
         HealthReading(
           type: HealthDataType.HEART_RATE,
           value: 64,
           date: DateTime(2026, 1, 2, 9),
-          externalId: 'hr-3',
+          externalId: _idHr3,
         ),
       ]);
 
@@ -448,13 +553,13 @@ void main() {
           type: HealthDataType.HEART_RATE,
           value: 70,
           date: DateTime(2026, 1, 1, 8),
-          externalId: 'hr-1',
+          externalId: _idHr1,
         ),
         HealthReading(
           type: HealthDataType.RESTING_HEART_RATE,
           value: 52,
           date: DateTime(2026, 1, 1, 4),
-          externalId: 'rhr-1',
+          externalId: _idRhr1,
         ),
       ]);
 
@@ -473,7 +578,7 @@ void main() {
       final restingEntry = entries.firstWhere((e) => e.categoryId == resting.id);
       // Raw import: the platform record uuid and timestamp are kept as-is,
       // no day- key and no aggregate extra_data
-      expect(restingEntry.externalId, 'rhr-1');
+      expect(restingEntry.externalId, _idRhr1);
       expect(restingEntry.date, DateTime(2026, 1, 1, 4));
       expect(restingEntry.value, 52);
       expect(restingEntry.extraData, isNot(contains('sample_count')));
@@ -489,14 +594,14 @@ void main() {
           value: 90,
           date: DateTime(2026, 1, 1, 22, 30),
           dateTo: DateTime(2026, 1, 2, 0, 0),
-          externalId: 's-1',
+          externalId: _idS1,
         ),
         HealthReading(
           type: HealthDataType.SLEEP_ASLEEP,
           value: 360,
           date: DateTime(2026, 1, 2, 0, 0),
           dateTo: DateTime(2026, 1, 2, 6, 0),
-          externalId: 's-2',
+          externalId: _idS2,
         ),
         // A nap in the afternoon lands on its own calendar day
         HealthReading(
@@ -504,7 +609,7 @@ void main() {
           value: 30,
           date: DateTime(2026, 1, 2, 14, 0),
           dateTo: DateTime(2026, 1, 2, 14, 30),
-          externalId: 's-3',
+          externalId: _idS3,
         ),
       ]);
 
@@ -541,13 +646,13 @@ void main() {
           type: HealthDataType.SLEEP_ASLEEP,
           value: 20,
           date: DateTime(2026, 1, 1, 17, 59),
-          externalId: 's-1',
+          externalId: _idS1,
         ),
         HealthReading(
           type: HealthDataType.SLEEP_ASLEEP,
           value: 400,
           date: DateTime(2026, 1, 1, 18, 0),
-          externalId: 's-2',
+          externalId: _idS2,
         ),
       ]);
 
@@ -597,14 +702,14 @@ void main() {
           type: HealthDataType.HEART_RATE,
           value: 60,
           date: DateTime(2026, 1, 1, 8),
-          externalId: 'hr-1',
+          externalId: _idHr1,
         ),
         // A sample that arrived after the previous sync
         HealthReading(
           type: HealthDataType.HEART_RATE,
           value: 70,
           date: DateTime(2026, 1, 1, 20),
-          externalId: 'hr-2',
+          externalId: _idHr2,
         ),
       ]);
 
@@ -653,7 +758,7 @@ void main() {
           type: HealthDataType.HEART_RATE,
           value: 60,
           date: DateTime(2026, 1, 1, 8),
-          externalId: 'hr-1',
+          externalId: _idHr1,
         ),
       ]);
 
@@ -689,13 +794,13 @@ void main() {
           type: HealthDataType.BLOOD_PRESSURE_SYSTOLIC,
           value: 120,
           date: DateTime(2026, 1, 3),
-          externalId: 'bp-1',
+          externalId: _idBp1,
         ),
         HealthReading(
           type: HealthDataType.BLOOD_PRESSURE_DIASTOLIC,
           value: 80,
           date: DateTime(2026, 1, 3),
-          externalId: 'bp-1',
+          externalId: _idBp1,
         ),
       ]);
 
@@ -736,7 +841,7 @@ void main() {
           type: HealthDataType.BLOOD_PRESSURE_SYSTOLIC,
           value: 120,
           date: DateTime(2026, 1, 3),
-          externalId: 'bp-1',
+          externalId: _idBp1,
         ),
       ]);
 
@@ -761,7 +866,7 @@ void main() {
           value: 180,
           date: DateTime.utc(2026, 1, 1, 8),
           dateTo: DateTime.utc(2026, 1, 1, 9),
-          externalId: 'h-interval',
+          externalId: _idHInterval,
         ),
       ]);
 
@@ -780,7 +885,7 @@ void main() {
           type: HealthDataType.WEIGHT,
           value: 80.5,
           date: DateTime(2026, 1, 1),
-          externalId: 'w-1',
+          externalId: _idW1,
         ),
       ]);
 
@@ -805,13 +910,13 @@ void main() {
           type: HealthDataType.WEIGHT,
           value: 80.5,
           date: DateTime(2026, 1, 1),
-          externalId: 'w-1',
+          externalId: _idW1,
         ),
         HealthReading(
           type: HealthDataType.HEIGHT,
           value: 1.8,
           date: DateTime(2026, 1, 2),
-          externalId: 'h-1',
+          externalId: _idH1,
         ),
       ]);
 
