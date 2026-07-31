@@ -43,14 +43,11 @@ class CategoriesCard extends StatelessWidget {
 
     // sensibleRange() operates on raw (pre-aggregation) entries
     final (entriesAll, entries7dAvg) = sensibleRange(
-      currentCategory.entries
-          .map(
-            (e) => MeasurementChartEntry(
-              e.valueIn(currentCategory.unit, categoryUnit: currentCategory.unit),
-              e.date,
-            ),
-          )
-          .toList(),
+      chartEntriesFor(
+        currentCategory.entries,
+        targetUnit: currentCategory.unit,
+        categoryUnit: currentCategory.unit,
+      ),
     );
 
     return Card(

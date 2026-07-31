@@ -72,14 +72,11 @@ class _WeightOverviewState extends riverpod.ConsumerState<WeightOverview> {
         // Entries can be stored in mixed units (kg/lb); normalize everything
         // to the profile's display unit before charting or averaging
         final displayUnit = weightDisplayUnit(profile.isMetric);
-        final entriesAll = entriesList
-            .map(
-              (e) => MeasurementChartEntry(
-                e.valueIn(displayUnit, categoryUnit: category.unit),
-                e.date,
-              ),
-            )
-            .toList();
+        final entriesAll = chartEntriesFor(
+          entriesList,
+          targetUnit: displayUnit,
+          categoryUnit: category.unit,
+        );
         final entries7dAvg = moving7dAverage(entriesAll);
 
         // Restrict the data to the selected range. The average is computed over

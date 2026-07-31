@@ -102,4 +102,47 @@ void main() {
       expect(find.byIcon(Icons.add), findsOneWidget);
     });
   });
+
+  group('CategoriesCard daily aggregates', () {
+    /// A heart rate category as the importer stores it: one entry per day
+    /// holding the day's average, with the range it summarises in extra_data.
+    MeasurementCategory heartRate({bool withRange = true}) => MeasurementCategory(
+      id: 'hr',
+      name: 'Heart rate',
+      unit: 'bpm',
+      metricType: MetricType.heartRate,
+      entries: [
+        for (var day = 1; day <= 3; day++)
+          MeasurementEntry(
+            id: 'e$day',
+            categoryId: 'hr',
+            date: DateTime(2026, 1, day),
+            value: 60 + day,
+            notes: '',
+            source: 'apple',
+            extraData: withRange ? {'min': 50 + day, 'max': 90 + day} : const {},
+          ),
+      ],
+    );
+
+    testWidgets('draws the summarised range as a band around the line', (tester) async {
+      await tester.pumpWidget(_wrap(CategoriesCard(heartRate())));
+      await tester.pumpAndSettle();
+
+      final data = tester.widget<LineChart>(find.byType(LineChart)).data;
+      expect(data.betweenBarsData, hasLength(1));
+      // the bounds come from extra_data, the line they wrap from the values
+      final bounds = data.betweenBarsData.single;
+      expect(data.lineBarsData[bounds.fromIndex].spots.map((s) => s.y), [51, 52, 53]);
+      expect(data.lineBarsData[bounds.toIndex].spots.map((s) => s.y), [91, 92, 93]);
+      expect(data.lineBarsData[bounds.toIndex + 1].spots.map((s) => s.y), [61, 62, 63]);
+    });
+
+    testWidgets('plain entries get no band', (tester) async {
+      await tester.pumpWidget(_wrap(CategoriesCard(heartRate(withRange: false))));
+      await tester.pumpAndSettle();
+
+      expect(tester.widget<LineChart>(find.byType(LineChart)).data.betweenBarsData, isEmpty);
+    });
+  });
 }

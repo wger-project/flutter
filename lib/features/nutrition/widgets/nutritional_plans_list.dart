@@ -26,6 +26,7 @@ import 'package:wger/features/account/providers/user_profile_notifier.dart';
 import 'package:wger/features/measurements/measurements.dart';
 import 'package:wger/features/measurements/models/unit_conversion.dart';
 import 'package:wger/features/measurements/widgets/charts.dart';
+import 'package:wger/features/measurements/widgets/helpers.dart';
 import 'package:wger/features/nutrition/providers/nutrition_notifier.dart';
 import 'package:wger/features/nutrition/screens/nutritional_plan_screen.dart';
 import 'package:wger/features/weight/providers/body_weight_provider.dart';
@@ -51,11 +52,11 @@ class NutritionalPlansList extends riverpod.ConsumerWidget {
 
     // Normalize mixed-unit entries to the display unit before averaging
     final displayUnit = weightDisplayUnit(profile.isMetric);
-    final entriesAll = category.entries
-        .map(
-          (e) => MeasurementChartEntry(e.valueIn(displayUnit, categoryUnit: category.unit), e.date),
-        )
-        .toList();
+    final entriesAll = chartEntriesFor(
+      category.entries,
+      targetUnit: displayUnit,
+      categoryUnit: category.unit,
+    );
     final entries7dAvg = moving7dAverage(entriesAll).whereDateWithInterpolation(startDate, endDate);
     if (entries7dAvg.length < 2) {
       return const SizedBox.shrink();

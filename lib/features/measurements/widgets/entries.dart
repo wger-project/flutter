@@ -44,14 +44,11 @@ class EntriesList extends ConsumerWidget {
 
     // Values are read through the unit helper; for plain categories without
     // per-entry units this is a pass-through to the category unit
-    final entriesAll = _category.entries
-        .map(
-          (e) => MeasurementChartEntry(
-            e.valueIn(_category.unit, categoryUnit: _category.unit),
-            e.date,
-          ),
-        )
-        .toList();
+    final entriesAll = chartEntriesFor(
+      _category.entries,
+      targetUnit: _category.unit,
+      categoryUnit: _category.unit,
+    );
     final entries7dAvg = moving7dAverage(entriesAll);
 
     final datetimeFormat = localizedDate(context);

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wger/features/measurements/measurements.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
+import 'package:wger/features/measurements/models/measurement_entry.dart';
 import 'package:wger/features/measurements/models/unit_conversion.dart';
 import 'package:wger/features/measurements/widgets/charts.dart';
 import 'package:wger/features/nutrition/models/nutritional_plan.dart';
@@ -139,17 +140,35 @@ DateTime? sensibleRangeStart(List<MeasurementChartEntry> entriesAll) {
   return (entriesAll.whereDate(start, null), entries7dAvg.whereDate(start, null));
 }
 
+/// Turns stored entries into chart points, converting the value to [targetUnit].
+///
+/// Entries stored as a daily aggregate keep the range they summarise in
+/// `extra_data` (heart rate min/max); it is lifted onto the point so the chart
+/// draws a band around the line. Those bounds are written in the category unit
+/// alongside the value, and aggregates never carry a per-entry unit.
+List<MeasurementChartEntry> chartEntriesFor(
+  List<MeasurementEntry> entries, {
+  required String targetUnit,
+  required String categoryUnit,
+}) => entries
+    .map(
+      (e) => MeasurementChartEntry(
+        e.valueIn(targetUnit, categoryUnit: categoryUnit),
+        e.date,
+        min: e.extraData?['min'] as num?,
+        max: e.extraData?['max'] as num?,
+      ),
+    )
+    .toList();
+
 /// One line per component of a multi-value group, in the children's in-group
 /// order and named after them.
 ///
 /// All components share the same range, so their lines cover the same span
 /// even when one of them has fewer readings.
 List<MeasurementChartSeries> groupComponentSeries(MeasurementCategory group) {
-  List<MeasurementChartEntry> pointsOf(MeasurementCategory child) => child.entries
-      .map(
-        (e) => MeasurementChartEntry(e.valueIn(child.unit, categoryUnit: child.unit), e.date),
-      )
-      .toList();
+  List<MeasurementChartEntry> pointsOf(MeasurementCategory child) =>
+      chartEntriesFor(child.entries, targetUnit: child.unit, categoryUnit: child.unit);
 
   final start = sensibleRangeStart(group.children.expand(pointsOf).toList());
   return group.children
