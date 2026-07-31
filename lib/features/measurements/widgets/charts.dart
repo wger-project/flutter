@@ -83,6 +83,14 @@ class MeasurementChartWidgetFl extends StatefulWidget {
   State<MeasurementChartWidgetFl> createState() => _MeasurementChartWidgetFlState();
 }
 
+/// Colour of the [index]-th [MeasurementSeriesRole.component] line. Shared
+/// with the legend so a component's colour matches its line.
+Color componentColor(BuildContext context, int index) {
+  final scheme = Theme.of(context).colorScheme;
+  final colors = [scheme.primary, scheme.tertiary, scheme.secondary, scheme.error];
+  return colors[index % colors.length];
+}
+
 /// A series resolved into what fl_chart needs: the line itself plus, for range
 /// series, the two invisible bounds the band is painted between.
 class _ResolvedSeries {
@@ -104,14 +112,6 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
       ),
     );
   }
-
-  /// Colours for [MeasurementSeriesRole.component], by position in the group.
-  List<Color> get _componentColors => [
-    Theme.of(context).colorScheme.primary,
-    Theme.of(context).colorScheme.tertiary,
-    Theme.of(context).colorScheme.secondary,
-    Theme.of(context).colorScheme.error,
-  ];
 
   List<FlSpot> _spots(
     List<MeasurementChartEntry> entries, [
@@ -165,7 +165,7 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
           line = LineChartBarData(
             spots: spots,
             isCurved: false,
-            color: _componentColors[componentIndex++ % _componentColors.length],
+            color: componentColor(context, componentIndex++),
             barWidth: 2,
             isStrokeCapRound: true,
             dotData: const FlDotData(show: true),

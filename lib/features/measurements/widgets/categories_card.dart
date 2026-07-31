@@ -130,10 +130,12 @@ class CategoriesCard extends StatelessWidget {
     );
   }
 
-  /// Card for a multi-value group (e.g. blood pressure): one row per
-  /// component with its latest reading; new readings are entered for all
-  /// components at once.
+  /// Card for a multi-value group (e.g. blood pressure): all components in one
+  /// chart, then one row per component with its latest reading; new readings
+  /// are entered for all components at once.
   Widget _buildGroupCard(BuildContext context) {
+    final series = groupComponentSeries(currentCategory);
+
     return Card(
       elevation: elevation,
       child: Column(
@@ -149,11 +151,26 @@ class CategoriesCard extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          ...currentCategory.children.map((child) {
+          if (series.any((s) => s.entries.isNotEmpty))
+            Container(
+              padding: const EdgeInsets.all(10),
+              height: 220,
+              child: MeasurementChartWidgetFl(series, currentCategory.unit),
+            ),
+          ...currentCategory.children.mapIndexed((index, child) {
             // Entries arrive sorted by date descending, so first is the latest
             final latest = child.entries.firstOrNull;
             return ListTile(
               dense: true,
+              // The dot ties the row to its line in the chart above
+              leading: Container(
+                width: 12,
+                height: 12,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: componentColor(context, index),
+                ),
+              ),
               title: Text(child.name),
               trailing: Text(
                 latest != null

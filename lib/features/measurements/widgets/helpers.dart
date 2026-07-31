@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wger/features/measurements/measurements.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
+import 'package:wger/features/measurements/models/unit_conversion.dart';
 import 'package:wger/features/measurements/widgets/charts.dart';
 import 'package:wger/features/nutrition/models/nutritional_plan.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -107,31 +108,59 @@ List<Widget> getOverviewWidgetsSeries(
   ];
 }
 
-// return the raw and average measurements for a "sensible range"
-// a sensible range is something relatively recent, which is most relevant
-// for the user to track their progress, but a range should always include
-// at least 5 points, and if not we chose a bigger one.
-// we return a range of the last 2 months, 4 months, or the full history
-(List<MeasurementChartEntry>, List<MeasurementChartEntry>) sensibleRange(
-  List<MeasurementChartEntry> entriesAll,
-) {
-  final entries7dAvg = moving7dAverage(entriesAll);
+// the start of a "sensible range": something relatively recent, which is most
+// relevant for the user to track their progress, but a range should always
+// include at least 5 points, and if not we chose a bigger one.
+// we return the start of the last 2 months, 4 months, or null for the full history
+DateTime? sensibleRangeStart(List<MeasurementChartEntry> entriesAll) {
   final twoMonthsAgo = DateTime.now().subtract(const Duration(days: 61));
   final fourMonthsAgo = DateTime.now().subtract(const Duration(days: 122));
 
   if (entriesAll.whereDate(twoMonthsAgo, null).length > 4) {
-    return (
-      entriesAll.whereDate(twoMonthsAgo, null),
-      entries7dAvg.whereDate(twoMonthsAgo, null),
-    );
+    return twoMonthsAgo;
   }
   if (entriesAll.whereDate(fourMonthsAgo, null).length > 4) {
-    return (
-      entriesAll.whereDate(fourMonthsAgo, null),
-      entries7dAvg.whereDate(fourMonthsAgo, null),
-    );
+    return fourMonthsAgo;
   }
-  return (entriesAll, entries7dAvg);
+  return null;
+}
+
+// return the raw and average measurements for a "sensible range", see
+// sensibleRangeStart
+(List<MeasurementChartEntry>, List<MeasurementChartEntry>) sensibleRange(
+  List<MeasurementChartEntry> entriesAll,
+) {
+  final entries7dAvg = moving7dAverage(entriesAll);
+  final start = sensibleRangeStart(entriesAll);
+
+  if (start == null) {
+    return (entriesAll, entries7dAvg);
+  }
+  return (entriesAll.whereDate(start, null), entries7dAvg.whereDate(start, null));
+}
+
+/// One line per component of a multi-value group, in the children's in-group
+/// order and named after them.
+///
+/// All components share the same range, so their lines cover the same span
+/// even when one of them has fewer readings.
+List<MeasurementChartSeries> groupComponentSeries(MeasurementCategory group) {
+  List<MeasurementChartEntry> pointsOf(MeasurementCategory child) => child.entries
+      .map(
+        (e) => MeasurementChartEntry(e.valueIn(child.unit, categoryUnit: child.unit), e.date),
+      )
+      .toList();
+
+  final start = sensibleRangeStart(group.children.expand(pointsOf).toList());
+  return group.children
+      .map(
+        (child) => MeasurementChartSeries(
+          start == null ? pointsOf(child) : pointsOf(child).whereDate(start, null),
+          MeasurementSeriesRole.component,
+          label: child.name,
+        ),
+      )
+      .toList();
 }
 
 Widget buildChartForMetricType(

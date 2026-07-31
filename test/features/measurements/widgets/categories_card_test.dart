@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
@@ -57,6 +58,41 @@ void main() {
 
       // Text('—') should appear for both children
       expect(find.text('—'), findsNWidgets(2));
+    });
+
+    testWidgets('charts all components as one line each', (tester) async {
+      await tester.pumpWidget(_wrap(CategoriesCard(_bpGroup(withEntries: true))));
+      await tester.pumpAndSettle();
+
+      final data = tester.widget<LineChart>(find.byType(LineChart)).data;
+      expect(data.lineBarsData, hasLength(2));
+      // systolic and diastolic must be told apart at a glance
+      expect(data.lineBarsData.first.color, isNot(data.lineBarsData.last.color));
+    });
+
+    testWidgets('each component row carries the colour of its line', (tester) async {
+      await tester.pumpWidget(_wrap(CategoriesCard(_bpGroup(withEntries: true))));
+      await tester.pumpAndSettle();
+
+      final lineColors = tester
+          .widget<LineChart>(find.byType(LineChart))
+          .data
+          .lineBarsData
+          .map((b) => b.color)
+          .toList();
+      final dotColors = tester
+          .widgetList<ListTile>(find.byType(ListTile))
+          .map((t) => ((t.leading! as Container).decoration! as BoxDecoration).color)
+          .toList();
+
+      expect(dotColors, lineColors);
+    });
+
+    testWidgets('renders no chart while no component has readings', (tester) async {
+      await tester.pumpWidget(_wrap(CategoriesCard(_bpGroup(withEntries: false))));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(LineChart), findsNothing);
     });
 
     testWidgets('add icon button is present on group card', (tester) async {
