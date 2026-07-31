@@ -1576,6 +1576,37 @@
   "@healthSyncPermissionDenied": {
     "description": "Snackbar shown when enabling health sync fails because the platform permissions were denied"
   },
+  "healthSyncNoData": "No health data was found. Check in {platform} that wger is allowed to read your data.",
+  "@healthSyncNoData": {
+    "description": "Snackbar shown when enabling health sync imported nothing, pointing at the platform's permission settings",
+    "placeholders": {
+      "platform": {
+        "type": "String",
+        "example": "Apple Health"
+      }
+    }
+  },
+  "healthSyncStatus": "{count, plural, =0{Last sync: {time}, no new entries} one{Last sync: {time}, 1 new entry} other{Last sync: {time}, {count} new entries}}",
+  "@healthSyncStatus": {
+    "description": "Status line under the health sync toggle showing when the last sync ran and how many entries it imported",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "time": {
+        "type": "String",
+        "example": "7/31/2026 14:32"
+      }
+    }
+  },
+  "healthSyncSyncing": "Syncing health data…",
+  "@healthSyncSyncing": {
+    "description": "Status line under the health sync toggle while a sync is running"
+  },
+  "healthSyncNow": "Sync now",
+  "@healthSyncNow": {
+    "description": "Label of the manual health sync action in the settings"
+  },
   "health": "Health",
   "@health": {
     "description": "Section header for health-related settings"

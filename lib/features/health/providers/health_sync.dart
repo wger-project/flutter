@@ -17,6 +17,7 @@
  */
 
 import 'package:collection/collection.dart';
+import 'package:flutter/widgets.dart' show AppLifecycleListener;
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:health_bridge/health.dart';
 import 'package:logging/logging.dart';
@@ -54,6 +55,10 @@ sealed class HealthSyncState with _$HealthSyncState {
     @Default(false) bool isEnabled,
     @Default(false) bool isSyncing,
     @Default(0) int lastSyncCount,
+
+    /// When the last successful sync finished; null until one succeeded in
+    /// this session.
+    DateTime? lastSyncTime,
   }) = _HealthSyncState;
 }
 
@@ -67,6 +72,9 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
   /// How far the read window reaches back before the last-sync watermark, to
   /// pick up records that arrived late with a past date.
   static const _syncOverlap = Duration(days: 30);
+
+  /// Minimum pause between the automatic re-syncs on app resume.
+  static const _resumeThrottle = Duration(minutes: 15);
 
   final _logger = Logger('HealthSyncNotifier');
   late final HealthRepository _health;
@@ -84,6 +92,20 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
     _health = ref.read(healthRepositoryProvider);
     _measurements = ref.read(measurementRepositoryProvider);
     _loadPersistedState();
+
+    // New readings often exist exactly when the app comes back from the
+    // background (the user just weighed in, granted permissions, ...), so
+    // resume triggers a sync as well, throttled to stay unobtrusive
+    final lifecycleListener = AppLifecycleListener(
+      onResume: () {
+        final last = state.lastSyncTime;
+        if (last == null || DateTime.now().difference(last) >= _resumeThrottle) {
+          sync();
+        }
+      },
+    );
+    ref.onDispose(lifecycleListener.dispose);
+
     return const HealthSyncState();
   }
 
@@ -107,7 +129,7 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
     }
     await PreferenceHelper.instance.setHealthSyncEnabled(true);
     state = state.copyWith(isEnabled: true);
-    return syncOnAppOpen();
+    return sync();
   }
 
   /// Clears the preference and disables importing.
@@ -119,8 +141,9 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
 
   /// Reads the enabled metrics from the health platform and writes any new
   /// readings to the matching measurement categories. Returns the number of
-  /// imported entries. A no-op unless the user enabled sync.
-  Future<int> syncOnAppOpen() async {
+  /// imported entries. A no-op unless the user enabled sync. Triggered on app
+  /// open, on app resume, and manually from the settings.
+  Future<int> sync() async {
     final prefs = PreferenceHelper.instance;
     if (!await prefs.getHealthSyncEnabled()) {
       return 0;
@@ -151,7 +174,7 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
       final readings = await _health.read(types: _types, start: startTime, end: endTime);
       if (readings.isEmpty) {
         _logger.info('No new health data');
-        state = state.copyWith(isSyncing: false, lastSyncCount: 0);
+        state = state.copyWith(isSyncing: false, lastSyncCount: 0, lastSyncTime: DateTime.now());
         return 0;
       }
 
@@ -215,7 +238,7 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
         );
       }
       _logger.info('Imported $synced health measurements');
-      state = state.copyWith(isSyncing: false, lastSyncCount: synced);
+      state = state.copyWith(isSyncing: false, lastSyncCount: synced, lastSyncTime: DateTime.now());
       return synced;
     } catch (e) {
       _logger.warning('Health sync failed: $e');

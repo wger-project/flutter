@@ -57,6 +57,10 @@ const _catSleepId = 'bbbbbbbb-0000-4000-8000-000000000002';
 
 @GenerateMocks([HealthRepository, MeasurementRepository])
 void main() {
+  // The notifier registers an AppLifecycleListener for the resume re-sync,
+  // which needs a live widgets binding even in plain tests
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   late MockHealthRepository health;
   late MockMeasurementRepository measurements;
 
@@ -181,7 +185,18 @@ void main() {
     });
   });
 
-  group('syncOnAppOpen', () {
+  group('sync', () {
+    test('stamps lastSyncTime after a successful run, even an empty one', () async {
+      stubReadings([]);
+      final notifier = createNotifier();
+
+      expect(container.read(healthSyncProvider).lastSyncTime, isNull);
+      await notifier.sync();
+
+      expect(container.read(healthSyncProvider).lastSyncTime, isNotNull);
+      expect(container.read(healthSyncProvider).isSyncing, isFalse);
+    });
+
     test('imports enabled metrics into new categories with converted values', () async {
       when(measurements.getAllOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
       stubReadings([
@@ -216,7 +231,7 @@ void main() {
         ),
       ]);
 
-      final count = await createNotifier().syncOnAppOpen();
+      final count = await createNotifier().sync();
       expect(count, 4);
 
       final createdCategories = verify(
@@ -288,7 +303,7 @@ void main() {
         ),
       ]);
 
-      await createNotifier().syncOnAppOpen();
+      await createNotifier().sync();
 
       final entry =
           verify(measurements.addLocalDrift(captureAny)).captured.single as MeasurementEntry;
@@ -308,7 +323,7 @@ void main() {
         ),
       ]);
 
-      await createNotifier().syncOnAppOpen();
+      await createNotifier().sync();
 
       final entry =
           verify(measurements.addLocalDrift(captureAny)).captured.single as MeasurementEntry;
@@ -334,7 +349,7 @@ void main() {
         ),
       ]);
 
-      await createNotifier().syncOnAppOpen();
+      await createNotifier().sync();
       final firstId =
           (verify(measurements.addLocalDrift(captureAny)).captured.single as MeasurementEntry)
               .externalId!;
@@ -357,7 +372,7 @@ void main() {
         ],
       );
 
-      final count = await createNotifier().syncOnAppOpen();
+      final count = await createNotifier().sync();
 
       expect(count, 0);
       verifyNever(measurements.addLocalDrift(any));
@@ -396,7 +411,7 @@ void main() {
         ),
       ]);
 
-      final count = await createNotifier().syncOnAppOpen();
+      final count = await createNotifier().sync();
       expect(count, 1);
       verifyNever(measurements.addLocalDriftCategory(any));
 
@@ -431,7 +446,7 @@ void main() {
         ),
       ]);
 
-      final count = await createNotifier().syncOnAppOpen();
+      final count = await createNotifier().sync();
       expect(count, 1);
       verifyNever(measurements.addLocalDriftCategory(any));
 
@@ -468,7 +483,7 @@ void main() {
         ),
       ]);
 
-      await createNotifier().syncOnAppOpen();
+      await createNotifier().sync();
 
       final entry =
           verify(measurements.addLocalDrift(captureAny)).captured.single as MeasurementEntry;
@@ -507,7 +522,7 @@ void main() {
         ),
       ]);
 
-      final count = await createNotifier().syncOnAppOpen();
+      final count = await createNotifier().sync();
 
       // Three samples become two daily entries
       expect(count, 2);
@@ -563,7 +578,7 @@ void main() {
         ),
       ]);
 
-      await createNotifier().syncOnAppOpen();
+      await createNotifier().sync();
 
       final categories = verify(
         measurements.addLocalDriftCategory(captureAny),
@@ -613,7 +628,7 @@ void main() {
         ),
       ]);
 
-      final count = await createNotifier().syncOnAppOpen();
+      final count = await createNotifier().sync();
 
       // All three segments belong to 2026-01-02
       expect(count, 1);
@@ -656,7 +671,7 @@ void main() {
         ),
       ]);
 
-      final count = await createNotifier().syncOnAppOpen();
+      final count = await createNotifier().sync();
 
       expect(count, 2);
       final entries = verify(
@@ -713,7 +728,7 @@ void main() {
         ),
       ]);
 
-      final count = await createNotifier().syncOnAppOpen();
+      final count = await createNotifier().sync();
 
       expect(count, 1);
       verifyNever(measurements.addLocalDrift(any));
@@ -764,7 +779,7 @@ void main() {
 
       // Re-reading the same samples within the overlap window must not queue
       // a pointless sync upload
-      final count = await createNotifier().syncOnAppOpen();
+      final count = await createNotifier().sync();
 
       expect(count, 0);
       verifyNever(measurements.addLocalDrift(any));
@@ -804,7 +819,7 @@ void main() {
         ),
       ]);
 
-      final count = await createNotifier().syncOnAppOpen();
+      final count = await createNotifier().sync();
       expect(count, 2);
       verifyNever(measurements.addLocalDriftCategory(any));
 
@@ -845,7 +860,7 @@ void main() {
         ),
       ]);
 
-      final count = await createNotifier().syncOnAppOpen();
+      final count = await createNotifier().sync();
 
       // Nothing is written and the watermark holds, so the readings are
       // retried once the conflict is resolved
@@ -870,7 +885,7 @@ void main() {
         ),
       ]);
 
-      await createNotifier().syncOnAppOpen();
+      await createNotifier().sync();
 
       final entry =
           verify(measurements.addLocalDrift(captureAny)).captured.single as MeasurementEntry;
@@ -889,7 +904,7 @@ void main() {
         ),
       ]);
 
-      final count = await createNotifier().syncOnAppOpen();
+      final count = await createNotifier().sync();
 
       // Never creates the official category; the reading stays unimported (no
       // watermark advance) and is retried on the next sync
@@ -920,7 +935,7 @@ void main() {
         ),
       ]);
 
-      final count = await createNotifier().syncOnAppOpen();
+      final count = await createNotifier().sync();
 
       // Height imports, but the watermark must not advance past the weight
       // readings: they would leave the overlap window before the official
@@ -937,7 +952,7 @@ void main() {
       when(measurements.getAllOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
       stubReadings([]);
 
-      await createNotifier().syncOnAppOpen();
+      await createNotifier().sync();
 
       final start =
           verify(
@@ -956,7 +971,7 @@ void main() {
     test('does nothing when sync is disabled', () async {
       await PreferenceHelper.instance.setHealthSyncEnabled(false);
 
-      final count = await createNotifier().syncOnAppOpen();
+      final count = await createNotifier().sync();
       expect(count, 0);
       verifyNever(
         health.read(

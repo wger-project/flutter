@@ -23,28 +23,41 @@ import 'package:wger/features/account/widgets/settings/health_sync.dart';
 import 'package:wger/features/health/providers/health_sync.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
-/// Reports the platform as available and returns a canned result from
-/// [enableSync] without touching the real health/preferences stack.
+/// Reports the platform as available and returns canned results without
+/// touching the real health/preferences stack.
 class _FakeHealthSyncNotifier extends HealthSyncNotifier {
   final int? enableSyncResult;
+  final HealthSyncState initialState;
+  int syncCalls = 0;
 
-  _FakeHealthSyncNotifier(this.enableSyncResult);
+  _FakeHealthSyncNotifier(this.enableSyncResult, {this.initialState = const HealthSyncState()});
 
   @override
-  HealthSyncState build() => const HealthSyncState();
+  HealthSyncState build() => initialState;
 
   @override
   Future<bool> isAvailable() async => true;
 
   @override
-  Future<int?> enableSync() async => enableSyncResult;
+  Future<int?> enableSync() async {
+    if (enableSyncResult != null) {
+      state = state.copyWith(isEnabled: true);
+    }
+    return enableSyncResult;
+  }
+
+  @override
+  Future<int> sync() async {
+    syncCalls++;
+    return 0;
+  }
 }
 
 void main() {
-  Widget createTile(int? enableSyncResult) {
+  Widget createTile(_FakeHealthSyncNotifier fake) {
     return ProviderScope(
       overrides: [
-        healthSyncProvider.overrideWith(() => _FakeHealthSyncNotifier(enableSyncResult)),
+        healthSyncProvider.overrideWith(() => fake),
       ],
       child: const MaterialApp(
         localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -55,7 +68,7 @@ void main() {
   }
 
   testWidgets('shows a snackbar when the permissions are denied', (tester) async {
-    await tester.pumpWidget(createTile(null));
+    await tester.pumpWidget(createTile(_FakeHealthSyncNotifier(null)));
     await tester.pumpAndSettle();
 
     await tester.tap(find.byType(SwitchListTile));
@@ -65,7 +78,7 @@ void main() {
   });
 
   testWidgets('shows the import count after a successful sync', (tester) async {
-    await tester.pumpWidget(createTile(5));
+    await tester.pumpWidget(createTile(_FakeHealthSyncNotifier(5)));
     await tester.pumpAndSettle();
 
     await tester.tap(find.byType(SwitchListTile));
@@ -74,13 +87,57 @@ void main() {
     expect(find.text('Imported 5 measurements from Health'), findsOneWidget);
   });
 
-  testWidgets('shows no snackbar when nothing was imported', (tester) async {
-    await tester.pumpWidget(createTile(0));
+  testWidgets('points at the platform settings when nothing was imported', (tester) async {
+    // An empty first import is what a declined read permission looks like,
+    // iOS never reports the denial itself
+    await tester.pumpWidget(createTile(_FakeHealthSyncNotifier(0)));
     await tester.pumpAndSettle();
 
     await tester.tap(find.byType(SwitchListTile));
     await tester.pumpAndSettle();
 
-    expect(find.byType(SnackBar), findsNothing);
+    expect(
+      find.text(
+        'No health data was found. Check in Health Connect that wger is allowed to read your data.',
+      ),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('status line shows the last sync and starts a manual one', (tester) async {
+    final fake = _FakeHealthSyncNotifier(
+      null,
+      initialState: HealthSyncState(
+        isEnabled: true,
+        lastSyncCount: 3,
+        lastSyncTime: DateTime(2026, 7, 31, 14, 32),
+      ),
+    );
+    await tester.pumpWidget(createTile(fake));
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('3 new entries'), findsOneWidget);
+    expect(find.text('Sync now'), findsOneWidget);
+
+    await tester.tap(find.byIcon(Icons.sync));
+    await tester.pumpAndSettle();
+
+    expect(fake.syncCalls, 1);
+  });
+
+  testWidgets('shows a spinner and blocks interaction while syncing', (tester) async {
+    await tester.pumpWidget(
+      createTile(
+        _FakeHealthSyncNotifier(
+          null,
+          initialState: const HealthSyncState(isEnabled: true, isSyncing: true),
+        ),
+      ),
+    );
+    await tester.pump();
+
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    expect(find.text('Syncing health data…'), findsOneWidget);
+    expect(tester.widget<SwitchListTile>(find.byType(SwitchListTile)).onChanged, isNull);
   });
 }

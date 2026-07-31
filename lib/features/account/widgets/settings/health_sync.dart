@@ -16,8 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:flutter/foundation.dart' show TargetPlatform, defaultTargetPlatform;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/features/health/providers/health_sync.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
@@ -86,13 +88,65 @@ class _HealthSyncSettingsTileState extends ConsumerState<HealthSyncSettingsTile>
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text(i18n.healthSyncSuccess(count))),
                       );
+                    } else {
+                      // An empty initial import usually means the platform has
+                      // no data to give: either there is none, or the read
+                      // access was declined, which at least iOS never reports
+                      // (the request "succeeds" and reads come back empty).
+                      // Point at the platform's permission settings.
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(i18n.healthSyncNoData(_platformName))),
+                      );
                     }
                   } else {
                     await notifier.disableSync();
                   }
                 },
         ),
+        if (syncState.isEnabled) _statusTile(syncState, i18n),
       ],
+    );
+  }
+
+  String get _platformName =>
+      defaultTargetPlatform == TargetPlatform.iOS ? 'Apple Health' : 'Health Connect';
+
+  /// Status line under the toggle: what the last sync did, a spinner while
+  /// one is running, and tapping it starts one manually.
+  Widget _statusTile(HealthSyncState syncState, AppLocalizations i18n) {
+    final lastSync = syncState.lastSyncTime;
+    return ListTile(
+      leading: syncState.isSyncing
+          ? const SizedBox(
+              width: 24,
+              height: 24,
+              child: CircularProgressIndicator(strokeWidth: 2.5),
+            )
+          : const Icon(Icons.sync),
+      title: Text(
+        syncState.isSyncing
+            ? i18n.healthSyncSyncing
+            : lastSync != null
+            ? i18n.healthSyncStatus(
+                syncState.lastSyncCount,
+                localizedDate(context).add_Hm().format(lastSync),
+              )
+            : i18n.healthSyncNow,
+      ),
+      subtitle: syncState.isSyncing || lastSync == null ? null : Text(i18n.healthSyncNow),
+      enabled: !syncState.isSyncing,
+      onTap: syncState.isSyncing
+          ? null
+          : () async {
+              final count = await ref.read(healthSyncProvider.notifier).sync();
+              // The status line already reflects "nothing new"; only actual
+              // imports get a snackbar
+              if (mounted && count > 0) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(i18n.healthSyncSuccess(count))),
+                );
+              }
+            },
     );
   }
 }

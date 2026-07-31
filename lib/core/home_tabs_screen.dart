@@ -52,7 +52,7 @@ class _HomeTabsScreenState extends ConsumerState<HomeTabsScreen>
       if (!mounted) {
         return;
       }
-      ref.read(healthSyncProvider.notifier).syncOnAppOpen();
+      ref.read(healthSyncProvider.notifier).sync();
     });
   }
 

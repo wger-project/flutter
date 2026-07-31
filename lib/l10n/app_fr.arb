@@ -1174,5 +1174,9 @@
     "chartLast3MonthsTitle": "{name}, 3 derniers mois",
     "chartRangeAll": "Tout",
     "chartRangeLastYear": "1 an",
-    "chartRangeLast3Months": "3 mois"
+    "chartRangeLast3Months": "3 mois",
+    "healthSyncNoData": "Aucune donnée de santé n'a été trouvée. Vérifiez dans {platform} que wger peut lire vos données.",
+    "healthSyncStatus": "{count, plural, =0{Dernière synchronisation : {time}, aucune nouvelle entrée} one{Dernière synchronisation : {time}, 1 nouvelle entrée} other{Dernière synchronisation : {time}, {count} nouvelles entrées}}",
+    "healthSyncSyncing": "Synchronisation des données de santé…",
+    "healthSyncNow": "Synchroniser maintenant"
 }

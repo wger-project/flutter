@@ -1350,17 +1350,6 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
-  String get newSet =>
-      (super.noSuchMethod(
-            Invocation.getter(#newSet),
-            returnValue: _i3.dummyValue<String>(
-              this,
-              Invocation.getter(#newSet),
-            ),
-          )
-          as String);
-
-  @override
   String get personalRecords =>
       (super.noSuchMethod(
             Invocation.getter(#personalRecords),
@@ -3324,17 +3313,6 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
-  String get identicalExercisePleaseDiscard =>
-      (super.noSuchMethod(
-            Invocation.getter(#identicalExercisePleaseDiscard),
-            returnValue: _i3.dummyValue<String>(
-              this,
-              Invocation.getter(#identicalExercisePleaseDiscard),
-            ),
-          )
-          as String);
-
-  @override
   String get checkInformationBeforeSubmitting =>
       (super.noSuchMethod(
             Invocation.getter(#checkInformationBeforeSubmitting),
@@ -3665,17 +3643,6 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.getter(#addSuperset),
-            ),
-          )
-          as String);
-
-  @override
-  String get superset =>
-      (super.noSuchMethod(
-            Invocation.getter(#superset),
-            returnValue: _i3.dummyValue<String>(
-              this,
-              Invocation.getter(#superset),
             ),
           )
           as String);
@@ -4919,6 +4886,28 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get healthSyncSyncing =>
+      (super.noSuchMethod(
+            Invocation.getter(#healthSyncSyncing),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#healthSyncSyncing),
+            ),
+          )
+          as String);
+
+  @override
+  String get healthSyncNow =>
+      (super.noSuchMethod(
+            Invocation.getter(#healthSyncNow),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#healthSyncNow),
+            ),
+          )
+          as String);
+
+  @override
   String get health =>
       (super.noSuchMethod(
             Invocation.getter(#health),
@@ -5249,17 +5238,6 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
-  String imageFormatNotSupportedDetail(String? imageFormat) =>
-      (super.noSuchMethod(
-            Invocation.method(#imageFormatNotSupportedDetail, [imageFormat]),
-            returnValue: _i3.dummyValue<String>(
-              this,
-              Invocation.method(#imageFormatNotSupportedDetail, [imageFormat]),
-            ),
-          )
-          as String);
-
-  @override
   String alsoKnownAs(String? aliases) =>
       (super.noSuchMethod(
             Invocation.method(#alsoKnownAs, [aliases]),
@@ -5343,6 +5321,28 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.method(#healthSyncSuccess, [count]),
+            ),
+          )
+          as String);
+
+  @override
+  String healthSyncNoData(String? platform) =>
+      (super.noSuchMethod(
+            Invocation.method(#healthSyncNoData, [platform]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#healthSyncNoData, [platform]),
+            ),
+          )
+          as String);
+
+  @override
+  String healthSyncStatus(int? count, String? time) =>
+      (super.noSuchMethod(
+            Invocation.method(#healthSyncStatus, [count, time]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#healthSyncStatus, [count, time]),
             ),
           )
           as String);
