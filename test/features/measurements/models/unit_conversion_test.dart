@@ -70,5 +70,23 @@ void main() {
       expect(entry(80).valueIn('kg', categoryUnit: 'kg'), 80);
       expect(entry(80).valueIn('lb', categoryUnit: 'kg'), 176.37);
     });
+
+    test('boundIn follows the value through the same conversion', () {
+      // The bounds of an aggregate are stored in the value's unit, so reading
+      // the value in lb and the bounds in kg would put the band 2.2x off
+      final aggregate = entry(80, extraData: {'min': 70, 'max': 90});
+
+      expect(aggregate.valueIn('lb', categoryUnit: 'kg'), 176.37);
+      expect(aggregate.boundIn(70, 'lb', categoryUnit: 'kg'), 154.32);
+      expect(aggregate.boundIn(90, 'lb', categoryUnit: 'kg'), 198.42);
+    });
+
+    test('boundIn honours the entry stamp like valueIn does', () {
+      final stamped = entry(176.4, extraData: {'unit': 'lb'});
+
+      expect(stamped.boundIn(176.4, 'kg', categoryUnit: 'kg'), 80.01);
+      // and leaves label-only units alone
+      expect(entry(60).boundIn(50, 'bpm', categoryUnit: 'bpm'), 50);
+    });
   });
 }

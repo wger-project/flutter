@@ -55,4 +55,11 @@ extension MeasurementEntryUnit on MeasurementEntry {
   double valueIn(String targetUnit, {required String categoryUnit}) {
     return convertWeight(value, from: unitOrFallback(categoryUnit), to: targetUnit);
   }
+
+  /// A number stored in `extra_data` next to [value] in [targetUnit], such as
+  /// the bounds of a daily aggregate. They are written in the value's unit, so
+  /// they have to follow it through the same conversion.
+  double boundIn(num bound, String targetUnit, {required String categoryUnit}) {
+    return convertWeight(bound, from: unitOrFallback(categoryUnit), to: targetUnit);
+  }
 }

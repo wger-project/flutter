@@ -20,6 +20,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
+import 'package:wger/features/measurements/models/measurement_entry.dart';
 import 'package:wger/features/measurements/widgets/charts.dart';
 import 'package:wger/features/measurements/widgets/helpers.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -57,6 +58,47 @@ void main() {
     MeasurementChartEntry(20, DateTime(2026, 1, 10)),
   ];
   final avgEntries = moving7dAverage(rawEntries);
+
+  group('chartEntriesFor', () {
+    test('converts the aggregate bounds along with the value', () {
+      // Reading the value in lb but the bounds in kg would put the band a
+      // factor 2.2 off the line it is supposed to wrap
+      final points = chartEntriesFor(
+        [
+          MeasurementEntry(
+            categoryId: 'c',
+            date: DateTime(2026, 1, 1),
+            value: 80,
+            notes: '',
+            extraData: const {'min': 70, 'max': 90},
+          ),
+        ],
+        targetUnit: 'lb',
+        categoryUnit: 'kg',
+      );
+
+      expect(points.single.value, 176.37);
+      expect(points.single.min, 154.32);
+      expect(points.single.max, 198.42);
+    });
+
+    test('leaves entries without bounds unranged', () {
+      final points = chartEntriesFor(
+        [
+          MeasurementEntry(
+            categoryId: 'c',
+            date: DateTime(2026, 1, 1),
+            value: 80,
+            notes: '',
+          ),
+        ],
+        targetUnit: 'kg',
+        categoryUnit: 'kg',
+      );
+
+      expect(points.single.hasRange, isFalse);
+    });
+  });
 
   group('buildChartForMetricType routing', () {
     final entries = [

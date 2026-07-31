@@ -145,22 +145,25 @@ DateTime? sensibleRangeStart(List<MeasurementChartEntry> entriesAll) {
 ///
 /// Entries stored as a daily aggregate keep the range they summarise in
 /// `extra_data` (heart rate min/max); it is lifted onto the point so the chart
-/// draws a band around the line. Those bounds are written in the category unit
-/// alongside the value, and aggregates never carry a per-entry unit.
+/// draws a band around the line. Those bounds share the value's unit and are
+/// converted along with it.
 List<MeasurementChartEntry> chartEntriesFor(
   List<MeasurementEntry> entries, {
   required String targetUnit,
   required String categoryUnit,
-}) => entries
-    .map(
-      (e) => MeasurementChartEntry(
-        e.valueIn(targetUnit, categoryUnit: categoryUnit),
-        e.date,
-        min: e.extraData?['min'] as num?,
-        max: e.extraData?['max'] as num?,
-      ),
-    )
-    .toList();
+}) => entries.map((entry) {
+  num? bound(String key) {
+    final stored = entry.extraData?[key];
+    return stored is num ? entry.boundIn(stored, targetUnit, categoryUnit: categoryUnit) : null;
+  }
+
+  return MeasurementChartEntry(
+    entry.valueIn(targetUnit, categoryUnit: categoryUnit),
+    entry.date,
+    min: bound('min'),
+    max: bound('max'),
+  );
+}).toList();
 
 /// The readings of a two-component group as ranges: one point per timestamp,
 /// spanning from the lower component to the upper one.
