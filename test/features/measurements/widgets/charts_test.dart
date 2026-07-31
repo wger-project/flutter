@@ -54,6 +54,24 @@ void main() {
 
       expect(find.byType(BarChart), findsOneWidget);
     });
+
+    testWidgets('only labels a few dates on the x axis', (tester) async {
+      final entries = List.generate(
+        40,
+        (i) => entry(1000 + i, DateTime(2026, 1, 1).add(Duration(days: i))),
+      );
+      await tester.pumpWidget(_wrap(MeasurementBarChartWidgetFl(entries, 'steps')));
+      await tester.pumpAndSettle();
+
+      final dateLabels = find.byWidgetPredicate(
+        (w) => w is Text && RegExp(r'^\d+/\d+$').hasMatch(w.data ?? ''),
+      );
+      expect(dateLabels, findsNWidgets(4));
+      // the labels are spread out and kept away from the axis edges
+      expect(find.text('1/6'), findsOneWidget);
+      expect(find.text('2/5'), findsOneWidget);
+      expect(find.text('1/1'), findsNothing);
+    });
   });
 
   group('aggregatePerDay', () {

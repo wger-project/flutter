@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:math';
+
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -293,6 +295,9 @@ class MeasurementBarChartWidgetFl extends StatefulWidget {
 }
 
 class _MeasurementBarChartWidgetFlState extends State<MeasurementBarChartWidgetFl> {
+  /// Number of dates to label on the x axis
+  static const X_LABEL_COUNT = 4;
+
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
@@ -309,10 +314,13 @@ class _MeasurementBarChartWidgetFlState extends State<MeasurementBarChartWidgetF
       touchTooltipData: BarTouchTooltipData(
         getTooltipColor: (group) => Theme.of(context).colorScheme.primaryContainer,
         getTooltipItem: (group, groupIndex, rod, rodIndex) {
+          if (groupIndex < 0 || groupIndex >= widget._entries.length) {
+            return null;
+          }
           final numberFormat = NumberFormat.decimalPattern(
             Localizations.localeOf(context).toString(),
           );
-          final DateTime date = DateTime.fromMillisecondsSinceEpoch(group.x);
+          final DateTime date = widget._entries[groupIndex].date;
           final dateStr = DateFormat.Md(Localizations.localeOf(context).languageCode).format(date);
 
           return BarTooltipItem(
@@ -327,6 +335,16 @@ class _MeasurementBarChartWidgetFlState extends State<MeasurementBarChartWidgetF
   BarChartData mainData() {
     final String locale = Localizations.localeOf(context).toString();
     final NumberFormat numberFormat = NumberFormat.decimalPattern(locale);
+
+    // A bar chart draws one bottom title per group (the x value is a group key,
+    // not a position), so thinning out the labels has to happen here.
+    final labelStep = max(1, (widget._entries.length / X_LABEL_COUNT).ceil());
+    // keep the labels away from the chart edges
+    final labelOffset = labelStep ~/ 2;
+    final spansYears =
+        widget._entries.isNotEmpty &&
+        widget._entries.first.date.year != widget._entries.last.date.year;
+
     return BarChartData(
       barTouchData: tooltipData(),
       gridData: FlGridData(
@@ -344,16 +362,20 @@ class _MeasurementBarChartWidgetFlState extends State<MeasurementBarChartWidgetF
           sideTitles: SideTitles(
             showTitles: true,
             getTitlesWidget: (value, meta) {
-              // avoid label overlap with the axis edges
-              if (value == meta.min || value == meta.max) {
+              final index = value.toInt();
+              if (index < 0 || index >= widget._entries.length) {
                 return const Text('');
               }
-              final DateTime date = DateTime.fromMillisecondsSinceEpoch(value.toInt());
+              if ((index - labelOffset) % labelStep != 0) {
+                return const Text('');
+              }
+              final DateTime date = widget._entries[index].date;
+              // if we go across years, show years in the ticks. otherwise leave them out
+              if (spansYears) {
+                return Text(localizedDate(context).format(date));
+              }
               return Text(DateFormat.Md(Localizations.localeOf(context).languageCode).format(date));
             },
-            interval: widget._entries.isNotEmpty
-                ? chartGetInterval(widget._entries.last.date, widget._entries.first.date)
-                : CHART_MILLISECOND_FACTOR,
           ),
         ),
         leftTitles: AxisTitles(
@@ -374,12 +396,14 @@ class _MeasurementBarChartWidgetFlState extends State<MeasurementBarChartWidgetF
         border: Border.all(color: Theme.of(context).colorScheme.primaryContainer),
       ),
       barGroups: widget._entries
+          .asMap()
+          .entries
           .map(
             (e) => BarChartGroupData(
-              x: e.date.millisecondsSinceEpoch,
+              x: e.key,
               barRods: [
                 BarChartRodData(
-                  toY: e.value.toDouble(),
+                  toY: e.value.value.toDouble(),
                   color: Theme.of(context).colorScheme.primary,
                   width: 12,
                   borderRadius: const BorderRadius.vertical(top: Radius.circular(2)),
