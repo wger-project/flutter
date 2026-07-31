@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:wger/features/measurements/measurements.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
@@ -160,6 +161,39 @@ List<MeasurementChartEntry> chartEntriesFor(
       ),
     )
     .toList();
+
+/// The readings of a two-component group as ranges: one point per timestamp,
+/// spanning from the lower component to the upper one.
+///
+/// A reading is one event, so it is drawn as a single bar (diastolic to
+/// systolic) rather than as two lines: the components belong together, and
+/// nothing was measured between two readings. Components are paired by their
+/// shared timestamp, which is how both the importer and the group form write
+/// them; an unpaired half-reading is skipped, it has no range.
+List<MeasurementChartEntry> groupRangeEntries(MeasurementCategory group) {
+  final byDate = <DateTime, List<num>>{};
+  for (final child in group.children) {
+    for (final entry in child.entries) {
+      byDate
+          .putIfAbsent(entry.date, () => [])
+          .add(entry.valueIn(child.unit, categoryUnit: child.unit));
+    }
+  }
+
+  final ranges = [
+    for (final MapEntry(key: date, value: values) in byDate.entries)
+      if (values.length > 1)
+        MeasurementChartEntry(
+          values.average,
+          date,
+          min: values.min,
+          max: values.max,
+        ),
+  ]..sort((a, b) => a.date.compareTo(b.date));
+
+  final start = sensibleRangeStart(ranges);
+  return start == null ? ranges : ranges.whereDate(start, null);
+}
 
 /// One line per component of a multi-value group, in the children's in-group
 /// order and named after them.

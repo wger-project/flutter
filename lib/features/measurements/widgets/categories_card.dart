@@ -131,7 +131,15 @@ class CategoriesCard extends StatelessWidget {
   /// chart, then one row per component with its latest reading; new readings
   /// are entered for all components at once.
   Widget _buildGroupCard(BuildContext context) {
-    final series = groupComponentSeries(currentCategory);
+    // Two components are one reading with a low and a high end, so they are
+    // drawn as a bar spanning it. More than two cannot be a range, they stay
+    // one line each.
+    final asRange = currentCategory.children.length == 2;
+    final ranges = asRange ? groupRangeEntries(currentCategory) : const <MeasurementChartEntry>[];
+    final series = asRange
+        ? const <MeasurementChartSeries>[]
+        : groupComponentSeries(currentCategory);
+    final hasData = asRange ? ranges.isNotEmpty : series.any((s) => s.entries.isNotEmpty);
 
     return Card(
       elevation: elevation,
@@ -148,26 +156,31 @@ class CategoriesCard extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          if (series.any((s) => s.entries.isNotEmpty))
+          if (hasData)
             Container(
               padding: const EdgeInsets.all(10),
               height: 220,
-              child: MeasurementChartWidgetFl(series, currentCategory.unit),
+              child: asRange
+                  ? MeasurementBarChartWidgetFl(ranges, currentCategory.unit)
+                  : MeasurementChartWidgetFl(series, currentCategory.unit),
             ),
           ...currentCategory.children.mapIndexed((index, child) {
             // Entries arrive sorted by date descending, so first is the latest
             final latest = child.entries.firstOrNull;
             return ListTile(
               dense: true,
-              // The dot ties the row to its line in the chart above
-              leading: Container(
-                width: 12,
-                height: 12,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: componentColor(context, index),
-                ),
-              ),
+              // The dot ties the row to its line in the chart above. A range
+              // is a single bar, where the ends speak for themselves.
+              leading: asRange
+                  ? null
+                  : Container(
+                      width: 12,
+                      height: 12,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: componentColor(context, index),
+                      ),
+                    ),
               title: Text(child.name),
               trailing: Text(
                 latest != null

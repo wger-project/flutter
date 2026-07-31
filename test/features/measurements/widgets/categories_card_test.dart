@@ -41,6 +41,30 @@ MeasurementCategory _bpGroup({bool withEntries = false}) {
   return testMeasurementCategoryBloodPressure.copyWith(children: [sys, dia]);
 }
 
+/// A group with three components, which cannot be read as a low/high range
+MeasurementCategory _tripleGroup() {
+  final children = [
+    for (var i = 0; i < 3; i++)
+      MeasurementCategory(
+        id: 'c$i',
+        name: 'Component $i',
+        unit: 'mmHg',
+        parentId: 'bp',
+        order: i,
+        entries: [
+          MeasurementEntry(
+            id: 'e$i',
+            categoryId: 'c$i',
+            date: DateTime(2026, 1, 1),
+            value: 100 + i * 10,
+            notes: '',
+          ),
+        ],
+      ),
+  ];
+  return testMeasurementCategoryBloodPressure.copyWith(children: children);
+}
+
 void main() {
   group('CategoriesCard group card', () {
     testWidgets('shows one ListTile per child with latest reading', (tester) async {
@@ -60,39 +84,53 @@ void main() {
       expect(find.text('—'), findsNWidgets(2));
     });
 
-    testWidgets('charts all components as one line each', (tester) async {
+    testWidgets('draws a reading as one bar spanning its components', (tester) async {
       await tester.pumpWidget(_wrap(CategoriesCard(_bpGroup(withEntries: true))));
       await tester.pumpAndSettle();
 
-      final data = tester.widget<LineChart>(find.byType(LineChart)).data;
-      expect(data.lineBarsData, hasLength(2));
-      // systolic and diastolic must be told apart at a glance
-      expect(data.lineBarsData.first.color, isNot(data.lineBarsData.last.color));
+      // One event, one bar: no line claiming values between two readings
+      expect(find.byType(LineChart), findsNothing);
+      final groups = tester.widget<BarChart>(find.byType(BarChart)).data.barGroups;
+      expect(groups, hasLength(1));
+
+      final rod = groups.single.barRods.single;
+      expect(rod.fromY, 80); // diastolic
+      expect(rod.toY, 120); // systolic
     });
 
-    testWidgets('each component row carries the colour of its line', (tester) async {
+    testWidgets('a range needs no per-component colour dots', (tester) async {
       await tester.pumpWidget(_wrap(CategoriesCard(_bpGroup(withEntries: true))));
       await tester.pumpAndSettle();
 
-      final lineColors = tester
-          .widget<LineChart>(find.byType(LineChart))
-          .data
-          .lineBarsData
-          .map((b) => b.color)
-          .toList();
-      final dotColors = tester
-          .widgetList<ListTile>(find.byType(ListTile))
-          .map((t) => ((t.leading! as Container).decoration! as BoxDecoration).color)
-          .toList();
-
-      expect(dotColors, lineColors);
+      // The ends of the bar say which is which
+      expect(
+        tester.widgetList<ListTile>(find.byType(ListTile)).every((t) => t.leading == null),
+        isTrue,
+      );
     });
 
     testWidgets('renders no chart while no component has readings', (tester) async {
       await tester.pumpWidget(_wrap(CategoriesCard(_bpGroup(withEntries: false))));
       await tester.pumpAndSettle();
 
+      expect(find.byType(BarChart), findsNothing);
       expect(find.byType(LineChart), findsNothing);
+    });
+
+    testWidgets('a group of three keeps one line per component', (tester) async {
+      // Only two components form a low/high range; more stay separate lines
+      await tester.pumpWidget(_wrap(CategoriesCard(_tripleGroup())));
+      await tester.pumpAndSettle();
+
+      final data = tester.widget<LineChart>(find.byType(LineChart)).data;
+      expect(data.lineBarsData, hasLength(3));
+
+      final lineColors = data.lineBarsData.map((b) => b.color).toList();
+      final dotColors = tester
+          .widgetList<ListTile>(find.byType(ListTile))
+          .map((t) => ((t.leading! as Container).decoration! as BoxDecoration).color)
+          .toList();
+      expect(dotColors, lineColors);
     });
 
     testWidgets('add icon button is present on group card', (tester) async {

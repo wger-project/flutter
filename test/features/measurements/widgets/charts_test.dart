@@ -181,6 +181,58 @@ void main() {
     });
   });
 
+  group('MeasurementBarChartWidgetFl ranges', () {
+    BarChartData chartData(WidgetTester tester) =>
+        tester.widget<BarChart>(find.byType(BarChart)).data;
+
+    testWidgets('a range entry becomes a bar spanning its bounds', (tester) async {
+      await tester.pumpWidget(
+        _wrap(
+          MeasurementBarChartWidgetFl([
+            MeasurementChartEntry(100, DateTime(2026, 1, 1), min: 80, max: 120),
+          ], 'mmHg'),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final rod = chartData(tester).barGroups.single.barRods.single;
+      expect(rod.fromY, 80);
+      expect(rod.toY, 120);
+    });
+
+    testWidgets('a plain entry still grows from zero', (tester) async {
+      await tester.pumpWidget(
+        _wrap(MeasurementBarChartWidgetFl([entry(1500, DateTime(2026, 1, 1))], 'steps')),
+      );
+      await tester.pumpAndSettle();
+
+      final rod = chartData(tester).barGroups.single.barRods.single;
+      expect(rod.fromY, 0);
+      expect(rod.toY, 1500);
+    });
+
+    testWidgets('bars get thinner the more of them share the width', (tester) async {
+      Future<double> barWidthFor(int count) async {
+        await tester.pumpWidget(
+          _wrap(
+            MeasurementBarChartWidgetFl(
+              List.generate(count, (i) => entry(100, DateTime(2026, 1, 1).add(Duration(days: i)))),
+              'steps',
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        return chartData(tester).barGroups.first.barRods.single.width;
+      }
+
+      // a handful of bars stay comfortably wide, a season of readings must not
+      // overflow into a solid block
+      expect(await barWidthFor(5), 12.0);
+      expect(await barWidthFor(120), lessThan(4));
+      expect(await barWidthFor(120), greaterThanOrEqualTo(1));
+    });
+  });
+
   group('aggregatePerDay', () {
     test('returns an empty list for no entries', () {
       expect(aggregatePerDay([]), isEmpty);

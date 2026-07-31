@@ -438,6 +438,13 @@ List<MeasurementChartEntry> aggregatePerDay(List<MeasurementChartEntry> vals) {
   return out;
 }
 
+/// Bar chart for entries that are discrete events rather than a continuous
+/// series: daily totals, and the readings of a multi-value group.
+///
+/// Entries carrying a range (see [MeasurementChartEntry.hasRange]) are drawn
+/// as a bar spanning it, so a blood pressure reading appears as one bar from
+/// diastolic to systolic. That keeps the pair together as the single event it
+/// is, and claims nothing about the time between two readings.
 class MeasurementBarChartWidgetFl extends StatefulWidget {
   final List<MeasurementChartEntry> _entries;
   final String _unit;
@@ -452,13 +459,21 @@ class _MeasurementBarChartWidgetFlState extends State<MeasurementBarChartWidgetF
   /// Number of dates to label on the x axis
   static const X_LABEL_COUNT = 4;
 
+  /// Widest a single bar gets, for charts with only a handful of entries
+  static const MAX_BAR_WIDTH = 12.0;
+
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
       aspectRatio: 1.70,
       child: Padding(
         padding: const EdgeInsets.all(4),
-        child: BarChart(mainData()),
+        // Bar width is in pixels, so it has to follow from how many bars share
+        // the available space, otherwise a couple of months of readings
+        // overlap into a solid block
+        child: LayoutBuilder(
+          builder: (context, constraints) => BarChart(mainData(constraints.maxWidth)),
+        ),
       ),
     );
   }
@@ -474,11 +489,18 @@ class _MeasurementBarChartWidgetFlState extends State<MeasurementBarChartWidgetF
           final numberFormat = NumberFormat.decimalPattern(
             Localizations.localeOf(context).toString(),
           );
-          final DateTime date = widget._entries[groupIndex].date;
-          final dateStr = DateFormat.Md(Localizations.localeOf(context).languageCode).format(date);
+          final entry = widget._entries[groupIndex];
+          final dateStr = DateFormat.Md(
+            Localizations.localeOf(context).languageCode,
+          ).format(entry.date);
+          // A range is quoted as high over low, the way a blood pressure
+          // reading is written
+          final value = entry.hasRange
+              ? '${numberFormat.format(entry.max)}/${numberFormat.format(entry.min)}'
+              : numberFormat.format(rod.toY);
 
           return BarTooltipItem(
-            '$dateStr: ${numberFormat.format(rod.toY)} ${widget._unit}',
+            '$dateStr: $value ${widget._unit}',
             TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer),
           );
         },
@@ -486,9 +508,14 @@ class _MeasurementBarChartWidgetFlState extends State<MeasurementBarChartWidgetF
     );
   }
 
-  BarChartData mainData() {
+  BarChartData mainData(double availableWidth) {
     final String locale = Localizations.localeOf(context).toString();
     final NumberFormat numberFormat = NumberFormat.decimalPattern(locale);
+
+    // Leave a gap between neighbouring bars, but never go below a hairline
+    final barWidth = widget._entries.isEmpty
+        ? MAX_BAR_WIDTH
+        : (availableWidth / widget._entries.length * 0.7).clamp(1.0, MAX_BAR_WIDTH);
 
     // A bar chart draws one bottom title per group (the x value is a group key,
     // not a position), so thinning out the labels has to happen here.
@@ -557,10 +584,14 @@ class _MeasurementBarChartWidgetFlState extends State<MeasurementBarChartWidgetF
               x: e.key,
               barRods: [
                 BarChartRodData(
-                  toY: e.value.value.toDouble(),
+                  // A range spans its bounds, a plain value grows from zero
+                  fromY: e.value.hasRange ? e.value.min!.toDouble() : 0,
+                  toY: e.value.hasRange ? e.value.max!.toDouble() : e.value.value.toDouble(),
                   color: Theme.of(context).colorScheme.primary,
-                  width: 12,
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(2)),
+                  width: barWidth,
+                  borderRadius: e.value.hasRange
+                      ? BorderRadius.circular(2)
+                      : const BorderRadius.vertical(top: Radius.circular(2)),
                 ),
               ],
             ),
