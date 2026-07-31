@@ -60,15 +60,22 @@ List<Widget> getOverviewWidgetsSeries(
   String? mainChartTitle,
 }) {
   final monthAgo = DateTime.now().subtract(const Duration(days: 30));
+  // Condensed once and shared: the main chart draws these points directly
+  // (condensing again is a no-op), and both charts show slices of the same
+  // trend. With dense metrics the full-series passes dominate the build.
+  final summed = metricType.isSummedPerDay;
+  final points = summed ? entriesAll : downsample(entriesAll);
+  final trendAll = summed ? null : smoothedTrendline(points);
   return [
     ...getOverviewWidgets(
       mainChartTitle ?? AppLocalizations.of(context).chartAllTimeTitle(name),
-      entriesAll,
+      points,
       entries7dAvg,
       unit,
       context,
       metricType: metricType,
       planPeriods: planPeriods,
+      trend: trendAll,
     ),
     // if all time is significantly longer than 30 days (let's say > 75 days)
     // then let's show a separate chart just focusing on the last 30 days,
@@ -78,6 +85,9 @@ List<Widget> getOverviewWidgetsSeries(
         entriesAll.any((e) => e.date.isAfter(monthAgo)))
       ...getOverviewWidgets(
         AppLocalizations.of(context).chart30DaysTitle(name),
+        // Sliced from the raw series, not from [points]: the window is
+        // condensed on its own so it keeps the finer resolution its shorter
+        // span allows
         entriesAll.whereDateWithInterpolation(monthAgo, null),
         entries7dAvg.whereDateWithInterpolation(monthAgo, null),
         unit,
@@ -87,9 +97,7 @@ List<Widget> getOverviewWidgetsSeries(
         // The tail of the full-history trend: recomputing it inside the
         // window would seed the EMA from the window's (possibly interpolated)
         // first point and bend it across half the chart
-        trend: metricType.isSummedPerDay
-            ? null
-            : smoothedTrendline(downsample(entriesAll)).whereDate(monthAgo, null),
+        trend: trendAll?.whereDate(monthAgo, null),
       ),
     // legend
     Row(
