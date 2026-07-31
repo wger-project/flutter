@@ -132,14 +132,18 @@ class CategoriesCard extends StatelessWidget {
   /// are entered for all components at once.
   Widget _buildGroupCard(BuildContext context) {
     // Two components are one reading with a low and a high end, so they are
-    // drawn as a bar spanning it. More than two cannot be a range, they stay
-    // one line each.
-    final asRange = currentCategory.children.length == 2;
-    final ranges = asRange ? groupRangeEntries(currentCategory) : const <MeasurementChartEntry>[];
+    // drawn as a bar spanning it. Anything else stays one line per component:
+    // more than two components cannot be a range, and neither can readings
+    // that are not paired, which happens once the date of one half is edited
+    // apart from the other.
+    final ranges = currentCategory.children.length == 2
+        ? groupRangeEntries(currentCategory)
+        : const <MeasurementChartEntry>[];
+    final asRange = ranges.isNotEmpty;
     final series = asRange
         ? const <MeasurementChartSeries>[]
         : groupComponentSeries(currentCategory);
-    final hasData = asRange ? ranges.isNotEmpty : series.any((s) => s.entries.isNotEmpty);
+    final hasData = asRange || series.any((s) => s.entries.isNotEmpty);
 
     return Card(
       elevation: elevation,

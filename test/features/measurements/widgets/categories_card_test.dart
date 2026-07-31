@@ -109,6 +109,28 @@ void main() {
       );
     });
 
+    testWidgets('falls back to lines when the readings are not paired', (tester) async {
+      // Editing the date of one half pulls a reading apart, and there is then
+      // no range to draw. The card must still show the data it has instead of
+      // going blank.
+      final sys = testMeasurementCategorySystolic.copyWith(
+        entries: [testNeasurementEntry9],
+      );
+      final dia = testMeasurementCategoryDiastolic.copyWith(
+        entries: [
+          testNeasurementEntry10.copyWith(date: DateTime(2026, 1, 1, 9, 30)),
+        ],
+      );
+      final group = testMeasurementCategoryBloodPressure.copyWith(children: [sys, dia]);
+
+      await tester.pumpWidget(_wrap(CategoriesCard(group)));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(BarChart), findsNothing);
+      final data = tester.widget<LineChart>(find.byType(LineChart)).data;
+      expect(data.lineBarsData, hasLength(2));
+    });
+
     testWidgets('renders no chart while no component has readings', (tester) async {
       await tester.pumpWidget(_wrap(CategoriesCard(_bpGroup(withEntries: false))));
       await tester.pumpAndSettle();
