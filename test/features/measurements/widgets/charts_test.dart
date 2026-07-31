@@ -234,6 +234,57 @@ void main() {
     });
   });
 
+  group('moving7dAverage', () {
+    test('returns an empty list for no entries', () {
+      expect(moving7dAverage([]), isEmpty);
+    });
+
+    test('averages over everything within the preceding 7 days', () {
+      final result = moving7dAverage([
+        entry(10, DateTime(2026, 1, 1)),
+        entry(20, DateTime(2026, 1, 2)),
+        entry(30, DateTime(2026, 1, 3)),
+      ]);
+
+      expect(result.map((e) => e.value), [10, 15, 20]);
+      expect(result.map((e) => e.date), [
+        DateTime(2026, 1, 1),
+        DateTime(2026, 1, 2),
+        DateTime(2026, 1, 3),
+      ]);
+    });
+
+    test('drops points that fell out of the window', () {
+      final result = moving7dAverage([
+        entry(10, DateTime(2026, 1, 1)),
+        entry(20, DateTime(2026, 1, 20)),
+      ]);
+
+      // the january 1st entry is far outside the 7 days before january 20th
+      expect(result.last.value, 20);
+    });
+
+    test('sorts unordered input by date first', () {
+      final result = moving7dAverage([
+        entry(30, DateTime(2026, 1, 3)),
+        entry(10, DateTime(2026, 1, 1)),
+        entry(20, DateTime(2026, 1, 2)),
+      ]);
+
+      expect(result.map((e) => e.value), [10, 15, 20]);
+    });
+
+    test('stays accurate over a long dense series', () {
+      // The window total is carried along rather than re-summed, so this
+      // guards against drift piling up
+      final result = moving7dAverage([
+        for (var i = 0; i < 5000; i++) entry(100, DateTime(2026, 1, 1).add(Duration(minutes: i))),
+      ]);
+
+      expect(result.every((e) => (e.value - 100).abs() < 0.000001), isTrue);
+    });
+  });
+
   group('downsample', () {
     /// A day of heart-rate-like sampling: every 5 minutes, alternating between
     /// a resting and an exerting value

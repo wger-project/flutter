@@ -424,19 +424,25 @@ List<MeasurementChartEntry> moving7dAverage(List<MeasurementChartEntry> vals) {
   // first make sure our list is in ascending order
   vals.sort((a, b) => a.date.compareTo(b.date));
 
+  // The window total is carried along instead of re-summing the window for
+  // every point: with densely sampled metrics the window holds thousands of
+  // values, and re-adding them each time makes this quadratic
+  num sum = 0;
+
   while (end < vals.length) {
+    sum += vals[end].value;
+
     // since users can log measurements several days, or minutes apart,
     // we can't make assumptions.  We have to manually advance 'start'
     // such that it is always the first point within our desired range.
     // posibly start == end (when there is only one point in the range)
     final intervalStart = vals[end].date.subtract(const Duration(days: 7));
     while (start < end && vals[start].date.isBefore(intervalStart)) {
+      sum -= vals[start].value;
       start++;
     }
 
-    final sub = vals.sublist(start, end + 1).map((e) => e.value);
-    final sum = sub.reduce((val, el) => val + el);
-    out.add(MeasurementChartEntry(sum / sub.length, vals[end].date));
+    out.add(MeasurementChartEntry(sum / (end - start + 1), vals[end].date));
 
     end++;
   }
