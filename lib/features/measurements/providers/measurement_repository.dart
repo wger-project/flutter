@@ -46,9 +46,21 @@ class MeasurementRepository {
   /// [MeasurementCategory.children] attached, sorted by their in-group order.
   Stream<List<MeasurementCategory>> watchAll() {
     _logger.finer('Watching all measurement categories with entries');
+    return _watchCategories();
+  }
+
+  /// Watches the categories matching [filter] (all of them when it is null),
+  /// each populated with its entries and, for group parents, its children.
+  Stream<List<MeasurementCategory>> _watchCategories([
+    Expression<bool> Function($MeasurementCategoryTableTable table)? filter,
+  ]) {
+    final select = _db.select(_db.measurementCategoryTable);
+    if (filter != null) {
+      select.where(filter);
+    }
 
     final joined =
-        _db.select(_db.measurementCategoryTable).join([
+        select.join([
           leftOuterJoin(
             _db.measurementEntryTable,
             _db.measurementEntryTable.categoryId.equalsExp(_db.measurementCategoryTable.id),
@@ -89,9 +101,13 @@ class MeasurementRepository {
     });
   }
 
+  /// Watches a single category with its entries, and its children when it is
+  /// a group parent.
   Stream<MeasurementCategory?> watchLocalDriftCategoryById(String id) {
     _logger.finer('Watching local measurement category $id');
-    return watchAll().map((categories) => categories.firstWhereOrNull((c) => c.id == id));
+    return _watchCategories(
+      (table) => table.id.equals(id) | table.parentId.equals(id),
+    ).map((categories) => categories.firstWhereOrNull((c) => c.id == id));
   }
 
   /// One-shot snapshot of all categories with their entries.

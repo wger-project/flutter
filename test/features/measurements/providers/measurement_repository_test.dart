@@ -134,6 +134,52 @@ void main() {
 
       expect(emitted, isNull);
     });
+
+    test('a group parent keeps its children', () async {
+      // The query is narrowed to one category, which must not cost a group
+      // its components
+      await seedCategoriesAndEntries();
+      for (final category in getBloodPressureGroup()) {
+        await repo.addLocalDriftCategory(category);
+      }
+
+      final emitted = await repo.watchLocalDriftCategoryById('bp').first;
+
+      expect(emitted!.children.map((c) => c.id), ['sys', 'dia']);
+    });
+
+    test('a component can be watched on its own', () async {
+      await seedCategoriesAndEntries();
+      for (final category in getBloodPressureGroup()) {
+        await repo.addLocalDriftCategory(category);
+      }
+
+      final emitted = await repo.watchLocalDriftCategoryById('sys').first;
+
+      expect(emitted!.name, 'Systolic');
+      expect(emitted.children, isEmpty);
+    });
+
+    test('re-emits when one of its own entries changes', () async {
+      await seedCategoriesAndEntries();
+      final iter = StreamIterator(repo.watchLocalDriftCategoryById('1'));
+
+      await iter.moveNext();
+      final initial = iter.current!.entries.length;
+
+      await repo.addLocalDrift(
+        MeasurementEntry(
+          categoryId: '1',
+          date: DateTime.utc(2027, 1, 1),
+          value: 42,
+          notes: '',
+        ),
+      );
+
+      await iter.moveNext();
+      expect(iter.current!.entries, hasLength(initial + 1));
+      await iter.cancel();
+    });
   });
 
   group('entry CRUD', () {
