@@ -533,7 +533,7 @@
   "@weight": {
     "description": "The weight of a workout log or body weight entry"
   },
-  "chartAllTimeTitle": "{name} all-time",
+  "chartAllTimeTitle": "{name}, all-time",
   "@chartAllTimeTitle": {
     "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
     "type": "text",
@@ -543,7 +543,7 @@
       }
     }
   },
-  "chart30DaysTitle": "{name} last 30 days",
+  "chart30DaysTitle": "{name}, last 30 days",
   "@chart30DaysTitle": {
     "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
     "type": "text",
@@ -553,7 +553,7 @@
       }
     }
   },
-  "chartLastYearTitle": "{name} last year",
+  "chartLastYearTitle": "{name}, last year",
   "@chartLastYearTitle": {
     "description": "last year chart of 'name' (e.g. 'weight', 'body fat' etc.)",
     "type": "text",
@@ -563,7 +563,7 @@
       }
     }
   },
-  "chartLast3MonthsTitle": "{name} last 3 months",
+  "chartLast3MonthsTitle": "{name}, last 3 months",
   "@chartLast3MonthsTitle": {
     "description": "last 3 months chart of 'name' (e.g. 'weight', 'body fat' etc.)",
     "type": "text",
@@ -577,11 +577,11 @@
   "@chartRangeAll": {
     "description": "Label for the chart time-range selector option showing all data"
   },
-  "chartRangeLastYear": "Last year",
+  "chartRangeLastYear": "1 year",
   "@chartRangeLastYear": {
     "description": "Label for the chart time-range selector option showing the last year"
   },
-  "chartRangeLast3Months": "Last 3 months",
+  "chartRangeLast3Months": "3 months",
   "@chartRangeLast3Months": {
     "description": "Label for the chart time-range selector option showing the last 3 months"
   },

@@ -108,8 +108,8 @@ void main() {
     // The range selector is shown with the three options
     expect(find.byType(ChartRangeSelector), findsOneWidget);
     expect(find.text('All'), findsOneWidget);
-    expect(find.text('Last year'), findsOneWidget);
-    expect(find.text('Last 3 months'), findsOneWidget);
+    expect(find.text('1 year'), findsOneWidget);
+    expect(find.text('3 months'), findsOneWidget);
 
     // The default range excludes the (old) seeded data
     expect(find.byType(MeasurementChartWidgetFl), findsNothing);
@@ -122,8 +122,8 @@ void main() {
     expect(find.byType(MeasurementChartWidgetFl), findsOneWidget);
 
     // and back again
-    await tester.ensureVisible(find.text('Last 3 months'));
-    await tester.tap(find.text('Last 3 months'));
+    await tester.ensureVisible(find.text('3 months'));
+    await tester.tap(find.text('3 months'));
     await tester.pumpAndSettle();
     expect(find.byType(MeasurementChartWidgetFl), findsNothing);
   });

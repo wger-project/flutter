@@ -709,7 +709,7 @@
     "lightMode": "Mode clair permanent",
     "darkMode": "Mode sombre permanent",
     "systemMode": "Paramètres du système",
-    "chart30DaysTitle": "{name} les 30 derniers jours",
+    "chart30DaysTitle": "{name}, 30 derniers jours",
     "@chart30DaysTitle": {
         "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
         "type": "text",
@@ -719,7 +719,7 @@
             }
         }
     },
-    "chartAllTimeTitle": "{name} depuis le début",
+    "chartAllTimeTitle": "{name}, depuis le début",
     "@chartAllTimeTitle": {
         "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
         "type": "text",
@@ -1185,5 +1185,10 @@
     "allowSelfSignedCertsTitle": "Autoriser les certificats auto-signés",
     "allowSelfSignedCertsDetail": "Désactive la validation du certificat TLS. Ne l'activez que pour un serveur de confiance.",
     "certsNotVerifiedTitle": "La validation des certificats est désactivée",
-    "certsNotVerifiedDetail": "Les certificats de {host} ne sont pas vérifiés. Pour changer cela, déconnectez-vous et modifiez l'option sur l'écran de connexion."
+    "certsNotVerifiedDetail": "Les certificats de {host} ne sont pas vérifiés. Pour changer cela, déconnectez-vous et modifiez l'option sur l'écran de connexion.",
+    "chartLastYearTitle": "{name}, dernière année",
+    "chartLast3MonthsTitle": "{name}, 3 derniers mois",
+    "chartRangeAll": "Tout",
+    "chartRangeLastYear": "1 an",
+    "chartRangeLast3Months": "3 mois"
 }

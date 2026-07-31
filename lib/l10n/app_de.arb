@@ -675,7 +675,7 @@
     "noIngredientsDefined": "Noch keine Zutaten definiert",
     "ingredientLogged": "Zutat im Tagebuch protokolliert",
     "selectMealToLog": "Wähle eine Mahlzeit, um sie im Tagebuch zu protokollieren",
-    "chartAllTimeTitle": "{name} aller Zeiten",
+    "chartAllTimeTitle": "{name}, gesamt",
     "@chartAllTimeTitle": {
         "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
         "type": "text",
@@ -685,7 +685,7 @@
             }
         }
     },
-    "chart30DaysTitle": "{name} der letzten 30 Tage",
+    "chart30DaysTitle": "{name}, letzte 30 Tage",
     "@chart30DaysTitle": {
         "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
         "type": "text",
@@ -1175,5 +1175,10 @@
     "allowSelfSignedCertsTitle": "Selbstsignierte Zertifikate erlauben",
     "allowSelfSignedCertsDetail": "Deaktiviert die Validierung des TLS-Zertifikats. Aktiviere das nur für einen Server, dem du vertraust.",
     "certsNotVerifiedTitle": "Zertifikatsvalidierung ist deaktiviert",
-    "certsNotVerifiedDetail": "Zertifikate für {host} werden nicht geprüft. Zum Ändern melde dich ab und passe die Option im Anmeldebildschirm an."
+    "certsNotVerifiedDetail": "Zertifikate für {host} werden nicht geprüft. Zum Ändern melde dich ab und passe die Option im Anmeldebildschirm an.",
+    "chartLastYearTitle": "{name}, letztes Jahr",
+    "chartLast3MonthsTitle": "{name}, letzte 3 Monate",
+    "chartRangeAll": "Gesamt",
+    "chartRangeLastYear": "1 Jahr",
+    "chartRangeLast3Months": "3 Monate"
 }
