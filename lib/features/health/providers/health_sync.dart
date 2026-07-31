@@ -133,6 +133,13 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
   /// Whether a health platform is available on this device.
   Future<bool> isAvailable() => _health.isAvailable();
 
+  /// How usable the device's health platform is, so the settings can offer
+  /// installing or updating Health Connect instead of hiding the feature.
+  Future<HealthPlatformAvailability> availability() => _health.availability();
+
+  /// Sends the user to the store page for Health Connect. Android only.
+  Future<void> openHealthConnectInstall() => _health.openHealthConnectInstall();
+
   /// Requests permissions, persists the preference, and runs an initial import.
   ///
   /// Returns the number of imported entries, or `null` when the platform
@@ -163,6 +170,11 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
   }
 
   /// Clears the preference and disables importing.
+  ///
+  /// The sync watermark goes with it, so switching back on re-reads the full
+  /// history. That is slower but never leaves a hole: everything recorded
+  /// while the sync was off would otherwise stay outside the read window
+  /// forever. Re-reads are deduplicated via externalId.
   Future<void> disableSync() async {
     _logger.info('Disabling health sync');
     await PreferenceHelper.instance.clearHealthSyncPreferences();
@@ -270,9 +282,13 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
 
       // Advancing the watermark past readings a skipped metric could not
       // import would push them out of the overlap window for good, so keep
-      // the old one until every metric got its category.
+      // the old one until every metric got its category. A reading dated in
+      // the future (a device with a wrong clock) must not drag the watermark
+      // along with it either, or everything recorded until that date is
+      // skipped on the next run.
       if (latest != null && !skippedMetric) {
-        await prefs.setLastHealthSyncTimestamp(latest.toIso8601String());
+        final watermark = latest.isAfter(endTime) ? endTime : latest;
+        await prefs.setLastHealthSyncTimestamp(watermark.toIso8601String());
       }
       if (_normalizedIdCount > 0) {
         _logger.warning(

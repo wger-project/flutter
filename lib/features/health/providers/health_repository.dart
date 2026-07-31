@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2026 wger Team
+ * Copyright (c) 2026 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,6 +18,7 @@
 
 import 'dart:io';
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/services.dart' show PlatformException;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:health_bridge/health.dart';
@@ -27,6 +28,20 @@ import 'package:wger/features/health/models/health_reading.dart';
 final healthRepositoryProvider = Provider<HealthRepository>((ref) {
   return HealthRepository();
 });
+
+/// How usable the health platform is on this device.
+enum HealthPlatformAvailability {
+  available,
+
+  /// Android without Health Connect installed.
+  notInstalled,
+
+  /// Android with a Health Connect too old for the SDK.
+  updateRequired,
+
+  /// Neither Apple Health nor Health Connect exists here (desktop, web).
+  unsupported,
+}
 
 /// Wraps the `health` plugin so the rest of the app talks to a small, mockable
 /// surface instead of Apple Health / Health Connect directly.
@@ -41,13 +56,48 @@ class HealthRepository {
   String get sourceName => Platform.isIOS ? 'apple' : 'google';
 
   /// Whether a health platform is usable on this device.
-  Future<bool> isAvailable() async {
+  Future<bool> isAvailable() async => await availability() == HealthPlatformAvailability.available;
+
+  /// How usable the device's health platform is.
+  ///
+  /// Android tells the two unusable cases apart, and both are the user's to
+  /// fix: Health Connect can be installed or updated from the store, see
+  /// [openHealthConnectInstall].
+  Future<HealthPlatformAvailability> availability() async {
+    // Checked before anything else: on web `dart:io` is a stub whose
+    // Platform getters throw instead of returning false
+    if (kIsWeb) {
+      return HealthPlatformAvailability.unsupported;
+    }
     if (Platform.isAndroid) {
       await _health.configure();
-      final status = await _health.getHealthConnectSdkStatus();
-      return status == HealthConnectSdkStatus.sdkAvailable;
+      return switch (await _health.getHealthConnectSdkStatus()) {
+        HealthConnectSdkStatus.sdkAvailable => HealthPlatformAvailability.available,
+        HealthConnectSdkStatus.sdkUnavailableProviderUpdateRequired =>
+          HealthPlatformAvailability.updateRequired,
+        _ => HealthPlatformAvailability.notInstalled,
+      };
     }
-    return Platform.isIOS;
+    return Platform.isIOS
+        ? HealthPlatformAvailability.available
+        : HealthPlatformAvailability.unsupported;
+  }
+
+  /// Sends the user to the store page for installing or updating Health
+  /// Connect. Android only, a no-op elsewhere.
+  Future<void> openHealthConnectInstall() => _health.installHealthConnect();
+
+  /// Whether the platform grants access to records older than 30 days.
+  ///
+  /// Android gates the history behind its own permission; without it Health
+  /// Connect silently limits every read to the last 30 days, which would make
+  /// the first import look complete while missing everything before that.
+  /// Always true on iOS, which has no such gate.
+  Future<bool> ensureHistoryAuthorized() async {
+    if (kIsWeb || !Platform.isAndroid) {
+      return true;
+    }
+    return _health.requestHealthDataHistoryAuthorization();
   }
 
   /// Whether READ access to [types] is known to be missing, without ever
@@ -94,8 +144,12 @@ class HealthRepository {
       }
     }
 
-    if (Platform.isAndroid) {
-      await _health.requestHealthDataHistoryAuthorization();
+    // Not fatal: without it the import still works, it just cannot reach
+    // further back than 30 days
+    if (!await ensureHistoryAuthorized()) {
+      _logger.warning(
+        'Access to the health history was not granted, only the last 30 days can be imported',
+      );
     }
     return true;
   }

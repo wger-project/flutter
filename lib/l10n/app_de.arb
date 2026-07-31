@@ -1171,5 +1171,8 @@
     "healthSyncNow": "Jetzt synchronisieren",
     "healthSyncPermissionMissing": "{platform} gibt deine Daten nicht frei",
     "healthSyncGrantAccess": "Zum erneuten Erlauben antippen",
-    "healthSyncFailed": "Der letzte Abgleich konnte nicht abgeschlossen werden"
+    "healthSyncFailed": "Der letzte Abgleich konnte nicht abgeschlossen werden",
+    "healthConnectInstall": "Health Connect installieren",
+    "healthConnectUpdate": "Health Connect aktualisieren",
+    "healthConnectRequired": "Health Connect wird benötigt, um Körpermesswerte zu importieren"
 }

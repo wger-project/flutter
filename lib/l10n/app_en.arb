@@ -1625,6 +1625,18 @@
   "@healthSyncFailed": {
     "description": "Status line under the health sync toggle after a failed sync"
   },
+  "healthConnectInstall": "Install Health Connect",
+  "@healthConnectInstall": {
+    "description": "Action shown instead of the health sync toggle when Health Connect is missing on Android"
+  },
+  "healthConnectUpdate": "Update Health Connect",
+  "@healthConnectUpdate": {
+    "description": "Action shown instead of the health sync toggle when the installed Health Connect is too old"
+  },
+  "healthConnectRequired": "Health Connect is needed to import body measurements",
+  "@healthConnectRequired": {
+    "description": "Explanation below the install/update Health Connect action"
+  },
   "health": "Health",
   "@health": {
     "description": "Section header for health-related settings"

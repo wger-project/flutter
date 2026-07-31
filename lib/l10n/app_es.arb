@@ -1210,5 +1210,8 @@
     "healthSyncNow": "Sincronizar ahora",
     "healthSyncPermissionMissing": "{platform} no comparte tus datos",
     "healthSyncGrantAccess": "Toca para volver a dar acceso",
-    "healthSyncFailed": "No se ha podido completar la última sincronización"
+    "healthSyncFailed": "No se ha podido completar la última sincronización",
+    "healthConnectInstall": "Instalar Health Connect",
+    "healthConnectUpdate": "Actualizar Health Connect",
+    "healthConnectRequired": "Health Connect es necesario para importar medidas corporales"
 }

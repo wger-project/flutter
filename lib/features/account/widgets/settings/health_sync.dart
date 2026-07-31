@@ -21,6 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/core/formatting/formatting.dart';
+import 'package:wger/features/health/providers/health_repository.dart';
 import 'package:wger/features/health/providers/health_sync.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
@@ -33,7 +34,7 @@ class HealthSyncSettingsTile extends ConsumerStatefulWidget {
 
 class _HealthSyncSettingsTileState extends ConsumerState<HealthSyncSettingsTile> {
   final _logger = Logger('HealthSyncSettingsTile');
-  bool? _isAvailable;
+  HealthPlatformAvailability? _availability;
 
   @override
   void initState() {
@@ -43,23 +44,34 @@ class _HealthSyncSettingsTileState extends ConsumerState<HealthSyncSettingsTile>
 
   Future<void> _checkAvailability() async {
     final notifier = ref.read(healthSyncProvider.notifier);
-    final available = await notifier.isAvailable();
+    final availability = await notifier.availability();
     if (mounted) {
-      setState(() => _isAvailable = available);
+      setState(() => _availability = availability);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    // Hide entirely (including the section header) if the platform check
-    // hasn't completed or no health platform is available
-    if (_isAvailable != true) {
+    // Hide entirely (including the section header) while the platform check
+    // is running, and on platforms that have no health platform at all
+    if (_availability == null || _availability == HealthPlatformAvailability.unsupported) {
       return const SizedBox.shrink();
     }
 
     final syncState = ref.watch(healthSyncProvider);
 
     final i18n = AppLocalizations.of(context);
+
+    if (_availability != HealthPlatformAvailability.available) {
+      return Column(
+        children: [
+          ListTile(
+            title: Text(i18n.health, style: Theme.of(context).textTheme.headlineSmall),
+          ),
+          _installTile(i18n),
+        ],
+      );
+    }
 
     return Column(
       children: [
@@ -120,6 +132,23 @@ class _HealthSyncSettingsTileState extends ConsumerState<HealthSyncSettingsTile>
 
   String get _platformName =>
       defaultTargetPlatform == TargetPlatform.iOS ? 'Apple Health' : 'Health Connect';
+
+  /// Offered instead of the toggle when Health Connect is missing or too old:
+  /// hiding the feature would leave the user with no idea it exists, or why
+  /// it disappeared.
+  Widget _installTile(AppLocalizations i18n) {
+    final needsUpdate = _availability == HealthPlatformAvailability.updateRequired;
+    return ListTile(
+      leading: const Icon(Icons.download),
+      title: Text(needsUpdate ? i18n.healthConnectUpdate : i18n.healthConnectInstall),
+      subtitle: Text(i18n.healthConnectRequired),
+      onTap: () async {
+        await ref.read(healthSyncProvider.notifier).openHealthConnectInstall();
+        // The store leaves the app, so re-check what came back
+        await _checkAvailability();
+      },
+    );
+  }
 
   /// Status line under the toggle: what the last sync did or why it didn't,
   /// a spinner while one is running, and tapping it syncs (or, when the

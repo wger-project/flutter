@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wger/features/account/widgets/settings/health_sync.dart';
+import 'package:wger/features/health/providers/health_repository.dart';
 import 'package:wger/features/health/providers/health_sync.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
@@ -28,16 +29,28 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 class _FakeHealthSyncNotifier extends HealthSyncNotifier {
   final int? enableSyncResult;
   final HealthSyncState initialState;
+  final HealthPlatformAvailability platformAvailability;
   int syncCalls = 0;
   int retryCalls = 0;
+  int installCalls = 0;
 
-  _FakeHealthSyncNotifier(this.enableSyncResult, {this.initialState = const HealthSyncState()});
+  _FakeHealthSyncNotifier(
+    this.enableSyncResult, {
+    this.initialState = const HealthSyncState(),
+    this.platformAvailability = HealthPlatformAvailability.available,
+  });
 
   @override
   HealthSyncState build() => initialState;
 
   @override
-  Future<bool> isAvailable() async => true;
+  Future<bool> isAvailable() async => platformAvailability == HealthPlatformAvailability.available;
+
+  @override
+  Future<HealthPlatformAvailability> availability() async => platformAvailability;
+
+  @override
+  Future<void> openHealthConnectInstall() async => installCalls++;
 
   @override
   Future<int?> enableSync() async {
@@ -186,6 +199,52 @@ void main() {
     // Treated like a denial instead of bubbling into the global error dialog
     expect(tester.takeException(), isNull);
     expect(find.text('Access to health data was not granted'), findsOneWidget);
+  });
+
+  testWidgets('offers installing Health Connect instead of hiding the feature', (tester) async {
+    final fake = _FakeHealthSyncNotifier(
+      null,
+      platformAvailability: HealthPlatformAvailability.notInstalled,
+    );
+    await tester.pumpWidget(createTile(fake));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Install Health Connect'), findsOneWidget);
+    expect(find.byType(SwitchListTile), findsNothing);
+
+    await tester.tap(find.text('Install Health Connect'));
+    await tester.pumpAndSettle();
+
+    expect(fake.installCalls, 1);
+  });
+
+  testWidgets('offers updating an outdated Health Connect', (tester) async {
+    await tester.pumpWidget(
+      createTile(
+        _FakeHealthSyncNotifier(
+          null,
+          platformAvailability: HealthPlatformAvailability.updateRequired,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Update Health Connect'), findsOneWidget);
+  });
+
+  testWidgets('stays hidden where no health platform exists', (tester) async {
+    await tester.pumpWidget(
+      createTile(
+        _FakeHealthSyncNotifier(
+          null,
+          platformAvailability: HealthPlatformAvailability.unsupported,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Health'), findsNothing);
+    expect(find.byType(ListTile), findsNothing);
   });
 
   testWidgets('shows a spinner and blocks interaction while syncing', (tester) async {

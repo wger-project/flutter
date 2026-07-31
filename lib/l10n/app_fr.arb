@@ -1181,5 +1181,8 @@
     "healthSyncNow": "Synchroniser maintenant",
     "healthSyncPermissionMissing": "{platform} ne partage pas vos données",
     "healthSyncGrantAccess": "Appuyez pour autoriser l'accès à nouveau",
-    "healthSyncFailed": "La dernière synchronisation n'a pas pu être terminée"
+    "healthSyncFailed": "La dernière synchronisation n'a pas pu être terminée",
+    "healthConnectInstall": "Installer Health Connect",
+    "healthConnectUpdate": "Mettre à jour Health Connect",
+    "healthConnectRequired": "Health Connect est nécessaire pour importer les mensurations"
 }
