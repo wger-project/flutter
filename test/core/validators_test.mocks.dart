@@ -5062,17 +5062,6 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
-  String chartDuringPlanTitle(String? chartName, String? planName) =>
-      (super.noSuchMethod(
-            Invocation.method(#chartDuringPlanTitle, [chartName, planName]),
-            returnValue: _i3.dummyValue<String>(
-              this,
-              Invocation.method(#chartDuringPlanTitle, [chartName, planName]),
-            ),
-          )
-          as String);
-
-  @override
   String chartLastYearTitle(String? name) =>
       (super.noSuchMethod(
             Invocation.method(#chartLastYearTitle, [name]),

@@ -26,6 +26,7 @@ import 'package:wger/features/nutrition/widgets/charts.dart';
 import 'package:wger/features/nutrition/widgets/macro_nutrients_table.dart';
 import 'package:wger/features/nutrition/widgets/meal.dart';
 import 'package:wger/features/nutrition/widgets/nutritional_diary_table.dart';
+import 'package:wger/features/nutrition/widgets/plan_weight_chart.dart';
 import 'package:wger/features/weight/providers/body_weight_provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
@@ -142,6 +143,7 @@ class NutritionalPlanDetailWidget extends riverpod.ConsumerWidget {
                 ],
               ),
             ),
+          PlanWeightChart(_nutritionalPlan),
         ],
       ),
     );
