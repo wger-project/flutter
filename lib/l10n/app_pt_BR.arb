@@ -115,10 +115,6 @@
         "description": "A set in a workout plan"
     },
     "noMeasurementEntries": "Você não tem entradas de medição",
-    "newSet": "Nova séries",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
-    },
     "impression": "Impressão",
     "@impression": {
         "description": "General impression (e.g. for a workout session) such as good, bad, etc."
@@ -976,7 +972,6 @@
             }
         }
     },
-    "identicalExercisePleaseDiscard": "Se você notar um exercício idêntico ao que você está adicionando, descarte o rascunho e edite o exercício.",
     "checkInformationBeforeSubmitting": "Verifique se as informações inseridas estão corretas antes de enviar o exercício",
     "imageDetailsTitle": "Detalhes da imagem",
     "@imageDetailsTitle": {
@@ -1027,21 +1022,10 @@
             }
         }
     },
-    "imageFormatNotSupportedDetail": "Imagens {imageFormat} ainda não são suportadas.",
-    "@imageFormatNotSupportedDetail": {
-        "description": "Label shown on the image preview container when image format is not supported",
-        "type": "text",
-        "placeholders": {
-            "imageFormat": {
-                "type": "String"
-            }
-        }
-    },
     "add": "adicionar",
     "@add": {
         "description": "Add button text"
     },
-    "superset": "Supersérie",
     "enterTextInLanguage": "Por favor, insira o texto no idioma correto!",
     "endWorkout": "Terminar treino",
     "@endWorkout": {

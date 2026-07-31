@@ -11,10 +11,6 @@
             }
         }
     },
-    "newSet": "புதிய தொகுப்பு",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
-    },
     "gymMode": "சிம் பயன்முறை",
     "@gymMode": {
         "description": "Label when starting the gym mode"

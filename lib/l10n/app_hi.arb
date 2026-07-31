@@ -105,8 +105,6 @@
   "@workoutSession": {},
   "newDay": "नया दिन",
   "@newDay": {},
-  "newSet": "नया सेट",
-  "@newSet": {},
   "selectExercises": "यदि आप एक सुपरसेट करना चाहते हैं तो आप कई अभ्यास खोज सकते हैं, उन्हें एक साथ समूहीकृत किया जाएगा",
   "@selectExercises": {},
   "gymMode": "जिम मोड",

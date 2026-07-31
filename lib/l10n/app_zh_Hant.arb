@@ -311,10 +311,6 @@
     },
     "weightUnit": "重量單位",
     "newDay": "新的一天",
-    "newSet": "新增一組",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
-    },
     "start": "開始",
     "@start": {
         "description": "Label on button to start the gym mode (i.e., an imperative)"
@@ -944,7 +940,6 @@
             }
         }
     },
-    "identicalExercisePleaseDiscard": "如果你發現有訓練動作與你正在新增的動作相同，請捨棄目前的草稿，改為編輯該訓練動作。",
     "checkInformationBeforeSubmitting": "提交訓練動作前，請確認你輸入的資訊正確無誤。",
     "imageDetailsTitle": "圖片資訊",
     "@imageDetailsTitle": {
@@ -961,19 +956,8 @@
             }
         }
     },
-    "imageFormatNotSupportedDetail": "目前尚不支援 {imageFormat} 格式的圖片。",
-    "@imageFormatNotSupportedDetail": {
-        "description": "Label shown on the image preview container when image format is not supported",
-        "type": "text",
-        "placeholders": {
-            "imageFormat": {
-                "type": "String"
-            }
-        }
-    },
     "fitInWeekHelp": "啟用後，訓練日會以每週為週期循環；若未啟用，訓練日會依序進行，不受每週起始日影響。",
     "addSuperset": "新增超級組",
-    "superset": "超級組",
     "setHasNoExercises": "此組尚未加入任何動作！",
     "useBasicMarkdown": "您可以使用基本的 Markdown 語法來格式化文字",
     "simpleModeHelp": "編輯動作時，隱藏部分進階設定",

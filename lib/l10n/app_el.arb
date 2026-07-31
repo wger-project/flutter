@@ -283,10 +283,6 @@
   "@impression": {
     "description": "General impression (e.g. for a workout session) such as good, bad, etc."
   },
-  "newSet": "Νέο σετ",
-  "@newSet": {
-    "description": "Header when adding a new set to a workout day"
-  },
   "gymMode": "Λειτουργία γυμναστηρίου",
   "@gymMode": {
     "description": "Label when starting the gym mode"

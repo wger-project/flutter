@@ -123,10 +123,6 @@
         "description": "A (logged) workout session"
     },
     "newDay": "Nou dia",
-    "newSet": "Nova sèrie",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
-    },
     "selectExercises": "Si vols fer una supersèrie, pots cercar diversos exercicis: s'agruparan junts",
     "plateCalculator": "Plaques",
     "@plateCalculator": {
@@ -424,16 +420,6 @@
     "imageFormatNotSupported": "{imageFormat} no és compatible",
     "@imageFormatNotSupported": {
         "description": "Label shown on the error container when image format is not supported",
-        "type": "text",
-        "placeholders": {
-            "imageFormat": {
-                "type": "String"
-            }
-        }
-    },
-    "imageFormatNotSupportedDetail": "Les imatges {imageFormat} encara no són compatibles.",
-    "@imageFormatNotSupportedDetail": {
-        "description": "Label shown on the image preview container when image format is not supported",
         "type": "text",
         "placeholders": {
             "imageFormat": {
@@ -973,7 +959,6 @@
             }
         }
     },
-    "identicalExercisePleaseDiscard": "Si notes que ja hi ha un exercici idèntic al que estàs afegint, descarta l'esborrany i edita l'exercici.",
     "checkInformationBeforeSubmitting": "Comprova que la informació introduïda es correcte abans d'enviar l'exercici",
     "imageDetailsTitle": "Detalls de la imatge",
     "@imageDetailsTitle": {
@@ -1021,7 +1006,6 @@
     "fitInWeek": "Horari setmanal fixe",
     "fitInWeekHelp": "Si està actiu, els dies es repetiran en un cicle setmanal, d'altre manera els dies seran seqüencials sense importar l'inici d'una nova setmana.",
     "addSuperset": "Afegir superserie",
-    "superset": "Super-serie",
     "setHasProgression": "La serie té progressió",
     "setHasProgressionWarning": "Ara mateix no és possible editar totes les configuracions per a una serie o configurar la progressió automàtica des de l'aplicació mòbil. Per ara, usa l'aplicació web.",
     "setHasNoExercises": "Aquesta serie encara no te exercicis!",

@@ -207,10 +207,6 @@
   },
   "newDay": "Yeni gün",
   "@newDay": {},
-  "newSet": "Yeni set",
-  "@newSet": {
-    "description": "Header when adding a new set to a workout day"
-  },
   "gymMode": "Spor salonu modu",
   "@gymMode": {
     "description": "Label when starting the gym mode"

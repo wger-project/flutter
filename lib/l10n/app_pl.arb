@@ -170,10 +170,6 @@
     "@workoutSession": {
         "description": "A (logged) workout session"
     },
-    "newSet": "Nowa seria",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
-    },
     "selectExercises": "Jeśli chcesz zrobić super serię, możesz wyszukać kilka ćwiczeń, zostaną one zgrupowane razem",
     "gymMode": "Tryb treningu",
     "@gymMode": {

@@ -105,10 +105,6 @@
     "cancel": "Abbrechen",
     "save": "Speichern",
     "description": "Beschreibung",
-    "newSet": "Neuer Satz",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
-    },
     "newDay": "Neuer Tag",
     "workoutSession": "Trainingseinheit",
     "@workoutSession": {
@@ -319,16 +315,6 @@
     "imageFormatNotSupported": "{imageFormat} wird nicht unterstützt",
     "@imageFormatNotSupported": {
         "description": "Label shown on the error container when image format is not supported",
-        "type": "text",
-        "placeholders": {
-            "imageFormat": {
-                "type": "String"
-            }
-        }
-    },
-    "imageFormatNotSupportedDetail": "{imageFormat}-Bilder werden noch nicht unterstützt.",
-    "@imageFormatNotSupportedDetail": {
-        "description": "Label shown on the image preview container when image format is not supported",
         "type": "text",
         "placeholders": {
             "imageFormat": {
@@ -871,7 +857,6 @@
         "description": "When a nutrition plan has no pre-defined end date"
     },
     "overview": "Überblick",
-    "identicalExercisePleaseDiscard": "Wenn Sie eine Übung entdecken, die mit der von Ihnen hinzugefügten identisch ist, verwerfen Sie bitte Ihren Entwurf und bearbeiten Sie stattdessen diese Übung.",
     "checkInformationBeforeSubmitting": "Bitte überprüfe, ob die eingegebenen Informationen korrekt sind, bevor du die Übung abschickst",
     "imageDetailsTitle": "Bilddetails",
     "@imageDetailsTitle": {
@@ -959,7 +944,6 @@
             }
         }
     },
-    "superset": "Supersatz",
     "isVegan": "Vegan",
     "isVegetarian": "Vegetarisch",
     "filter": "Filtern",

@@ -358,10 +358,6 @@
     "@musclesSecondary": {
         "description": "secondary muscles trained by an exercise"
     },
-    "newSet": "新增训练日",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
-    },
     "plateCalculatorNotDivisible": "达不到预定重量",
     "@plateCalculatorNotDivisible": {
         "description": "Error message when the current weight is not reachable with plates (e.g. 33.1 kg)"

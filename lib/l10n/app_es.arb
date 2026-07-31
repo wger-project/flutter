@@ -168,10 +168,6 @@
         "description": "Label when starting the gym mode"
     },
     "selectExercises": "Si quieres hacer una superserie puedes buscar varios ejercicios, se agruparán juntos",
-    "newSet": "Nueva serie",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
-    },
     "newDay": "Nuevo día",
     "workoutSession": "Sesión de entrenamiento",
     "@workoutSession": {
@@ -307,16 +303,6 @@
     "imageFormatNotSupported": "{imageFormat} no compatible",
     "@imageFormatNotSupported": {
         "description": "Label shown on the error container when image format is not supported",
-        "type": "text",
-        "placeholders": {
-            "imageFormat": {
-                "type": "String"
-            }
-        }
-    },
-    "imageFormatNotSupportedDetail": "Las imágenes {imageFormat} aún no son compatibles.",
-    "@imageFormatNotSupportedDetail": {
-        "description": "Label shown on the image preview container when image format is not supported",
         "type": "text",
         "placeholders": {
             "imageFormat": {
@@ -853,7 +839,6 @@
         "description": "When a nutrition plan has no pre-defined end date"
     },
     "overview": "Descripción general",
-    "identicalExercisePleaseDiscard": "Si observa un ejercicio idéntico al que está agregando, descarte el borrador y edítelo en su lugar.",
     "checkInformationBeforeSubmitting": "Por favor verifique que la información que ingresó sea correcta antes de enviar el ejercicio",
     "imageDetailsTitle": "Detalles de la imagen",
     "@imageDetailsTitle": {
@@ -958,7 +943,6 @@
             }
         }
     },
-    "superset": "Superserie",
     "endWorkout": "Finalizar entrenamiento",
     "@endWorkout": {
         "description": "Use the imperative, label on button to finish the current workout in gym mode"

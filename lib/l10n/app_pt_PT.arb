@@ -405,10 +405,6 @@
     "noIngredientsDefined": "Ainda não há ingredientes definidos",
     "routineDays": "Dias na rotina",
     "newDay": "Novo dia",
-    "newSet": "Nova série",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
-    },
     "kcalValue": "{value} kcal",
     "@kcalValue": {
         "description": "A value in kcal, e.g. 500 kcal",

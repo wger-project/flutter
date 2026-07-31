@@ -358,10 +358,6 @@
   "resultingRoutine": "Resulting routine",
   "newDay": "New day",
   "@newDay": {},
-  "newSet": "New set",
-  "@newSet": {
-    "description": "Header when adding a new set to a workout day"
-  },
   "personalRecords": "Personal records",
   "gymMode": "Gym mode",
   "@gymMode": {
@@ -432,16 +428,16 @@
     "description": "Label for the button that adds a set (to a workout day)"
   },
   
-"gymModeLogScope": "Previous logs",
-"gymModeLogScopeHelp": "Which logs to show as reference while training",
-"gymModeLogScopeCurrentRoutine": "Current routine",
-"gymModeLogScopeWeeks": "Last {weeks} weeks",
-"@gymModeLogScopeWeeks": {
+  "gymModeLogScope": "Previous logs",
+  "gymModeLogScopeHelp": "Which logs to show as reference while training",
+  "gymModeLogScopeCurrentRoutine": "Current routine",
+  "gymModeLogScopeWeeks": "Last {weeks} weeks",
+  "@gymModeLogScopeWeeks": {
   "placeholders": {
     "weeks": { "type": "int" }
   }
 },
-"gymModeDistinctLogs": "Hide duplicate values",
+  "gymModeDistinctLogs": "Hide duplicate values",
   "addMeal": "Add meal",
   "@addMeal": {},
   "meal": "Meal",
@@ -1048,7 +1044,6 @@
   "@close": {
     "description": "Translation for close"
   },
-  "identicalExercisePleaseDiscard": "If you notice an exercise that is identical to the one you're adding, please discard your draft and edit that exercise instead.",
   "checkInformationBeforeSubmitting": "Please check that the information you entered is correct before submitting the exercise",
   "add_exercise_image_license": "Images must be compatible with the CC BY SA license. If in doubt, upload only photos you've taken yourself.",
   "imageDetailsTitle": "Image details",
@@ -1103,16 +1098,6 @@
           }
       }
   },
-  "imageFormatNotSupportedDetail": "{imageFormat} images are not supported yet.",
-  "@imageFormatNotSupportedDetail": {
-      "description": "Label shown on the image preview container when image format is not supported",
-      "type": "text",
-      "placeholders": {
-          "imageFormat": {
-              "type": "String"
-          }
-      }
-  },
   "add": "add",
   "@add": {
     "description": "Add button text"
@@ -1159,7 +1144,6 @@
   "fitInWeek": "Fixed weekly schedule",
   "fitInWeekHelp": "If enabled, the days will repeat in a weekly cycle, otherwise the days will follow sequentially without regards to the start of a new week.",
   "addSuperset": "Add superset",
-  "superset": "Superset",
   "setHasNoExercises": "This set has no exercises yet!",
   "contributeExercise": "Contribute an exercise",
   "translation": "Translation",

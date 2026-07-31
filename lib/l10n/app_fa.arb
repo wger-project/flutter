@@ -155,10 +155,6 @@
     },
     "newDay": "روز جدید",
     "@newDay": {},
-    "newSet": "مجموعه جدید",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
-    },
     "selectExercises": "اگر می‌خواهید مجموعه ای از حرکات را انجام دهید، می‌توانید چندین تمرین را جستجو کنید، آنها در یک گروه قرار می‌گیرند",
     "@selectExercises": {},
     "gymMode": "حالت باشگاه",

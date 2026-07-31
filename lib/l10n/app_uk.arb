@@ -194,10 +194,6 @@
     "@notes": {
         "description": "Personal notes, e.g. for a workout session"
     },
-    "newSet": "Новий набір",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
-    },
     "measurementCategoriesHelpText": "Категорія вимірювання, така як \"біцепс\" або \"жир тіла\"",
     "time": "Час",
     "@time": {
@@ -433,16 +429,6 @@
     "imageFormatNotSupported": "{imageFormat} не підтримується",
     "@imageFormatNotSupported": {
         "description": "Label shown on the error container when image format is not supported",
-        "type": "text",
-        "placeholders": {
-            "imageFormat": {
-                "type": "String"
-            }
-        }
-    },
-    "imageFormatNotSupportedDetail": "Зображення {imageFormat} поки що не підтримуються.",
-    "@imageFormatNotSupportedDetail": {
-        "description": "Label shown on the image preview container when image format is not supported",
         "type": "text",
         "placeholders": {
             "imageFormat": {
@@ -850,7 +836,6 @@
         "description": "When a nutrition plan has no pre-defined end date"
     },
     "overview": "Огляд",
-    "identicalExercisePleaseDiscard": "Якщо ви помітили вправу, ідентичну тій, яку ви додаєте, будь ласка, відкиньте свій чернетку та відредагуйте цю вправу.",
     "checkInformationBeforeSubmitting": "Будь ласка, перевірте правильність введеної вами інформації, перш ніж надсилати вправу",
     "enterTextInLanguage": "Будь ласка, введіть текст правильною мовою!",
     "imageDetailsTitle": "Деталі зображення",
@@ -988,7 +973,6 @@
             }
         }
     },
-    "superset": "Суперсет",
     "dashboardWidgets": "Віджети панелі інструментів",
     "trophies": "Трофеї",
     "topSet": "Верхній набір: {value}",

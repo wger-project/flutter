@@ -399,10 +399,6 @@
         "description": "Label for the popup with general app options"
     },
     "sameRepetitions": "Если количество повторений и вес не меняются от подхода к подходу, достаточно указать данные один раз. Например, для 4 подходов введите 10 повторений, и это автоматически преобразуется в '4 x 10'.",
-    "newSet": "Новый подход (сет)",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
-    },
     "dataCopied": "Данные копируются в новую запись",
     "@dataCopied": {
         "description": "Snackbar message to show on copying data to a new log entry"

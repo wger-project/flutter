@@ -389,10 +389,6 @@
         "description": "A (logged) workout session"
     },
     "newDay": "Novi dan",
-    "newSet": "Nova serija",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
-    },
     "selectExercises": "Ako želiš izraditi nasdkup, traži i odaberi vježbe koje će se grupirati u jednu grupu",
     "gymMode": "Modus teretane",
     "@gymMode": {
@@ -937,7 +933,6 @@
     "aboutContributeTitle": "Doprinesi",
     "aboutContributeText": "Sve vrste doprinosa su dobrodošle. Bilo da si programer, prevoditelj ili jednostavno strastveni ljubitelj fitnessa, svaka podrška je dobrodošla!",
     "aboutBugsListTitle": "Prijavi problem ili predloži funkciju",
-    "identicalExercisePleaseDiscard": "Ako primijetiš vježbu koja je identična onoj koju dodaješ, odbaci svoju vježbu i umjesto toga uredi tu vježbu.",
     "checkInformationBeforeSubmitting": "Provjeri točnost tvojih unesenih podataka prije slanja vježbe",
     "imageDetailsTitle": "Detalji slike",
     "@imageDetailsTitle": {
@@ -981,16 +976,6 @@
     "imageFormatNotSupported": "{imageFormat} nije podržani format",
     "@imageFormatNotSupported": {
         "description": "Label shown on the error container when image format is not supported",
-        "type": "text",
-        "placeholders": {
-            "imageFormat": {
-                "type": "String"
-            }
-        }
-    },
-    "imageFormatNotSupportedDetail": "{imageFormat} slike još nisu podržane.",
-    "@imageFormatNotSupportedDetail": {
-        "description": "Label shown on the image preview container when image format is not supported",
         "type": "text",
         "placeholders": {
             "imageFormat": {
@@ -1061,7 +1046,6 @@
             }
         }
     },
-    "superset": "Super-serija",
     "trophies": "Trofeje",
     "productNotFoundOpenFoodFacts": "Dodaj ovaj proizvod na Open Food Facts i pomogni zajednici!",
     "@productNotFoundOpenFoodFacts": {

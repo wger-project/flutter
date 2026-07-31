@@ -165,10 +165,6 @@
         "description": "A (logged) workout session"
     },
     "newDay": "Hari baru",
-    "newSet": "Set baru",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
-    },
     "selectExercises": "Jika Anda ingin melakukan superset, Anda dapat mencari beberapa latihan, mereka akan dikelompokkan bersama",
     "gymMode": "Mode gym",
     "@gymMode": {
@@ -995,7 +991,6 @@
     "@volume": {
         "description": "The volume of a workout or set, i.e. weight x reps"
     },
-    "identicalExercisePleaseDiscard": "Jika kamu menemukan latihan yang identik dengan yang sedang ditambahkan, harap batalkan draf kamu dan edit latihan tersebut.",
     "checkInformationBeforeSubmitting": "Pastikan informasi yang kamu masukkan sudah benar sebelum mengirimkan latihan",
     "imageDetailsTitle": "Detail gambar",
     "@imageDetailsTitle": {
@@ -1056,21 +1051,10 @@
             }
         }
     },
-    "imageFormatNotSupportedDetail": "Gambar {imageFormat} belum didukung.",
-    "@imageFormatNotSupportedDetail": {
-        "description": "Label shown on the image preview container when image format is not supported",
-        "type": "text",
-        "placeholders": {
-            "imageFormat": {
-                "type": "String"
-            }
-        }
-    },
     "add": "Tambah",
     "@add": {
         "description": "Add button text"
     },
-    "superset": "Superset",
     "useBasicMarkdown": "Kamu dapat menggunakan Markdown dasar untuk memformat teks",
     "editorBold": "Tebal",
     "@editorBold": {

@@ -135,10 +135,6 @@
   },
   "newDay": "יום חדש",
   "@newDay": {},
-  "newSet": "סט חדש",
-  "@newSet": {
-    "description": "Header when adding a new set to a workout day"
-  },
   "plateCalculator": "צלחות",
   "@plateCalculator": {
     "description": "Label used for the plate calculator in the gym mode"
