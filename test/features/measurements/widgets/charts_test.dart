@@ -164,6 +164,28 @@ void main() {
       expect(data.lineBarsData[2].spots.map((s) => s.y), [60, 70]);
     });
 
+    testWidgets('only the measured series gets a band, not its average', (tester) async {
+      // Condensing attaches a range to every point, so a downsampled average
+      // would otherwise be drawn with a band of its own. The band means "this
+      // is the spread of the measurements", which a smoothed line has not.
+      final ranged = [
+        MeasurementChartEntry(60, DateTime(2026, 1, 1), min: 50, max: 80),
+        MeasurementChartEntry(70, DateTime(2026, 1, 2), min: 55, max: 95),
+      ];
+      await tester.pumpWidget(
+        _wrap(
+          MeasurementChartWidgetFl([
+            MeasurementChartSeries(ranged, MeasurementSeriesRole.raw),
+            MeasurementChartSeries(ranged, MeasurementSeriesRole.average),
+            MeasurementChartSeries(ranged, MeasurementSeriesRole.trend),
+          ], 'bpm'),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(chartData(tester).betweenBarsData, hasLength(1));
+    });
+
     testWidgets('no band when only some points carry a range', (tester) async {
       await tester.pumpWidget(
         _wrap(

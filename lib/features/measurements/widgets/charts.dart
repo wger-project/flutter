@@ -199,7 +199,17 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
 
       // Points that summarise a range get a band between their bounds. The
       // bounds themselves are invisible; only the fill between them shows.
-      final ranged = series.entries.where((e) => e.hasRange).toList();
+      //
+      // Only for the measured series: a band says "this is the spread of the
+      // measurements", which a derived line has none of. Condensing attaches a
+      // range to every point, so an average that got downsampled along with
+      // its values would otherwise be given a second band of its own.
+      final carriesSpread =
+          series.role == MeasurementSeriesRole.raw ||
+          series.role == MeasurementSeriesRole.component;
+      final ranged = carriesSpread
+          ? series.entries.where((e) => e.hasRange).toList()
+          : const <MeasurementChartEntry>[];
       return _ResolvedSeries(
         line,
         series.label,

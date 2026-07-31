@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
@@ -79,6 +80,27 @@ void main() {
 
       expect(find.byType(MeasurementChartWidgetFl), findsOneWidget);
       expect(find.byType(MeasurementBarChartWidgetFl), findsNothing);
+    });
+
+    testWidgets('a condensed history draws one band, around the values', (tester) async {
+      // Past ~200 points both the values and their average are condensed, and
+      // condensing attaches a range to every point. Only the values may be
+      // given a band; the average must not get a second one.
+      final many = [
+        for (var i = 0; i < 400; i++)
+          MeasurementChartEntry(60 + i % 7, DateTime(2026, 1, 1).add(Duration(days: i))),
+      ];
+      final widget = buildChartForMetricType(
+        MetricType.custom,
+        many,
+        moving7dAverage(many),
+        'kg',
+      );
+      await tester.pumpWidget(_wrapChart(widget));
+      await tester.pumpAndSettle();
+
+      final data = tester.widget<LineChart>(find.byType(LineChart)).data;
+      expect(data.betweenBarsData, hasLength(1));
     });
 
     testWidgets('energy -> MeasurementBarChartWidgetFl', (tester) async {
