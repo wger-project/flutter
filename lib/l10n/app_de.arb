@@ -1166,6 +1166,7 @@
     "metricHeight": "Körpergröße",
     "metricBloodPressure": "Blutdruck",
     "metricHeartRate": "Herzfrequenz",
+    "metricRestingHeartRate": "Ruhepuls",
     "metricSteps": "Schritte",
     "metricDistance": "Distanz",
     "metricEnergy": "Energie",

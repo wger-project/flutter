@@ -2237,6 +2237,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get metricRestingHeartRate =>
+      (super.noSuchMethod(
+            Invocation.getter(#metricRestingHeartRate),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#metricRestingHeartRate),
+            ),
+          )
+          as String);
+
+  @override
   String get metricSteps =>
       (super.noSuchMethod(
             Invocation.getter(#metricSteps),

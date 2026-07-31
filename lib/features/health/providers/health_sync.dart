@@ -22,6 +22,7 @@ import 'package:health_bridge/health.dart';
 import 'package:logging/logging.dart';
 import 'package:powersync/powersync.dart' as ps;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:wger/core/consts.dart';
 import 'package:wger/core/shared_preferences.dart';
 import 'package:wger/features/health/models/health_metric.dart';
 import 'package:wger/features/health/models/health_reading.dart';
@@ -173,12 +174,9 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
         }
 
         for (final (category, metricReadings) in targets) {
-          final (importedCount, newest) = await _importReadings(
-            metric,
-            metricReadings,
-            category,
-            source,
-          );
+          final (importedCount, newest) = metric.aggregateDaily
+              ? await _importDailyAggregates(metric, metricReadings, category, source)
+              : await _importReadings(metric, metricReadings, category, source);
           synced += importedCount;
           if (newest != null && (latest == null || newest.isAfter(latest))) {
             latest = newest;
@@ -262,6 +260,66 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
       synced++;
       if (latest == null || reading.date.isAfter(latest)) {
         latest = reading.date;
+      }
+    }
+    return (synced, latest);
+  }
+
+  /// Imports [metricReadings] as one entry per calendar day: the day's
+  /// average as the value, min/max/sample count in extra_data. Days are keyed
+  /// by a synthetic externalId (`day-YYYY-MM-DD`), so a re-read within the
+  /// overlap window updates the aggregate in place when late samples change
+  /// it (the current day keeps growing until midnight). Returns the number of
+  /// written entries and the newest processed sample date.
+  Future<(int, DateTime?)> _importDailyAggregates(
+    HealthMetric metric,
+    Iterable<HealthReading> metricReadings,
+    MeasurementCategory category,
+    String source,
+  ) async {
+    var synced = 0;
+    DateTime? latest;
+    final byDay = groupBy(
+      metricReadings,
+      (r) => DateTime(r.date.year, r.date.month, r.date.day),
+    );
+
+    for (final MapEntry(key: day, value: samples) in byDay.entries) {
+      final values = samples.map((r) => metric.toCategoryValue(r.value)).toList();
+      // Round like the raw import: the server stores Decimal with 2 places
+      final value = (values.average * 100).roundToDouble() / 100;
+      final extraData = <String, dynamic>{
+        'min': values.min,
+        'max': values.max,
+        'sample_count': values.length,
+        'record_type': metric.dataType.name,
+      };
+
+      final externalId = 'day-${DateFormatLists.format(day)}';
+      final existing = category.entries.firstWhereOrNull((e) => e.externalId == externalId);
+      if (existing == null) {
+        await _measurements.addLocalDrift(
+          MeasurementEntry(
+            categoryId: category.id!,
+            date: day,
+            value: value,
+            notes: '',
+            source: source,
+            externalId: externalId,
+            extraData: extraData,
+          ),
+        );
+        synced++;
+      } else if (existing.value != value ||
+          !const MapEquality<String, dynamic>().equals(existing.extraData, extraData)) {
+        await _measurements.updateLocalDrift(existing.copyWith(value: value, extraData: extraData));
+        synced++;
+      }
+
+      for (final sample in samples) {
+        if (latest == null || sample.date.isAfter(latest)) {
+          latest = sample.date;
+        }
       }
     }
     return (synced, latest);

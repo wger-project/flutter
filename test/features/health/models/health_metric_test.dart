@@ -26,7 +26,7 @@ HealthMetric _metric(MetricType type) => healthMetrics.firstWhere((m) => m.metri
 
 void main() {
   group('Enabled metric set', () {
-    test('only body fat, height, body weight and blood pressure are imported in V1', () {
+    test('only the V1 sample metrics are imported', () {
       expect(
         enabledHealthMetrics.map((m) => m.metricType),
         containsAll([
@@ -34,9 +34,17 @@ void main() {
           MetricType.height,
           MetricType.bodyWeight,
           MetricType.bloodPressure,
+          MetricType.heartRate,
+          MetricType.restingHeartRate,
         ]),
       );
-      expect(enabledHealthMetrics.length, 4);
+      expect(enabledHealthMetrics.length, 6);
+    });
+
+    test('only raw heart rate is aggregated per day', () {
+      expect(_metric(MetricType.heartRate).aggregateDaily, isTrue);
+      // The platforms compute the resting rate per day themselves
+      expect(_metric(MetricType.restingHeartRate).aggregateDaily, isFalse);
     });
 
     test('blood pressure reads both component types', () {

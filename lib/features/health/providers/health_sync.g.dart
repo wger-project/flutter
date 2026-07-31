@@ -56,7 +56,7 @@ final class HealthSyncNotifierProvider
   }
 }
 
-String _$healthSyncNotifierHash() => r'f301d60a828e5af34058c6aa21e2c41f62ec558b';
+String _$healthSyncNotifierHash() => r'6f1925f4c1da0ef550ce724b78748f3f53e6818e';
 
 /// Imports body metrics from Apple Health / Health Connect into measurement
 /// categories. Read-only: reads the platform (via [HealthRepository]), writes to

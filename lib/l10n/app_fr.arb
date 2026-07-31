@@ -1176,6 +1176,7 @@
     "metricHeight": "Taille",
     "metricBloodPressure": "Pression artérielle",
     "metricHeartRate": "Fréquence cardiaque",
+    "metricRestingHeartRate": "Fréquence cardiaque au repos",
     "metricSteps": "Pas",
     "metricDistance": "Distance",
     "metricEnergy": "Énergie",

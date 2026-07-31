@@ -48,6 +48,7 @@ void main() {
     when(health.ensureAuthorized(any)).thenAnswer((_) async => true);
     when(health.sourceName).thenReturn('apple');
     when(measurements.addLocalDrift(any)).thenAnswer((_) async {});
+    when(measurements.updateLocalDrift(any)).thenAnswer((_) async {});
     when(measurements.addLocalDriftCategory(any)).thenAnswer((_) async {});
   });
 
@@ -352,6 +353,195 @@ void main() {
         'source_value': 177.0,
         'source_unit': 'lb',
       });
+    });
+
+    test('aggregates heart rate into one entry per day', () async {
+      when(measurements.getAllOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
+      stubReadings([
+        HealthReading(
+          type: HealthDataType.HEART_RATE,
+          value: 60,
+          date: DateTime(2026, 1, 1, 8),
+          externalId: 'hr-1',
+        ),
+        HealthReading(
+          type: HealthDataType.HEART_RATE,
+          value: 71,
+          date: DateTime(2026, 1, 1, 20),
+          externalId: 'hr-2',
+        ),
+        HealthReading(
+          type: HealthDataType.HEART_RATE,
+          value: 64,
+          date: DateTime(2026, 1, 2, 9),
+          externalId: 'hr-3',
+        ),
+      ]);
+
+      final count = await createNotifier().syncOnAppOpen();
+
+      // Three samples become two daily entries
+      expect(count, 2);
+      final entries = verify(
+        measurements.addLocalDrift(captureAny),
+      ).captured.cast<MeasurementEntry>();
+      expect(entries, hasLength(2));
+
+      final day1 = entries.firstWhere((e) => e.externalId == 'day-2026-01-01');
+      expect(day1.date, DateTime(2026, 1, 1));
+      expect(day1.value, 65.5); // (60 + 71) / 2
+      expect(day1.extraData, {
+        'min': 60,
+        'max': 71,
+        'sample_count': 2,
+        'record_type': 'HEART_RATE',
+      });
+
+      final day2 = entries.firstWhere((e) => e.externalId == 'day-2026-01-02');
+      expect(day2.value, 64);
+      expect(day2.extraData?['sample_count'], 1);
+
+      // The watermark tracks the newest sample, not the aggregate's date
+      expect(
+        await PreferenceHelper.instance.getLastHealthSyncTimestamp(),
+        DateTime(2026, 1, 2, 9).toIso8601String(),
+      );
+    });
+
+    test('keeps resting heart rate in its own category, imported raw', () async {
+      when(measurements.getAllOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
+      stubReadings([
+        HealthReading(
+          type: HealthDataType.HEART_RATE,
+          value: 70,
+          date: DateTime(2026, 1, 1, 8),
+          externalId: 'hr-1',
+        ),
+        HealthReading(
+          type: HealthDataType.RESTING_HEART_RATE,
+          value: 52,
+          date: DateTime(2026, 1, 1, 4),
+          externalId: 'rhr-1',
+        ),
+      ]);
+
+      await createNotifier().syncOnAppOpen();
+
+      final categories = verify(
+        measurements.addLocalDriftCategory(captureAny),
+      ).captured.cast<MeasurementCategory>();
+      final heartRate = categories.firstWhere((c) => c.metricType == MetricType.heartRate);
+      final resting = categories.firstWhere((c) => c.metricType == MetricType.restingHeartRate);
+      expect(resting.id, isNot(heartRate.id));
+
+      final entries = verify(
+        measurements.addLocalDrift(captureAny),
+      ).captured.cast<MeasurementEntry>();
+      final restingEntry = entries.firstWhere((e) => e.categoryId == resting.id);
+      // Raw import: the platform record uuid and timestamp are kept as-is,
+      // no day- key and no aggregate extra_data
+      expect(restingEntry.externalId, 'rhr-1');
+      expect(restingEntry.date, DateTime(2026, 1, 1, 4));
+      expect(restingEntry.value, 52);
+      expect(restingEntry.extraData, isNot(contains('sample_count')));
+    });
+
+    test('updates a daily aggregate when later samples change it', () async {
+      final existing = MeasurementCategory(
+        id: 'cat-hr',
+        name: 'Heart rate',
+        unit: 'bpm',
+        metricType: MetricType.heartRate,
+        entries: [
+          MeasurementEntry(
+            id: 'e1',
+            categoryId: 'cat-hr',
+            date: DateTime(2026, 1, 1),
+            value: 60,
+            notes: '',
+            externalId: 'day-2026-01-01',
+            extraData: const {
+              'min': 60,
+              'max': 60,
+              'sample_count': 1,
+              'record_type': 'HEART_RATE',
+            },
+          ),
+        ],
+      );
+      when(measurements.getAllOnce()).thenAnswer((_) async => [existing]);
+      stubReadings([
+        HealthReading(
+          type: HealthDataType.HEART_RATE,
+          value: 60,
+          date: DateTime(2026, 1, 1, 8),
+          externalId: 'hr-1',
+        ),
+        // A sample that arrived after the previous sync
+        HealthReading(
+          type: HealthDataType.HEART_RATE,
+          value: 70,
+          date: DateTime(2026, 1, 1, 20),
+          externalId: 'hr-2',
+        ),
+      ]);
+
+      final count = await createNotifier().syncOnAppOpen();
+
+      expect(count, 1);
+      verifyNever(measurements.addLocalDrift(any));
+      final updated =
+          verify(measurements.updateLocalDrift(captureAny)).captured.single as MeasurementEntry;
+      expect(updated.id, 'e1');
+      expect(updated.value, 65);
+      expect(updated.extraData, {
+        'min': 60,
+        'max': 70,
+        'sample_count': 2,
+        'record_type': 'HEART_RATE',
+      });
+    });
+
+    test('leaves an unchanged daily aggregate alone', () async {
+      final existing = MeasurementCategory(
+        id: 'cat-hr',
+        name: 'Heart rate',
+        unit: 'bpm',
+        metricType: MetricType.heartRate,
+        entries: [
+          MeasurementEntry(
+            id: 'e1',
+            categoryId: 'cat-hr',
+            date: DateTime(2026, 1, 1),
+            value: 60,
+            notes: '',
+            externalId: 'day-2026-01-01',
+            extraData: const {
+              'min': 60,
+              'max': 60,
+              'sample_count': 1,
+              'record_type': 'HEART_RATE',
+            },
+          ),
+        ],
+      );
+      when(measurements.getAllOnce()).thenAnswer((_) async => [existing]);
+      stubReadings([
+        HealthReading(
+          type: HealthDataType.HEART_RATE,
+          value: 60,
+          date: DateTime(2026, 1, 1, 8),
+          externalId: 'hr-1',
+        ),
+      ]);
+
+      // Re-reading the same samples within the overlap window must not queue
+      // a pointless sync upload
+      final count = await createNotifier().syncOnAppOpen();
+
+      expect(count, 0);
+      verifyNever(measurements.addLocalDrift(any));
+      verifyNever(measurements.updateLocalDrift(any));
     });
 
     test('imports blood pressure into an existing group by in-group order', () async {

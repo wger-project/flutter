@@ -638,6 +638,10 @@
   "@metricHeartRate": {
     "description": "Label for heart rate measurement"
   },
+  "metricRestingHeartRate": "Resting heart rate",
+  "@metricRestingHeartRate": {
+    "description": "Label for resting heart rate measurement"
+  },
   "metricSteps": "Steps",
   "@metricSteps": {
     "description": "Label for step count measurement"

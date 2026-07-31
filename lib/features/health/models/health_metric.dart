@@ -32,6 +32,7 @@ class HealthMetric {
     required this.unit,
     required this.toCategoryValue,
     this.components = const [],
+    this.aggregateDaily = false,
     this.enabled = false,
     this.disabledReason,
   });
@@ -58,6 +59,11 @@ class HealthMetric {
   /// in-group position (this list's order), and the group category itself
   /// stays measurement-free.
   final List<HealthMetricComponent> components;
+
+  /// High-frequency metrics are not stored as raw samples but as one entry
+  /// per calendar day: the day's average as the value, min/max/sample count
+  /// in extra_data. Re-reads update the day in place as new samples arrive.
+  final bool aggregateDaily;
 
   /// Whether V1 imports this metric. Disabled ones are declared for visibility
   /// and blocked on further groundwork (see [disabledReason]).
@@ -151,7 +157,19 @@ const List<HealthMetric> healthMetrics = [
     canonicalName: 'Heart rate',
     unit: 'bpm',
     toCategoryValue: _identity,
-    disabledReason: 'High-frequency; needs a per-day aggregation strategy.',
+    aggregateDaily: true,
+    enabled: true,
+  ),
+  HealthMetric(
+    // Both platforms compute this themselves and write (typically) one value
+    // per day, so it is imported raw: no aggregation on our side, and the
+    // platform record uuid stays available for dedup.
+    metricType: MetricType.restingHeartRate,
+    dataType: HealthDataType.RESTING_HEART_RATE,
+    canonicalName: 'Resting heart rate',
+    unit: 'bpm',
+    toCategoryValue: _identity,
+    enabled: true,
   ),
   HealthMetric(
     metricType: MetricType.steps,
