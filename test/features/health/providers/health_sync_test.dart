@@ -446,6 +446,84 @@ void main() {
       expect(restingEntry.extraData, isNot(contains('sample_count')));
     });
 
+    test('sums a night of sleep onto the wake day', () async {
+      when(measurements.getAllOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
+      stubReadings([
+        // One night, split into segments across midnight: everything from
+        // 18:00 onwards counts towards the following day
+        HealthReading(
+          type: HealthDataType.SLEEP_ASLEEP,
+          value: 90,
+          date: DateTime(2026, 1, 1, 22, 30),
+          dateTo: DateTime(2026, 1, 2, 0, 0),
+          externalId: 's-1',
+        ),
+        HealthReading(
+          type: HealthDataType.SLEEP_ASLEEP,
+          value: 360,
+          date: DateTime(2026, 1, 2, 0, 0),
+          dateTo: DateTime(2026, 1, 2, 6, 0),
+          externalId: 's-2',
+        ),
+        // A nap in the afternoon lands on its own calendar day
+        HealthReading(
+          type: HealthDataType.SLEEP_ASLEEP,
+          value: 30,
+          date: DateTime(2026, 1, 2, 14, 0),
+          dateTo: DateTime(2026, 1, 2, 14, 30),
+          externalId: 's-3',
+        ),
+      ]);
+
+      final count = await createNotifier().syncOnAppOpen();
+
+      // All three segments belong to 2026-01-02
+      expect(count, 1);
+      final entry =
+          verify(measurements.addLocalDrift(captureAny)).captured.single as MeasurementEntry;
+      expect(entry.externalId, 'day-2026-01-02');
+      expect(entry.date, DateTime(2026, 1, 2));
+      expect(entry.value, 480); // 90 + 360 + 30 minutes
+      expect(entry.extraData, {
+        'sample_count': 3,
+        'record_type': 'SLEEP_ASLEEP',
+        // The window the segments really cover, since the entry's date is the
+        // wake day rather than the samples' calendar day
+        'date_from': DateTime(2026, 1, 1, 22, 30).toIso8601String(),
+        'date_to': DateTime(2026, 1, 2, 14, 30).toIso8601String(),
+      });
+      // A summed metric has no meaningful per-sample min/max
+      expect(entry.extraData, isNot(contains('min')));
+    });
+
+    test('splits sleep into separate days at the rollover hour', () async {
+      when(measurements.getAllOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
+      stubReadings([
+        // 17:59 still belongs to the first day, 18:00 already to the next
+        HealthReading(
+          type: HealthDataType.SLEEP_ASLEEP,
+          value: 20,
+          date: DateTime(2026, 1, 1, 17, 59),
+          externalId: 's-1',
+        ),
+        HealthReading(
+          type: HealthDataType.SLEEP_ASLEEP,
+          value: 400,
+          date: DateTime(2026, 1, 1, 18, 0),
+          externalId: 's-2',
+        ),
+      ]);
+
+      final count = await createNotifier().syncOnAppOpen();
+
+      expect(count, 2);
+      final entries = verify(
+        measurements.addLocalDrift(captureAny),
+      ).captured.cast<MeasurementEntry>();
+      expect(entries.firstWhere((e) => e.externalId == 'day-2026-01-01').value, 20);
+      expect(entries.firstWhere((e) => e.externalId == 'day-2026-01-02').value, 400);
+    });
+
     test('updates a daily aggregate when later samples change it', () async {
       final existing = MeasurementCategory(
         id: 'cat-hr',

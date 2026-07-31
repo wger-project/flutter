@@ -174,7 +174,7 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
         }
 
         for (final (category, metricReadings) in targets) {
-          final (importedCount, newest) = metric.aggregateDaily
+          final (importedCount, newest) = metric.dailyAggregation != null
               ? await _importDailyAggregates(metric, metricReadings, category, source)
               : await _importReadings(metric, metricReadings, category, source);
           synced += importedCount;
@@ -265,12 +265,14 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
     return (synced, latest);
   }
 
-  /// Imports [metricReadings] as one entry per calendar day: the day's
-  /// average as the value, min/max/sample count in extra_data. Days are keyed
-  /// by a synthetic externalId (`day-YYYY-MM-DD`), so a re-read within the
-  /// overlap window updates the aggregate in place when late samples change
-  /// it (the current day keeps growing until midnight). Returns the number of
-  /// written entries and the newest processed sample date.
+  /// Imports [metricReadings] as one entry per day, condensed per the metric's
+  /// [HealthMetric.dailyAggregation]. Days are keyed by a synthetic externalId
+  /// (`day-YYYY-MM-DD`), so a re-read within the overlap window updates the
+  /// aggregate in place when late samples change it (the current day keeps
+  /// growing until it ends). The entry's date is the start of that day; for
+  /// metrics that roll over (sleep) the samples' real window is kept in
+  /// extra_data. Returns the number of written entries and the newest
+  /// processed sample date.
   Future<(int, DateTime?)> _importDailyAggregates(
     HealthMetric metric,
     Iterable<HealthReading> metricReadings,
@@ -279,20 +281,29 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
   ) async {
     var synced = 0;
     DateTime? latest;
-    final byDay = groupBy(
-      metricReadings,
-      (r) => DateTime(r.date.year, r.date.month, r.date.day),
-    );
+    final byDay = groupBy(metricReadings, (r) => _dayOf(r.date, metric));
 
     for (final MapEntry(key: day, value: samples) in byDay.entries) {
       final values = samples.map((r) => metric.toCategoryValue(r.value)).toList();
+      final aggregate = switch (metric.dailyAggregation!) {
+        DailyAggregation.average => values.average,
+        DailyAggregation.sum => values.sum,
+      };
       // Round like the raw import: the server stores Decimal with 2 places
-      final value = (values.average * 100).roundToDouble() / 100;
+      final value = (aggregate * 100).roundToDouble() / 100;
       final extraData = <String, dynamic>{
-        'min': values.min,
-        'max': values.max,
+        if (metric.dailyAggregation == DailyAggregation.average) ...{
+          'min': values.min,
+          'max': values.max,
+        },
         'sample_count': values.length,
         'record_type': metric.dataType.name,
+        // A rolled-over day is not the samples' calendar day, so keep the
+        // window they actually cover
+        if (metric.dayRollsOverAtHour != null) ...{
+          'date_from': samples.map((r) => r.date).reduce(_earlier).toIso8601String(),
+          'date_to': samples.map((r) => r.dateTo ?? r.date).reduce(_later).toIso8601String(),
+        },
       };
 
       final externalId = 'day-${DateFormatLists.format(day)}';
@@ -324,6 +335,20 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
     }
     return (synced, latest);
   }
+
+  /// The day a sample is attributed to. Plain calendar day, unless the metric
+  /// rolls over: samples at or after [HealthMetric.dayRollsOverAtHour] then
+  /// count towards the next day, so a night of sleep lands on the day the user
+  /// wakes up instead of being split at midnight.
+  DateTime _dayOf(DateTime date, HealthMetric metric) {
+    final day = DateTime(date.year, date.month, date.day);
+    final rollover = metric.dayRollsOverAtHour;
+    return rollover != null && date.hour >= rollover ? day.add(const Duration(days: 1)) : day;
+  }
+
+  static DateTime _earlier(DateTime a, DateTime b) => a.isBefore(b) ? a : b;
+
+  static DateTime _later(DateTime a, DateTime b) => a.isAfter(b) ? a : b;
 
   /// Builds an imported entry's `extra_data` from the reading's provenance.
   ///

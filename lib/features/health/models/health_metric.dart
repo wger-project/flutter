@@ -19,6 +19,15 @@
 import 'package:health_bridge/health.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 
+/// How a day's samples are condensed into the single value stored for it.
+enum DailyAggregation {
+  /// The day's mean, e.g. heart rate.
+  average,
+
+  /// The day's total, e.g. the sleep segments of one night.
+  sum,
+}
+
 /// A body metric that can be imported from Apple Health / Health Connect into a
 /// measurement category.
 ///
@@ -32,7 +41,8 @@ class HealthMetric {
     required this.unit,
     required this.toCategoryValue,
     this.components = const [],
-    this.aggregateDaily = false,
+    this.dailyAggregation,
+    this.dayRollsOverAtHour,
     this.enabled = false,
     this.disabledReason,
   });
@@ -60,10 +70,17 @@ class HealthMetric {
   /// stays measurement-free.
   final List<HealthMetricComponent> components;
 
-  /// High-frequency metrics are not stored as raw samples but as one entry
-  /// per calendar day: the day's average as the value, min/max/sample count
-  /// in extra_data. Re-reads update the day in place as new samples arrive.
-  final bool aggregateDaily;
+  /// How samples are condensed into one entry per day. `null` imports every
+  /// sample as its own entry. Set for metrics whose individual samples are
+  /// not meaningful on their own (high-frequency ones like heart rate, or
+  /// segmented ones like sleep); re-reads then update the day in place as
+  /// further samples arrive.
+  final DailyAggregation? dailyAggregation;
+
+  /// Hour at which a sample starts counting towards the *next* calendar day.
+  /// Sleep is attributed to the day the user wakes up, so a night starting at
+  /// 23:30 belongs to the following day. `null` buckets by plain calendar day.
+  final int? dayRollsOverAtHour;
 
   /// Whether V1 imports this metric. Disabled ones are declared for visibility
   /// and blocked on further groundwork (see [disabledReason]).
@@ -157,7 +174,7 @@ const List<HealthMetric> healthMetrics = [
     canonicalName: 'Heart rate',
     unit: 'bpm',
     toCategoryValue: _identity,
-    aggregateDaily: true,
+    dailyAggregation: DailyAggregation.average,
     enabled: true,
   ),
   HealthMetric(
@@ -169,6 +186,20 @@ const List<HealthMetric> healthMetrics = [
     canonicalName: 'Resting heart rate',
     unit: 'bpm',
     toCategoryValue: _identity,
+    enabled: true,
+  ),
+  HealthMetric(
+    // V1 imports the total time asleep only; the stages (deep/light/REM) are
+    // available on both platforms and would map onto a category group.
+    // Both report minutes, and a night arrives as several segments, so the
+    // day's value is their sum.
+    metricType: MetricType.sleep,
+    dataType: HealthDataType.SLEEP_ASLEEP,
+    canonicalName: 'Sleep',
+    unit: 'min',
+    toCategoryValue: _identity,
+    dailyAggregation: DailyAggregation.sum,
+    dayRollsOverAtHour: 18,
     enabled: true,
   ),
   HealthMetric(

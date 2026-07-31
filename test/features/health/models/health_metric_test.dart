@@ -36,15 +36,23 @@ void main() {
           MetricType.bloodPressure,
           MetricType.heartRate,
           MetricType.restingHeartRate,
+          MetricType.sleep,
         ]),
       );
-      expect(enabledHealthMetrics.length, 6);
+      expect(enabledHealthMetrics.length, 7);
     });
 
-    test('only raw heart rate is aggregated per day', () {
-      expect(_metric(MetricType.heartRate).aggregateDaily, isTrue);
+    test('daily aggregation is set per metric', () {
+      expect(_metric(MetricType.heartRate).dailyAggregation, DailyAggregation.average);
+      // A night arrives as several segments, so they add up
+      expect(_metric(MetricType.sleep).dailyAggregation, DailyAggregation.sum);
       // The platforms compute the resting rate per day themselves
-      expect(_metric(MetricType.restingHeartRate).aggregateDaily, isFalse);
+      expect(_metric(MetricType.restingHeartRate).dailyAggregation, isNull);
+    });
+
+    test('sleep is attributed to the wake day', () {
+      expect(_metric(MetricType.sleep).dayRollsOverAtHour, 18);
+      expect(_metric(MetricType.heartRate).dayRollsOverAtHour, isNull);
     });
 
     test('blood pressure reads both component types', () {
