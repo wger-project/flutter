@@ -35,6 +35,17 @@ import 'package:wger/features/measurements/providers/measurement_repository.dart
 part 'health_sync.freezed.dart';
 part 'health_sync.g.dart';
 
+/// Stable id identifying the aggregate of [day] within [categoryId].
+///
+/// Deterministic, so re-reading a day within the overlap window updates the
+/// same entry instead of adding a second one. It has to be a real UUID rather
+/// than a readable `day-<date>` key, because the server stores `external_id`
+/// as a UUIDField and rejects anything else permanently. The category id is
+/// itself a UUID and serves as the v5 namespace, which is exactly the
+/// "day X within category Y" relationship the id expresses.
+String dailyAggregateExternalId(String categoryId, DateTime day) =>
+    ps.uuid.v5(categoryId, DateFormatLists.format(day));
+
 @freezed
 sealed class HealthSyncState with _$HealthSyncState {
   const factory HealthSyncState({
@@ -266,9 +277,9 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
   }
 
   /// Imports [metricReadings] as one entry per day, condensed per the metric's
-  /// [HealthMetric.dailyAggregation]. Days are keyed by a synthetic externalId
-  /// (`day-YYYY-MM-DD`), so a re-read within the overlap window updates the
-  /// aggregate in place when late samples change it (the current day keeps
+  /// [HealthMetric.dailyAggregation]. Days are keyed by
+  /// [dailyAggregateExternalId], so a re-read within the overlap window updates
+  /// the aggregate in place when late samples change it (the current day keeps
   /// growing until it ends). The entry's date is the start of that day; for
   /// metrics that roll over (sleep) the samples' real window is kept in
   /// extra_data. Returns the number of written entries and the newest
@@ -306,7 +317,7 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
         },
       };
 
-      final externalId = 'day-${DateFormatLists.format(day)}';
+      final externalId = dailyAggregateExternalId(category.id!, day);
       final existing = category.entries.firstWhereOrNull((e) => e.externalId == externalId);
       if (existing == null) {
         await _measurements.addLocalDrift(

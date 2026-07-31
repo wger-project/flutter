@@ -33,6 +33,11 @@ import 'package:wger/features/measurements/providers/measurement_repository.dart
 
 import 'health_sync_test.mocks.dart';
 
+// Category ids are UUIDs in production, and dailyAggregateExternalId parses
+// them as the v5 namespace, so the fixtures use real ones.
+const _catHrId = 'aaaaaaaa-0000-4000-8000-000000000001';
+const _catSleepId = 'bbbbbbbb-0000-4000-8000-000000000002';
+
 @GenerateMocks([HealthRepository, MeasurementRepository])
 void main() {
   late MockHealthRepository health;
@@ -137,6 +142,25 @@ void main() {
       expect(await PreferenceHelper.instance.getHealthSyncEnabled(), isFalse);
       expect(await PreferenceHelper.instance.getLastHealthSyncTimestamp(), isNull);
       expect(container.read(healthSyncProvider).isEnabled, isFalse);
+    });
+  });
+
+  group('dailyAggregateExternalId', () {
+    test('is a UUID', () {
+      // The server stores external_id as a UUIDField and rejects anything
+      // else permanently, so a readable day key would silently lose every
+      // aggregate on push
+      expect(
+        dailyAggregateExternalId(_catHrId, DateTime(2026, 1, 1)),
+        matches(RegExp(r'^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$')),
+      );
+    });
+
+    test('is stable per category and day, and differs across both', () {
+      final id = dailyAggregateExternalId(_catHrId, DateTime(2026, 1, 1));
+      expect(dailyAggregateExternalId(_catHrId, DateTime(2026, 1, 1)), id);
+      expect(dailyAggregateExternalId(_catHrId, DateTime(2026, 1, 2)), isNot(id));
+      expect(dailyAggregateExternalId(_catSleepId, DateTime(2026, 1, 1)), isNot(id));
     });
   });
 
@@ -387,7 +411,14 @@ void main() {
       ).captured.cast<MeasurementEntry>();
       expect(entries, hasLength(2));
 
-      final day1 = entries.firstWhere((e) => e.externalId == 'day-2026-01-01');
+      final categoryId =
+          (verify(measurements.addLocalDriftCategory(captureAny)).captured.single
+                  as MeasurementCategory)
+              .id!;
+
+      final day1 = entries.firstWhere(
+        (e) => e.externalId == dailyAggregateExternalId(categoryId, DateTime(2026, 1, 1)),
+      );
       expect(day1.date, DateTime(2026, 1, 1));
       expect(day1.value, 65.5); // (60 + 71) / 2
       expect(day1.extraData, {
@@ -397,7 +428,9 @@ void main() {
         'record_type': 'HEART_RATE',
       });
 
-      final day2 = entries.firstWhere((e) => e.externalId == 'day-2026-01-02');
+      final day2 = entries.firstWhere(
+        (e) => e.externalId == dailyAggregateExternalId(categoryId, DateTime(2026, 1, 2)),
+      );
       expect(day2.value, 64);
       expect(day2.extraData?['sample_count'], 1);
 
@@ -481,7 +514,11 @@ void main() {
       expect(count, 1);
       final entry =
           verify(measurements.addLocalDrift(captureAny)).captured.single as MeasurementEntry;
-      expect(entry.externalId, 'day-2026-01-02');
+      final categoryId =
+          (verify(measurements.addLocalDriftCategory(captureAny)).captured.single
+                  as MeasurementCategory)
+              .id!;
+      expect(entry.externalId, dailyAggregateExternalId(categoryId, DateTime(2026, 1, 2)));
       expect(entry.date, DateTime(2026, 1, 2));
       expect(entry.value, 480); // 90 + 360 + 30 minutes
       expect(entry.extraData, {
@@ -520,24 +557,31 @@ void main() {
       final entries = verify(
         measurements.addLocalDrift(captureAny),
       ).captured.cast<MeasurementEntry>();
-      expect(entries.firstWhere((e) => e.externalId == 'day-2026-01-01').value, 20);
-      expect(entries.firstWhere((e) => e.externalId == 'day-2026-01-02').value, 400);
+      final categoryId =
+          (verify(measurements.addLocalDriftCategory(captureAny)).captured.single
+                  as MeasurementCategory)
+              .id!;
+      final byDay = {
+        for (final e in entries) e.externalId: e.value,
+      };
+      expect(byDay[dailyAggregateExternalId(categoryId, DateTime(2026, 1, 1))], 20);
+      expect(byDay[dailyAggregateExternalId(categoryId, DateTime(2026, 1, 2))], 400);
     });
 
     test('updates a daily aggregate when later samples change it', () async {
       final existing = MeasurementCategory(
-        id: 'cat-hr',
+        id: _catHrId,
         name: 'Heart rate',
         unit: 'bpm',
         metricType: MetricType.heartRate,
         entries: [
           MeasurementEntry(
             id: 'e1',
-            categoryId: 'cat-hr',
+            categoryId: _catHrId,
             date: DateTime(2026, 1, 1),
             value: 60,
             notes: '',
-            externalId: 'day-2026-01-01',
+            externalId: dailyAggregateExternalId(_catHrId, DateTime(2026, 1, 1)),
             extraData: const {
               'min': 60,
               'max': 60,
@@ -582,18 +626,18 @@ void main() {
 
     test('leaves an unchanged daily aggregate alone', () async {
       final existing = MeasurementCategory(
-        id: 'cat-hr',
+        id: _catHrId,
         name: 'Heart rate',
         unit: 'bpm',
         metricType: MetricType.heartRate,
         entries: [
           MeasurementEntry(
             id: 'e1',
-            categoryId: 'cat-hr',
+            categoryId: _catHrId,
             date: DateTime(2026, 1, 1),
             value: 60,
             notes: '',
-            externalId: 'day-2026-01-01',
+            externalId: dailyAggregateExternalId(_catHrId, DateTime(2026, 1, 1)),
             extraData: const {
               'min': 60,
               'max': 60,
