@@ -100,20 +100,48 @@ class HealthRepository {
     return _health.requestHealthDataHistoryAuthorization();
   }
 
-  /// Whether READ access to [types] is known to be missing, without ever
-  /// showing a permission dialog.
+  /// The subset of [types] the platform lets us read, without ever showing a
+  /// permission dialog.
   ///
-  /// Only Android answers this exactly. HealthKit does not disclose read
-  /// access, so iOS always reports `false` (not known to be missing) and a
-  /// denial only shows up when a read fails, see [isAuthorizationMissing].
-  Future<bool> isAuthorizationKnownMissing(List<HealthDataType> types) async {
+  /// Asked per type on purpose. Both platforms hand out access per data type,
+  /// and Health Connect's dialog invites the user to untick individual ones,
+  /// so a single declined type must cost only its own metric its import.
+  /// (`hasPermissions` answers for the whole list at once, which turned one
+  /// declined type into a full stop.)
+  ///
+  /// Only Android answers exactly. HealthKit does not disclose read access, so
+  /// the types it maps come back as `requestedOrUnknown` and count as
+  /// readable; a denial there only shows up when the read fails, see
+  /// [isAuthorizationMissing].
+  Future<Set<HealthDataType>> readableTypes(List<HealthDataType> types) async {
+    if (types.isEmpty) {
+      return {};
+    }
     await _health.configure();
-    final granted = await _health.hasPermissions(
-      types,
-      permissions: List.filled(types.length, HealthDataAccess.READ),
-    );
-    return granted == false;
+
+    try {
+      final snapshot = await _health.getAuthorizationSnapshot(types.toSet().toList());
+      if (!snapshot.available) {
+        return {};
+      }
+      return {
+        for (final entry in snapshot.types)
+          if (_isReadable(entry.read)) entry.type,
+      };
+    } catch (e) {
+      // The snapshot only refines what we try: without it every type is read
+      // and the ones the platform refuses fail individually, which is the
+      // behaviour this method improves on, not one it depends on
+      _logger.warning('Could not read the authorization snapshot, trying every type: $e');
+      return types.toSet();
+    }
   }
+
+  static bool _isReadable(HealthAuthorizationState state) => switch (state) {
+    // iOS never reports more than "was requested at some point"
+    HealthAuthorizationState.authorized || HealthAuthorizationState.requestedOrUnknown => true,
+    _ => false,
+  };
 
   /// Whether [error] is the platform refusing a read for lack of permissions.
   ///
@@ -133,15 +161,24 @@ class HealthRepository {
   /// user started themselves.
   Future<bool> ensureAuthorized(List<HealthDataType> types) async {
     await _health.configure();
-    final access = List.filled(types.length, HealthDataAccess.READ);
 
-    final hasPerms = await _health.hasPermissions(types, permissions: access);
-    if (hasPerms != true) {
-      final granted = await _health.requestAuthorization(types, permissions: access);
-      if (!granted) {
-        _logger.warning('Health permissions not granted');
-        return false;
-      }
+    if ((await readableTypes(types)).length < types.length) {
+      // The return value is deliberately ignored: Android reports success as
+      // soon as the dialog closes, whatever the user ticked there. Only the
+      // snapshot afterwards says what we may actually read
+      await _health.requestAuthorization(
+        types,
+        permissions: List.filled(types.length, HealthDataAccess.READ),
+      );
+    }
+
+    final readable = await readableTypes(types);
+    if (readable.isEmpty) {
+      _logger.warning('Health permissions not granted');
+      return false;
+    }
+    if (readable.length < types.length) {
+      _logger.info('Health access granted for ${readable.length} of ${types.length} types');
     }
 
     // Not fatal: without it the import still works, it just cannot reach

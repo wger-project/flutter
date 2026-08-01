@@ -201,10 +201,24 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
       // Checked silently, never requested: this runs on app open and resume,
       // where a permission dialog would come out of nowhere. Asking again is
       // the user's call, see [retryWithPermissions].
-      if (await _health.isAuthorizationKnownMissing(_types)) {
+      final readable = await _health.readableTypes(_types);
+      final metrics = enabledHealthMetrics
+          .where((m) => m.dataTypes.every(readable.contains))
+          .toList();
+      if (metrics.isEmpty) {
         _logger.warning('Health permissions not granted, skipping sync');
         state = state.copyWith(isSyncing: false, issue: HealthSyncIssue.permissionsMissing);
         return 0;
+      }
+      if (metrics.length < enabledHealthMetrics.length) {
+        // A declined type costs its own metric its import, nothing else. Both
+        // platforms hand out access per type, so this is the normal state
+        // after a user unticked one, not an error
+        final blocked = enabledHealthMetrics.where((m) => !metrics.contains(m));
+        _logger.info(
+          'No access to ${blocked.map((m) => m.metricType.name).join(', ')}, '
+          'importing the remaining ${metrics.length} metrics',
+        );
       }
 
       // The ids of the typed categories are derived from the user, see
@@ -223,13 +237,24 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
       // only syncs days after the measurement), so the read window reaches
       // back beyond the watermark; re-reads are deduplicated via externalId.
       final lastSyncStr = await prefs.getLastHealthSyncTimestamp();
-      final startTime = lastSyncStr == null || _missingCategories(categories).isNotEmpty
+      final startTime =
+          lastSyncStr == null ||
+              _missingCategories(metrics, categories).isNotEmpty ||
+              await _hasNewlyReadableTypes(readable)
           ? DateTime(2000)
           : DateTime.parse(lastSyncStr).subtract(_syncOverlap);
       final endTime = DateTime.now();
       _logger.info('Syncing health data from $startTime to $endTime');
 
-      final readings = await _health.read(types: _types, start: startTime, end: endTime);
+      final readings = await _health.read(
+        types: metrics.expand((m) => m.dataTypes).toList(),
+        start: startTime,
+        end: endTime,
+      );
+      // Recorded after the read, so a run that never got that far tries again
+      // rather than remembering an access it did not use
+      await prefs.setHealthSyncReadableTypes(readable.map((t) => t.name).toList());
+
       if (readings.isEmpty) {
         _logger.info('No new health data');
         state = state.copyWith(isSyncing: false, lastSyncCount: 0, lastSyncTime: DateTime.now());
@@ -242,7 +267,7 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
       var failedMetric = false;
       DateTime? latest;
 
-      for (final metric in enabledHealthMetrics) {
+      for (final metric in metrics) {
         // One bad metric must not cost the others their import, and the
         // watermark has to stay put for whatever it could not write
         try {
@@ -540,6 +565,28 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
     return ps.uuid.v5(categoryId, platformId);
   }
 
+  /// Whether the platform now lets us read a type it did not last time.
+  ///
+  /// Such a type has no history in wger for the same reason a deleted category
+  /// has none: nothing was ever imported for it, so the watermark says nothing
+  /// about it. That happens when the user grants access they had declined, and
+  /// after an app update that added the type.
+  Future<bool> _hasNewlyReadableTypes(Set<HealthDataType> readable) async {
+    final previous = await PreferenceHelper.instance.getHealthSyncReadableTypes();
+    if (previous == null) {
+      return false;
+    }
+
+    final newlyReadable = readable.map((t) => t.name).toSet().difference(previous.toSet());
+    if (newlyReadable.isNotEmpty) {
+      _logger.info(
+        'Access to ${newlyReadable.join(', ')} is new, '
+        'reading the full history instead of from the watermark',
+      );
+    }
+    return newlyReadable.isNotEmpty;
+  }
+
   /// The enabled metrics that have no category to import into.
   ///
   /// Their history in wger is empty, either because the user deleted the
@@ -549,7 +596,10 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
   /// back to the full window for that run instead. Since the categories exist
   /// afterwards, the next sync is back on the watermark, and the entries the
   /// other metrics re-read are deduplicated via their external ids.
-  List<HealthMetric> _missingCategories(List<MeasurementCategory> categories) {
+  List<HealthMetric> _missingCategories(
+    List<HealthMetric> metrics,
+    List<MeasurementCategory> categories,
+  ) {
     bool hasCategories(HealthMetric metric) {
       if (metric.metricType == MetricType.bodyWeight) {
         return categories.any((c) => c.isOfficialBodyWeight);
@@ -569,7 +619,7 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
       );
     }
 
-    final missing = enabledHealthMetrics.where((m) => !hasCategories(m)).toList();
+    final missing = metrics.where((m) => !hasCategories(m)).toList();
     if (missing.isNotEmpty) {
       _logger.info(
         'No category for ${missing.map((m) => m.metricType.name).join(', ')}, '

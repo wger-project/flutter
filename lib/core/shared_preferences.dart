@@ -137,6 +137,7 @@ class PreferenceHelper {
 
   static const _healthSyncEnabledKey = 'healthSyncEnabled';
   static const _lastHealthSyncTimestampKey = 'lastHealthSyncTimestamp';
+  static const _healthSyncReadableTypesKey = 'healthSyncReadableTypes';
 
   Future<void> setHealthSyncEnabled(bool value) async {
     await PreferenceHelper.asyncPref.setBool(_healthSyncEnabledKey, value);
@@ -155,8 +156,22 @@ class PreferenceHelper {
     return PreferenceHelper.asyncPref.getString(_lastHealthSyncTimestampKey);
   }
 
+  /// The health data types the platform let us read during the last sync.
+  ///
+  /// A type that was not readable then has no history in wger, so the sync
+  /// reads the full window once it becomes readable, instead of starting at
+  /// the watermark and leaving everything before it missing.
+  Future<void> setHealthSyncReadableTypes(List<String> value) async {
+    await PreferenceHelper.asyncPref.setStringList(_healthSyncReadableTypesKey, value);
+  }
+
+  Future<List<String>?> getHealthSyncReadableTypes() async {
+    return PreferenceHelper.asyncPref.getStringList(_healthSyncReadableTypesKey);
+  }
+
   Future<void> clearHealthSyncPreferences() async {
     await PreferenceHelper.asyncPref.remove(_healthSyncEnabledKey);
     await PreferenceHelper.asyncPref.remove(_lastHealthSyncTimestampKey);
+    await PreferenceHelper.asyncPref.remove(_healthSyncReadableTypesKey);
   }
 }

@@ -70,6 +70,10 @@ void main() {
 
   setUp(() async {
     SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+    // SharedPreferencesAsync captures the platform instance in its constructor,
+    // and PreferenceHelper builds its own once for the whole run, so the line
+    // above only takes effect for the first test. Clear what this suite writes
+    await PreferenceHelper.instance.clearHealthSyncPreferences();
     await PreferenceHelper.instance.setHealthSyncEnabled(true);
 
     health = MockHealthRepository();
@@ -78,7 +82,9 @@ void main() {
     when(credentials.dbOwnerUserId()).thenAnswer((_) async => '2');
 
     when(health.ensureAuthorized(any)).thenAnswer((_) async => true);
-    when(health.isAuthorizationKnownMissing(any)).thenAnswer((_) async => false);
+    when(health.readableTypes(any)).thenAnswer(
+      (invocation) async => (invocation.positionalArguments.first as List<HealthDataType>).toSet(),
+    );
     when(health.sourceName).thenReturn('apple');
     when(measurements.addLocalDrift(any)).thenAnswer((_) async {});
     when(measurements.updateLocalDrift(any)).thenAnswer((_) async {});
@@ -255,12 +261,12 @@ void main() {
 
       await createNotifier().sync();
 
-      verify(health.isAuthorizationKnownMissing(any)).called(1);
+      verify(health.readableTypes(any)).called(1);
       verifyNever(health.ensureAuthorized(any));
     });
 
     test('flags missing permissions instead of reading', () async {
-      when(health.isAuthorizationKnownMissing(any)).thenAnswer((_) async => true);
+      when(health.readableTypes(any)).thenAnswer((_) async => <HealthDataType>{});
 
       final count = await createNotifier().sync();
 
@@ -269,6 +275,74 @@ void main() {
       verifyNever(
         health.read(types: anyNamed('types'), start: anyNamed('start'), end: anyNamed('end')),
       );
+    });
+
+    test('a metric without access costs only itself its import', () async {
+      // Both platforms hand out access per type, and Health Connect invites
+      // the user to untick single ones, so one declined type must not stop
+      // everything else
+      final bloodPressure = enabledHealthMetrics.firstWhere(
+        (m) => m.metricType == MetricType.bloodPressure,
+      );
+      when(health.readableTypes(any)).thenAnswer(
+        (invocation) async => (invocation.positionalArguments.first as List<HealthDataType>)
+            .toSet()
+            .difference(bloodPressure.dataTypes.toSet()),
+      );
+      stubReadings([
+        HealthReading(
+          type: HealthDataType.BODY_FAT_PERCENTAGE,
+          value: 0.2,
+          date: DateTime(2026, 1, 1),
+          externalId: _idBf1,
+        ),
+      ]);
+
+      final count = await createNotifier().sync();
+
+      expect(count, 1);
+      expect(container.read(healthSyncProvider).issue, isNull);
+      // The declined types are not even asked for
+      final requested =
+          verify(
+                health.read(
+                  types: captureAnyNamed('types'),
+                  start: anyNamed('start'),
+                  end: anyNamed('end'),
+                ),
+              ).captured.single
+              as List<HealthDataType>;
+      expect(requested, isNot(contains(HealthDataType.BLOOD_PRESSURE_SYSTOLIC)));
+      expect(requested, contains(HealthDataType.BODY_FAT_PERCENTAGE));
+    });
+
+    test('reads the full history when a type becomes readable', () async {
+      // Granting access to a type that was declined leaves the same hole as a
+      // deleted category: nothing was ever imported for it
+      await PreferenceHelper.instance.setLastHealthSyncTimestamp('2026-06-01T12:00:00.000');
+      await PreferenceHelper.instance.setHealthSyncReadableTypes([
+        HealthDataType.BODY_FAT_PERCENTAGE.name,
+      ]);
+      when(measurements.getAllOnce()).thenAnswer((_) async => categoriesForEveryMetric());
+      stubReadings([]);
+
+      await createNotifier().sync();
+
+      expect(capturedReadStart(), DateTime(2000));
+    });
+
+    test('stays on the watermark while the readable types are unchanged', () async {
+      await PreferenceHelper.instance.setLastHealthSyncTimestamp('2026-06-01T12:00:00.000');
+      await PreferenceHelper.instance.setHealthSyncReadableTypes([
+        for (final metric in enabledHealthMetrics)
+          for (final type in metric.dataTypes) type.name,
+      ]);
+      when(measurements.getAllOnce()).thenAnswer((_) async => categoriesForEveryMetric());
+      stubReadings([]);
+
+      await createNotifier().sync();
+
+      expect(capturedReadStart(), DateTime(2026, 5, 2, 12));
     });
 
     test('a read the platform refuses for authorization is a permission issue', () async {
