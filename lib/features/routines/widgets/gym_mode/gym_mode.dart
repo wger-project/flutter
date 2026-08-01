@@ -132,8 +132,9 @@ class _GymModeState extends ConsumerState<GymMode> {
                 ? TimerCountdownWidget(
                     _controller,
                     (rest ?? gymState.countdownDuration.inSeconds).toInt(),
+                    slotPage.uuid,
                   )
-                : TimerWidget(_controller),
+                : TimerWidget(_controller, slotPage.uuid),
           );
         }
       }

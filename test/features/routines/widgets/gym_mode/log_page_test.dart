@@ -32,6 +32,7 @@ import 'package:wger/features/routines/models/log.dart';
 import 'package:wger/features/routines/models/routine.dart';
 import 'package:wger/features/routines/models/set_config_data.dart';
 import 'package:wger/features/routines/models/slot_data.dart';
+import 'package:wger/features/routines/providers/gym_log_notifier.dart';
 import 'package:wger/features/routines/providers/gym_state.dart';
 import 'package:wger/features/routines/providers/gym_state_notifier.dart';
 import 'package:wger/features/routines/providers/workout_logs_repository.dart';
@@ -72,7 +73,11 @@ void main() {
       SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
       testExercises = getTestExercises();
       mockWorkoutLogRepo = MockWorkoutLogRepository();
-      when(mockWorkoutLogRepo.addLocalDrift(any)).thenAnswer((_) async {});
+      // Mimic the real insert: the freshly minted id is written back to the log
+      when(mockWorkoutLogRepo.addLocalDrift(any)).thenAnswer((invocation) async {
+        (invocation.positionalArguments[0] as Log).id = 'new-log-id';
+      });
+      when(mockWorkoutLogRepo.updateLocalDrift(any)).thenAnswer((_) async {});
       // Past logs on the page come from this stream (per exercise); reuse the
       // test routine's logs so the previous-entries assertions keep working.
       when(
@@ -241,6 +246,44 @@ void main() {
       expect(saved.slotEntryId, gymState.getSlotEntryPageByIndex()!.setConfigData!.slotEntryId);
       expect(saved.routineId, gymState.routine.id);
       expect(saved.iteration, gymState.iteration);
+    });
+
+    testWidgets('re-visiting a logged page restores the saved values and saving updates the row', (
+      tester,
+    ) async {
+      seedLogPage(testdata.getTestRoutine());
+      await pumpLogPage(tester);
+
+      // Enter and save non-default values
+      final fields = find.byType(TextFormField);
+      await tester.enterText(fields.at(0), '12'); // reps
+      await tester.enterText(fields.at(1), '34'); // weight
+      await tester.pump();
+      await tester.tap(find.byKey(const ValueKey('save-log-button')));
+      await tester.pumpAndSettle();
+      verify(mockWorkoutLogRepo.addLocalDrift(captureAny)).called(1);
+
+      // Navigate away (page 3 is the timer) and back (page 2 is the log page)
+      final gymNotifier = container.read(gymStateProvider.notifier);
+      gymNotifier.setCurrentPage(3);
+      gymNotifier.setCurrentPage(2);
+      await tester.pumpAndSettle();
+
+      // The form is seeded from the saved entry, keeping its id
+      expect(container.read(gymLogProvider)!.id, 'new-log-id');
+      final repField = tester.widget<EditableText>(find.byType(EditableText).at(0));
+      expect(repField.controller.text, '12');
+
+      // Saving again updates the existing row instead of inserting a duplicate
+      await tester.tap(find.byKey(const ValueKey('save-log-button')));
+      await tester.pumpAndSettle();
+
+      final updated =
+          verify(mockWorkoutLogRepo.updateLocalDrift(captureAny)).captured.single as Log;
+      expect(updated.id, 'new-log-id');
+      expect(updated.repetitions, 12);
+      expect(updated.weight, 34);
+      verifyNever(mockWorkoutLogRepo.addLocalDrift(any));
     });
 
     testWidgets('reps quick buttons increment and decrement the value', (tester) async {
