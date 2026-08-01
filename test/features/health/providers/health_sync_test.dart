@@ -26,6 +26,7 @@ import 'package:shared_preferences_platform_interface/in_memory_shared_preferenc
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/core/network/auth_credentials_storage.dart';
 import 'package:wger/core/shared_preferences.dart';
+import 'package:wger/features/health/models/health_metric.dart';
 import 'package:wger/features/health/models/health_reading.dart';
 import 'package:wger/features/health/providers/health_repository.dart';
 import 'package:wger/features/health/providers/health_sync.dart';
@@ -82,6 +83,7 @@ void main() {
     when(measurements.addLocalDrift(any)).thenAnswer((_) async {});
     when(measurements.updateLocalDrift(any)).thenAnswer((_) async {});
     when(measurements.addLocalDriftCategory(any)).thenAnswer((_) async {});
+    when(measurements.getAllOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
   });
 
   late ProviderContainer container;
@@ -96,6 +98,61 @@ void main() {
     );
     return container.read(healthSyncProvider.notifier);
   }
+
+  /// A category for every enabled metric, components included, all on the ids
+  /// the sync derives. Without them the sync reads the full history instead of
+  /// starting from the watermark.
+  List<MeasurementCategory> categoriesForEveryMetric() {
+    final categories = <MeasurementCategory>[];
+    for (final metric in enabledHealthMetrics) {
+      if (metric.metricType == MetricType.bodyWeight) {
+        categories.add(
+          MeasurementCategory(
+            id: 'official-body-weight',
+            name: 'Body weight',
+            unit: 'kg',
+            metricType: MetricType.bodyWeight,
+            isOfficial: true,
+          ),
+        );
+        continue;
+      }
+
+      final parentId = deterministicCategoryId('2', metric.metricType);
+      categories.add(
+        MeasurementCategory(
+          id: parentId,
+          name: metric.canonicalName,
+          unit: metric.unit,
+          metricType: metric.metricType,
+        ),
+      );
+      for (final (order, (metricType, name)) in metric.metricType.components.indexed) {
+        categories.add(
+          MeasurementCategory(
+            id: deterministicCategoryId('2', metricType),
+            name: name,
+            unit: metric.unit,
+            metricType: metricType,
+            parentId: parentId,
+            order: order,
+          ),
+        );
+      }
+    }
+    return categories;
+  }
+
+  /// The start of the window the sync asked the platform for
+  DateTime capturedReadStart() =>
+      verify(
+            health.read(
+              types: anyNamed('types'),
+              start: captureAnyNamed('start'),
+              end: anyNamed('end'),
+            ),
+          ).captured.single
+          as DateTime;
 
   void stubReadings(List<HealthReading> readings) {
     when(
@@ -1088,23 +1145,45 @@ void main() {
 
     test('reads with an overlap window before the stored watermark', () async {
       await PreferenceHelper.instance.setLastHealthSyncTimestamp('2026-06-01T12:00:00.000');
-      when(measurements.getAllOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
+      when(measurements.getAllOnce()).thenAnswer((_) async => categoriesForEveryMetric());
       stubReadings([]);
 
       await createNotifier().sync();
 
-      final start =
-          verify(
-                health.read(
-                  types: anyNamed('types'),
-                  start: captureAnyNamed('start'),
-                  end: anyNamed('end'),
-                ),
-              ).captured.single
-              as DateTime;
       // 30 days before the watermark, so late-arriving backdated records
       // (e.g. a scale syncing days after the measurement) are still picked up
-      expect(start, DateTime(2026, 5, 2, 12));
+      expect(capturedReadStart(), DateTime(2026, 5, 2, 12));
+    });
+
+    test('reads the full history when a category was deleted', () async {
+      // Deleting a category takes its entries with it, and the watermark says
+      // nothing about a metric that has no history left: reading from it would
+      // import only what happened since and leave the rest missing
+      await PreferenceHelper.instance.setLastHealthSyncTimestamp('2026-06-01T12:00:00.000');
+      final remaining = categoriesForEveryMetric()
+          .where((c) => c.metricType != MetricType.bodyFat)
+          .toList();
+      when(measurements.getAllOnce()).thenAnswer((_) async => remaining);
+      stubReadings([]);
+
+      await createNotifier().sync();
+
+      expect(capturedReadStart(), DateTime(2000));
+    });
+
+    test('reads the full history when one component of a group was deleted', () async {
+      // The readings live in the components, so a group that lost one of them
+      // has the same hole as a metric without any category
+      await PreferenceHelper.instance.setLastHealthSyncTimestamp('2026-06-01T12:00:00.000');
+      final remaining = categoriesForEveryMetric()
+          .where((c) => c.metricType != MetricType.bloodPressureDiastolic)
+          .toList();
+      when(measurements.getAllOnce()).thenAnswer((_) async => remaining);
+      stubReadings([]);
+
+      await createNotifier().sync();
+
+      expect(capturedReadStart(), DateTime(2000));
     });
 
     test('does nothing when sync is disabled', () async {

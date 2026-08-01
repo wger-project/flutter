@@ -207,23 +207,6 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
         return 0;
       }
 
-      // Health records can arrive late with past dates (e.g. a scale that
-      // only syncs days after the measurement), so the read window reaches
-      // back beyond the watermark; re-reads are deduplicated via externalId.
-      final lastSyncStr = await prefs.getLastHealthSyncTimestamp();
-      final startTime = lastSyncStr != null
-          ? DateTime.parse(lastSyncStr).subtract(_syncOverlap)
-          : DateTime(2000);
-      final endTime = DateTime.now();
-      _logger.info('Syncing health data from $startTime to $endTime');
-
-      final readings = await _health.read(types: _types, start: startTime, end: endTime);
-      if (readings.isEmpty) {
-        _logger.info('No new health data');
-        state = state.copyWith(isSyncing: false, lastSyncCount: 0, lastSyncTime: DateTime.now());
-        return 0;
-      }
-
       // The ids of the typed categories are derived from the user, see
       // [deterministicCategoryId]. Without one nothing could be created that
       // another device would recognise as the same category
@@ -235,6 +218,24 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
       }
 
       final categories = await _measurements.getAllOnce();
+
+      // Health records can arrive late with past dates (e.g. a scale that
+      // only syncs days after the measurement), so the read window reaches
+      // back beyond the watermark; re-reads are deduplicated via externalId.
+      final lastSyncStr = await prefs.getLastHealthSyncTimestamp();
+      final startTime = lastSyncStr == null || _missingCategories(categories).isNotEmpty
+          ? DateTime(2000)
+          : DateTime.parse(lastSyncStr).subtract(_syncOverlap);
+      final endTime = DateTime.now();
+      _logger.info('Syncing health data from $startTime to $endTime');
+
+      final readings = await _health.read(types: _types, start: startTime, end: endTime);
+      if (readings.isEmpty) {
+        _logger.info('No new health data');
+        state = state.copyWith(isSyncing: false, lastSyncCount: 0, lastSyncTime: DateTime.now());
+        return 0;
+      }
+
       final source = _health.sourceName;
       var synced = 0;
       var skippedMetric = false;
@@ -537,6 +538,45 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
     }
     _normalizedIdCount++;
     return ps.uuid.v5(categoryId, platformId);
+  }
+
+  /// The enabled metrics that have no category to import into.
+  ///
+  /// Their history in wger is empty, either because the user deleted the
+  /// category or because the metric was only just enabled, so the watermark
+  /// says nothing about them: reading from it would import what has happened
+  /// since and leave everything before it missing, silently. The sync falls
+  /// back to the full window for that run instead. Since the categories exist
+  /// afterwards, the next sync is back on the watermark, and the entries the
+  /// other metrics re-read are deduplicated via their external ids.
+  List<HealthMetric> _missingCategories(List<MeasurementCategory> categories) {
+    bool hasCategories(HealthMetric metric) {
+      if (metric.metricType == MetricType.bodyWeight) {
+        return categories.any((c) => c.isOfficialBodyWeight);
+      }
+
+      final group = categories.firstWhereOrNull(
+        (c) => c.parentId == null && c.metricType == metric.metricType,
+      );
+      if (group == null) {
+        return false;
+      }
+      // Empty for everything but a group metric, whose readings live in one
+      // child category per component
+      return metric.metricType.components.every(
+        (component) =>
+            categories.any((c) => c.parentId == group.id && c.metricType == component.$1),
+      );
+    }
+
+    final missing = enabledHealthMetrics.where((m) => !hasCategories(m)).toList();
+    if (missing.isNotEmpty) {
+      _logger.info(
+        'No category for ${missing.map((m) => m.metricType.name).join(', ')}, '
+        'reading the full history instead of from the watermark',
+      );
+    }
+    return missing;
   }
 
   /// Finds the category for [metric] by its `metric_type`, or creates it. The
