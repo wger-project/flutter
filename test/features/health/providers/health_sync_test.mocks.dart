@@ -8,6 +8,8 @@ import 'dart:async' as _i4;
 import 'package:health_bridge/health.dart' as _i5;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i3;
+import 'package:wger/core/network/auth_credentials_storage.dart' as _i10;
+import 'package:wger/core/network/auth_state.dart' as _i11;
 import 'package:wger/features/health/models/health_reading.dart' as _i6;
 import 'package:wger/features/health/providers/health_repository.dart' as _i2;
 import 'package:wger/features/measurements/models/measurement_category.dart' as _i8;
@@ -52,6 +54,33 @@ class MockHealthRepository extends _i1.Mock implements _i2.HealthRepository {
   _i4.Future<bool> isAvailable() =>
       (super.noSuchMethod(
             Invocation.method(#isAvailable, []),
+            returnValue: _i4.Future<bool>.value(false),
+          )
+          as _i4.Future<bool>);
+
+  @override
+  _i4.Future<_i2.HealthPlatformAvailability> availability() =>
+      (super.noSuchMethod(
+            Invocation.method(#availability, []),
+            returnValue: _i4.Future<_i2.HealthPlatformAvailability>.value(
+              _i2.HealthPlatformAvailability.available,
+            ),
+          )
+          as _i4.Future<_i2.HealthPlatformAvailability>);
+
+  @override
+  _i4.Future<void> openHealthConnectInstall() =>
+      (super.noSuchMethod(
+            Invocation.method(#openHealthConnectInstall, []),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<bool> ensureHistoryAuthorized() =>
+      (super.noSuchMethod(
+            Invocation.method(#ensureHistoryAuthorized, []),
             returnValue: _i4.Future<bool>.value(false),
           )
           as _i4.Future<bool>);
@@ -204,4 +233,139 @@ class MockMeasurementRepository extends _i1.Mock implements _i7.MeasurementRepos
             returnValueForMissingStub: _i4.Future<void>.value(),
           )
           as _i4.Future<void>);
+}
+
+/// A class which mocks [AuthCredentialsStorage].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockAuthCredentialsStorage extends _i1.Mock implements _i10.AuthCredentialsStorage {
+  MockAuthCredentialsStorage() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i4.Future<_i10.StoredAuth?> load() =>
+      (super.noSuchMethod(
+            Invocation.method(#load, []),
+            returnValue: _i4.Future<_i10.StoredAuth?>.value(),
+          )
+          as _i4.Future<_i10.StoredAuth?>);
+
+  @override
+  _i4.Future<void> saveJwt({
+    required _i11.JwtCredential? credential,
+    required String? serverUrl,
+    String? refreshToken,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#saveJwt, [], {
+              #credential: credential,
+              #serverUrl: serverUrl,
+              #refreshToken: refreshToken,
+            }),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> updateJwt({
+    required _i11.JwtCredential? credential,
+    String? refreshToken,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#updateJwt, [], {
+              #credential: credential,
+              #refreshToken: refreshToken,
+            }),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> clearJwt() =>
+      (super.noSuchMethod(
+            Invocation.method(#clearJwt, []),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> clearLegacy() =>
+      (super.noSuchMethod(
+            Invocation.method(#clearLegacy, []),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> clearCredentials() =>
+      (super.noSuchMethod(
+            Invocation.method(#clearCredentials, []),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> clearAll() =>
+      (super.noSuchMethod(
+            Invocation.method(#clearAll, []),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<String?> dbOwnerUserId() =>
+      (super.noSuchMethod(
+            Invocation.method(#dbOwnerUserId, []),
+            returnValue: _i4.Future<String?>.value(),
+          )
+          as _i4.Future<String?>);
+
+  @override
+  _i4.Future<void> setDbOwnerUserId(String? userId) =>
+      (super.noSuchMethod(
+            Invocation.method(#setDbOwnerUserId, [userId]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<bool> keepDataOnLogout() =>
+      (super.noSuchMethod(
+            Invocation.method(#keepDataOnLogout, []),
+            returnValue: _i4.Future<bool>.value(false),
+          )
+          as _i4.Future<bool>);
+
+  @override
+  _i4.Future<bool> hasEverSynced() =>
+      (super.noSuchMethod(
+            Invocation.method(#hasEverSynced, []),
+            returnValue: _i4.Future<bool>.value(false),
+          )
+          as _i4.Future<bool>);
+
+  @override
+  _i4.Future<void> markEverSynced() =>
+      (super.noSuchMethod(
+            Invocation.method(#markEverSynced, []),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<String?> readRefreshToken() =>
+      (super.noSuchMethod(
+            Invocation.method(#readRefreshToken, []),
+            returnValue: _i4.Future<String?>.value(),
+          )
+          as _i4.Future<String?>);
 }

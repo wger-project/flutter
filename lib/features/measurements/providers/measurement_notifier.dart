@@ -23,6 +23,7 @@
 import 'package:collection/collection.dart';
 import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:wger/core/network/auth_credentials_storage.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/measurement_entry.dart';
 
@@ -87,8 +88,39 @@ final class MeasurementNotifier extends _$MeasurementNotifier {
     await _repo.updateLocalDriftCategory(category);
   }
 
+  /// Adds a category, and its components when it is a group.
+  ///
+  /// A typed category takes the id derived from user and metric type (see
+  /// [deterministicCategoryId]) instead of a random one, so that a category
+  /// created here and the same one created on another device converge on one
+  /// row rather than colliding with the server's uniqueness constraint.
   Future<void> addCategory(MeasurementCategory category) async {
-    await _repo.addLocalDriftCategory(category);
+    final userId = await ref.read(authCredentialsStorageProvider).dbOwnerUserId();
+    if (userId == null || !category.metricType.hasDeterministicId) {
+      await _repo.addLocalDriftCategory(category);
+      return;
+    }
+
+    final parent = category.copyWith(
+      id: category.id ?? deterministicCategoryId(userId, category.metricType),
+    );
+    await _repo.addLocalDriftCategory(parent);
+
+    // A group is a container, its readings live in one child per component.
+    // The server creates them as well, on the same ids, so whichever side
+    // gets there first wins and the other is acknowledged as a no-op
+    for (final (order, (metricType, name)) in parent.metricType.components.indexed) {
+      await _repo.addLocalDriftCategory(
+        MeasurementCategory(
+          id: deterministicCategoryId(userId, metricType),
+          name: name,
+          unit: parent.unit,
+          metricType: metricType,
+          parentId: parent.id,
+          order: order,
+        ),
+      );
+    }
   }
 
   /// Moves the top-level category at [oldIndex] to [newIndex] and renumbers

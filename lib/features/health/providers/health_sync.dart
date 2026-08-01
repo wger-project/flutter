@@ -24,6 +24,7 @@ import 'package:logging/logging.dart';
 import 'package:powersync/powersync.dart' as ps;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wger/core/consts.dart';
+import 'package:wger/core/network/auth_credentials_storage.dart';
 import 'package:wger/core/shared_preferences.dart';
 import 'package:wger/features/health/models/health_metric.dart';
 import 'package:wger/features/health/models/health_reading.dart';
@@ -223,6 +224,16 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
         return 0;
       }
 
+      // The ids of the typed categories are derived from the user, see
+      // [deterministicCategoryId]. Without one nothing could be created that
+      // another device would recognise as the same category
+      final userId = await ref.read(authCredentialsStorageProvider).dbOwnerUserId();
+      if (userId == null) {
+        _logger.warning('Local database has no owner, skipping health sync');
+        state = state.copyWith(isSyncing: false, issue: HealthSyncIssue.failed);
+        return 0;
+      }
+
       final categories = await _measurements.getAllOnce();
       final source = _health.sourceName;
       var synced = 0;
@@ -242,7 +253,7 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
             if (metricReadings.isEmpty) {
               continue;
             }
-            final category = await _findOrCreateCategory(metric, categories);
+            final category = await _findOrCreateCategory(metric, categories, userId);
             if (category == null) {
               skippedMetric = true;
               continue;
@@ -256,7 +267,7 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
             if (byComponent.every((r) => r.isEmpty)) {
               continue;
             }
-            final children = await _findOrCreateGroupChildren(metric, categories);
+            final children = await _findOrCreateGroupChildren(metric, categories, userId);
             if (children == null) {
               skippedMetric = true;
               continue;
@@ -528,10 +539,14 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
     return ps.uuid.v5(categoryId, platformId);
   }
 
-  /// Finds the category for [metric] (by `metric_type`, falling back to the
-  /// canonical name to reuse a matching category the user created by hand) or
-  /// creates it. The created category is appended to [categories] so a later
-  /// metric in the same run reuses it.
+  /// Finds the category for [metric] by its `metric_type`, or creates it. The
+  /// created category is appended to [categories] so a later metric in the same
+  /// run reuses it.
+  ///
+  /// Matching by name as well was dropped deliberately: it hit any hand-made
+  /// category that happened to be called like the metric in English and missed
+  /// it in every other language, so the target depended on the UI language.
+  /// Adopting an existing category is done by giving it the metric type.
   ///
   /// Body weight is the exception: it goes only into the official category,
   /// which the server creates for every user. It is never created here;
@@ -540,6 +555,7 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
   Future<MeasurementCategory?> _findOrCreateCategory(
     HealthMetric metric,
     List<MeasurementCategory> categories,
+    String userId,
   ) async {
     if (metric.metricType == MetricType.bodyWeight) {
       final official = categories.firstWhereOrNull((c) => c.isOfficialBodyWeight);
@@ -549,15 +565,13 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
       return official;
     }
 
-    final existing = categories.firstWhereOrNull(
-      (c) => c.metricType == metric.metricType || c.name == metric.canonicalName,
-    );
+    final existing = categories.firstWhereOrNull((c) => c.metricType == metric.metricType);
     if (existing != null) {
       return existing;
     }
 
     final category = MeasurementCategory(
-      id: ps.uuid.v7(),
+      id: deterministicCategoryId(userId, metric.metricType),
       name: metric.canonicalName,
       unit: metric.unit,
       metricType: metric.metricType,
@@ -568,18 +582,17 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
   }
 
   /// Finds the child categories a group metric imports into, one per
-  /// component matched by in-group position, creating the group and any
+  /// component matched by its own metric type, creating the group and any
   /// missing children as needed. Returns `null` (skip the metric) when the
   /// matching category holds entries itself: the server allows measurements
   /// only on leaves, so attaching children would make its rows invalid.
   Future<List<MeasurementCategory>?> _findOrCreateGroupChildren(
     HealthMetric metric,
     List<MeasurementCategory> categories,
+    String userId,
   ) async {
     final existing = categories.firstWhereOrNull(
-      (c) =>
-          c.parentId == null &&
-          (c.metricType == metric.metricType || c.name == metric.canonicalName),
+      (c) => c.parentId == null && c.metricType == metric.metricType,
     );
     if (existing != null && existing.entries.isNotEmpty) {
       _logger.warning(
@@ -592,7 +605,7 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
     final parent =
         existing ??
         MeasurementCategory(
-          id: ps.uuid.v7(),
+          id: deterministicCategoryId(userId, metric.metricType),
           name: metric.canonicalName,
           unit: metric.unit,
           metricType: metric.metricType,
@@ -602,22 +615,25 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
       categories.add(parent);
     }
 
-    final children = categories
-        .where((c) => c.parentId == parent.id)
-        .sortedBy<num>((c) => c.order)
-        .toList();
+    // The component categories come from the metric type, in the same order as
+    // the metric's health data types, so the caller can pair them by index.
+    // The server creates them on the very same ids when it sees the group
     final result = <MeasurementCategory>[];
-    for (var i = 0; i < metric.components.length; i++) {
-      if (i < children.length) {
-        result.add(children[i]);
+    for (final (order, (metricType, name)) in metric.metricType.components.indexed) {
+      final existingChild = categories.firstWhereOrNull(
+        (c) => c.parentId == parent.id && c.metricType == metricType,
+      );
+      if (existingChild != null) {
+        result.add(existingChild);
         continue;
       }
       final child = MeasurementCategory(
-        id: ps.uuid.v7(),
-        name: metric.components[i].canonicalName,
+        id: deterministicCategoryId(userId, metricType),
+        name: name,
         unit: metric.unit,
+        metricType: metricType,
         parentId: parent.id,
-        order: i,
+        order: order,
       );
       await _measurements.addLocalDriftCategory(child);
       categories.add(child);

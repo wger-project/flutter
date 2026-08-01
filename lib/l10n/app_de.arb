@@ -1136,6 +1136,8 @@
     "metricBodyFat": "Körperfett",
     "metricHeight": "Körpergröße",
     "metricBloodPressure": "Blutdruck",
+    "metricBloodPressureSystolic": "Systolisch",
+    "metricBloodPressureDiastolic": "Diastolisch",
     "metricHeartRate": "Herzfrequenz",
     "metricRestingHeartRate": "Ruhepuls",
     "metricSteps": "Schritte",

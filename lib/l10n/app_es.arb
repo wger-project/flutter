@@ -1175,6 +1175,8 @@
     "metricBodyFat": "Grasa corporal",
     "metricHeight": "Altura",
     "metricBloodPressure": "Presión arterial",
+    "metricBloodPressureSystolic": "Sistólica",
+    "metricBloodPressureDiastolic": "Diastólica",
     "metricHeartRate": "Frecuencia cardíaca",
     "metricRestingHeartRate": "Frecuencia cardíaca en reposo",
     "metricSteps": "Pasos",

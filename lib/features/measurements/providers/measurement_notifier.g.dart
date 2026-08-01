@@ -33,7 +33,7 @@ final class MeasurementNotifierProvider
   MeasurementNotifier create() => MeasurementNotifier();
 }
 
-String _$measurementNotifierHash() => r'b071f9215b067007ffd1907a55f9634a4ea078fa';
+String _$measurementNotifierHash() => r'182e6c83fc407e876f9826fcd442a7e0808e74ee';
 
 abstract class _$MeasurementNotifier extends $StreamNotifier<List<MeasurementCategory>> {
   Stream<List<MeasurementCategory>> build();

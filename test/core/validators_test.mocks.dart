@@ -2215,6 +2215,28 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get metricBloodPressureSystolic =>
+      (super.noSuchMethod(
+            Invocation.getter(#metricBloodPressureSystolic),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#metricBloodPressureSystolic),
+            ),
+          )
+          as String);
+
+  @override
+  String get metricBloodPressureDiastolic =>
+      (super.noSuchMethod(
+            Invocation.getter(#metricBloodPressureDiastolic),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#metricBloodPressureDiastolic),
+            ),
+          )
+          as String);
+
+  @override
   String get metricHeartRate =>
       (super.noSuchMethod(
             Invocation.getter(#metricHeartRate),
@@ -4925,6 +4947,39 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.getter(#healthSyncFailed),
+            ),
+          )
+          as String);
+
+  @override
+  String get healthConnectInstall =>
+      (super.noSuchMethod(
+            Invocation.getter(#healthConnectInstall),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#healthConnectInstall),
+            ),
+          )
+          as String);
+
+  @override
+  String get healthConnectUpdate =>
+      (super.noSuchMethod(
+            Invocation.getter(#healthConnectUpdate),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#healthConnectUpdate),
+            ),
+          )
+          as String);
+
+  @override
+  String get healthConnectRequired =>
+      (super.noSuchMethod(
+            Invocation.getter(#healthConnectRequired),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#healthConnectRequired),
             ),
           )
           as String);

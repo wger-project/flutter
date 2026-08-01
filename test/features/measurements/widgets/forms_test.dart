@@ -88,7 +88,7 @@ void main() {
       expect(find.byType(MeasurementCategoryForm), findsOneWidget);
     });
 
-    testWidgets('metricType dropdown offers all MetricType values except body weight', (
+    testWidgets('metricType dropdown offers neither body weight nor the components', (
       tester,
     ) async {
       await tester.pumpWidget(wrap(const MeasurementCategoryForm()));
@@ -100,17 +100,22 @@ void main() {
 
       // The initialValue stays visible on the form behind the opened menu
       // overlay, which shows every offered MetricType option once. Body
-      // weight is reserved for the official category and not offered.
-      expect(
-        find.byType(DropdownMenuItem<MetricType>),
-        findsNWidgets(MetricType.values.length),
-      );
-      expect(
-        find.byWidgetPredicate(
-          (w) => w is DropdownMenuItem<MetricType> && w.value == MetricType.bodyWeight,
-        ),
-        findsNothing,
-      );
+      // weight is reserved for the official category, and a component only
+      // exists as the child of the group it is created with.
+      final offered = MetricType.values.where((t) => !t.isOfficial && !t.isComponent).length;
+      expect(find.byType(DropdownMenuItem<MetricType>), findsNWidgets(offered + 1));
+      for (final hidden in [
+        MetricType.bodyWeight,
+        MetricType.bloodPressureSystolic,
+        MetricType.bloodPressureDiastolic,
+      ]) {
+        expect(
+          find.byWidgetPredicate(
+            (w) => w is DropdownMenuItem<MetricType> && w.value == hidden,
+          ),
+          findsNothing,
+        );
+      }
     });
 
     testWidgets('editing a category with the body weight type keeps its value', (tester) async {

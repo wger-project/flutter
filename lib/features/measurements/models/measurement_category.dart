@@ -19,12 +19,30 @@
 import 'package:drift/drift.dart' hide JsonKey;
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:powersync/powersync.dart' as ps;
 import 'package:wger/core/exceptions/no_such_entry_exception.dart';
 import 'package:wger/database/powersync/database.dart';
 import 'package:wger/features/measurements/models/measurement_entry.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 part 'measurement_category.freezed.dart';
+
+/// Namespace of the derived category ids.
+///
+/// MUST stay identical to CATEGORY_NAMESPACE on the server: a UUIDv5 hashes
+/// namespace and name together, so a different constant here derives different
+/// ids and the whole point of [deterministicCategoryId] collapses.
+const categoryIdNamespace = '4c5ef6dd-97c9-5b18-9f8b-2a5c1ed70a2f';
+
+/// The id the category of [metricType] has for the user [userId].
+///
+/// A typed category is the one place its metric lives, but the app creates it
+/// while offline, so two devices would otherwise produce two rows for the same
+/// metric. Deriving the id makes both arrive at the same one, and the server
+/// acknowledges the second push as a no-op instead of rejecting it against its
+/// uniqueness constraint.
+String deterministicCategoryId(String userId, MetricType metricType) =>
+    ps.uuid.v5(categoryIdNamespace, '$userId:${metricType.wireValue}');
 
 /// The wire values mirror the Django API field names (e.g., 'body_weight', 'heart_rate'),
 enum MetricType {
@@ -33,6 +51,8 @@ enum MetricType {
   bodyFat('body_fat'),
   height('height'),
   bloodPressure('blood_pressure'),
+  bloodPressureSystolic('blood_pressure_systolic'),
+  bloodPressureDiastolic('blood_pressure_diastolic'),
   heartRate('heart_rate'),
   restingHeartRate('resting_heart_rate'),
   steps('steps'),
@@ -65,6 +85,34 @@ enum MetricType {
     _ => false,
   };
 
+  /// The components of the multi-value metric types with the name their
+  /// category is created under, in group order. Mirrors GROUP_COMPONENTS on
+  /// the server, names included, so both sides create the same categories.
+  static const _groupComponents = <MetricType, List<(MetricType, String)>>{
+    MetricType.bloodPressure: [
+      (MetricType.bloodPressureSystolic, 'Systolic'),
+      (MetricType.bloodPressureDiastolic, 'Diastolic'),
+    ],
+  };
+
+  /// `true` for a container type whose readings live in its components, e.g.
+  /// blood pressure. A group category never carries entries of its own.
+  bool get isGroup => _groupComponents.containsKey(this);
+
+  /// `true` for one component of a group, e.g. systolic. Components exist
+  /// only as children of their group and are not offered when creating a
+  /// category.
+  bool get isComponent =>
+      _groupComponents.values.any((components) => components.any((c) => c.$1 == this));
+
+  /// The components of this group, in group order; empty for every other type
+  List<(MetricType, String)> get components => _groupComponents[this] ?? const [];
+
+  /// `true` for the types whose category id is derived instead of random,
+  /// see [deterministicCategoryId]. Body weight is excluded: the server
+  /// creates that category itself and the app looks it up by [isOfficial].
+  bool get hasDeterministicId => this != MetricType.custom && this != MetricType.bodyWeight;
+
   /// `true` for metric types whose charts show nutrition plan periods for
   /// context. Custom categories are typically hand-kept body measurements
   /// (waist, biceps), so they qualify; the typed health metrics do not.
@@ -84,6 +132,8 @@ extension MeasurementMetricTypeL10n on MetricType {
       MetricType.bodyFat => l10n.metricBodyFat,
       MetricType.height => l10n.metricHeight,
       MetricType.bloodPressure => l10n.metricBloodPressure,
+      MetricType.bloodPressureSystolic => l10n.metricBloodPressureSystolic,
+      MetricType.bloodPressureDiastolic => l10n.metricBloodPressureDiastolic,
       MetricType.heartRate => l10n.metricHeartRate,
       MetricType.restingHeartRate => l10n.metricRestingHeartRate,
       MetricType.steps => l10n.metricSteps,

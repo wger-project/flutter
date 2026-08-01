@@ -617,6 +617,14 @@
   "@metricBloodPressure": {
     "description": "Label for blood pressure measurement"
   },
+  "metricBloodPressureSystolic": "Systolic",
+  "@metricBloodPressureSystolic": {
+    "description": "Label for the systolic component of a blood pressure reading"
+  },
+  "metricBloodPressureDiastolic": "Diastolic",
+  "@metricBloodPressureDiastolic": {
+    "description": "Label for the diastolic component of a blood pressure reading"
+  },
   "metricHeartRate": "Heart rate",
   "@metricHeartRate": {
     "description": "Label for heart rate measurement"

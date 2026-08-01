@@ -24,6 +24,7 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
+import 'package:wger/core/network/auth_credentials_storage.dart';
 import 'package:wger/core/shared_preferences.dart';
 import 'package:wger/features/health/models/health_reading.dart';
 import 'package:wger/features/health/providers/health_repository.dart';
@@ -56,7 +57,7 @@ const _idWLb = '0000000e-0000-4000-8000-000000000014'; // w-lb
 const _catHrId = 'aaaaaaaa-0000-4000-8000-000000000001';
 const _catSleepId = 'bbbbbbbb-0000-4000-8000-000000000002';
 
-@GenerateMocks([HealthRepository, MeasurementRepository])
+@GenerateMocks([HealthRepository, MeasurementRepository, AuthCredentialsStorage])
 void main() {
   // The notifier registers an AppLifecycleListener for the resume re-sync,
   // which needs a live widgets binding even in plain tests
@@ -64,6 +65,7 @@ void main() {
 
   late MockHealthRepository health;
   late MockMeasurementRepository measurements;
+  late MockAuthCredentialsStorage credentials;
 
   setUp(() async {
     SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
@@ -71,6 +73,8 @@ void main() {
 
     health = MockHealthRepository();
     measurements = MockMeasurementRepository();
+    credentials = MockAuthCredentialsStorage();
+    when(credentials.dbOwnerUserId()).thenAnswer((_) async => '2');
 
     when(health.ensureAuthorized(any)).thenAnswer((_) async => true);
     when(health.isAuthorizationKnownMissing(any)).thenAnswer((_) async => false);
@@ -87,6 +91,7 @@ void main() {
       overrides: [
         healthRepositoryProvider.overrideWithValue(health),
         measurementRepositoryProvider.overrideWithValue(measurements),
+        authCredentialsStorageProvider.overrideWithValue(credentials),
       ],
     );
     return container.read(healthSyncProvider.notifier);
@@ -332,12 +337,24 @@ void main() {
         (c) => c.metricType == MetricType.bloodPressure,
       );
       expect(bloodPressure.parentId, isNull);
-      final systolic = createdCategories.firstWhere((c) => c.name == 'Systolic');
-      final diastolic = createdCategories.firstWhere((c) => c.name == 'Diastolic');
+      final systolic = createdCategories.firstWhere(
+        (c) => c.metricType == MetricType.bloodPressureSystolic,
+      );
+      final diastolic = createdCategories.firstWhere(
+        (c) => c.metricType == MetricType.bloodPressureDiastolic,
+      );
+      expect(systolic.name, 'Systolic');
       expect(systolic.parentId, bloodPressure.id);
       expect(systolic.order, 0);
+      expect(diastolic.name, 'Diastolic');
       expect(diastolic.parentId, bloodPressure.id);
       expect(diastolic.order, 1);
+
+      // Every created category takes the id derived from user and metric
+      // type, which is the one the server derives as well
+      for (final category in createdCategories) {
+        expect(category.id, deterministicCategoryId('2', category.metricType));
+      }
 
       final entries = verify(
         measurements.addLocalDrift(captureAny),
@@ -870,20 +887,27 @@ void main() {
       verifyNever(measurements.updateLocalDrift(any));
     });
 
-    test('imports blood pressure into an existing group by in-group order', () async {
+    test('imports blood pressure into an existing group by component type', () async {
       // The user's own group with different names: components map onto the
-      // children by their in-group position, not by name
+      // children by their metric type, not by name
       final parent = MeasurementCategory(
         id: 'bp',
         name: 'BP',
         unit: 'mmHg',
         metricType: MetricType.bloodPressure,
       );
-      final upper = MeasurementCategory(id: 'upper', name: 'Upper', unit: 'mmHg', parentId: 'bp');
+      final upper = MeasurementCategory(
+        id: 'upper',
+        name: 'Upper',
+        unit: 'mmHg',
+        metricType: MetricType.bloodPressureSystolic,
+        parentId: 'bp',
+      );
       final lower = MeasurementCategory(
         id: 'lower',
         name: 'Lower',
         unit: 'mmHg',
+        metricType: MetricType.bloodPressureDiastolic,
         parentId: 'bp',
         order: 1,
       );
@@ -913,6 +937,37 @@ void main() {
       expect(entries.firstWhere((e) => e.value == 120).categoryId, 'upper');
       expect(entries.firstWhere((e) => e.value == 80).categoryId, 'lower');
     });
+
+    test(
+      'a category with the canonical name is not adopted, only the metric type counts',
+      () async {
+        // Matching by name made the target depend on the UI language, so a
+        // hand-kept category is only used once it carries the metric type
+        final handMade = MeasurementCategory(id: 'own', name: 'Body fat', unit: '%');
+        when(measurements.getAllOnce()).thenAnswer((_) async => [handMade]);
+        stubReadings([
+          HealthReading(
+            type: HealthDataType.BODY_FAT_PERCENTAGE,
+            value: 0.2,
+            date: DateTime(2026, 1, 1),
+            externalId: _idBf1,
+          ),
+        ]);
+
+        await createNotifier().sync();
+
+        final created = verify(
+          measurements.addLocalDriftCategory(captureAny),
+        ).captured.cast<MeasurementCategory>();
+        expect(created.single.metricType, MetricType.bodyFat);
+        expect(created.single.id, deterministicCategoryId('2', MetricType.bodyFat));
+
+        final entries = verify(
+          measurements.addLocalDrift(captureAny),
+        ).captured.cast<MeasurementEntry>();
+        expect(entries.single.categoryId, created.single.id);
+      },
+    );
 
     test('skips blood pressure when the matching category holds entries', () async {
       await PreferenceHelper.instance.setLastHealthSyncTimestamp('2020-01-01T00:00:00.000');

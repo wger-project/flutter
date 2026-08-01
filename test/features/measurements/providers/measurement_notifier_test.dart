@@ -20,6 +20,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:wger/core/network/auth_credentials_storage.dart';
+import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
 
@@ -27,13 +29,16 @@ import '../../../../test_data/body_weight.dart';
 import '../../../../test_data/measurements.dart';
 import 'measurement_notifier_test.mocks.dart';
 
-@GenerateMocks([MeasurementRepository])
+@GenerateMocks([MeasurementRepository, AuthCredentialsStorage])
 void main() {
   late MockMeasurementRepository mockRepo;
+  late MockAuthCredentialsStorage mockCredentials;
   late ProviderContainer container;
 
   setUp(() {
     mockRepo = MockMeasurementRepository();
+    mockCredentials = MockAuthCredentialsStorage();
+    when(mockCredentials.dbOwnerUserId()).thenAnswer((_) async => '2');
 
     // Default stubs
     when(mockRepo.watchAll()).thenAnswer((_) => Stream.value([]));
@@ -50,6 +55,7 @@ void main() {
     container = ProviderContainer(
       overrides: [
         measurementRepositoryProvider.overrideWithValue(mockRepo),
+        authCredentialsStorageProvider.overrideWithValue(mockCredentials),
       ],
     );
   });
@@ -97,6 +103,49 @@ void main() {
 
       await notifier.addCategory(category);
       verify(mockRepo.addLocalDriftCategory(category)).called(1);
+    });
+
+    test('addCategory derives the id of a typed category', () async {
+      final notifier = container.read(measurementProvider.notifier);
+
+      await notifier.addCategory(
+        MeasurementCategory(
+          name: 'Steps',
+          unit: 'count',
+          metricType: MetricType.steps,
+        ),
+      );
+
+      final added = verify(
+        mockRepo.addLocalDriftCategory(captureAny),
+      ).captured.cast<MeasurementCategory>();
+      expect(added.single.id, deterministicCategoryId('2', MetricType.steps));
+    });
+
+    test('addCategory creates a group with its components', () async {
+      final notifier = container.read(measurementProvider.notifier);
+
+      await notifier.addCategory(
+        MeasurementCategory(
+          name: 'Blood pressure',
+          unit: 'mmHg',
+          metricType: MetricType.bloodPressure,
+        ),
+      );
+
+      final added = verify(
+        mockRepo.addLocalDriftCategory(captureAny),
+      ).captured.cast<MeasurementCategory>();
+      expect(
+        added.map((c) => (c.metricType, c.name, c.order)),
+        [
+          (MetricType.bloodPressure, 'Blood pressure', 0),
+          (MetricType.bloodPressureSystolic, 'Systolic', 0),
+          (MetricType.bloodPressureDiastolic, 'Diastolic', 1),
+        ],
+      );
+      expect(added.last.parentId, added.first.id);
+      expect(added.last.id, deterministicCategoryId('2', MetricType.bloodPressureDiastolic));
     });
 
     test('build watches repository stream', () async {

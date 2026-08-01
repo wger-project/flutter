@@ -96,12 +96,14 @@ class _MeasurementCategoryFormState extends ConsumerState<MeasurementCategoryFor
             },
           ),
 
-          // metricType. Official types are reserved for the categories the server manages
+          // metricType. Official types are reserved for the categories the
+          // server manages, components are a structural type: they only exist
+          // as the children of their group, which is created with them
           DropdownButtonFormField(
             initialValue: _draft.metricType,
             decoration: InputDecoration(labelText: AppLocalizations.of(context).metricType),
             items: MetricType.values
-                .where((t) => !t.isOfficial || t == _draft.metricType)
+                .where((t) => (!t.isOfficial && !t.isComponent) || t == _draft.metricType)
                 .map((t) => DropdownMenuItem(value: t, child: Text(t.localized(context))))
                 .toList(),
             onChanged: (value) {
@@ -115,14 +117,16 @@ class _MeasurementCategoryFormState extends ConsumerState<MeasurementCategoryFor
 
           // Parent group (multi-value measurements, e.g. blood pressure).
           // Mirrors the server rules: only top-level, entry-free categories
-          // can be parents, and a category with children cannot be nested.
+          // can be parents, a category with children cannot be nested, a typed
+          // category stays top-level, and a group takes only its own
+          // components (which it is created with).
           Builder(
             builder: (context) {
               final categories = ref.watch(measurementProvider).asData?.value ?? [];
 
               final hasChildren =
                   _draft.id != null && categories.any((c) => c.parentId == _draft.id);
-              if (hasChildren) {
+              if (hasChildren || _draft.metricType != MetricType.custom) {
                 return const SizedBox.shrink();
               }
 
@@ -132,7 +136,8 @@ class _MeasurementCategoryFormState extends ConsumerState<MeasurementCategoryFor
                         c.parentId == null &&
                         c.id != _draft.id &&
                         c.entries.isEmpty &&
-                        !c.isOfficialBodyWeight,
+                        !c.isOfficialBodyWeight &&
+                        !c.metricType.isGroup,
                   )
                   .toList();
               if (candidates.isEmpty) {
