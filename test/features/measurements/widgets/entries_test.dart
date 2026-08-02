@@ -24,6 +24,7 @@ import 'package:mockito/mockito.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/measurement_entry.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
+import 'package:wger/features/measurements/widgets/chart_range_selector.dart';
 import 'package:wger/features/measurements/widgets/charts.dart';
 import 'package:wger/features/measurements/widgets/entries.dart';
 import 'package:wger/features/nutrition/providers/ingredient_repository.dart';
@@ -65,7 +66,13 @@ void main() {
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
-          body: SingleChildScrollView(child: EntriesList(category)),
+          body: SingleChildScrollView(
+            child: EntriesList(
+              category,
+              range: ChartRange.last3Months,
+              onRangeChanged: (_) {},
+            ),
+          ),
         ),
       ),
     );

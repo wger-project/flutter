@@ -52,7 +52,9 @@ void main() {
 
   group('CategoriesList', () {
     testWidgets('two top-level categories render two CategoriesCard widgets', (tester) async {
-      when(mockRepo.watchAll()).thenAnswer((_) => Stream.value(getMeasurementCategories()));
+      when(
+        mockRepo.watchAll(entriesSince: anyNamed('entriesSince')),
+      ).thenAnswer((_) => Stream.value(getMeasurementCategories()));
 
       await tester.pumpWidget(_wrap(mockRepo));
       await tester.pumpAndSettle();
@@ -64,7 +66,9 @@ void main() {
       tester,
     ) async {
       // Only 'bp' should produce a CategoriesCard; children stay inside it.
-      when(mockRepo.watchAll()).thenAnswer((_) => Stream.value(getBloodPressureGroup()));
+      when(
+        mockRepo.watchAll(entriesSince: anyNamed('entriesSince')),
+      ).thenAnswer((_) => Stream.value(getBloodPressureGroup()));
 
       await tester.pumpWidget(_wrap(mockRepo));
       await tester.pumpAndSettle();
@@ -75,7 +79,9 @@ void main() {
     });
 
     testWidgets('empty list renders no CategoriesCard', (tester) async {
-      when(mockRepo.watchAll()).thenAnswer((_) => Stream.value([]));
+      when(
+        mockRepo.watchAll(entriesSince: anyNamed('entriesSince')),
+      ).thenAnswer((_) => Stream.value([]));
 
       await tester.pumpWidget(_wrap(mockRepo));
       await tester.pumpAndSettle();

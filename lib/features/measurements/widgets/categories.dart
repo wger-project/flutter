@@ -40,7 +40,9 @@ class _CategoriesListState extends ConsumerState<CategoriesList> {
   @override
   Widget build(BuildContext context) {
     return AsyncValueWidget<List<MeasurementCategory>>(
-      value: ref.watch(measurementProvider),
+      // Only the entries the range charts are read: a synced account holds
+      // years of them, and this list draws three months by default
+      value: ref.watch(measurementCategoriesSinceProvider(_range.readCutoff)),
       loggerName: 'CategoriesList',
       data: (categoriesList) {
         // Children of multi-value groups are rendered inside their parent's

@@ -35,6 +35,27 @@ enum ChartRange {
   /// Oldest date still shown, null for the full history.
   DateTime? get cutoff => _days == null ? null : DateTime.now().subtract(Duration(days: _days));
 
+  /// Days read beyond [cutoff], so the moving average of the first days in
+  /// range averages the days before them instead of starting over at the
+  /// cutoff.
+  static const _averageLeadDays = 7;
+
+  /// Oldest entry to read from the database, null for the full history.
+  ///
+  /// Rounded down to midnight, and deliberately so: this identifies a provider
+  /// and has to stay the same across rebuilds, which a bound derived from the
+  /// current instant would not.
+  DateTime? get readCutoff {
+    final from = cutoff;
+    if (from == null) {
+      return null;
+    }
+
+    final lead = from.subtract(const Duration(days: _averageLeadDays));
+
+    return DateTime(lead.year, lead.month, lead.day);
+  }
+
   String label(AppLocalizations i18n) => switch (this) {
     ChartRange.all => i18n.chartRangeAll,
     ChartRange.lastYear => i18n.chartRangeLastYear,

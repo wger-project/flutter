@@ -104,7 +104,13 @@ const PowersyncMeasurementEntryTable = ps.Table(
     ps.Column.text('extra_data'),
   ],
   indexes: [
-    ps.Index('category_idx', [ps.IndexedColumn('category_id')]),
+    // Entries are read per category and bounded by date (the charts read a
+    // range, the lists sort by it). The date is stored as an ISO string, which
+    // sorts the same way the timestamps do, so a range is one index scan
+    ps.Index('category_idx', [
+      ps.IndexedColumn('category_id'),
+      ps.IndexedColumn('date'),
+    ]),
     ps.Index('external_id_idx', [ps.IndexedColumn('external_id')]),
   ],
 );

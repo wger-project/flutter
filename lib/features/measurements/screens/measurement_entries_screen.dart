@@ -24,8 +24,8 @@ import 'package:wger/core/widgets/confirm_delete_dialog.dart';
 import 'package:wger/core/widgets/error.dart';
 import 'package:wger/core/widgets/object_gone_redirect.dart';
 import 'package:wger/core/widgets/progress_indicator.dart';
-import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
+import 'package:wger/features/measurements/widgets/chart_range_selector.dart';
 import 'package:wger/features/measurements/widgets/entries.dart';
 import 'package:wger/features/measurements/widgets/forms.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -46,36 +46,35 @@ class MeasurementEntriesScreen extends ConsumerStatefulWidget {
 
 class _MeasurementEntriesScreenState extends ConsumerState<MeasurementEntriesScreen> {
   late final String _categoryId;
-  late final Stream<MeasurementCategory?> _categoryStream;
   bool _initialised = false;
+
+  /// Owned here rather than in the list below, because it bounds the query
+  /// that reads the entries, not only the span the chart draws
+  ChartRange _range = ChartRange.last3Months;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Initialise once, the route argument and notifier don't change for the
-    // lifetime of this screen, so we must not recreate the stream on every build
+    // Initialise once, the route argument doesn't change for the lifetime of
+    // this screen
     if (!_initialised) {
       _categoryId = ModalRoute.of(context)!.settings.arguments as String;
-      _categoryStream = ref.read(measurementProvider.notifier).watchCategoryById(_categoryId);
       _initialised = true;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<MeasurementCategory?>(
-      stream: _categoryStream,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const BoxedProgressIndicator();
-        }
-        if (snapshot.hasError) {
-          return StreamErrorIndicator(snapshot.error.toString());
-        }
+    final categoryValue = ref.watch(
+      measurementCategorySinceProvider(_categoryId, _range.readCutoff),
+    );
 
+    return categoryValue.when(
+      loading: () => const BoxedProgressIndicator(),
+      error: (error, _) => StreamErrorIndicator(error.toString()),
+      data: (category) {
         // Category was deleted (locally or via PowerSync from another device).
         // Leave this now-stale screen.
-        final category = snapshot.data;
         if (category == null) {
           return objectGoneRedirect(context);
         }
@@ -145,7 +144,11 @@ class _MeasurementEntriesScreenState extends ConsumerState<MeasurementEntriesScr
           ),
           body: WidescreenWrapper(
             child: SingleChildScrollView(
-              child: EntriesList(category),
+              child: EntriesList(
+                category,
+                range: _range,
+                onRangeChanged: (range) => setState(() => _range = range),
+              ),
             ),
           ),
         );

@@ -35,7 +35,7 @@ void main() {
   Widget createMeasurementScreen({locale = 'en'}) {
     final mockRepo = MockMeasurementRepository();
     when(
-      mockRepo.watchAll(),
+      mockRepo.watchAll(entriesSince: anyNamed('entriesSince')),
     ).thenAnswer(
       (_) => Stream<List<MeasurementCategory>>.value([
         ...getMeasurementCategories(),

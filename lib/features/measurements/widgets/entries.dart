@@ -36,22 +36,19 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 
 import 'forms.dart';
 
-class EntriesList extends ConsumerStatefulWidget {
+class EntriesList extends ConsumerWidget {
   final MeasurementCategory category;
 
-  const EntriesList(this.category);
+  /// Range the entries were read for. Owned by the screen, because it decides
+  /// how far back the query reaches, not just what the chart draws.
+  final ChartRange range;
+  final ValueChanged<ChartRange> onRangeChanged;
+
+  const EntriesList(this.category, {required this.range, required this.onRangeChanged});
 
   @override
-  ConsumerState<EntriesList> createState() => _EntriesListState();
-}
-
-class _EntriesListState extends ConsumerState<EntriesList> {
-  ChartRange _range = ChartRange.last3Months;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final i18n = AppLocalizations.of(context);
-    final category = widget.category;
 
     // A group carries no entries of its own, its readings live in the
     // components, so everything below would chart an empty list
@@ -86,7 +83,7 @@ class _EntriesListState extends ConsumerState<EntriesList> {
     // first points of the range average the days before it instead of starting
     // over at the cutoff
     final allAvg = moving7dAverage(allEntries);
-    final cutoff = _range.cutoff;
+    final cutoff = range.cutoff;
     final entriesAll = cutoff == null ? allEntries : allEntries.whereDate(cutoff, null);
     final entries7dAvg = cutoff == null ? allAvg : allAvg.whereDate(cutoff, null);
 
@@ -95,8 +92,8 @@ class _EntriesListState extends ConsumerState<EntriesList> {
     return Column(
       children: [
         ChartRangeSelector(
-          value: _range,
-          onChanged: (range) => setState(() => _range = range),
+          value: range,
+          onChanged: onRangeChanged,
         ),
         ...getOverviewWidgetsSeries(
           category.name,
@@ -106,7 +103,7 @@ class _EntriesListState extends ConsumerState<EntriesList> {
           category.unit,
           context,
           metricType: category.metricType,
-          mainChartTitle: _range.chartTitle(i18n, category.name),
+          mainChartTitle: range.chartTitle(i18n, category.name),
         ),
         SizedBox(
           height: 300,
@@ -185,7 +182,7 @@ class _EntriesListState extends ConsumerState<EntriesList> {
     final i18n = AppLocalizations.of(context);
     final numberFormat = localizedNumberFormat(context);
     final datetimeFormat = localizedDate(context);
-    final cutoff = _range.cutoff;
+    final cutoff = range.cutoff;
     final hasData = groupHasData(category, cutoff: cutoff);
     final readings = groupReadings(category, cutoff: cutoff);
     // Only the stacked chart leaves a component out, so the colours of the
@@ -195,11 +192,11 @@ class _EntriesListState extends ConsumerState<EntriesList> {
     return Column(
       children: [
         ChartRangeSelector(
-          value: _range,
-          onChanged: (range) => setState(() => _range = range),
+          value: range,
+          onChanged: onRangeChanged,
         ),
         Text(
-          _range.chartTitle(i18n, category.name),
+          range.chartTitle(i18n, category.name),
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.titleLarge,
         ),

@@ -44,27 +44,38 @@ class MeasurementRepository {
   /// The list is flat (children of multi-value groups appear as regular items
   /// with a non-null `parentId`), but group parents additionally get their
   /// [MeasurementCategory.children] attached, sorted by their in-group order.
-  Stream<List<MeasurementCategory>> watchAll() {
+  /// [entriesSince] limits the entries to those on or after it; null reads the
+  /// full history. The categories themselves are returned either way.
+  Stream<List<MeasurementCategory>> watchAll({DateTime? entriesSince}) {
     _logger.finer('Watching all measurement categories with entries');
-    return _watchCategories();
+    return _watchCategories(entriesSince: entriesSince);
   }
 
   /// Watches the categories matching [filter] (all of them when it is null),
   /// each populated with its entries and, for group parents, its children.
-  Stream<List<MeasurementCategory>> _watchCategories([
+  ///
+  /// [entriesSince] bounds the entries in the query rather than afterwards, so
+  /// a chart showing three months does not materialise years of rows.
+  Stream<List<MeasurementCategory>> _watchCategories({
     Expression<bool> Function($MeasurementCategoryTableTable table)? filter,
-  ]) {
+    DateTime? entriesSince,
+  }) {
     final select = _db.select(_db.measurementCategoryTable);
     if (filter != null) {
       select.where(filter);
     }
 
+    // The date bound belongs into the join condition, not into a where: as a
+    // where it would drop the categories that have no entry in the range,
+    // turning the outer join into an inner one.
+    var on = _db.measurementEntryTable.categoryId.equalsExp(_db.measurementCategoryTable.id);
+    if (entriesSince != null) {
+      on = on & _db.measurementEntryTable.date.isBiggerOrEqualValue(entriesSince);
+    }
+
     final joined =
         select.join([
-          leftOuterJoin(
-            _db.measurementEntryTable,
-            _db.measurementEntryTable.categoryId.equalsExp(_db.measurementCategoryTable.id),
-          ),
+          leftOuterJoin(_db.measurementEntryTable, on),
         ])..orderBy([
           OrderingTerm(expression: _db.measurementCategoryTable.order),
           OrderingTerm(expression: _db.measurementCategoryTable.name),
@@ -107,10 +118,11 @@ class MeasurementRepository {
 
   /// Watches a single category with its entries, and its children when it is
   /// a group parent.
-  Stream<MeasurementCategory?> watchLocalDriftCategoryById(String id) {
+  Stream<MeasurementCategory?> watchLocalDriftCategoryById(String id, {DateTime? entriesSince}) {
     _logger.finer('Watching local measurement category $id');
     return _watchCategories(
-      (table) => table.id.equals(id) | table.parentId.equals(id),
+      filter: (table) => table.id.equals(id) | table.parentId.equals(id),
+      entriesSince: entriesSince,
     ).map((categories) => categories.firstWhereOrNull((c) => c.id == id));
   }
 

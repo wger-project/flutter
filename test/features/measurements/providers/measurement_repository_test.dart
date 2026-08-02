@@ -78,6 +78,43 @@ void main() {
       expect(emitted.first.entries, isEmpty);
     });
 
+    test('entriesSince bounds the entries in the query', () async {
+      await db
+          .into(db.measurementCategoryTable)
+          .insert(MeasurementCategory(id: '1', name: 'Body fat', unit: '%').toCompanion());
+      for (final date in [DateTime(2026, 1, 1), DateTime(2026, 6, 1), DateTime(2026, 6, 10)]) {
+        await db
+            .into(db.measurementEntryTable)
+            .insert(
+              MeasurementEntry(
+                id: 'e-${date.toIso8601String()}',
+                categoryId: '1',
+                date: date,
+                value: 20,
+                notes: '',
+              ).toCompanion(),
+            );
+      }
+
+      final emitted = await repo.watchAll(entriesSince: DateTime(2026, 5, 1)).first;
+
+      expect(emitted.single.entries.map((e) => e.date), [
+        DateTime(2026, 6, 10),
+        DateTime(2026, 6, 1),
+      ]);
+    });
+
+    test('a category with no entry in range is still returned', () async {
+      // The bound belongs into the join condition: as a where it would turn
+      // the outer join into an inner one and drop the category entirely
+      await seedCategoriesAndEntries();
+
+      final emitted = await repo.watchAll(entriesSince: DateTime(2100)).first;
+
+      expect(emitted, hasLength(2));
+      expect(emitted.every((c) => c.entries.isEmpty), isTrue);
+    });
+
     test('emits entries newest first within each category', () async {
       await seedCategoriesAndEntries();
 

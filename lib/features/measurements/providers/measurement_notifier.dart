@@ -31,6 +31,27 @@ import 'measurement_repository.dart';
 
 part 'measurement_notifier.g.dart';
 
+/// All categories with the entries from [since] on, null covering the full
+/// history.
+///
+/// The bound is applied in the query rather than in the chart, so showing
+/// three months does not read years of entries into memory. Kept apart from
+/// [measurementProvider], which stays unbounded for the consumers that need
+/// the latest entry regardless of its age (the dashboard card).
+@riverpod
+Stream<List<MeasurementCategory>> measurementCategoriesSince(Ref ref, DateTime? since) {
+  return ref.read(measurementRepositoryProvider).watchAll(entriesSince: since);
+}
+
+/// One category with its children and the entries from [since] on, null while
+/// it does not exist (or no longer does).
+@riverpod
+Stream<MeasurementCategory?> measurementCategorySince(Ref ref, String id, DateTime? since) {
+  return ref
+      .read(measurementRepositoryProvider)
+      .watchLocalDriftCategoryById(id, entriesSince: since);
+}
+
 @riverpod
 final class MeasurementNotifier extends _$MeasurementNotifier {
   final _logger = Logger('MeasurementNotifier');

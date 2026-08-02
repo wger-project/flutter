@@ -299,19 +299,26 @@ class MockMeasurementRepository extends _i1.Mock implements _i12.MeasurementRepo
   }
 
   @override
-  _i3.Stream<List<_i13.MeasurementCategory>> watchAll() =>
+  _i3.Stream<List<_i13.MeasurementCategory>> watchAll({
+    DateTime? entriesSince,
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#watchAll, []),
+            Invocation.method(#watchAll, [], {#entriesSince: entriesSince}),
             returnValue: _i3.Stream<List<_i13.MeasurementCategory>>.empty(),
           )
           as _i3.Stream<List<_i13.MeasurementCategory>>);
 
   @override
   _i3.Stream<_i13.MeasurementCategory?> watchLocalDriftCategoryById(
-    String? id,
-  ) =>
+    String? id, {
+    DateTime? entriesSince,
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#watchLocalDriftCategoryById, [id]),
+            Invocation.method(
+              #watchLocalDriftCategoryById,
+              [id],
+              {#entriesSince: entriesSince},
+            ),
             returnValue: _i3.Stream<_i13.MeasurementCategory?>.empty(),
           )
           as _i3.Stream<_i13.MeasurementCategory?>);

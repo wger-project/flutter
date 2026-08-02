@@ -2303,6 +2303,72 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get noDataAvailable =>
+      (super.noSuchMethod(
+            Invocation.getter(#noDataAvailable),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#noDataAvailable),
+            ),
+          )
+          as String);
+
+  @override
+  String get metricSleepTotal =>
+      (super.noSuchMethod(
+            Invocation.getter(#metricSleepTotal),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#metricSleepTotal),
+            ),
+          )
+          as String);
+
+  @override
+  String get metricSleepLight =>
+      (super.noSuchMethod(
+            Invocation.getter(#metricSleepLight),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#metricSleepLight),
+            ),
+          )
+          as String);
+
+  @override
+  String get metricSleepDeep =>
+      (super.noSuchMethod(
+            Invocation.getter(#metricSleepDeep),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#metricSleepDeep),
+            ),
+          )
+          as String);
+
+  @override
+  String get metricSleepRem =>
+      (super.noSuchMethod(
+            Invocation.getter(#metricSleepRem),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#metricSleepRem),
+            ),
+          )
+          as String);
+
+  @override
+  String get metricSleepAwake =>
+      (super.noSuchMethod(
+            Invocation.getter(#metricSleepAwake),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#metricSleepAwake),
+            ),
+          )
+          as String);
+
+  @override
   String get measurementEntriesHelpText =>
       (super.noSuchMethod(
             Invocation.getter(#measurementEntriesHelpText),

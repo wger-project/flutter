@@ -40,7 +40,7 @@ void main() {
   setUp(() {
     mockMeasurementRepo = MockMeasurementRepository();
     when(
-      mockMeasurementRepo.watchLocalDriftCategoryById(any),
+      mockMeasurementRepo.watchLocalDriftCategoryById(any, entriesSince: anyNamed('entriesSince')),
     ).thenAnswer((_) => Stream<MeasurementCategory>.value(getMeasurementCategories()[0]));
 
     mockNutritionRepo = MockNutritionRepository();
