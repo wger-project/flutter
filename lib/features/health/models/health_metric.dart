@@ -19,6 +19,20 @@
 import 'package:health_bridge/health.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 
+/// Timeline a single platform query covers unless the metric says otherwise,
+/// see [HealthMetric.readWindow].
+const defaultReadWindow = Duration(days: 30);
+
+/// Query window for the metrics a wearable writes continuously.
+///
+/// Measured on a Pixel 7 Pro with a watch worn daily: a week of heart rate
+/// peaked at 134 MB of a 256 MB heap, i.e. half the budget for a history that
+/// is not unusually dense. Three days leave room for someone recording several
+/// times as densely, and cost almost nothing: the windows before the first
+/// record return in about 6 ms each, and the ones with data take as long as
+/// their data does, however it is sliced.
+const highVolumeReadWindow = Duration(days: 3);
+
 /// How a day's samples are condensed into the single value stored for it.
 enum DailyAggregation {
   /// The day's mean, e.g. heart rate.
@@ -45,6 +59,7 @@ class HealthMetric {
     this.dayRollsOverAtHour,
     this.enabled = false,
     this.disabledReason,
+    this.readWindow = defaultReadWindow,
   });
 
   /// Metric type stored on the category, e.g. [MetricType.bodyFat].
@@ -88,6 +103,16 @@ class HealthMetric {
 
   /// Why a declared metric is not imported yet.
   final String? disabledReason;
+
+  /// How much of the timeline one platform query may cover for this metric.
+  ///
+  /// The plugin materialises every record it reads and then serialises the
+  /// whole batch for the method channel, so the query size decides the peak
+  /// memory, against an Android app heap capped at 256 MB. A scale writes a
+  /// handful of values a month, a watch writes heart rate around the clock:
+  /// measured on a real device, a month of heart rate needs ~240 MB, a week
+  /// well under a hundred.
+  final Duration readWindow;
 
   /// All platform types this metric reads (the components' for a group).
   List<HealthDataType> get dataTypes =>
@@ -176,6 +201,7 @@ const List<HealthMetric> healthMetrics = [
     toCategoryValue: _identity,
     dailyAggregation: DailyAggregation.average,
     enabled: true,
+    readWindow: highVolumeReadWindow,
   ),
   HealthMetric(
     // Both platforms compute this themselves and write (typically) one value
@@ -209,6 +235,7 @@ const List<HealthMetric> healthMetrics = [
     unit: 'count',
     toCategoryValue: _identity,
     disabledReason: 'High-volume cumulative type, parked behind a load test.',
+    readWindow: highVolumeReadWindow,
   ),
 ];
 

@@ -149,16 +149,30 @@ void main() {
     return categories;
   }
 
-  /// The start of the window the sync asked the platform for
-  DateTime capturedReadStart() =>
-      verify(
-            health.read(
-              types: anyNamed('types'),
-              start: captureAnyNamed('start'),
-              end: anyNamed('end'),
-            ),
-          ).captured.single
-          as DateTime;
+  /// The start of the window the sync asked the platform for. Every metric is
+  /// read separately, but all of them over the same range
+  DateTime capturedReadStart() {
+    final starts = verify(
+      health.read(
+        types: anyNamed('types'),
+        start: captureAnyNamed('start'),
+        end: anyNamed('end'),
+        window: anyNamed('window'),
+      ),
+    ).captured.cast<DateTime>();
+    expect(starts.toSet(), hasLength(1), reason: 'Every metric reads the same range');
+    return starts.first;
+  }
+
+  /// Every health data type the sync asked the platform for
+  List<HealthDataType> capturedReadTypes() => verify(
+    health.read(
+      types: captureAnyNamed('types'),
+      start: anyNamed('start'),
+      end: anyNamed('end'),
+      window: anyNamed('window'),
+    ),
+  ).captured.cast<List<HealthDataType>>().expand((types) => types).toList();
 
   void stubReadings(List<HealthReading> readings) {
     when(
@@ -166,6 +180,7 @@ void main() {
         types: anyNamed('types'),
         start: anyNamed('start'),
         end: anyNamed('end'),
+        window: anyNamed('window'),
       ),
     ).thenAnswer((_) async => readings);
   }
@@ -197,7 +212,12 @@ void main() {
       expect(count, isNull);
       expect(await PreferenceHelper.instance.getHealthSyncEnabled(), isFalse);
       verifyNever(
-        health.read(types: anyNamed('types'), start: anyNamed('start'), end: anyNamed('end')),
+        health.read(
+          types: anyNamed('types'),
+          start: anyNamed('start'),
+          end: anyNamed('end'),
+          window: anyNamed('window'),
+        ),
       );
     });
 
@@ -273,7 +293,12 @@ void main() {
       expect(count, 0);
       expect(container.read(healthSyncProvider).issue, HealthSyncIssue.permissionsMissing);
       verifyNever(
-        health.read(types: anyNamed('types'), start: anyNamed('start'), end: anyNamed('end')),
+        health.read(
+          types: anyNamed('types'),
+          start: anyNamed('start'),
+          end: anyNamed('end'),
+          window: anyNamed('window'),
+        ),
       );
     });
 
@@ -303,15 +328,7 @@ void main() {
       expect(count, 1);
       expect(container.read(healthSyncProvider).issue, isNull);
       // The declined types are not even asked for
-      final requested =
-          verify(
-                health.read(
-                  types: captureAnyNamed('types'),
-                  start: anyNamed('start'),
-                  end: anyNamed('end'),
-                ),
-              ).captured.single
-              as List<HealthDataType>;
+      final requested = capturedReadTypes();
       expect(requested, isNot(contains(HealthDataType.BLOOD_PRESSURE_SYSTOLIC)));
       expect(requested, contains(HealthDataType.BODY_FAT_PERCENTAGE));
     });
@@ -328,7 +345,7 @@ void main() {
 
       await createNotifier().sync();
 
-      expect(capturedReadStart(), DateTime(2000));
+      expect(capturedReadStart(), DateTime(2020));
     });
 
     test('stays on the watermark while the readable types are unchanged', () async {
@@ -349,7 +366,12 @@ void main() {
       // The one permission problem iOS reports at all, and what a reinstall
       // leaves behind: the preference says enabled, HealthKit disagrees
       when(
-        health.read(types: anyNamed('types'), start: anyNamed('start'), end: anyNamed('end')),
+        health.read(
+          types: anyNamed('types'),
+          start: anyNamed('start'),
+          end: anyNamed('end'),
+          window: anyNamed('window'),
+        ),
       ).thenThrow(
         PlatformException(
           code: 'HEALTH_ERROR',
@@ -365,7 +387,12 @@ void main() {
 
     test('any other failure is reported as a plain failure', () async {
       when(
-        health.read(types: anyNamed('types'), start: anyNamed('start'), end: anyNamed('end')),
+        health.read(
+          types: anyNamed('types'),
+          start: anyNamed('start'),
+          end: anyNamed('end'),
+          window: anyNamed('window'),
+        ),
       ).thenThrow(Exception('boom'));
 
       final count = await createNotifier().sync();
@@ -1242,7 +1269,7 @@ void main() {
 
       await createNotifier().sync();
 
-      expect(capturedReadStart(), DateTime(2000));
+      expect(capturedReadStart(), DateTime(2020));
     });
 
     test('reads the full history when one component of a group was deleted', () async {
@@ -1257,7 +1284,31 @@ void main() {
 
       await createNotifier().sync();
 
-      expect(capturedReadStart(), DateTime(2000));
+      expect(capturedReadStart(), DateTime(2020));
+    });
+
+    test('each metric is read with the window its density affords', () async {
+      // A month of heart rate does not fit into the Android app heap, a month
+      // of scale readings is nothing, so the window comes from the metric
+      stubReadings([]);
+
+      await createNotifier().sync();
+
+      final calls = verify(
+        health.read(
+          types: captureAnyNamed('types'),
+          start: anyNamed('start'),
+          end: anyNamed('end'),
+          window: captureAnyNamed('window'),
+        ),
+      ).captured;
+      final windowByType = <HealthDataType, Duration>{
+        for (var i = 0; i < calls.length; i += 2)
+          for (final type in calls[i] as List<HealthDataType>) type: calls[i + 1] as Duration,
+      };
+
+      expect(windowByType[HealthDataType.HEART_RATE], highVolumeReadWindow);
+      expect(windowByType[HealthDataType.BODY_FAT_PERCENTAGE], defaultReadWindow);
     });
 
     test('does nothing when sync is disabled', () async {
@@ -1270,6 +1321,7 @@ void main() {
           types: anyNamed('types'),
           start: anyNamed('start'),
           end: anyNamed('end'),
+          window: anyNamed('window'),
         ),
       );
     });

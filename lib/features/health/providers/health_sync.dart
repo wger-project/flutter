@@ -92,6 +92,15 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
   /// Minimum pause between the automatic re-syncs on app resume.
   static const _resumeThrottle = Duration(minutes: 15);
 
+  /// Where a full read starts, i.e. when there is no watermark to go from.
+  ///
+  /// Not the epoch: every window before the first record is a platform query
+  /// that returns nothing, and for a metric read in weekly windows those add
+  /// up. Health Connect shipped in 2022 and HealthKit's own data rarely
+  /// predates a wearable, so this cuts the empty part without cutting real
+  /// history in practice.
+  static final _fullHistoryStart = DateTime(2020);
+
   final _logger = Logger('HealthSyncNotifier');
   late final HealthRepository _health;
   late final MeasurementRepository _measurements;
@@ -241,36 +250,32 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
           lastSyncStr == null ||
               _missingCategories(metrics, categories).isNotEmpty ||
               await _hasNewlyReadableTypes(readable)
-          ? DateTime(2000)
+          ? _fullHistoryStart
           : DateTime.parse(lastSyncStr).subtract(_syncOverlap);
       final endTime = DateTime.now();
       _logger.info('Syncing health data from $startTime to $endTime');
-
-      final readings = await _health.read(
-        types: metrics.expand((m) => m.dataTypes).toList(),
-        start: startTime,
-        end: endTime,
-      );
-      // Recorded after the read, so a run that never got that far tries again
-      // rather than remembering an access it did not use
-      await prefs.setHealthSyncReadableTypes(readable.map((t) => t.name).toList());
-
-      if (readings.isEmpty) {
-        _logger.info('No new health data');
-        state = state.copyWith(isSyncing: false, lastSyncCount: 0, lastSyncTime: DateTime.now());
-        return 0;
-      }
 
       final source = _health.sourceName;
       var synced = 0;
       var skippedMetric = false;
       var failedMetric = false;
+      var permissionsMissing = false;
       DateTime? latest;
 
       for (final metric in metrics) {
         // One bad metric must not cost the others their import, and the
         // watermark has to stay put for whatever it could not write
         try {
+          // Read per metric: how much of the timeline one platform query may
+          // cover depends on how densely the metric is written, see
+          // [HealthMetric.readWindow]
+          final readings = await _health.read(
+            types: metric.dataTypes,
+            start: startTime,
+            end: endTime,
+            window: metric.readWindow,
+          );
+
           // Pair each target category with the readings it receives: the metric's
           // own category, or one child per component for a group metric.
           final List<(MeasurementCategory, Iterable<HealthReading>)> targets;
@@ -311,11 +316,22 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
             }
           }
         } catch (e, s) {
-          _logger.severe('Importing ${metric.metricType.name} failed', e, s);
           skippedMetric = true;
-          failedMetric = true;
+          if (HealthRepository.isAuthorizationMissing(e)) {
+            // The one permission failure iOS reports, and it reports it only
+            // when the read runs. Worth telling apart, the user can fix it
+            _logger.warning('No authorization to read ${metric.metricType.name}', e);
+            permissionsMissing = true;
+          } else {
+            _logger.severe('Importing ${metric.metricType.name} failed', e, s);
+            failedMetric = true;
+          }
         }
       }
+
+      // Recorded after the metrics ran, so a sync that died earlier tries
+      // again rather than remembering an access it never used
+      await prefs.setHealthSyncReadableTypes(readable.map((t) => t.name).toList());
 
       // Advancing the watermark past readings a skipped metric could not
       // import would push them out of the overlap window for good, so keep
@@ -337,7 +353,11 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
         isSyncing: false,
         lastSyncCount: synced,
         lastSyncTime: DateTime.now(),
-        issue: failedMetric ? HealthSyncIssue.failed : null,
+        issue: failedMetric
+            ? HealthSyncIssue.failed
+            : permissionsMissing
+            ? HealthSyncIssue.permissionsMissing
+            : null,
       );
       return synced;
     } catch (e, s) {

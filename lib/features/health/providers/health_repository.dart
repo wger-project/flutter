@@ -23,6 +23,7 @@ import 'package:flutter/services.dart' show PlatformException;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:health_bridge/health.dart';
 import 'package:logging/logging.dart';
+import 'package:wger/features/health/models/health_metric.dart';
 import 'package:wger/features/health/models/health_reading.dart';
 
 final healthRepositoryProvider = Provider<HealthRepository>((ref) {
@@ -199,10 +200,20 @@ class HealthRepository {
   /// cost every other type its import too. A failing type is logged by name
   /// and skipped; only when every type fails does the error propagate, so a
   /// wholesale denial still surfaces as one.
+  ///
+  /// Each type is read in windows of [window]: the plugin turns every record
+  /// into a map and then serialises the whole batch for the method channel, so
+  /// one query spanning years of a densely written type fills the Android app
+  /// heap, which is capped at 256 MB however much RAM the device has, and the
+  /// process is killed. How large a window a metric can afford is a property
+  /// of the metric, see [HealthMetric.readWindow]. The windows are contiguous,
+  /// and a record sitting exactly on a boundary is removed by the
+  /// deduplication below.
   Future<List<HealthReading>> read({
     required List<HealthDataType> types,
     required DateTime start,
     required DateTime end,
+    required Duration window,
   }) async {
     final points = <HealthDataPoint>[];
     Object? firstError;
@@ -210,10 +221,32 @@ class HealthRepository {
 
     for (final type in types) {
       try {
-        points.addAll(
-          await _health.getHealthDataFromTypes(types: [type], startTime: start, endTime: end),
-        );
+        var windowStart = start;
+        var readForType = 0;
+        while (windowStart.isBefore(end)) {
+          final windowEnd = windowStart.add(window);
+          final batch = await _health.getHealthDataFromTypes(
+            types: [type],
+            startTime: windowStart,
+            endTime: windowEnd.isAfter(end) ? end : windowEnd,
+          );
+          // How much a window holds is what decides whether [window] is small
+          // enough, so it is worth having in a bug report instead of being
+          // reconstructed from GC lines afterwards
+          if (batch.isNotEmpty) {
+            _logger.finer('Read ${batch.length} ${type.name} records from $windowStart');
+            readForType += batch.length;
+          }
+          points.addAll(batch);
+          windowStart = windowEnd;
+        }
+        if (readForType > 0) {
+          _logger.fine('Read $readForType ${type.name} records in total');
+        }
       } catch (e) {
+        // The whole type counts as failed even when earlier windows delivered:
+        // importing half a type would let the watermark move past the readings
+        // the failing windows never returned
         failed++;
         firstError ??= e;
         _logger.warning('Reading ${type.name} from the health platform failed: $e');

@@ -110,12 +110,14 @@ class MockHealthRepository extends _i1.Mock implements _i2.HealthRepository {
     required List<_i5.HealthDataType>? types,
     required DateTime? start,
     required DateTime? end,
+    required Duration? window,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#read, [], {
               #types: types,
               #start: start,
               #end: end,
+              #window: window,
             }),
             returnValue: _i4.Future<List<_i6.HealthReading>>.value(
               <_i6.HealthReading>[],
