@@ -146,6 +146,33 @@ void main() {
       expect(find.byType(DropdownButtonFormField<ChartType>), findsNothing);
     });
 
+    testWidgets('changing the metric type drops a chart type it cannot use', (tester) async {
+      final category = getMeasurementCategories()[1].copyWith(chartType: ChartType.line);
+      when(mockRepo.watchAll()).thenAnswer((_) => Stream.value([category]));
+      when(mockRepo.updateLocalDriftCategory(any)).thenAnswer((_) async {});
+
+      await tester.pumpWidget(wrap(MeasurementCategoryForm(category)));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byType(DropdownButtonFormField<MetricType>));
+      await tester.pumpAndSettle();
+      await tester.tap(
+        find.text(MetricType.steps.localized(tester.element(find.byType(Form)))).last,
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byType(ElevatedButton));
+      await tester.pumpAndSettle();
+
+      // Steps are drawn as bars or as a heatmap, never as a line, so the form
+      // shows the picker back on automatic and has to save exactly that
+      final saved =
+          verify(mockRepo.updateLocalDriftCategory(captureAny)).captured.single
+              as MeasurementCategory;
+      expect(saved.metricType, MetricType.steps);
+      expect(saved.chartType, ChartType.auto);
+    });
+
     testWidgets('a leaf category gets the chart type picker', (tester) async {
       final category = getMeasurementCategories()[1];
       when(mockRepo.watchAll()).thenAnswer((_) => Stream.value([category]));

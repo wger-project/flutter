@@ -122,7 +122,16 @@ class _MeasurementCategoryFormState extends ConsumerState<MeasurementCategoryFor
             onChanged: (value) {
               if (value != null) {
                 setState(() {
-                  _draft = _draft.copyWith(metricType: value);
+                  // Bars are no choice for a sample type and a line is none for
+                  // a summed one, so a pick the new type cannot be drawn as goes
+                  // back to being derived. The picker below falls back to
+                  // automatic on its own; without resetting the draft as well,
+                  // the form would show that fallback but save the old pick
+                  final picked = _draft.chartType;
+                  _draft = _draft.copyWith(
+                    metricType: value,
+                    chartType: value.availableChartTypes.contains(picked) ? picked : ChartType.auto,
+                  );
                 });
               }
             },
