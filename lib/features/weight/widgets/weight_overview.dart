@@ -37,18 +37,16 @@ import 'package:wger/features/weight/providers/body_weight_provider.dart';
 import 'package:wger/features/weight/widgets/forms.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
-class WeightOverview extends riverpod.ConsumerStatefulWidget {
-  const WeightOverview();
+class WeightOverview extends riverpod.ConsumerWidget {
+  /// Range the entries were read for. Owned by the screen, because it bounds
+  /// the query that reads them, not only the span the chart draws.
+  final ChartRange range;
+  final ValueChanged<ChartRange> onRangeChanged;
+
+  const WeightOverview({required this.range, required this.onRangeChanged});
 
   @override
-  riverpod.ConsumerState<WeightOverview> createState() => _WeightOverviewState();
-}
-
-class _WeightOverviewState extends riverpod.ConsumerState<WeightOverview> {
-  ChartRange _range = ChartRange.last3Months;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, riverpod.WidgetRef ref) {
     final i18n = AppLocalizations.of(context);
     final profileAsync = ref.watch(userProfileProvider);
     final numberFormat = localizedNumberFormat(context);
@@ -61,7 +59,7 @@ class _WeightOverviewState extends riverpod.ConsumerState<WeightOverview> {
     ];
 
     return AsyncValueWidget<MeasurementCategory?>(
-      value: ref.watch(bodyWeightCategoryProvider),
+      value: ref.watch(bodyWeightCategorySinceProvider(range.readCutoff)),
       loggerName: 'WeightOverview',
       data: (category) {
         // Profile drives the unit display; show a spinner while it loads
@@ -84,10 +82,10 @@ class _WeightOverviewState extends riverpod.ConsumerState<WeightOverview> {
         );
         final entries7dAvg = moving7dAverage(entriesAll);
 
-        // Restrict the data to the selected range. The average is computed over
-        // the full history first and only filtered afterwards, matching how the
-        // per-plan and 30-day sub-charts are built.
-        final cutoff = _range.cutoff;
+        // Restrict the data to the selected range. The average is computed
+        // first, over the week the query reads beyond the cutoff as well, so
+        // the first days in range average the days before them.
+        final cutoff = range.cutoff;
         final entriesRange = cutoff == null ? entriesAll : entriesAll.whereDate(cutoff, null);
         final entries7dAvgRange = cutoff == null
             ? entries7dAvg
@@ -98,8 +96,8 @@ class _WeightOverviewState extends riverpod.ConsumerState<WeightOverview> {
         return Column(
           children: [
             ChartRangeSelector(
-              value: _range,
-              onChanged: (range) => setState(() => _range = range),
+              value: range,
+              onChanged: onRangeChanged,
             ),
             ...getOverviewWidgetsSeries(
               i18n.weight,
@@ -108,7 +106,7 @@ class _WeightOverviewState extends riverpod.ConsumerState<WeightOverview> {
               planPeriods,
               unit,
               context,
-              mainChartTitle: _range.chartTitle(i18n, i18n.weight),
+              mainChartTitle: range.chartTitle(i18n, i18n.weight),
             ),
             TextButton(
               onPressed: () => Navigator.pushNamed(

@@ -44,7 +44,7 @@ Widget createWeightScreen({Locale? locale}) {
   locale ??= const Locale('en');
   final mockMeasurementRepository = MockMeasurementRepository();
   when(
-    mockMeasurementRepository.watchAll(),
+    mockMeasurementRepository.watchAll(entriesSince: anyNamed('entriesSince')),
   ).thenAnswer((_) => Stream.value([getScreenshotBodyWeightCategory()]));
 
   final mockUserProfileRepository = MockUserProfileRepository();

@@ -61,7 +61,7 @@ void main() {
 
     mockMeasurementRepository = MockMeasurementRepository();
     when(
-      mockMeasurementRepository.watchAll(),
+      mockMeasurementRepository.watchAll(entriesSince: anyNamed('entriesSince')),
     ).thenAnswer((_) => Stream.value([getBodyWeightCategory()]));
     when(
       mockMeasurementRepository.deleteLocalDrift(any),
@@ -128,6 +128,28 @@ void main() {
     expect(find.byType(MeasurementChartWidgetFl), findsNothing);
   });
 
+  testWidgets('The chart range bounds the query the entries are read with', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(createWeightScreen());
+    await tester.pumpAndSettle();
+
+    // The default range reads from its cutoff on
+    verifyNever(mockMeasurementRepository.watchAll(entriesSince: null));
+    verify(
+      mockMeasurementRepository.watchAll(
+        entriesSince: argThat(isNotNull, named: 'entriesSince'),
+      ),
+    ).called(greaterThanOrEqualTo(1));
+
+    await tester.ensureVisible(find.text('All'));
+    await tester.tap(find.text('All'));
+    await tester.pumpAndSettle();
+
+    // The full history has no lower bound
+    verify(mockMeasurementRepository.watchAll(entriesSince: null)).called(1);
+  });
+
   testWidgets('Test deleting an item using the Delete button', (WidgetTester tester) async {
     // Arrange
     await tester.pumpWidget(createWeightScreen());
@@ -158,7 +180,7 @@ void main() {
 
   testWidgets('Converts mixed-unit entries to the profile unit', (WidgetTester tester) async {
     // 176.4 lb convert to 80.01 kg for the metric profile; the kg entry stays
-    when(mockMeasurementRepository.watchAll()).thenAnswer(
+    when(mockMeasurementRepository.watchAll(entriesSince: anyNamed('entriesSince'))).thenAnswer(
       (_) => Stream.value([
         getBodyWeightCategory([testWeightEntryLb, testWeightEntry1]),
       ]),
@@ -187,7 +209,7 @@ void main() {
       source: 'apple',
       externalId: 'w-1',
     );
-    when(mockMeasurementRepository.watchAll()).thenAnswer(
+    when(mockMeasurementRepository.watchAll(entriesSince: anyNamed('entriesSince'))).thenAnswer(
       (_) => Stream.value([
         getBodyWeightCategory([imported, testWeightEntry1]),
       ]),
@@ -204,7 +226,9 @@ void main() {
   testWidgets('No FAB while the official category has not been synced', (
     WidgetTester tester,
   ) async {
-    when(mockMeasurementRepository.watchAll()).thenAnswer((_) => Stream.value([]));
+    when(
+      mockMeasurementRepository.watchAll(entriesSince: anyNamed('entriesSince')),
+    ).thenAnswer((_) => Stream.value([]));
 
     await tester.pumpWidget(createWeightScreen());
     // No pumpAndSettle: the overview shows an endless spinner in this state

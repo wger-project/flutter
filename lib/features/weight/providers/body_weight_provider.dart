@@ -28,9 +28,25 @@ part 'body_weight_provider.g.dart';
 /// The category is created by the server (registration / data migration) and
 /// only arrives via sync; a `null` value means the initial sync has not
 /// delivered it yet. Mutations go through [measurementProvider]'s notifier.
+///
+/// Unbounded, for the consumers that need the latest entry whatever its age
+/// (the dashboard card, the nutrition widgets). A screen that shows a range
+/// takes [bodyWeightCategorySince] instead.
 @riverpod
 AsyncValue<MeasurementCategory?> bodyWeightCategory(Ref ref) {
   return ref
       .watch(measurementProvider)
+      .whenData((categories) => categories.firstWhereOrNull((c) => c.isOfficialBodyWeight));
+}
+
+/// The official body weight category with the entries from [since] on, null
+/// covering the full history.
+///
+/// The bound is applied in the query rather than in the chart, so showing three
+/// months does not read years of entries into memory.
+@riverpod
+AsyncValue<MeasurementCategory?> bodyWeightCategorySince(Ref ref, DateTime? since) {
+  return ref
+      .watch(measurementCategoriesSinceProvider(since))
       .whenData((categories) => categories.firstWhereOrNull((c) => c.isOfficialBodyWeight));
 }

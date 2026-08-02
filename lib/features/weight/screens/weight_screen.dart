@@ -21,21 +21,31 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/core/form_screen.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/core/widgets/app_bar.dart';
+import 'package:wger/features/measurements/widgets/chart_range_selector.dart';
 import 'package:wger/features/weight/providers/body_weight_provider.dart';
 import 'package:wger/features/weight/widgets/forms.dart';
 import 'package:wger/features/weight/widgets/weight_overview.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
-class WeightScreen extends ConsumerWidget {
+class WeightScreen extends ConsumerStatefulWidget {
   const WeightScreen();
 
   static const routeName = '/weight';
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<WeightScreen> createState() => _WeightScreenState();
+}
+
+class _WeightScreenState extends ConsumerState<WeightScreen> {
+  /// Owned here rather than in the overview below, because it bounds the query
+  /// that reads the entries, not only the span the chart draws
+  ChartRange _range = ChartRange.last3Months;
+
+  @override
+  Widget build(BuildContext context) {
     // New entries need the official category, which the server creates and the
     // initial sync delivers; hide the FAB until it is there.
-    final category = ref.watch(bodyWeightCategoryProvider).value;
+    final category = ref.watch(bodyWeightCategorySinceProvider(_range.readCutoff)).value;
 
     return Scaffold(
       appBar: EmptyAppBar(AppLocalizations.of(context).weight),
@@ -54,9 +64,12 @@ class WeightScreen extends ConsumerWidget {
                 );
               },
             ),
-      body: const WidescreenWrapper(
+      body: WidescreenWrapper(
         child: SingleChildScrollView(
-          child: WeightOverview(),
+          child: WeightOverview(
+            range: _range,
+            onRangeChanged: (range) => setState(() => _range = range),
+          ),
         ),
       ),
     );
