@@ -50,6 +50,7 @@ const _idRhr1 = '00000009-0000-4000-8000-000000000009'; // rhr-1
 const _idS1 = '0000000a-0000-4000-8000-000000000010'; // s-1
 const _idS2 = '0000000b-0000-4000-8000-000000000011'; // s-2
 const _idS3 = '0000000c-0000-4000-8000-000000000012'; // s-3
+const _idS4 = '0000000f-0000-4000-8000-000000000015'; // s-4
 const _idW1 = '0000000d-0000-4000-8000-000000000013'; // w-1
 const _idWLb = '0000000e-0000-4000-8000-000000000014'; // w-lb
 
@@ -889,14 +890,13 @@ void main() {
 
       final count = await createNotifier().sync();
 
-      // All three segments belong to 2026-01-02
+      // All three segments belong to 2026-01-02, and only the total collects
+      // them: the stage categories have no samples of their own here
       expect(count, 1);
       final entry =
           verify(measurements.addLocalDrift(captureAny)).captured.single as MeasurementEntry;
-      final categoryId =
-          (verify(measurements.addLocalDriftCategory(captureAny)).captured.single
-                  as MeasurementCategory)
-              .id!;
+      final categoryId = _sleepCategoryId(measurements, MetricType.sleepTotal);
+      expect(entry.categoryId, categoryId);
       expect(entry.externalId, dailyAggregateExternalId(categoryId, DateTime(2026, 1, 2)));
       expect(entry.date, DateTime(2026, 1, 2));
       expect(entry.value, 480); // 90 + 360 + 30 minutes
@@ -936,15 +936,108 @@ void main() {
       final entries = verify(
         measurements.addLocalDrift(captureAny),
       ).captured.cast<MeasurementEntry>();
-      final categoryId =
-          (verify(measurements.addLocalDriftCategory(captureAny)).captured.single
-                  as MeasurementCategory)
-              .id!;
+      final categoryId = _sleepCategoryId(measurements, MetricType.sleepTotal);
       final byDay = {
         for (final e in entries) e.externalId: e.value,
       };
       expect(byDay[dailyAggregateExternalId(categoryId, DateTime(2026, 1, 1))], 20);
       expect(byDay[dailyAggregateExternalId(categoryId, DateTime(2026, 1, 2))], 400);
+    });
+
+    test('imports each sleep stage into its own category', () async {
+      when(measurements.getAllOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
+      stubReadings([
+        // A night as a watch records it: stages rather than one asleep block
+        HealthReading(
+          type: HealthDataType.SLEEP_LIGHT,
+          value: 120,
+          date: DateTime(2026, 1, 1, 23, 0),
+          dateTo: DateTime(2026, 1, 2, 1, 0),
+          externalId: _idS1,
+        ),
+        HealthReading(
+          type: HealthDataType.SLEEP_DEEP,
+          value: 90,
+          date: DateTime(2026, 1, 2, 1, 0),
+          dateTo: DateTime(2026, 1, 2, 2, 30),
+          externalId: _idS2,
+        ),
+        HealthReading(
+          type: HealthDataType.SLEEP_REM,
+          value: 60,
+          date: DateTime(2026, 1, 2, 2, 30),
+          dateTo: DateTime(2026, 1, 2, 3, 30),
+          externalId: _idS3,
+        ),
+        HealthReading(
+          type: HealthDataType.SLEEP_AWAKE,
+          value: 15,
+          date: DateTime(2026, 1, 2, 3, 30),
+          dateTo: DateTime(2026, 1, 2, 3, 45),
+          externalId: _idS4,
+        ),
+      ]);
+
+      await createNotifier().sync();
+
+      final entries = verify(
+        measurements.addLocalDrift(captureAny),
+      ).captured.cast<MeasurementEntry>();
+      final categories = verify(
+        measurements.addLocalDriftCategory(captureAny),
+      ).captured.cast<MeasurementCategory>();
+      final typeOf = {for (final c in categories) c.id: c.metricType};
+      final byType = {for (final e in entries) typeOf[e.categoryId]: e.value};
+
+      expect(byType[MetricType.sleepLight], 120);
+      expect(byType[MetricType.sleepDeep], 90);
+      expect(byType[MetricType.sleepRem], 60);
+      expect(byType[MetricType.sleepAwake], 15);
+      // The stages roll up into the total, the waking quarter hour does not
+      expect(byType[MetricType.sleepTotal], 270);
+      // The group itself never carries entries
+      expect(byType.containsKey(MetricType.sleep), isFalse);
+    });
+
+    test('counts a night reported by two sources once', () async {
+      when(measurements.getAllOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
+      stubReadings([
+        // The phone writes the whole night as undifferentiated sleep while the
+        // watch writes the very same night as its stages. Adding the durations
+        // up would report twice the sleep.
+        HealthReading(
+          type: HealthDataType.SLEEP_ASLEEP,
+          value: 240,
+          date: DateTime(2026, 1, 1, 23, 0),
+          dateTo: DateTime(2026, 1, 2, 3, 0),
+          externalId: _idS1,
+        ),
+        HealthReading(
+          type: HealthDataType.SLEEP_LIGHT,
+          value: 180,
+          date: DateTime(2026, 1, 1, 23, 0),
+          dateTo: DateTime(2026, 1, 2, 2, 0),
+          externalId: _idS2,
+        ),
+        HealthReading(
+          type: HealthDataType.SLEEP_DEEP,
+          value: 60,
+          date: DateTime(2026, 1, 2, 2, 0),
+          dateTo: DateTime(2026, 1, 2, 3, 0),
+          externalId: _idS3,
+        ),
+      ]);
+
+      await createNotifier().sync();
+
+      final entries = verify(
+        measurements.addLocalDrift(captureAny),
+      ).captured.cast<MeasurementEntry>();
+      final totalId = _sleepCategoryId(measurements, MetricType.sleepTotal);
+      final total = entries.firstWhere((e) => e.categoryId == totalId);
+
+      expect(total.value, 240);
+      expect(total.extraData!['record_type'], 'SLEEP_ASLEEP,SLEEP_DEEP,SLEEP_LIGHT');
     });
 
     test('updates a daily aggregate when later samples change it', () async {
@@ -1327,3 +1420,10 @@ void main() {
     });
   });
 }
+
+/// The id of the sleep category with [metricType] among the ones the sync
+/// created. Sleep is a group, so a run creates the group plus one child per
+/// stage; consumes the recorded calls, so call it once per test.
+String _sleepCategoryId(MockMeasurementRepository measurements, MetricType metricType) => verify(
+  measurements.addLocalDriftCategory(captureAny),
+).captured.cast<MeasurementCategory>().firstWhere((c) => c.metricType == metricType).id!;

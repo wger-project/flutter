@@ -34,7 +34,12 @@ const _readPermissions = {
   HealthDataType.BLOOD_PRESSURE_DIASTOLIC: 'android.permission.health.READ_BLOOD_PRESSURE',
   HealthDataType.HEART_RATE: 'android.permission.health.READ_HEART_RATE',
   HealthDataType.RESTING_HEART_RATE: 'android.permission.health.READ_RESTING_HEART_RATE',
+  // Every sleep type is a SleepSessionRecord, so they share one permission
   HealthDataType.SLEEP_ASLEEP: 'android.permission.health.READ_SLEEP',
+  HealthDataType.SLEEP_LIGHT: 'android.permission.health.READ_SLEEP',
+  HealthDataType.SLEEP_DEEP: 'android.permission.health.READ_SLEEP',
+  HealthDataType.SLEEP_REM: 'android.permission.health.READ_SLEEP',
+  HealthDataType.SLEEP_AWAKE: 'android.permission.health.READ_SLEEP',
   HealthDataType.STEPS: 'android.permission.health.READ_STEPS',
   HealthDataType.DISTANCE_DELTA: 'android.permission.health.READ_DISTANCE',
   HealthDataType.ACTIVE_ENERGY_BURNED: 'android.permission.health.READ_ACTIVE_CALORIES_BURNED',

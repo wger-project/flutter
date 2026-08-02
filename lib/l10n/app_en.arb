@@ -649,6 +649,26 @@
   "@metricSleep": {
     "description": "Label for sleep duration measurement"
   },
+  "metricSleepTotal": "Total sleep",
+  "@metricSleepTotal": {
+    "description": "Label for the total time asleep in a night, all sleep stages together"
+  },
+  "metricSleepLight": "Light sleep",
+  "@metricSleepLight": {
+    "description": "Label for the light sleep stage"
+  },
+  "metricSleepDeep": "Deep sleep",
+  "@metricSleepDeep": {
+    "description": "Label for the deep sleep stage"
+  },
+  "metricSleepRem": "REM sleep",
+  "@metricSleepRem": {
+    "description": "Label for the REM (rapid eye movement) sleep stage"
+  },
+  "metricSleepAwake": "Awake",
+  "@metricSleepAwake": {
+    "description": "Label for the time spent awake during a night, not counted as sleep"
+  },
   "measurementEntriesHelpText": "The unit used to measure the category such as 'cm' or '%'",
   "@measurementEntriesHelpText": {},
   "partOfGroup": "Part of group",

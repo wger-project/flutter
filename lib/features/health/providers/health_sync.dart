@@ -293,7 +293,7 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
           } else {
             final byComponent = [
               for (final component in metric.components)
-                readings.where((r) => r.type == component.dataType),
+                readings.where((r) => component.dataTypes.contains(r.type)),
             ];
             if (byComponent.every((r) => r.isEmpty)) {
               continue;
@@ -469,6 +469,7 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
       final aggregate = switch (metric.dailyAggregation!) {
         DailyAggregation.average => values.average,
         DailyAggregation.sum => values.sum,
+        DailyAggregation.mergedDuration => _mergedDurationMinutes(samples),
       };
       // Round like the raw import: the server stores Decimal with 2 places
       final value = (aggregate * 100).roundToDouble() / 100;
@@ -478,7 +479,9 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
           'max': values.max,
         },
         'sample_count': values.length,
-        'record_type': metric.dataType.name,
+        // The types actually seen, not the metric's own: a component can roll
+        // several of them up (total sleep)
+        'record_type': (samples.map((r) => r.type.name).toSet().toList()..sort()).join(','),
         // A rolled-over day is not the samples' calendar day, so keep the
         // window they actually cover
         if (metric.dayRollsOverAtHour != null) ...{
@@ -515,6 +518,47 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
       }
     }
     return (synced, latest);
+  }
+
+  /// The time [samples] cover in minutes, counting overlapping stretches once.
+  ///
+  /// Adding the durations up would report a night twice when two sources both
+  /// recorded it, which is the normal case for sleep: a phone writes the night
+  /// as undifferentiated sleep while a watch writes the same night as its
+  /// stages. A sample without an end is taken to last as long as its value
+  /// says.
+  double _mergedDurationMinutes(Iterable<HealthReading> samples) {
+    final intervals =
+        samples
+            .map(
+              (r) => (
+                r.date,
+                r.dateTo ?? r.date.add(Duration(microseconds: (r.value * 60 * 1000000).round())),
+              ),
+            )
+            .toList()
+          ..sort((a, b) => a.$1.compareTo(b.$1));
+
+    var total = Duration.zero;
+    DateTime? start;
+    DateTime? end;
+    for (final (from, to) in intervals) {
+      if (end == null || from.isAfter(end)) {
+        if (start != null) {
+          total += end!.difference(start);
+        }
+        start = from;
+        end = to;
+        continue;
+      }
+      if (to.isAfter(end)) {
+        end = to;
+      }
+    }
+    if (start != null) {
+      total += end!.difference(start);
+    }
+    return total.inMicroseconds / Duration.microsecondsPerMinute;
   }
 
   /// The day a sample is attributed to. Plain calendar day, unless the metric

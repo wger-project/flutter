@@ -58,7 +58,12 @@ enum MetricType {
   steps('steps'),
   distance('distance'),
   energy('energy'),
-  sleep('sleep');
+  sleep('sleep'),
+  sleepTotal('sleep_total'),
+  sleepLight('sleep_light'),
+  sleepDeep('sleep_deep'),
+  sleepRem('sleep_rem'),
+  sleepAwake('sleep_awake');
 
   final String wireValue;
   const MetricType(this.wireValue);
@@ -74,7 +79,15 @@ enum MetricType {
   /// `true` for metric types that should be aggregated per-day and shown as
   /// a bar/histogram instead of a raw-sample line chart.
   bool get isSummedPerDay => switch (this) {
-    MetricType.steps || MetricType.distance || MetricType.energy || MetricType.sleep => true,
+    MetricType.steps ||
+    MetricType.distance ||
+    MetricType.energy ||
+    MetricType.sleep ||
+    MetricType.sleepTotal ||
+    MetricType.sleepLight ||
+    MetricType.sleepDeep ||
+    MetricType.sleepRem ||
+    MetricType.sleepAwake => true,
     _ => false,
   };
 
@@ -92,6 +105,17 @@ enum MetricType {
     MetricType.bloodPressure: [
       (MetricType.bloodPressureSystolic, 'Systolic'),
       (MetricType.bloodPressureDiastolic, 'Diastolic'),
+    ],
+    // The total is a component of its own because a group carries no
+    // measurements. It is not the sum of the three stages below it: platforms
+    // also report sleep without a stage breakdown, which counts towards the
+    // total and has no stage category to live in
+    MetricType.sleep: [
+      (MetricType.sleepTotal, 'Total sleep'),
+      (MetricType.sleepLight, 'Light sleep'),
+      (MetricType.sleepDeep, 'Deep sleep'),
+      (MetricType.sleepRem, 'REM sleep'),
+      (MetricType.sleepAwake, 'Awake'),
     ],
   };
 
@@ -140,6 +164,11 @@ extension MeasurementMetricTypeL10n on MetricType {
       MetricType.distance => l10n.metricDistance,
       MetricType.energy => l10n.metricEnergy,
       MetricType.sleep => l10n.metricSleep,
+      MetricType.sleepTotal => l10n.metricSleepTotal,
+      MetricType.sleepLight => l10n.metricSleepLight,
+      MetricType.sleepDeep => l10n.metricSleepDeep,
+      MetricType.sleepRem => l10n.metricSleepRem,
+      MetricType.sleepAwake => l10n.metricSleepAwake,
     };
   }
 }

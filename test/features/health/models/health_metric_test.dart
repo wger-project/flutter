@@ -44,8 +44,9 @@ void main() {
 
     test('daily aggregation is set per metric', () {
       expect(_metric(MetricType.heartRate).dailyAggregation, DailyAggregation.average);
-      // A night arrives as several segments, so they add up
-      expect(_metric(MetricType.sleep).dailyAggregation, DailyAggregation.sum);
+      // A night arrives as segments from possibly several sources, so the
+      // time they cover is counted once rather than added up
+      expect(_metric(MetricType.sleep).dailyAggregation, DailyAggregation.mergedDuration);
       // The platforms compute the resting rate per day themselves
       expect(_metric(MetricType.restingHeartRate).dailyAggregation, isNull);
     });

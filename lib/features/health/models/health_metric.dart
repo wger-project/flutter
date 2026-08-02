@@ -38,8 +38,14 @@ enum DailyAggregation {
   /// The day's mean, e.g. heart rate.
   average,
 
-  /// The day's total, e.g. the sleep segments of one night.
+  /// The day's total, for cumulative counters like steps.
   sum,
+
+  /// The time the day's samples cover, overlapping ones counted once, e.g.
+  /// sleep. Adding the durations up instead would double-count a night that
+  /// two sources both reported (a phone writing undifferentiated sleep while
+  /// a watch writes the stages of the very same night).
+  mergedDuration,
 }
 
 /// A body metric that can be imported from Apple Health / Health Connect into a
@@ -114,18 +120,20 @@ class HealthMetric {
   /// well under a hundred.
   final Duration readWindow;
 
-  /// All platform types this metric reads (the components' for a group).
+  /// All platform types this metric reads (the components' for a group), each
+  /// one once even when several components read it.
   List<HealthDataType> get dataTypes =>
-      components.isEmpty ? [dataType] : components.map((c) => c.dataType).toList();
+      components.isEmpty ? [dataType] : components.expand((c) => c.dataTypes).toSet().toList();
 }
 
 /// One component of a multi-value metric (e.g. systolic), imported into its
 /// own child category of the group.
 class HealthMetricComponent {
-  const HealthMetricComponent({required this.dataType, required this.canonicalName});
+  const HealthMetricComponent({required this.dataTypes, required this.canonicalName});
 
-  /// Health platform type this component reads.
-  final HealthDataType dataType;
+  /// Health platform types this component reads. More than one where the
+  /// component is a roll-up of several platform types, e.g. total sleep.
+  final List<HealthDataType> dataTypes;
 
   /// Stable, non-localized name of the created child category.
   final String canonicalName;
@@ -183,11 +191,11 @@ const List<HealthMetric> healthMetrics = [
     // sharing one timestamp.
     components: [
       HealthMetricComponent(
-        dataType: HealthDataType.BLOOD_PRESSURE_SYSTOLIC,
+        dataTypes: [HealthDataType.BLOOD_PRESSURE_SYSTOLIC],
         canonicalName: 'Systolic',
       ),
       HealthMetricComponent(
-        dataType: HealthDataType.BLOOD_PRESSURE_DIASTOLIC,
+        dataTypes: [HealthDataType.BLOOD_PRESSURE_DIASTOLIC],
         canonicalName: 'Diastolic',
       ),
     ],
@@ -215,16 +223,39 @@ const List<HealthMetric> healthMetrics = [
     enabled: true,
   ),
   HealthMetric(
-    // V1 imports the total time asleep only; the stages (deep/light/REM) are
-    // available on both platforms and would map onto a category group.
-    // Both report minutes, and a night arrives as several segments, so the
-    // day's value is their sum.
+    // SLEEP_ASLEEP is not the whole night, it is the coarsest stage: the
+    // plugin filters it down to HealthKit's asleepUnspecified and to Health
+    // Connect's STAGE_TYPE_SLEEPING. Anything writing a real hypnogram (an
+    // Apple Watch, Samsung Health, Fitbit) writes light/deep/REM instead, so
+    // reading only SLEEP_ASLEEP imports nothing for exactly those users. The
+    // total therefore rolls the stages up, and each stage also gets its own
+    // category. All types report minutes on both platforms.
     metricType: MetricType.sleep,
     dataType: HealthDataType.SLEEP_ASLEEP,
     canonicalName: 'Sleep',
     unit: 'min',
     toCategoryValue: _identity,
-    dailyAggregation: DailyAggregation.sum,
+    components: [
+      HealthMetricComponent(
+        dataTypes: [
+          HealthDataType.SLEEP_ASLEEP,
+          HealthDataType.SLEEP_LIGHT,
+          HealthDataType.SLEEP_DEEP,
+          HealthDataType.SLEEP_REM,
+        ],
+        canonicalName: 'Total sleep',
+      ),
+      HealthMetricComponent(
+        dataTypes: [HealthDataType.SLEEP_LIGHT],
+        canonicalName: 'Light sleep',
+      ),
+      HealthMetricComponent(dataTypes: [HealthDataType.SLEEP_DEEP], canonicalName: 'Deep sleep'),
+      HealthMetricComponent(dataTypes: [HealthDataType.SLEEP_REM], canonicalName: 'REM sleep'),
+      // Time awake during the night completes the picture but is not sleep,
+      // so it stays out of the total above
+      HealthMetricComponent(dataTypes: [HealthDataType.SLEEP_AWAKE], canonicalName: 'Awake'),
+    ],
+    dailyAggregation: DailyAggregation.mergedDuration,
     dayRollsOverAtHour: 18,
     enabled: true,
   ),
