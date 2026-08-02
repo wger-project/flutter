@@ -681,6 +681,31 @@ void main() {
       expect(entries.single.externalId, _idBf2);
     });
 
+    test('drops a reading outside the limits of its metric type', () async {
+      stubReadings([
+        HealthReading(
+          type: HealthDataType.BODY_FAT_PERCENTAGE,
+          value: 0.9, // 90 %, more than the server accepts
+          date: DateTime(2026, 1, 1),
+          externalId: _idBf1,
+        ),
+        HealthReading(
+          type: HealthDataType.BODY_FAT_PERCENTAGE,
+          value: 0.22,
+          date: DateTime(2026, 1, 3),
+          externalId: _idBf2,
+        ),
+      ]);
+
+      final count = await createNotifier().sync();
+
+      expect(count, 1);
+      final entries = verify(
+        measurements.addLocalDrift(captureAny),
+      ).captured.cast<MeasurementEntry>();
+      expect(entries.single.externalId, _idBf2);
+    });
+
     test('imports weight only into the official body weight category', () async {
       // A user-created lookalike must not receive the readings
       final lookalike = MeasurementCategory(

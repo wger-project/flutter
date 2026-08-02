@@ -203,9 +203,7 @@ void main() {
       expect(saved.extraData, {'unit': 'lb'});
     });
 
-    testWidgets('Accepts imperial weights over the 300 kg display bound', (
-      WidgetTester tester,
-    ) async {
+    testWidgets('Accepts imperial weights over the metric bound', (WidgetTester tester) async {
       when(
         mockProfileRepo.watchDrift(),
       ).thenAnswer((_) => Stream.value(UserProfile(id: 1, weightUnitStr: 'lb')));
@@ -236,12 +234,12 @@ void main() {
       await tester.pumpAndSettle();
 
       // 365 lb are over the numeric kg bound but a perfectly valid weight
-      await tester.enterText(find.byKey(const Key('weightInput')), '365');
+      await tester.enterText(find.byKey(const Key('weightInput')), '400');
       await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
       await tester.pumpAndSettle();
 
       final saved = verify(mockRepo.addLocalDrift(captureAny)).captured.single as MeasurementEntry;
-      expect(saved.value, 365);
+      expect(saved.value, 400);
       expect(saved.extraData, {'unit': 'lb'});
     });
 
@@ -251,14 +249,13 @@ void main() {
       await tester.pumpWidget(createWeightForm(entry: testWeightEntryLb));
       await tester.pumpAndSettle();
 
-      // 35 lb are below the plausible minimum of 30 kg
+      // 35 lb are below the plausible minimum
       await tester.enterText(find.byKey(const Key('weightInput')), '35');
       await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
       await tester.pumpAndSettle();
 
       verifyNever(mockRepo.updateLocalDrift(any));
-      // Bounds are rounded inwards, so the displayed minimum is acceptable
-      expect(find.text('Please enter a value between 67 and 661'), findsOneWidget);
+      expect(find.text('Please enter a value between 44 and 770'), findsOneWidget);
     });
 
     testWidgets('Editing shows the stored value in its stored unit, unconverted', (

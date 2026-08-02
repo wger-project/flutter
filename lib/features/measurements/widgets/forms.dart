@@ -289,8 +289,8 @@ class _MeasurementEntryFormState extends ConsumerState<MeasurementEntryForm> {
                 labelText: AppLocalizations.of(context).value,
                 suffixText: category.unit,
                 isRequired: true,
-                min: MeasurementEntry.minValue,
-                max: MeasurementEntry.maxValue,
+                min: category.metricType.limits(category.unit).min,
+                max: category.metricType.limits(category.unit).max,
                 onChanged: (value) => _value = value,
               ),
               // Notes
@@ -405,15 +405,16 @@ class _GroupMeasurementEntryFormState extends ConsumerState<GroupMeasurementEntr
             },
           ),
 
-          // One value field per component
+          // One value field per component, each bounded by its own type:
+          // systolic and diastolic do not share a range
           for (final child in widget._group.children)
             DecimalInputWidget(
               value: _values[child.id],
               labelText: child.name,
               suffixText: child.unit.isNotEmpty ? child.unit : widget._group.unit,
               isRequired: true,
-              min: MeasurementEntry.minValue,
-              max: MeasurementEntry.maxValue,
+              min: child.metricType.limits(child.unit).min,
+              max: child.metricType.limits(child.unit).max,
               onChanged: (value) => _values[child.id!] = value,
             ),
 

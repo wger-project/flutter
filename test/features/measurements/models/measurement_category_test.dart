@@ -91,6 +91,32 @@ void main() {
       expect(MetricType.heartRate.isSummedPerDay, isFalse);
     });
 
+    test('limits are per unit for body weight only', () {
+      expect(MetricType.bodyWeight.limits('kg').max, 350);
+      expect(MetricType.bodyWeight.limits('lb').max, 770);
+
+      // every other type has one unit, so the argument changes nothing
+      expect(MetricType.heartRate.limits('bpm').max, MetricType.heartRate.limits().max);
+    });
+
+    test('limits of the components differ from each other', () {
+      expect(MetricType.bloodPressureSystolic.limits().max, 250);
+      expect(MetricType.bloodPressureDiastolic.limits().max, 150);
+    });
+
+    test('limits of an untyped category are the column itself', () {
+      expect(MetricType.custom.limits().min, 0);
+      expect(MetricType.custom.limits().max, measurementSchemaMaxValue);
+    });
+
+    test('contains is inclusive', () {
+      final limits = MetricType.steps.limits();
+
+      expect(limits.contains(0), isTrue);
+      expect(limits.contains(100000), isTrue);
+      expect(limits.contains(100001), isFalse);
+    });
+
     test('correlatesWithNutrition is true for body composition and custom', () {
       expect(MetricType.bodyWeight.correlatesWithNutrition, isTrue);
       expect(MetricType.bodyFat.correlatesWithNutrition, isTrue);

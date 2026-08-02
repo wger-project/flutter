@@ -31,9 +31,8 @@ import 'package:wger/features/measurements/models/unit_conversion.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
-/// Sanity bounds (in kg) and stepper sizes for manual body weight input
-const _minWeightKg = 30;
-const _maxWeightKg = 300;
+/// Stepper sizes for the quick +/- buttons. The value bounds come from the
+/// metric type, which has them per unit (see [MetricType.limits])
 const _stepperSmall = 0.1;
 const _stepperBig = 1;
 
@@ -95,11 +94,11 @@ class _WeightFormState extends riverpod.ConsumerState<WeightForm> {
     super.dispose();
   }
 
+  /// The bounds of the unit the value is currently entered in
+  MetricLimits get _limits => MetricType.bodyWeight.limits(_unit);
+
   /// `true` when [value] (in the currently selected unit) is plausible
-  bool _isInRange(num value) {
-    final kg = convertWeight(value, from: _unit, to: 'kg');
-    return kg >= _minWeightKg && kg <= _maxWeightKg;
-  }
+  bool _isInRange(num value) => _limits.contains(value);
 
   /// Adds [delta] to the field's current value, clamped to the valid range
   void _step(num delta) {
@@ -202,11 +201,9 @@ class _WeightFormState extends riverpod.ConsumerState<WeightForm> {
                 return i18n.enterValidNumber;
               }
               if (!_isInRange(parsed)) {
-                // The bounds are defined in kg; show them in the entered unit,
-                // rounded inwards so every displayed bound is itself accepted
                 return i18n.formMinMaxValues(
-                  convertWeight(_minWeightKg, from: 'kg', to: _unit).ceil(),
-                  convertWeight(_maxWeightKg, from: 'kg', to: _unit).floor(),
+                  _limits.min.toInt(),
+                  _limits.max.toInt(),
                 );
               }
               return null;

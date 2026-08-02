@@ -44,6 +44,27 @@ const categoryIdNamespace = '4c5ef6dd-97c9-5b18-9f8b-2a5c1ed70a2f';
 String deterministicCategoryId(String userId, MetricType metricType) =>
     ps.uuid.v5(categoryIdNamespace, '$userId:${metricType.wireValue}');
 
+/// Largest value the server's column can hold (numeric(8, 2)). It is what a
+/// category without a metric type is bounded by, since nothing about a
+/// free-form category says more.
+const measurementSchemaMaxValue = 999999.99;
+
+/// The range a measurement value of one metric type may be in.
+///
+/// [min] and [max] are what the API enforces, a value outside them comes back
+/// as a 400. [softMin] and [softMax] are the everyday range, meant for warnings
+/// and chart axes; nothing enforces them.
+class MetricLimits {
+  final num min;
+  final num max;
+  final num? softMin;
+  final num? softMax;
+
+  const MetricLimits(this.min, this.max, [this.softMin, this.softMax]);
+
+  bool contains(num value) => value >= min && value <= max;
+}
+
 /// The wire values mirror the Django API field names (e.g., 'body_weight', 'heart_rate'),
 enum MetricType {
   custom('custom'),
@@ -148,6 +169,39 @@ enum MetricType {
   bool get correlatesWithNutrition => switch (this) {
     MetricType.bodyWeight || MetricType.bodyFat || MetricType.custom => true,
     _ => false,
+  };
+
+  /// The range a value of this type may be in, in the unit the type is stored
+  /// in. Body weight is the only one that comes in more than one unit, so it is
+  /// the only one [unit] matters for.
+  ///
+  /// MUST stay identical to METRIC_LIMITS on the server: this is the copy the
+  /// app validates against while offline, and a value the app accepts but the
+  /// server does not is rejected permanently on push. Bounds may therefore be
+  /// widened over releases, never tightened.
+  MetricLimits limits([String? unit]) => switch (this) {
+    MetricType.bodyWeight =>
+      unit == 'lb' ? const MetricLimits(44, 770, 66, 661) : const MetricLimits(20, 350, 30, 300),
+    MetricType.bodyFat => const MetricLimits(2, 60, 5, 50),
+    MetricType.height => const MetricLimits(50, 250, 140, 210),
+    MetricType.bloodPressureSystolic => const MetricLimits(50, 250, 90, 180),
+    MetricType.bloodPressureDiastolic => const MetricLimits(30, 150, 50, 110),
+    MetricType.heartRate => const MetricLimits(30, 250, 40, 200),
+    MetricType.restingHeartRate => const MetricLimits(30, 120, 40, 100),
+    // The cumulative types hold a whole day, and a rest day really is 0 steps
+    MetricType.steps => const MetricLimits(0, 100000, 0, 30000),
+    MetricType.distance => const MetricLimits(0, 500, 0, 30),
+    MetricType.energy => const MetricLimits(0, 10000, 0, 2000),
+    // Sleep is stored in minutes, so the upper bound is not a rarity but
+    // arithmetic: a day has 1440 of them
+    MetricType.sleepTotal => const MetricLimits(0, 1440, 180, 720),
+    MetricType.sleepLight ||
+    MetricType.sleepDeep ||
+    MetricType.sleepRem ||
+    MetricType.sleepAwake => const MetricLimits(0, 1440, 0, 720),
+    // Free-form categories, and the group containers, which carry no
+    // measurements at all
+    _ => const MetricLimits(0, measurementSchemaMaxValue),
   };
 }
 

@@ -110,6 +110,10 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
   /// changed its id format under us.
   var _normalizedIdCount = 0;
 
+  /// Readings dropped during the running sync because their value is outside
+  /// what its metric type allows, see [_isInRange].
+  var _outOfRangeCount = 0;
+
   List<HealthDataType> get _types => enabledHealthMetrics.expand((m) => m.dataTypes).toList();
 
   @override
@@ -205,6 +209,7 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
     }
     state = state.copyWith(isEnabled: true, isSyncing: true, issue: null);
     _normalizedIdCount = 0;
+    _outOfRangeCount = 0;
 
     try {
       // Checked silently, never requested: this runs on app open and resume,
@@ -348,6 +353,9 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
           'Folded $_normalizedIdCount platform record ids into UUIDs during this sync',
         );
       }
+      if (_outOfRangeCount > 0) {
+        _logger.warning('Dropped $_outOfRangeCount readings outside their metric limits');
+      }
       _logger.info('Imported $synced health measurements');
       state = state.copyWith(
         isSyncing: false,
@@ -416,29 +424,34 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
       // (1.803 m * 100 = 180.29999999999998).
       final value = (converted * 100).roundToDouble() / 100;
 
-      await _measurements.addLocalDrift(
-        MeasurementEntry(
-          categoryId: category.id!,
-          date: reading.date,
-          value: value,
-          notes: '',
-          source: source,
-          externalId: uuid,
-          extraData: _extraDataFor(
-            metric,
-            reading,
-            converted: sourceUnit != null || converted != reading.value,
-            sourceUnit: sourceUnit,
-            // Only set when the platform id had to be folded into a UUID
-            sourceRecordId: uuid == reading.externalId ? null : reading.externalId,
+      if (_isInRange(value, category, metric)) {
+        await _measurements.addLocalDrift(
+          MeasurementEntry(
+            categoryId: category.id!,
+            date: reading.date,
+            value: value,
+            notes: '',
+            source: source,
+            externalId: uuid,
+            extraData: _extraDataFor(
+              metric,
+              reading,
+              converted: sourceUnit != null || converted != reading.value,
+              sourceUnit: sourceUnit,
+              // Only set when the platform id had to be folded into a UUID
+              sourceRecordId: uuid == reading.externalId ? null : reading.externalId,
+            ),
           ),
-        ),
-      );
+        );
 
-      if (uuid != null) {
-        seen.add(uuid);
+        if (uuid != null) {
+          seen.add(uuid);
+        }
+        synced++;
       }
-      synced++;
+
+      // Also for a dropped reading: it will never become importable, so
+      // holding the watermark back would only mean reading it again forever
       if (latest == null || reading.date.isAfter(latest)) {
         latest = reading.date;
       }
@@ -490,25 +503,29 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
         },
       };
 
-      final externalId = dailyAggregateExternalId(category.id!, day);
-      final existing = category.entries.firstWhereOrNull((e) => e.externalId == externalId);
-      if (existing == null) {
-        await _measurements.addLocalDrift(
-          MeasurementEntry(
-            categoryId: category.id!,
-            date: day,
-            value: value,
-            notes: '',
-            source: source,
-            externalId: externalId,
-            extraData: extraData,
-          ),
-        );
-        synced++;
-      } else if (existing.value != value ||
-          !const MapEquality<String, dynamic>().equals(existing.extraData, extraData)) {
-        await _measurements.updateLocalDrift(existing.copyWith(value: value, extraData: extraData));
-        synced++;
+      if (_isInRange(value, category, metric)) {
+        final externalId = dailyAggregateExternalId(category.id!, day);
+        final existing = category.entries.firstWhereOrNull((e) => e.externalId == externalId);
+        if (existing == null) {
+          await _measurements.addLocalDrift(
+            MeasurementEntry(
+              categoryId: category.id!,
+              date: day,
+              value: value,
+              notes: '',
+              source: source,
+              externalId: externalId,
+              extraData: extraData,
+            ),
+          );
+          synced++;
+        } else if (existing.value != value ||
+            !const MapEquality<String, dynamic>().equals(existing.extraData, extraData)) {
+          await _measurements.updateLocalDrift(
+            existing.copyWith(value: value, extraData: extraData),
+          );
+          synced++;
+        }
       }
 
       for (final sample in samples) {
@@ -627,6 +644,32 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
     }
     _normalizedIdCount++;
     return ps.uuid.v5(categoryId, platformId);
+  }
+
+  /// Whether [value] is within what the server accepts for [category].
+  ///
+  /// A value outside those bounds is rejected with a 400, and a validation
+  /// failure is permanent by design: the entry would sit in the local database
+  /// and never sync. So it is dropped here instead of written. Nobody ever
+  /// complains about a dropped wearable artifact, which makes this log the only
+  /// signal that a bound is too tight.
+  ///
+  /// The unit is the metric's, not the category's: body weight is imported in
+  /// kilograms and stamped as such, even into a category labelled in pounds.
+  bool _isInRange(num value, MeasurementCategory category, HealthMetric metric) {
+    final limits = category.metricType.limits(metric.unit);
+    if (limits.contains(value)) {
+      return true;
+    }
+
+    if (_outOfRangeCount == 0) {
+      _logger.warning(
+        'Dropping a ${category.metricType.name} reading of $value ${metric.unit}, '
+        'outside the accepted ${limits.min} to ${limits.max}',
+      );
+    }
+    _outOfRangeCount++;
+    return false;
   }
 
   /// Whether the platform now lets us read a type it did not last time.
