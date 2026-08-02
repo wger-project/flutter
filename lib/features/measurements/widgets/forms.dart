@@ -50,9 +50,16 @@ class _MeasurementCategoryFormState extends ConsumerState<MeasurementCategoryFor
 
   @override
   Widget build(BuildContext context) {
+    // A category with children is a group whatever its metric type says, which
+    // is also how the charts decide. Both the chart type and the parent are
+    // meaningless for one
+    final categories = ref.watch(measurementProvider).asData?.value ?? [];
+    final hasChildren = _draft.id != null && categories.any((c) => c.parentId == _draft.id);
+
     // What the chart type picker offers: no override, plus what this metric
-    // type may be drawn as. Empty for a group, which gets no picker at all
-    final chartTypes = _draft.metricType.availableChartTypes.isEmpty
+    // type may be drawn as. Empty for a group, whose chart follows from what
+    // its components are to each other rather than from a preference
+    final chartTypes = hasChildren || _draft.metricType.availableChartTypes.isEmpty
         ? const <ChartType>[]
         : [ChartType.auto, ..._draft.metricType.availableChartTypes];
 
@@ -151,10 +158,6 @@ class _MeasurementCategoryFormState extends ConsumerState<MeasurementCategoryFor
           // components (which it is created with).
           Builder(
             builder: (context) {
-              final categories = ref.watch(measurementProvider).asData?.value ?? [];
-
-              final hasChildren =
-                  _draft.id != null && categories.any((c) => c.parentId == _draft.id);
               if (hasChildren || _draft.metricType != MetricType.custom) {
                 return const SizedBox.shrink();
               }

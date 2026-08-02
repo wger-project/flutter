@@ -133,6 +133,29 @@ void main() {
       );
     });
 
+    testWidgets('a category with children gets no chart type picker', (tester) async {
+      // Its chart follows from what its components are to each other, which is
+      // what buildGroupChart decides; a pick would have no effect
+      final parent = getMeasurementCategories()[1];
+      final child = getMeasurementCategories()[0].copyWith(parentId: parent.id);
+      when(mockRepo.watchAll()).thenAnswer((_) => Stream.value([parent, child]));
+
+      await tester.pumpWidget(wrap(MeasurementCategoryForm(parent)));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(DropdownButtonFormField<ChartType>), findsNothing);
+    });
+
+    testWidgets('a leaf category gets the chart type picker', (tester) async {
+      final category = getMeasurementCategories()[1];
+      when(mockRepo.watchAll()).thenAnswer((_) => Stream.value([category]));
+
+      await tester.pumpWidget(wrap(MeasurementCategoryForm(category)));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(DropdownButtonFormField<ChartType>), findsOneWidget);
+    });
+
     testWidgets('editing existing category pre-fills name and unit', (tester) async {
       final existing = getMeasurementCategories()[1];
 
