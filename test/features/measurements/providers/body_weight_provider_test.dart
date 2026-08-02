@@ -21,8 +21,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
+import 'package:wger/features/measurements/providers/body_weight_provider.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
-import 'package:wger/features/weight/providers/body_weight_provider.dart';
 
 import '../../../../test_data/body_weight.dart';
 import '../../../../test_data/measurements.dart';

@@ -20,10 +20,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/features/account/providers/user_profile_notifier.dart';
 import 'package:wger/features/measurements/models/unit_conversion.dart';
+import 'package:wger/features/measurements/providers/body_weight_provider.dart';
 import 'package:wger/features/measurements/widgets/charts.dart';
 import 'package:wger/features/measurements/widgets/helpers.dart';
 import 'package:wger/features/nutrition/models/nutritional_plan.dart';
-import 'package:wger/features/weight/providers/body_weight_provider.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 /// Body weight during the plan's period: chart plus overall change.
