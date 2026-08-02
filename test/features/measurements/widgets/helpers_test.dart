@@ -270,7 +270,8 @@ void main() {
 
       expect(readings, hasLength(1));
       expect(readings.single.$1, DateTime(2026, 1, 2, 8));
-      expect(readings.single.$2, {'Systolic': 120, 'Diastolic': 80});
+      // keyed by the component id, the name is translated for display
+      expect(readings.single.$2, {'sys': 120, 'dia': 80});
     });
 
     testWidgets('a summed group stacks its components', (tester) async {

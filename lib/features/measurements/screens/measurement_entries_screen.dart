@@ -24,6 +24,7 @@ import 'package:wger/core/widgets/confirm_delete_dialog.dart';
 import 'package:wger/core/widgets/error.dart';
 import 'package:wger/core/widgets/object_gone_redirect.dart';
 import 'package:wger/core/widgets/progress_indicator.dart';
+import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/measurements/widgets/chart_range_selector.dart';
 import 'package:wger/features/measurements/widgets/entries.dart';
@@ -81,7 +82,7 @@ class _MeasurementEntriesScreenState extends ConsumerState<MeasurementEntriesScr
 
         return Scaffold(
           appBar: AppBar(
-            title: Text(category.name),
+            title: Text(category.displayName(context)),
             actions: [
               PopupMenuButton<MeasurementOptions>(
                 icon: const Icon(Icons.more_vert),
@@ -101,7 +102,7 @@ class _MeasurementEntriesScreenState extends ConsumerState<MeasurementEntriesScr
                     case MeasurementOptions.delete:
                       showConfirmDeleteDialog(
                         context,
-                        itemName: category.name,
+                        itemName: category.displayName(context),
                         onConfirm: () =>
                             ref.read(measurementProvider.notifier).deleteCategory(category.id!),
                         // Exit the detail screen once the category is gone.

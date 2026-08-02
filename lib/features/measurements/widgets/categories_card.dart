@@ -70,7 +70,7 @@ class CategoriesCard extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               child: Text(
-                currentCategory.name,
+                currentCategory.displayName(context),
                 style: Theme.of(context).textTheme.titleLarge,
                 textAlign: TextAlign.center,
                 maxLines: 2,
@@ -165,7 +165,7 @@ class CategoriesCard extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             child: Text(
-              currentCategory.name,
+              currentCategory.displayName(context),
               style: Theme.of(context).textTheme.titleLarge,
               textAlign: TextAlign.center,
               maxLines: 2,
@@ -199,7 +199,7 @@ class CategoriesCard extends StatelessWidget {
                         color: componentColor(context, colorIndex),
                       ),
                     ),
-              title: Text(child.name),
+              title: Text(child.displayName(context)),
               trailing: Text(
                 latest != null
                     ? '${localizedNumberFormat(context).format(latest.valueIn(child.unit, categoryUnit: child.unit))} ${child.unit}'

@@ -142,4 +142,40 @@ void main() {
     // Each component is a way into its own screen
     expect(find.byIcon(Icons.chevron_right), findsNWidgets(2));
   });
+
+  testWidgets('A typed category is titled by its metric type, not by the stored name', (
+    WidgetTester tester,
+  ) async {
+    // The server and the importer create typed categories with an English
+    // name; the metric type is what carries the translation
+    final category = MeasurementCategory(
+      id: 'c1',
+      name: 'Blutdruck',
+      unit: 'mmHg',
+      metricType: MetricType.bloodPressureSystolic,
+      entries: [userEntry],
+    );
+
+    await tester.pumpWidget(createEntriesList(category));
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('Systolic'), findsWidgets);
+    expect(find.textContaining('Blutdruck'), findsNothing);
+  });
+
+  testWidgets('A free-form category keeps the name the user gave it', (
+    WidgetTester tester,
+  ) async {
+    final category = MeasurementCategory(
+      id: 'c1',
+      name: 'Bizeps',
+      unit: 'cm',
+      entries: [userEntry],
+    );
+
+    await tester.pumpWidget(createEntriesList(category));
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('Bizeps'), findsWidgets);
+  });
 }

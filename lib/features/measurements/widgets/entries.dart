@@ -77,7 +77,7 @@ class EntriesList extends ConsumerWidget {
     final i18n = AppLocalizations.of(context);
     // The overrides describe a single category and only apply to the leaf
     // branch below; a group is presented through its components
-    final name = title ?? category.name;
+    final name = title ?? category.displayName(context);
     final unit = displayUnit ?? category.unit;
     final unitLabel = displayUnitLabel ?? unit;
 
@@ -231,7 +231,7 @@ class EntriesList extends ConsumerWidget {
           onChanged: onRangeChanged,
         ),
         Text(
-          range.chartTitle(i18n, category.name),
+          range.chartTitle(i18n, category.displayName(context)),
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.titleLarge,
         ),
@@ -263,7 +263,7 @@ class EntriesList extends ConsumerWidget {
                       color: componentColor(context, colorIndex),
                     ),
                   ),
-            title: Text(child.name),
+            title: Text(child.displayName(context)),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => Navigator.pushNamed(
               context,
@@ -282,16 +282,18 @@ class EntriesList extends ConsumerWidget {
               final (date, values) = readings[index];
               final total = category.children
                   .firstWhereOrNull((c) => c.metricType.isGroupTotal)
-                  ?.name;
+                  ?.id;
               // A roll-up leads and the parts explain it; without one the
               // values are the reading itself, written the way it is read
               // (a blood pressure as 120/80)
               final headline = total != null && values.containsKey(total)
                   ? '${numberFormat.format(values[total])} ${category.unit}'
                   : '${values.values.sorted((a, b) => b.compareTo(a)).map(numberFormat.format).join('/')} ${category.unit}';
+              final componentsById = {for (final c in category.children) c.id!: c};
               final parts = [
-                for (final MapEntry(key: name, value: value) in values.entries)
-                  if (name != total) '$name ${numberFormat.format(value)}',
+                for (final MapEntry(key: id, value: value) in values.entries)
+                  if (id != total)
+                    '${componentsById[id]!.displayName(context)} ${numberFormat.format(value)}',
               ];
 
               return Card(

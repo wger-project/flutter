@@ -232,6 +232,17 @@ extension MeasurementMetricTypeL10n on MetricType {
   }
 }
 
+extension MeasurementCategoryDisplay on MeasurementCategory {
+  /// Name to show the user.
+  ///
+  /// A typed category is created by the server or by the health importer and
+  /// carries an English name ("Systolic", "Deep sleep"), while its metric type
+  /// already has a translated label. Only a free-form category holds a name
+  /// the user picked themselves.
+  String displayName(BuildContext context) =>
+      metricType == MetricType.custom ? name : metricType.localized(context);
+}
+
 @freezed
 class MeasurementCategory with _$MeasurementCategory {
   /// Inclusive upper bound for [name]

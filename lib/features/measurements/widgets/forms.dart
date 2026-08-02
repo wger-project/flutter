@@ -410,7 +410,7 @@ class _GroupMeasurementEntryFormState extends ConsumerState<GroupMeasurementEntr
           for (final child in widget._group.children)
             DecimalInputWidget(
               value: _values[child.id],
-              labelText: child.name,
+              labelText: child.displayName(context),
               suffixText: child.unit.isNotEmpty ? child.unit : widget._group.unit,
               isRequired: true,
               min: child.metricType.limits(child.unit).min,

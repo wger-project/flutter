@@ -68,7 +68,7 @@ class _SortableList extends ConsumerWidget {
         final category = _categories[index];
         return ListTile(
           key: ValueKey(category.id),
-          title: Text(category.name),
+          title: Text(category.displayName(context)),
           subtitle: Text(category.unit),
           trailing: ReorderableDragStartListener(
             index: index,

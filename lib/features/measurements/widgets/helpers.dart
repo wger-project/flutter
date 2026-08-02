@@ -225,7 +225,11 @@ List<MeasurementChartEntry> groupRangeEntries(MeasurementCategory group, {DateTi
 /// All components share the same range, so their lines cover the same span
 /// even when one of them has fewer readings. Only readings from [cutoff] on
 /// are returned; null covers the full history.
-List<MeasurementChartSeries> groupComponentSeries(MeasurementCategory group, {DateTime? cutoff}) {
+List<MeasurementChartSeries> groupComponentSeries(
+  BuildContext context,
+  MeasurementCategory group, {
+  DateTime? cutoff,
+}) {
   List<MeasurementChartEntry> pointsOf(MeasurementCategory child) =>
       chartEntriesFor(child.entries, targetUnit: child.unit, categoryUnit: child.unit);
 
@@ -234,7 +238,7 @@ List<MeasurementChartSeries> groupComponentSeries(MeasurementCategory group, {Da
         (child) => MeasurementChartSeries(
           cutoff == null ? pointsOf(child) : pointsOf(child).whereDate(cutoff, null),
           MeasurementSeriesRole.component,
-          label: child.name,
+          label: child.displayName(context),
         ),
       )
       .toList();
@@ -295,7 +299,7 @@ Widget buildGroupChart(BuildContext context, MeasurementCategory group, {DateTim
     if (stacked.isNotEmpty) {
       return MeasurementStackedBarChartWidgetFl(
         stacked,
-        components.map((c) => c.name).toList(),
+        components.map((c) => c.displayName(context)).toList(),
         group.unit,
       );
     }
@@ -308,7 +312,10 @@ Widget buildGroupChart(BuildContext context, MeasurementCategory group, {DateTim
     return MeasurementBarChartWidgetFl(ranges, group.unit);
   }
 
-  return MeasurementChartWidgetFl(groupComponentSeries(group, cutoff: cutoff), group.unit);
+  return MeasurementChartWidgetFl(
+    groupComponentSeries(context, group, cutoff: cutoff),
+    group.unit,
+  );
 }
 
 /// The readings of a group, newest first: one per timestamp, with what each
@@ -320,6 +327,8 @@ Widget buildGroupChart(BuildContext context, MeasurementCategory group, {DateTim
 /// without deep sleep) that is the normal case, not a broken pair. Only
 /// readings from [cutoff] on are included; null covers the full history.
 List<(DateTime, Map<String, num>)> groupReadings(MeasurementCategory group, {DateTime? cutoff}) {
+  // Keyed by the component id rather than by its name: the name is translated
+  // for display, and two components could carry the same one
   final byDate = <DateTime, Map<String, num>>{};
   for (final child in group.children) {
     for (final entry in child.entries) {
@@ -328,7 +337,7 @@ List<(DateTime, Map<String, num>)> groupReadings(MeasurementCategory group, {Dat
       }
       final values = byDate.putIfAbsent(entry.date, () => {});
       final value = entry.valueIn(child.unit, categoryUnit: child.unit);
-      values[child.name] = (values[child.name] ?? 0) + value;
+      values[child.id!] = (values[child.id!] ?? 0) + value;
     }
   }
 
