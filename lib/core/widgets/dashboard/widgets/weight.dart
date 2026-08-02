@@ -28,10 +28,10 @@ import 'package:wger/features/account/providers/user_profile_notifier.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/unit_conversion.dart';
 import 'package:wger/features/measurements/providers/body_weight_provider.dart';
+import 'package:wger/features/measurements/screens/weight_screen.dart';
 import 'package:wger/features/measurements/widgets/charts.dart';
 import 'package:wger/features/measurements/widgets/helpers.dart';
-import 'package:wger/features/weight/screens/weight_screen.dart';
-import 'package:wger/features/weight/widgets/forms.dart';
+import 'package:wger/features/measurements/widgets/weight_form.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 class DashboardWeightWidget extends ConsumerWidget {

@@ -21,12 +21,23 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/core/form_screen.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/core/widgets/app_bar.dart';
+import 'package:wger/core/widgets/progress_indicator.dart';
+import 'package:wger/features/account/providers/user_profile_notifier.dart';
+import 'package:wger/features/measurements/models/unit_conversion.dart';
 import 'package:wger/features/measurements/providers/body_weight_provider.dart';
 import 'package:wger/features/measurements/widgets/chart_range_selector.dart';
-import 'package:wger/features/weight/widgets/forms.dart';
-import 'package:wger/features/weight/widgets/weight_overview.dart';
+import 'package:wger/features/measurements/widgets/charts.dart';
+import 'package:wger/features/measurements/widgets/entries.dart';
+import 'package:wger/features/measurements/widgets/weight_form.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
+/// Body weight, presented as its own tab.
+///
+/// The data is the official body weight category, so this is [EntriesList]
+/// over it. What the category alone does not say is presentation: the values
+/// are shown in the profile unit (entries can be stored in kg or lb), the
+/// title is translated rather than taken from the server-created category, and
+/// the entry form is the one with the quick steppers.
 class WeightScreen extends ConsumerStatefulWidget {
   const WeightScreen();
 
@@ -37,18 +48,21 @@ class WeightScreen extends ConsumerStatefulWidget {
 }
 
 class _WeightScreenState extends ConsumerState<WeightScreen> {
-  /// Owned here rather than in the overview below, because it bounds the query
+  /// Owned here rather than in the list below, because it bounds the query
   /// that reads the entries, not only the span the chart draws
   ChartRange _range = ChartRange.last3Months;
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
     // New entries need the official category, which the server creates and the
     // initial sync delivers; hide the FAB until it is there.
     final category = ref.watch(bodyWeightCategorySinceProvider(_range.readCutoff)).value;
+    // The profile decides the display unit, so nothing can be drawn without it
+    final profile = ref.watch(userProfileProvider).value;
 
     return Scaffold(
-      appBar: EmptyAppBar(AppLocalizations.of(context).weight),
+      appBar: EmptyAppBar(i18n.weight),
       floatingActionButton: category == null
           ? null
           : FloatingActionButton(
@@ -58,7 +72,7 @@ class _WeightScreenState extends ConsumerState<WeightScreen> {
                   context,
                   FormScreen.routeName,
                   arguments: FormScreenArguments(
-                    AppLocalizations.of(context).newEntry,
+                    i18n.newEntry,
                     WeightForm(category),
                   ),
                 );
@@ -66,10 +80,31 @@ class _WeightScreenState extends ConsumerState<WeightScreen> {
             ),
       body: WidescreenWrapper(
         child: SingleChildScrollView(
-          child: WeightOverview(
-            range: _range,
-            onRangeChanged: (range) => setState(() => _range = range),
-          ),
+          child: category == null || profile == null
+              ? const BoxedProgressIndicator()
+              : Column(
+                  children: [
+                    EntriesList(
+                      category,
+                      range: _range,
+                      onRangeChanged: (range) => setState(() => _range = range),
+                      title: i18n.weight,
+                      displayUnit: weightDisplayUnit(profile.isMetric),
+                      displayUnitLabel: weightUnit(profile.isMetric, context),
+                      editFormBuilder: (entry) => WeightForm(category, entry),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.pushNamed(context, '/measurement-categories'),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Text(i18n.measurements),
+                          const Icon(Icons.chevron_right),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
         ),
       ),
     );

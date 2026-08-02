@@ -23,9 +23,9 @@ import 'package:wger/core/dashboard.dart';
 import 'package:wger/core/material.dart';
 import 'package:wger/features/gallery/screens/gallery_screen.dart';
 import 'package:wger/features/health/providers/health_sync.dart';
+import 'package:wger/features/measurements/screens/weight_screen.dart';
 import 'package:wger/features/nutrition/screens/nutritional_plans_screen.dart';
 import 'package:wger/features/routines/screens/routine_list_screen.dart';
-import 'package:wger/features/weight/screens/weight_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 class HomeTabsScreen extends ConsumerStatefulWidget {

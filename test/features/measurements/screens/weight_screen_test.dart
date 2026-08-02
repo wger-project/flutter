@@ -25,12 +25,12 @@ import 'package:wger/core/form_screen.dart';
 import 'package:wger/features/account/providers/user_profile_repository.dart';
 import 'package:wger/features/measurements/models/measurement_entry.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
+import 'package:wger/features/measurements/screens/weight_screen.dart';
 import 'package:wger/features/measurements/widgets/chart_range_selector.dart';
 import 'package:wger/features/measurements/widgets/charts.dart';
+import 'package:wger/features/measurements/widgets/weight_form.dart';
 import 'package:wger/features/nutrition/providers/ingredient_repository.dart';
 import 'package:wger/features/nutrition/providers/nutrition_repository.dart';
-import 'package:wger/features/weight/screens/weight_screen.dart';
-import 'package:wger/features/weight/widgets/forms.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 import '../../../../test_data/body_weight.dart';

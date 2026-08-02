@@ -24,6 +24,7 @@ import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/core/snackbar.dart';
 import 'package:wger/features/measurements/measurements.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
+import 'package:wger/features/measurements/models/measurement_entry.dart';
 import 'package:wger/features/measurements/models/unit_conversion.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/measurements/screens/measurement_entries_screen.dart';
@@ -44,11 +45,41 @@ class EntriesList extends ConsumerWidget {
   final ChartRange range;
   final ValueChanged<ChartRange> onRangeChanged;
 
-  const EntriesList(this.category, {required this.range, required this.onRangeChanged});
+  /// Name the category is presented under, `category.name` by default. Body
+  /// weight is created by the server and is titled in the user's language
+  /// instead of with the name it was stored with.
+  final String? title;
+
+  /// Unit the values are converted to, `category.unit` by default. Body weight
+  /// is shown in the profile unit, since its entries can be stored in either.
+  final String? displayUnit;
+
+  /// Label for [displayUnit], the unit itself by default. The two differ where
+  /// the unit is translated (kg reads كغم in Arabic).
+  final String? displayUnitLabel;
+
+  /// Form the edit action opens, [MeasurementEntryForm] by default. Body
+  /// weight has one of its own, with quick steppers and a unit dropdown.
+  final Widget Function(MeasurementEntry entry)? editFormBuilder;
+
+  const EntriesList(
+    this.category, {
+    required this.range,
+    required this.onRangeChanged,
+    this.title,
+    this.displayUnit,
+    this.displayUnitLabel,
+    this.editFormBuilder,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final i18n = AppLocalizations.of(context);
+    // The overrides describe a single category and only apply to the leaf
+    // branch below; a group is presented through its components
+    final name = title ?? category.name;
+    final unit = displayUnit ?? category.unit;
+    final unitLabel = displayUnitLabel ?? unit;
 
     // A group carries no entries of its own, its readings live in the
     // components, so everything below would chart an empty list
@@ -70,13 +101,12 @@ class EntriesList extends ConsumerWidget {
           ]
         : const <PlanPeriod>[];
     final numberFormat = localizedNumberFormat(context);
-    final provider = ref.read(measurementProvider.notifier);
 
     // Values are read through the unit helper; for plain categories without
     // per-entry units this is a pass-through to the category unit
     final allEntries = chartEntriesFor(
       category.entries,
-      targetUnit: category.unit,
+      targetUnit: unit,
       categoryUnit: category.unit,
     );
     // The average is computed over the full history and only then cut, so the
@@ -96,14 +126,14 @@ class EntriesList extends ConsumerWidget {
           onChanged: onRangeChanged,
         ),
         ...getOverviewWidgetsSeries(
-          category.name,
+          name,
           entriesAll,
           entries7dAvg,
           planPeriods,
-          category.unit,
+          unitLabel,
           context,
           metricType: category.metricType,
-          mainChartTitle: range.chartTitle(i18n, category.name),
+          mainChartTitle: range.chartTitle(i18n, name),
         ),
         SizedBox(
           height: 300,
@@ -116,7 +146,7 @@ class EntriesList extends ConsumerWidget {
               return Card(
                 child: ListTile(
                   title: Text(
-                    '${numberFormat.format(currentEntry.valueIn(category.unit, categoryUnit: category.unit))} ${category.unit}',
+                    '${numberFormat.format(currentEntry.valueIn(unit, categoryUnit: category.unit))} $unitLabel',
                   ),
                   subtitle: Text(datetimeFormat.format(currentEntry.date)),
                   // Imported entries are read-only; changes belong in the
@@ -136,18 +166,23 @@ class EntriesList extends ConsumerWidget {
                                   FormScreen.routeName,
                                   arguments: FormScreenArguments(
                                     AppLocalizations.of(context).edit,
-                                    MeasurementEntryForm(
-                                      category.id!,
-                                      currentEntry,
-                                    ),
+                                    editFormBuilder?.call(currentEntry) ??
+                                        MeasurementEntryForm(
+                                          category.id!,
+                                          currentEntry,
+                                        ),
                                   ),
                                 ),
                               ),
                               PopupMenuItem(
                                 child: Text(AppLocalizations.of(context).delete),
                                 onTap: () async {
-                                  // Delete entry from DB
-                                  await provider.deleteEntry(currentEntry.id!);
+                                  // Read here rather than in build: the
+                                  // notifier holds the unbounded query, and
+                                  // this list is shown for a range
+                                  await ref
+                                      .read(measurementProvider.notifier)
+                                      .deleteEntry(currentEntry.id!);
 
                                   // and inform the user
                                   if (context.mounted) {

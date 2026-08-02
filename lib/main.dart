@@ -55,6 +55,7 @@ import 'package:wger/features/gallery/screens/gallery_screen.dart';
 import 'package:wger/features/measurements/screens/measurement_categories_screen.dart';
 import 'package:wger/features/measurements/screens/measurement_category_sort_screen.dart';
 import 'package:wger/features/measurements/screens/measurement_entries_screen.dart';
+import 'package:wger/features/measurements/screens/weight_screen.dart';
 import 'package:wger/features/nutrition/screens/ingredient_detail_screen.dart';
 import 'package:wger/features/nutrition/screens/ingredients_screen.dart';
 import 'package:wger/features/nutrition/screens/log_meal_screen.dart';
@@ -69,7 +70,6 @@ import 'package:wger/features/routines/screens/routine_logs_screen.dart';
 import 'package:wger/features/routines/screens/routine_screen.dart';
 import 'package:wger/features/routines/screens/settings_plates_screen.dart';
 import 'package:wger/features/trophies/screens/trophy_screen.dart';
-import 'package:wger/features/weight/screens/weight_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/theme/theme.dart';
 

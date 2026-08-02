@@ -29,12 +29,12 @@ import 'package:wger/features/account/providers/user_profile_repository.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/measurement_entry.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
-import 'package:wger/features/weight/widgets/forms.dart';
+import 'package:wger/features/measurements/widgets/weight_form.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 import '../../../../test_data/body_weight.dart';
 import '../../../../test_data/profile.dart';
-import 'forms_test.mocks.dart';
+import 'weight_form_test.mocks.dart';
 
 @GenerateMocks([MeasurementRepository, UserProfileRepository])
 void main() {
