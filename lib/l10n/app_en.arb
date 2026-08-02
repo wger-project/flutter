@@ -581,6 +581,26 @@
   "@chartRangeLast3Months": {
     "description": "Label for the chart time-range selector option showing the last 3 months"
   },
+  "chartType": "Chart type",
+  "@chartType": {
+    "description": "Label of the chart type picker of a measurement category"
+  },
+  "chartTypeAuto": "Automatic",
+  "@chartTypeAuto": {
+    "description": "Chart type option that leaves the chart to the metric type of the category"
+  },
+  "chartTypeLine": "Line",
+  "@chartTypeLine": {
+    "description": "Chart type option: a line through the measured values"
+  },
+  "chartTypeBar": "Bars",
+  "@chartTypeBar": {
+    "description": "Chart type option: one bar per day"
+  },
+  "chartTypeHeatmap": "Heatmap",
+  "@chartTypeHeatmap": {
+    "description": "Chart type option: a calendar grid with one coloured cell per day"
+  },
   "measurement": "Measurement",
   "@measurement": {},
   "measurements": "Measurements",

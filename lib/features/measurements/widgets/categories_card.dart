@@ -85,6 +85,7 @@ class CategoriesCard extends StatelessWidget {
                 entriesAll,
                 entries7dAvg,
                 currentCategory.unit,
+                chartType: currentCategory.chartType,
               ),
             ),
             if (entries7dAvg.isNotEmpty && !currentCategory.metricType.isSummedPerDay)

@@ -50,6 +50,12 @@ class _MeasurementCategoryFormState extends ConsumerState<MeasurementCategoryFor
 
   @override
   Widget build(BuildContext context) {
+    // What the chart type picker offers: no override, plus what this metric
+    // type may be drawn as. Empty for a group, which gets no picker at all
+    final chartTypes = _draft.metricType.availableChartTypes.isEmpty
+        ? const <ChartType>[]
+        : [ChartType.auto, ..._draft.metricType.availableChartTypes];
+
     return Form(
       key: _form,
       child: Column(
@@ -114,6 +120,29 @@ class _MeasurementCategoryFormState extends ConsumerState<MeasurementCategoryFor
               }
             },
           ),
+
+          // Chart type. Only the shapes that are a matter of taste are offered,
+          // and only those the metric type can actually be drawn as; a group
+          // gets none, its chart follows from what its components are
+          if (chartTypes.isNotEmpty)
+            DropdownButtonFormField(
+              // A type stored by a client that offers more of them than this
+              // one falls back to the derived chart, so it shows as automatic
+              initialValue: chartTypes.contains(_draft.chartType)
+                  ? _draft.chartType
+                  : ChartType.auto,
+              decoration: InputDecoration(labelText: AppLocalizations.of(context).chartType),
+              items: chartTypes
+                  .map((t) => DropdownMenuItem(value: t, child: Text(t.localized(context))))
+                  .toList(),
+              onChanged: (value) {
+                if (value != null) {
+                  setState(() {
+                    _draft = _draft.copyWith(chartType: value);
+                  });
+                }
+              },
+            ),
 
           // Parent group (multi-value measurements, e.g. blood pressure).
           // Mirrors the server rules: only top-level, entry-free categories

@@ -16,6 +16,7 @@ List<Widget> getOverviewWidgets(
   MetricType metricType = MetricType.custom,
   List<PlanPeriod> planPeriods = const [],
   List<MeasurementChartEntry>? trend,
+  ChartType chartType = ChartType.auto,
 }) {
   return [
     Text(
@@ -42,6 +43,7 @@ List<Widget> getOverviewWidgets(
               unit,
               planPeriods: planPeriods,
               trend: trend,
+              chartType: chartType,
             ),
     ),
     if (avg.isNotEmpty) MeasurementOverallChangeWidget(avg.first, avg.last, unit),
@@ -58,7 +60,28 @@ List<Widget> getOverviewWidgetsSeries(
   BuildContext context, {
   MetricType metricType = MetricType.custom,
   String? mainChartTitle,
+  ChartType chartType = ChartType.auto,
 }) {
+  final title = mainChartTitle ?? AppLocalizations.of(context).chartAllTimeTitle(name);
+
+  // A heatmap is one grid over the whole range and needs its points per day,
+  // so none of what follows applies to it: condensing would collapse days into
+  // weeks, the extra 30-day chart is a window the grid already shows, and the
+  // legend names lines it does not draw
+  if (metricType.resolveChartType(chartType) == ChartType.heatmap) {
+    return getOverviewWidgets(
+      title,
+      entriesAll,
+      // No overall change either: it is the distance between two points of a
+      // line, which is not what the grid is about
+      const [],
+      unit,
+      context,
+      metricType: metricType,
+      chartType: chartType,
+    );
+  }
+
   final monthAgo = DateTime.now().subtract(const Duration(days: 30));
   // Condensed once and shared: the main chart draws these points directly
   // (condensing again is a no-op), and both charts show slices of the same
@@ -68,7 +91,7 @@ List<Widget> getOverviewWidgetsSeries(
   final trendAll = summed ? null : smoothedTrendline(points);
   return [
     ...getOverviewWidgets(
-      mainChartTitle ?? AppLocalizations.of(context).chartAllTimeTitle(name),
+      title,
       points,
       entries7dAvg,
       unit,
@@ -358,8 +381,20 @@ Widget buildChartForMetricType(
   String unit, {
   List<PlanPeriod> planPeriods = const [],
   List<MeasurementChartEntry>? trend,
+  ChartType chartType = ChartType.auto,
 }) {
-  if (metricType.isSummedPerDay) {
+  final summed = metricType.isSummedPerDay;
+
+  // A pick that does not fit the metric type falls back to the derived chart,
+  // which is also what a category configured on a newer client gets here
+  if (metricType.resolveChartType(chartType) == ChartType.heatmap) {
+    // The cells are days, so how a day's readings become one value has to be
+    // decided here: the summed types are a daily total, the sample types are
+    // repeated readings of the same thing and average
+    return MeasurementHeatmapWidgetFl(summed ? aggregatePerDay(raw) : averagePerDay(raw), unit);
+  }
+
+  if (summed) {
     return MeasurementBarChartWidgetFl(aggregatePerDay(raw), unit);
   }
 

@@ -19,6 +19,7 @@
 import 'package:drift/drift.dart';
 import 'package:powersync/powersync.dart' as ps;
 import 'package:wger/database/converters/json_map_converter.dart';
+import 'package:wger/database/converters/measurement_chart_type_converter.dart';
 import 'package:wger/database/converters/measurement_metric_type_converter.dart';
 import 'package:wger/database/converters/utc_datetime_converter.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
@@ -35,6 +36,10 @@ class MeasurementCategoryTable extends Table {
   TextColumn get unit => text()();
   TextColumn get metricType =>
       text().named('metric_type').map(const MeasurementMetricTypeConverter())();
+
+  /// Chart the user picked, NULL for the one derived from the metric type.
+  TextColumn get chartType =>
+      text().named('chart_type').nullable().map(const MeasurementChartTypeConverter())();
 
   /// Multi-value groups: parent category id (max. one level of nesting; only
   /// leaf categories carry entries).
@@ -55,6 +60,7 @@ const PowersyncMeasurementCategoryTable = ps.Table(
     ps.Column.text('name'),
     ps.Column.text('unit'),
     ps.Column.text('metric_type'),
+    ps.Column.text('chart_type'),
     ps.Column.text('parent_id'),
     ps.Column.integer('order'),
     // Postgres boolean; integer so the view yields 0/1, not the string '0'

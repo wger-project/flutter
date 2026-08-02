@@ -134,6 +134,7 @@ class EntriesList extends ConsumerWidget {
           context,
           metricType: category.metricType,
           mainChartTitle: range.chartTitle(i18n, name),
+          chartType: category.chartType,
         ),
         SizedBox(
           height: 300,

@@ -152,6 +152,60 @@ void main() {
 
       expect(find.byType(MeasurementBarChartWidgetFl), findsOneWidget);
     });
+
+    testWidgets('a heatmap override wins over the derived chart', (tester) async {
+      final widget = buildChartForMetricType(
+        MetricType.steps,
+        entries,
+        [],
+        'steps',
+        chartType: ChartType.heatmap,
+      );
+      await tester.pumpWidget(_wrapChart(widget));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(MeasurementHeatmapWidgetFl), findsOneWidget);
+      expect(find.byType(MeasurementBarChartWidgetFl), findsNothing);
+    });
+
+    testWidgets('a sample type keeps its line chart under a bar override', (tester) async {
+      // Bars are not offered for a sample type, and a value that does not fit
+      // falls back to the derived chart instead of being drawn anyway
+      final widget = buildChartForMetricType(
+        MetricType.custom,
+        entries,
+        [],
+        'cm',
+        chartType: ChartType.bar,
+      );
+      await tester.pumpWidget(_wrapChart(widget));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(MeasurementChartWidgetFl), findsOneWidget);
+    });
+
+    testWidgets('a heatmap keeps one point per day instead of condensing', (tester) async {
+      // Past ~200 points the line chart condenses into calendar buckets, which
+      // for a grid of days would collapse whole weeks into a single cell
+      final many = [
+        for (var i = 0; i < 300; i++)
+          MeasurementChartEntry(60 + i % 7, DateTime(2026, 1, 1).add(Duration(days: i))),
+      ];
+      final widget = buildChartForMetricType(
+        MetricType.custom,
+        many,
+        [],
+        'kg',
+        chartType: ChartType.heatmap,
+      );
+      await tester.pumpWidget(_wrapChart(widget));
+      await tester.pumpAndSettle();
+
+      final heatmap = tester.widget<MeasurementHeatmapWidgetFl>(
+        find.byType(MeasurementHeatmapWidgetFl),
+      );
+      expect(heatmap.days, hasLength(300));
+    });
   });
 
   group('group charts', () {

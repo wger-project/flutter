@@ -62,6 +62,41 @@ void main() {
     });
   });
 
+  group('ChartType', () {
+    test('fromWire maps null, the server default, to no override', () {
+      expect(ChartType.fromWire(null), ChartType.auto);
+    });
+
+    test('fromWire defaults to auto for a type this release does not know', () {
+      expect(ChartType.fromWire('sunburst'), ChartType.auto);
+    });
+
+    test('wireValue round-trips through fromWire for every case', () {
+      for (final type in ChartType.values) {
+        expect(ChartType.fromWire(type.wireValue), type);
+      }
+    });
+
+    test('the offered types follow the metric type', () {
+      expect(MetricType.steps.availableChartTypes, [ChartType.bar, ChartType.heatmap]);
+      expect(MetricType.custom.availableChartTypes, [ChartType.line, ChartType.heatmap]);
+
+      // a group is drawn by what its components are to each other
+      expect(MetricType.bloodPressure.availableChartTypes, isEmpty);
+    });
+
+    test('a type that does not fit falls back to the derived chart', () {
+      expect(MetricType.custom.resolveChartType(ChartType.bar), ChartType.line);
+      expect(MetricType.steps.resolveChartType(ChartType.line), ChartType.bar);
+      expect(MetricType.custom.resolveChartType(ChartType.auto), ChartType.line);
+    });
+
+    test('a type that fits is kept', () {
+      expect(MetricType.custom.resolveChartType(ChartType.heatmap), ChartType.heatmap);
+      expect(MetricType.steps.resolveChartType(ChartType.bar), ChartType.bar);
+    });
+  });
+
   group('MetricType', () {
     test('fromWire maps a known wire value to its enum case', () {
       expect(MetricType.fromWire('body_fat'), MetricType.bodyFat);

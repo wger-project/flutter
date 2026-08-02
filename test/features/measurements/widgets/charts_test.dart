@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:math';
+
 import 'package:collection/collection.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
@@ -595,6 +597,159 @@ void main() {
         DateTime(2026, 1, 3),
       ]);
       expect(result.map((e) => e.value), [15, 20, 30]);
+    });
+  });
+
+  group('averagePerDay', () {
+    test('returns an empty list for no entries', () {
+      expect(averagePerDay([]), isEmpty);
+    });
+
+    test('averages entries sharing a calendar day into one point', () {
+      final result = averagePerDay([
+        entry(80, DateTime(2026, 1, 1, 8)),
+        entry(82, DateTime(2026, 1, 1, 20)),
+      ]);
+
+      expect(result.single.value, 81);
+      expect(result.single.date, DateTime(2026, 1, 1));
+    });
+
+    test('keeps separate days apart and sorts them ascending', () {
+      final result = averagePerDay([
+        entry(30, DateTime(2026, 1, 3)),
+        entry(10, DateTime(2026, 1, 1)),
+        entry(20, DateTime(2026, 1, 2)),
+      ]);
+
+      expect(result.map((e) => e.date), [
+        DateTime(2026, 1, 1),
+        DateTime(2026, 1, 2),
+        DateTime(2026, 1, 3),
+      ]);
+      expect(result.map((e) => e.value), [10, 20, 30]);
+    });
+  });
+
+  group('buildHeatmapGrid', () {
+    // 2 March 2026 is a Monday, 18 March a Wednesday
+    final monday = DateTime(2026, 3, 2);
+    final wednesday = DateTime(2026, 3, 18);
+
+    test('starts on the Monday of the oldest week and ends with today', () {
+      final grid = buildHeatmapGrid(
+        [entry(10, monday), entry(20, wednesday)],
+        today: wednesday,
+      );
+
+      expect(grid.start, monday);
+      expect(grid.weeks, 3);
+      expect(grid.dayAt(0, 0), monday);
+      expect(grid.dayAt(2, 2), wednesday);
+    });
+
+    test('leaves days without a measurement empty rather than zero', () {
+      final grid = buildHeatmapGrid([entry(10, monday)], today: monday);
+
+      expect(grid.valueAt(0, 0), 10);
+      expect(grid.valueAt(0, 1), isNull);
+    });
+
+    test('runs up to today, so a stretch without measurements stays visible', () {
+      final grid = buildHeatmapGrid([entry(10, monday)], today: wednesday);
+
+      expect(grid.weeks, 3);
+      expect(grid.valueAt(2, 2), isNull);
+    });
+
+    test('caps a long history at a year of week columns', () {
+      final grid = buildHeatmapGrid(
+        [entry(10, DateTime(2020, 1, 1)), entry(20, wednesday)],
+        today: wednesday,
+      );
+
+      expect(grid.weeks, heatmapMaxWeeks);
+      expect(grid.dayAt(grid.weeks - 1, 2), wednesday);
+    });
+
+    test('anchors on the last measurement when the history ended long ago', () {
+      // Anchoring on today would put the whole history outside the grid and
+      // draw an empty one
+      final grid = buildHeatmapGrid(
+        [entry(10, monday), entry(20, wednesday)],
+        today: DateTime(2028, 1, 1),
+      );
+
+      expect(grid.dayAt(grid.weeks - 1, 2), wednesday);
+      expect(grid.valueAt(grid.weeks - 1, 2), 20);
+    });
+
+    test('takes the top of the colour scale only from the days it shows', () {
+      // A spike outside the window would scale the colours of every visible
+      // cell without being visible itself, washing out the whole grid
+      final grid = buildHeatmapGrid(
+        [entry(45000, DateTime(2024, 1, 3)), entry(8000, wednesday)],
+        today: wednesday,
+      );
+
+      expect(grid.maxValue, 8000);
+      expect(grid.values.containsKey(DateTime(2024, 1, 3)), isFalse);
+    });
+
+    test('takes the top of the colour scale from the largest value', () {
+      final grid = buildHeatmapGrid(
+        [entry(10, monday), entry(8000, wednesday)],
+        today: wednesday,
+      );
+
+      expect(grid.maxValue, 8000);
+    });
+
+    test('is a full grid of the last year when there is nothing to show', () {
+      final grid = buildHeatmapGrid([]);
+
+      expect(grid.weeks, heatmapMaxWeeks);
+      expect(grid.maxValue, 0);
+      expect(grid.valueAt(0, 0), isNull);
+    });
+  });
+
+  group('MeasurementHeatmapWidgetFl', () {
+    testWidgets('renders without error for empty entries', (tester) async {
+      await tester.pumpWidget(_wrap(const MeasurementHeatmapWidgetFl([], 'steps')));
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('reads out the day that was tapped', (tester) async {
+      final today = DateTime.now();
+      final day = DateTime(today.year, today.month, today.day);
+      await tester.pumpWidget(_wrap(MeasurementHeatmapWidgetFl([entry(500, day)], 'steps')));
+      await tester.pumpAndSettle();
+
+      // A single day is a one-column grid, so its cell sits in the row of its
+      // weekday. The read-out is what the tooltip is on the other charts.
+      expect(buildHeatmapGrid([entry(500, day)]).weeks, 1);
+
+      // Mirrors the widget's own layout: the read-out line above the grid, the
+      // weekday labels to its left, the month labels on top, and the square
+      // cells centred in what is left
+      const readoutHeight = 20.0;
+      const labelWidth = 22.0;
+      const labelHeight = 12.0;
+      final box = tester.getRect(find.byType(MeasurementHeatmapWidgetFl));
+      final gridHeight = box.height - readoutHeight - labelHeight;
+      final step = min(box.width - labelWidth, gridHeight / DateTime.daysPerWeek);
+      final top =
+          box.top + readoutHeight + labelHeight + (gridHeight - step * DateTime.daysPerWeek) / 2;
+
+      await tester.tapAt(
+        Offset(box.left + labelWidth + step / 2, top + step * (day.weekday - 1) + step / 2),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('500'), findsOneWidget);
     });
   });
 

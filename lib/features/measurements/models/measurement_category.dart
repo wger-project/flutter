@@ -65,6 +65,46 @@ class MetricLimits {
   bool contains(num value) => value >= min && value <= max;
 }
 
+/// Chart a category is drawn as.
+///
+/// The wire values mirror the server's ChartType, where the override is a
+/// nullable column: [ChartType.auto] is that null, i.e. "derive the chart from
+/// the metric type", which is what every category does unless the user picked
+/// something else. Only the shapes that are a matter of taste are offered; a
+/// floating bar (two components) and a stacked bar (a summed group) follow from
+/// what the group is and are not choices.
+enum ChartType {
+  auto(null),
+  line('line'),
+  bar('bar'),
+  heatmap('heatmap');
+
+  final String? wireValue;
+  const ChartType(this.wireValue);
+
+  /// Looks up an enum case by its Django wire value.
+  ///
+  /// Defaults to [ChartType.auto] for an unknown value, which is what keeps a
+  /// chart type added after this release from leaving the chart blank.
+  static ChartType fromWire(String? value) => ChartType.values.firstWhere(
+    (e) => e.wireValue == value,
+    orElse: () => ChartType.auto,
+  );
+}
+
+extension MeasurementChartTypeL10n on ChartType {
+  /// Localized human-readable label for the picker.
+  String localized(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return switch (this) {
+      ChartType.auto => l10n.chartTypeAuto,
+      ChartType.line => l10n.chartTypeLine,
+      ChartType.bar => l10n.chartTypeBar,
+      ChartType.heatmap => l10n.chartTypeHeatmap,
+    };
+  }
+}
+
 /// The wire values mirror the Django API field names (e.g., 'body_weight', 'heart_rate'),
 enum MetricType {
   custom('custom'),
@@ -111,6 +151,33 @@ enum MetricType {
     MetricType.sleepAwake => true,
     _ => false,
   };
+
+  /// The chart a category of this type is drawn as when the user picked none.
+  ///
+  /// Summed types are one value per day and are drawn as that day's bar,
+  /// everything else is a series of samples and gets the line chart. A group
+  /// has no default here: its chart follows from what its components are to
+  /// each other, see buildGroupChart.
+  ChartType get defaultChartType => isSummedPerDay ? ChartType.bar : ChartType.line;
+
+  /// The chart types a category of this type may be drawn as, i.e. what the
+  /// picker offers on top of [ChartType.auto].
+  ///
+  /// The heatmap is the one alternative that fits every leaf type: it answers
+  /// how regularly rather than how much, and it is the only chart of the set
+  /// where a missing day is visible instead of being spanned by a line. A
+  /// group is left out, its chart is structural rather than a preference.
+  List<ChartType> get availableChartTypes =>
+      isGroup ? const [] : [defaultChartType, ChartType.heatmap];
+
+  /// The chart a category of this type is drawn as, given what the user picked.
+  ///
+  /// A pick that does not fit the type falls back to the derived default
+  /// instead of being refused: the server stores the string without judging it,
+  /// so this is also what keeps a category configured on a newer client from
+  /// showing nothing here.
+  ChartType resolveChartType(ChartType picked) =>
+      availableChartTypes.contains(picked) ? picked : defaultChartType;
 
   /// `true` for metric types that are reserved for the official categories
   /// the server manages: users cannot create categories of these types.
@@ -269,6 +336,11 @@ class MeasurementCategory with _$MeasurementCategory {
   @override
   final MetricType metricType;
 
+  /// Chart the user picked for this category, [ChartType.auto] (the server's
+  /// null) for the one derived from [metricType].
+  @override
+  final ChartType chartType;
+
   /// Multi-value groups (e.g. blood pressure): id of the parent category, one
   /// child per component. Max. one level of nesting; only leaf categories
   /// (no children) carry entries.
@@ -295,6 +367,7 @@ class MeasurementCategory with _$MeasurementCategory {
     this.unit = '',
     this.entries = const [],
     this.metricType = MetricType.custom,
+    this.chartType = ChartType.auto,
     this.parentId,
     this.order = 0,
     this.isOfficial = false,
@@ -323,6 +396,7 @@ class MeasurementCategory with _$MeasurementCategory {
       name: Value(name),
       unit: Value(unit),
       metricType: Value(metricType),
+      chartType: Value(chartType),
       parentId: Value(parentId),
       order: Value(order),
       isOfficial: Value(isOfficial),

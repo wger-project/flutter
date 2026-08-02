@@ -4719,6 +4719,17 @@ class $MeasurementCategoryTableTable extends MeasurementCategoryTable
       ).withConverter<MetricType>(
         $MeasurementCategoryTableTable.$convertermetricType,
       );
+  @override
+  late final GeneratedColumnWithTypeConverter<ChartType, String> chartType =
+      GeneratedColumn<String>(
+        'chart_type',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      ).withConverter<ChartType>(
+        $MeasurementCategoryTableTable.$converterchartType,
+      );
   static const VerificationMeta _parentIdMeta = const VerificationMeta(
     'parentId',
   );
@@ -4764,6 +4775,7 @@ class $MeasurementCategoryTableTable extends MeasurementCategoryTable
     name,
     unit,
     metricType,
+    chartType,
     parentId,
     order,
     isOfficial,
@@ -4844,6 +4856,12 @@ class $MeasurementCategoryTableTable extends MeasurementCategoryTable
           data['${effectivePrefix}metric_type'],
         )!,
       ),
+      chartType: $MeasurementCategoryTableTable.$converterchartType.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}chart_type'],
+        ),
+      ),
       parentId: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}parent_id'],
@@ -4866,6 +4884,8 @@ class $MeasurementCategoryTableTable extends MeasurementCategoryTable
 
   static TypeConverter<MetricType, String> $convertermetricType =
       const MeasurementMetricTypeConverter();
+  static TypeConverter<ChartType, String?> $converterchartType =
+      const MeasurementChartTypeConverter();
 }
 
 class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCategory> {
@@ -4873,6 +4893,7 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
   final Value<String> name;
   final Value<String> unit;
   final Value<MetricType> metricType;
+  final Value<ChartType> chartType;
   final Value<String?> parentId;
   final Value<int> order;
   final Value<bool> isOfficial;
@@ -4882,6 +4903,7 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
     this.name = const Value.absent(),
     this.unit = const Value.absent(),
     this.metricType = const Value.absent(),
+    this.chartType = const Value.absent(),
     this.parentId = const Value.absent(),
     this.order = const Value.absent(),
     this.isOfficial = const Value.absent(),
@@ -4892,6 +4914,7 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
     required String name,
     required String unit,
     required MetricType metricType,
+    this.chartType = const Value.absent(),
     this.parentId = const Value.absent(),
     this.order = const Value.absent(),
     this.isOfficial = const Value.absent(),
@@ -4904,6 +4927,7 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
     Expression<String>? name,
     Expression<String>? unit,
     Expression<String>? metricType,
+    Expression<String>? chartType,
     Expression<String>? parentId,
     Expression<int>? order,
     Expression<bool>? isOfficial,
@@ -4914,6 +4938,7 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
       if (name != null) 'name': name,
       if (unit != null) 'unit': unit,
       if (metricType != null) 'metric_type': metricType,
+      if (chartType != null) 'chart_type': chartType,
       if (parentId != null) 'parent_id': parentId,
       if (order != null) 'order': order,
       if (isOfficial != null) 'is_official': isOfficial,
@@ -4926,6 +4951,7 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
     Value<String>? name,
     Value<String>? unit,
     Value<MetricType>? metricType,
+    Value<ChartType>? chartType,
     Value<String?>? parentId,
     Value<int>? order,
     Value<bool>? isOfficial,
@@ -4936,6 +4962,7 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
       name: name ?? this.name,
       unit: unit ?? this.unit,
       metricType: metricType ?? this.metricType,
+      chartType: chartType ?? this.chartType,
       parentId: parentId ?? this.parentId,
       order: order ?? this.order,
       isOfficial: isOfficial ?? this.isOfficial,
@@ -4962,6 +4989,13 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
         ),
       );
     }
+    if (chartType.present) {
+      map['chart_type'] = Variable<String>(
+        $MeasurementCategoryTableTable.$converterchartType.toSql(
+          chartType.value,
+        ),
+      );
+    }
     if (parentId.present) {
       map['parent_id'] = Variable<String>(parentId.value);
     }
@@ -4984,6 +5018,7 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
           ..write('name: $name, ')
           ..write('unit: $unit, ')
           ..write('metricType: $metricType, ')
+          ..write('chartType: $chartType, ')
           ..write('parentId: $parentId, ')
           ..write('order: $order, ')
           ..write('isOfficial: $isOfficial, ')
@@ -16278,6 +16313,7 @@ typedef $$MeasurementCategoryTableTableCreateCompanionBuilder =
       required String name,
       required String unit,
       required MetricType metricType,
+      Value<ChartType> chartType,
       Value<String?> parentId,
       Value<int> order,
       Value<bool> isOfficial,
@@ -16289,6 +16325,7 @@ typedef $$MeasurementCategoryTableTableUpdateCompanionBuilder =
       Value<String> name,
       Value<String> unit,
       Value<MetricType> metricType,
+      Value<ChartType> chartType,
       Value<String?> parentId,
       Value<int> order,
       Value<bool> isOfficial,
@@ -16379,6 +16416,11 @@ class $$MeasurementCategoryTableTableFilterComposer
         builder: (column) => ColumnWithTypeConverterFilters(column),
       );
 
+  ColumnWithTypeConverterFilters<ChartType, ChartType, String> get chartType => $composableBuilder(
+    column: $table.chartType,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+
   ColumnFilters<int> get order => $composableBuilder(
     column: $table.order,
     builder: (column) => ColumnFilters(column),
@@ -16465,6 +16507,11 @@ class $$MeasurementCategoryTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get chartType => $composableBuilder(
+    column: $table.chartType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get order => $composableBuilder(
     column: $table.order,
     builder: (column) => ColumnOrderings(column),
@@ -16520,6 +16567,9 @@ class $$MeasurementCategoryTableTableAnnotationComposer
     column: $table.metricType,
     builder: (column) => column,
   );
+
+  GeneratedColumnWithTypeConverter<ChartType, String> get chartType =>
+      $composableBuilder(column: $table.chartType, builder: (column) => column);
 
   GeneratedColumn<int> get order =>
       $composableBuilder(column: $table.order, builder: (column) => column);
@@ -16619,6 +16669,7 @@ class $$MeasurementCategoryTableTableTableManager
                 Value<String> name = const Value.absent(),
                 Value<String> unit = const Value.absent(),
                 Value<MetricType> metricType = const Value.absent(),
+                Value<ChartType> chartType = const Value.absent(),
                 Value<String?> parentId = const Value.absent(),
                 Value<int> order = const Value.absent(),
                 Value<bool> isOfficial = const Value.absent(),
@@ -16628,6 +16679,7 @@ class $$MeasurementCategoryTableTableTableManager
                 name: name,
                 unit: unit,
                 metricType: metricType,
+                chartType: chartType,
                 parentId: parentId,
                 order: order,
                 isOfficial: isOfficial,
@@ -16639,6 +16691,7 @@ class $$MeasurementCategoryTableTableTableManager
                 required String name,
                 required String unit,
                 required MetricType metricType,
+                Value<ChartType> chartType = const Value.absent(),
                 Value<String?> parentId = const Value.absent(),
                 Value<int> order = const Value.absent(),
                 Value<bool> isOfficial = const Value.absent(),
@@ -16648,6 +16701,7 @@ class $$MeasurementCategoryTableTableTableManager
                 name: name,
                 unit: unit,
                 metricType: metricType,
+                chartType: chartType,
                 parentId: parentId,
                 order: order,
                 isOfficial: isOfficial,
