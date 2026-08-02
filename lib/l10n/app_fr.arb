@@ -1159,6 +1159,7 @@
     "metricSleepDeep": "Sommeil profond",
     "metricSleepRem": "Sommeil paradoxal",
     "metricSleepAwake": "Éveillé",
+    "noDataAvailable": "Aucune donnée disponible",
     "partOfGroup": "Fait partie du groupe",
     "noGroup": "Aucun groupe",
     "healthSync": "Synchronisation santé",

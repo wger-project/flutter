@@ -154,6 +154,159 @@ void main() {
     });
   });
 
+  group('group charts', () {
+    MeasurementEntry entry(String categoryId, DateTime date, num value) =>
+        MeasurementEntry(categoryId: categoryId, date: date, value: value, notes: '');
+
+    /// A sleep group as the importer writes it: the total plus its stages.
+    MeasurementCategory sleepGroup({bool withStages = true}) => MeasurementCategory(
+      id: 'g',
+      name: 'Sleep',
+      unit: 'min',
+      metricType: MetricType.sleep,
+      children: [
+        MeasurementCategory(
+          id: 'total',
+          name: 'Total sleep',
+          unit: 'min',
+          metricType: MetricType.sleepTotal,
+          parentId: 'g',
+          entries: [entry('total', DateTime(2026, 1, 2), 480)],
+        ),
+        MeasurementCategory(
+          id: 'deep',
+          name: 'Deep sleep',
+          unit: 'min',
+          metricType: MetricType.sleepDeep,
+          parentId: 'g',
+          order: 1,
+          entries: withStages ? [entry('deep', DateTime(2026, 1, 2), 90)] : const [],
+        ),
+        MeasurementCategory(
+          id: 'rem',
+          name: 'REM sleep',
+          unit: 'min',
+          metricType: MetricType.sleepRem,
+          parentId: 'g',
+          order: 2,
+          entries: withStages ? [entry('rem', DateTime(2026, 1, 2), 60)] : const [],
+        ),
+      ],
+    );
+
+    MeasurementCategory bloodPressure() => MeasurementCategory(
+      id: 'bp',
+      name: 'Blood pressure',
+      unit: 'mmHg',
+      metricType: MetricType.bloodPressure,
+      children: [
+        MeasurementCategory(
+          id: 'sys',
+          name: 'Systolic',
+          unit: 'mmHg',
+          metricType: MetricType.bloodPressureSystolic,
+          parentId: 'bp',
+          entries: [entry('sys', DateTime(2026, 1, 2, 8), 120)],
+        ),
+        MeasurementCategory(
+          id: 'dia',
+          name: 'Diastolic',
+          unit: 'mmHg',
+          metricType: MetricType.bloodPressureDiastolic,
+          parentId: 'bp',
+          order: 1,
+          entries: [entry('dia', DateTime(2026, 1, 2, 8), 80)],
+        ),
+      ],
+    );
+
+    test('the roll-up component is left out of the stack', () {
+      // Total sleep covers the stages, so stacking it would count the night
+      // twice
+      expect(
+        stackableComponents(sleepGroup()).map((c) => c.metricType),
+        [MetricType.sleepDeep, MetricType.sleepRem],
+      );
+      expect(stackableComponents(bloodPressure()), hasLength(2));
+    });
+
+    test('stacked entries carry one value per component and day', () {
+      final components = stackableComponents(sleepGroup());
+      final stacked = groupStackedEntries(components);
+
+      expect(stacked, hasLength(1));
+      expect(stacked.single.date, DateTime(2026, 1, 2));
+      expect(stacked.single.values, [90, 60]);
+      expect(stacked.single.total, 150);
+    });
+
+    test('several entries of one day add up within their component', () {
+      // A nap next to the night: the bar shows the day, not the segment
+      final group = MeasurementCategory(
+        id: 'g',
+        name: 'Sleep',
+        unit: 'min',
+        metricType: MetricType.sleep,
+        children: [
+          MeasurementCategory(
+            id: 'deep',
+            name: 'Deep sleep',
+            unit: 'min',
+            metricType: MetricType.sleepDeep,
+            parentId: 'g',
+            entries: [
+              entry('deep', DateTime(2026, 1, 2, 3), 90),
+              entry('deep', DateTime(2026, 1, 2, 14), 20),
+            ],
+          ),
+        ],
+      );
+
+      expect(groupStackedEntries(group.children).single.values, [110]);
+    });
+
+    test('readings pair the components on their shared timestamp', () {
+      final readings = groupReadings(bloodPressure());
+
+      expect(readings, hasLength(1));
+      expect(readings.single.$1, DateTime(2026, 1, 2, 8));
+      expect(readings.single.$2, {'Systolic': 120, 'Diastolic': 80});
+    });
+
+    testWidgets('a summed group stacks its components', (tester) async {
+      await tester.pumpWidget(
+        _wrapChart(Builder(builder: (ctx) => buildGroupChart(ctx, sleepGroup()))),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.byType(MeasurementStackedBarChartWidgetFl), findsOneWidget);
+    });
+
+    testWidgets('a two-component group is a floating bar per reading', (tester) async {
+      await tester.pumpWidget(
+        _wrapChart(Builder(builder: (ctx) => buildGroupChart(ctx, bloodPressure()))),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.byType(MeasurementBarChartWidgetFl), findsOneWidget);
+      expect(find.byType(MeasurementStackedBarChartWidgetFl), findsNothing);
+    });
+
+    testWidgets('without stage data the group falls back to lines', (tester) async {
+      // Only the total reported, so there is nothing to stack. Falling through
+      // to the line chart keeps the card from going blank while data exists
+      await tester.pumpWidget(
+        _wrapChart(
+          Builder(builder: (ctx) => buildGroupChart(ctx, sleepGroup(withStages: false))),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.byType(MeasurementStackedBarChartWidgetFl), findsNothing);
+      expect(find.byType(MeasurementChartWidgetFl), findsOneWidget);
+    });
+  });
+
   group('getOverviewWidgets', () {
     testWidgets('empty raw shows no-data placeholder', (tester) async {
       await _pumpWidgetList(tester, (ctx) => getOverviewWidgets('Test', [], [], 'cm', ctx));

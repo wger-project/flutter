@@ -784,6 +784,184 @@ class _MeasurementBarChartWidgetFlState extends State<MeasurementBarChartWidgetF
   }
 }
 
+/// One stacked bar: a day, and the value each component contributed to it.
+///
+/// [values] runs parallel to the components the chart was given, a null
+/// standing for a component that has nothing on that day.
+class MeasurementStackedEntry {
+  const MeasurementStackedEntry(this.date, this.values);
+
+  final DateTime date;
+  final List<num?> values;
+
+  /// The bar's full height, i.e. what the components add up to.
+  num get total => values.fold(0, (sum, value) => sum + (value ?? 0));
+}
+
+/// Stacked bar chart for a group whose components are parts of one whole, e.g.
+/// the sleep stages of a night.
+///
+/// One bar per day, split into a segment per component in the components' own
+/// order, so the bar's height is the night and its segments are how it was
+/// spent. Colours come from [componentColor] by position, which is what ties a
+/// segment to its legend entry.
+class MeasurementStackedBarChartWidgetFl extends StatefulWidget {
+  final List<MeasurementStackedEntry> _entries;
+  final List<String> _labels;
+  final String _unit;
+
+  const MeasurementStackedBarChartWidgetFl(this._entries, this._labels, this._unit);
+
+  @override
+  State<MeasurementStackedBarChartWidgetFl> createState() =>
+      _MeasurementStackedBarChartWidgetFlState();
+}
+
+class _MeasurementStackedBarChartWidgetFlState extends State<MeasurementStackedBarChartWidgetFl> {
+  /// Number of dates to label on the x axis
+  static const X_LABEL_COUNT = 4;
+
+  /// Widest a single bar gets, for charts with only a handful of entries
+  static const MAX_BAR_WIDTH = 12.0;
+
+  @override
+  Widget build(BuildContext context) {
+    return AspectRatio(
+      aspectRatio: 1.70,
+      child: Padding(
+        padding: const EdgeInsets.all(4),
+        child: LayoutBuilder(
+          builder: (context, constraints) => BarChart(mainData(constraints.maxWidth)),
+        ),
+      ),
+    );
+  }
+
+  /// The whole bar with its parts, since a single segment says little without
+  /// the night it belongs to.
+  BarTouchData tooltipData() {
+    return BarTouchData(
+      touchTooltipData: BarTouchTooltipData(
+        getTooltipColor: (group) => Theme.of(context).colorScheme.primaryContainer,
+        getTooltipItem: (group, groupIndex, rod, rodIndex) {
+          if (groupIndex < 0 || groupIndex >= widget._entries.length) {
+            return null;
+          }
+          final numberFormat = NumberFormat.decimalPattern(
+            Localizations.localeOf(context).toString(),
+          );
+          final entry = widget._entries[groupIndex];
+          final dateStr = DateFormat.Md(
+            Localizations.localeOf(context).languageCode,
+          ).format(entry.date);
+          final parts = [
+            for (final (index, value) in entry.values.indexed)
+              if (value != null) '${widget._labels[index]}: ${numberFormat.format(value)}',
+          ];
+
+          return BarTooltipItem(
+            '$dateStr: ${numberFormat.format(entry.total)} ${widget._unit}'
+            '${parts.isEmpty ? '' : '\n${parts.join('\n')}'}',
+            TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer),
+          );
+        },
+      ),
+    );
+  }
+
+  BarChartData mainData(double availableWidth) {
+    final String locale = Localizations.localeOf(context).toString();
+    final NumberFormat numberFormat = NumberFormat.decimalPattern(locale);
+
+    final barWidth = widget._entries.isEmpty
+        ? MAX_BAR_WIDTH
+        : (availableWidth / widget._entries.length * 0.7).clamp(1.0, MAX_BAR_WIDTH);
+    final labelStep = max(1, (widget._entries.length / X_LABEL_COUNT).ceil());
+    final labelOffset = labelStep ~/ 2;
+    final spansYears =
+        widget._entries.isNotEmpty &&
+        widget._entries.first.date.year != widget._entries.last.date.year;
+
+    return BarChartData(
+      barTouchData: tooltipData(),
+      gridData: FlGridData(
+        show: true,
+        drawVerticalLine: false,
+        getDrawingHorizontalLine: (value) {
+          return FlLine(color: Theme.of(context).colorScheme.primaryContainer, strokeWidth: 1);
+        },
+      ),
+      titlesData: FlTitlesData(
+        show: true,
+        rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+        topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+        bottomTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: true,
+            getTitlesWidget: (value, meta) {
+              final index = value.toInt();
+              if (index < 0 || index >= widget._entries.length) {
+                return const Text('');
+              }
+              if ((index - labelOffset) % labelStep != 0) {
+                return const Text('');
+              }
+              final DateTime date = widget._entries[index].date;
+              if (spansYears) {
+                return Text(localizedDate(context).format(date));
+              }
+              return Text(DateFormat.Md(Localizations.localeOf(context).languageCode).format(date));
+            },
+          ),
+        ),
+        leftTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: true,
+            reservedSize: 65,
+            getTitlesWidget: (value, meta) {
+              if (value == meta.min || value == meta.max) {
+                return const Text('');
+              }
+              return _YAxisLabel('${numberFormat.format(value)} ${widget._unit}');
+            },
+          ),
+        ),
+      ),
+      borderData: FlBorderData(
+        show: true,
+        border: Border.all(color: Theme.of(context).colorScheme.primaryContainer),
+      ),
+      barGroups: widget._entries.asMap().entries.map((e) {
+        // fl_chart stacks by absolute offsets rather than by segment heights,
+        // so each part is placed on top of what came before it
+        var offset = 0.0;
+        final stack = <BarChartRodStackItem>[];
+        for (final (index, value) in e.value.values.indexed) {
+          if (value == null || value <= 0) {
+            continue;
+          }
+          stack.add(
+            BarChartRodStackItem(offset, offset + value.toDouble(), componentColor(context, index)),
+          );
+          offset += value.toDouble();
+        }
+
+        return BarChartGroupData(
+          x: e.key,
+          barRods: [
+            BarChartRodData(
+              toY: offset,
+              width: barWidth,
+              rodStackItems: stack,
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(2)),
+            ),
+          ],
+        );
+      }).toList(),
+    );
+  }
+}
+
 /// Produces a smoothed trendline via an Exponential Moving Average (EMA),
 /// seeded with the first data point. A larger [period] tracks the raw values
 /// more loosely (smoother, more lag).

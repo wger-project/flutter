@@ -71,6 +71,40 @@ MeasurementCategory _tripleGroup() {
   return testMeasurementCategoryBloodPressure.copyWith(children: children);
 }
 
+/// A sleep group: the total plus two stages, all on the same night
+MeasurementCategory _sleepGroup() {
+  MeasurementCategory child(String id, String name, MetricType type, int order, num value) =>
+      MeasurementCategory(
+        id: id,
+        name: name,
+        unit: 'min',
+        metricType: type,
+        parentId: 'sleep',
+        order: order,
+        entries: [
+          MeasurementEntry(
+            id: 'e-$id',
+            categoryId: id,
+            date: DateTime(2026, 1, 2),
+            value: value,
+            notes: '',
+          ),
+        ],
+      );
+
+  return MeasurementCategory(
+    id: 'sleep',
+    name: 'Sleep',
+    unit: 'min',
+    metricType: MetricType.sleep,
+    children: [
+      child('total', 'Total sleep', MetricType.sleepTotal, 0, 480),
+      child('deep', 'Deep sleep', MetricType.sleepDeep, 1, 90),
+      child('rem', 'REM sleep', MetricType.sleepRem, 2, 60),
+    ],
+  );
+}
+
 void main() {
   group('CategoriesCard group card', () {
     testWidgets('shows one ListTile per child with latest reading', (tester) async {
@@ -166,6 +200,36 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byIcon(Icons.add), findsOneWidget);
+    });
+
+    testWidgets('the group itself can be opened, like any other category', (tester) async {
+      await tester.pumpWidget(_card(_bpGroup(withEntries: true)));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Go to detail page'), findsOneWidget);
+    });
+
+    testWidgets('sleep stacks its stages into one bar per night', (tester) async {
+      await tester.pumpWidget(_card(_sleepGroup()));
+      await tester.pumpAndSettle();
+
+      final groups = tester.widget<BarChart>(find.byType(BarChart)).data.barGroups;
+      expect(groups, hasLength(1));
+
+      // The stages stack, the total does not: it already covers them
+      final rod = groups.single.barRods.single;
+      expect(rod.rodStackItems.map((s) => s.toY - s.fromY), [90, 60]);
+      expect(rod.toY, 150);
+    });
+
+    testWidgets('the roll-up row gets no colour dot', (tester) async {
+      await tester.pumpWidget(_card(_sleepGroup()));
+      await tester.pumpAndSettle();
+
+      // Total sleep is no segment of the stack, so no colour identifies it
+      final tiles = tester.widgetList<ListTile>(find.byType(ListTile)).toList();
+      expect(tiles.first.leading, isNull);
+      expect(tiles.skip(1).every((t) => t.leading != null), isTrue);
     });
   });
 

@@ -134,7 +134,11 @@ class _MeasurementEntriesScreenState extends ConsumerState<MeasurementEntriesScr
                 FormScreen.routeName,
                 arguments: FormScreenArguments(
                   AppLocalizations.of(context).newEntry,
-                  MeasurementEntryForm(_categoryId),
+                  // A group holds no entries itself: one reading is a value per
+                  // component, entered in one go
+                  category.isGroup
+                      ? GroupMeasurementEntryForm(category)
+                      : MeasurementEntryForm(_categoryId),
                 ),
               );
             },

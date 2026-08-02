@@ -24,6 +24,7 @@ import 'package:mockito/mockito.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/measurement_entry.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
+import 'package:wger/features/measurements/widgets/charts.dart';
 import 'package:wger/features/measurements/widgets/entries.dart';
 import 'package:wger/features/nutrition/providers/ingredient_repository.dart';
 import 'package:wger/features/nutrition/providers/nutrition_repository.dart';
@@ -64,16 +65,7 @@ void main() {
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
-          body: SingleChildScrollView(
-            child: EntriesList(
-              MeasurementCategory(
-                id: category.id,
-                name: category.name,
-                unit: category.unit,
-                entries: category.entries,
-              ),
-            ),
-          ),
+          body: SingleChildScrollView(child: EntriesList(category)),
         ),
       ),
     );
@@ -95,5 +87,52 @@ void main() {
     // Only the manual entry has the menu, the imported one carries the badge
     expect(find.byTooltip('Show menu'), findsOneWidget);
     expect(find.byIcon(Icons.monitor_heart_outlined), findsOneWidget);
+  });
+
+  testWidgets('A group charts its components and lists the readings', (
+    WidgetTester tester,
+  ) async {
+    // The list defaults to the last three months, so a fixed date would fall
+    // out of the range as time passes
+    final night = DateTime.now().subtract(const Duration(days: 1));
+    MeasurementCategory child(String id, String name, MetricType type, int order, num value) =>
+        MeasurementCategory(
+          id: id,
+          name: name,
+          unit: 'min',
+          metricType: type,
+          parentId: 'sleep',
+          order: order,
+          entries: [
+            MeasurementEntry(
+              id: 'e-$id',
+              categoryId: id,
+              date: night,
+              value: value,
+              notes: '',
+            ),
+          ],
+        );
+    final group = MeasurementCategory(
+      id: 'sleep',
+      name: 'Sleep',
+      unit: 'min',
+      metricType: MetricType.sleep,
+      children: [
+        child('total', 'Total sleep', MetricType.sleepTotal, 0, 480),
+        child('deep', 'Deep sleep', MetricType.sleepDeep, 1, 90),
+      ],
+    );
+
+    await tester.pumpWidget(createEntriesList(group));
+    await tester.pumpAndSettle();
+
+    // The group holds no entries itself, so its own list would be empty: it
+    // shows the components' readings instead, the roll-up leading
+    expect(find.byType(MeasurementStackedBarChartWidgetFl), findsOneWidget);
+    expect(find.text('480 min'), findsOneWidget);
+    expect(find.textContaining('Deep sleep 90'), findsOneWidget);
+    // Each component is a way into its own screen
+    expect(find.byIcon(Icons.chevron_right), findsNWidgets(2));
   });
 }

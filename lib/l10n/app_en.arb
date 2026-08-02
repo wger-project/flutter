@@ -649,6 +649,10 @@
   "@metricSleep": {
     "description": "Label for sleep duration measurement"
   },
+  "noDataAvailable": "No data available",
+  "@noDataAvailable": {
+    "description": "Shown in place of a chart when the category has no entries in the selected range"
+  },
   "metricSleepTotal": "Total sleep",
   "@metricSleepTotal": {
     "description": "Label for the total time asleep in a night, all sleep stages together"

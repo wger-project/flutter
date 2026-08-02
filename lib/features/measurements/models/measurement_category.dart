@@ -132,6 +132,11 @@ enum MetricType {
   /// The components of this group, in group order; empty for every other type
   List<(MetricType, String)> get components => _groupComponents[this] ?? const [];
 
+  /// `true` for the component that rolls its siblings up instead of being one
+  /// part next to them. Total sleep already covers the stages beside it, so a
+  /// stacked chart has to leave it out or it counts every night twice.
+  bool get isGroupTotal => this == MetricType.sleepTotal;
+
   /// `true` for the types whose category id is derived instead of random,
   /// see [deterministicCategoryId]. Body weight is excluded: the server
   /// creates that category itself and the app looks it up by [isOfficial].

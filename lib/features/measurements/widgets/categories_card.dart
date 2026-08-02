@@ -142,20 +142,20 @@ class CategoriesCard extends StatelessWidget {
   /// chart, then one row per component with its latest reading; new readings
   /// are entered for all components at once.
   Widget _buildGroupCard(BuildContext context) {
-    // Two components are one reading with a low and a high end, so they are
-    // drawn as a bar spanning it. Anything else stays one line per component:
-    // more than two components cannot be a range, and neither can readings
-    // that are not paired, which happens once the date of one half is edited
-    // apart from the other.
     final cutoff = range.cutoff;
-    final ranges = currentCategory.children.length == 2
-        ? groupRangeEntries(currentCategory, cutoff: cutoff)
-        : const <MeasurementChartEntry>[];
-    final asRange = ranges.isNotEmpty;
-    final series = asRange
-        ? const <MeasurementChartSeries>[]
-        : groupComponentSeries(currentCategory, cutoff: cutoff);
-    final hasData = asRange || series.any((s) => s.entries.isNotEmpty);
+    final hasData = groupHasData(currentCategory, cutoff: cutoff);
+    // A range is a single bar whose ends speak for themselves, and a stacked
+    // bar's segments carry the component colours; only the line chart needs
+    // the dots on the rows below to tie a component to its line.
+    final asRange =
+        currentCategory.children.length == 2 &&
+        groupRangeEntries(currentCategory, cutoff: cutoff).isNotEmpty;
+    // The stacked chart draws only the components that are parts of the whole,
+    // so a row's colour has to come from that list rather than from its
+    // position among all children
+    final stacked = currentCategory.metricType.isSummedPerDay
+        ? stackableComponents(currentCategory)
+        : null;
 
     return Card(
       elevation: elevation,
@@ -176,25 +176,27 @@ class CategoriesCard extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(10),
               height: 220,
-              child: asRange
-                  ? MeasurementBarChartWidgetFl(ranges, currentCategory.unit)
-                  : MeasurementChartWidgetFl(series, currentCategory.unit),
+              child: buildGroupChart(context, currentCategory, cutoff: cutoff),
             ),
           ...currentCategory.children.mapIndexed((index, child) {
             // Entries arrive sorted by date descending, so first is the latest
             final latest = child.entries.firstOrNull;
+            final colorIndex = stacked == null
+                ? index
+                : stacked.indexWhere((c) => c.id == child.id);
             return ListTile(
               dense: true,
-              // The dot ties the row to its line in the chart above. A range
-              // is a single bar, where the ends speak for themselves.
-              leading: asRange
+              // The dot ties the row to its part of the chart above. A range
+              // is a single bar, where the ends speak for themselves, and a
+              // roll-up component is no segment of the stack.
+              leading: asRange || colorIndex < 0
                   ? null
                   : Container(
                       width: 12,
                       height: 12,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: componentColor(context, index),
+                        color: componentColor(context, colorIndex),
                       ),
                     ),
               title: Text(child.name),
@@ -212,21 +214,33 @@ class CategoriesCard extends StatelessWidget {
             );
           }),
           const Divider(),
-          Align(
-            alignment: Alignment.centerRight,
-            child: IconButton(
-              onPressed: () async {
-                await Navigator.pushNamed(
-                  context,
-                  FormScreen.routeName,
-                  arguments: FormScreenArguments(
-                    AppLocalizations.of(context).newEntry,
-                    GroupMeasurementEntryForm(currentCategory),
-                  ),
-                );
-              },
-              icon: const Icon(Icons.add),
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              TextButton(
+                child: Text(AppLocalizations.of(context).goToDetailPage),
+                onPressed: () {
+                  Navigator.pushNamed(
+                    context,
+                    MeasurementEntriesScreen.routeName,
+                    arguments: currentCategory.id,
+                  );
+                },
+              ),
+              IconButton(
+                onPressed: () async {
+                  await Navigator.pushNamed(
+                    context,
+                    FormScreen.routeName,
+                    arguments: FormScreenArguments(
+                      AppLocalizations.of(context).newEntry,
+                      GroupMeasurementEntryForm(currentCategory),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.add),
+              ),
+            ],
           ),
         ],
       ),

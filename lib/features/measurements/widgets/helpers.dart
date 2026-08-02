@@ -29,7 +29,7 @@ List<Widget> getOverviewWidgets(
       child: raw.isEmpty
           ? Center(
               child: Text(
-                'No data available',
+                AppLocalizations.of(context).noDataAvailable,
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   color: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.7),
                 ),
@@ -239,6 +239,108 @@ List<MeasurementChartSeries> groupComponentSeries(MeasurementCategory group, {Da
       )
       .toList();
 }
+
+/// The components of [group] that stack into one whole, i.e. everything but a
+/// roll-up component (see [MetricType.isGroupTotal]).
+List<MeasurementCategory> stackableComponents(MeasurementCategory group) =>
+    group.children.where((c) => !c.metricType.isGroupTotal).toList();
+
+/// One stacked bar per day for [components], stacked in the order they are
+/// given.
+///
+/// Only days that any component reported are returned. Values are read through
+/// the unit helper, like everywhere else, so a component holding mixed units
+/// still stacks correctly. Only readings from [cutoff] on are included; null
+/// covers the full history.
+List<MeasurementStackedEntry> groupStackedEntries(
+  List<MeasurementCategory> components, {
+  DateTime? cutoff,
+}) {
+  final byDay = <DateTime, List<num?>>{};
+  for (final (index, child) in components.indexed) {
+    for (final entry in child.entries) {
+      if (cutoff != null && entry.date.isBefore(cutoff)) {
+        continue;
+      }
+      final day = DateTime(entry.date.year, entry.date.month, entry.date.day);
+      final values = byDay.putIfAbsent(day, () => List<num?>.filled(components.length, null));
+      final value = entry.valueIn(child.unit, categoryUnit: child.unit);
+      // A component can hold several entries for one day (a nap next to the
+      // night), and the bar shows the day, so they add up
+      values[index] = (values[index] ?? 0) + value;
+    }
+  }
+
+  return [
+    for (final MapEntry(key: day, value: values) in byDay.entries)
+      MeasurementStackedEntry(
+        day,
+        values,
+      ),
+  ]..sort((a, b) => a.date.compareTo(b.date));
+}
+
+/// The chart a multi-value group gets, which follows from what its components
+/// are to each other.
+///
+/// Components that are parts of one whole (the sleep stages) stack into one
+/// bar per day. Two components that are the ends of a reading (blood pressure)
+/// become one floating bar spanning them. Everything else, and anything the
+/// first two have no data for, falls back to one line per component so the
+/// card never goes blank while there is something to show.
+Widget buildGroupChart(BuildContext context, MeasurementCategory group, {DateTime? cutoff}) {
+  if (group.metricType.isSummedPerDay) {
+    final components = stackableComponents(group);
+    final stacked = groupStackedEntries(components, cutoff: cutoff);
+    if (stacked.isNotEmpty) {
+      return MeasurementStackedBarChartWidgetFl(
+        stacked,
+        components.map((c) => c.name).toList(),
+        group.unit,
+      );
+    }
+  }
+
+  final ranges = group.children.length == 2
+      ? groupRangeEntries(group, cutoff: cutoff)
+      : const <MeasurementChartEntry>[];
+  if (ranges.isNotEmpty) {
+    return MeasurementBarChartWidgetFl(ranges, group.unit);
+  }
+
+  return MeasurementChartWidgetFl(groupComponentSeries(group, cutoff: cutoff), group.unit);
+}
+
+/// The readings of a group, newest first: one per timestamp, with what each
+/// component holds for it.
+///
+/// Components are paired by their shared timestamp, which is how the importer
+/// and the group form write them. A reading only some components reported is
+/// kept, listing what there is: for a group whose parts are optional (a night
+/// without deep sleep) that is the normal case, not a broken pair. Only
+/// readings from [cutoff] on are included; null covers the full history.
+List<(DateTime, Map<String, num>)> groupReadings(MeasurementCategory group, {DateTime? cutoff}) {
+  final byDate = <DateTime, Map<String, num>>{};
+  for (final child in group.children) {
+    for (final entry in child.entries) {
+      if (cutoff != null && entry.date.isBefore(cutoff)) {
+        continue;
+      }
+      final values = byDate.putIfAbsent(entry.date, () => {});
+      final value = entry.valueIn(child.unit, categoryUnit: child.unit);
+      values[child.name] = (values[child.name] ?? 0) + value;
+    }
+  }
+
+  return [for (final MapEntry(key: date, value: values) in byDate.entries) (date, values)]
+    ..sort((a, b) => b.$1.compareTo(a.$1));
+}
+
+/// Whether [group] has anything to draw at all, i.e. any component holds a
+/// reading within [cutoff].
+bool groupHasData(MeasurementCategory group, {DateTime? cutoff}) => group.children.any(
+  (child) => child.entries.any((e) => cutoff == null || !e.date.isBefore(cutoff)),
+);
 
 Widget buildChartForMetricType(
   MetricType metricType,

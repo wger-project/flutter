@@ -1149,6 +1149,7 @@
     "metricSleepDeep": "Tiefschlaf",
     "metricSleepRem": "REM-Schlaf",
     "metricSleepAwake": "Wach",
+    "noDataAvailable": "Keine Daten vorhanden",
     "partOfGroup": "Teil der Gruppe",
     "noGroup": "Keine Gruppe",
     "healthSync": "Health-Synchronisation",
