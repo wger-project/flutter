@@ -18,6 +18,7 @@
 
 import 'dart:async';
 
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -200,52 +201,66 @@ class MainApp extends ConsumerWidget {
         final userLocale = ref.watch(
           appSettingsProvider.select((s) => s.value?.userLocale),
         );
+        final useDynamicColor = ref.watch(
+          appSettingsProvider.select((s) => s.value?.useDynamicColor ?? false),
+        );
 
-        return MaterialApp(
-          title: 'wger',
-          navigatorKey: navigatorKey,
-          scaffoldMessengerKey: scaffoldMessengerKey,
-          theme: wgerLightTheme,
-          darkTheme: wgerDarkTheme,
-          highContrastTheme: wgerLightThemeHc,
-          highContrastDarkTheme: wgerDarkThemeHc,
-          themeMode: themeMode,
-          locale: userLocale,
-          home: _getHomeScreen(authState),
-          routes: {
-            DashboardScreen.routeName: (ctx) => const DashboardScreen(),
-            FormScreen.routeName: (ctx) => const FormScreen(),
-            GalleryScreen.routeName: (ctx) => const GalleryScreen(),
-            GymModeScreen.routeName: (ctx) => const GymModeScreen(),
-            HomeTabsScreen.routeName: (ctx) => const HomeTabsScreen(),
-            MeasurementCategoriesScreen.routeName: (ctx) => const MeasurementCategoriesScreen(),
-            MeasurementEntriesScreen.routeName: (ctx) => const MeasurementEntriesScreen(),
-            NutritionalPlansScreen.routeName: (ctx) => const NutritionalPlansScreen(),
-            NutritionalDiaryScreen.routeName: (ctx) => const NutritionalDiaryScreen(),
-            NutritionalPlanScreen.routeName: (ctx) => const NutritionalPlanScreen(),
-            IngredientDetailScreen.routeName: (ctx) => const IngredientDetailScreen(),
-            IngredientsScreen.routeName: (ctx) => const IngredientsScreen(),
-            LogMealsScreen.routeName: (ctx) => const LogMealsScreen(),
-            LogMealScreen.routeName: (ctx) => const LogMealScreen(),
-            WeightScreen.routeName: (ctx) => const WeightScreen(),
-            RoutineScreen.routeName: (ctx) => const RoutineScreen(),
-            RoutineEditScreen.routeName: (ctx) => const RoutineEditScreen(),
-            WorkoutLogsScreen.routeName: (ctx) => const WorkoutLogsScreen(),
-            RoutineListScreen.routeName: (ctx) => const RoutineListScreen(),
-            ExercisesScreen.routeName: (ctx) => const ExercisesScreen(),
-            ExerciseDetailScreen.routeName: (ctx) => const ExerciseDetailScreen(),
-            AddExerciseScreen.routeName: (ctx) => const AddExerciseScreen(),
-            AboutPage.routeName: (ctx) => const AboutPage(),
-            SettingsPage.routeName: (ctx) => const SettingsPage(),
-            LogOverviewPage.routeName: (ctx) => const LogOverviewPage(),
-            ConfigurePlatesScreen.routeName: (ctx) => const ConfigurePlatesScreen(),
-            ConfigureDashboardWidgetsScreen.routeName: (ctx) =>
-                const ConfigureDashboardWidgetsScreen(),
-            TrophyScreen.routeName: (ctx) => const TrophyScreen(),
+        return DynamicColorBuilder(
+          builder: (lightDynamic, darkDynamic) {
+            final light = useDynamicColor && lightDynamic != null
+                ? wgerThemeFromScheme(lightDynamic)
+                : wgerLightTheme;
+            final dark = useDynamicColor && darkDynamic != null
+                ? wgerThemeFromScheme(darkDynamic)
+                : wgerDarkTheme;
+
+            return MaterialApp(
+              title: 'wger',
+              navigatorKey: navigatorKey,
+              scaffoldMessengerKey: scaffoldMessengerKey,
+              theme: light,
+              darkTheme: dark,
+              highContrastTheme: wgerLightThemeHc,
+              highContrastDarkTheme: wgerDarkThemeHc,
+              themeMode: themeMode,
+              locale: userLocale,
+              home: _getHomeScreen(authState),
+              routes: {
+                DashboardScreen.routeName: (ctx) => const DashboardScreen(),
+                FormScreen.routeName: (ctx) => const FormScreen(),
+                GalleryScreen.routeName: (ctx) => const GalleryScreen(),
+                GymModeScreen.routeName: (ctx) => const GymModeScreen(),
+                HomeTabsScreen.routeName: (ctx) => const HomeTabsScreen(),
+                MeasurementCategoriesScreen.routeName: (ctx) => const MeasurementCategoriesScreen(),
+                MeasurementEntriesScreen.routeName: (ctx) => const MeasurementEntriesScreen(),
+                NutritionalPlansScreen.routeName: (ctx) => const NutritionalPlansScreen(),
+                NutritionalDiaryScreen.routeName: (ctx) => const NutritionalDiaryScreen(),
+                NutritionalPlanScreen.routeName: (ctx) => const NutritionalPlanScreen(),
+                IngredientDetailScreen.routeName: (ctx) => const IngredientDetailScreen(),
+                IngredientsScreen.routeName: (ctx) => const IngredientsScreen(),
+                LogMealsScreen.routeName: (ctx) => const LogMealsScreen(),
+                LogMealScreen.routeName: (ctx) => const LogMealScreen(),
+                WeightScreen.routeName: (ctx) => const WeightScreen(),
+                RoutineScreen.routeName: (ctx) => const RoutineScreen(),
+                RoutineEditScreen.routeName: (ctx) => const RoutineEditScreen(),
+                WorkoutLogsScreen.routeName: (ctx) => const WorkoutLogsScreen(),
+                RoutineListScreen.routeName: (ctx) => const RoutineListScreen(),
+                ExercisesScreen.routeName: (ctx) => const ExercisesScreen(),
+                ExerciseDetailScreen.routeName: (ctx) => const ExerciseDetailScreen(),
+                AddExerciseScreen.routeName: (ctx) => const AddExerciseScreen(),
+                AboutPage.routeName: (ctx) => const AboutPage(),
+                SettingsPage.routeName: (ctx) => const SettingsPage(),
+                LogOverviewPage.routeName: (ctx) => const LogOverviewPage(),
+                ConfigurePlatesScreen.routeName: (ctx) => const ConfigurePlatesScreen(),
+                ConfigureDashboardWidgetsScreen.routeName: (ctx) =>
+                    const ConfigureDashboardWidgetsScreen(),
+                TrophyScreen.routeName: (ctx) => const TrophyScreen(),
+              },
+              localeListResolutionCallback: resolveLocale,
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+            );
           },
-          localeListResolutionCallback: resolveLocale,
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
         );
       },
     );

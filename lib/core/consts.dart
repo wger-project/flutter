@@ -59,6 +59,11 @@ const PREFS_USER_DARK_THEME = 'userDarkMode';
 const PREFS_USER_LOCALE = 'userLocale';
 const PREFS_LAST_SERVER = 'lastServer';
 
+/// User preference: use Material You dynamic colors from the platform (Android
+/// 12+, iOS 18+, macOS 26, Windows/Linux accents) instead of the fixed wger
+/// seed palette. Off by default.
+const PREFS_USE_DYNAMIC_COLOR = 'useDynamicColor';
+
 /// Headless JWT auth: SharedPreferences keys.
 ///
 /// Read in parallel with the legacy `PREFS_USER` blob during the migration

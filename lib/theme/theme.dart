@@ -151,6 +151,19 @@ final wgerDarkThemeHc = FlexThemeData.dark(
   textTheme: wgerTextTheme,
 );
 
+/// Builds a wger theme (same sub-themes, app bar style and typography as the
+/// seed themes) from a provided [scheme], e.g. a dynamic platform scheme.
+ThemeData wgerThemeFromScheme(ColorScheme scheme) {
+  final isDark = scheme.brightness == Brightness.dark;
+  return (isDark ? FlexThemeData.dark : FlexThemeData.light)(
+    colorScheme: scheme,
+    useMaterial3: true,
+    appBarStyle: isDark ? null : FlexAppBarStyle.primary,
+    subThemesData: wgerSubThemeData,
+    textTheme: wgerTextTheme,
+  );
+}
+
 CalendarStyle getWgerCalendarStyle(ThemeData theme) {
   return CalendarStyle(
     outsideDaysVisible: false,

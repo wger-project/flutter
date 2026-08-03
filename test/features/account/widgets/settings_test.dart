@@ -74,6 +74,28 @@ void main() {
 
       verify(mockSharedPreferences.setBool(PREFS_USER_DARK_THEME, false)).called(1);
     });
+
+    testWidgets('toggling dynamic color persists the preference', (WidgetTester tester) async {
+      await tester.pumpWidget(createSettingsScreen());
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const ValueKey('useDynamicColorSwitch')));
+      await tester.pumpAndSettle();
+
+      verify(mockSharedPreferences.setBool(PREFS_USE_DYNAMIC_COLOR, true)).called(1);
+    });
+
+    testWidgets('dynamic color switch reflects a stored preference', (WidgetTester tester) async {
+      when(mockSharedPreferences.getBool(PREFS_USE_DYNAMIC_COLOR)).thenAnswer((_) async => true);
+
+      await tester.pumpWidget(createSettingsScreen());
+      await tester.pumpAndSettle();
+
+      final switchWidget = tester.widget<SwitchListTile>(
+        find.byKey(const ValueKey('useDynamicColorSwitch')),
+      );
+      expect(switchWidget.value, true);
+    });
   });
 
   group('Language switcher', () {

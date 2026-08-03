@@ -359,4 +359,41 @@ void main() {
       expect(await prefs.getBool(PREFS_ALLOW_SELF_SIGNED_CERTS), true);
     });
   });
+
+  group('use dynamic color', () {
+    test('defaults to false', () async {
+      final settings = await container.read(appSettingsProvider.future);
+      expect(settings.useDynamicColor, false);
+    });
+
+    test('loads true from prefs', () async {
+      SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+      final prefs = SharedPreferencesAsync();
+      await prefs.setBool(PREFS_USE_DYNAMIC_COLOR, true);
+
+      container.dispose();
+      container = ProviderContainer(
+        overrides: [appSettingsPrefsProvider.overrideWithValue(prefs)],
+      );
+
+      final settings = await container.read(appSettingsProvider.future);
+      expect(settings.useDynamicColor, true);
+    });
+
+    test('setUseDynamicColor persists the toggle', () async {
+      SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+      final prefs = SharedPreferencesAsync();
+
+      container.dispose();
+      container = ProviderContainer(
+        overrides: [appSettingsPrefsProvider.overrideWithValue(prefs)],
+      );
+
+      await container.read(appSettingsProvider.future);
+      await container.read(appSettingsProvider.notifier).setUseDynamicColor(true);
+
+      expect(container.read(appSettingsProvider).requireValue.useDynamicColor, true);
+      expect(await prefs.getBool(PREFS_USE_DYNAMIC_COLOR), true);
+    });
+  });
 }
