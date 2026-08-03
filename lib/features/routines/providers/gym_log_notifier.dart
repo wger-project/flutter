@@ -66,4 +66,10 @@ class GymLogNotifier extends _$GymLogNotifier {
   void setWeightUnit(WeightUnit weightUnit) {
     state = state?.copyWith(weightUnitObj: weightUnit);
   }
+
+  void setNotes(String notes) {
+    if (state != null) {
+      state = state!..notes = notes;
+    }
+  }
 }

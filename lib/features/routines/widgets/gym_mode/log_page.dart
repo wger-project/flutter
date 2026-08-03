@@ -265,7 +265,11 @@ class LogsPastLogsWidget extends ConsumerWidget {
             return ListTile(
               key: ValueKey('past-log-${pastLog.id}'),
               title: Text(pastLog.repTextNoNl(context)),
-              subtitle: Text(dateFormat.format(pastLog.date)),
+              subtitle: Text(
+                pastLog.notes != null && pastLog.notes!.isNotEmpty
+                    ? '${dateFormat.format(pastLog.date)} · ${pastLog.notes}'
+                    : dateFormat.format(pastLog.date),
+              ),
               trailing: const Icon(Icons.copy),
               onTap: () {
                 logProvider.setLog(pastLog, exercise: exercise);
@@ -297,6 +301,13 @@ class LogFormWidget extends ConsumerStatefulWidget {
 
 class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
   final _form = GlobalKey<FormState>();
+  final _notesController = TextEditingController();
+
+  @override
+  void dispose() {
+    _notesController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -366,6 +377,16 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
             log.rir,
             onChanged: (value) {
               log.rir = value == '' ? null : num.parse(value);
+            },
+          ),
+          TextFormField(
+            key: const ValueKey('notes-input-widget'),
+            controller: _notesController,
+            decoration: InputDecoration(labelText: i18n.notes),
+            maxLines: 2,
+            keyboardType: TextInputType.multiline,
+            onChanged: (value) {
+              ref.read(gymLogProvider.notifier).setNotes(value);
             },
           ),
           FilledButton(
