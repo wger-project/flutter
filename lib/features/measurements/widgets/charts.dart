@@ -1044,9 +1044,7 @@ MeasurementHeatmapGrid buildHeatmapGrid(
   int maxWeeks = heatmapMaxWeeks,
   DateTime? today,
 }) {
-  // Days are shifted through the constructor rather than by adding a Duration:
-  // a day is not always 24 hours long, and an hour lost to a time change would
-  // put the date in the neighbouring cell
+  // Calendar arithmetic, not Duration: a DST day is 23 or 25 hours long
   DateTime dayOf(DateTime date) => DateTime(date.year, date.month, date.day);
   DateTime shift(DateTime day, int days) => DateTime(day.year, day.month, day.day + days);
   DateTime mondayOf(DateTime date) => shift(date, -(date.weekday - 1));

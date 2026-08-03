@@ -59,6 +59,14 @@ const _idWLb = '0000000e-0000-4000-8000-000000000014'; // w-lb
 const _catHrId = 'aaaaaaaa-0000-4000-8000-000000000001';
 const _catSleepId = 'bbbbbbbb-0000-4000-8000-000000000002';
 
+/// Whether the local zone shifts its clocks in the night the DST test uses.
+///
+/// The zone belongs to the process, so a single test cannot pick its own; where
+/// there is no shift, that test cannot tell the two ways of counting a day
+/// apart and is skipped rather than passing without meaning.
+final _springsForward =
+    DateTime(2026, 3, 29).timeZoneOffset != DateTime(2026, 3, 30).timeZoneOffset;
+
 @GenerateMocks([HealthRepository, MeasurementRepository, AuthCredentialsStorage])
 void main() {
   // The notifier registers an AppLifecycleListener for the resume re-sync,
@@ -968,6 +976,42 @@ void main() {
       expect(byDay[dailyAggregateExternalId(categoryId, DateTime(2026, 1, 1))], 20);
       expect(byDay[dailyAggregateExternalId(categoryId, DateTime(2026, 1, 2))], 400);
     });
+
+    test(
+      'keeps a night across a time change as one aggregate',
+      () async {
+        // With +24h the two halves of the night key apart but format to the same
+        // date, so both would claim one external id
+        when(measurements.getAllOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
+        stubReadings([
+          HealthReading(
+            type: HealthDataType.SLEEP_ASLEEP,
+            value: 120,
+            date: DateTime(2026, 3, 29, 23, 0),
+            dateTo: DateTime(2026, 3, 30, 1, 0),
+            externalId: _idS1,
+          ),
+          HealthReading(
+            type: HealthDataType.SLEEP_ASLEEP,
+            value: 300,
+            date: DateTime(2026, 3, 30, 1, 0),
+            dateTo: DateTime(2026, 3, 30, 6, 0),
+            externalId: _idS2,
+          ),
+        ]);
+
+        final count = await createNotifier().sync();
+
+        expect(count, 1);
+        final entry =
+            verify(measurements.addLocalDrift(captureAny)).captured.single as MeasurementEntry;
+        final categoryId = _sleepCategoryId(measurements, MetricType.sleepTotal);
+        expect(entry.externalId, dailyAggregateExternalId(categoryId, DateTime(2026, 3, 30)));
+        expect(entry.date, DateTime(2026, 3, 30));
+        expect(entry.value, 420);
+      },
+      skip: _springsForward ? false : 'needs a time zone that shifts on 2026-03-30 (CI: Berlin)',
+    );
 
     test('imports each sleep stage into its own category', () async {
       when(measurements.getAllOnce()).thenAnswer((_) async => <MeasurementCategory>[]);

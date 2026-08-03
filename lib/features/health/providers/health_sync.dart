@@ -583,9 +583,11 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
   /// count towards the next day, so a night of sleep lands on the day the user
   /// wakes up instead of being split at midnight.
   DateTime _dayOf(DateTime date, HealthMetric metric) {
-    final day = DateTime(date.year, date.month, date.day);
     final rollover = metric.dayRollsOverAtHour;
-    return rollover != null && date.hour >= rollover ? day.add(const Duration(days: 1)) : day;
+    final rollsOver = rollover != null && date.hour >= rollover;
+
+    // Calendar arithmetic, not +24h: a DST day is 23 or 25 hours long
+    return DateTime(date.year, date.month, date.day + (rollsOver ? 1 : 0));
   }
 
   static DateTime _earlier(DateTime a, DateTime b) => a.isBefore(b) ? a : b;
