@@ -35,6 +35,9 @@ Future<void> showMetricPicker(BuildContext context) => showModalBottomSheet(
   context: context,
   showDragHandle: true,
   isScrollControlled: true,
+  // The list is long enough to fill the screen, which leaves nothing to tap
+  // next to the sheet and makes it dismissable by dragging alone
+  constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * 0.7),
   builder: (context) => const MetricPickerSheet(),
 );
 
