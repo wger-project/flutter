@@ -1418,6 +1418,44 @@ void main() {
       expect(capturedReadStart(), DateTime(2026, 5, 2, 12));
     });
 
+    test('a metric the platform has nothing for stops forcing the full history', () async {
+      // No reading means no category, and a metric without one is what asks
+      // for the full window: it would do so on every sync, for every metric
+      await PreferenceHelper.instance.setLastHealthSyncTimestamp('2026-06-01T12:00:00.000');
+      when(measurements.getAllOnce()).thenAnswer(
+        (_) async => categoriesForEveryMetric()
+            .where((c) => c.metricType != MetricType.bodyFat)
+            .toList(),
+      );
+      stubReadings([]);
+
+      await createNotifier().sync();
+      expect(capturedReadStart(), DateTime(2020));
+
+      await createNotifier().sync();
+      expect(capturedReadStart(), DateTime(2026, 5, 2, 12));
+    });
+
+    test('a deleted category is read again even after an empty run', () async {
+      // Only a metric without a category is remembered as empty, so deleting
+      // the category of one that has data still gets its history back
+      await PreferenceHelper.instance.setLastHealthSyncTimestamp('2026-06-01T12:00:00.000');
+      when(measurements.getAllOnce()).thenAnswer((_) async => categoriesForEveryMetric());
+      stubReadings([]);
+
+      await createNotifier().sync();
+      expect(capturedReadStart(), DateTime(2026, 5, 2, 12));
+
+      when(measurements.getAllOnce()).thenAnswer(
+        (_) async => categoriesForEveryMetric()
+            .where((c) => c.metricType != MetricType.bodyFat)
+            .toList(),
+      );
+
+      await createNotifier().sync();
+      expect(capturedReadStart(), DateTime(2020));
+    });
+
     test('reads the full history when a category was deleted', () async {
       // Deleting a category takes its entries with it, and the watermark says
       // nothing about a metric that has no history left: reading from it would

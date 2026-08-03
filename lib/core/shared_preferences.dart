@@ -138,6 +138,7 @@ class PreferenceHelper {
   static const _healthSyncEnabledKey = 'healthSyncEnabled';
   static const _lastHealthSyncTimestampKey = 'lastHealthSyncTimestamp';
   static const _healthSyncReadableTypesKey = 'healthSyncReadableTypes';
+  static const _healthSyncEmptyMetricsKey = 'healthSyncEmptyMetrics';
 
   Future<void> setHealthSyncEnabled(bool value) async {
     await PreferenceHelper.asyncPref.setBool(_healthSyncEnabledKey, value);
@@ -169,9 +170,24 @@ class PreferenceHelper {
     return PreferenceHelper.asyncPref.getStringList(_healthSyncReadableTypesKey);
   }
 
+  /// The metrics the platform had nothing at all for when their full history
+  /// was last read.
+  ///
+  /// Such a metric never gets a category, and a missing category is what sends
+  /// the sync back to the full window; without this it would do so on every
+  /// run, for every metric.
+  Future<void> setHealthSyncEmptyMetrics(List<String> value) async {
+    await PreferenceHelper.asyncPref.setStringList(_healthSyncEmptyMetricsKey, value);
+  }
+
+  Future<List<String>?> getHealthSyncEmptyMetrics() async {
+    return PreferenceHelper.asyncPref.getStringList(_healthSyncEmptyMetricsKey);
+  }
+
   Future<void> clearHealthSyncPreferences() async {
     await PreferenceHelper.asyncPref.remove(_healthSyncEnabledKey);
     await PreferenceHelper.asyncPref.remove(_lastHealthSyncTimestampKey);
     await PreferenceHelper.asyncPref.remove(_healthSyncReadableTypesKey);
+    await PreferenceHelper.asyncPref.remove(_healthSyncEmptyMetricsKey);
   }
 }

@@ -251,12 +251,21 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
       // only syncs days after the measurement), so the read window reaches
       // back beyond the watermark; re-reads are deduplicated via externalId.
       final lastSyncStr = await prefs.getLastHealthSyncTimestamp();
+      // Metrics whose full history the platform had nothing for. They never
+      // get a category, so counting them as missing would send every sync back
+      // to the full window, for every metric
+      final knownEmpty = {...?await prefs.getHealthSyncEmptyMetrics()};
+      final withoutCategory = _missingCategories(
+        metrics,
+        categories,
+      ).map((m) => m.metricType.name).toSet();
       final startTime =
           lastSyncStr == null ||
-              _missingCategories(metrics, categories).isNotEmpty ||
+              withoutCategory.difference(knownEmpty).isNotEmpty ||
               await _hasNewlyReadableTypes(readable)
           ? _fullHistoryStart
           : DateTime.parse(lastSyncStr).subtract(_syncOverlap);
+      final readsFullHistory = startTime == _fullHistoryStart;
       final endTime = DateTime.now();
       _logger.info('Syncing health data from $startTime to $endTime');
 
@@ -287,8 +296,12 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
           if (metric.components.isEmpty) {
             final metricReadings = readings.where((r) => r.type == metric.dataType);
             if (metricReadings.isEmpty) {
+              if (readsFullHistory && withoutCategory.contains(metric.metricType.name)) {
+                knownEmpty.add(metric.metricType.name);
+              }
               continue;
             }
+            knownEmpty.remove(metric.metricType.name);
             final category = await _findOrCreateCategory(metric, categories, userId);
             if (category == null) {
               skippedMetric = true;
@@ -301,8 +314,12 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
                 readings.where((r) => component.dataTypes.contains(r.type)),
             ];
             if (byComponent.every((r) => r.isEmpty)) {
+              if (readsFullHistory && withoutCategory.contains(metric.metricType.name)) {
+                knownEmpty.add(metric.metricType.name);
+              }
               continue;
             }
+            knownEmpty.remove(metric.metricType.name);
             final children = await _findOrCreateGroupChildren(metric, categories, userId);
             if (children == null) {
               skippedMetric = true;
@@ -337,6 +354,8 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
       // Recorded after the metrics ran, so a sync that died earlier tries
       // again rather than remembering an access it never used
       await prefs.setHealthSyncReadableTypes(readable.map((t) => t.name).toList());
+      // A metric that threw is in neither set and keeps its full-window read
+      await prefs.setHealthSyncEmptyMetrics(knownEmpty.toList());
 
       // Advancing the watermark past readings a skipped metric could not
       // import would push them out of the overlap window for good, so keep
@@ -705,6 +724,10 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
   /// back to the full window for that run instead. Since the categories exist
   /// afterwards, the next sync is back on the watermark, and the entries the
   /// other metrics re-read are deduplicated via their external ids.
+  ///
+  /// The caller excludes the metrics the platform has nothing for: a category
+  /// is only created for one that delivers, so those would never stop asking
+  /// for the full window (see setHealthSyncEmptyMetrics).
   List<HealthMetric> _missingCategories(
     List<HealthMetric> metrics,
     List<MeasurementCategory> categories,
@@ -730,10 +753,7 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
 
     final missing = metrics.where((m) => !hasCategories(m)).toList();
     if (missing.isNotEmpty) {
-      _logger.info(
-        'No category for ${missing.map((m) => m.metricType.name).join(', ')}, '
-        'reading the full history instead of from the watermark',
-      );
+      _logger.info('No category for ${missing.map((m) => m.metricType.name).join(', ')}');
     }
     return missing;
   }
