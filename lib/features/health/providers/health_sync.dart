@@ -251,9 +251,8 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
       // only syncs days after the measurement), so the read window reaches
       // back beyond the watermark; re-reads are deduplicated via externalId.
       final lastSyncStr = await prefs.getLastHealthSyncTimestamp();
-      // Metrics whose full history the platform had nothing for. They never
-      // get a category, so counting them as missing would send every sync back
-      // to the full window, for every metric
+      // Metrics the platform has nothing for never get a category, so counting
+      // them as missing would ask for the full window on every sync
       final knownEmpty = {...?await prefs.getHealthSyncEmptyMetrics()};
       final withoutCategory = _missingCategories(
         metrics,
@@ -285,7 +284,7 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
           // [HealthMetric.readWindow]
           final readings = await _health.read(
             types: metric.dataTypes,
-            start: startTime,
+            start: _windowStartFor(startTime, metric),
             end: endTime,
             window: metric.readWindow,
           );
@@ -597,6 +596,25 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
     return total.inMicroseconds / Duration.microsecondsPerMinute;
   }
 
+  /// Where the read window starts for [metric].
+  ///
+  /// A daily aggregate is recomputed from what the window returns, so a start
+  /// inside a day would overwrite it with a fraction of it.
+  DateTime _windowStartFor(DateTime start, HealthMetric metric) {
+    if (metric.dailyAggregation == null) {
+      return start;
+    }
+
+    final rollover = metric.dayRollsOverAtHour;
+    if (rollover == null) {
+      return DateTime(start.year, start.month, start.day);
+    }
+
+    // Before the rollover hour the current day began on the previous one
+    final dayBegan = start.hour >= rollover ? start.day : start.day - 1;
+    return DateTime(start.year, start.month, dayBegan, rollover);
+  }
+
   /// The day a sample is attributed to. Plain calendar day, unless the metric
   /// rolls over: samples at or after [HealthMetric.dayRollsOverAtHour] then
   /// count towards the next day, so a night of sleep lands on the day the user
@@ -725,9 +743,8 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
   /// afterwards, the next sync is back on the watermark, and the entries the
   /// other metrics re-read are deduplicated via their external ids.
   ///
-  /// The caller excludes the metrics the platform has nothing for: a category
-  /// is only created for one that delivers, so those would never stop asking
-  /// for the full window (see setHealthSyncEmptyMetrics).
+  /// The caller excludes the metrics the platform has nothing for, see
+  /// setHealthSyncEmptyMetrics.
   List<HealthMetric> _missingCategories(
     List<HealthMetric> metrics,
     List<MeasurementCategory> categories,

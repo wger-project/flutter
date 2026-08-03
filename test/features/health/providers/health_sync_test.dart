@@ -158,20 +158,33 @@ void main() {
     return categories;
   }
 
-  /// The start of the window the sync asked the platform for. Every metric is
-  /// read separately, but all of them over the same range
-  DateTime capturedReadStart() {
-    final starts = verify(
+  /// The start of the window the sync asked the platform for, per data type.
+  ///
+  /// Every metric is read separately and a metric that aggregates per day
+  /// starts at the beginning of its own day, so the starts differ.
+  Map<HealthDataType, DateTime> capturedReadStarts() {
+    final captured = verify(
       health.read(
-        types: anyNamed('types'),
+        types: captureAnyNamed('types'),
         start: captureAnyNamed('start'),
         end: anyNamed('end'),
         window: anyNamed('window'),
       ),
-    ).captured.cast<DateTime>();
-    expect(starts.toSet(), hasLength(1), reason: 'Every metric reads the same range');
-    return starts.first;
+    ).captured;
+
+    final starts = <HealthDataType, DateTime>{};
+    for (var i = 0; i < captured.length; i += 2) {
+      for (final type in captured[i] as List<HealthDataType>) {
+        starts[type] = captured[i + 1] as DateTime;
+      }
+    }
+    return starts;
   }
+
+  /// The start of the window for the metric reading [type], body weight by
+  /// default: a plain sample metric, which reads from the unrounded start
+  DateTime capturedReadStart([HealthDataType type = HealthDataType.WEIGHT]) =>
+      capturedReadStarts()[type]!;
 
   /// Every health data type the sync asked the platform for
   List<HealthDataType> capturedReadTypes() => verify(
@@ -1423,9 +1436,8 @@ void main() {
       // for the full window: it would do so on every sync, for every metric
       await PreferenceHelper.instance.setLastHealthSyncTimestamp('2026-06-01T12:00:00.000');
       when(measurements.getAllOnce()).thenAnswer(
-        (_) async => categoriesForEveryMetric()
-            .where((c) => c.metricType != MetricType.bodyFat)
-            .toList(),
+        (_) async =>
+            categoriesForEveryMetric().where((c) => c.metricType != MetricType.bodyFat).toList(),
       );
       stubReadings([]);
 
@@ -1447,13 +1459,32 @@ void main() {
       expect(capturedReadStart(), DateTime(2026, 5, 2, 12));
 
       when(measurements.getAllOnce()).thenAnswer(
-        (_) async => categoriesForEveryMetric()
-            .where((c) => c.metricType != MetricType.bodyFat)
-            .toList(),
+        (_) async =>
+            categoriesForEveryMetric().where((c) => c.metricType != MetricType.bodyFat).toList(),
       );
 
       await createNotifier().sync();
       expect(capturedReadStart(), DateTime(2020));
+    });
+
+    test('an aggregating metric reads from the start of its own day', () async {
+      // The overlap start is a time of day, and a daily aggregate is
+      // recomputed from what the window returns: cutting into the day would
+      // overwrite that day's stored value with the part that was read
+      await PreferenceHelper.instance.setLastHealthSyncTimestamp('2026-06-01T12:00:00.000');
+      when(measurements.getAllOnce()).thenAnswer((_) async => categoriesForEveryMetric());
+      stubReadings([]);
+
+      await createNotifier().sync();
+
+      final starts = capturedReadStarts();
+      // A sample metric has no aggregate to protect and reads from the
+      // watermark minus the overlap
+      expect(starts[HealthDataType.WEIGHT], DateTime(2026, 5, 2, 12));
+      // Heart rate is stored as one aggregate per calendar day
+      expect(starts[HealthDataType.HEART_RATE], DateTime(2026, 5, 2));
+      // The sleep day of 2 May began at 18:00 on 1 May
+      expect(starts[HealthDataType.SLEEP_ASLEEP], DateTime(2026, 5, 1, 18));
     });
 
     test('reads the full history when a category was deleted', () async {
