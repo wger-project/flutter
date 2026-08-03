@@ -24,6 +24,7 @@ import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/measurement_entry.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
 
+import '../../../../test_data/body_weight.dart';
 import '../../../../test_data/measurements.dart';
 import '../../../helpers/in_memory_drift.dart';
 
@@ -216,6 +217,57 @@ void main() {
       await iter.moveNext();
       expect(iter.current!.entries, hasLength(initial + 1));
       await iter.cancel();
+    });
+  });
+
+  group('watchOfficialBodyWeightCategory', () {
+    Future<void> seedBodyWeight() async {
+      await repo.addLocalDriftCategory(getBodyWeightCategory());
+      for (final entry in [testWeightEntry1, testWeightEntry2]) {
+        await repo.addLocalDrift(entry);
+      }
+    }
+
+    test('returns the official category with its entries', () async {
+      await seedCategoriesAndEntries();
+      await seedBodyWeight();
+
+      final emitted = await repo.watchOfficialBodyWeightCategory().first;
+
+      expect(emitted!.id, testBodyWeightCategoryId);
+      expect(emitted.entries, [testWeightEntry2, testWeightEntry1]);
+    });
+
+    test('a category of the same type that is not official is ignored', () async {
+      await repo.addLocalDriftCategory(
+        MeasurementCategory(
+          id: 'custom',
+          name: 'My weight',
+          unit: 'kg',
+          metricType: MetricType.bodyWeight,
+        ),
+      );
+      await seedBodyWeight();
+
+      final emitted = await repo.watchOfficialBodyWeightCategory().first;
+
+      expect(emitted!.id, testBodyWeightCategoryId);
+    });
+
+    test('is null before the category has been synced', () async {
+      await seedCategoriesAndEntries();
+
+      expect(await repo.watchOfficialBodyWeightCategory().first, isNull);
+    });
+
+    test('entriesSince bounds the entries', () async {
+      await seedBodyWeight();
+
+      final emitted = await repo
+          .watchOfficialBodyWeightCategory(entriesSince: DateTime.utc(2021, 01, 05))
+          .first;
+
+      expect(emitted!.entries, [testWeightEntry2]);
     });
   });
 

@@ -26,6 +26,7 @@ import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/measurements/screens/measurement_categories_screen.dart';
 import 'package:wger/features/measurements/widgets/categories_card.dart';
+import 'package:wger/features/measurements/widgets/chart_range_selector.dart';
 import 'package:wger/features/measurements/widgets/forms.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
@@ -43,7 +44,11 @@ class _DashboardMeasurementWidgetState extends ConsumerState<DashboardMeasuremen
   @override
   Widget build(BuildContext context) {
     return AsyncValueWidget<List<MeasurementCategory>>(
-      value: ref.watch(measurementProvider),
+      // The cards chart three months (their own default); a year is read so a
+      // group card still has a latest reading to show per component after a
+      // gap. Reading the full history is what a synced account pays for, the
+      // sleep stages alone write five entries a night
+      value: ref.watch(measurementCategoriesSinceProvider(ChartRange.lastYear.readCutoff)),
       loggerName: 'DashboardMeasurementWidget',
       data: (allCategories) {
         // Children of multi-value groups are shown inside their parent's card.

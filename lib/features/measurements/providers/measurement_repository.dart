@@ -126,6 +126,21 @@ class MeasurementRepository {
     ).map((categories) => categories.firstWhereOrNull((c) => c.id == id));
   }
 
+  /// Watches the user's official body weight category with its entries.
+  ///
+  /// The category has no fixed id (the server assigns it), so it is selected
+  /// by its type in the query rather than picked out of every category
+  /// afterwards: reading all of them would materialise every other category's
+  /// entries as well, and the health sync writes five sleep rows a night.
+  Stream<MeasurementCategory?> watchOfficialBodyWeightCategory({DateTime? entriesSince}) {
+    _logger.finer('Watching the official body weight category');
+    return _watchCategories(
+      filter: (table) =>
+          table.isOfficial.equals(true) & table.metricType.equalsValue(MetricType.bodyWeight),
+      entriesSince: entriesSince,
+    ).map((categories) => categories.firstOrNull);
+  }
+
   /// One-shot snapshot of all categories with their entries.
   Future<List<MeasurementCategory>> getAllOnce() => watchAll().first;
 

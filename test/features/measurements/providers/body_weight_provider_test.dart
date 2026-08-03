@@ -25,7 +25,6 @@ import 'package:wger/features/measurements/providers/body_weight_provider.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
 
 import '../../../../test_data/body_weight.dart';
-import '../../../../test_data/measurements.dart';
 import 'body_weight_provider_test.mocks.dart';
 
 @GenerateMocks([MeasurementRepository])
@@ -33,8 +32,10 @@ void main() {
   late MockMeasurementRepository mockRepo;
   late ProviderContainer container;
 
-  ProviderContainer buildContainer(List<MeasurementCategory> categories) {
-    when(mockRepo.watchAll()).thenAnswer((_) => Stream.value(categories));
+  ProviderContainer buildContainer(MeasurementCategory? category) {
+    when(
+      mockRepo.watchOfficialBodyWeightCategory(entriesSince: anyNamed('entriesSince')),
+    ).thenAnswer((_) => Stream.value(category));
     return ProviderContainer.test(
       overrides: [measurementRepositoryProvider.overrideWithValue(mockRepo)],
     );
@@ -44,16 +45,8 @@ void main() {
     mockRepo = MockMeasurementRepository();
   });
 
-  test('selects the official body weight category', () async {
-    // A user-created category with the same metric type must not shadow the
-    // official one.
-    final lookalike = MeasurementCategory(
-      id: 'custom',
-      name: 'My weight',
-      unit: 'kg',
-      metricType: MetricType.bodyWeight,
-    );
-    container = buildContainer([lookalike, ...getMeasurementCategories(), getBodyWeightCategory()]);
+  test('exposes the official body weight category with its entries', () async {
+    container = buildContainer(getBodyWeightCategory());
     container.listen(bodyWeightCategoryProvider, (_, _) {});
     await pumpEventQueue();
 
@@ -63,12 +56,32 @@ void main() {
   });
 
   test('is null while no official category has been synced', () async {
-    container = buildContainer(getMeasurementCategories());
+    container = buildContainer(null);
     container.listen(bodyWeightCategoryProvider, (_, _) {});
     await pumpEventQueue();
 
     final async = container.read(bodyWeightCategoryProvider);
     expect(async.hasValue, isTrue);
     expect(async.value, isNull);
+  });
+
+  test('asks the repository for one category instead of for all of them', () async {
+    // Reading every category and keeping one made any other category's entry
+    // rebuild the weight screen, and the sync writes five sleep rows a night
+    final since = DateTime.utc(2026, 1, 1);
+    container = buildContainer(getBodyWeightCategory());
+    container.listen(bodyWeightCategorySinceProvider(since), (_, _) {});
+    await pumpEventQueue();
+
+    verify(mockRepo.watchOfficialBodyWeightCategory(entriesSince: since)).called(1);
+    verifyNever(mockRepo.watchAll(entriesSince: anyNamed('entriesSince')));
+  });
+
+  test('the unbounded provider reads the full history', () async {
+    container = buildContainer(getBodyWeightCategory());
+    container.listen(bodyWeightCategoryProvider, (_, _) {});
+    await pumpEventQueue();
+
+    verify(mockRepo.watchOfficialBodyWeightCategory(entriesSince: null)).called(1);
   });
 }

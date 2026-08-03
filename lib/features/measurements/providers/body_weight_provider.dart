@@ -16,10 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:collection/collection.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
-import 'package:wger/features/measurements/providers/measurement_notifier.dart';
+import 'package:wger/features/measurements/providers/measurement_repository.dart';
 
 part 'body_weight_provider.g.dart';
 
@@ -34,19 +33,19 @@ part 'body_weight_provider.g.dart';
 /// takes [bodyWeightCategorySince] instead.
 @riverpod
 AsyncValue<MeasurementCategory?> bodyWeightCategory(Ref ref) {
-  return ref
-      .watch(measurementProvider)
-      .whenData((categories) => categories.firstWhereOrNull((c) => c.isOfficialBodyWeight));
+  return ref.watch(bodyWeightCategorySinceProvider(null));
 }
 
 /// The official body weight category with the entries from [since] on, null
 /// covering the full history.
 ///
 /// The bound is applied in the query rather than in the chart, so showing three
-/// months does not read years of entries into memory.
+/// months does not read years of entries into memory. So is the category
+/// itself: reading every category and keeping one made a body fat or sleep
+/// entry re-materialise the whole measurement history.
 @riverpod
-AsyncValue<MeasurementCategory?> bodyWeightCategorySince(Ref ref, DateTime? since) {
+Stream<MeasurementCategory?> bodyWeightCategorySince(Ref ref, DateTime? since) {
   return ref
-      .watch(measurementCategoriesSinceProvider(since))
-      .whenData((categories) => categories.firstWhereOrNull((c) => c.isOfficialBodyWeight));
+      .read(measurementRepositoryProvider)
+      .watchOfficialBodyWeightCategory(entriesSince: since);
 }
