@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -151,12 +151,17 @@ final wgerDarkThemeHc = FlexThemeData.dark(
   textTheme: wgerTextTheme,
 );
 
-/// Builds a wger theme (same sub-themes, app bar style and typography as the
-/// seed themes) from a provided [scheme], e.g. a dynamic platform scheme.
-ThemeData wgerThemeFromScheme(ColorScheme scheme) {
-  final isDark = scheme.brightness == Brightness.dark;
+/// Builds a wger theme for [brightness] with the palette generated from [seed],
+/// e.g. the platform's dynamic color. Sub-themes, app bar style and typography
+/// match the fixed themes, so only the hues change.
+ThemeData wgerThemeFromSeed(Color seed, Brightness brightness) {
+  final isDark = brightness == Brightness.dark;
   return (isDark ? FlexThemeData.dark : FlexThemeData.light)(
-    colorScheme: scheme,
+    colorScheme: SeedColorScheme.fromSeeds(
+      primaryKey: seed,
+      brightness: brightness,
+      tones: FlexTones.vivid(brightness),
+    ),
     useMaterial3: true,
     appBarStyle: isDark ? null : FlexAppBarStyle.primary,
     subThemesData: wgerSubThemeData,

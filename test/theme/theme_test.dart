@@ -16,40 +16,52 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wger/theme/theme.dart';
 
 void main() {
-  group('wgerThemeFromScheme', () {
-    test('light scheme is preserved and applied to the light theme', () {
-      final scheme = ColorScheme.fromSeed(
-        seedColor: const Color(0xFF112233),
-        brightness: Brightness.light,
-      );
-      final theme = wgerThemeFromScheme(scheme);
+  group('wgerThemeFromSeed', () {
+    const seed = Color(0xFF6750A4);
 
-      expect(theme.brightness, Brightness.light);
-      expect(theme.colorScheme.primary, scheme.primary);
-      expect(theme.colorScheme.surface, scheme.surface);
+    test('applies the requested brightness', () {
+      expect(wgerThemeFromSeed(seed, Brightness.light).brightness, Brightness.light);
+      expect(wgerThemeFromSeed(seed, Brightness.dark).brightness, Brightness.dark);
     });
 
-    test('dark scheme is preserved and applied to the dark theme', () {
-      final scheme = ColorScheme.fromSeed(
-        seedColor: const Color(0xFF112233),
-        brightness: Brightness.dark,
-      );
-      final theme = wgerThemeFromScheme(scheme);
+    test('derives the palette from the seed hue', () {
+      final scheme = wgerThemeFromSeed(seed, Brightness.light).colorScheme;
 
-      expect(theme.brightness, Brightness.dark);
-      expect(theme.colorScheme.primary, scheme.primary);
-      expect(theme.colorScheme.surface, scheme.surface);
+      expect(
+        Hct.fromInt(scheme.primary.toARGB32()).hue,
+        closeTo(Hct.fromInt(seed.toARGB32()).hue, 5),
+      );
+    });
+
+    test('generates a distinct surface container ramp', () {
+      // A platform scheme used as-is leaves these unset, which flattens every
+      // elevated surface onto the scaffold color.
+      for (final brightness in Brightness.values) {
+        final scheme = wgerThemeFromSeed(seed, brightness).colorScheme;
+
+        expect(
+          {
+            scheme.surface,
+            scheme.surfaceContainerLowest,
+            scheme.surfaceContainerLow,
+            scheme.surfaceContainer,
+            scheme.surfaceContainerHigh,
+            scheme.surfaceContainerHighest,
+          },
+          hasLength(6),
+          reason: 'surface tones collapsed in $brightness',
+        );
+      }
     });
 
     test('keeps the wger typography', () {
-      final theme = wgerThemeFromScheme(
-        ColorScheme.fromSeed(seedColor: const Color(0xFF112233)),
-      );
+      final theme = wgerThemeFromSeed(seed, Brightness.light);
 
       expect(theme.textTheme.headlineLarge?.fontFamily, wgerDisplayFont);
     });

@@ -207,11 +207,14 @@ class MainApp extends ConsumerWidget {
 
         return DynamicColorBuilder(
           builder: (lightDynamic, darkDynamic) {
-            final light = useDynamicColor && lightDynamic != null
-                ? wgerThemeFromScheme(lightDynamic)
+            // One seed drives both themes: re-tonalising normalises the hue,
+            // so it doesn't matter which of the two schemes it comes from.
+            final seed = (lightDynamic ?? darkDynamic)?.primary;
+            final light = useDynamicColor && seed != null
+                ? wgerThemeFromSeed(seed, Brightness.light)
                 : wgerLightTheme;
-            final dark = useDynamicColor && darkDynamic != null
-                ? wgerThemeFromScheme(darkDynamic)
+            final dark = useDynamicColor && seed != null
+                ? wgerThemeFromSeed(seed, Brightness.dark)
                 : wgerDarkTheme;
 
             return MaterialApp(
