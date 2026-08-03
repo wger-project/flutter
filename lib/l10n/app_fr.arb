@@ -401,6 +401,9 @@
     },
     "measurementEntriesHelpText": "L'unité utilisée pour mesurer la catégorie, comme cm ou %",
     "measurementCategoriesHelpText": "Catégorie de mesure, comme « biceps » ou « graisse corporelle »",
+    "whatToTrack": "Que voulez-vous suivre ?",
+    "customMeasurement": "Mesure personnalisée",
+    "metricAlreadyTracked": "Déjà suivi",
     "measurements": "Mesures",
     "@measurements": {
         "description": "Categories for the measurements such as biceps size, body fat, etc."

@@ -88,49 +88,24 @@ void main() {
       expect(find.byType(MeasurementCategoryForm), findsOneWidget);
     });
 
-    testWidgets('metricType dropdown offers neither body weight nor the components', (
-      tester,
-    ) async {
+    testWidgets('the metric type is not offered', (tester) async {
+      // It is picked when the category is created and immutable from then on,
+      // the server refuses a change
       await tester.pumpWidget(wrap(const MeasurementCategoryForm()));
       await tester.pumpAndSettle();
 
-      // Open the dropdown
-      await tester.tap(find.byType(DropdownButtonFormField<MetricType>));
-      await tester.pumpAndSettle();
-
-      // The initialValue stays visible on the form behind the opened menu
-      // overlay, which shows every offered MetricType option once. Body
-      // weight is reserved for the official category, and a component only
-      // exists as the child of the group it is created with.
-      final offered = MetricType.values.where((t) => !t.isOfficial && !t.isComponent).length;
-      expect(find.byType(DropdownMenuItem<MetricType>), findsNWidgets(offered + 1));
-      for (final hidden in [
-        MetricType.bodyWeight,
-        MetricType.bloodPressureSystolic,
-        MetricType.bloodPressureDiastolic,
-      ]) {
-        expect(
-          find.byWidgetPredicate(
-            (w) => w is DropdownMenuItem<MetricType> && w.value == hidden,
-          ),
-          findsNothing,
-        );
-      }
+      expect(find.byType(DropdownButtonFormField<MetricType>), findsNothing);
     });
 
-    testWidgets('editing a category with the body weight type keeps its value', (tester) async {
-      final lookalike = getMeasurementCategories()[1].copyWith(metricType: MetricType.bodyWeight);
+    testWidgets('a typed category has neither a name nor a unit field', (tester) async {
+      final typed = getMeasurementCategories()[1].copyWith(metricType: MetricType.heartRate);
 
-      await tester.pumpWidget(wrap(MeasurementCategoryForm(lookalike)));
+      await tester.pumpWidget(wrap(MeasurementCategoryForm(typed)));
       await tester.pumpAndSettle();
 
-      // The dropdown must contain the pre-existing value or the form crashes
-      expect(
-        find.byWidgetPredicate(
-          (w) => w is DropdownMenuItem<MetricType> && w.value == MetricType.bodyWeight,
-        ),
-        findsOneWidget,
-      );
+      // Both come from the metric type, which is also what is displayed
+      expect(find.byType(TextFormField), findsNothing);
+      expect(find.byType(DropdownButtonFormField<ChartType>), findsOneWidget);
     });
 
     testWidgets('a category with children gets no chart type picker', (tester) async {
@@ -144,33 +119,6 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(DropdownButtonFormField<ChartType>), findsNothing);
-    });
-
-    testWidgets('changing the metric type drops a chart type it cannot use', (tester) async {
-      final category = getMeasurementCategories()[1].copyWith(chartType: ChartType.line);
-      when(mockRepo.watchAll()).thenAnswer((_) => Stream.value([category]));
-      when(mockRepo.updateLocalDriftCategory(any)).thenAnswer((_) async {});
-
-      await tester.pumpWidget(wrap(MeasurementCategoryForm(category)));
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.byType(DropdownButtonFormField<MetricType>));
-      await tester.pumpAndSettle();
-      await tester.tap(
-        find.text(MetricType.steps.localized(tester.element(find.byType(Form)))).last,
-      );
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.byType(ElevatedButton));
-      await tester.pumpAndSettle();
-
-      // Steps are drawn as bars or as a heatmap, never as a line, so the form
-      // shows the picker back on automatic and has to save exactly that
-      final saved =
-          verify(mockRepo.updateLocalDriftCategory(captureAny)).captured.single
-              as MeasurementCategory;
-      expect(saved.metricType, MetricType.steps);
-      expect(saved.chartType, ChartType.auto);
     });
 
     testWidgets('a leaf category gets the chart type picker', (tester) async {

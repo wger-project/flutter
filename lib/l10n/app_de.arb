@@ -403,6 +403,9 @@
         "description": "The value of a measurement entry"
     },
     "measurementCategoriesHelpText": "Messkategorie, z. B. „Bizeps“ oder „Körperfett“",
+    "whatToTrack": "Was möchtest du aufzeichnen?",
+    "customMeasurement": "Eigene Messung",
+    "metricAlreadyTracked": "Wird bereits aufgezeichnet",
     "measurementEntriesHelpText": "Die Einheit, die verwendet wird, um die Kategorie zu messen, wie z.B. „cm“ oder „%“",
     "fatShort": "F",
     "@fatShort": {

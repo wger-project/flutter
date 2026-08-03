@@ -109,17 +109,18 @@ final class MeasurementNotifier extends _$MeasurementNotifier {
     await _repo.updateLocalDriftCategory(category);
   }
 
-  /// Adds a category, and its components when it is a group.
+  /// Adds a category, and its components when it is a group. Returns the id it
+  /// was created under, null for a free-form one, where the database assigns it.
   ///
   /// A typed category takes the id derived from user and metric type (see
   /// [deterministicCategoryId]) instead of a random one, so that a category
   /// created here and the same one created on another device converge on one
   /// row rather than colliding with the server's uniqueness constraint.
-  Future<void> addCategory(MeasurementCategory category) async {
+  Future<String?> addCategory(MeasurementCategory category) async {
     final userId = await ref.read(authCredentialsStorageProvider).dbOwnerUserId();
     if (userId == null || !category.metricType.hasDeterministicId) {
       await _repo.addLocalDriftCategory(category);
-      return;
+      return category.id;
     }
 
     final parent = category.copyWith(
@@ -130,18 +131,19 @@ final class MeasurementNotifier extends _$MeasurementNotifier {
     // A group is a container, its readings live in one child per component.
     // The server creates them as well, on the same ids, so whichever side
     // gets there first wins and the other is acknowledged as a no-op
-    for (final (order, (metricType, name)) in parent.metricType.components.indexed) {
+    for (final (order, metricType) in parent.metricType.components.indexed) {
       await _repo.addLocalDriftCategory(
         MeasurementCategory(
           id: deterministicCategoryId(userId, metricType),
-          name: name,
-          unit: parent.unit,
+          name: metricType.canonicalName,
+          unit: metricType.defaultUnit,
           metricType: metricType,
           parentId: parent.id,
           order: order,
         ),
       );
     }
+    return parent.id;
   }
 
   /// Moves the top-level category at [oldIndex] to [newIndex] and renumbers

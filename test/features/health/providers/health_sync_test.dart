@@ -142,12 +142,12 @@ void main() {
           metricType: metric.metricType,
         ),
       );
-      for (final (order, (metricType, name)) in metric.metricType.components.indexed) {
+      for (final (order, metricType) in metric.metricType.components.indexed) {
         categories.add(
           MeasurementCategory(
             id: deterministicCategoryId('2', metricType),
-            name: name,
-            unit: metric.unit,
+            name: metricType.canonicalName,
+            unit: metricType.defaultUnit,
             metricType: metricType,
             parentId: parentId,
             order: order,

@@ -62,7 +62,14 @@ void main() {
         HealthDataType.BLOOD_PRESSURE_SYSTOLIC,
         HealthDataType.BLOOD_PRESSURE_DIASTOLIC,
       ]);
-      expect(bp.components.map((c) => c.canonicalName), ['Systolic', 'Diastolic']);
+    });
+
+    test('every group metric has one component per component category', () {
+      // The two lists are paired by position: the readings of the n-th
+      // component go into the category of the n-th component metric type
+      for (final metric in healthMetrics.where((m) => m.components.isNotEmpty)) {
+        expect(metric.components.length, metric.metricType.components.length);
+      }
     });
 
     test('every disabled metric explains why', () {

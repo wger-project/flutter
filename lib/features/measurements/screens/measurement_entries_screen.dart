@@ -113,10 +113,11 @@ class _MeasurementEntriesScreenState extends ConsumerState<MeasurementEntriesScr
                 },
                 itemBuilder: (context) {
                   return [
-                    PopupMenuItem<MeasurementOptions>(
-                      value: MeasurementOptions.edit,
-                      child: Text(AppLocalizations.of(context).edit),
-                    ),
+                    if (category.isEditable)
+                      PopupMenuItem<MeasurementOptions>(
+                        value: MeasurementOptions.edit,
+                        child: Text(AppLocalizations.of(context).edit),
+                      ),
                     PopupMenuItem<MeasurementOptions>(
                       value: MeasurementOptions.delete,
                       child: Text(AppLocalizations.of(context).delete),

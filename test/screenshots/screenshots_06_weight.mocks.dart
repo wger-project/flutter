@@ -70,6 +70,18 @@ class MockMeasurementRepository extends _i1.Mock implements _i2.MeasurementRepos
           as _i3.Stream<_i4.MeasurementCategory?>);
 
   @override
+  _i3.Stream<_i4.MeasurementCategory?> watchOfficialBodyWeightCategory({
+    DateTime? entriesSince,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#watchOfficialBodyWeightCategory, [], {
+              #entriesSince: entriesSince,
+            }),
+            returnValue: _i3.Stream<_i4.MeasurementCategory?>.empty(),
+          )
+          as _i3.Stream<_i4.MeasurementCategory?>);
+
+  @override
   _i3.Future<List<_i4.MeasurementCategory>> getAllOnce() =>
       (super.noSuchMethod(
             Invocation.method(#getAllOnce, []),

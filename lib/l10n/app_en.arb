@@ -609,6 +609,18 @@
   },
   "measurementCategoriesHelpText": "Measurement category, such as 'biceps' or 'body fat'",
   "@measurementCategoriesHelpText": {},
+  "whatToTrack": "What do you want to track?",
+  "@whatToTrack": {
+    "description": "Title of the sheet that starts a new measurement category"
+  },
+  "customMeasurement": "Custom measurement",
+  "@customMeasurement": {
+    "description": "Option that creates a free-form measurement category with its own name and unit"
+  },
+  "metricAlreadyTracked": "Already tracked",
+  "@metricAlreadyTracked": {
+    "description": "Shown for a metric the user already has a category for, which cannot be picked twice"
+  },
   "metricType": "Metric Type",
   "@metricType": {
     "description": "Metric type for a measurement category"

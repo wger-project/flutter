@@ -763,8 +763,7 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
       // Empty for everything but a group metric, whose readings live in one
       // child category per component
       return metric.metricType.components.every(
-        (component) =>
-            categories.any((c) => c.parentId == group.id && c.metricType == component.$1),
+        (component) => categories.any((c) => c.parentId == group.id && c.metricType == component),
       );
     }
 
@@ -781,8 +780,8 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
   ///
   /// Matching by name as well was dropped deliberately: it hit any hand-made
   /// category that happened to be called like the metric in English and missed
-  /// it in every other language, so the target depended on the UI language.
-  /// Adopting an existing category is done by giving it the metric type.
+  /// it in every other language, so the target depended on the UI language. A
+  /// hand-kept category cannot be adopted into a metric type yet, see the plan.
   ///
   /// Body weight is the exception: it goes only into the official category,
   /// which the server creates for every user. It is never created here;
@@ -855,7 +854,7 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
     // the metric's health data types, so the caller can pair them by index.
     // The server creates them on the very same ids when it sees the group
     final result = <MeasurementCategory>[];
-    for (final (order, (metricType, name)) in metric.metricType.components.indexed) {
+    for (final (order, metricType) in metric.metricType.components.indexed) {
       final existingChild = categories.firstWhereOrNull(
         (c) => c.parentId == parent.id && c.metricType == metricType,
       );
@@ -865,8 +864,8 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
       }
       final child = MeasurementCategory(
         id: deterministicCategoryId(userId, metricType),
-        name: name,
-        unit: metric.unit,
+        name: metricType.canonicalName,
+        unit: metricType.defaultUnit,
         metricType: metricType,
         parentId: parent.id,
         order: order,

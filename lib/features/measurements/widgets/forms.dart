@@ -63,79 +63,61 @@ class _MeasurementCategoryFormState extends ConsumerState<MeasurementCategoryFor
         ? const <ChartType>[]
         : [ChartType.auto, ..._draft.metricType.availableChartTypes];
 
+    // Name and unit belong to the user only for a free-form category. A typed
+    // one takes both from its metric type, which is also what is shown for it
+    final isCustom = _draft.metricType == MetricType.custom;
+
     return Form(
       key: _form,
       child: Column(
         children: [
           // Name
-          TextFormField(
-            initialValue: _draft.name,
-            decoration: InputDecoration(
-              labelText: AppLocalizations.of(context).name,
-              helperText: AppLocalizations.of(context).measurementCategoriesHelpText,
+          if (isCustom)
+            TextFormField(
+              initialValue: _draft.name,
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context).name,
+                helperText: AppLocalizations.of(context).measurementCategoriesHelpText,
+              ),
+              maxLength: MeasurementCategory.maxNameChars,
+              onSaved: (value) => _draft = _draft.copyWith(name: value ?? ''),
+              validator: (value) {
+                final i18n = AppLocalizations.of(context);
+                if (value!.isEmpty) {
+                  return i18n.enterValue;
+                }
+                if (value.length > MeasurementCategory.maxNameChars) {
+                  return i18n.enterMaxCharacters(MeasurementCategory.maxNameChars.toString());
+                }
+                return null;
+              },
             ),
-            maxLength: MeasurementCategory.maxNameChars,
-            onSaved: (value) => _draft = _draft.copyWith(name: value ?? ''),
-            validator: (value) {
-              final i18n = AppLocalizations.of(context);
-              if (value!.isEmpty) {
-                return i18n.enterValue;
-              }
-              if (value.length > MeasurementCategory.maxNameChars) {
-                return i18n.enterMaxCharacters(MeasurementCategory.maxNameChars.toString());
-              }
-              return null;
-            },
-          ),
 
           // Unit
-          TextFormField(
-            initialValue: _draft.unit,
-            decoration: InputDecoration(
-              labelText: AppLocalizations.of(context).unit,
-              helperText: AppLocalizations.of(context).measurementEntriesHelpText,
+          if (isCustom)
+            TextFormField(
+              initialValue: _draft.unit,
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context).unit,
+                helperText: AppLocalizations.of(context).measurementEntriesHelpText,
+              ),
+              maxLength: MeasurementCategory.maxUnitChars,
+              onSaved: (value) => _draft = _draft.copyWith(unit: value ?? ''),
+              validator: (value) {
+                final i18n = AppLocalizations.of(context);
+                if (value!.isEmpty) {
+                  return i18n.enterValue;
+                }
+                if (value.length > MeasurementCategory.maxUnitChars) {
+                  return i18n.enterMaxCharacters(MeasurementCategory.maxUnitChars.toString());
+                }
+                return null;
+              },
             ),
-            maxLength: MeasurementCategory.maxUnitChars,
-            onSaved: (value) => _draft = _draft.copyWith(unit: value ?? ''),
-            validator: (value) {
-              final i18n = AppLocalizations.of(context);
-              if (value!.isEmpty) {
-                return i18n.enterValue;
-              }
-              if (value.length > MeasurementCategory.maxUnitChars) {
-                return i18n.enterMaxCharacters(MeasurementCategory.maxUnitChars.toString());
-              }
-              return null;
-            },
-          ),
 
-          // metricType. Official types are reserved for the categories the
-          // server manages, components are a structural type: they only exist
-          // as the children of their group, which is created with them
-          DropdownButtonFormField(
-            initialValue: _draft.metricType,
-            decoration: InputDecoration(labelText: AppLocalizations.of(context).metricType),
-            items: MetricType.values
-                .where((t) => (!t.isOfficial && !t.isComponent) || t == _draft.metricType)
-                .map((t) => DropdownMenuItem(value: t, child: Text(t.localized(context))))
-                .toList(),
-            onChanged: (value) {
-              if (value != null) {
-                setState(() {
-                  // Bars are no choice for a sample type and a line is none for
-                  // a summed one, so a pick the new type cannot be drawn as goes
-                  // back to being derived. The picker below falls back to
-                  // automatic on its own; without resetting the draft as well,
-                  // the form would show that fallback but save the old pick
-                  final picked = _draft.chartType;
-                  _draft = _draft.copyWith(
-                    metricType: value,
-                    chartType: value.availableChartTypes.contains(picked) ? picked : ChartType.auto,
-                  );
-                });
-              }
-            },
-          ),
+          // The metric type is picked when the category is created (see
+          // MetricPickerSheet) and fixed from then on: the key of a typed
+          // category is derived from it, and the server refuses a change
 
           // Chart type. Only the shapes that are a matter of taste are offered,
           // and only those the metric type can actually be drawn as; a group

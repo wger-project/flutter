@@ -2105,6 +2105,61 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get chartType =>
+      (super.noSuchMethod(
+            Invocation.getter(#chartType),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#chartType),
+            ),
+          )
+          as String);
+
+  @override
+  String get chartTypeAuto =>
+      (super.noSuchMethod(
+            Invocation.getter(#chartTypeAuto),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#chartTypeAuto),
+            ),
+          )
+          as String);
+
+  @override
+  String get chartTypeLine =>
+      (super.noSuchMethod(
+            Invocation.getter(#chartTypeLine),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#chartTypeLine),
+            ),
+          )
+          as String);
+
+  @override
+  String get chartTypeBar =>
+      (super.noSuchMethod(
+            Invocation.getter(#chartTypeBar),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#chartTypeBar),
+            ),
+          )
+          as String);
+
+  @override
+  String get chartTypeHeatmap =>
+      (super.noSuchMethod(
+            Invocation.getter(#chartTypeHeatmap),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#chartTypeHeatmap),
+            ),
+          )
+          as String);
+
+  @override
   String get measurement =>
       (super.noSuchMethod(
             Invocation.getter(#measurement),
@@ -2133,6 +2188,39 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.getter(#measurementCategoriesHelpText),
+            ),
+          )
+          as String);
+
+  @override
+  String get whatToTrack =>
+      (super.noSuchMethod(
+            Invocation.getter(#whatToTrack),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#whatToTrack),
+            ),
+          )
+          as String);
+
+  @override
+  String get customMeasurement =>
+      (super.noSuchMethod(
+            Invocation.getter(#customMeasurement),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#customMeasurement),
+            ),
+          )
+          as String);
+
+  @override
+  String get metricAlreadyTracked =>
+      (super.noSuchMethod(
+            Invocation.getter(#metricAlreadyTracked),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#metricAlreadyTracked),
             ),
           )
           as String);

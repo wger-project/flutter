@@ -84,13 +84,15 @@ final class BodyWeightCategoryProvider
   }
 }
 
-String _$bodyWeightCategoryHash() => r'c3dcd508fad547e2ea0b69a0ad403afafc2f81fc';
+String _$bodyWeightCategoryHash() => r'8f2f7da1d4d675e2357428666f2cd9c51d53fcc4';
 
 /// The official body weight category with the entries from [since] on, null
 /// covering the full history.
 ///
 /// The bound is applied in the query rather than in the chart, so showing three
-/// months does not read years of entries into memory.
+/// months does not read years of entries into memory. So is the category
+/// itself: reading every category and keeping one made a body fat or sleep
+/// entry re-materialise the whole measurement history.
 
 @ProviderFor(bodyWeightCategorySince)
 final bodyWeightCategorySinceProvider = BodyWeightCategorySinceFamily._();
@@ -99,21 +101,25 @@ final bodyWeightCategorySinceProvider = BodyWeightCategorySinceFamily._();
 /// covering the full history.
 ///
 /// The bound is applied in the query rather than in the chart, so showing three
-/// months does not read years of entries into memory.
+/// months does not read years of entries into memory. So is the category
+/// itself: reading every category and keeping one made a body fat or sleep
+/// entry re-materialise the whole measurement history.
 
 final class BodyWeightCategorySinceProvider
     extends
         $FunctionalProvider<
           AsyncValue<MeasurementCategory?>,
-          AsyncValue<MeasurementCategory?>,
-          AsyncValue<MeasurementCategory?>
+          MeasurementCategory?,
+          Stream<MeasurementCategory?>
         >
-    with $Provider<AsyncValue<MeasurementCategory?>> {
+    with $FutureModifier<MeasurementCategory?>, $StreamProvider<MeasurementCategory?> {
   /// The official body weight category with the entries from [since] on, null
   /// covering the full history.
   ///
   /// The bound is applied in the query rather than in the chart, so showing three
-  /// months does not read years of entries into memory.
+  /// months does not read years of entries into memory. So is the category
+  /// itself: reading every category and keeping one made a body fat or sleep
+  /// entry re-materialise the whole measurement history.
   BodyWeightCategorySinceProvider._({
     required BodyWeightCategorySinceFamily super.from,
     required DateTime? super.argument,
@@ -137,24 +143,14 @@ final class BodyWeightCategorySinceProvider
 
   @$internal
   @override
-  $ProviderElement<AsyncValue<MeasurementCategory?>> $createElement(
+  $StreamProviderElement<MeasurementCategory?> $createElement(
     $ProviderPointer pointer,
-  ) => $ProviderElement(pointer);
+  ) => $StreamProviderElement(pointer);
 
   @override
-  AsyncValue<MeasurementCategory?> create(Ref ref) {
+  Stream<MeasurementCategory?> create(Ref ref) {
     final argument = this.argument as DateTime?;
     return bodyWeightCategorySince(ref, argument);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AsyncValue<MeasurementCategory?> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<AsyncValue<MeasurementCategory?>>(
-        value,
-      ),
-    );
   }
 
   @override
@@ -168,16 +164,18 @@ final class BodyWeightCategorySinceProvider
   }
 }
 
-String _$bodyWeightCategorySinceHash() => r'62082b42ba89c02f77257f54d8a7725aea00c836';
+String _$bodyWeightCategorySinceHash() => r'86893a68fab1ed9b4c8ac4a2ff7d31c64c8fa723';
 
 /// The official body weight category with the entries from [since] on, null
 /// covering the full history.
 ///
 /// The bound is applied in the query rather than in the chart, so showing three
-/// months does not read years of entries into memory.
+/// months does not read years of entries into memory. So is the category
+/// itself: reading every category and keeping one made a body fat or sleep
+/// entry re-materialise the whole measurement history.
 
 final class BodyWeightCategorySinceFamily extends $Family
-    with $FunctionalFamilyOverride<AsyncValue<MeasurementCategory?>, DateTime?> {
+    with $FunctionalFamilyOverride<Stream<MeasurementCategory?>, DateTime?> {
   BodyWeightCategorySinceFamily._()
     : super(
         retry: null,
@@ -191,7 +189,9 @@ final class BodyWeightCategorySinceFamily extends $Family
   /// covering the full history.
   ///
   /// The bound is applied in the query rather than in the chart, so showing three
-  /// months does not read years of entries into memory.
+  /// months does not read years of entries into memory. So is the category
+  /// itself: reading every category and keeping one made a body fat or sleep
+  /// entry re-materialise the whole measurement history.
 
   BodyWeightCategorySinceProvider call(DateTime? since) =>
       BodyWeightCategorySinceProvider._(argument: since, from: this);

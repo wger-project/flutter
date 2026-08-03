@@ -57,8 +57,6 @@ class HealthMetric {
   const HealthMetric({
     required this.metricType,
     required this.dataType,
-    required this.canonicalName,
-    required this.unit,
     required this.toCategoryValue,
     this.components = const [],
     this.dailyAggregation,
@@ -74,13 +72,11 @@ class HealthMetric {
   /// Health platform type this metric reads.
   final HealthDataType dataType;
 
-  /// Stable, non-localized category name. Used to find-or-create the category,
-  /// and as the fallback match for a category the user already created by hand
-  /// (which carries [MetricType.custom], not this metric's type).
-  final String canonicalName;
+  /// Name and unit the category is created under. They belong to the metric
+  /// type, so a category the user creates by hand looks the same.
+  String get canonicalName => metricType.canonicalName;
 
-  /// Unit the value is stored in on the category.
-  final String unit;
+  String get unit => metricType.defaultUnit;
 
   /// Converts the platform's numeric value (in its native unit) into [unit].
   final double Function(double raw) toCategoryValue;
@@ -129,14 +125,11 @@ class HealthMetric {
 /// One component of a multi-value metric (e.g. systolic), imported into its
 /// own child category of the group.
 class HealthMetricComponent {
-  const HealthMetricComponent({required this.dataTypes, required this.canonicalName});
+  const HealthMetricComponent({required this.dataTypes});
 
   /// Health platform types this component reads. More than one where the
   /// component is a roll-up of several platform types, e.g. total sleep.
   final List<HealthDataType> dataTypes;
-
-  /// Stable, non-localized name of the created child category.
-  final String canonicalName;
 }
 
 /// Apple Health / Health Connect report body fat as a fraction on iOS (0.15)
@@ -160,43 +153,33 @@ const List<HealthMetric> healthMetrics = [
   HealthMetric(
     metricType: MetricType.bodyFat,
     dataType: HealthDataType.BODY_FAT_PERCENTAGE,
-    canonicalName: 'Body fat',
-    unit: '%',
     toCategoryValue: _bodyFatToPercent,
     enabled: true,
   ),
   HealthMetric(
     metricType: MetricType.height,
     dataType: HealthDataType.HEIGHT,
-    canonicalName: 'Height',
-    unit: 'cm',
     toCategoryValue: _heightToCm,
     enabled: true,
   ),
   HealthMetric(
     metricType: MetricType.bodyWeight,
     dataType: HealthDataType.WEIGHT,
-    canonicalName: 'Weight',
-    unit: 'kg',
     toCategoryValue: _identity,
     enabled: true,
   ),
   HealthMetric(
     metricType: MetricType.bloodPressure,
     dataType: HealthDataType.BLOOD_PRESSURE_SYSTOLIC,
-    canonicalName: 'Blood pressure',
-    unit: 'mmHg',
     toCategoryValue: _identity,
     // Both platforms report mmHg; a reading is the systolic/diastolic pair
     // sharing one timestamp.
     components: [
       HealthMetricComponent(
         dataTypes: [HealthDataType.BLOOD_PRESSURE_SYSTOLIC],
-        canonicalName: 'Systolic',
       ),
       HealthMetricComponent(
         dataTypes: [HealthDataType.BLOOD_PRESSURE_DIASTOLIC],
-        canonicalName: 'Diastolic',
       ),
     ],
     enabled: true,
@@ -204,8 +187,6 @@ const List<HealthMetric> healthMetrics = [
   HealthMetric(
     metricType: MetricType.heartRate,
     dataType: HealthDataType.HEART_RATE,
-    canonicalName: 'Heart rate',
-    unit: 'bpm',
     toCategoryValue: _identity,
     dailyAggregation: DailyAggregation.average,
     enabled: true,
@@ -217,8 +198,6 @@ const List<HealthMetric> healthMetrics = [
     // platform record uuid stays available for dedup.
     metricType: MetricType.restingHeartRate,
     dataType: HealthDataType.RESTING_HEART_RATE,
-    canonicalName: 'Resting heart rate',
-    unit: 'bpm',
     toCategoryValue: _identity,
     enabled: true,
   ),
@@ -232,8 +211,6 @@ const List<HealthMetric> healthMetrics = [
     // category. All types report minutes on both platforms.
     metricType: MetricType.sleep,
     dataType: HealthDataType.SLEEP_ASLEEP,
-    canonicalName: 'Sleep',
-    unit: 'min',
     toCategoryValue: _identity,
     components: [
       HealthMetricComponent(
@@ -243,17 +220,15 @@ const List<HealthMetric> healthMetrics = [
           HealthDataType.SLEEP_DEEP,
           HealthDataType.SLEEP_REM,
         ],
-        canonicalName: 'Total sleep',
       ),
       HealthMetricComponent(
         dataTypes: [HealthDataType.SLEEP_LIGHT],
-        canonicalName: 'Light sleep',
       ),
-      HealthMetricComponent(dataTypes: [HealthDataType.SLEEP_DEEP], canonicalName: 'Deep sleep'),
-      HealthMetricComponent(dataTypes: [HealthDataType.SLEEP_REM], canonicalName: 'REM sleep'),
+      HealthMetricComponent(dataTypes: [HealthDataType.SLEEP_DEEP]),
+      HealthMetricComponent(dataTypes: [HealthDataType.SLEEP_REM]),
       // Time awake during the night completes the picture but is not sleep,
       // so it stays out of the total above
-      HealthMetricComponent(dataTypes: [HealthDataType.SLEEP_AWAKE], canonicalName: 'Awake'),
+      HealthMetricComponent(dataTypes: [HealthDataType.SLEEP_AWAKE]),
     ],
     dailyAggregation: DailyAggregation.mergedDuration,
     dayRollsOverAtHour: 18,
@@ -262,8 +237,6 @@ const List<HealthMetric> healthMetrics = [
   HealthMetric(
     metricType: MetricType.steps,
     dataType: HealthDataType.STEPS,
-    canonicalName: 'Steps',
-    unit: 'count',
     toCategoryValue: _identity,
     disabledReason: 'High-volume cumulative type, parked behind a load test.',
     readWindow: highVolumeReadWindow,

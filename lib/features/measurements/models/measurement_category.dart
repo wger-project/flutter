@@ -186,24 +186,23 @@ enum MetricType {
     _ => false,
   };
 
-  /// The components of the multi-value metric types with the name their
-  /// category is created under, in group order. Mirrors GROUP_COMPONENTS on
-  /// the server, names included, so both sides create the same categories.
-  static const _groupComponents = <MetricType, List<(MetricType, String)>>{
+  /// The components of the multi-value metric types, in group order. Mirrors
+  /// GROUP_COMPONENTS on the server.
+  static const _groupComponents = <MetricType, List<MetricType>>{
     MetricType.bloodPressure: [
-      (MetricType.bloodPressureSystolic, 'Systolic'),
-      (MetricType.bloodPressureDiastolic, 'Diastolic'),
+      MetricType.bloodPressureSystolic,
+      MetricType.bloodPressureDiastolic,
     ],
     // The total is a component of its own because a group carries no
     // measurements. It is not the sum of the three stages below it: platforms
     // also report sleep without a stage breakdown, which counts towards the
     // total and has no stage category to live in
     MetricType.sleep: [
-      (MetricType.sleepTotal, 'Total sleep'),
-      (MetricType.sleepLight, 'Light sleep'),
-      (MetricType.sleepDeep, 'Deep sleep'),
-      (MetricType.sleepRem, 'REM sleep'),
-      (MetricType.sleepAwake, 'Awake'),
+      MetricType.sleepTotal,
+      MetricType.sleepLight,
+      MetricType.sleepDeep,
+      MetricType.sleepRem,
+      MetricType.sleepAwake,
     ],
   };
 
@@ -214,11 +213,67 @@ enum MetricType {
   /// `true` for one component of a group, e.g. systolic. Components exist
   /// only as children of their group and are not offered when creating a
   /// category.
-  bool get isComponent =>
-      _groupComponents.values.any((components) => components.any((c) => c.$1 == this));
+  bool get isComponent => _groupComponents.values.any((c) => c.contains(this));
 
   /// The components of this group, in group order; empty for every other type
-  List<(MetricType, String)> get components => _groupComponents[this] ?? const [];
+  List<MetricType> get components => _groupComponents[this] ?? const [];
+
+  /// `true` for the types a user can pick when creating a category. Body
+  /// weight is the server's, a component comes with its group, and a custom
+  /// category is not picked but described.
+  bool get isPickable => !isOfficial && !isComponent && this != MetricType.custom;
+
+  /// Stable, non-localized name the category of this type is created under.
+  ///
+  /// Users see [localized] instead, this is what ends up in the database. Both
+  /// the server and the health importer create their categories under the same
+  /// names, so whoever gets there first, the row looks the same.
+  String get canonicalName => switch (this) {
+    MetricType.custom => '',
+    MetricType.bodyWeight => 'Weight',
+    MetricType.bodyFat => 'Body fat',
+    MetricType.height => 'Height',
+    MetricType.bloodPressure => 'Blood pressure',
+    MetricType.bloodPressureSystolic => 'Systolic',
+    MetricType.bloodPressureDiastolic => 'Diastolic',
+    MetricType.heartRate => 'Heart rate',
+    MetricType.restingHeartRate => 'Resting heart rate',
+    MetricType.steps => 'Steps',
+    MetricType.distance => 'Distance',
+    MetricType.energy => 'Energy',
+    MetricType.sleep => 'Sleep',
+    MetricType.sleepTotal => 'Total sleep',
+    MetricType.sleepLight => 'Light sleep',
+    MetricType.sleepDeep => 'Deep sleep',
+    MetricType.sleepRem => 'REM sleep',
+    MetricType.sleepAwake => 'Awake',
+  };
+
+  /// Unit the values of this type are stored in, empty for a free-form
+  /// category, whose unit the user gives it.
+  ///
+  /// [limits] is keyed by type alone, so this is the unit those bounds mean.
+  /// Body weight is the exception: it is also stored in lb, and its category
+  /// follows the profile.
+  String get defaultUnit => switch (this) {
+    MetricType.custom => '',
+    MetricType.bodyWeight => 'kg',
+    MetricType.bodyFat => '%',
+    MetricType.height => 'cm',
+    MetricType.bloodPressure ||
+    MetricType.bloodPressureSystolic ||
+    MetricType.bloodPressureDiastolic => 'mmHg',
+    MetricType.heartRate || MetricType.restingHeartRate => 'bpm',
+    MetricType.steps => 'count',
+    MetricType.distance => 'km',
+    MetricType.energy => 'kcal',
+    MetricType.sleep ||
+    MetricType.sleepTotal ||
+    MetricType.sleepLight ||
+    MetricType.sleepDeep ||
+    MetricType.sleepRem ||
+    MetricType.sleepAwake => 'min',
+  };
 
   /// `true` for the component that rolls its siblings up instead of being one
   /// part next to them. Total sleep already covers the stages beside it, so a
@@ -381,6 +436,14 @@ class MeasurementCategory with _$MeasurementCategory {
   /// The user's body weight category. It has its own screens (weight feature)
   /// and is hidden from the general measurements UI.
   bool get isOfficialBodyWeight => isOfficial && metricType == MetricType.bodyWeight;
+
+  /// Whether the category form has anything to offer for this category.
+  ///
+  /// A free-form one owns its name and unit, a typed leaf can still be drawn
+  /// differently, and a group has neither: its name and unit come from the
+  /// metric type and its chart from what its components are to each other.
+  bool get isEditable =>
+      metricType == MetricType.custom || (!isGroup && metricType.availableChartTypes.isNotEmpty);
 
   MeasurementEntry findEntryById(String id) {
     return entries.firstWhere(

@@ -367,6 +367,9 @@
     },
     "measurement": "Medida",
     "measurementCategoriesHelpText": "Categoría de medición, como \"bíceps\" o \"grasa corporal\"",
+    "whatToTrack": "¿Qué quieres registrar?",
+    "customMeasurement": "Medición personalizada",
+    "metricAlreadyTracked": "Ya se está registrando",
     "measurementEntriesHelpText": "La unidad utilizada para medir la categoría, como \"cm\" o \"%\"",
     "value": "Valor",
     "@value": {
