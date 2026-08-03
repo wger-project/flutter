@@ -53,6 +53,10 @@ class FlNutritionalPlanGoalWidget extends StatelessWidget {
     double? plan,
     double val,
   ) {
+    // Four gauges of the same measure, not four categories, so they share the
+    // theme's primary rather than pulling from the chart palette.
+    final barColor = Theme.of(context).colorScheme.primary;
+
     Container segment(double width, Color color) {
       return Container(
         height: 16,
@@ -66,7 +70,7 @@ class FlNutritionalPlanGoalWidget extends StatelessWidget {
 
     // paint a simple bar
     if (plan == null || val == plan) {
-      return segment(normWidth, LIST_OF_COLORS8[0]);
+      return segment(normWidth, barColor);
     }
 
     // paint a surplus
@@ -74,7 +78,7 @@ class FlNutritionalPlanGoalWidget extends StatelessWidget {
       return Stack(
         children: [
           segment(normWidth * val / plan, COLOR_SURPLUS),
-          segment(normWidth, LIST_OF_COLORS8[0]),
+          segment(normWidth, barColor),
         ],
       );
     }
@@ -83,7 +87,7 @@ class FlNutritionalPlanGoalWidget extends StatelessWidget {
     return Stack(
       children: [
         segment(normWidth, Theme.of(context).colorScheme.surface),
-        segment(normWidth * val / plan, LIST_OF_COLORS8[0]),
+        segment(normWidth * val / plan, barColor),
       ],
     );
   }
@@ -586,7 +590,7 @@ class MealDiaryBarChartWidgetState extends State<MealDiaryBarChartWidget> {
                     barRods: [
                       BarChartRodData(
                         toY: _safePercent(widget._logged.energy, widget._planned.energy),
-                        color: LIST_OF_COLORS3.first,
+                        color: Theme.of(context).colorScheme.primary,
                         width: barsWidth,
                       ),
                     ],
@@ -597,7 +601,7 @@ class MealDiaryBarChartWidgetState extends State<MealDiaryBarChartWidget> {
                     barRods: [
                       BarChartRodData(
                         toY: _safePercent(widget._logged.protein, widget._planned.protein),
-                        color: LIST_OF_COLORS3.first,
+                        color: Theme.of(context).colorScheme.primary,
                         width: barsWidth,
                       ),
                     ],
@@ -611,7 +615,7 @@ class MealDiaryBarChartWidgetState extends State<MealDiaryBarChartWidget> {
                           widget._logged.carbohydrates,
                           widget._planned.carbohydrates,
                         ),
-                        color: LIST_OF_COLORS3.first,
+                        color: Theme.of(context).colorScheme.primary,
                         width: barsWidth,
                       ),
                     ],
@@ -622,7 +626,7 @@ class MealDiaryBarChartWidgetState extends State<MealDiaryBarChartWidget> {
                     barRods: [
                       BarChartRodData(
                         toY: _safePercent(widget._logged.fat, widget._planned.fat),
-                        color: LIST_OF_COLORS3.first,
+                        color: Theme.of(context).colorScheme.primary,
                         width: barsWidth,
                       ),
                     ],
