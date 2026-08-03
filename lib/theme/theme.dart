@@ -170,6 +170,15 @@ ThemeData wgerThemeFromSeed(Color seed, Brightness brightness) {
 }
 
 CalendarStyle getWgerCalendarStyle(ThemeData theme) {
+  final scheme = theme.colorScheme;
+  final selectedDecoration = BoxDecoration(
+    color: scheme.secondary,
+    shape: BoxShape.circle,
+  );
+  // table_calendar defaults these to a near-white that only works on a dark
+  // circle, and secondary is light in dark mode.
+  final selectedTextStyle = TextStyle(color: scheme.onSecondary, fontSize: 16);
+
   return CalendarStyle(
     outsideDaysVisible: false,
     todayDecoration: const BoxDecoration(
@@ -180,19 +189,13 @@ CalendarStyle getWgerCalendarStyle(ThemeData theme) {
       color: theme.textTheme.headlineLarge?.color,
       shape: BoxShape.circle,
     ),
-    selectedDecoration: const BoxDecoration(
-      color: wgerSecondaryColor,
-      shape: BoxShape.circle,
-    ),
-    rangeStartDecoration: const BoxDecoration(
-      color: wgerSecondaryColor,
-      shape: BoxShape.circle,
-    ),
-    rangeEndDecoration: const BoxDecoration(
-      color: wgerSecondaryColor,
-      shape: BoxShape.circle,
-    ),
-    rangeHighlightColor: wgerSecondaryColorLight,
-    weekendTextStyle: const TextStyle(color: wgerSecondaryColor),
+    selectedDecoration: selectedDecoration,
+    selectedTextStyle: selectedTextStyle,
+    rangeStartDecoration: selectedDecoration,
+    rangeStartTextStyle: selectedTextStyle,
+    rangeEndDecoration: selectedDecoration,
+    rangeEndTextStyle: selectedTextStyle,
+    rangeHighlightColor: scheme.secondaryContainer,
+    weekendTextStyle: TextStyle(color: scheme.secondary),
   );
 }

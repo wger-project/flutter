@@ -18,7 +18,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:wger/features/auth/widgets/auth_card.dart';
-import 'package:wger/theme/theme.dart';
 
 class AuthScreen extends StatelessWidget {
   const AuthScreen();
@@ -28,8 +27,15 @@ class AuthScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.sizeOf(context);
+    final scheme = Theme.of(context).colorScheme;
+    // The banner carries the white logo, so it has to stay dark in both modes.
+    // primary is the dark tone in light mode, primaryContainer in dark mode.
+    final isDark = scheme.brightness == Brightness.dark;
+    final bannerColor = isDark ? scheme.primaryContainer : scheme.primary;
+    final onBannerColor = isDark ? scheme.onPrimaryContainer : scheme.onPrimary;
+
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      backgroundColor: scheme.surface,
       body: Stack(
         children: [
           Positioned(
@@ -38,7 +44,7 @@ class AuthScreen extends StatelessWidget {
             left: 0,
             child: Container(
               height: 0.55 * deviceSize.height,
-              color: wgerPrimaryColor,
+              color: bannerColor,
             ),
           ),
           SingleChildScrollView(
@@ -61,10 +67,10 @@ class AuthScreen extends StatelessWidget {
                       vertical: 8.0,
                       horizontal: 94.0,
                     ),
-                    child: const Text(
+                    child: Text(
                       'wger',
                       style: TextStyle(
-                        color: Colors.white70,
+                        color: onBannerColor.withValues(alpha: 0.7),
                         fontSize: 30,
                         fontWeight: FontWeight.bold,
                       ),
