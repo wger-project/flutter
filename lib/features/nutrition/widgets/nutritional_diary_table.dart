@@ -79,7 +79,7 @@ class NutritionalDiaryTable extends StatelessWidget {
   ) {
     return TableRow(
       decoration: BoxDecoration(
-        border: Border(top: BorderSide(color: Colors.grey[300]!)),
+        border: Border(top: BorderSide(color: Theme.of(context).colorScheme.outlineVariant)),
       ),
       children:
           [
