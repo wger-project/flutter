@@ -91,7 +91,7 @@ sealed class AppSettings with _$AppSettings {
     /// When true, the app palette follows the platform dynamic colors
     /// (system wallpaper on Android 12+) instead of the fixed wger seeds.
     /// A no-op on platforms without dynamic color support.
-    @Default(false) bool useDynamicColor,
+    @Default(USE_DYNAMIC_COLOR_DEFAULT) bool useDynamicColor,
   }) = _AppSettings;
 }
 
@@ -230,7 +230,7 @@ class AppSettingsNotifier extends _$AppSettingsNotifier {
   //
 
   Future<bool> _loadUseDynamicColor() async =>
-      (await _prefs.getBool(PREFS_USE_DYNAMIC_COLOR)) ?? false;
+      (await _prefs.getBool(PREFS_USE_DYNAMIC_COLOR)) ?? USE_DYNAMIC_COLOR_DEFAULT;
 
   Future<void> setUseDynamicColor(bool value) async {
     final current = state.asData?.value ?? const AppSettings();

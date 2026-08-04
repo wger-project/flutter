@@ -17,6 +17,7 @@
  */
 
 import 'package:dynamic_color/dynamic_color.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -37,3 +38,20 @@ final dynamicColorAvailableProvider = FutureProvider<bool>((ref) async {
     return false;
   }
 });
+
+/// The color to seed the app themes from, or null to keep the fixed palette.
+///
+/// Null whenever the setting is off or the platform returned nothing. A single
+/// seed drives both brightnesses: re-tonalising normalises the hue, so it does
+/// not matter which of the two platform schemes it is taken from.
+Color? appThemeSeed({
+  required bool useDynamicColor,
+  required ColorScheme? lightDynamic,
+  required ColorScheme? darkDynamic,
+}) {
+  if (!useDynamicColor) {
+    return null;
+  }
+
+  return (lightDynamic ?? darkDynamic)?.primary;
+}

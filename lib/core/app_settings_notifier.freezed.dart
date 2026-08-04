@@ -213,7 +213,7 @@ return $default(_that.themeMode,_that.dashboardItems,_that.userLocale,_that.keep
 
 
 class _AppSettings implements AppSettings {
-  const _AppSettings({this.themeMode = ThemeMode.system, final  List<DashboardItem> dashboardItems = const [], this.userLocale, this.keepDataOnLogout = KEEP_DATA_ON_LOGOUT_DEFAULT, this.allowSelfSignedCerts = ALLOW_SELF_SIGNED_CERTS_DEFAULT, this.useDynamicColor = false}): _dashboardItems = dashboardItems;
+  const _AppSettings({this.themeMode = ThemeMode.system, final  List<DashboardItem> dashboardItems = const [], this.userLocale, this.keepDataOnLogout = KEEP_DATA_ON_LOGOUT_DEFAULT, this.allowSelfSignedCerts = ALLOW_SELF_SIGNED_CERTS_DEFAULT, this.useDynamicColor = USE_DYNAMIC_COLOR_DEFAULT}): _dashboardItems = dashboardItems;
   
 
 @override@JsonKey() final  ThemeMode themeMode;

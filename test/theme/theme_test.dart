@@ -60,6 +60,25 @@ void main() {
       }
     });
 
+    test('high contrast spreads the palette further apart', () {
+      double contrast(Color a, Color b) {
+        final values = [a.computeLuminance(), b.computeLuminance()]..sort();
+
+        return (values.last + 0.05) / (values.first + 0.05);
+      }
+
+      for (final brightness in Brightness.values) {
+        final normal = wgerThemeFromSeed(seed, brightness).colorScheme;
+        final hc = wgerThemeFromSeed(seed, brightness, highContrast: true).colorScheme;
+
+        expect(
+          contrast(hc.onSurface, hc.surface),
+          greaterThan(contrast(normal.onSurface, normal.surface)),
+          reason: 'no extra contrast in $brightness',
+        );
+      }
+    });
+
     test('keeps the wger typography', () {
       final theme = wgerThemeFromSeed(seed, Brightness.light);
 

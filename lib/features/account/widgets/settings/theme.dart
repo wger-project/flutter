@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/core/app_settings_notifier.dart';
+import 'package:wger/core/consts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/theme/dynamic_color.dart';
 
@@ -14,7 +15,7 @@ class SettingsTheme extends ConsumerWidget {
       appSettingsProvider.select((s) => s.value?.themeMode ?? ThemeMode.system),
     );
     final useDynamicColor = ref.watch(
-      appSettingsProvider.select((s) => s.value?.useDynamicColor ?? false),
+      appSettingsProvider.select((s) => s.value?.useDynamicColor ?? USE_DYNAMIC_COLOR_DEFAULT),
     );
     // Hidden while the probe is still running and where it comes back negative:
     // the toggle does nothing on a platform without a dynamic palette.

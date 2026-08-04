@@ -154,13 +154,20 @@ final wgerDarkThemeHc = FlexThemeData.dark(
 /// Builds a wger theme for [brightness] with the palette generated from [seed],
 /// e.g. the platform's dynamic color. Sub-themes, app bar style and typography
 /// match the fixed themes, so only the hues change.
-ThemeData wgerThemeFromSeed(Color seed, Brightness brightness) {
+///
+/// With [highContrast] the palette is spread over a wider tonal range, matching
+/// the fixed high contrast themes the OS accessibility setting switches to.
+ThemeData wgerThemeFromSeed(
+  Color seed,
+  Brightness brightness, {
+  bool highContrast = false,
+}) {
   final isDark = brightness == Brightness.dark;
   return (isDark ? FlexThemeData.dark : FlexThemeData.light)(
     colorScheme: SeedColorScheme.fromSeeds(
       primaryKey: seed,
       brightness: brightness,
-      tones: FlexTones.vivid(brightness),
+      tones: highContrast ? FlexTones.ultraContrast(brightness) : FlexTones.vivid(brightness),
     ),
     useMaterial3: true,
     appBarStyle: isDark ? null : FlexAppBarStyle.primary,

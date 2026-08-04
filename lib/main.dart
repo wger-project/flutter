@@ -71,6 +71,7 @@ import 'package:wger/features/routines/screens/settings_plates_screen.dart';
 import 'package:wger/features/trophies/screens/trophy_screen.dart';
 import 'package:wger/features/weight/screens/weight_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/theme/dynamic_color.dart';
 import 'package:wger/theme/theme.dart';
 
 void _setupLogging() {
@@ -196,7 +197,7 @@ class MainApp extends ConsumerWidget {
       appSettingsProvider.select((s) => s.value?.userLocale),
     );
     final useDynamicColor = ref.watch(
-      appSettingsProvider.select((s) => s.value?.useDynamicColor ?? false),
+      appSettingsProvider.select((s) => s.value?.useDynamicColor ?? USE_DYNAMIC_COLOR_DEFAULT),
     );
 
     // Above the auth switch so the platform call is already in flight while the
@@ -204,15 +205,21 @@ class MainApp extends ConsumerWidget {
     // fixed palette and then repaints.
     return DynamicColorBuilder(
       builder: (lightDynamic, darkDynamic) {
-        // One seed drives both themes: re-tonalising normalises the hue, so it
-        // doesn't matter which of the two schemes it comes from.
-        final seed = (lightDynamic ?? darkDynamic)?.primary;
-        final light = useDynamicColor && seed != null
-            ? wgerThemeFromSeed(seed, Brightness.light)
-            : wgerLightTheme;
-        final dark = useDynamicColor && seed != null
-            ? wgerThemeFromSeed(seed, Brightness.dark)
-            : wgerDarkTheme;
+        final seed = appThemeSeed(
+          useDynamicColor: useDynamicColor,
+          lightDynamic: lightDynamic,
+          darkDynamic: darkDynamic,
+        );
+        final light = seed == null ? wgerLightTheme : wgerThemeFromSeed(seed, Brightness.light);
+        final dark = seed == null ? wgerDarkTheme : wgerThemeFromSeed(seed, Brightness.dark);
+        // The OS accessibility setting swaps to these, so they follow the seed
+        // too rather than dropping back to the fixed palette.
+        final lightHc = seed == null
+            ? wgerLightThemeHc
+            : wgerThemeFromSeed(seed, Brightness.light, highContrast: true);
+        final darkHc = seed == null
+            ? wgerDarkThemeHc
+            : wgerThemeFromSeed(seed, Brightness.dark, highContrast: true);
 
         return authAsync.when(
           loading: () => MaterialApp(
@@ -236,8 +243,8 @@ class MainApp extends ConsumerWidget {
               scaffoldMessengerKey: scaffoldMessengerKey,
               theme: light,
               darkTheme: dark,
-              highContrastTheme: wgerLightThemeHc,
-              highContrastDarkTheme: wgerDarkThemeHc,
+              highContrastTheme: lightHc,
+              highContrastDarkTheme: darkHc,
               themeMode: themeMode,
               locale: userLocale,
               home: _getHomeScreen(authState),
