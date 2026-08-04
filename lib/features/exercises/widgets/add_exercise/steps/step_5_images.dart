@@ -203,13 +203,17 @@ class _Step5ImagesState extends ConsumerState<Step5Images> with ExerciseImagePic
                 return Column(
                   children: [
                     const SizedBox(height: 20),
-                    Icon(Icons.add_photo_alternate, size: 80, color: Colors.grey.shade400),
+                    Icon(
+                      Icons.add_photo_alternate,
+                      size: 80,
+                      color: Theme.of(context).colorScheme.outline,
+                    ),
                     const SizedBox(height: 16),
                     Text(
                       'No images selected',
-                      style: Theme.of(
-                        context,
-                      ).textTheme.titleMedium?.copyWith(color: Colors.grey.shade600),
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
                     ),
                     const SizedBox(height: 24),
                     // Camera and Gallery buttons
@@ -240,9 +244,9 @@ class _Step5ImagesState extends ConsumerState<Step5Images> with ExerciseImagePic
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: Text(
                         'Only JPEG, PNG and WEBP files below 20 MB are supported',
-                        style: Theme.of(
-                          context,
-                        ).textTheme.bodySmall?.copyWith(color: Colors.grey.shade600),
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
                         textAlign: TextAlign.center,
                       ),
                     ),

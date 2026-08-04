@@ -28,7 +28,6 @@ import 'package:wger/features/account/models/user_profile.dart';
 import 'package:wger/features/account/providers/account_notifier.dart';
 import 'package:wger/features/account/providers/user_profile_notifier.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/theme/theme.dart';
 
 /// Shows the user's account data and lets them edit the profile preferences.
 ///
@@ -83,7 +82,7 @@ class _UserProfileFormState extends ConsumerState<UserProfileForm> {
       child: Column(
         children: [
           ListTile(
-            leading: const Icon(Icons.person, color: wgerPrimaryColor),
+            leading: Icon(Icons.person, color: Theme.of(context).colorScheme.primary),
             title: Text(i18n.username),
             subtitle: Text(account.username),
           ),
@@ -99,7 +98,7 @@ class _UserProfileFormState extends ConsumerState<UserProfileForm> {
             dense: true,
           ),
           ListTile(
-            leading: const Icon(Icons.email_rounded, color: wgerPrimaryColor),
+            leading: Icon(Icons.email_rounded, color: Theme.of(context).colorScheme.primary),
             title: TextFormField(
               decoration: InputDecoration(
                 labelText: account.emailVerified ? i18n.verifiedEmail : i18n.unVerifiedEmail,
@@ -135,7 +134,7 @@ class _UserProfileFormState extends ConsumerState<UserProfileForm> {
           const Divider(height: 32),
           ListTile(
             key: const Key('manageAccountOnWebTile'),
-            leading: const Icon(Icons.open_in_new, color: wgerPrimaryColor),
+            leading: Icon(Icons.open_in_new, color: Theme.of(context).colorScheme.primary),
             title: Text(i18n.manageAccountOnWeb),
             subtitle: Text(i18n.manageAccountOnWebSubtitle),
             enabled: isOnline,

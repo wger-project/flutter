@@ -179,7 +179,10 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
                     child: SingleChildScrollView(
                       child: Text(
                         fullStackTrace,
-                        style: TextStyle(fontSize: 12.0, color: Colors.grey[700]),
+                        style: TextStyle(
+                          fontSize: 12.0,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
                       ),
                     ),
                   ),
@@ -201,7 +204,10 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
                           ...applicationLogs.map(
                             (entry) => Text(
                               entry,
-                              style: TextStyle(fontSize: 12.0, color: Colors.grey[700]),
+                              style: TextStyle(
+                                fontSize: 12.0,
+                                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                              ),
                             ),
                           ),
                         ],

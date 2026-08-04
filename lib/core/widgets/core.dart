@@ -51,7 +51,7 @@ class Pill extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
       decoration: BoxDecoration(
         color: Theme.of(context).primaryColorLight.withValues(alpha: 0.15),
-        border: Border.all(color: Colors.grey[300]!),
+        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
         borderRadius: BorderRadius.circular(5),
       ),
       child: Text(title),
@@ -63,14 +63,15 @@ class CircleIconAvatar extends StatelessWidget {
   final double radius;
   final Icon _icon;
 
-  final Color color;
+  /// Defaults to the theme's highest container tone.
+  final Color? color;
 
-  const CircleIconAvatar(this._icon, {this.radius = 20, this.color = Colors.black12});
+  const CircleIconAvatar(this._icon, {this.radius = 20, this.color});
 
   @override
   Widget build(BuildContext context) {
     return CircleAvatar(
-      backgroundColor: color,
+      backgroundColor: color ?? Theme.of(context).colorScheme.surfaceContainerHighest,
       radius: radius,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(50.0),

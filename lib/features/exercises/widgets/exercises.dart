@@ -206,7 +206,9 @@ class _CarouselImagesState extends State<CarouselImages> {
                 height: 8,
                 width: 8,
                 decoration: BoxDecoration(
-                  color: pageIndex == index ? Colors.black : Colors.black26,
+                  color: pageIndex == index
+                      ? Theme.of(context).colorScheme.primary
+                      : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.26),
                   shape: BoxShape.circle,
                 ),
               ),

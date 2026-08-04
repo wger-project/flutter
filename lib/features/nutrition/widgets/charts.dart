@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -53,6 +53,10 @@ class FlNutritionalPlanGoalWidget extends StatelessWidget {
     double? plan,
     double val,
   ) {
+    // Four gauges of the same measure, not four categories, so they share the
+    // theme's primary rather than pulling from the chart palette.
+    final barColor = Theme.of(context).colorScheme.primary;
+
     Container segment(double width, Color color) {
       return Container(
         height: 16,
@@ -66,7 +70,7 @@ class FlNutritionalPlanGoalWidget extends StatelessWidget {
 
     // paint a simple bar
     if (plan == null || val == plan) {
-      return segment(normWidth, LIST_OF_COLORS8[0]);
+      return segment(normWidth, barColor);
     }
 
     // paint a surplus
@@ -74,7 +78,7 @@ class FlNutritionalPlanGoalWidget extends StatelessWidget {
       return Stack(
         children: [
           segment(normWidth * val / plan, COLOR_SURPLUS),
-          segment(normWidth, LIST_OF_COLORS8[0]),
+          segment(normWidth, barColor),
         ],
       );
     }
@@ -83,7 +87,7 @@ class FlNutritionalPlanGoalWidget extends StatelessWidget {
     return Stack(
       children: [
         segment(normWidth, Theme.of(context).colorScheme.surface),
-        segment(normWidth * val / plan, LIST_OF_COLORS8[0]),
+        segment(normWidth * val / plan, barColor),
       ],
     );
   }
@@ -212,6 +216,9 @@ class FlNutritionalPlanPieChartWidget extends StatefulWidget {
 class FlNutritionalPlanPieChartState extends State<FlNutritionalPlanPieChartWidget> {
   int touchedIndex = -1;
 
+  /// Shared by the sections and the legend so both stay in sync.
+  List<Color> get _macroColors => chartColorPalette(3, Theme.of(context).colorScheme);
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -248,9 +255,9 @@ class FlNutritionalPlanPieChartState extends State<FlNutritionalPlanPieChartWidg
           crossAxisAlignment: CrossAxisAlignment.start,
           children:
               [
-                    (AppLocalizations.of(context).protein, LIST_OF_COLORS3[1]),
-                    (AppLocalizations.of(context).carbohydrates, LIST_OF_COLORS3[0]),
-                    (AppLocalizations.of(context).fat, LIST_OF_COLORS3[2]),
+                    (AppLocalizations.of(context).protein, _macroColors[1]),
+                    (AppLocalizations.of(context).carbohydrates, _macroColors[0]),
+                    (AppLocalizations.of(context).fat, _macroColors[2]),
                   ]
                   .map(
                     (e) => Padding(
@@ -267,9 +274,9 @@ class FlNutritionalPlanPieChartState extends State<FlNutritionalPlanPieChartWidg
 
   List<PieChartSectionData> showingSections() {
     return [
-      (0, LIST_OF_COLORS3[1], widget.nutritionalValues.protein),
-      (1, LIST_OF_COLORS3[0], widget.nutritionalValues.carbohydrates),
-      (2, LIST_OF_COLORS3[2], widget.nutritionalValues.fat),
+      (0, _macroColors[1], widget.nutritionalValues.protein),
+      (1, _macroColors[0], widget.nutritionalValues.carbohydrates),
+      (2, _macroColors[2], widget.nutritionalValues.fat),
     ].map((e) {
       final isTouched = e.$1 == touchedIndex;
       final radius = isTouched ? 92.0 : 80.0;
@@ -278,6 +285,8 @@ class FlNutritionalPlanPieChartState extends State<FlNutritionalPlanPieChartWidg
         color: e.$2,
         value: e.$3,
         title: '${e.$3.toStringAsFixed(0)}g',
+        // Merged onto the ambient style, so only the color is overridden.
+        titleStyle: TextStyle(color: onChartColor(e.$2)),
         titlePositionPercentageOffset: 0.5,
         radius: radius,
       );
@@ -336,7 +345,10 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
     final loggedToday = widget._nutritionalPlan.loggedNutritionalValuesToday;
     final logged7DayAvg = widget._nutritionalPlan.loggedNutritionalValues7DayAvg;
 
-    final [colorPlanned, colorLoggedToday, colorLogged7Day] = LIST_OF_COLORS3;
+    final [colorPlanned, colorLoggedToday, colorLogged7Day] = chartColorPalette(
+      3,
+      Theme.of(context).colorScheme,
+    );
 
     BarChartGroupData barchartGroup(
       int x,
@@ -424,8 +436,8 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
                   gridData: FlGridData(
                     show: true,
                     checkToShowHorizontalLine: (value) => value % 10 == 0,
-                    getDrawingHorizontalLine: (value) => const FlLine(
-                      color: Colors.black,
+                    getDrawingHorizontalLine: (value) => FlLine(
+                      color: Theme.of(context).colorScheme.outlineVariant,
                       strokeWidth: 1,
                     ),
                     drawVerticalLine: false,
@@ -570,8 +582,8 @@ class MealDiaryBarChartWidgetState extends State<MealDiaryBarChartWidget> {
                 ),
                 gridData: FlGridData(
                   show: true,
-                  getDrawingHorizontalLine: (value) => const FlLine(
-                    color: Colors.black,
+                  getDrawingHorizontalLine: (value) => FlLine(
+                    color: Theme.of(context).colorScheme.outlineVariant,
                     strokeWidth: 1,
                   ),
                   drawVerticalLine: false,
@@ -586,7 +598,7 @@ class MealDiaryBarChartWidgetState extends State<MealDiaryBarChartWidget> {
                     barRods: [
                       BarChartRodData(
                         toY: _safePercent(widget._logged.energy, widget._planned.energy),
-                        color: LIST_OF_COLORS3.first,
+                        color: Theme.of(context).colorScheme.primary,
                         width: barsWidth,
                       ),
                     ],
@@ -597,7 +609,7 @@ class MealDiaryBarChartWidgetState extends State<MealDiaryBarChartWidget> {
                     barRods: [
                       BarChartRodData(
                         toY: _safePercent(widget._logged.protein, widget._planned.protein),
-                        color: LIST_OF_COLORS3.first,
+                        color: Theme.of(context).colorScheme.primary,
                         width: barsWidth,
                       ),
                     ],
@@ -611,7 +623,7 @@ class MealDiaryBarChartWidgetState extends State<MealDiaryBarChartWidget> {
                           widget._logged.carbohydrates,
                           widget._planned.carbohydrates,
                         ),
-                        color: LIST_OF_COLORS3.first,
+                        color: Theme.of(context).colorScheme.primary,
                         width: barsWidth,
                       ),
                     ],
@@ -622,7 +634,7 @@ class MealDiaryBarChartWidgetState extends State<MealDiaryBarChartWidget> {
                     barRods: [
                       BarChartRodData(
                         toY: _safePercent(widget._logged.fat, widget._planned.fat),
-                        color: LIST_OF_COLORS3.first,
+                        color: Theme.of(context).colorScheme.primary,
                         width: barsWidth,
                       ),
                     ],

@@ -19,6 +19,7 @@
 import 'package:collection/collection.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:wger/core/colors.dart';
 import 'package:wger/features/routines/models/log.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
@@ -44,31 +45,12 @@ class MuscleGroupsCard extends StatelessWidget {
     }
     final muscleCounts = allMuscles.groupListsBy((muscle) => muscle.nameTranslated(context));
     final total = allMuscles.length;
+    final colors = chartColorPalette(muscleCounts.length, Theme.of(context).colorScheme);
 
-    int colorIndex = 0;
-    final colors = [
-      Colors.blue,
-      Colors.green,
-      Colors.orange,
-      Colors.purple,
-      Colors.red,
-      Colors.teal,
-      Colors.deepOrange,
-      Colors.indigo,
-      Colors.pink,
-      Colors.brown,
-      Colors.cyan,
-      Colors.lime,
-      Colors.amber,
-      Colors.lightGreen,
-      Colors.deepPurple,
-    ];
-
-    return muscleCounts.entries.map((entry) {
+    return muscleCounts.entries.mapIndexed((index, entry) {
       final percentage = (entry.value.length / total) * 100;
-      final color = colors[colorIndex % colors.length];
-      colorIndex++;
-      return MuscleGroup(entry.key, percentage, color);
+
+      return MuscleGroup(entry.key, percentage, colors[index]);
     }).toList();
   }
 
@@ -102,7 +84,7 @@ class MuscleGroupsCard extends StatelessWidget {
                       titleStyle: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
-                        color: theme.colorScheme.onPrimary,
+                        color: onChartColor(muscle.color),
                       ),
                     );
                   }).toList(),

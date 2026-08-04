@@ -44,12 +44,12 @@ class FormProgressIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const SizedBox(
+    return SizedBox(
       height: 20,
       width: 20,
-      child: CircularProgressIndicator(
-        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-      ),
+      // Takes the surrounding foreground: the label color inside a button, the
+      // leading icon color inside a ListTile.
+      child: CircularProgressIndicator(color: IconTheme.of(context).color),
     );
   }
 }
