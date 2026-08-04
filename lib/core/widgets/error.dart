@@ -154,7 +154,11 @@ class _PlainErrorBody extends StatelessWidget {
             const SizedBox(height: 8),
             SelectableText(
               stacktrace.toString(),
-              style: const TextStyle(fontFamily: 'monospace', fontSize: 11, color: Colors.grey),
+              style: TextStyle(
+                fontFamily: 'monospace',
+                fontSize: 11,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
             ),
           ],
         ],
