@@ -84,10 +84,10 @@ class _LogChartWidgetFlState extends State<LogChartWidgetFl> {
         show: true,
         drawVerticalLine: true,
         getDrawingHorizontalLine: (value) {
-          return const FlLine(color: Colors.grey, strokeWidth: 1);
+          return FlLine(color: Theme.of(context).colorScheme.outlineVariant, strokeWidth: 1);
         },
         getDrawingVerticalLine: (value) {
-          return const FlLine(color: Colors.grey, strokeWidth: 1);
+          return FlLine(color: Theme.of(context).colorScheme.outlineVariant, strokeWidth: 1);
         },
       ),
       titlesData: FlTitlesData(
@@ -139,11 +139,15 @@ class _LogChartWidgetFlState extends State<LogChartWidgetFl> {
       ),
       borderData: FlBorderData(
         show: true,
-        border: Border.all(color: const Color(0xff37434d)),
+        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
       ),
       lineBarsData: [
         ...widget._data.keys.map((reps) {
           colors.moveNext();
+          // Captured: getDotPainter runs while painting, when the shared
+          // iterator has already moved on to the last series.
+          final color = colors.current;
+
           return LineChartBarData(
             spots: [
               ...widget._data[reps]!.map(
@@ -154,14 +158,14 @@ class _LogChartWidgetFlState extends State<LogChartWidgetFl> {
               ),
             ],
             isCurved: true,
-            color: colors.current,
+            color: color,
             barWidth: 2,
             isStrokeCapRound: true,
             dotData: FlDotData(
               show: true,
               getDotPainter: (p0, p1, p2, p3) => FlDotCirclePainter(
                 radius: 2,
-                color: Colors.black,
+                color: color,
                 strokeWidth: 0,
               ),
             ),

@@ -114,10 +114,10 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
         // horizontalInterval: 1,
         // verticalInterval: 1,
         getDrawingHorizontalLine: (value) {
-          return FlLine(color: Theme.of(context).colorScheme.primaryContainer, strokeWidth: 1);
+          return FlLine(color: Theme.of(context).colorScheme.outlineVariant, strokeWidth: 1);
         },
         getDrawingVerticalLine: (value) {
-          return FlLine(color: Theme.of(context).colorScheme.primaryContainer, strokeWidth: 1);
+          return FlLine(color: Theme.of(context).colorScheme.outlineVariant, strokeWidth: 1);
         },
       ),
       titlesData: FlTitlesData(
@@ -177,7 +177,7 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
       ),
       borderData: FlBorderData(
         show: true,
-        border: Border.all(color: Theme.of(context).colorScheme.primaryContainer),
+        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
       ),
       lineBarsData: [
         LineChartBarData(
