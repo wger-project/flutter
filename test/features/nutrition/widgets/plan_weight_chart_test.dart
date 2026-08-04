@@ -40,10 +40,16 @@ void main() {
 
   setUp(() {
     mockMeasurementRepo = MockMeasurementRepository();
-    when(mockMeasurementRepo.watchAll()).thenAnswer(
-      (_) => Stream.value([
+    // The chart reads the official category through bodyWeightCategoryProvider,
+    // not the whole list
+    when(
+      mockMeasurementRepo.watchOfficialBodyWeightCategory(
+        entriesSince: anyNamed('entriesSince'),
+      ),
+    ).thenAnswer(
+      (_) => Stream.value(
         getBodyWeightCategory([testWeightEntry2, testWeightEntry1, testWeightEntryLb]),
-      ]),
+      ),
     );
 
     mockUserProfileRepo = MockUserProfileRepository();

@@ -221,6 +221,15 @@ void main() {
   });
 
   group('watchOfficialBodyWeightCategory', () {
+    /// The entries with their dates back in UTC.
+    ///
+    /// Drift hands them over in the local zone (UtcDateTimeConverter), and a
+    /// DateTime only equals another one in the same zone, so comparing against
+    /// the UTC fixtures passes in UTC and nowhere else.
+    List<MeasurementEntry> inUtc(Iterable<MeasurementEntry> entries) => [
+      for (final entry in entries) entry.copyWith(date: entry.date.toUtc()),
+    ];
+
     Future<void> seedBodyWeight() async {
       await repo.addLocalDriftCategory(getBodyWeightCategory());
       for (final entry in [testWeightEntry1, testWeightEntry2]) {
@@ -235,7 +244,7 @@ void main() {
       final emitted = await repo.watchOfficialBodyWeightCategory().first;
 
       expect(emitted!.id, testBodyWeightCategoryId);
-      expect(emitted.entries, [testWeightEntry2, testWeightEntry1]);
+      expect(inUtc(emitted.entries), [testWeightEntry2, testWeightEntry1]);
     });
 
     test('a category of the same type that is not official is ignored', () async {
@@ -267,7 +276,7 @@ void main() {
           .watchOfficialBodyWeightCategory(entriesSince: DateTime.utc(2021, 01, 05))
           .first;
 
-      expect(emitted!.entries, [testWeightEntry2]);
+      expect(inUtc(emitted!.entries), [testWeightEntry2]);
     });
   });
 
