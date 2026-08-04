@@ -87,6 +87,11 @@ sealed class AppSettings with _$AppSettings {
     /// When true, an invalid TLS certificate is accepted from the self-hosted
     /// server the app is configured for. Never applies to the official servers.
     @Default(ALLOW_SELF_SIGNED_CERTS_DEFAULT) bool allowSelfSignedCerts,
+
+    /// When true, the app palette follows the platform dynamic colors
+    /// (system wallpaper on Android 12+) instead of the fixed wger seeds.
+    /// A no-op on platforms without dynamic color support.
+    @Default(USE_DYNAMIC_COLOR_DEFAULT) bool useDynamicColor,
   }) = _AppSettings;
 }
 
@@ -107,12 +112,14 @@ class AppSettingsNotifier extends _$AppSettingsNotifier {
     final items = await _loadDashboardItems();
     final keepDataOnLogout = await _loadKeepDataOnLogout();
     final allowSelfSignedCerts = await _loadAllowSelfSignedCerts();
+    final useDynamicColor = await _loadUseDynamicColor();
     return AppSettings(
       themeMode: themeMode,
       userLocale: userLocale,
       dashboardItems: items,
       keepDataOnLogout: keepDataOnLogout,
       allowSelfSignedCerts: allowSelfSignedCerts,
+      useDynamicColor: useDynamicColor,
     );
   }
 
@@ -216,6 +223,19 @@ class AppSettingsNotifier extends _$AppSettingsNotifier {
     state = AsyncData(current.copyWith(allowSelfSignedCerts: value));
     WgerHttpOverrides.allowSelfSignedCerts = value;
     await _prefs.setBool(PREFS_ALLOW_SELF_SIGNED_CERTS, value);
+  }
+
+  //
+  // Use dynamic color
+  //
+
+  Future<bool> _loadUseDynamicColor() async =>
+      (await _prefs.getBool(PREFS_USE_DYNAMIC_COLOR)) ?? USE_DYNAMIC_COLOR_DEFAULT;
+
+  Future<void> setUseDynamicColor(bool value) async {
+    final current = state.asData?.value ?? const AppSettings();
+    state = AsyncData(current.copyWith(useDynamicColor: value));
+    await _prefs.setBool(PREFS_USE_DYNAMIC_COLOR, value);
   }
 
   //

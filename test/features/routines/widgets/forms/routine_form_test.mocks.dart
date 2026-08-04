@@ -8,6 +8,8 @@ import 'dart:async' as _i9;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:wger/core/language.dart' as _i20;
 import 'package:wger/core/search_options.dart' as _i14;
+import 'package:wger/features/account/models/user_profile.dart' as _i22;
+import 'package:wger/features/account/providers/user_profile_repository.dart' as _i21;
 import 'package:wger/features/exercises/models/category.dart' as _i16;
 import 'package:wger/features/exercises/models/equipment.dart' as _i18;
 import 'package:wger/features/exercises/models/exercise_filters.dart' as _i15;
@@ -417,4 +419,30 @@ class MockExerciseRepository extends _i1.Mock implements _i13.ExerciseRepository
             returnValue: _i9.Stream<List<_i20.Language>>.empty(),
           )
           as _i9.Stream<List<_i20.Language>>);
+}
+
+/// A class which mocks [UserProfileRepository].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockUserProfileRepository extends _i1.Mock implements _i21.UserProfileRepository {
+  MockUserProfileRepository() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i9.Stream<_i22.UserProfile?> watchDrift() =>
+      (super.noSuchMethod(
+            Invocation.method(#watchDrift, []),
+            returnValue: _i9.Stream<_i22.UserProfile?>.empty(),
+          )
+          as _i9.Stream<_i22.UserProfile?>);
+
+  @override
+  _i9.Future<void> editLocalDrift(_i22.UserProfile? profile) =>
+      (super.noSuchMethod(
+            Invocation.method(#editLocalDrift, [profile]),
+            returnValue: _i9.Future<void>.value(),
+            returnValueForMissingStub: _i9.Future<void>.value(),
+          )
+          as _i9.Future<void>);
 }

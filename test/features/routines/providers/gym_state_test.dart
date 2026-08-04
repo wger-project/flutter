@@ -20,14 +20,20 @@ import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/core/shared_preferences.dart';
+import 'package:wger/features/account/models/user_profile.dart';
+import 'package:wger/features/account/providers/user_profile_notifier.dart';
+import 'package:wger/features/account/providers/user_profile_repository.dart';
 import 'package:wger/features/routines/providers/gym_state.dart';
 import 'package:wger/features/routines/providers/gym_state_notifier.dart';
+import 'package:wger/features/routines/providers/routines_notifier.dart';
 
 import '../../../../test_data/exercises.dart';
 import '../../../../test_data/routines.dart';
+import '../helpers/routine_form_test_overrides.dart';
 
 void main() {
   late GymStateNotifier notifier;
@@ -168,6 +174,52 @@ void main() {
 
       // Assert
       expect(notifier.state.pages[1].exercises.first.id, testSquats.id);
+    });
+  });
+
+  group('GymStateNotifier.addExerciseAfterPage', () {
+    test('Stamps the profile default weight unit on the ad-hoc set configs', () async {
+      // Ad-hoc exercises bypass routine hydration, so the notifier itself
+      // resolves the profile default: lb (id 2) for an imperial user.
+      final profileRepo = MockUserProfileRepository();
+      when(
+        profileRepo.watchDrift(),
+      ).thenAnswer((_) => Stream.value(UserProfile(id: 1, weightUnitStr: 'lb')));
+
+      final imperialContainer = ProviderContainer.test(
+        overrides: [
+          userProfileRepositoryProvider.overrideWithValue(profileRepo),
+          routineWeightUnitProvider.overrideWith((ref) => Stream.value(testWeightUnits)),
+        ],
+      );
+      // Let both streams emit before the notifier reads them (in the app the
+      // dashboard keeps them alive long before gym mode starts).
+      imperialContainer.listen(userProfileProvider, (_, _) {});
+      imperialContainer.listen(routineWeightUnitProvider, (_, _) {});
+      await pumpEventQueue();
+
+      final imperialNotifier = imperialContainer.read(gymStateProvider.notifier);
+      imperialNotifier.state = imperialNotifier.state.copyWith(
+        showExercisePages: true,
+        showTimerPages: true,
+        dayId: 1,
+        iteration: 1,
+        routine: getTestRoutine(),
+      );
+      imperialNotifier.calculatePages();
+      final setPage = imperialNotifier.state.pages.firstWhere((p) => p.type == PageType.set);
+
+      imperialNotifier.addExerciseAfterPage(setPage.uuid, newExercise: testSquats);
+
+      // recalculateIndices copies the page objects, so look the page up by uuid.
+      final pages = imperialNotifier.state.pages;
+      final newPage = pages[pages.indexWhere((p) => p.uuid == setPage.uuid) + 1];
+      expect(newPage.slotPages, isNotEmpty);
+      for (final slotPage in newPage.slotPages) {
+        // testWeightUnit2 has id 2 == WEIGHT_UNIT_LB.
+        expect(slotPage.setConfigData!.weightUnit, testWeightUnit2);
+        expect(slotPage.setConfigData!.weightUnitId, isNull);
+      }
     });
   });
 

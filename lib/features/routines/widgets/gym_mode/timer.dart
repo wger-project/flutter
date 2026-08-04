@@ -24,7 +24,6 @@ import 'package:intl/intl.dart';
 import 'package:wger/features/routines/providers/gym_state_notifier.dart';
 import 'package:wger/features/routines/widgets/gym_mode/navigation.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/theme/theme.dart';
 
 class TimerWidget extends StatefulWidget {
   final PageController _controller;
@@ -75,7 +74,9 @@ class _TimerWidgetState extends State<TimerWidget> {
           child: Center(
             child: Text(
               DateFormat('m:ss').format(displayTime),
-              style: Theme.of(context).textTheme.displayLarge!.copyWith(color: wgerPrimaryColor),
+              style: Theme.of(
+                context,
+              ).textTheme.displayLarge!.copyWith(color: Theme.of(context).colorScheme.primary),
             ),
           ),
         ),
@@ -155,7 +156,9 @@ class _TimerCountdownWidgetState extends ConsumerState<TimerCountdownWidget> {
             children: [
               Text(
                 DateFormat('m:ss').format(displayTime),
-                style: Theme.of(context).textTheme.displayLarge!.copyWith(color: wgerPrimaryColor),
+                style: Theme.of(
+                  context,
+                ).textTheme.displayLarge!.copyWith(color: Theme.of(context).colorScheme.primary),
               ),
               const SizedBox(height: 16),
             ],

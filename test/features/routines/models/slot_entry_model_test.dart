@@ -52,6 +52,13 @@ void main() {
     expect(slotEntry.maxRestTimeConfigs.length, 1);
   });
 
+  test('withData leaves the weight unit unset so the profile default applies', () {
+    final slotEntry = SlotEntry.withData(slotId: 1, exercise: testSquats);
+
+    expect(slotEntry.weightUnitId, isNull);
+    expect(slotEntry.weightUnitObj, isNull);
+  });
+
   test('Checks that an empty model correctly calculates hasProgressionRules', () {
     final slotEntry = SlotEntry.empty();
     expect(slotEntry.hasProgressionRules, false);

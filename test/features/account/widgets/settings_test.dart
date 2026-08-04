@@ -28,6 +28,7 @@ import 'package:wger/features/account/widgets/settings.dart';
 import 'package:wger/features/health/providers/health_repository.dart';
 import 'package:wger/features/health/providers/health_sync.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/theme/dynamic_color.dart';
 
 import 'settings_test.mocks.dart';
 
@@ -64,11 +65,14 @@ void main() {
     ).thenAnswer((_) async {});
   });
 
-  Widget createSettingsScreen({locale = 'en'}) {
+  Widget createSettingsScreen({locale = 'en', bool dynamicColorAvailable = true}) {
     return riverpod.ProviderScope(
       overrides: [
         appSettingsPrefsProvider.overrideWithValue(mockSharedPreferences),
         healthSyncProvider.overrideWith(_FakeHealthSyncNotifier.new),
+        // The plugin has no test implementation and would report the toggle as
+        // unsupported, which hides it.
+        dynamicColorAvailableProvider.overrideWith((ref) async => dynamicColorAvailable),
       ],
       child: MaterialApp(
         locale: Locale(locale),
@@ -89,6 +93,38 @@ void main() {
       await tester.pumpAndSettle();
 
       verify(mockSharedPreferences.setBool(PREFS_USER_DARK_THEME, false)).called(1);
+    });
+
+    testWidgets('toggling dynamic color persists the preference', (WidgetTester tester) async {
+      await tester.pumpWidget(createSettingsScreen());
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const ValueKey('useDynamicColorSwitch')));
+      await tester.pumpAndSettle();
+
+      verify(mockSharedPreferences.setBool(PREFS_USE_DYNAMIC_COLOR, true)).called(1);
+    });
+
+    testWidgets('dynamic color switch reflects a stored preference', (WidgetTester tester) async {
+      when(mockSharedPreferences.getBool(PREFS_USE_DYNAMIC_COLOR)).thenAnswer((_) async => true);
+
+      await tester.pumpWidget(createSettingsScreen());
+      await tester.pumpAndSettle();
+
+      final switchWidget = tester.widget<SwitchListTile>(
+        find.byKey(const ValueKey('useDynamicColorSwitch')),
+      );
+      expect(switchWidget.value, true);
+    });
+
+    testWidgets('dynamic color switch is hidden where the platform has none', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(createSettingsScreen(dynamicColorAvailable: false));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const ValueKey('useDynamicColorSwitch')), findsNothing);
+      expect(find.byKey(const ValueKey('themeModeDropdown')), findsOneWidget);
     });
   });
 

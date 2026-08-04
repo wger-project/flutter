@@ -27,6 +27,7 @@ import 'package:wger/core/consts.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/core/widgets/form_submit_button.dart';
+import 'package:wger/features/account/providers/user_profile_repository.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/exercises/providers/exercise_repository.dart';
 import 'package:wger/features/exercises/providers/exercises_notifier.dart';
@@ -46,13 +47,19 @@ import '../../../../../test_data/routines.dart';
 import '../../../../fake_connectivity.dart';
 import './routine_form_test.mocks.dart';
 
-@GenerateMocks([RoutinesRepository, WorkoutSessionRepository, ExerciseRepository])
+@GenerateMocks([
+  RoutinesRepository,
+  WorkoutSessionRepository,
+  ExerciseRepository,
+  UserProfileRepository,
+])
 void main() {
   installFakeConnectivity();
 
   late MockRoutinesRepository mockRoutinesRepository;
   late MockWorkoutSessionRepository mockSessionRepo;
   late MockExerciseRepository mockExerciseRepo;
+  late MockUserProfileRepository mockUserProfileRepo;
   late StreamController<List<Routine>> routineStream;
   late Routine existingRoutine;
   late Routine newRoutine;
@@ -92,6 +99,10 @@ void main() {
     when(
       mockExerciseRepo.watchAllDrift(),
     ).thenAnswer((_) => Stream.value(ExerciseState(const <Exercise>[])));
+    // RoutinesRiverpod.build() also listens to the user profile for the default
+    // weight unit; stub it so the real PowerSync DB isn't pulled in.
+    mockUserProfileRepo = MockUserProfileRepository();
+    when(mockUserProfileRepo.watchDrift()).thenAnswer((_) => Stream.value(null));
   });
 
   tearDown(() {
@@ -106,6 +117,7 @@ void main() {
         routinesRepositoryProvider.overrideWithValue(mockRoutinesRepository),
         workoutSessionRepositoryProvider.overrideWithValue(mockSessionRepo),
         exerciseRepositoryProvider.overrideWithValue(mockExerciseRepo),
+        userProfileRepositoryProvider.overrideWithValue(mockUserProfileRepo),
         networkStatusProvider.overrideWithValue(isOnline),
         routineRepetitionUnitProvider.overrideWith(
           (ref) => Stream<List<RepetitionUnit>>.value(testRepetitionUnits),

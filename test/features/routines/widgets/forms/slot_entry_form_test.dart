@@ -129,6 +129,16 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('slot-entry-type-option-myo')), warnIfMissed: false);
     await tester.pumpAndSettle();
 
+    // Set the units (select by name, the item keys collide between the dropdowns)
+    await tester.tap(find.byType(WeightUnitInputWidget));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(testWeightUnit2.name).last, warnIfMissed: false);
+    await tester.pumpAndSettle();
+    await tester.tap(find.byType(RepetitionUnitInputWidget));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(testRepetitionUnit2.name).last, warnIfMissed: false);
+    await tester.pumpAndSettle();
+
     await tester.tap(find.byKey(const ValueKey(SUBMIT_BUTTON_KEY_NAME)));
     await tester.pumpAndSettle();
 
@@ -139,7 +149,9 @@ void main() {
               .having((d) => d.id, 'id', null)
               .having((d) => d.slotId, 'slotId', 1)
               .having((d) => d.order, 'order', 1)
-              .having((d) => d.type, 'type', SlotEntryType.myo),
+              .having((d) => d.type, 'type', SlotEntryType.myo)
+              .having((d) => d.weightUnitId, 'weightUnitId', testWeightUnit2.id)
+              .having((d) => d.repetitionUnitId, 'repetitionUnitId', testRepetitionUnit2.id),
         ),
       ),
     );

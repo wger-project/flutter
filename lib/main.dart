@@ -18,6 +18,7 @@
 
 import 'dart:async';
 
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -71,6 +72,7 @@ import 'package:wger/features/routines/screens/routine_screen.dart';
 import 'package:wger/features/routines/screens/settings_plates_screen.dart';
 import 'package:wger/features/trophies/screens/trophy_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/theme/dynamic_color.dart';
 import 'package:wger/theme/theme.dart';
 
 void _setupLogging() {
@@ -187,67 +189,104 @@ class MainApp extends ConsumerWidget {
     // incoming deep links as a side effect of being read.
     ref.watch(appLinkRouterProvider);
 
-    return authAsync.when(
-      loading: () => const MaterialApp(home: SplashScreen()),
-      error: (error, stack) => MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: AutoLoginErrorScreen(error: error),
-      ),
-      data: (authState) {
-        final themeMode = ref.watch(
-          appSettingsProvider.select((s) => s.value?.themeMode ?? ThemeMode.system),
-        );
-        final userLocale = ref.watch(
-          appSettingsProvider.select((s) => s.value?.userLocale),
-        );
+    // Read before the builder below: its callback runs during the child's
+    // build, where ref.watch would be out of phase.
+    final themeMode = ref.watch(
+      appSettingsProvider.select((s) => s.value?.themeMode ?? ThemeMode.system),
+    );
+    final userLocale = ref.watch(
+      appSettingsProvider.select((s) => s.value?.userLocale),
+    );
+    final useDynamicColor = ref.watch(
+      appSettingsProvider.select((s) => s.value?.useDynamicColor ?? USE_DYNAMIC_COLOR_DEFAULT),
+    );
 
-        return MaterialApp(
-          title: 'wger',
-          navigatorKey: navigatorKey,
-          scaffoldMessengerKey: scaffoldMessengerKey,
-          theme: wgerLightTheme,
-          darkTheme: wgerDarkTheme,
-          highContrastTheme: wgerLightThemeHc,
-          highContrastDarkTheme: wgerDarkThemeHc,
-          themeMode: themeMode,
-          locale: userLocale,
-          home: _getHomeScreen(authState),
-          routes: {
-            DashboardScreen.routeName: (ctx) => const DashboardScreen(),
-            FormScreen.routeName: (ctx) => const FormScreen(),
-            GalleryScreen.routeName: (ctx) => const GalleryScreen(),
-            GymModeScreen.routeName: (ctx) => const GymModeScreen(),
-            HomeTabsScreen.routeName: (ctx) => const HomeTabsScreen(),
-            MeasurementCategoriesScreen.routeName: (ctx) => const MeasurementCategoriesScreen(),
-            MeasurementCategorySortScreen.routeName: (ctx) => const MeasurementCategorySortScreen(),
-            MeasurementEntriesScreen.routeName: (ctx) => const MeasurementEntriesScreen(),
-            NutritionalPlansScreen.routeName: (ctx) => const NutritionalPlansScreen(),
-            NutritionalDiaryScreen.routeName: (ctx) => const NutritionalDiaryScreen(),
-            NutritionalPlanScreen.routeName: (ctx) => const NutritionalPlanScreen(),
-            IngredientDetailScreen.routeName: (ctx) => const IngredientDetailScreen(),
-            IngredientsScreen.routeName: (ctx) => const IngredientsScreen(),
-            LogMealsScreen.routeName: (ctx) => const LogMealsScreen(),
-            LogMealScreen.routeName: (ctx) => const LogMealScreen(),
-            WeightScreen.routeName: (ctx) => const WeightScreen(),
-            RoutineScreen.routeName: (ctx) => const RoutineScreen(),
-            RoutineEditScreen.routeName: (ctx) => const RoutineEditScreen(),
-            WorkoutLogsScreen.routeName: (ctx) => const WorkoutLogsScreen(),
-            RoutineListScreen.routeName: (ctx) => const RoutineListScreen(),
-            ExercisesScreen.routeName: (ctx) => const ExercisesScreen(),
-            ExerciseDetailScreen.routeName: (ctx) => const ExerciseDetailScreen(),
-            AddExerciseScreen.routeName: (ctx) => const AddExerciseScreen(),
-            AboutPage.routeName: (ctx) => const AboutPage(),
-            SettingsPage.routeName: (ctx) => const SettingsPage(),
-            LogOverviewPage.routeName: (ctx) => const LogOverviewPage(),
-            ConfigurePlatesScreen.routeName: (ctx) => const ConfigurePlatesScreen(),
-            ConfigureDashboardWidgetsScreen.routeName: (ctx) =>
-                const ConfigureDashboardWidgetsScreen(),
-            TrophyScreen.routeName: (ctx) => const TrophyScreen(),
+    // Above the auth switch so the platform call is already in flight while the
+    // splash screen is up. Below it, the first frame after login renders the
+    // fixed palette and then repaints.
+    return DynamicColorBuilder(
+      builder: (lightDynamic, darkDynamic) {
+        final seed = appThemeSeed(
+          useDynamicColor: useDynamicColor,
+          lightDynamic: lightDynamic,
+          darkDynamic: darkDynamic,
+        );
+        final light = seed == null ? wgerLightTheme : wgerThemeFromSeed(seed, Brightness.light);
+        final dark = seed == null ? wgerDarkTheme : wgerThemeFromSeed(seed, Brightness.dark);
+        // The OS accessibility setting swaps to these, so they follow the seed
+        // too rather than dropping back to the fixed palette.
+        final lightHc = seed == null
+            ? wgerLightThemeHc
+            : wgerThemeFromSeed(seed, Brightness.light, highContrast: true);
+        final darkHc = seed == null
+            ? wgerDarkThemeHc
+            : wgerThemeFromSeed(seed, Brightness.dark, highContrast: true);
+
+        return authAsync.when(
+          loading: () => MaterialApp(
+            theme: light,
+            darkTheme: dark,
+            themeMode: themeMode,
+            home: const SplashScreen(),
+          ),
+          error: (error, stack) => MaterialApp(
+            theme: light,
+            darkTheme: dark,
+            themeMode: themeMode,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: AutoLoginErrorScreen(error: error),
+          ),
+          data: (authState) {
+            return MaterialApp(
+              title: 'wger',
+              navigatorKey: navigatorKey,
+              scaffoldMessengerKey: scaffoldMessengerKey,
+              theme: light,
+              darkTheme: dark,
+              highContrastTheme: lightHc,
+              highContrastDarkTheme: darkHc,
+              themeMode: themeMode,
+              locale: userLocale,
+              home: _getHomeScreen(authState),
+              routes: {
+                DashboardScreen.routeName: (ctx) => const DashboardScreen(),
+                FormScreen.routeName: (ctx) => const FormScreen(),
+                GalleryScreen.routeName: (ctx) => const GalleryScreen(),
+                GymModeScreen.routeName: (ctx) => const GymModeScreen(),
+                HomeTabsScreen.routeName: (ctx) => const HomeTabsScreen(),
+                MeasurementCategoriesScreen.routeName: (ctx) => const MeasurementCategoriesScreen(),
+                MeasurementCategorySortScreen.routeName: (ctx) =>
+                    const MeasurementCategorySortScreen(),
+                MeasurementEntriesScreen.routeName: (ctx) => const MeasurementEntriesScreen(),
+                NutritionalPlansScreen.routeName: (ctx) => const NutritionalPlansScreen(),
+                NutritionalDiaryScreen.routeName: (ctx) => const NutritionalDiaryScreen(),
+                NutritionalPlanScreen.routeName: (ctx) => const NutritionalPlanScreen(),
+                IngredientDetailScreen.routeName: (ctx) => const IngredientDetailScreen(),
+                IngredientsScreen.routeName: (ctx) => const IngredientsScreen(),
+                LogMealsScreen.routeName: (ctx) => const LogMealsScreen(),
+                LogMealScreen.routeName: (ctx) => const LogMealScreen(),
+                WeightScreen.routeName: (ctx) => const WeightScreen(),
+                RoutineScreen.routeName: (ctx) => const RoutineScreen(),
+                RoutineEditScreen.routeName: (ctx) => const RoutineEditScreen(),
+                WorkoutLogsScreen.routeName: (ctx) => const WorkoutLogsScreen(),
+                RoutineListScreen.routeName: (ctx) => const RoutineListScreen(),
+                ExercisesScreen.routeName: (ctx) => const ExercisesScreen(),
+                ExerciseDetailScreen.routeName: (ctx) => const ExerciseDetailScreen(),
+                AddExerciseScreen.routeName: (ctx) => const AddExerciseScreen(),
+                AboutPage.routeName: (ctx) => const AboutPage(),
+                SettingsPage.routeName: (ctx) => const SettingsPage(),
+                LogOverviewPage.routeName: (ctx) => const LogOverviewPage(),
+                ConfigurePlatesScreen.routeName: (ctx) => const ConfigurePlatesScreen(),
+                ConfigureDashboardWidgetsScreen.routeName: (ctx) =>
+                    const ConfigureDashboardWidgetsScreen(),
+                TrophyScreen.routeName: (ctx) => const TrophyScreen(),
+              },
+              localeListResolutionCallback: resolveLocale,
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+            );
           },
-          localeListResolutionCallback: resolveLocale,
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
         );
       },
     );

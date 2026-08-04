@@ -28,6 +28,11 @@ class _AddExerciseMultiselectButtonState<T> extends State<AddExerciseMultiselect
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    // Dimmed once something is selected: the chips below carry the content and
+    // the title drops back to a caption.
+    final labelColor = _selectedItems.isEmpty ? scheme.onSurfaceVariant : scheme.outline;
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: MultiSelectDialogField(
@@ -53,19 +58,13 @@ class _AddExerciseMultiselectButtonState<T> extends State<AddExerciseMultiselect
           icon: const Icon(Icons.close),
         ),
         title: Text(widget.title),
-        buttonText: Text(
-          widget.title,
-          style: TextStyle(
-            color: _selectedItems.isEmpty ? Colors.grey[700] : Colors.grey,
-          ),
-        ),
-        buttonIcon: Icon(
-          Icons.arrow_drop_down,
-          color: _selectedItems.isEmpty ? Colors.grey[700] : Colors.grey,
-        ),
+        buttonText: Text(widget.title, style: TextStyle(color: labelColor)),
+        buttonIcon: Icon(Icons.arrow_drop_down, color: labelColor),
         decoration: BoxDecoration(
+          // Once chips carry the selection the outline is dropped, the same way
+          // a filled input field loses its placeholder framing.
           border: Border.all(
-            color: _selectedItems.isEmpty ? Colors.grey : Colors.transparent,
+            color: _selectedItems.isEmpty ? scheme.outline : Colors.transparent,
           ),
           borderRadius: const BorderRadius.all(Radius.circular(10)),
         ),

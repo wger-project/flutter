@@ -34,7 +34,9 @@ class PlateWeight extends StatelessWidget {
           alignment: Alignment.center,
           margin: EdgeInsets.all(margin),
           decoration: BoxDecoration(
-            color: isSelected ? color : Colors.black12,
+            // Selected shows the real plate color, so its rim and label stay
+            // black whatever the theme. Unselected sits on the surface instead.
+            color: isSelected ? color : Theme.of(context).colorScheme.surfaceContainerHighest,
             shape: BoxShape.circle,
             border: Border.all(color: Colors.black, width: isSelected ? 2 : 0),
           ),
@@ -44,7 +46,7 @@ class PlateWeight extends StatelessWidget {
               value.toString(),
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: isSelected ? Colors.black : Colors.black87,
+                color: isSelected ? Colors.black : Theme.of(context).colorScheme.onSurfaceVariant,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
               ),
             ),

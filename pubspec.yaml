@@ -37,9 +37,10 @@ dependencies:
   clock: ^1.1.2
   collection: ^1.19.1
   cupertino_icons: ^1.0.9
-  drift: ^2.34.2
+  drift: ^2.34.3
+  dynamic_color: ^1.8.1
   equatable: ^2.1.0
-  extended_image: ^10.0.1
+  extended_image: ^10.1.0
   fl_chart: ^1.2.0
   flex_color_scheme: ^8.4.0
   flutter_html: ^3.0.0
@@ -81,7 +82,7 @@ dependencies:
   stream_transform: ^2.1.1
   state_notifier: ^1.0.0
   connectivity_plus: ^7.3.1
-  powersync: ^2.3.2
+  powersync: ^2.3.3
 
 dependency_overrides:
   # health -> device_info_plus ^12.1.0 pins win32 5.x, which conflicts with
@@ -106,7 +107,7 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   flutter_native_splash: ^2.4.8
   freezed: ^3.2.0
-  json_serializable: ^6.14.0
+  json_serializable: ^6.14.1
   mockito: ^5.6.4
   network_image_mock: ^2.1.1
   plugin_platform_interface: ^2.1.8

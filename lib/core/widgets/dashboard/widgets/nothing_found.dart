@@ -18,7 +18,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:wger/core/form_screen.dart';
-import 'package:wger/theme/theme.dart';
 
 class NothingFound extends StatelessWidget {
   final String _title;
@@ -38,7 +37,8 @@ class NothingFound extends StatelessWidget {
           if (_titleForm != null && _form != null)
             IconButton(
               iconSize: 30,
-              icon: const Icon(Icons.add_box, color: wgerPrimaryButtonColor),
+              color: Theme.of(context).colorScheme.primary,
+              icon: const Icon(Icons.add_box),
               onPressed: () {
                 Navigator.pushNamed(
                   context,

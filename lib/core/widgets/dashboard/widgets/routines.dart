@@ -32,7 +32,6 @@ import 'package:wger/features/routines/screens/gym_mode.dart';
 import 'package:wger/features/routines/screens/routine_screen.dart';
 import 'package:wger/features/routines/widgets/forms/routine.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/theme/theme.dart';
 
 class DashboardRoutineWidget extends ConsumerStatefulWidget {
   const DashboardRoutineWidget();
@@ -248,7 +247,7 @@ class DetailContentWidget extends StatelessWidget {
                       IconButton(
                         tooltip: AppLocalizations.of(context).gymMode,
                         icon: const Icon(Icons.play_arrow),
-                        color: wgerPrimaryButtonColor,
+                        color: Theme.of(context).colorScheme.primary,
                         onPressed: () {
                           Navigator.of(context).pushNamed(
                             GymModeScreen.routeName,

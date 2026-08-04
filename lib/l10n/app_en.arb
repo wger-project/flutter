@@ -1445,6 +1445,10 @@
   "darkMode": "Always dark mode",
   "lightMode": "Always light mode",
   "systemMode": "System settings",
+  "useDynamicColor": "Use dynamic color",
+  "@useDynamicColor": {
+    "description": "Settings toggle to follow the system wallpaper colors (Material You) on supported platforms"
+  },
   "youAreOffline": "You are offline",
   "appLanguage": "App language",
   "@appLanguage": {

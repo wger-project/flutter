@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -151,7 +151,41 @@ final wgerDarkThemeHc = FlexThemeData.dark(
   textTheme: wgerTextTheme,
 );
 
+/// Builds a wger theme for [brightness] with the palette generated from [seed],
+/// e.g. the platform's dynamic color. Sub-themes, app bar style and typography
+/// match the fixed themes, so only the hues change.
+///
+/// With [highContrast] the palette is spread over a wider tonal range, matching
+/// the fixed high contrast themes the OS accessibility setting switches to.
+ThemeData wgerThemeFromSeed(
+  Color seed,
+  Brightness brightness, {
+  bool highContrast = false,
+}) {
+  final isDark = brightness == Brightness.dark;
+  return (isDark ? FlexThemeData.dark : FlexThemeData.light)(
+    colorScheme: SeedColorScheme.fromSeeds(
+      primaryKey: seed,
+      brightness: brightness,
+      tones: highContrast ? FlexTones.ultraContrast(brightness) : FlexTones.vivid(brightness),
+    ),
+    useMaterial3: true,
+    appBarStyle: isDark ? null : FlexAppBarStyle.primary,
+    subThemesData: wgerSubThemeData,
+    textTheme: wgerTextTheme,
+  );
+}
+
 CalendarStyle getWgerCalendarStyle(ThemeData theme) {
+  final scheme = theme.colorScheme;
+  final selectedDecoration = BoxDecoration(
+    color: scheme.secondary,
+    shape: BoxShape.circle,
+  );
+  // table_calendar defaults these to a near-white that only works on a dark
+  // circle, and secondary is light in dark mode.
+  final selectedTextStyle = TextStyle(color: scheme.onSecondary, fontSize: 16);
+
   return CalendarStyle(
     outsideDaysVisible: false,
     todayDecoration: const BoxDecoration(
@@ -162,19 +196,13 @@ CalendarStyle getWgerCalendarStyle(ThemeData theme) {
       color: theme.textTheme.headlineLarge?.color,
       shape: BoxShape.circle,
     ),
-    selectedDecoration: const BoxDecoration(
-      color: wgerSecondaryColor,
-      shape: BoxShape.circle,
-    ),
-    rangeStartDecoration: const BoxDecoration(
-      color: wgerSecondaryColor,
-      shape: BoxShape.circle,
-    ),
-    rangeEndDecoration: const BoxDecoration(
-      color: wgerSecondaryColor,
-      shape: BoxShape.circle,
-    ),
-    rangeHighlightColor: wgerSecondaryColorLight,
-    weekendTextStyle: const TextStyle(color: wgerSecondaryColor),
+    selectedDecoration: selectedDecoration,
+    selectedTextStyle: selectedTextStyle,
+    rangeStartDecoration: selectedDecoration,
+    rangeStartTextStyle: selectedTextStyle,
+    rangeEndDecoration: selectedDecoration,
+    rangeEndTextStyle: selectedTextStyle,
+    rangeHighlightColor: scheme.secondaryContainer,
+    weekendTextStyle: TextStyle(color: scheme.secondary),
   );
 }
