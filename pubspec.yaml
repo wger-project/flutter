@@ -37,7 +37,7 @@ dependencies:
   clock: ^1.1.2
   collection: ^1.19.1
   cupertino_icons: ^1.0.9
-  drift: ^2.34.2
+  drift: ^2.34.3
   dynamic_color: ^1.8.1
   equatable: ^2.1.0
   extended_image: ^10.1.0
