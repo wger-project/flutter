@@ -216,6 +216,9 @@ class FlNutritionalPlanPieChartWidget extends StatefulWidget {
 class FlNutritionalPlanPieChartState extends State<FlNutritionalPlanPieChartWidget> {
   int touchedIndex = -1;
 
+  /// Shared by the sections and the legend so both stay in sync.
+  List<Color> get _macroColors => chartColorPalette(3, Theme.of(context).colorScheme);
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -252,9 +255,9 @@ class FlNutritionalPlanPieChartState extends State<FlNutritionalPlanPieChartWidg
           crossAxisAlignment: CrossAxisAlignment.start,
           children:
               [
-                    (AppLocalizations.of(context).protein, LIST_OF_COLORS3[1]),
-                    (AppLocalizations.of(context).carbohydrates, LIST_OF_COLORS3[0]),
-                    (AppLocalizations.of(context).fat, LIST_OF_COLORS3[2]),
+                    (AppLocalizations.of(context).protein, _macroColors[1]),
+                    (AppLocalizations.of(context).carbohydrates, _macroColors[0]),
+                    (AppLocalizations.of(context).fat, _macroColors[2]),
                   ]
                   .map(
                     (e) => Padding(
@@ -271,9 +274,9 @@ class FlNutritionalPlanPieChartState extends State<FlNutritionalPlanPieChartWidg
 
   List<PieChartSectionData> showingSections() {
     return [
-      (0, LIST_OF_COLORS3[1], widget.nutritionalValues.protein),
-      (1, LIST_OF_COLORS3[0], widget.nutritionalValues.carbohydrates),
-      (2, LIST_OF_COLORS3[2], widget.nutritionalValues.fat),
+      (0, _macroColors[1], widget.nutritionalValues.protein),
+      (1, _macroColors[0], widget.nutritionalValues.carbohydrates),
+      (2, _macroColors[2], widget.nutritionalValues.fat),
     ].map((e) {
       final isTouched = e.$1 == touchedIndex;
       final radius = isTouched ? 92.0 : 80.0;
@@ -282,6 +285,8 @@ class FlNutritionalPlanPieChartState extends State<FlNutritionalPlanPieChartWidg
         color: e.$2,
         value: e.$3,
         title: '${e.$3.toStringAsFixed(0)}g',
+        // Merged onto the ambient style, so only the color is overridden.
+        titleStyle: TextStyle(color: onChartColor(e.$2)),
         titlePositionPercentageOffset: 0.5,
         radius: radius,
       );
@@ -340,7 +345,10 @@ class NutritionalDiaryChartWidgetFlState extends State<NutritionalDiaryChartWidg
     final loggedToday = widget._nutritionalPlan.loggedNutritionalValuesToday;
     final logged7DayAvg = widget._nutritionalPlan.loggedNutritionalValues7DayAvg;
 
-    final [colorPlanned, colorLoggedToday, colorLogged7Day] = LIST_OF_COLORS3;
+    final [colorPlanned, colorLoggedToday, colorLogged7Day] = chartColorPalette(
+      3,
+      Theme.of(context).colorScheme,
+    );
 
     BarChartGroupData barchartGroup(
       int x,

@@ -73,7 +73,10 @@ class _LogChartWidgetFlState extends State<LogChartWidgetFl> {
   }
 
   LineChartData mainData() {
-    final colors = generateChartColors(widget._data.keys.length).iterator;
+    final colors = generateChartColors(
+      widget._data.keys.length,
+      Theme.of(context).colorScheme,
+    ).iterator;
 
     return LineChartData(
       lineTouchData: tooltipData(),

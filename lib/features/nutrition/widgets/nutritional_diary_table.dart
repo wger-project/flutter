@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:wger/core/colors.dart';
 import 'package:wger/features/nutrition/models/nutritional_goals.dart';
 import 'package:wger/features/nutrition/models/nutritional_plan.dart';
 import 'package:wger/features/nutrition/models/nutritional_values.dart';
@@ -85,9 +84,9 @@ class NutritionalDiaryTable extends StatelessWidget {
       children:
           [
             Text(
-              style: Theme.of(
-                context,
-              ).textTheme.titleMedium?.copyWith(color: LIST_OF_COLORS3.first),
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                color: Theme.of(context).colorScheme.primary,
+              ),
               DateFormat.Md(Localizations.localeOf(context).languageCode).format(date),
             ),
             Text(
