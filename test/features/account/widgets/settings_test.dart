@@ -26,6 +26,7 @@ import 'package:wger/core/app_settings_notifier.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/features/account/widgets/settings.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/theme/dynamic_color.dart';
 
 import 'settings_test.mocks.dart';
 
@@ -49,10 +50,13 @@ void main() {
     ).thenAnswer((_) async {});
   });
 
-  Widget createSettingsScreen({locale = 'en'}) {
+  Widget createSettingsScreen({locale = 'en', bool dynamicColorAvailable = true}) {
     return riverpod.ProviderScope(
       overrides: [
         appSettingsPrefsProvider.overrideWithValue(mockSharedPreferences),
+        // The plugin has no test implementation and would report the toggle as
+        // unsupported, which hides it.
+        dynamicColorAvailableProvider.overrideWith((ref) async => dynamicColorAvailable),
       ],
       child: MaterialApp(
         locale: Locale(locale),
@@ -95,6 +99,16 @@ void main() {
         find.byKey(const ValueKey('useDynamicColorSwitch')),
       );
       expect(switchWidget.value, true);
+    });
+
+    testWidgets('dynamic color switch is hidden where the platform has none', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(createSettingsScreen(dynamicColorAvailable: false));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const ValueKey('useDynamicColorSwitch')), findsNothing);
+      expect(find.byKey(const ValueKey('themeModeDropdown')), findsOneWidget);
     });
   });
 

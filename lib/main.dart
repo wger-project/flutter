@@ -187,36 +187,49 @@ class MainApp extends ConsumerWidget {
     // incoming deep links as a side effect of being read.
     ref.watch(appLinkRouterProvider);
 
-    return authAsync.when(
-      loading: () => const MaterialApp(home: SplashScreen()),
-      error: (error, stack) => MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: AutoLoginErrorScreen(error: error),
-      ),
-      data: (authState) {
-        final themeMode = ref.watch(
-          appSettingsProvider.select((s) => s.value?.themeMode ?? ThemeMode.system),
-        );
-        final userLocale = ref.watch(
-          appSettingsProvider.select((s) => s.value?.userLocale),
-        );
-        final useDynamicColor = ref.watch(
-          appSettingsProvider.select((s) => s.value?.useDynamicColor ?? false),
-        );
+    // Read before the builder below: its callback runs during the child's
+    // build, where ref.watch would be out of phase.
+    final themeMode = ref.watch(
+      appSettingsProvider.select((s) => s.value?.themeMode ?? ThemeMode.system),
+    );
+    final userLocale = ref.watch(
+      appSettingsProvider.select((s) => s.value?.userLocale),
+    );
+    final useDynamicColor = ref.watch(
+      appSettingsProvider.select((s) => s.value?.useDynamicColor ?? false),
+    );
 
-        return DynamicColorBuilder(
-          builder: (lightDynamic, darkDynamic) {
-            // One seed drives both themes: re-tonalising normalises the hue,
-            // so it doesn't matter which of the two schemes it comes from.
-            final seed = (lightDynamic ?? darkDynamic)?.primary;
-            final light = useDynamicColor && seed != null
-                ? wgerThemeFromSeed(seed, Brightness.light)
-                : wgerLightTheme;
-            final dark = useDynamicColor && seed != null
-                ? wgerThemeFromSeed(seed, Brightness.dark)
-                : wgerDarkTheme;
+    // Above the auth switch so the platform call is already in flight while the
+    // splash screen is up. Below it, the first frame after login renders the
+    // fixed palette and then repaints.
+    return DynamicColorBuilder(
+      builder: (lightDynamic, darkDynamic) {
+        // One seed drives both themes: re-tonalising normalises the hue, so it
+        // doesn't matter which of the two schemes it comes from.
+        final seed = (lightDynamic ?? darkDynamic)?.primary;
+        final light = useDynamicColor && seed != null
+            ? wgerThemeFromSeed(seed, Brightness.light)
+            : wgerLightTheme;
+        final dark = useDynamicColor && seed != null
+            ? wgerThemeFromSeed(seed, Brightness.dark)
+            : wgerDarkTheme;
 
+        return authAsync.when(
+          loading: () => MaterialApp(
+            theme: light,
+            darkTheme: dark,
+            themeMode: themeMode,
+            home: const SplashScreen(),
+          ),
+          error: (error, stack) => MaterialApp(
+            theme: light,
+            darkTheme: dark,
+            themeMode: themeMode,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: AutoLoginErrorScreen(error: error),
+          ),
+          data: (authState) {
             return MaterialApp(
               title: 'wger',
               navigatorKey: navigatorKey,

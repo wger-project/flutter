@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/core/app_settings_notifier.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/theme/dynamic_color.dart';
 
 class SettingsTheme extends ConsumerWidget {
   const SettingsTheme({super.key});
@@ -15,6 +16,9 @@ class SettingsTheme extends ConsumerWidget {
     final useDynamicColor = ref.watch(
       appSettingsProvider.select((s) => s.value?.useDynamicColor ?? false),
     );
+    // Hidden while the probe is still running and where it comes back negative:
+    // the toggle does nothing on a platform without a dynamic palette.
+    final showDynamicColor = ref.watch(dynamicColorAvailableProvider).value ?? false;
 
     return Column(
       children: [
@@ -44,14 +48,15 @@ class SettingsTheme extends ConsumerWidget {
             }).toList(),
           ),
         ),
-        SwitchListTile(
-          key: const ValueKey('useDynamicColorSwitch'),
-          title: Text(i18n.useDynamicColor),
-          value: useDynamicColor,
-          onChanged: (bool value) {
-            ref.read(appSettingsProvider.notifier).setUseDynamicColor(value);
-          },
-        ),
+        if (showDynamicColor)
+          SwitchListTile(
+            key: const ValueKey('useDynamicColorSwitch'),
+            title: Text(i18n.useDynamicColor),
+            value: useDynamicColor,
+            onChanged: (bool value) {
+              ref.read(appSettingsProvider.notifier).setUseDynamicColor(value);
+            },
+          ),
       ],
     );
   }

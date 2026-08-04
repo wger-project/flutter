@@ -59,9 +59,13 @@ const PREFS_USER_DARK_THEME = 'userDarkMode';
 const PREFS_USER_LOCALE = 'userLocale';
 const PREFS_LAST_SERVER = 'lastServer';
 
-/// User preference: use Material You dynamic colors from the platform (Android
-/// 12+, iOS 18+, macOS 26, Windows/Linux accents) instead of the fixed wger
-/// seed palette. Off by default.
+/// User preference: use Material You dynamic colors from the platform instead
+/// of the fixed wger seed palette. Off by default.
+///
+/// Android 12+ supplies a wallpaper palette, macOS (10.14+), Windows and
+/// GTK-based Linux a system accent color. iOS and the web have no
+/// implementation, so the setting is only offered where dynamicColorAvailable
+/// reports true.
 const PREFS_USE_DYNAMIC_COLOR = 'useDynamicColor';
 
 /// Headless JWT auth: SharedPreferences keys.
