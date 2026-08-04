@@ -84,7 +84,6 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
     required List<WorkoutSession> sessions,
     required List<NutritionalPlan> plans,
   }) {
-    final numberFormat = localizedNumberFormat(context);
     final i18n = AppLocalizations.of(context);
     final events = <String, List<Event>>{};
 
@@ -99,14 +98,17 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
 
       for (final entry in category.entries) {
         final date = DateFormatLists.format(entry.date);
-        final value = numberFormat.format(
+        final value = measurementValue(
+          context,
           entry.valueIn(displayUnit, categoryUnit: category.unit),
+          displayUnit,
         );
+        final label = measurementUnit(unitLabel);
         events.putIfAbsent(date, () => []);
         events[date]!.add(
           isBodyWeight
-              ? Event(EventType.weight, '$value $unitLabel')
-              : Event(EventType.measurement, '${category.name}: $value $unitLabel'),
+              ? Event(EventType.weight, '$value $label')
+              : Event(EventType.measurement, '${category.name}: $value $label'),
         );
       }
     }

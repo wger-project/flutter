@@ -47,7 +47,7 @@ class MeasurementOverallChangeWidget extends StatelessWidget {
 
     return Text(
       '${AppLocalizations.of(context).overallChangeWeight} '
-      '$prefix${delta.abs().toStringAsFixed(1)} $_unit',
+      '$prefix${measurementWithUnit(context, delta.abs(), _unit)}',
     );
   }
 }
@@ -310,7 +310,6 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
       touchTooltipData: LineTouchTooltipData(
         getTooltipColor: (touchedSpot) => Theme.of(context).colorScheme.primaryContainer,
         getTooltipItems: (touchedSpots) {
-          final numberFormat = localizedNumberFormat(context);
           // The plan context belongs to the touched date, not to a series, so
           // it goes below the last tooltip line instead of onto every line
           final lastVisible = touchedSpots.lastWhereOrNull(
@@ -337,8 +336,8 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
                 ? _planNamesAt(date)
                 : const <String>[];
             return LineTooltipItem(
-              '$prefix$dateStr: ${numberFormat.format(touchedSpot.y)} '
-              '${widget._unit}$interpolatedMarker',
+              '$prefix$dateStr: '
+              '${measurementWithUnit(context, touchedSpot.y, widget._unit)}$interpolatedMarker',
               TextStyle(color: touchedSpot.bar.color),
               children: [
                 for (final name in planNames)
@@ -355,9 +354,21 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
   }
 
   LineChartData mainData(double availableWidth) {
-    final numberFormat = localizedNumberFormat(context);
     final allEntries = widget._allEntries;
     final dates = allEntries.map((e) => e.date).toList()..sort();
+
+    // The bounds of a band reach past the line they wrap, so the axis follows
+    // every value that is drawn, not just the plotted ones
+    final drawn = <num>[
+      for (final entry in allEntries) ...[
+        entry.value,
+        if (entry.min != null) entry.min!,
+        if (entry.max != null) entry.max!,
+      ],
+    ];
+    final yAxis = drawn.isEmpty
+        ? null
+        : durationAxis(widget._unit, drawn.reduce(min), drawn.reduce(max));
 
     // Flatten the series into fl_chart's flat bar list, remembering which
     // indices are band bounds (invisible) and which carry a name.
@@ -387,6 +398,8 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
     }
 
     return LineChartData(
+      minY: yAxis?.min,
+      maxY: yAxis?.max,
       lineTouchData: tooltipData(hidden, labels),
       betweenBarsData: bands,
       rangeAnnotations: _planBands(dates),
@@ -441,6 +454,7 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
           sideTitles: SideTitles(
             showTitles: true,
             reservedSize: 65,
+            interval: yAxis?.interval,
             getTitlesWidget: (value, meta) {
               // Don't show the first and last entries, to avoid overlap
               // see https://stackoverflow.com/questions/73355777/flutter-fl-chart-how-can-we-avoid-the-overlap-of-the-ordinate
@@ -449,7 +463,7 @@ class _MeasurementChartWidgetFlState extends State<MeasurementChartWidgetFl> {
                 return const Text('');
               }
 
-              return _YAxisLabel('${numberFormat.format(value)} ${widget._unit}');
+              return _YAxisLabel(measurementWithUnit(context, value, widget._unit));
             },
           ),
         ),
@@ -692,9 +706,6 @@ class _MeasurementBarChartWidgetFlState extends State<MeasurementBarChartWidgetF
           if (groupIndex < 0 || groupIndex >= widget._entries.length) {
             return null;
           }
-          final numberFormat = NumberFormat.decimalPattern(
-            Localizations.localeOf(context).toString(),
-          );
           final entry = widget._entries[groupIndex];
           final dateStr = DateFormat.Md(
             Localizations.localeOf(context).languageCode,
@@ -702,11 +713,12 @@ class _MeasurementBarChartWidgetFlState extends State<MeasurementBarChartWidgetF
           // A range is quoted as high over low, the way a blood pressure
           // reading is written
           final value = entry.hasRange
-              ? '${numberFormat.format(entry.max)}/${numberFormat.format(entry.min)}'
-              : numberFormat.format(rod.toY);
+              ? '${measurementValue(context, entry.max!, widget._unit)}'
+                    '/${measurementValue(context, entry.min!, widget._unit)}'
+              : measurementValue(context, rod.toY, widget._unit);
 
           return BarTooltipItem(
-            '$dateStr: $value ${widget._unit}',
+            '$dateStr: $value ${measurementUnit(widget._unit)}',
             TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer),
           );
         },
@@ -715,13 +727,22 @@ class _MeasurementBarChartWidgetFlState extends State<MeasurementBarChartWidgetF
   }
 
   BarChartData mainData(double availableWidth) {
-    final String locale = Localizations.localeOf(context).toString();
-    final NumberFormat numberFormat = NumberFormat.decimalPattern(locale);
-
     // Leave a gap between neighbouring bars, but never go below a hairline
     final barWidth = widget._entries.isEmpty
         ? MAX_BAR_WIDTH
         : (availableWidth / widget._entries.length * 0.7).clamp(1.0, MAX_BAR_WIDTH);
+
+    // A range bar spans from its lower to its upper bound, so both decide the
+    // axis; a plain bar grows from zero
+    final drawn = <num>[
+      0,
+      for (final entry in widget._entries) ...[
+        entry.value,
+        if (entry.min != null) entry.min!,
+        if (entry.max != null) entry.max!,
+      ],
+    ];
+    final yAxis = durationAxis(widget._unit, drawn.reduce(min), drawn.reduce(max));
 
     // A bar chart draws one bottom title per group (the x value is a group key,
     // not a position), so thinning out the labels has to happen here.
@@ -733,6 +754,8 @@ class _MeasurementBarChartWidgetFlState extends State<MeasurementBarChartWidgetF
         widget._entries.first.date.year != widget._entries.last.date.year;
 
     return BarChartData(
+      minY: yAxis?.min,
+      maxY: yAxis?.max,
       barTouchData: tooltipData(),
       gridData: FlGridData(
         show: true,
@@ -769,11 +792,12 @@ class _MeasurementBarChartWidgetFlState extends State<MeasurementBarChartWidgetF
           sideTitles: SideTitles(
             showTitles: true,
             reservedSize: 65,
+            interval: yAxis?.interval,
             getTitlesWidget: (value, meta) {
               if (value == meta.min || value == meta.max) {
                 return const Text('');
               }
-              return _YAxisLabel('${numberFormat.format(value)} ${widget._unit}');
+              return _YAxisLabel(measurementWithUnit(context, value, widget._unit));
             },
           ),
         ),
@@ -870,20 +894,18 @@ class _MeasurementStackedBarChartWidgetFlState extends State<MeasurementStackedB
           if (groupIndex < 0 || groupIndex >= widget._entries.length) {
             return null;
           }
-          final numberFormat = NumberFormat.decimalPattern(
-            Localizations.localeOf(context).toString(),
-          );
           final entry = widget._entries[groupIndex];
           final dateStr = DateFormat.Md(
             Localizations.localeOf(context).languageCode,
           ).format(entry.date);
           final parts = [
             for (final (index, value) in entry.values.indexed)
-              if (value != null) '${widget._labels[index]}: ${numberFormat.format(value)}',
+              if (value != null)
+                '${widget._labels[index]}: ${measurementValue(context, value, widget._unit)}',
           ];
 
           return BarTooltipItem(
-            '$dateStr: ${numberFormat.format(entry.total)} ${widget._unit}'
+            '$dateStr: ${measurementWithUnit(context, entry.total, widget._unit)}'
             '${parts.isEmpty ? '' : '\n${parts.join('\n')}'}',
             TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer),
           );
@@ -893,12 +915,17 @@ class _MeasurementStackedBarChartWidgetFlState extends State<MeasurementStackedB
   }
 
   BarChartData mainData(double availableWidth) {
-    final String locale = Localizations.localeOf(context).toString();
-    final NumberFormat numberFormat = NumberFormat.decimalPattern(locale);
-
     final barWidth = widget._entries.isEmpty
         ? MAX_BAR_WIDTH
         : (availableWidth / widget._entries.length * 0.7).clamp(1.0, MAX_BAR_WIDTH);
+
+    // The bar is as tall as its segments together, so that is what the axis
+    // has to cover
+    final yAxis = durationAxis(
+      widget._unit,
+      0,
+      widget._entries.map((e) => e.total).fold<num>(0, max),
+    );
     final labelStep = max(1, (widget._entries.length / X_LABEL_COUNT).ceil());
     final labelOffset = labelStep ~/ 2;
     final spansYears =
@@ -906,6 +933,8 @@ class _MeasurementStackedBarChartWidgetFlState extends State<MeasurementStackedB
         widget._entries.first.date.year != widget._entries.last.date.year;
 
     return BarChartData(
+      minY: yAxis?.min,
+      maxY: yAxis?.max,
       barTouchData: tooltipData(),
       gridData: FlGridData(
         show: true,
@@ -941,11 +970,12 @@ class _MeasurementStackedBarChartWidgetFlState extends State<MeasurementStackedB
           sideTitles: SideTitles(
             showTitles: true,
             reservedSize: 65,
+            interval: yAxis?.interval,
             getTitlesWidget: (value, meta) {
               if (value == meta.min || value == meta.max) {
                 return const Text('');
               }
-              return _YAxisLabel('${numberFormat.format(value)} ${widget._unit}');
+              return _YAxisLabel(measurementWithUnit(context, value, widget._unit));
             },
           ),
         ),
@@ -1187,8 +1217,8 @@ class _MeasurementHeatmapWidgetFlState extends State<MeasurementHeatmapWidgetFl>
       return '${dateFormat.format(selected)}: ${AppLocalizations.of(context).noDataAvailable}';
     }
 
-    final numberFormat = NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
-    return '${dateFormat.format(selected)}: ${numberFormat.format(value)} ${widget.unit}';
+    return '${dateFormat.format(selected)}: '
+        '${measurementWithUnit(context, value, widget.unit)}';
   }
 }
 

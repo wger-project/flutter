@@ -100,7 +100,6 @@ class EntriesList extends ConsumerWidget {
               ),
           ]
         : const <PlanPeriod>[];
-    final numberFormat = localizedNumberFormat(context);
 
     // Values are read through the unit helper; for plain categories without
     // per-entry units this is a pass-through to the category unit
@@ -147,7 +146,8 @@ class EntriesList extends ConsumerWidget {
               return Card(
                 child: ListTile(
                   title: Text(
-                    '${numberFormat.format(currentEntry.valueIn(unit, categoryUnit: category.unit))} $unitLabel',
+                    '${measurementValue(context, currentEntry.valueIn(unit, categoryUnit: category.unit), unit)} '
+                    '${measurementUnit(unitLabel)}',
                   ),
                   subtitle: Text(datetimeFormat.format(currentEntry.date)),
                   // Imported entries are read-only; changes belong in the
@@ -216,7 +216,6 @@ class EntriesList extends ConsumerWidget {
   /// which the legend rows lead to.
   Widget _buildGroup(BuildContext context, MeasurementCategory category) {
     final i18n = AppLocalizations.of(context);
-    final numberFormat = localizedNumberFormat(context);
     final datetimeFormat = localizedDate(context);
     final cutoff = range.cutoff;
     final hasData = groupHasData(category, cutoff: cutoff);
@@ -287,14 +286,16 @@ class EntriesList extends ConsumerWidget {
               // A roll-up leads and the parts explain it; without one the
               // values are the reading itself, written the way it is read
               // (a blood pressure as 120/80)
+              String formatted(num value) => measurementValue(context, value, category.unit);
               final headline = total != null && values.containsKey(total)
-                  ? '${numberFormat.format(values[total])} ${category.unit}'
-                  : '${values.values.sorted((a, b) => b.compareTo(a)).map(numberFormat.format).join('/')} ${category.unit}';
+                  ? '${formatted(values[total]!)} ${measurementUnit(category.unit)}'
+                  : '${values.values.sorted((a, b) => b.compareTo(a)).map(formatted).join('/')} '
+                        '${measurementUnit(category.unit)}';
               final componentsById = {for (final c in category.children) c.id!: c};
               final parts = [
                 for (final MapEntry(key: id, value: value) in values.entries)
                   if (id != total)
-                    '${componentsById[id]!.displayName(context)} ${numberFormat.format(value)}',
+                    '${componentsById[id]!.displayName(context)} ${formatted(value)}',
               ];
 
               return Card(

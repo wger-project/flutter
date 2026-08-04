@@ -137,8 +137,9 @@ void main() {
     // The group holds no entries itself, so its own list would be empty: it
     // shows the components' readings instead, the roll-up leading
     expect(find.byType(MeasurementStackedBarChartWidgetFl), findsOneWidget);
-    expect(find.text('480 min'), findsOneWidget);
-    expect(find.textContaining('Deep sleep 90'), findsOneWidget);
+    // A duration is read in hours and minutes, not in the minutes it is stored as
+    expect(find.text('8:00 h'), findsOneWidget);
+    expect(find.textContaining('Deep sleep 1:30'), findsOneWidget);
     // Each component is a way into its own screen
     expect(find.byIcon(Icons.chevron_right), findsNWidgets(2));
   });
