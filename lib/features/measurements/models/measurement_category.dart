@@ -78,7 +78,8 @@ enum ChartType {
   line('line'),
   bar('bar'),
   heatmap('heatmap'),
-  delta('delta');
+  delta('delta'),
+  distribution('distribution');
 
   final String? wireValue;
   const ChartType(this.wireValue);
@@ -103,6 +104,7 @@ extension MeasurementChartTypeL10n on ChartType {
       ChartType.bar => l10n.chartTypeBar,
       ChartType.heatmap => l10n.chartTypeHeatmap,
       ChartType.delta => l10n.chartTypeDelta,
+      ChartType.distribution => l10n.chartTypeDistribution,
     };
   }
 }
@@ -165,13 +167,16 @@ enum MetricType {
   /// The chart types a category of this type may be drawn as, i.e. what the
   /// picker offers on top of [ChartType.auto].
   ///
-  /// The two alternatives fit every leaf type: the heatmap answers how
-  /// regularly rather than how much, and is the only chart of the set where a
-  /// missing day is visible instead of being spanned by a line; the delta chart
-  /// answers which way it is going, which a line only implies. A group is left
-  /// out, its chart is structural rather than a preference.
-  List<ChartType> get availableChartTypes =>
-      isGroup ? const [] : [defaultChartType, ChartType.heatmap, ChartType.delta];
+  /// The alternatives fit every leaf type: the heatmap answers how regularly
+  /// rather than how much, and is the only chart of the set where a missing
+  /// day is visible instead of being spanned by a line; the delta chart
+  /// answers which way it is going, which a line only implies; the
+  /// distribution answers what is normal and what is an outlier, which no
+  /// chart over time shows. A group is left out, its chart is structural
+  /// rather than a preference.
+  List<ChartType> get availableChartTypes => isGroup
+      ? const []
+      : [defaultChartType, ChartType.heatmap, ChartType.delta, ChartType.distribution];
 
   /// The chart a category of this type is drawn as, given what the user picked.
   ///
@@ -327,6 +332,37 @@ enum MetricType {
     // Free-form categories, and the group containers, which carry no
     // measurements at all
     _ => const MetricLimits(0, measurementSchemaMaxValue),
+  };
+
+  /// Width of one distribution-histogram bin, in the unit the type is stored
+  /// in. Body weight is the only type that comes in more than one unit, so it
+  /// is the only one [unit] matters for. Null for the types nothing is known
+  /// about (free-form categories, and the groups, which are never drawn as a
+  /// distribution): their width is derived from the data instead.
+  ///
+  /// Fixed per type rather than computed (Freedman-Diaconis and friends):
+  /// a computed width changes with every range switch, which makes two looks
+  /// at the same category incomparable, and it lands on edges like 0.73 kg
+  /// where a maintained table lands on round ones.
+  ///
+  /// MUST stay identical to BIN_WIDTHS in react, or the same category bins
+  /// differently per client.
+  num? binWidth([String? unit]) => switch (this) {
+    MetricType.bodyWeight => unit == 'lb' ? 1 : 0.5,
+    MetricType.bodyFat => 0.5,
+    MetricType.height => 1,
+    MetricType.bloodPressureSystolic || MetricType.bloodPressureDiastolic => 5,
+    MetricType.heartRate => 2,
+    MetricType.restingHeartRate => 1,
+    MetricType.steps => 1000,
+    MetricType.distance => 1,
+    MetricType.energy => 100,
+    MetricType.sleepTotal => 30,
+    MetricType.sleepLight ||
+    MetricType.sleepDeep ||
+    MetricType.sleepRem ||
+    MetricType.sleepAwake => 15,
+    _ => null,
   };
 }
 

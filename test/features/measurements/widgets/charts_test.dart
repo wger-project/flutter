@@ -953,4 +953,156 @@ void main() {
       expect(result.last.date, DateTime(2026, 1, 3));
     });
   });
+
+  group('niceBinWidth', () {
+    test('rounds the span split into ~20 bins up to 1, 2 or 5 times a power of ten', () {
+      // span 14.6 / 20 = 0.73 -> 1, not an edge like 59.3-61.3
+      expect(niceBinWidth(59.3, 73.9), 1);
+      // span 30000 / 20 = 1500 -> 2000
+      expect(niceBinWidth(0, 30000), 2000);
+      // span 9 / 20 = 0.45 -> 0.5
+      expect(niceBinWidth(1, 10), 0.5);
+    });
+
+    test('a span of nothing still has a width', () {
+      expect(niceBinWidth(80, 80), 1);
+    });
+  });
+
+  group('buildHistogram', () {
+    test('aligns the bin edges to round multiples of the width', () {
+      final result = buildHistogram([
+        entry(79.7, DateTime(2026, 1, 1)),
+        entry(82.3, DateTime(2026, 1, 2)),
+      ], binWidth: 0.5);
+
+      expect(result.firstEdge, 79.5);
+      expect(result.lowerEdgeOf(1), 80);
+      expect(result.upperEdgeOf(result.counts.length - 1), 82.5);
+    });
+
+    test('keeps empty bins between the occupied ones, a gap is information', () {
+      final result = buildHistogram([
+        entry(60, DateTime(2026, 1, 1)),
+        entry(61, DateTime(2026, 1, 2)),
+        entry(65, DateTime(2026, 1, 3)),
+      ], binWidth: 2);
+
+      expect(result.counts, [2, 0, 1]);
+    });
+
+    test('takes the median of the values, odd and even', () {
+      final odd = buildHistogram([
+        entry(60, DateTime(2026, 1, 1)),
+        entry(62, DateTime(2026, 1, 2)),
+        entry(70, DateTime(2026, 1, 3)),
+      ], binWidth: 2);
+      expect(odd.median, 62);
+
+      final even = buildHistogram([
+        entry(60, DateTime(2026, 1, 1)),
+        entry(63, DateTime(2026, 1, 2)),
+        entry(65, DateTime(2026, 1, 3)),
+        entry(70, DateTime(2026, 1, 4)),
+      ], binWidth: 2);
+      expect(even.median, 64);
+    });
+
+    test('the latest value follows the dates, not the list order', () {
+      final result = buildHistogram([
+        entry(70, DateTime(2026, 1, 3)),
+        entry(60, DateTime(2026, 1, 5)),
+        entry(65, DateTime(2026, 1, 1)),
+      ], binWidth: 5);
+
+      expect(result.latest, 60);
+    });
+
+    test('derives a width from the span when the type brings none', () {
+      final result = buildHistogram([
+        entry(59.3, DateTime(2026, 1, 1)),
+        entry(73.9, DateTime(2026, 1, 2)),
+      ]);
+
+      expect(result.binWidth, 1);
+    });
+
+    test('doubles the width until an outlier no longer stretches it into hundreds of bins', () {
+      // 20 to 350 at 0.5 kg would be 661 bins; doubling keeps the edges round
+      final result = buildHistogram([
+        entry(20, DateTime(2026, 1, 1)),
+        entry(80, DateTime(2026, 1, 2)),
+        entry(350, DateTime(2026, 1, 3)),
+      ], binWidth: 0.5);
+
+      expect(result.binWidth, 4);
+      expect(result.counts.length, lessThanOrEqualTo(100));
+      expect(result.counts.sum, 3);
+    });
+  });
+
+  group('MeasurementDistributionWidgetFl', () {
+    final values = [
+      entry(60, DateTime(2026, 1, 1)),
+      entry(61, DateTime(2026, 1, 2)),
+      entry(65, DateTime(2026, 1, 3)),
+    ];
+
+    testWidgets('renders nothing for no values instead of crashing', (tester) async {
+      await tester.pumpWidget(_wrap(const MeasurementDistributionWidgetFl([], 'kg')));
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('reads out the median and the newest value, which the lines only place', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap(MeasurementDistributionWidgetFl(values, 'kg', binWidth: 2)));
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('Median: 61 kg', findRichText: true), findsOneWidget);
+      expect(find.textContaining('Latest: 65 kg', findRichText: true), findsOneWidget);
+    });
+
+    // Mirrors the widget's own layout: the read-out line on top, the count
+    // labels to the left, the bins sharing the rest of the width
+    Offset firstBinCenter(WidgetTester tester, {required int bins}) {
+      const readoutHeight = 20.0;
+      const countLabelWidth = 30.0;
+      final box = tester.getRect(find.byType(MeasurementDistributionWidgetFl));
+      final step = (box.width - countLabelWidth) / bins;
+      return Offset(box.left + countLabelWidth + step / 2, box.top + readoutHeight + 100);
+    }
+
+    testWidgets('a tapped bin reads out as its range and count', (tester) async {
+      await tester.pumpWidget(_wrap(MeasurementDistributionWidgetFl(values, 'kg', binWidth: 2)));
+      await tester.pumpAndSettle();
+
+      // Bins are [60-62): 2, [62-64): 0, [64-66): 1
+      await tester.tapAt(firstBinCenter(tester, bins: 3));
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('60-62 kg: 2 entries'), findsOneWidget);
+
+      // Tapping the bin again clears the selection
+      await tester.tapAt(firstBinCenter(tester, bins: 3));
+      await tester.pumpAndSettle();
+      expect(find.textContaining('Median:', findRichText: true), findsOneWidget);
+    });
+
+    testWidgets('counts read as days for a metric summed per day', (tester) async {
+      await tester.pumpWidget(
+        _wrap(
+          MeasurementDistributionWidgetFl(values, 'kg', binWidth: 2, countsAreDays: true),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tapAt(firstBinCenter(tester, bins: 3));
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('60-62 kg: 2 days'), findsOneWidget);
+    });
+  });
 }

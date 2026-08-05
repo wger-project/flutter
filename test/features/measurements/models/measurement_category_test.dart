@@ -82,11 +82,13 @@ void main() {
         ChartType.bar,
         ChartType.heatmap,
         ChartType.delta,
+        ChartType.distribution,
       ]);
       expect(MetricType.custom.availableChartTypes, [
         ChartType.line,
         ChartType.heatmap,
         ChartType.delta,
+        ChartType.distribution,
       ]);
 
       // a group is drawn by what its components are to each other
@@ -103,6 +105,28 @@ void main() {
       expect(MetricType.custom.resolveChartType(ChartType.heatmap), ChartType.heatmap);
       expect(MetricType.steps.resolveChartType(ChartType.bar), ChartType.bar);
       expect(MetricType.bodyWeight.resolveChartType(ChartType.delta), ChartType.delta);
+      expect(
+        MetricType.restingHeartRate.resolveChartType(ChartType.distribution),
+        ChartType.distribution,
+      );
+    });
+  });
+
+  group('binWidth', () {
+    test('body weight follows the unit, like its limits do', () {
+      expect(MetricType.bodyWeight.binWidth('kg'), 0.5);
+      expect(MetricType.bodyWeight.binWidth('lb'), 1);
+    });
+
+    test('the typed metrics carry a fixed width', () {
+      expect(MetricType.restingHeartRate.binWidth(), 1);
+      expect(MetricType.steps.binWidth(), 1000);
+      expect(MetricType.sleepTotal.binWidth(), 30);
+    });
+
+    test('free-form categories and groups have none, theirs follows the data', () {
+      expect(MetricType.custom.binWidth(), isNull);
+      expect(MetricType.bloodPressure.binWidth(), isNull);
     });
   });
 

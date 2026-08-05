@@ -211,6 +211,61 @@ void main() {
       expect(rods.first.color, isNot(rods.last.color));
     });
 
+    testWidgets('a distribution override bins the values instead of plotting them', (tester) async {
+      final history = [
+        for (var i = 0; i < 30; i++) MeasurementChartEntry(80 + (i % 5), DateTime(2026, 1, 1 + i)),
+      ];
+      final widget = buildChartForMetricType(
+        MetricType.bodyWeight,
+        history,
+        [],
+        'kg',
+        chartType: ChartType.distribution,
+      );
+      await tester.pumpWidget(_wrapChart(widget));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(MeasurementChartWidgetFl), findsNothing);
+      expect(find.byType(MeasurementDistributionWidgetFl), findsOneWidget);
+    });
+
+    testWidgets('a distribution of too few values falls back to the derived chart', (tester) async {
+      // A histogram of a handful of values is noise with gaps, so the card
+      // shows the default chart instead of an empty-looking one
+      final widget = buildChartForMetricType(
+        MetricType.bodyWeight,
+        [for (var i = 0; i < 5; i++) MeasurementChartEntry(80, DateTime(2026, 1, 1 + i))],
+        [],
+        'kg',
+        chartType: ChartType.distribution,
+      );
+      await tester.pumpWidget(_wrapChart(widget));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(MeasurementDistributionWidgetFl), findsNothing);
+      expect(find.byType(MeasurementChartWidgetFl), findsOneWidget);
+    });
+
+    testWidgets('a summed distribution measures its days, not its samples', (tester) async {
+      // 30 samples on 5 days are 5 daily totals: not enough for a histogram,
+      // whatever the sample count says
+      final widget = buildChartForMetricType(
+        MetricType.steps,
+        [
+          for (var i = 0; i < 30; i++)
+            MeasurementChartEntry(500, DateTime(2026, 1, 1 + i % 5, 8 + i ~/ 5)),
+        ],
+        [],
+        'count',
+        chartType: ChartType.distribution,
+      );
+      await tester.pumpWidget(_wrapChart(widget));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(MeasurementDistributionWidgetFl), findsNothing);
+      expect(find.byType(BarChart), findsOneWidget);
+    });
+
     testWidgets('a heatmap keeps one point per day instead of condensing', (tester) async {
       // Past ~200 points the line chart condenses into calendar buckets, which
       // for a grid of days would collapse whole weeks into a single cell
@@ -503,6 +558,67 @@ void main() {
       await pumpDelta(tester);
 
       expect(find.byType(MeasurementOverallChangeWidget), findsOneWidget);
+    });
+  });
+
+  group('getOverviewWidgetsSeries distribution chart', () {
+    final history = [
+      for (var i = 0; i < 100; i++)
+        MeasurementChartEntry(60 + (i % 5), DateTime.now().subtract(Duration(days: 99 - i))),
+    ];
+
+    Future<void> pumpDistribution(WidgetTester tester) => _pumpWidgetList(
+      tester,
+      (ctx) => getOverviewWidgetsSeries(
+        'Weight',
+        history,
+        moving7dAverage(history),
+        [],
+        'kg',
+        ctx,
+        metricType: MetricType.bodyWeight,
+        chartType: ChartType.distribution,
+      ),
+    );
+
+    testWidgets('one histogram, without the extra 30-day chart or the legend', (tester) async {
+      await pumpDistribution(tester);
+
+      expect(find.byType(MeasurementDistributionWidgetFl), findsOneWidget);
+      expect(find.byType(LineChart), findsNothing);
+      expect(find.byType(Indicator), findsNothing);
+    });
+
+    testWidgets('the title says the bars are a distribution, not a history', (tester) async {
+      await pumpDistribution(tester);
+
+      expect(find.text('Weight, distribution'), findsOneWidget);
+    });
+
+    testWidgets('no overall change: a distribution has no direction', (tester) async {
+      await pumpDistribution(tester);
+
+      expect(find.byType(MeasurementOverallChangeWidget), findsNothing);
+    });
+
+    testWidgets('too few values fall back to the usual line chart', (tester) async {
+      await _pumpWidgetList(
+        tester,
+        (ctx) => getOverviewWidgetsSeries(
+          'Weight',
+          history.take(5).toList(),
+          moving7dAverage(history.take(5).toList()),
+          [],
+          'kg',
+          ctx,
+          metricType: MetricType.bodyWeight,
+          chartType: ChartType.distribution,
+        ),
+      );
+
+      expect(find.byType(MeasurementDistributionWidgetFl), findsNothing);
+      expect(find.byType(LineChart), findsOneWidget);
+      expect(find.text('Weight, distribution'), findsNothing);
     });
   });
 

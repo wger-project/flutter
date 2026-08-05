@@ -615,6 +615,46 @@
       }
     }
   },
+  "chartTypeDistribution": "Distribution",
+  "@chartTypeDistribution": {
+    "description": "Chart type option: a histogram of how often each value occurred"
+  },
+  "chartDistributionTitle": "{name}, distribution",
+  "@chartDistributionTitle": {
+    "description": "Title of the histogram showing how the values of 'name' (e.g. 'weight') are distributed",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "distributionMedian": "Median",
+  "@distributionMedian": {
+    "description": "Label of the median marker in the distribution histogram"
+  },
+  "distributionLatest": "Latest",
+  "@distributionLatest": {
+    "description": "Label of the marker for the most recent value in the distribution histogram"
+  },
+  "distributionEntryCount": "{count, plural, one{1 entry} other{{count} entries}}",
+  "@distributionEntryCount": {
+    "description": "How many measurements fall into the tapped histogram bin",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "distributionDayCount": "{count, plural, one{1 day} other{{count} days}}",
+  "@distributionDayCount": {
+    "description": "How many days fall into the tapped histogram bin, for metrics summed per day",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "measurement": "Measurement",
   "@measurement": {},
   "measurements": "Measurements",

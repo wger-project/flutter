@@ -64,19 +64,24 @@ List<Widget> getOverviewWidgetsSeries(
 }) {
   final title = mainChartTitle ?? AppLocalizations.of(context).chartAllTimeTitle(name);
 
-  final resolved = metricType.resolveChartType(chartType);
+  final resolved = resolveChartTypeForData(metricType, chartType, entriesAll);
 
-  // Neither the heatmap nor the change chart is a line over the range, and both
-  // bucket the points themselves: condensing would collapse the days they are
-  // built from, the extra 30-day chart is a window they already show, and the
-  // legend names lines they do not draw
-  if (resolved == ChartType.heatmap || resolved == ChartType.delta) {
+  // Neither the heatmap nor the change chart nor the distribution is a line
+  // over the range, and all of them bucket the points themselves: condensing
+  // would collapse the days (or narrow the spread) they are built from, the
+  // extra 30-day chart is a window they already show, and the legend names
+  // lines they do not draw
+  if (resolved == ChartType.heatmap ||
+      resolved == ChartType.delta ||
+      resolved == ChartType.distribution) {
     return getOverviewWidgets(
       // The selector right above names the range, so the title says what the
       // bars are instead
-      resolved == ChartType.delta
-          ? AppLocalizations.of(context).chartWeeklyChangeTitle(name)
-          : title,
+      switch (resolved) {
+        ChartType.delta => AppLocalizations.of(context).chartWeeklyChangeTitle(name),
+        ChartType.distribution => AppLocalizations.of(context).chartDistributionTitle(name),
+        _ => title,
+      },
       entriesAll,
       // The overall change is the one-number version of the change chart. Over
       // a grid it measures a line that is not drawn, and a summed metric has no
@@ -381,6 +386,29 @@ bool groupHasData(MeasurementCategory group, {DateTime? cutoff}) => group.childr
   (child) => child.entries.any((e) => cutoff == null || !e.date.isBefore(cutoff)),
 );
 
+/// The chart [picked] resolves to, given the data it would draw.
+///
+/// On top of [MetricType.resolveChartType]'s rule that a pick has to fit the
+/// type, a distribution needs enough values to be one: a histogram of a
+/// handful is noise with gaps, so it falls back to the derived default. The
+/// criterion lives here so every dispatch point applies it identically, or
+/// the overview card and the detail screen would draw different charts.
+ChartType resolveChartTypeForData(
+  MetricType metricType,
+  ChartType picked,
+  List<MeasurementChartEntry> raw,
+) {
+  final resolved = metricType.resolveChartType(picked);
+  if (resolved != ChartType.distribution) {
+    return resolved;
+  }
+
+  // What would be binned is what has to clear the bar: for the summed types
+  // that is their daily totals, not the samples they are summed from
+  final values = metricType.isSummedPerDay ? aggregatePerDay(raw) : raw;
+  return values.length < distributionMinValues ? metricType.defaultChartType : resolved;
+}
+
 Widget buildChartForMetricType(
   MetricType metricType,
   List<MeasurementChartEntry> raw,
@@ -394,7 +422,21 @@ Widget buildChartForMetricType(
 
   // A pick that does not fit the metric type falls back to the derived chart,
   // which is also what a category configured on a newer client gets here
-  final resolved = metricType.resolveChartType(chartType);
+  final resolved = resolveChartTypeForData(metricType, chartType, raw);
+
+  if (resolved == ChartType.distribution) {
+    // Not condensed: condensing 400 values into 200 bucket means narrows the
+    // distribution artificially, and binning is a single O(n) pass anyway.
+    // What is binned mirrors the heatmap's split: the summed types distribute
+    // their daily totals, the sample types every reading (three weigh-ins on
+    // one day are all part of the distribution).
+    return MeasurementDistributionWidgetFl(
+      summed ? aggregatePerDay(raw) : raw,
+      unit,
+      binWidth: metricType.binWidth(unit),
+      countsAreDays: summed,
+    );
+  }
 
   if (resolved == ChartType.delta) {
     // Not condensed: a week is already the bucket, and the deltas are what the
