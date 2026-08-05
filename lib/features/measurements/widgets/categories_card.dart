@@ -57,9 +57,10 @@ class CategoriesCard extends StatelessWidget {
     // The average is computed over the full history and only then cut, so the
     // first points of the range average the days before it instead of starting
     // over at the cutoff
-    final allAvg = moving7dAverage(allEntries);
+    final settings = currentCategory.chartSettings;
+    final allAverage = movingAverage(allEntries, days: settings.averageWindow);
     final entriesAll = cutoff == null ? allEntries : allEntries.whereDate(cutoff, null);
-    final entries7dAvg = cutoff == null ? allAvg : allAvg.whereDate(cutoff, null);
+    final average = cutoff == null ? allAverage : allAverage.whereDate(cutoff, null);
 
     return Card(
       elevation: elevation,
@@ -83,15 +84,16 @@ class CategoriesCard extends StatelessWidget {
               child: buildChartForMetricType(
                 currentCategory.metricType,
                 entriesAll,
-                entries7dAvg,
+                average,
                 currentCategory.unit,
                 chartType: currentCategory.chartType,
+                settings: settings,
               ),
             ),
-            if (entries7dAvg.isNotEmpty && !currentCategory.metricType.isSummedPerDay)
+            if (average.isNotEmpty && !currentCategory.metricType.isSummedPerDay)
               MeasurementOverallChangeWidget(
-                entries7dAvg.first,
-                entries7dAvg.last,
+                average.first,
+                average.last,
                 currentCategory.unit,
               ),
             const Divider(),

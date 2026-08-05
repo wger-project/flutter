@@ -396,13 +396,13 @@ void main() {
     });
   });
 
-  group('moving7dAverage', () {
+  group('movingAverage', () {
     test('returns an empty list for no entries', () {
-      expect(moving7dAverage([]), isEmpty);
+      expect(movingAverage([]), isEmpty);
     });
 
     test('averages over everything within the preceding 7 days', () {
-      final result = moving7dAverage([
+      final result = movingAverage([
         entry(10, DateTime(2026, 1, 1)),
         entry(20, DateTime(2026, 1, 2)),
         entry(30, DateTime(2026, 1, 3)),
@@ -417,7 +417,7 @@ void main() {
     });
 
     test('drops points that fell out of the window', () {
-      final result = moving7dAverage([
+      final result = movingAverage([
         entry(10, DateTime(2026, 1, 1)),
         entry(20, DateTime(2026, 1, 20)),
       ]);
@@ -427,7 +427,7 @@ void main() {
     });
 
     test('sorts unordered input by date first', () {
-      final result = moving7dAverage([
+      final result = movingAverage([
         entry(30, DateTime(2026, 1, 3)),
         entry(10, DateTime(2026, 1, 1)),
         entry(20, DateTime(2026, 1, 2)),
@@ -439,11 +439,22 @@ void main() {
     test('stays accurate over a long dense series', () {
       // The window total is carried along rather than re-summed, so this
       // guards against drift piling up
-      final result = moving7dAverage([
+      final result = movingAverage([
         for (var i = 0; i < 5000; i++) entry(100, DateTime(2026, 1, 1).add(Duration(minutes: i))),
       ]);
 
       expect(result.every((e) => (e.value - 100).abs() < 0.000001), isTrue);
+    });
+
+    test('a wider window reaches further back', () {
+      final points = [
+        entry(10, DateTime(2026, 1, 1)),
+        entry(20, DateTime(2026, 1, 12)),
+      ];
+
+      // the january 1st entry is outside 7 days but inside 14
+      expect(movingAverage(points, days: 7).last.value, 20);
+      expect(movingAverage(points, days: 14).last.value, 15);
     });
   });
 

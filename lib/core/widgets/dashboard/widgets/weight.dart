@@ -115,7 +115,7 @@ class DashboardWeightWidget extends ConsumerWidget {
 
     // Mixed-unit entries (kg/lb) are normalized to the profile's display unit
     final displayUnit = weightDisplayUnit(profile.isMetric);
-    final (entriesAll, entries7dAvg) = sensibleRange(
+    final (entriesAll, average) = sensibleRange(
       entriesList
           .map(
             (e) => MeasurementChartEntry(
@@ -124,6 +124,7 @@ class DashboardWeightWidget extends ConsumerWidget {
             ),
           )
           .toList(),
+      averageDays: category.chartSettings.averageWindow,
     );
 
     return Column(
@@ -133,13 +134,13 @@ class DashboardWeightWidget extends ConsumerWidget {
           child: MeasurementChartWidgetFl.singleMeasurement(
             entriesAll,
             weightUnit(profile.isMetric, context),
-            avgs: entries7dAvg,
+            avgs: average,
           ),
         ),
-        if (entries7dAvg.isNotEmpty)
+        if (average.isNotEmpty)
           MeasurementOverallChangeWidget(
-            entries7dAvg.first,
-            entries7dAvg.last,
+            average.first,
+            average.last,
             weightUnit(profile.isMetric, context),
           ),
         LayoutBuilder(

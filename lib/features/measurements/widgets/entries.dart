@@ -111,10 +111,11 @@ class EntriesList extends ConsumerWidget {
     // The average is computed over the full history and only then cut, so the
     // first points of the range average the days before it instead of starting
     // over at the cutoff
-    final allAvg = moving7dAverage(allEntries);
+    final settings = category.chartSettings;
+    final allAverage = movingAverage(allEntries, days: settings.averageWindow);
     final cutoff = range.cutoff;
     final entriesAll = cutoff == null ? allEntries : allEntries.whereDate(cutoff, null);
-    final entries7dAvg = cutoff == null ? allAvg : allAvg.whereDate(cutoff, null);
+    final average = cutoff == null ? allAverage : allAverage.whereDate(cutoff, null);
 
     final datetimeFormat = localizedDate(context);
 
@@ -127,13 +128,14 @@ class EntriesList extends ConsumerWidget {
         ...getOverviewWidgetsSeries(
           name,
           entriesAll,
-          entries7dAvg,
+          average,
           planPeriods,
           unitLabel,
           context,
           metricType: category.metricType,
           mainChartTitle: range.chartTitle(i18n, name),
           chartType: category.chartType,
+          settings: settings,
         ),
         SizedBox(
           height: 300,

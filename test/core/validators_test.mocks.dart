@@ -2160,6 +2160,105 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get chartTypeDelta =>
+      (super.noSuchMethod(
+            Invocation.getter(#chartTypeDelta),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#chartTypeDelta),
+            ),
+          )
+          as String);
+
+  @override
+  String get chartTrend =>
+      (super.noSuchMethod(
+            Invocation.getter(#chartTrend),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#chartTrend),
+            ),
+          )
+          as String);
+
+  @override
+  String get trendReactive =>
+      (super.noSuchMethod(
+            Invocation.getter(#trendReactive),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#trendReactive),
+            ),
+          )
+          as String);
+
+  @override
+  String get trendBalanced =>
+      (super.noSuchMethod(
+            Invocation.getter(#trendBalanced),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#trendBalanced),
+            ),
+          )
+          as String);
+
+  @override
+  String get trendSluggish =>
+      (super.noSuchMethod(
+            Invocation.getter(#trendSluggish),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#trendSluggish),
+            ),
+          )
+          as String);
+
+  @override
+  String get chartAverageWindow =>
+      (super.noSuchMethod(
+            Invocation.getter(#chartAverageWindow),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#chartAverageWindow),
+            ),
+          )
+          as String);
+
+  @override
+  String get chartTypeDistribution =>
+      (super.noSuchMethod(
+            Invocation.getter(#chartTypeDistribution),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#chartTypeDistribution),
+            ),
+          )
+          as String);
+
+  @override
+  String get distributionMedian =>
+      (super.noSuchMethod(
+            Invocation.getter(#distributionMedian),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#distributionMedian),
+            ),
+          )
+          as String);
+
+  @override
+  String get distributionLatest =>
+      (super.noSuchMethod(
+            Invocation.getter(#distributionLatest),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#distributionLatest),
+            ),
+          )
+          as String);
+
+  @override
   String get measurement =>
       (super.noSuchMethod(
             Invocation.getter(#measurement),
@@ -4644,6 +4743,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get useDynamicColor =>
+      (super.noSuchMethod(
+            Invocation.getter(#useDynamicColor),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#useDynamicColor),
+            ),
+          )
+          as String);
+
+  @override
   String get youAreOffline =>
       (super.noSuchMethod(
             Invocation.getter(#youAreOffline),
@@ -5299,6 +5409,61 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.method(#chartLast3MonthsTitle, [name]),
+            ),
+          )
+          as String);
+
+  @override
+  String chartWeeklyChangeTitle(String? name) =>
+      (super.noSuchMethod(
+            Invocation.method(#chartWeeklyChangeTitle, [name]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#chartWeeklyChangeTitle, [name]),
+            ),
+          )
+          as String);
+
+  @override
+  String chartAverageWindowDays(int? days) =>
+      (super.noSuchMethod(
+            Invocation.method(#chartAverageWindowDays, [days]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#chartAverageWindowDays, [days]),
+            ),
+          )
+          as String);
+
+  @override
+  String chartDistributionTitle(String? name) =>
+      (super.noSuchMethod(
+            Invocation.method(#chartDistributionTitle, [name]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#chartDistributionTitle, [name]),
+            ),
+          )
+          as String);
+
+  @override
+  String distributionEntryCount(int? count) =>
+      (super.noSuchMethod(
+            Invocation.method(#distributionEntryCount, [count]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#distributionEntryCount, [count]),
+            ),
+          )
+          as String);
+
+  @override
+  String distributionDayCount(int? count) =>
+      (super.noSuchMethod(
+            Invocation.method(#distributionDayCount, [count]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#distributionDayCount, [count]),
             ),
           )
           as String);

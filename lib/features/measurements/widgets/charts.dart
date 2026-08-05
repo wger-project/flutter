@@ -525,8 +525,8 @@ class MeasurementChartSeries {
   final String? label;
 }
 
-// for each point, return the average of all the points in the 7 days preceding it
-List<MeasurementChartEntry> moving7dAverage(List<MeasurementChartEntry> vals) {
+/// For each point, the average of all the points in the [days] preceding it.
+List<MeasurementChartEntry> movingAverage(List<MeasurementChartEntry> vals, {int days = 7}) {
   var start = 0;
   var end = 0;
   final List<MeasurementChartEntry> out = <MeasurementChartEntry>[];
@@ -546,7 +546,7 @@ List<MeasurementChartEntry> moving7dAverage(List<MeasurementChartEntry> vals) {
     // we can't make assumptions.  We have to manually advance 'start'
     // such that it is always the first point within our desired range.
     // posibly start == end (when there is only one point in the range)
-    final intervalStart = vals[end].date.subtract(const Duration(days: 7));
+    final intervalStart = vals[end].date.subtract(Duration(days: days));
     while (start < end && vals[start].date.isBefore(intervalStart)) {
       sum -= vals[start].value;
       start++;

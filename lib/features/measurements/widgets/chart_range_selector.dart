@@ -16,7 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 /// Time range the user can pick to limit how far back the charts go.
@@ -37,8 +39,9 @@ enum ChartRange {
 
   /// Days read beyond [cutoff], so the moving average of the first days in
   /// range averages the days before them instead of starting over at the
-  /// cutoff.
-  static const _averageLeadDays = 7;
+  /// cutoff. The largest window a category can be set to, rather than its own,
+  /// so changing that setting does not invalidate the provider.
+  static final _averageLeadDays = ChartSettings.averageWindows.max;
 
   /// Oldest entry to read from the database, null for the full history.
   ///
@@ -51,7 +54,7 @@ enum ChartRange {
       return null;
     }
 
-    final lead = from.subtract(const Duration(days: _averageLeadDays));
+    final lead = from.subtract(Duration(days: _averageLeadDays));
 
     return DateTime(lead.year, lead.month, lead.day);
   }

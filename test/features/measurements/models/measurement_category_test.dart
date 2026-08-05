@@ -112,6 +112,42 @@ void main() {
     });
   });
 
+  group('chartConfig', () {
+    MeasurementCategory withConfig(Map<String, dynamic> config) =>
+        MeasurementCategory(chartConfig: config);
+
+    test('an unconfigured category gets the defaults', () {
+      // A row synced before the column existed reads null, one the user never
+      // configured an empty object; both mean the same thing
+      expect(MeasurementCategory().chartSettings.trend, TrendCharacter.balanced);
+      expect(MeasurementCategory().chartSettings.averageWindow, 7);
+      expect(withConfig({}).chartSettings.trend, TrendCharacter.balanced);
+      expect(withConfig({}).chartSettings.averageWindow, 7);
+    });
+
+    test('reads what was configured', () {
+      expect(withConfig({'trend': 'sluggish'}).chartSettings.trend, TrendCharacter.sluggish);
+      expect(withConfig({'average_window': 30}).chartSettings.averageWindow, 30);
+    });
+
+    test('a value this release does not know falls back to the default', () {
+      expect(withConfig({'trend': 'glacial'}).chartSettings.trend, TrendCharacter.balanced);
+      expect(withConfig({'average_window': 21}).chartSettings.averageWindow, 7);
+      expect(withConfig({'average_window': 'a fortnight'}).chartSettings.averageWindow, 7);
+    });
+
+    test('a setting is changed without dropping the keys of another client', () {
+      final category = withConfig({'goal_line': 75}).withChartSetting('trend', 'reactive');
+
+      expect(category.chartConfig, {'goal_line': 75, 'trend': 'reactive'});
+    });
+
+    test('the trend character maps to the EMA period the chart uses', () {
+      expect(TrendCharacter.reactive.emaPeriod, lessThan(TrendCharacter.balanced.emaPeriod));
+      expect(TrendCharacter.sluggish.emaPeriod, greaterThan(TrendCharacter.balanced.emaPeriod));
+    });
+  });
+
   group('binWidth', () {
     test('body weight follows the unit, like its limits do', () {
       expect(MetricType.bodyWeight.binWidth('kg'), 0.5);

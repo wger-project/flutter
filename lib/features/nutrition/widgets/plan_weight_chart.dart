@@ -63,7 +63,8 @@ class PlanWeightChart extends ConsumerWidget {
     // to the profile's display unit before charting or averaging
     final displayUnit = weightDisplayUnit(profile.isMetric);
     final points = chartEntriesFor(entries, targetUnit: displayUnit, categoryUnit: category.unit);
-    final avg = moving7dAverage(points);
+    final settings = category.chartSettings;
+    final avg = movingAverage(points, days: settings.averageWindow);
 
     return Column(
       children: getOverviewWidgets(
@@ -73,6 +74,7 @@ class PlanWeightChart extends ConsumerWidget {
         weightUnit(profile.isMetric, context),
         context,
         metricType: category.metricType,
+        settings: settings,
       ),
     );
   }

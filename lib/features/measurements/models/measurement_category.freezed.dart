@@ -19,7 +19,13 @@ mixin _$MeasurementCategory {
 /// chart). [MetricType.custom] for plain user-created categories.
  MetricType get metricType;/// Chart the user picked for this category, [ChartType.auto] (the server's
 /// null) for the one derived from [metricType].
- ChartType get chartType;/// Multi-value groups (e.g. blood pressure): id of the parent category, one
+ ChartType get chartType;/// Taste-level chart settings, read through [trend] and [averageWindow].
+///
+/// Null for a category that configured none, which is also what a row synced
+/// before the column existed reads. Keys this release does not know are
+/// kept: another client may have written them, and a write from here
+/// replaces the whole object.
+ Map<String, dynamic>? get chartConfig;/// Multi-value groups (e.g. blood pressure): id of the parent category, one
 /// child per component. Max. one level of nesting; only leaf categories
 /// (no children) carry entries.
  String? get parentId;/// Position in the category list; for children, the position within the group
@@ -38,16 +44,16 @@ $MeasurementCategoryCopyWith<MeasurementCategory> get copyWith => _$MeasurementC
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MeasurementCategory&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.unit, unit) || other.unit == unit)&&const DeepCollectionEquality().equals(other.entries, entries)&&(identical(other.metricType, metricType) || other.metricType == metricType)&&(identical(other.chartType, chartType) || other.chartType == chartType)&&(identical(other.parentId, parentId) || other.parentId == parentId)&&(identical(other.order, order) || other.order == order)&&(identical(other.isOfficial, isOfficial) || other.isOfficial == isOfficial)&&const DeepCollectionEquality().equals(other.children, children));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MeasurementCategory&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.unit, unit) || other.unit == unit)&&const DeepCollectionEquality().equals(other.entries, entries)&&(identical(other.metricType, metricType) || other.metricType == metricType)&&(identical(other.chartType, chartType) || other.chartType == chartType)&&const DeepCollectionEquality().equals(other.chartConfig, chartConfig)&&(identical(other.parentId, parentId) || other.parentId == parentId)&&(identical(other.order, order) || other.order == order)&&(identical(other.isOfficial, isOfficial) || other.isOfficial == isOfficial)&&const DeepCollectionEquality().equals(other.children, children));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,name,unit,const DeepCollectionEquality().hash(entries),metricType,chartType,parentId,order,isOfficial,const DeepCollectionEquality().hash(children));
+int get hashCode => Object.hash(runtimeType,id,name,unit,const DeepCollectionEquality().hash(entries),metricType,chartType,const DeepCollectionEquality().hash(chartConfig),parentId,order,isOfficial,const DeepCollectionEquality().hash(children));
 
 @override
 String toString() {
-  return 'MeasurementCategory(id: $id, name: $name, unit: $unit, entries: $entries, metricType: $metricType, chartType: $chartType, parentId: $parentId, order: $order, isOfficial: $isOfficial, children: $children)';
+  return 'MeasurementCategory(id: $id, name: $name, unit: $unit, entries: $entries, metricType: $metricType, chartType: $chartType, chartConfig: $chartConfig, parentId: $parentId, order: $order, isOfficial: $isOfficial, children: $children)';
 }
 
 
@@ -58,7 +64,7 @@ abstract mixin class $MeasurementCategoryCopyWith<$Res>  {
   factory $MeasurementCategoryCopyWith(MeasurementCategory value, $Res Function(MeasurementCategory) _then) = _$MeasurementCategoryCopyWithImpl;
 @useResult
 $Res call({
- String? id, String name, String unit, List<MeasurementEntry> entries, MetricType metricType, ChartType chartType, String? parentId, int order, bool isOfficial, List<MeasurementCategory> children
+ String? id, String name, String unit, List<MeasurementEntry> entries, MetricType metricType, ChartType chartType, Map<String, dynamic>? chartConfig, String? parentId, int order, bool isOfficial, List<MeasurementCategory> children
 });
 
 
@@ -75,7 +81,7 @@ class _$MeasurementCategoryCopyWithImpl<$Res>
 
 /// Create a copy of MeasurementCategory
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? name = null,Object? unit = null,Object? entries = null,Object? metricType = null,Object? chartType = null,Object? parentId = freezed,Object? order = null,Object? isOfficial = null,Object? children = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? name = null,Object? unit = null,Object? entries = null,Object? metricType = null,Object? chartType = null,Object? chartConfig = freezed,Object? parentId = freezed,Object? order = null,Object? isOfficial = null,Object? children = null,}) {
   return _then(MeasurementCategory(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String?,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -83,7 +89,8 @@ as String,unit: null == unit ? _self.unit : unit // ignore: cast_nullable_to_non
 as String,entries: null == entries ? _self.entries : entries // ignore: cast_nullable_to_non_nullable
 as List<MeasurementEntry>,metricType: null == metricType ? _self.metricType : metricType // ignore: cast_nullable_to_non_nullable
 as MetricType,chartType: null == chartType ? _self.chartType : chartType // ignore: cast_nullable_to_non_nullable
-as ChartType,parentId: freezed == parentId ? _self.parentId : parentId // ignore: cast_nullable_to_non_nullable
+as ChartType,chartConfig: freezed == chartConfig ? _self.chartConfig : chartConfig // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>?,parentId: freezed == parentId ? _self.parentId : parentId // ignore: cast_nullable_to_non_nullable
 as String?,order: null == order ? _self.order : order // ignore: cast_nullable_to_non_nullable
 as int,isOfficial: null == isOfficial ? _self.isOfficial : isOfficial // ignore: cast_nullable_to_non_nullable
 as bool,children: null == children ? _self.children : children // ignore: cast_nullable_to_non_nullable

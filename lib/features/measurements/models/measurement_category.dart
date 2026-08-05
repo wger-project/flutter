@@ -94,6 +94,73 @@ enum ChartType {
   );
 }
 
+/// How closely the trend line follows the values, as the EMA period it maps to.
+///
+/// Stored as the character rather than the number, so the periods stay tunable
+/// without touching what users configured.
+enum TrendCharacter {
+  reactive('reactive', 5),
+  balanced('balanced', 10),
+  sluggish('sluggish', 20);
+
+  final String wireValue;
+  final int emaPeriod;
+  const TrendCharacter(this.wireValue, this.emaPeriod);
+
+  /// Falls back to [TrendCharacter.balanced], which is the unconfigured chart.
+  static TrendCharacter fromWire(Object? value) => TrendCharacter.values.firstWhere(
+    (e) => e.wireValue == value,
+    orElse: () => TrendCharacter.balanced,
+  );
+}
+
+extension MeasurementTrendCharacterL10n on TrendCharacter {
+  /// Localized human-readable label for the picker.
+  String localized(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return switch (this) {
+      TrendCharacter.reactive => l10n.trendReactive,
+      TrendCharacter.balanced => l10n.trendBalanced,
+      TrendCharacter.sluggish => l10n.trendSluggish,
+    };
+  }
+}
+
+/// The taste-level chart settings of a category, resolved.
+///
+/// One object rather than one parameter per setting: the charts take it as a
+/// whole, so a setting added here reaches them without touching a signature.
+/// The defaults are what an unconfigured category is drawn with.
+class ChartSettings {
+  /// Windows the moving average may be computed over, in days.
+  static const averageWindows = [7, 14, 30];
+
+  final TrendCharacter trend;
+
+  /// Window the moving average covers, in days
+  final int averageWindow;
+
+  const ChartSettings({
+    this.trend = TrendCharacter.balanced,
+    this.averageWindow = 7,
+  });
+
+  /// Reads the settings out of a stored `chart_config`.
+  ///
+  /// A value this release does not know, and a missing object, fall back to
+  /// the default, the same rule an unfitting [ChartType] follows.
+  factory ChartSettings.fromConfig(Map<String, dynamic>? config) {
+    final window = config?['average_window'];
+
+    return ChartSettings(
+      trend: TrendCharacter.fromWire(config?['trend']),
+      averageWindow: window is int && averageWindows.contains(window)
+          ? window
+          : averageWindows.first,
+    );
+  }
+}
+
 extension MeasurementChartTypeL10n on ChartType {
   /// Localized human-readable label for the picker.
   String localized(BuildContext context) {
@@ -435,6 +502,15 @@ class MeasurementCategory with _$MeasurementCategory {
   @override
   final ChartType chartType;
 
+  /// Taste-level chart settings, read through [chartSettings].
+  ///
+  /// Null for a category that configured none, which is also what a row synced
+  /// before the column existed reads. Keys this release does not know are
+  /// kept: another client may have written them, and a write from here
+  /// replaces the whole object.
+  @override
+  final Map<String, dynamic>? chartConfig;
+
   /// Multi-value groups (e.g. blood pressure): id of the parent category, one
   /// child per component. Max. one level of nesting; only leaf categories
   /// (no children) carry entries.
@@ -462,11 +538,20 @@ class MeasurementCategory with _$MeasurementCategory {
     this.entries = const [],
     this.metricType = MetricType.custom,
     this.chartType = ChartType.auto,
+    this.chartConfig,
     this.parentId,
     this.order = 0,
     this.isOfficial = false,
     this.children = const [],
   });
+
+  /// How this category is drawn, beyond the chart type: see [ChartSettings].
+  ChartSettings get chartSettings => ChartSettings.fromConfig(chartConfig);
+
+  /// A copy with one chart setting changed, keeping the keys this release does
+  /// not know: a write replaces the whole object.
+  MeasurementCategory withChartSetting(String key, Object value) =>
+      copyWith(chartConfig: {...?chartConfig, key: value});
 
   /// `true` for group parents (blood pressure etc.), which hold no entries of
   /// their own
@@ -499,6 +584,7 @@ class MeasurementCategory with _$MeasurementCategory {
       unit: Value(unit),
       metricType: Value(metricType),
       chartType: Value(chartType),
+      chartConfig: Value(chartConfig),
       parentId: Value(parentId),
       order: Value(order),
       isOfficial: Value(isOfficial),

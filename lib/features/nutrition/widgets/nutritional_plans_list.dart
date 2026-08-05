@@ -57,14 +57,17 @@ class NutritionalPlansList extends riverpod.ConsumerWidget {
       targetUnit: displayUnit,
       categoryUnit: category.unit,
     );
-    final entries7dAvg = moving7dAverage(entriesAll).whereDateWithInterpolation(startDate, endDate);
-    if (entries7dAvg.length < 2) {
+    final average = movingAverage(
+      entriesAll,
+      days: category.chartSettings.averageWindow,
+    ).whereDateWithInterpolation(startDate, endDate);
+    if (average.length < 2) {
       return const SizedBox.shrink();
     }
 
     // Calculate weight change
-    final firstWeight = entries7dAvg.first;
-    final lastWeight = entries7dAvg.last;
+    final firstWeight = average.first;
+    final lastWeight = average.last;
     final weightDifference = lastWeight.value - firstWeight.value;
 
     // Format the weight change text and determine color

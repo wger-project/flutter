@@ -615,6 +615,35 @@
       }
     }
   },
+  "chartTrend": "Trend line",
+  "@chartTrend": {
+    "description": "Label of the setting for how closely the trend line follows the values"
+  },
+  "trendReactive": "Reactive",
+  "@trendReactive": {
+    "description": "Trend line option: follows the values closely"
+  },
+  "trendBalanced": "Balanced",
+  "@trendBalanced": {
+    "description": "Trend line option: the default, between reactive and sluggish"
+  },
+  "trendSluggish": "Smooth",
+  "@trendSluggish": {
+    "description": "Trend line option: ignores short-term swings"
+  },
+  "chartAverageWindow": "Average over",
+  "@chartAverageWindow": {
+    "description": "Label of the setting for how many days the moving average covers"
+  },
+  "chartAverageWindowDays": "{days, plural, one{1 day} other{{days} days}}",
+  "@chartAverageWindowDays": {
+    "description": "One option of the average window setting, e.g. '7 days'",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
   "chartTypeDistribution": "Distribution",
   "@chartTypeDistribution": {
     "description": "Chart type option: a histogram of how often each value occurred"

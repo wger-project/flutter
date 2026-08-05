@@ -131,6 +131,94 @@ void main() {
       expect(find.byType(DropdownButtonFormField<ChartType>), findsOneWidget);
     });
 
+    testWidgets('a leaf category gets the line chart settings', (tester) async {
+      final category = getMeasurementCategories()[1];
+      when(mockRepo.watchAll()).thenAnswer((_) => Stream.value([category]));
+
+      await tester.pumpWidget(wrap(MeasurementCategoryForm(category)));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(DropdownButtonFormField<TrendCharacter>), findsOneWidget);
+      expect(find.byType(DropdownButtonFormField<int>), findsOneWidget);
+    });
+
+    testWidgets('a summed type has no line to configure', (tester) async {
+      // Its chart is one bar per day, which has neither a trend nor an
+      // average, and no pick can turn it into a line
+      final steps = getMeasurementCategories()[1].copyWith(metricType: MetricType.steps);
+      when(mockRepo.watchAll()).thenAnswer((_) => Stream.value([steps]));
+
+      await tester.pumpWidget(wrap(MeasurementCategoryForm(steps)));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(DropdownButtonFormField<TrendCharacter>), findsNothing);
+      expect(find.byType(DropdownButtonFormField<int>), findsNothing);
+    });
+
+    testWidgets('the line settings are disabled for a chart without a line', (tester) async {
+      // Kept rather than hidden: switching the chart type back applies them
+      // again, and a field that vanishes takes the reason with it
+      final category = getMeasurementCategories()[1].copyWith(chartType: ChartType.delta);
+      when(mockRepo.watchAll()).thenAnswer((_) => Stream.value([category]));
+
+      await tester.pumpWidget(wrap(MeasurementCategoryForm(category)));
+      await tester.pumpAndSettle();
+
+      expect(
+        tester
+            .widget<DropdownButtonFormField<TrendCharacter>>(
+              find.byType(DropdownButtonFormField<TrendCharacter>),
+            )
+            .onChanged,
+        isNull,
+      );
+      expect(
+        tester
+            .widget<DropdownButtonFormField<int>>(
+              find.byType(DropdownButtonFormField<int>),
+            )
+            .onChanged,
+        isNull,
+      );
+    });
+
+    testWidgets('the line settings are enabled while the chart is a line', (tester) async {
+      final category = getMeasurementCategories()[1].copyWith(chartType: ChartType.auto);
+      when(mockRepo.watchAll()).thenAnswer((_) => Stream.value([category]));
+
+      await tester.pumpWidget(wrap(MeasurementCategoryForm(category)));
+      await tester.pumpAndSettle();
+
+      expect(
+        tester
+            .widget<DropdownButtonFormField<TrendCharacter>>(
+              find.byType(DropdownButtonFormField<TrendCharacter>),
+            )
+            .onChanged,
+        isNotNull,
+      );
+    });
+
+    testWidgets('picking a trend keeps the settings of another client', (tester) async {
+      final category = getMeasurementCategories()[1].copyWith(chartConfig: {'goal_line': 75});
+      when(mockRepo.watchAll()).thenAnswer((_) => Stream.value([category]));
+
+      await tester.pumpWidget(wrap(MeasurementCategoryForm(category)));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byType(DropdownButtonFormField<TrendCharacter>));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Reactive').last);
+      await tester.pumpAndSettle();
+      await tester.tap(find.byType(ElevatedButton));
+      await tester.pumpAndSettle();
+
+      final saved =
+          verify(mockRepo.updateLocalDriftCategory(captureAny)).captured.single
+              as MeasurementCategory;
+      expect(saved.chartConfig, {'goal_line': 75, 'trend': 'reactive'});
+    });
+
     testWidgets('editing existing category pre-fills name and unit', (tester) async {
       final existing = getMeasurementCategories()[1];
 

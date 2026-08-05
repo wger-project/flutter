@@ -41,6 +41,11 @@ class MeasurementCategoryTable extends Table {
   TextColumn get chartType =>
       text().named('chart_type').nullable().map(const MeasurementChartTypeConverter())();
 
+  /// Taste-level chart settings (server JSONField), e.g. the trend character.
+  /// A missing key, and a missing object, mean the client default.
+  TextColumn get chartConfig =>
+      text().named('chart_config').map(const JsonMapConverter()).nullable()();
+
   /// Multi-value groups: parent category id (max. one level of nesting; only
   /// leaf categories carry entries).
   TextColumn get parentId =>
@@ -61,6 +66,8 @@ const PowersyncMeasurementCategoryTable = ps.Table(
     ps.Column.text('unit'),
     ps.Column.text('metric_type'),
     ps.Column.text('chart_type'),
+    // JSON object, synced and stored as text
+    ps.Column.text('chart_config'),
     ps.Column.text('parent_id'),
     ps.Column.integer('order'),
     // Postgres boolean; integer so the view yields 0/1, not the string '0'

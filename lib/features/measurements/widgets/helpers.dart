@@ -17,6 +17,7 @@ List<Widget> getOverviewWidgets(
   List<PlanPeriod> planPeriods = const [],
   List<MeasurementChartEntry>? trend,
   ChartType chartType = ChartType.auto,
+  ChartSettings settings = const ChartSettings(),
 }) {
   return [
     Text(
@@ -44,6 +45,7 @@ List<Widget> getOverviewWidgets(
               planPeriods: planPeriods,
               trend: trend,
               chartType: chartType,
+              settings: settings,
             ),
     ),
     if (avg.isNotEmpty) MeasurementOverallChangeWidget(avg.first, avg.last, unit),
@@ -54,13 +56,14 @@ List<Widget> getOverviewWidgets(
 List<Widget> getOverviewWidgetsSeries(
   String name,
   List<MeasurementChartEntry> entriesAll,
-  List<MeasurementChartEntry> entries7dAvg,
+  List<MeasurementChartEntry> average,
   List<PlanPeriod> planPeriods,
   String unit,
   BuildContext context, {
   MetricType metricType = MetricType.custom,
   String? mainChartTitle,
   ChartType chartType = ChartType.auto,
+  ChartSettings settings = const ChartSettings(),
 }) {
   final title = mainChartTitle ?? AppLocalizations.of(context).chartAllTimeTitle(name);
 
@@ -86,11 +89,12 @@ List<Widget> getOverviewWidgetsSeries(
       // The overall change is the one-number version of the change chart. Over
       // a grid it measures a line that is not drawn, and a summed metric has no
       // level to change.
-      resolved == ChartType.delta && !metricType.isSummedPerDay ? entries7dAvg : const [],
+      resolved == ChartType.delta && !metricType.isSummedPerDay ? average : const [],
       unit,
       context,
       metricType: metricType,
       chartType: chartType,
+      settings: settings,
     );
   }
 
@@ -100,17 +104,18 @@ List<Widget> getOverviewWidgetsSeries(
   // trend. With dense metrics the full-series passes dominate the build.
   final summed = metricType.isSummedPerDay;
   final points = summed ? entriesAll : downsample(entriesAll);
-  final trendAll = summed ? null : smoothedTrendline(points);
+  final trendAll = summed ? null : smoothedTrendline(points, period: settings.trend.emaPeriod);
   return [
     ...getOverviewWidgets(
       title,
       points,
-      entries7dAvg,
+      average,
       unit,
       context,
       metricType: metricType,
       planPeriods: planPeriods,
       trend: trendAll,
+      settings: settings,
     ),
     // if all time is significantly longer than 30 days (let's say > 75 days)
     // then let's show a separate chart just focusing on the last 30 days,
@@ -124,7 +129,7 @@ List<Widget> getOverviewWidgetsSeries(
         // condensed on its own so it keeps the finer resolution its shorter
         // span allows
         entriesAll.whereDateWithInterpolation(monthAgo, null),
-        entries7dAvg.whereDateWithInterpolation(monthAgo, null),
+        average.whereDateWithInterpolation(monthAgo, null),
         unit,
         context,
         metricType: metricType,
@@ -133,6 +138,7 @@ List<Widget> getOverviewWidgetsSeries(
         // window would seed the EMA from the window's (possibly interpolated)
         // first point and bend it across half the chart
         trend: trendAll?.whereDate(monthAgo, null),
+        settings: settings,
       ),
     // legend
     Row(
@@ -183,17 +189,19 @@ DateTime? sensibleRangeStart(List<MeasurementChartEntry> entriesAll) {
 }
 
 // return the raw and average measurements for a "sensible range", see
-// sensibleRangeStart
+// sensibleRangeStart. [averageDays] is the window of the moving average, which
+// the category can configure.
 (List<MeasurementChartEntry>, List<MeasurementChartEntry>) sensibleRange(
-  List<MeasurementChartEntry> entriesAll,
-) {
-  final entries7dAvg = moving7dAverage(entriesAll);
+  List<MeasurementChartEntry> entriesAll, {
+  int averageDays = 7,
+}) {
+  final average = movingAverage(entriesAll, days: averageDays);
   final start = sensibleRangeStart(entriesAll);
 
   if (start == null) {
-    return (entriesAll, entries7dAvg);
+    return (entriesAll, average);
   }
-  return (entriesAll.whereDate(start, null), entries7dAvg.whereDate(start, null));
+  return (entriesAll.whereDate(start, null), average.whereDate(start, null));
 }
 
 /// Turns stored entries into chart points, converting the value to [targetUnit].
@@ -417,6 +425,7 @@ Widget buildChartForMetricType(
   List<PlanPeriod> planPeriods = const [],
   List<MeasurementChartEntry>? trend,
   ChartType chartType = ChartType.auto,
+  ChartSettings settings = const ChartSettings(),
 }) {
   final summed = metricType.isSummedPerDay;
 
@@ -463,7 +472,7 @@ Widget buildChartForMetricType(
     points,
     unit,
     avgs: downsample(avg),
-    trend: trend ?? smoothedTrendline(points),
+    trend: trend ?? smoothedTrendline(points, period: settings.trend.emaPeriod),
     planPeriods: planPeriods,
   );
 }

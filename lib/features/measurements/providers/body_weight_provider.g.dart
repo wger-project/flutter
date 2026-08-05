@@ -12,7 +12,7 @@ part of 'body_weight_provider.dart';
 ///
 /// The category is created by the server (registration / data migration) and
 /// only arrives via sync; a `null` value means the initial sync has not
-/// delivered it yet. Mutations go through [measurementProvider]'s notifier.
+/// delivered it yet. Mutations go through `measurementProvider`'s notifier.
 ///
 /// Unbounded, for the consumers that need the latest entry whatever its age
 /// (the dashboard card, the nutrition widgets). A screen that shows a range
@@ -25,7 +25,7 @@ final bodyWeightCategoryProvider = BodyWeightCategoryProvider._();
 ///
 /// The category is created by the server (registration / data migration) and
 /// only arrives via sync; a `null` value means the initial sync has not
-/// delivered it yet. Mutations go through [measurementProvider]'s notifier.
+/// delivered it yet. Mutations go through `measurementProvider`'s notifier.
 ///
 /// Unbounded, for the consumers that need the latest entry whatever its age
 /// (the dashboard card, the nutrition widgets). A screen that shows a range
@@ -43,7 +43,7 @@ final class BodyWeightCategoryProvider
   ///
   /// The category is created by the server (registration / data migration) and
   /// only arrives via sync; a `null` value means the initial sync has not
-  /// delivered it yet. Mutations go through [measurementProvider]'s notifier.
+  /// delivered it yet. Mutations go through `measurementProvider`'s notifier.
   ///
   /// Unbounded, for the consumers that need the latest entry whatever its age
   /// (the dashboard card, the nutrition widgets). A screen that shows a range

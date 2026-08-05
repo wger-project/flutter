@@ -57,7 +57,7 @@ void main() {
     MeasurementChartEntry(10, DateTime(2026, 1, 1)),
     MeasurementChartEntry(20, DateTime(2026, 1, 10)),
   ];
-  final avgEntries = moving7dAverage(rawEntries);
+  final avgEntries = movingAverage(rawEntries);
 
   group('chartEntriesFor', () {
     test('converts the aggregate bounds along with the value', () {
@@ -100,6 +100,19 @@ void main() {
     });
   });
 
+  group('sensibleRange', () {
+    test('averages over the window the category configured', () {
+      final points = [
+        MeasurementChartEntry(10, DateTime.now().subtract(const Duration(days: 11))),
+        MeasurementChartEntry(20, DateTime.now()),
+      ];
+
+      // the older point is outside 7 days but inside 14
+      expect(sensibleRange(points).$2.last.value, 20);
+      expect(sensibleRange(points, averageDays: 14).$2.last.value, 15);
+    });
+  });
+
   group('buildChartForMetricType routing', () {
     final entries = [
       MeasurementChartEntry(1000, DateTime(2026, 1, 1)),
@@ -135,7 +148,7 @@ void main() {
       final widget = buildChartForMetricType(
         MetricType.custom,
         many,
-        moving7dAverage(many),
+        movingAverage(many),
         'kg',
       );
       await tester.pumpWidget(_wrapChart(widget));
@@ -531,7 +544,7 @@ void main() {
       (ctx) => getOverviewWidgetsSeries(
         'Weight',
         history,
-        moving7dAverage(history),
+        movingAverage(history),
         [],
         'kg',
         ctx,
@@ -572,7 +585,7 @@ void main() {
       (ctx) => getOverviewWidgetsSeries(
         'Weight',
         history,
-        moving7dAverage(history),
+        movingAverage(history),
         [],
         'kg',
         ctx,
@@ -607,7 +620,7 @@ void main() {
         (ctx) => getOverviewWidgetsSeries(
           'Weight',
           history.take(5).toList(),
-          moving7dAverage(history.take(5).toList()),
+          movingAverage(history.take(5).toList()),
           [],
           'kg',
           ctx,
@@ -636,8 +649,7 @@ void main() {
       ];
       await _pumpWidgetList(
         tester,
-        (ctx) =>
-            getOverviewWidgetsSeries('Weight', history, moving7dAverage(history), [], 'kg', ctx),
+        (ctx) => getOverviewWidgetsSeries('Weight', history, movingAverage(history), [], 'kg', ctx),
       );
 
       final charts = tester.widgetList<LineChart>(find.byType(LineChart)).toList();

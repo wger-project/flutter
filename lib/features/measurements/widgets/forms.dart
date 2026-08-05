@@ -67,6 +67,15 @@ class _MeasurementCategoryFormState extends ConsumerState<MeasurementCategoryFor
     // one takes both from its metric type, which is also what is shown for it
     final isCustom = _draft.metricType == MetricType.custom;
 
+    // The trend line and the moving average are parts of the line chart: a
+    // category that can never be drawn as one is not offered them at all, and
+    // one that is currently drawn as something else keeps its settings but
+    // cannot change them
+    final canDrawLine =
+        !hasChildren && _draft.metricType.availableChartTypes.contains(ChartType.line);
+    final drawsLine = _draft.metricType.resolveChartType(_draft.chartType) == ChartType.line;
+    final settings = _draft.chartSettings;
+
     return Form(
       key: _form,
       child: Column(
@@ -141,6 +150,50 @@ class _MeasurementCategoryFormState extends ConsumerState<MeasurementCategoryFor
                 }
               },
             ),
+
+          // Trend character and average window, disabled while the category is
+          // drawn as something that has neither
+          if (canDrawLine) ...[
+            DropdownButtonFormField<TrendCharacter>(
+              initialValue: settings.trend,
+              decoration: InputDecoration(labelText: AppLocalizations.of(context).chartTrend),
+              items: TrendCharacter.values
+                  .map((t) => DropdownMenuItem(value: t, child: Text(t.localized(context))))
+                  .toList(),
+              onChanged: drawsLine
+                  ? (value) {
+                      if (value != null) {
+                        setState(() {
+                          _draft = _draft.withChartSetting('trend', value.wireValue);
+                        });
+                      }
+                    }
+                  : null,
+            ),
+            DropdownButtonFormField<int>(
+              initialValue: settings.averageWindow,
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context).chartAverageWindow,
+              ),
+              items: ChartSettings.averageWindows
+                  .map(
+                    (days) => DropdownMenuItem(
+                      value: days,
+                      child: Text(AppLocalizations.of(context).chartAverageWindowDays(days)),
+                    ),
+                  )
+                  .toList(),
+              onChanged: drawsLine
+                  ? (value) {
+                      if (value != null) {
+                        setState(() {
+                          _draft = _draft.withChartSetting('average_window', value);
+                        });
+                      }
+                    }
+                  : null,
+            ),
+          ],
 
           // Parent group (multi-value measurements, e.g. blood pressure).
           // Mirrors the server rules: only top-level, entry-free categories
