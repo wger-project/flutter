@@ -222,6 +222,14 @@ void main() {
       expect(rod.toY, 150);
     });
 
+    testWidgets('a duration row reads h:mm, not minutes', (tester) async {
+      await tester.pumpWidget(_card(_sleepGroup()));
+      await tester.pumpAndSettle();
+
+      expect(find.text('8:00 h'), findsOneWidget);
+      expect(find.text('1:30 h'), findsOneWidget);
+    });
+
     testWidgets('the roll-up row gets no colour dot', (tester) async {
       await tester.pumpWidget(_card(_sleepGroup()));
       await tester.pumpAndSettle();

@@ -203,7 +203,11 @@ class CategoriesCard extends StatelessWidget {
               title: Text(child.displayName(context)),
               trailing: Text(
                 latest != null
-                    ? '${localizedNumberFormat(context).format(latest.valueIn(child.unit, categoryUnit: child.unit))} ${child.unit}'
+                    ? measurementWithUnit(
+                        context,
+                        latest.valueIn(child.unit, categoryUnit: child.unit),
+                        child.unit,
+                      )
                     : '—',
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
