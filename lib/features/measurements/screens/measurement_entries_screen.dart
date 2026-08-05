@@ -53,6 +53,13 @@ class _MeasurementEntriesScreenState extends ConsumerState<MeasurementEntriesScr
   /// that reads the entries, not only the span the chart draws
   ChartRange _range = ChartRange.last3Months;
 
+  /// The category as it was last read.
+  ///
+  /// Picking another range watches a different provider, which starts out
+  /// loading: without this the screen would drop everything it is showing for
+  /// a frame and come back, which is what the range switch used to look like.
+  MeasurementCategory? _lastCategory;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -70,91 +77,100 @@ class _MeasurementEntriesScreenState extends ConsumerState<MeasurementEntriesScr
       measurementCategorySinceProvider(_categoryId, _range.readCutoff),
     );
 
-    return categoryValue.when(
-      loading: () => const BoxedProgressIndicator(),
-      error: (error, _) => StreamErrorIndicator(error.toString()),
-      data: (category) {
-        // Category was deleted (locally or via PowerSync from another device).
-        // Leave this now-stale screen.
-        if (category == null) {
-          return objectGoneRedirect(context);
-        }
+    // Category was deleted (locally or via PowerSync from another device).
+    // Leave this now-stale screen. Asked of the value that just arrived, not
+    // of the cache, which still holds the category as it was.
+    if (categoryValue.hasValue && categoryValue.value == null) {
+      return objectGoneRedirect(context);
+    }
 
-        return Scaffold(
-          appBar: AppBar(
-            title: Text(category.displayName(context)),
-            actions: [
-              PopupMenuButton<MeasurementOptions>(
-                icon: const Icon(Icons.more_vert),
-                onSelected: (value) {
-                  switch (value) {
-                    case MeasurementOptions.edit:
-                      Navigator.pushNamed(
-                        context,
-                        FormScreen.routeName,
-                        arguments: FormScreenArguments(
-                          AppLocalizations.of(context).edit,
-                          MeasurementCategoryForm(category),
-                        ),
-                      );
-                      break;
+    final category = categoryValue.value ?? _lastCategory;
+    if (categoryValue.value != null) {
+      _lastCategory = categoryValue.value;
+    }
 
-                    case MeasurementOptions.delete:
-                      showConfirmDeleteDialog(
-                        context,
-                        itemName: category.displayName(context),
-                        onConfirm: () =>
-                            ref.read(measurementProvider.notifier).deleteCategory(category.id!),
-                        // Exit the detail screen once the category is gone.
-                        onDeleted: () => Navigator.of(context).pop(),
-                      );
-                      break;
-                  }
-                },
-                itemBuilder: (context) {
-                  return [
-                    if (category.isEditable)
-                      PopupMenuItem<MeasurementOptions>(
-                        value: MeasurementOptions.edit,
-                        child: Text(AppLocalizations.of(context).edit),
+    // The scaffold is built whether or not there is data: a bare indicator in
+    // its place is a screen without a background, i.e. a black flash
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(category?.displayName(context) ?? ''),
+        actions: [
+          if (category != null)
+            PopupMenuButton<MeasurementOptions>(
+              icon: const Icon(Icons.more_vert),
+              onSelected: (value) {
+                switch (value) {
+                  case MeasurementOptions.edit:
+                    Navigator.pushNamed(
+                      context,
+                      FormScreen.routeName,
+                      arguments: FormScreenArguments(
+                        AppLocalizations.of(context).edit,
+                        MeasurementCategoryForm(category),
                       ),
+                    );
+                    break;
+
+                  case MeasurementOptions.delete:
+                    showConfirmDeleteDialog(
+                      context,
+                      itemName: category.displayName(context),
+                      onConfirm: () =>
+                          ref.read(measurementProvider.notifier).deleteCategory(category.id!),
+                      // Exit the detail screen once the category is gone.
+                      onDeleted: () => Navigator.of(context).pop(),
+                    );
+                    break;
+                }
+              },
+              itemBuilder: (context) {
+                return [
+                  if (category.isEditable)
                     PopupMenuItem<MeasurementOptions>(
-                      value: MeasurementOptions.delete,
-                      child: Text(AppLocalizations.of(context).delete),
+                      value: MeasurementOptions.edit,
+                      child: Text(AppLocalizations.of(context).edit),
                     ),
-                  ];
-                },
-              ),
-            ],
-          ),
-          floatingActionButton: FloatingActionButton(
-            child: const Icon(Icons.add, color: Colors.white),
-            onPressed: () {
-              Navigator.pushNamed(
-                context,
-                FormScreen.routeName,
-                arguments: FormScreenArguments(
-                  AppLocalizations.of(context).newEntry,
-                  // A group holds no entries itself: one reading is a value per
-                  // component, entered in one go
-                  category.isGroup
-                      ? GroupMeasurementEntryForm(category)
-                      : MeasurementEntryForm(_categoryId),
-                ),
-              );
-            },
-          ),
-          body: WidescreenWrapper(
-            child: SingleChildScrollView(
-              child: EntriesList(
-                category,
-                range: _range,
-                onRangeChanged: (range) => setState(() => _range = range),
-              ),
+                  PopupMenuItem<MeasurementOptions>(
+                    value: MeasurementOptions.delete,
+                    child: Text(AppLocalizations.of(context).delete),
+                  ),
+                ];
+              },
+            ),
+        ],
+      ),
+      floatingActionButton: category == null
+          ? null
+          : FloatingActionButton(
+              child: const Icon(Icons.add, color: Colors.white),
+              onPressed: () {
+                Navigator.pushNamed(
+                  context,
+                  FormScreen.routeName,
+                  arguments: FormScreenArguments(
+                    AppLocalizations.of(context).newEntry,
+                    // A group holds no entries itself: one reading is a value
+                    // per component, entered in one go
+                    category.isGroup
+                        ? GroupMeasurementEntryForm(category)
+                        : MeasurementEntryForm(_categoryId),
+                  ),
+                );
+              },
+            ),
+      body: WidescreenWrapper(
+        child: switch ((category, categoryValue)) {
+          (final MeasurementCategory category, _) => SingleChildScrollView(
+            child: EntriesList(
+              category,
+              range: _range,
+              onRangeChanged: (range) => setState(() => _range = range),
             ),
           ),
-        );
-      },
+          (_, AsyncError(:final error)) => StreamErrorIndicator(error.toString()),
+          _ => const BoxedProgressIndicator(),
+        },
+      ),
     );
   }
 }

@@ -87,6 +87,21 @@ void main() {
     expect(find.text('30 %'), findsNWidgets(1));
   });
 
+  testWidgets('switching the range keeps the screen it already drew', (tester) async {
+    await tester.pumpWidget(createEntriesScreen());
+    await tester.tap(find.byType(TextButton));
+    await tester.pumpAndSettle();
+
+    // The new range watches a different provider, which starts out loading:
+    // this is the frame in which the screen used to drop everything it had
+    await tester.tap(find.text('1 month'));
+    await tester.pump();
+
+    expect(find.text('Body fat'), findsOneWidget);
+    expect(find.text('30 %'), findsNWidgets(1));
+    expect(find.byType(CircularProgressIndicator), findsNothing);
+  });
+
   testWidgets('Tests the localization of dates - EN', (WidgetTester tester) async {
     await tester.pumpWidget(createEntriesScreen());
     await tester.tap(find.byType(TextButton));
