@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -569,9 +569,13 @@ List<MeasurementChartEntry> moving7dAverage(List<MeasurementChartEntry> vals) {
 final _bucketUnits = <DateTime Function(DateTime)>[
   (d) => DateTime(d.year, d.month, d.day, d.hour),
   (d) => DateTime(d.year, d.month, d.day),
-  (d) => DateTime(d.year, d.month, d.day).subtract(Duration(days: d.weekday - 1)),
+  weekStart,
   (d) => DateTime(d.year, d.month),
 ];
+
+/// The Monday of the week [date] falls into, at midnight.
+DateTime weekStart(DateTime date) =>
+    DateTime(date.year, date.month, date.day).subtract(Duration(days: date.weekday - 1));
 
 /// Reduces a dense series to at most [maxPoints], keeping its shape.
 ///
@@ -658,6 +662,41 @@ List<MeasurementChartEntry> averagePerDay(List<MeasurementChartEntry> vals) {
   ];
 }
 
+/// The level a week is summarised at: its total for the summed metric types,
+/// its average for the sample ones, whose readings repeat the same measurement.
+num _weekLevel(List<MeasurementChartEntry> week, bool summed) =>
+    summed ? week.map((e) => e.value).sum : week.map((e) => e.value).average;
+
+/// Week-over-week change: one point per calendar week against the last week
+/// with readings, summarised (see [_weekLevel]) before subtracting so no single
+/// reading decides a bar. The running week of a summed metric is left out,
+/// its total is still growing and would read as a drop until Sunday.
+List<MeasurementChartEntry> weeklyDeltas(
+  List<MeasurementChartEntry> vals, {
+  bool summed = false,
+  DateTime? today,
+}) {
+  final byWeek = groupBy(vals, (MeasurementChartEntry e) => weekStart(e.date));
+  if (summed) {
+    byWeek.remove(weekStart(today ?? DateTime.now()));
+  }
+  final weeks = byWeek.keys.toList()..sort();
+
+  return [
+    for (final (index, week) in weeks.indexed.skip(1))
+      MeasurementChartEntry(
+        _weekLevel(byWeek[week]!, summed) - _weekLevel(byWeek[weeks[index - 1]]!, summed),
+        week,
+      ),
+  ];
+}
+
+/// Colour of a change bar, by which way it points. Theme colours rather than
+/// green and red: which direction is the good one depends on the goal (losing
+/// weight, building muscle), and the chart should not assert one.
+Color deltaColor(BuildContext context, num delta) =>
+    delta < 0 ? Theme.of(context).colorScheme.tertiary : Theme.of(context).colorScheme.primary;
+
 /// Bar chart for entries that are discrete events rather than a continuous
 /// series: daily totals, and the readings of a multi-value group.
 ///
@@ -669,7 +708,12 @@ class MeasurementBarChartWidgetFl extends StatefulWidget {
   final List<MeasurementChartEntry> _entries;
   final String _unit;
 
-  const MeasurementBarChartWidgetFl(this._entries, this._unit);
+  /// Whether the values are changes rather than amounts: their bars hang off a
+  /// marked zero line and are coloured by their direction.
+  final bool _signed;
+
+  const MeasurementBarChartWidgetFl(this._entries, this._unit, {bool signed = false})
+    : _signed = signed;
 
   @override
   State<MeasurementBarChartWidgetFl> createState() => _MeasurementBarChartWidgetFlState();
@@ -711,11 +755,13 @@ class _MeasurementBarChartWidgetFlState extends State<MeasurementBarChartWidgetF
             Localizations.localeOf(context).languageCode,
           ).format(entry.date);
           // A range is quoted as high over low, the way a blood pressure
-          // reading is written
+          // reading is written. A change carries its sign, and the plus has to
+          // be added: only the minus comes out of the number format
           final value = entry.hasRange
               ? '${measurementValue(context, entry.max!, widget._unit)}'
                     '/${measurementValue(context, entry.min!, widget._unit)}'
-              : measurementValue(context, rod.toY, widget._unit);
+              : '${widget._signed && rod.toY > 0 ? '+' : ''}'
+                    '${measurementValue(context, rod.toY, widget._unit)}';
 
           return BarTooltipItem(
             '$dateStr: $value ${measurementUnit(widget._unit)}',
@@ -806,6 +852,14 @@ class _MeasurementBarChartWidgetFlState extends State<MeasurementBarChartWidgetF
         show: true,
         border: Border.all(color: Theme.of(context).colorScheme.primaryContainer),
       ),
+      // The line the change bars hang off. Without it a chart of only
+      // decreases reads as a normal bar chart pointing the wrong way
+      extraLinesData: ExtraLinesData(
+        horizontalLines: [
+          if (widget._signed)
+            HorizontalLine(y: 0, color: Theme.of(context).colorScheme.outline, strokeWidth: 1),
+        ],
+      ),
       barGroups: widget._entries
           .asMap()
           .entries
@@ -817,11 +871,18 @@ class _MeasurementBarChartWidgetFlState extends State<MeasurementBarChartWidgetF
                   // A range spans its bounds, a plain value grows from zero
                   fromY: e.value.hasRange ? e.value.min!.toDouble() : 0,
                   toY: e.value.hasRange ? e.value.max!.toDouble() : e.value.value.toDouble(),
-                  color: Theme.of(context).colorScheme.primary,
+                  color: widget._signed
+                      ? deltaColor(context, e.value.value)
+                      : Theme.of(context).colorScheme.primary,
                   width: barWidth,
                   borderRadius: e.value.hasRange
                       ? BorderRadius.circular(2)
-                      : const BorderRadius.vertical(top: Radius.circular(2)),
+                      // The rounded end is the one away from the baseline, so
+                      // a bar pointing down is capped at the bottom
+                      : BorderRadius.vertical(
+                          top: e.value.value < 0 ? Radius.zero : const Radius.circular(2),
+                          bottom: e.value.value < 0 ? const Radius.circular(2) : Radius.zero,
+                        ),
                 ),
               ],
             ),

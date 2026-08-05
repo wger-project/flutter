@@ -601,6 +601,20 @@
   "@chartTypeHeatmap": {
     "description": "Chart type option: a calendar grid with one coloured cell per day"
   },
+  "chartTypeDelta": "Change",
+  "@chartTypeDelta": {
+    "description": "Chart type option: one bar per week, showing how much the value changed"
+  },
+  "chartWeeklyChangeTitle": "{name}, change per week",
+  "@chartWeeklyChangeTitle": {
+    "description": "Title of the chart showing the weekly change of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "measurement": "Measurement",
   "@measurement": {},
   "measurements": "Measurements",

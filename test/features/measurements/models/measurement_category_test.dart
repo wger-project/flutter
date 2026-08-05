@@ -78,8 +78,16 @@ void main() {
     });
 
     test('the offered types follow the metric type', () {
-      expect(MetricType.steps.availableChartTypes, [ChartType.bar, ChartType.heatmap]);
-      expect(MetricType.custom.availableChartTypes, [ChartType.line, ChartType.heatmap]);
+      expect(MetricType.steps.availableChartTypes, [
+        ChartType.bar,
+        ChartType.heatmap,
+        ChartType.delta,
+      ]);
+      expect(MetricType.custom.availableChartTypes, [
+        ChartType.line,
+        ChartType.heatmap,
+        ChartType.delta,
+      ]);
 
       // a group is drawn by what its components are to each other
       expect(MetricType.bloodPressure.availableChartTypes, isEmpty);
@@ -94,6 +102,7 @@ void main() {
     test('a type that fits is kept', () {
       expect(MetricType.custom.resolveChartType(ChartType.heatmap), ChartType.heatmap);
       expect(MetricType.steps.resolveChartType(ChartType.bar), ChartType.bar);
+      expect(MetricType.bodyWeight.resolveChartType(ChartType.delta), ChartType.delta);
     });
   });
 

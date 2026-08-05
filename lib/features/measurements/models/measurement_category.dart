@@ -77,7 +77,8 @@ enum ChartType {
   auto(null),
   line('line'),
   bar('bar'),
-  heatmap('heatmap');
+  heatmap('heatmap'),
+  delta('delta');
 
   final String? wireValue;
   const ChartType(this.wireValue);
@@ -101,6 +102,7 @@ extension MeasurementChartTypeL10n on ChartType {
       ChartType.line => l10n.chartTypeLine,
       ChartType.bar => l10n.chartTypeBar,
       ChartType.heatmap => l10n.chartTypeHeatmap,
+      ChartType.delta => l10n.chartTypeDelta,
     };
   }
 }
@@ -163,12 +165,13 @@ enum MetricType {
   /// The chart types a category of this type may be drawn as, i.e. what the
   /// picker offers on top of [ChartType.auto].
   ///
-  /// The heatmap is the one alternative that fits every leaf type: it answers
-  /// how regularly rather than how much, and it is the only chart of the set
-  /// where a missing day is visible instead of being spanned by a line. A
-  /// group is left out, its chart is structural rather than a preference.
+  /// The two alternatives fit every leaf type: the heatmap answers how
+  /// regularly rather than how much, and is the only chart of the set where a
+  /// missing day is visible instead of being spanned by a line; the delta chart
+  /// answers which way it is going, which a line only implies. A group is left
+  /// out, its chart is structural rather than a preference.
   List<ChartType> get availableChartTypes =>
-      isGroup ? const [] : [defaultChartType, ChartType.heatmap];
+      isGroup ? const [] : [defaultChartType, ChartType.heatmap, ChartType.delta];
 
   /// The chart a category of this type is drawn as, given what the user picked.
   ///

@@ -184,6 +184,33 @@ void main() {
       expect(find.byType(MeasurementChartWidgetFl), findsOneWidget);
     });
 
+    testWidgets('a delta override draws the weekly changes as signed bars', (tester) async {
+      // 5 January 2026 is a Monday
+      final weekly = [
+        MeasurementChartEntry(80, DateTime(2026, 1, 5)),
+        MeasurementChartEntry(79, DateTime(2026, 1, 12)),
+        MeasurementChartEntry(79.5, DateTime(2026, 1, 19)),
+      ];
+      final widget = buildChartForMetricType(
+        MetricType.bodyWeight,
+        weekly,
+        [],
+        'kg',
+        chartType: ChartType.delta,
+      );
+      await tester.pumpWidget(_wrapChart(widget));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(MeasurementChartWidgetFl), findsNothing);
+      final rods = tester
+          .widget<BarChart>(find.byType(BarChart))
+          .data
+          .barGroups
+          .map((g) => g.barRods.single);
+      expect(rods.map((r) => r.toY), [-1, 0.5]);
+      expect(rods.first.color, isNot(rods.last.color));
+    });
+
     testWidgets('a heatmap keeps one point per day instead of condensing', (tester) async {
       // Past ~200 points the line chart condenses into calendar buckets, which
       // for a grid of days would collapse whole weeks into a single cell
@@ -435,6 +462,47 @@ void main() {
       );
 
       expect(find.byType(Indicator), findsNWidgets(4));
+    });
+  });
+
+  group('getOverviewWidgetsSeries change chart', () {
+    final history = [
+      for (var i = 0; i < 100; i++)
+        MeasurementChartEntry(60 + (i % 5), DateTime.now().subtract(Duration(days: 99 - i))),
+    ];
+
+    Future<void> pumpDelta(WidgetTester tester) => _pumpWidgetList(
+      tester,
+      (ctx) => getOverviewWidgetsSeries(
+        'Weight',
+        history,
+        moving7dAverage(history),
+        [],
+        'kg',
+        ctx,
+        metricType: MetricType.bodyWeight,
+        chartType: ChartType.delta,
+      ),
+    );
+
+    testWidgets('one chart, without the legend of lines it does not draw', (tester) async {
+      await pumpDelta(tester);
+
+      expect(find.byType(BarChart), findsOneWidget);
+      expect(find.byType(LineChart), findsNothing);
+      expect(find.byType(Indicator), findsNothing);
+    });
+
+    testWidgets('the title says the bars are changes, not values', (tester) async {
+      await pumpDelta(tester);
+
+      expect(find.text('Weight, change per week'), findsOneWidget);
+    });
+
+    testWidgets('keeps the overall change, the one-number version of it', (tester) async {
+      await pumpDelta(tester);
+
+      expect(find.byType(MeasurementOverallChangeWidget), findsOneWidget);
     });
   });
 

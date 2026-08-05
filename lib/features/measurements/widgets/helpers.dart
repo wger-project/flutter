@@ -64,17 +64,24 @@ List<Widget> getOverviewWidgetsSeries(
 }) {
   final title = mainChartTitle ?? AppLocalizations.of(context).chartAllTimeTitle(name);
 
-  // A heatmap is one grid over the whole range and needs its points per day,
-  // so none of what follows applies to it: condensing would collapse days into
-  // weeks, the extra 30-day chart is a window the grid already shows, and the
-  // legend names lines it does not draw
-  if (metricType.resolveChartType(chartType) == ChartType.heatmap) {
+  final resolved = metricType.resolveChartType(chartType);
+
+  // Neither the heatmap nor the change chart is a line over the range, and both
+  // bucket the points themselves: condensing would collapse the days they are
+  // built from, the extra 30-day chart is a window they already show, and the
+  // legend names lines they do not draw
+  if (resolved == ChartType.heatmap || resolved == ChartType.delta) {
     return getOverviewWidgets(
-      title,
+      // The selector right above names the range, so the title says what the
+      // bars are instead
+      resolved == ChartType.delta
+          ? AppLocalizations.of(context).chartWeeklyChangeTitle(name)
+          : title,
       entriesAll,
-      // No overall change either: it is the distance between two points of a
-      // line, which is not what the grid is about
-      const [],
+      // The overall change is the one-number version of the change chart. Over
+      // a grid it measures a line that is not drawn, and a summed metric has no
+      // level to change.
+      resolved == ChartType.delta && !metricType.isSummedPerDay ? entries7dAvg : const [],
       unit,
       context,
       metricType: metricType,
@@ -387,7 +394,15 @@ Widget buildChartForMetricType(
 
   // A pick that does not fit the metric type falls back to the derived chart,
   // which is also what a category configured on a newer client gets here
-  if (metricType.resolveChartType(chartType) == ChartType.heatmap) {
+  final resolved = metricType.resolveChartType(chartType);
+
+  if (resolved == ChartType.delta) {
+    // Not condensed: a week is already the bucket, and the deltas are what the
+    // chart draws rather than the values they were derived from
+    return MeasurementBarChartWidgetFl(weeklyDeltas(raw, summed: summed), unit, signed: true);
+  }
+
+  if (resolved == ChartType.heatmap) {
     // The cells are days, so how a day's readings become one value has to be
     // decided here: the summed types are a daily total, the sample types are
     // repeated readings of the same thing and average

@@ -1191,6 +1191,8 @@
     "chartTypeLine": "Ligne",
     "chartTypeBar": "Barres",
     "chartTypeHeatmap": "Carte thermique",
+    "chartTypeDelta": "Variation",
+    "chartWeeklyChangeTitle": "{name}, variation par semaine",
     "healthSyncNoData": "Aucune donnée de santé n'a été trouvée. Vérifiez dans {platform} que wger peut lire vos données.",
     "healthSyncStatus": "{count, plural, =0{Dernière synchronisation : {time}, aucune nouvelle entrée} one{Dernière synchronisation : {time}, 1 nouvelle entrée} other{Dernière synchronisation : {time}, {count} nouvelles entrées}}",
     "healthSyncSyncing": "Synchronisation des données de santé…",

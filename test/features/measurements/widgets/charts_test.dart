@@ -631,6 +631,160 @@ void main() {
     });
   });
 
+  group('weeklyDeltas', () {
+    // 5 January 2026 is a Monday
+    final monday = DateTime(2026, 1, 5);
+    DateTime week(int index) => monday.add(Duration(days: 7 * index));
+
+    test('returns an empty list for no entries', () {
+      expect(weeklyDeltas([]), isEmpty);
+    });
+
+    test('has no bar for a single week, which has nothing to compare against', () {
+      expect(
+        weeklyDeltas([entry(80, monday), entry(81, monday.add(const Duration(days: 2)))]),
+        isEmpty,
+      );
+    });
+
+    test('subtracts the previous week, dated on the week it belongs to', () {
+      final result = weeklyDeltas([
+        entry(80, monday),
+        entry(79, week(1)),
+        entry(79.5, week(2)),
+      ]);
+
+      expect(result.map((e) => e.date), [week(1), week(2)]);
+      expect(result.map((e) => e.value), [-1, 0.5]);
+    });
+
+    test('compares the weeks by their average, not by single readings', () {
+      // the low reading is an outlier within its week and must not decide the bar
+      final result = weeklyDeltas([
+        entry(80, monday),
+        entry(82, monday.add(const Duration(days: 3))),
+        entry(75, week(1)),
+        entry(87, week(1).add(const Duration(days: 3))),
+      ]);
+
+      expect(result.single.value, 0);
+    });
+
+    test('sums the weeks of a metric that is read as a total', () {
+      final result = weeklyDeltas([
+        entry(3000, monday),
+        entry(4000, monday.add(const Duration(days: 1))),
+        entry(9000, week(1)),
+      ], summed: true);
+
+      expect(result.single.value, 2000);
+    });
+
+    test('takes the week after a gap against the last week that has readings', () {
+      final result = weeklyDeltas([entry(80, monday), entry(77, week(3))]);
+
+      // one bar on the week that was measured, holding the whole change, so the
+      // bars still add up to the change across the range
+      expect(result.single.date, week(3));
+      expect(result.single.value, -3);
+    });
+
+    test('sorts unordered input by week first', () {
+      final result = weeklyDeltas([entry(79, week(1)), entry(80, monday)]);
+
+      expect(result.single.value, -1);
+    });
+
+    test('leaves the running week out of a summed metric', () {
+      // its total is still growing and would read as a drop until Sunday
+      final result = weeklyDeltas(
+        [entry(7000, monday), entry(3000, week(1))],
+        summed: true,
+        today: week(1).add(const Duration(days: 2)),
+      );
+
+      expect(result, isEmpty);
+    });
+
+    test('keeps the running week of an averaged metric', () {
+      final result = weeklyDeltas(
+        [entry(80, monday), entry(79, week(1))],
+        today: week(1).add(const Duration(days: 2)),
+      );
+
+      expect(result.single.value, -1);
+    });
+  });
+
+  group('MeasurementBarChartWidgetFl changes', () {
+    BarChartData chartData(WidgetTester tester) =>
+        tester.widget<BarChart>(find.byType(BarChart)).data;
+
+    Future<BarChartData> pumpSigned(
+      WidgetTester tester,
+      List<MeasurementChartEntry> entries,
+    ) async {
+      await tester.pumpWidget(_wrap(MeasurementBarChartWidgetFl(entries, 'kg', signed: true)));
+      await tester.pumpAndSettle();
+      return chartData(tester);
+    }
+
+    testWidgets('a decrease hangs below the zero line, an increase above it', (tester) async {
+      final data = await pumpSigned(tester, [
+        entry(-1.5, DateTime(2026, 1, 5)),
+        entry(0.5, DateTime(2026, 1, 12)),
+      ]);
+
+      expect(data.barGroups.map((g) => g.barRods.single.fromY), [0, 0]);
+      expect(data.barGroups.map((g) => g.barRods.single.toY), [-1.5, 0.5]);
+      // the rounded end is the one away from the baseline
+      expect(data.barGroups.first.barRods.single.borderRadius?.bottomLeft, isNot(Radius.zero));
+      expect(data.barGroups.last.barRods.single.borderRadius?.topLeft, isNot(Radius.zero));
+    });
+
+    testWidgets('the two directions are told apart by colour', (tester) async {
+      final data = await pumpSigned(tester, [
+        entry(-1.5, DateTime(2026, 1, 5)),
+        entry(0.5, DateTime(2026, 1, 12)),
+      ]);
+
+      final colors = data.barGroups.map((g) => g.barRods.single.color).toList();
+      expect(colors.first, isNot(colors.last));
+    });
+
+    testWidgets('the zero line is drawn, so a chart of only decreases reads right', (
+      tester,
+    ) async {
+      final data = await pumpSigned(tester, [entry(-1.5, DateTime(2026, 1, 5))]);
+
+      expect(data.extraLinesData.horizontalLines.single.y, 0);
+    });
+
+    testWidgets('an amount chart has no zero line', (tester) async {
+      await tester.pumpWidget(
+        _wrap(MeasurementBarChartWidgetFl([entry(1500, DateTime(2026, 1, 5))], 'steps')),
+      );
+      await tester.pumpAndSettle();
+
+      expect(chartData(tester).extraLinesData.horizontalLines, isEmpty);
+    });
+
+    testWidgets('the tooltip quotes a change with its sign', (tester) async {
+      await pumpSigned(tester, [entry(0.5, DateTime(2026, 1, 12))]);
+
+      final data = chartData(tester);
+      final rod = data.barGroups.single.barRods.single;
+      final item = data.barTouchData.touchTooltipData.getTooltipItem(
+        data.barGroups.single,
+        0,
+        rod,
+        0,
+      );
+
+      expect(item!.text, contains('+0.5'));
+    });
+  });
+
   group('buildHeatmapGrid', () {
     // 2 March 2026 is a Monday, 18 March a Wednesday
     final monday = DateTime(2026, 3, 2);
