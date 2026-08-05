@@ -19,7 +19,7 @@ mixin _$MeasurementCategory {
 /// chart). [MetricType.custom] for plain user-created categories.
  MetricType get metricType;/// Chart the user picked for this category, [ChartType.auto] (the server's
 /// null) for the one derived from [metricType].
- ChartType get chartType;/// Taste-level chart settings, read through [trend] and [averageWindow].
+ ChartType get chartType;/// Taste-level chart settings, read through [chartSettings].
 ///
 /// Null for a category that configured none, which is also what a row synced
 /// before the column existed reads. Keys this release does not know are

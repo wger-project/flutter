@@ -28,7 +28,8 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 enum ChartRange {
   all(null),
   lastYear(365),
-  last3Months(90);
+  last3Months(90),
+  lastMonth(30);
 
   const ChartRange(this._days);
 
@@ -59,10 +60,13 @@ enum ChartRange {
     return DateTime(lead.year, lead.month, lead.day);
   }
 
+  /// Label for the selector, counted rather than one string per range, so a
+  /// range added here needs no new translation.
   String label(AppLocalizations i18n) => switch (this) {
     ChartRange.all => i18n.chartRangeAll,
-    ChartRange.lastYear => i18n.chartRangeLastYear,
-    ChartRange.last3Months => i18n.chartRangeLast3Months,
+    ChartRange.lastYear => i18n.chartRangeYears(1),
+    ChartRange.last3Months => i18n.chartRangeMonths(3),
+    ChartRange.lastMonth => i18n.chartRangeMonths(1),
   };
 
   /// Title for a chart of [name] over this range.
@@ -70,6 +74,7 @@ enum ChartRange {
     ChartRange.all => i18n.chartAllTimeTitle(name),
     ChartRange.lastYear => i18n.chartLastYearTitle(name),
     ChartRange.last3Months => i18n.chartLast3MonthsTitle(name),
+    ChartRange.lastMonth => i18n.chart30DaysTitle(name),
   };
 }
 

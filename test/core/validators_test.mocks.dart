@@ -2083,28 +2083,6 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
-  String get chartRangeLastYear =>
-      (super.noSuchMethod(
-            Invocation.getter(#chartRangeLastYear),
-            returnValue: _i3.dummyValue<String>(
-              this,
-              Invocation.getter(#chartRangeLastYear),
-            ),
-          )
-          as String);
-
-  @override
-  String get chartRangeLast3Months =>
-      (super.noSuchMethod(
-            Invocation.getter(#chartRangeLast3Months),
-            returnValue: _i3.dummyValue<String>(
-              this,
-              Invocation.getter(#chartRangeLast3Months),
-            ),
-          )
-          as String);
-
-  @override
   String get chartType =>
       (super.noSuchMethod(
             Invocation.getter(#chartType),
@@ -5409,6 +5387,28 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.method(#chartLast3MonthsTitle, [name]),
+            ),
+          )
+          as String);
+
+  @override
+  String chartRangeMonths(int? count) =>
+      (super.noSuchMethod(
+            Invocation.method(#chartRangeMonths, [count]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#chartRangeMonths, [count]),
+            ),
+          )
+          as String);
+
+  @override
+  String chartRangeYears(int? count) =>
+      (super.noSuchMethod(
+            Invocation.method(#chartRangeYears, [count]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#chartRangeYears, [count]),
             ),
           )
           as String);

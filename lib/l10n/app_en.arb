@@ -573,13 +573,23 @@
   "@chartRangeAll": {
     "description": "Label for the chart time-range selector option showing all data"
   },
-  "chartRangeLastYear": "1 year",
-  "@chartRangeLastYear": {
-    "description": "Label for the chart time-range selector option showing the last year"
+  "chartRangeMonths": "{count, plural, one{1 month} other{{count} months}}",
+  "@chartRangeMonths": {
+    "description": "Chart time-range selector option covering a number of months",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
-  "chartRangeLast3Months": "3 months",
-  "@chartRangeLast3Months": {
-    "description": "Label for the chart time-range selector option showing the last 3 months"
+  "chartRangeYears": "{count, plural, one{1 year} other{{count} years}}",
+  "@chartRangeYears": {
+    "description": "Chart time-range selector option covering a number of years",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "chartType": "Chart type",
   "@chartType": {
