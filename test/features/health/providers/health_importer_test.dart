@@ -114,6 +114,17 @@ void main() {
   /// One run, reduced to the number of entries it wrote.
   Future<int> runImport() async => (await createImporter().run()).imported;
 
+  /// A watermark for every enabled metric, i.e. what an install that has
+  /// imported before looks like.
+  Future<void> seedWatermarks(String timestamp) =>
+      PreferenceHelper.instance.setHealthSyncWatermarks({
+        for (final metric in enabledHealthMetrics) metric.metricType.name: timestamp,
+      });
+
+  /// How far [type] has been imported, null while it has no watermark.
+  Future<String?> watermarkOf(MetricType type) async =>
+      (await PreferenceHelper.instance.getHealthSyncWatermarks())[type.name];
+
   /// A category for every enabled metric, components included, all on the ids
   /// the sync derives. Without them the sync reads the full history instead of
   /// starting from the watermark.
@@ -268,7 +279,7 @@ void main() {
     test('reads the full history when a type becomes readable', () async {
       // Granting access to a type that was declined leaves the same hole as a
       // deleted category: nothing was ever imported for it
-      await PreferenceHelper.instance.setLastHealthSyncTimestamp('2026-06-01T12:00:00.000');
+      await seedWatermarks('2026-06-01T12:00:00.000');
       await PreferenceHelper.instance.setHealthSyncReadableTypes([
         HealthDataType.BODY_FAT_PERCENTAGE.name,
       ]);
@@ -281,7 +292,7 @@ void main() {
     });
 
     test('stays on the watermark while the readable types are unchanged', () async {
-      await PreferenceHelper.instance.setLastHealthSyncTimestamp('2026-06-01T12:00:00.000');
+      await seedWatermarks('2026-06-01T12:00:00.000');
       await PreferenceHelper.instance.setHealthSyncReadableTypes([
         for (final metric in enabledHealthMetrics)
           for (final type in metric.dataTypes) type.name,
@@ -362,7 +373,9 @@ void main() {
 
       expect(result.imported, 1);
       expect(result.issue, HealthSyncIssue.failed);
-      expect(await PreferenceHelper.instance.getLastHealthSyncTimestamp(), isNull);
+      // Body fat keeps its full-window read, height moves on without it
+      expect(await watermarkOf(MetricType.bodyFat), isNull);
+      expect(await watermarkOf(MetricType.height), isNotNull);
     });
 
     test('imports enabled metrics into new categories with converted values', () async {
@@ -463,9 +476,9 @@ void main() {
       expect(diastolicEntry.externalId, _idBp1);
       expect(entries, hasLength(4));
 
-      // The newest imported reading date becomes the next sync watermark
+      // The newest imported reading date becomes the metric's next watermark
       expect(
-        await PreferenceHelper.instance.getLastHealthSyncTimestamp(),
+        await watermarkOf(MetricType.bloodPressure),
         DateTime(2026, 1, 3).toIso8601String(),
       );
     });
@@ -737,7 +750,7 @@ void main() {
 
       // The watermark tracks the newest sample, not the aggregate's date
       expect(
-        await PreferenceHelper.instance.getLastHealthSyncTimestamp(),
+        await watermarkOf(MetricType.heartRate),
         DateTime(2026, 1, 2, 9).toIso8601String(),
       );
     });
@@ -1180,7 +1193,7 @@ void main() {
     );
 
     test('skips blood pressure when the matching category holds entries', () async {
-      await PreferenceHelper.instance.setLastHealthSyncTimestamp('2020-01-01T00:00:00.000');
+      await seedWatermarks('2020-01-01T00:00:00.000');
       // A plain leaf category of the blood pressure type: attaching children
       // would make its entries invalid (measurements only on leaves), so the
       // import must not touch it
@@ -1208,10 +1221,7 @@ void main() {
       expect(count, 0);
       verifyNever(measurements.addLocalDriftCategory(any));
       verifyNever(measurements.addLocalDrift(any));
-      expect(
-        await PreferenceHelper.instance.getLastHealthSyncTimestamp(),
-        '2020-01-01T00:00:00.000',
-      );
+      expect(await watermarkOf(MetricType.bloodPressure), '2020-01-01T00:00:00.000');
     });
 
     test('duration records keep their interval end as date_to', () async {
@@ -1234,7 +1244,7 @@ void main() {
     });
 
     test('skips weight while the official category has not been synced', () async {
-      await PreferenceHelper.instance.setLastHealthSyncTimestamp('2020-01-01T00:00:00.000');
+      await seedWatermarks('2020-01-01T00:00:00.000');
       when(measurements.getCategoriesOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
       stubReadings([
         HealthReading(
@@ -1252,14 +1262,11 @@ void main() {
       expect(count, 0);
       verifyNever(measurements.addLocalDriftCategory(any));
       verifyNever(measurements.addLocalDrift(any));
-      expect(
-        await PreferenceHelper.instance.getLastHealthSyncTimestamp(),
-        '2020-01-01T00:00:00.000',
-      );
+      expect(await watermarkOf(MetricType.bodyWeight), '2020-01-01T00:00:00.000');
     });
 
-    test('keeps the watermark when weight is skipped but other metrics import', () async {
-      await PreferenceHelper.instance.setLastHealthSyncTimestamp('2020-01-01T00:00:00.000');
+    test('a skipped metric holds its watermark while the others move on', () async {
+      await seedWatermarks('2020-01-01T00:00:00.000');
       when(measurements.getCategoriesOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
       stubReadings([
         HealthReading(
@@ -1278,18 +1285,45 @@ void main() {
 
       final count = await runImport();
 
-      // Height imports, but the watermark must not advance past the weight
-      // readings: they would leave the overlap window before the official
-      // category ever syncs and be lost for good
+      // Weight must not advance past readings it could not import: they would
+      // leave the overlap window before the official category ever syncs and
+      // be lost for good. Height has no such problem and is not held back
       expect(count, 1);
-      expect(
-        await PreferenceHelper.instance.getLastHealthSyncTimestamp(),
-        '2020-01-01T00:00:00.000',
-      );
+      expect(await watermarkOf(MetricType.bodyWeight), '2020-01-01T00:00:00.000');
+      expect(await watermarkOf(MetricType.height), DateTime(2026, 1, 2).toIso8601String());
+    });
+
+    test('a metric that found nothing still advances its own watermark', () async {
+      // Otherwise a metric the platform has no data for would read the full
+      // history on every single run
+      await seedWatermarks('2026-06-01T12:00:00.000');
+      when(measurements.getCategoriesOnce()).thenAnswer((_) async => categoriesForEveryMetric());
+      stubReadings([]);
+
+      await runImport();
+
+      expect(await watermarkOf(MetricType.height), isNotNull);
+      expect(await watermarkOf(MetricType.height), isNot('2026-06-01T12:00:00.000'));
+    });
+
+    test('each metric reads from its own watermark', () async {
+      // What the per-metric watermarks are for: a first import that died after
+      // height resumes at 2020 for the rest and at the watermark for height
+      await PreferenceHelper.instance.setHealthSyncWatermarks({
+        MetricType.height.name: '2026-06-01T12:00:00.000',
+      });
+      when(measurements.getCategoriesOnce()).thenAnswer((_) async => categoriesForEveryMetric());
+      stubReadings([]);
+
+      await runImport();
+
+      final starts = capturedReadStarts();
+      expect(starts[HealthDataType.HEIGHT], DateTime(2026, 5, 2, 12));
+      expect(starts[HealthDataType.BODY_FAT_PERCENTAGE], DateTime(2020));
     });
 
     test('reads with an overlap window before the stored watermark', () async {
-      await PreferenceHelper.instance.setLastHealthSyncTimestamp('2026-06-01T12:00:00.000');
+      await seedWatermarks('2026-06-01T12:00:00.000');
       when(measurements.getCategoriesOnce()).thenAnswer((_) async => categoriesForEveryMetric());
       stubReadings([]);
 
@@ -1303,7 +1337,7 @@ void main() {
     test('a metric the platform has nothing for stops forcing the full history', () async {
       // No reading means no category, and a metric without one is what asks
       // for the full window: it would do so on every sync, for every metric
-      await PreferenceHelper.instance.setLastHealthSyncTimestamp('2026-06-01T12:00:00.000');
+      await seedWatermarks('2026-06-01T12:00:00.000');
       when(measurements.getCategoriesOnce()).thenAnswer(
         (_) async =>
             categoriesForEveryMetric().where((c) => c.metricType != MetricType.bodyFat).toList(),
@@ -1311,21 +1345,25 @@ void main() {
       stubReadings([]);
 
       await runImport();
-      expect(capturedReadStart(), DateTime(2020));
+      expect(capturedReadStart(HealthDataType.BODY_FAT_PERCENTAGE), DateTime(2020));
 
+      // The metric it happened to is the only one dragged back
       await runImport();
-      expect(capturedReadStart(), DateTime(2026, 5, 2, 12));
+      expect(
+        capturedReadStart(HealthDataType.BODY_FAT_PERCENTAGE),
+        isNot(DateTime(2020)),
+      );
     });
 
     test('a deleted category is read again even after an empty run', () async {
       // Only a metric without a category is remembered as empty, so deleting
       // the category of one that has data still gets its history back
-      await PreferenceHelper.instance.setLastHealthSyncTimestamp('2026-06-01T12:00:00.000');
+      await seedWatermarks('2026-06-01T12:00:00.000');
       when(measurements.getCategoriesOnce()).thenAnswer((_) async => categoriesForEveryMetric());
       stubReadings([]);
 
       await runImport();
-      expect(capturedReadStart(), DateTime(2026, 5, 2, 12));
+      expect(capturedReadStart(HealthDataType.BODY_FAT_PERCENTAGE), DateTime(2026, 5, 2, 12));
 
       when(measurements.getCategoriesOnce()).thenAnswer(
         (_) async =>
@@ -1333,14 +1371,14 @@ void main() {
       );
 
       await runImport();
-      expect(capturedReadStart(), DateTime(2020));
+      expect(capturedReadStart(HealthDataType.BODY_FAT_PERCENTAGE), DateTime(2020));
     });
 
     test('an aggregating metric reads from the start of its own day', () async {
       // The overlap start is a time of day, and a daily aggregate is
       // recomputed from what the window returns: cutting into the day would
       // overwrite that day's stored value with the part that was read
-      await PreferenceHelper.instance.setLastHealthSyncTimestamp('2026-06-01T12:00:00.000');
+      await seedWatermarks('2026-06-01T12:00:00.000');
       when(measurements.getCategoriesOnce()).thenAnswer((_) async => categoriesForEveryMetric());
       stubReadings([]);
 
@@ -1360,7 +1398,7 @@ void main() {
       // Deleting a category takes its entries with it, and the watermark says
       // nothing about a metric that has no history left: reading from it would
       // import only what happened since and leave the rest missing
-      await PreferenceHelper.instance.setLastHealthSyncTimestamp('2026-06-01T12:00:00.000');
+      await seedWatermarks('2026-06-01T12:00:00.000');
       final remaining = categoriesForEveryMetric()
           .where((c) => c.metricType != MetricType.bodyFat)
           .toList();
@@ -1369,13 +1407,16 @@ void main() {
 
       await runImport();
 
-      expect(capturedReadStart(), DateTime(2020));
+      final starts = capturedReadStarts();
+      expect(starts[HealthDataType.BODY_FAT_PERCENTAGE], DateTime(2020));
+      // The metric that lost its category is the only one sent back
+      expect(starts[HealthDataType.WEIGHT], DateTime(2026, 5, 2, 12));
     });
 
     test('reads the full history when one component of a group was deleted', () async {
       // The readings live in the components, so a group that lost one of them
       // has the same hole as a metric without any category
-      await PreferenceHelper.instance.setLastHealthSyncTimestamp('2026-06-01T12:00:00.000');
+      await seedWatermarks('2026-06-01T12:00:00.000');
       final remaining = categoriesForEveryMetric()
           .where((c) => c.metricType != MetricType.bloodPressureDiastolic)
           .toList();
@@ -1384,7 +1425,10 @@ void main() {
 
       await runImport();
 
-      expect(capturedReadStart(), DateTime(2020));
+      expect(
+        capturedReadStart(HealthDataType.BLOOD_PRESSURE_SYSTOLIC),
+        DateTime(2020),
+      );
     });
 
     test('each metric is read with the window its density affords', () async {

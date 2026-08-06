@@ -158,7 +158,9 @@ void main() {
 
   group('disableSync', () {
     test('clears the preferences and resets the state', () async {
-      await PreferenceHelper.instance.setLastHealthSyncTimestamp('2026-06-01T12:00:00.000');
+      await PreferenceHelper.instance.setHealthSyncWatermarks({
+        'height': '2026-06-01T12:00:00.000',
+      });
       final notifier = createNotifier();
       // let _loadPersistedState finish so it cannot re-enable the state later
       await pumpEventQueue();
@@ -167,7 +169,7 @@ void main() {
       await notifier.disableSync();
 
       expect(await PreferenceHelper.instance.getHealthSyncEnabled(), isFalse);
-      expect(await PreferenceHelper.instance.getLastHealthSyncTimestamp(), isNull);
+      expect(await PreferenceHelper.instance.getHealthSyncWatermarks(), isEmpty);
       expect(container.read(healthSyncProvider).isEnabled, isFalse);
     });
   });

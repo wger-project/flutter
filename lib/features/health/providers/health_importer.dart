@@ -91,11 +91,12 @@ class HealthImporter {
 
   final _logger = Logger('HealthImporter');
 
-  /// How far the read window reaches back before the last-sync watermark, to
-  /// pick up records that arrived late with a past date.
+  /// How far a read window reaches back before the metric's watermark, to
+  /// pick up records that arrived late with a past date. Re-reads are
+  /// deduplicated via their external id.
   static const _syncOverlap = Duration(days: 30);
 
-  /// Where a full read starts, i.e. when there is no watermark to go from.
+  /// Where a full read starts, i.e. when a metric has no watermark to go from.
   ///
   /// Not the epoch: every window before the first record is a platform query
   /// that returns nothing, and for a metric read in weekly windows those add
@@ -154,10 +155,7 @@ class HealthImporter {
 
       final categories = await _measurements.getCategoriesOnce();
 
-      // Health records can arrive late with past dates (e.g. a scale that
-      // only syncs days after the measurement), so the read window reaches
-      // back beyond the watermark; re-reads are deduplicated via externalId.
-      final lastSyncStr = await _prefs.getLastHealthSyncTimestamp();
+      final watermarks = await _readWatermarks();
       // Metrics the platform has nothing for never get a category, so counting
       // them as missing would ask for the full window on every sync
       final knownEmpty = {...?await _prefs.getHealthSyncEmptyMetrics()};
@@ -165,25 +163,32 @@ class HealthImporter {
         metrics,
         categories,
       ).map((m) => m.metricType.name).toSet();
-      final startTime =
-          lastSyncStr == null ||
-              withoutCategory.difference(knownEmpty).isNotEmpty ||
-              await _hasNewlyReadableTypes(readable)
-          ? _fullHistoryStart
-          : DateTime.parse(lastSyncStr).subtract(_syncOverlap);
-      final readsFullHistory = startTime == _fullHistoryStart;
+      final readsEverything = await _hasNewlyReadableTypes(readable);
       final endTime = DateTime.now();
-      _logger.info('Syncing health data from $startTime to $endTime');
 
       final source = _health.sourceName;
       var synced = 0;
-      var skippedMetric = false;
       var failedMetric = false;
       var permissionsMissing = false;
-      DateTime? latest;
 
       for (final metric in metrics) {
-        // One bad metric must not cost the others their import, and the
+        final name = metric.metricType.name;
+        // A metric with nothing imported yet has no watermark to go from, and
+        // one without a category has no history behind its watermark either:
+        // reading from it would import what happened since and leave
+        // everything before it missing, silently
+        final startTime =
+            readsEverything ||
+                watermarks[name] == null ||
+                (withoutCategory.contains(name) && !knownEmpty.contains(name))
+            ? _fullHistoryStart
+            : watermarks[name]!.subtract(_syncOverlap);
+        final readsFullHistory = startTime == _fullHistoryStart;
+        // One line per metric would be eight per sync in the exportable log,
+        // where the summary below is what a report needs
+        _logger.fine('Syncing $name from $startTime to $endTime');
+
+        // One bad metric must not cost the others their import, and its own
         // watermark has to stay put for whatever it could not write
         try {
           // Read per metric: how much of the timeline one platform query may
@@ -202,15 +207,15 @@ class HealthImporter {
           if (metric.components.isEmpty) {
             final metricReadings = readings.where((r) => metric.dataTypes.contains(r.type));
             if (metricReadings.isEmpty) {
-              if (readsFullHistory && withoutCategory.contains(metric.metricType.name)) {
-                knownEmpty.add(metric.metricType.name);
+              if (readsFullHistory && withoutCategory.contains(name)) {
+                knownEmpty.add(name);
               }
+              watermarks[name] = endTime;
               continue;
             }
-            knownEmpty.remove(metric.metricType.name);
+            knownEmpty.remove(name);
             final category = await _findOrCreateCategory(metric, categories, userId);
             if (category == null) {
-              skippedMetric = true;
               continue;
             }
             targets = [(category, metricReadings)];
@@ -220,20 +225,21 @@ class HealthImporter {
                 readings.where((r) => component.dataTypes.contains(r.type)),
             ];
             if (byComponent.every((r) => r.isEmpty)) {
-              if (readsFullHistory && withoutCategory.contains(metric.metricType.name)) {
-                knownEmpty.add(metric.metricType.name);
+              if (readsFullHistory && withoutCategory.contains(name)) {
+                knownEmpty.add(name);
               }
+              watermarks[name] = endTime;
               continue;
             }
-            knownEmpty.remove(metric.metricType.name);
+            knownEmpty.remove(name);
             final children = await _findOrCreateGroupChildren(metric, categories, userId);
             if (children == null) {
-              skippedMetric = true;
               continue;
             }
             targets = [for (var i = 0; i < children.length; i++) (children[i], byComponent[i])];
           }
 
+          DateTime? latest;
           for (final (category, metricReadings) in targets) {
             final (importedCount, newest) = metric.dailyAggregation != null
                 ? await _importDailyAggregates(metric, metricReadings, category, source)
@@ -243,8 +249,12 @@ class HealthImporter {
               latest = newest;
             }
           }
+
+          // A reading dated in the future (a device with a wrong clock) must
+          // not drag the watermark along with it, or everything recorded until
+          // that date is skipped on the next run
+          watermarks[name] = latest == null || latest.isAfter(endTime) ? endTime : latest;
         } catch (e, s) {
-          skippedMetric = true;
           if (HealthRepository.isAuthorizationMissing(e)) {
             // The one permission failure iOS reports, and it reports it only
             // when the read runs. Worth telling apart, the user can fix it
@@ -262,17 +272,8 @@ class HealthImporter {
       await _prefs.setHealthSyncReadableTypes(readable.map((t) => t.name).toList());
       // A metric that threw is in neither set and keeps its full-window read
       await _prefs.setHealthSyncEmptyMetrics(knownEmpty.toList());
+      await _writeWatermarks(watermarks);
 
-      // Advancing the watermark past readings a skipped metric could not
-      // import would push them out of the overlap window for good, so keep
-      // the old one until every metric got its category. A reading dated in
-      // the future (a device with a wrong clock) must not drag the watermark
-      // along with it either, or everything recorded until that date is
-      // skipped on the next run.
-      if (latest != null && !skippedMetric) {
-        final watermark = latest.isAfter(endTime) ? endTime : latest;
-        await _prefs.setLastHealthSyncTimestamp(watermark.toIso8601String());
-      }
       if (_normalizedIdCount > 0) {
         _logger.warning(
           'Folded $_normalizedIdCount platform record ids into UUIDs during this sync',
@@ -281,7 +282,10 @@ class HealthImporter {
       if (_outOfRangeCount > 0) {
         _logger.warning('Dropped $_outOfRangeCount readings outside their metric limits');
       }
-      _logger.info('Imported $synced health measurements');
+      _logger.info(
+        'Imported $synced health measurements, '
+        '${watermarks.length} of ${metrics.length} metrics now have a watermark',
+      );
       return (
         imported: synced,
         issue: failedMetric
@@ -457,6 +461,18 @@ class HealthImporter {
       }
     }
     return (synced, latest);
+  }
+
+  /// How far each metric has been imported.
+  Future<Map<String, DateTime>> _readWatermarks() async {
+    final stored = await _prefs.getHealthSyncWatermarks();
+    return {for (final e in stored.entries) e.key: DateTime.parse(e.value)};
+  }
+
+  Future<void> _writeWatermarks(Map<String, DateTime> watermarks) async {
+    await _prefs.setHealthSyncWatermarks({
+      for (final e in watermarks.entries) e.key: e.value.toIso8601String(),
+    });
   }
 
   /// The time [samples] cover in minutes, counting overlapping stretches once.

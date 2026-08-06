@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences/util/legacy_to_async_migration_util.dart';
 import 'package:wger/core/search_options.dart';
@@ -136,7 +138,7 @@ class PreferenceHelper {
   // --- Health sync ---
 
   static const _healthSyncEnabledKey = 'healthSyncEnabled';
-  static const _lastHealthSyncTimestampKey = 'lastHealthSyncTimestamp';
+  static const _healthSyncWatermarksKey = 'healthSyncWatermarks';
   static const _healthSyncReadableTypesKey = 'healthSyncReadableTypes';
   static const _healthSyncEmptyMetricsKey = 'healthSyncEmptyMetrics';
 
@@ -149,12 +151,22 @@ class PreferenceHelper {
     return value ?? false;
   }
 
-  Future<void> setLastHealthSyncTimestamp(String value) async {
-    await PreferenceHelper.asyncPref.setString(_lastHealthSyncTimestampKey, value);
+  /// How far each metric has been imported, keyed by `MetricType.name` and
+  /// held as ISO-8601 timestamps.
+  ///
+  /// Per metric rather than one for all of them, so an import interrupted
+  /// halfway resumes where each metric got to instead of starting over, and
+  /// so that a metric that cannot be imported holds nobody else back.
+  Future<void> setHealthSyncWatermarks(Map<String, String> value) async {
+    await PreferenceHelper.asyncPref.setString(_healthSyncWatermarksKey, jsonEncode(value));
   }
 
-  Future<String?> getLastHealthSyncTimestamp() async {
-    return PreferenceHelper.asyncPref.getString(_lastHealthSyncTimestampKey);
+  Future<Map<String, String>> getHealthSyncWatermarks() async {
+    final stored = await PreferenceHelper.asyncPref.getString(_healthSyncWatermarksKey);
+    if (stored == null) {
+      return {};
+    }
+    return (jsonDecode(stored) as Map<String, dynamic>).cast<String, String>();
   }
 
   /// The health data types the platform let us read during the last sync.
@@ -186,7 +198,7 @@ class PreferenceHelper {
 
   Future<void> clearHealthSyncPreferences() async {
     await PreferenceHelper.asyncPref.remove(_healthSyncEnabledKey);
-    await PreferenceHelper.asyncPref.remove(_lastHealthSyncTimestampKey);
+    await PreferenceHelper.asyncPref.remove(_healthSyncWatermarksKey);
     await PreferenceHelper.asyncPref.remove(_healthSyncReadableTypesKey);
     await PreferenceHelper.asyncPref.remove(_healthSyncEmptyMetricsKey);
   }
