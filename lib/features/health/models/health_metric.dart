@@ -259,3 +259,8 @@ const List<HealthMetric> healthMetrics = [
 
 /// The enabled subset that the importer actually pulls.
 List<HealthMetric> get enabledHealthMetrics => healthMetrics.where((m) => m.enabled).toList();
+
+/// Every platform data type the enabled metrics are made of, i.e. what
+/// permissions are asked for and what is checked as readable.
+List<HealthDataType> get enabledHealthDataTypes =>
+    enabledHealthMetrics.expand((m) => m.dataTypes).toList();

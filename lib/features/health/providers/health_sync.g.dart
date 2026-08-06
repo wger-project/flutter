@@ -8,27 +8,27 @@ part of 'health_sync.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// Imports body metrics from Apple Health / Health Connect into measurement
-/// categories. Read-only: reads the platform (via [HealthRepository]), writes to
-/// the local Drift DB, and lets PowerSync push the rows up. Re-imports are
-/// deduplicated via each measurement's [MeasurementEntry.externalId] (the
-/// platform record UUID).
+/// Drives the health import: the user's preference, when a run happens, and
+/// what the settings screen shows about it.
+///
+/// The import itself is [HealthImporter], which this only starts and reports
+/// on. Everything about how readings become measurements lives there.
 
 @ProviderFor(HealthSyncNotifier)
 final healthSyncProvider = HealthSyncNotifierProvider._();
 
-/// Imports body metrics from Apple Health / Health Connect into measurement
-/// categories. Read-only: reads the platform (via [HealthRepository]), writes to
-/// the local Drift DB, and lets PowerSync push the rows up. Re-imports are
-/// deduplicated via each measurement's [MeasurementEntry.externalId] (the
-/// platform record UUID).
+/// Drives the health import: the user's preference, when a run happens, and
+/// what the settings screen shows about it.
+///
+/// The import itself is [HealthImporter], which this only starts and reports
+/// on. Everything about how readings become measurements lives there.
 final class HealthSyncNotifierProvider
     extends $NotifierProvider<HealthSyncNotifier, HealthSyncState> {
-  /// Imports body metrics from Apple Health / Health Connect into measurement
-  /// categories. Read-only: reads the platform (via [HealthRepository]), writes to
-  /// the local Drift DB, and lets PowerSync push the rows up. Re-imports are
-  /// deduplicated via each measurement's [MeasurementEntry.externalId] (the
-  /// platform record UUID).
+  /// Drives the health import: the user's preference, when a run happens, and
+  /// what the settings screen shows about it.
+  ///
+  /// The import itself is [HealthImporter], which this only starts and reports
+  /// on. Everything about how readings become measurements lives there.
   HealthSyncNotifierProvider._()
     : super(
         from: null,
@@ -56,13 +56,13 @@ final class HealthSyncNotifierProvider
   }
 }
 
-String _$healthSyncNotifierHash() => r'e5c9fc5ed4861e41a252ad495236f1166eb54820';
+String _$healthSyncNotifierHash() => r'9ed53f8b6656f0bc283d1acdbe1b29da2b6e9642';
 
-/// Imports body metrics from Apple Health / Health Connect into measurement
-/// categories. Read-only: reads the platform (via [HealthRepository]), writes to
-/// the local Drift DB, and lets PowerSync push the rows up. Re-imports are
-/// deduplicated via each measurement's [MeasurementEntry.externalId] (the
-/// platform record UUID).
+/// Drives the health import: the user's preference, when a run happens, and
+/// what the settings screen shows about it.
+///
+/// The import itself is [HealthImporter], which this only starts and reports
+/// on. Everything about how readings become measurements lives there.
 
 abstract class _$HealthSyncNotifier extends $Notifier<HealthSyncState> {
   HealthSyncState build();
