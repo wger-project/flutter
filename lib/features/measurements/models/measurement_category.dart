@@ -554,8 +554,9 @@ class MeasurementCategory with _$MeasurementCategory {
       copyWith(chartConfig: {...?chartConfig, key: value});
 
   /// `true` for group parents (blood pressure etc.), which hold no entries of
-  /// their own
-  bool get isGroup => children.isNotEmpty;
+  /// their own. Answers for this row: a group whose components have not synced
+  /// yet has none, unlike the structural [MetricType.isGroup].
+  bool get hasChildren => children.isNotEmpty;
 
   /// The user's body weight category. It has its own screens (weight feature)
   /// and is hidden from the general measurements UI.
@@ -567,7 +568,8 @@ class MeasurementCategory with _$MeasurementCategory {
   /// differently, and a group has neither: its name and unit come from the
   /// metric type and its chart from what its components are to each other.
   bool get isEditable =>
-      metricType == MetricType.custom || (!isGroup && metricType.availableChartTypes.isNotEmpty);
+      metricType == MetricType.custom ||
+      (!hasChildren && metricType.availableChartTypes.isNotEmpty);
 
   MeasurementEntry findEntryById(String id) {
     return entries.firstWhere(

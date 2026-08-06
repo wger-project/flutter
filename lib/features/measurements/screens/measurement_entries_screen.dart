@@ -138,7 +138,7 @@ class _MeasurementEntriesScreenState extends ConsumerState<MeasurementEntriesScr
                     AppLocalizations.of(context).newEntry,
                     // A group holds no entries itself: one reading is a value
                     // per component, entered in one go
-                    category.isGroup
+                    category.hasChildren
                         ? GroupMeasurementEntryForm(category)
                         : MeasurementEntryForm(_categoryId),
                   ),

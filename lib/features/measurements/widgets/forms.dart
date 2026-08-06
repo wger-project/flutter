@@ -291,12 +291,17 @@ class _MeasurementEntryFormState extends ConsumerState<MeasurementEntryForm> {
   num? _value;
   String _notes = '';
 
+  /// Read once: a future built in build() is a new one on every rebuild, which
+  /// sends the FutureBuilder back to its loading state.
+  late final Future<MeasurementCategory?> _categoryFuture;
+
   @override
   void initState() {
     super.initState();
     _value = widget._entry?.value;
     _notes = widget._entry?.notes ?? '';
     _notesController.text = _notes;
+    _categoryFuture = ref.read(measurementProvider.notifier).getCategoryById(widget._categoryId);
   }
 
   @override
@@ -308,12 +313,9 @@ class _MeasurementEntryFormState extends ConsumerState<MeasurementEntryForm> {
   @override
   Widget build(BuildContext context) {
     final notifier = ref.read(measurementProvider.notifier);
-    final Future<MeasurementCategory?> categoryFuture = notifier.getCategoryById(
-      widget._categoryId,
-    );
 
     return FutureBuilder(
-      future: categoryFuture,
+      future: _categoryFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const BoxedProgressIndicator();

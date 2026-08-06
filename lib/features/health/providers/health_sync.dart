@@ -293,7 +293,7 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
           // own category, or one child per component for a group metric.
           final List<(MeasurementCategory, Iterable<HealthReading>)> targets;
           if (metric.components.isEmpty) {
-            final metricReadings = readings.where((r) => r.type == metric.dataType);
+            final metricReadings = readings.where((r) => metric.dataTypes.contains(r.type));
             if (metricReadings.isEmpty) {
               if (readsFullHistory && withoutCategory.contains(metric.metricType.name)) {
                 knownEmpty.add(metric.metricType.name);

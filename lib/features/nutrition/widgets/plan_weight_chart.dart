@@ -67,12 +67,12 @@ class PlanWeightChart extends ConsumerWidget {
     final avg = movingAverage(points, days: settings.averageWindow);
 
     return Column(
-      children: getOverviewWidgets(
-        AppLocalizations.of(context).weight,
-        points,
-        avg,
-        weightUnit(profile.isMetric, context),
+      children: buildChartSection(
         context,
+        title: AppLocalizations.of(context).weight,
+        raw: points,
+        avg: avg,
+        unit: weightUnit(profile.isMetric, context),
         metricType: category.metricType,
         settings: settings,
       ),

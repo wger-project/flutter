@@ -133,11 +133,6 @@ final class MeasurementNotifier extends _$MeasurementNotifier {
     return _repo.watchAll();
   }
 
-  Stream<MeasurementCategory?> watchCategoryById(String id) {
-    _logger.finer('Watching local measurement category $id');
-    return _repo.watchLocalDriftCategoryById(id);
-  }
-
   Future<MeasurementCategory?> getCategoryById(String id) async {
     // Data already loaded
     final categories = state.asData?.value;
@@ -193,13 +188,13 @@ final class MeasurementNotifier extends _$MeasurementNotifier {
     final parent = category.copyWith(
       id: category.id ?? deterministicCategoryId(userId, category.metricType),
     );
-    await _repo.addLocalDriftCategory(parent);
 
     // A group is a container, its readings live in one child per component.
     // The server creates them as well, on the same ids, so whichever side
     // gets there first wins and the other is acknowledged as a no-op
-    for (final (order, metricType) in parent.metricType.components.indexed) {
-      await _repo.addLocalDriftCategory(
+    await _repo.addLocalDriftCategoryGroup([
+      parent,
+      for (final (order, metricType) in parent.metricType.components.indexed)
         MeasurementCategory(
           id: deterministicCategoryId(userId, metricType),
           name: metricType.canonicalName,
@@ -208,8 +203,7 @@ final class MeasurementNotifier extends _$MeasurementNotifier {
           parentId: parent.id,
           order: order,
         ),
-      );
-    }
+    ]);
     return parent.id;
   }
 

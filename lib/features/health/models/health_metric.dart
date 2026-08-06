@@ -56,21 +56,35 @@ enum DailyAggregation {
 class HealthMetric {
   const HealthMetric({
     required this.metricType,
-    required this.dataType,
+    required HealthDataType this.dataType,
     required this.toCategoryValue,
-    this.components = const [],
     this.dailyAggregation,
     this.dayRollsOverAtHour,
     this.enabled = false,
     this.disabledReason,
     this.readWindow = defaultReadWindow,
-  });
+  }) : components = const [];
+
+  /// A metric whose readings are split over several categories, e.g. blood
+  /// pressure. It has no platform type of its own: what it reads is what its
+  /// [components] read.
+  const HealthMetric.group({
+    required this.metricType,
+    required this.components,
+    required this.toCategoryValue,
+    this.dailyAggregation,
+    this.dayRollsOverAtHour,
+    this.enabled = false,
+    this.disabledReason,
+    this.readWindow = defaultReadWindow,
+  }) : dataType = null;
 
   /// Metric type stored on the category, e.g. [MetricType.bodyFat].
   final MetricType metricType;
 
-  /// Health platform type this metric reads.
-  final HealthDataType dataType;
+  /// Health platform type this metric reads, null for a group, whose
+  /// components carry theirs.
+  final HealthDataType? dataType;
 
   /// Name and unit the category is created under. They belong to the metric
   /// type, so a category the user creates by hand looks the same.
@@ -118,8 +132,10 @@ class HealthMetric {
 
   /// All platform types this metric reads (the components' for a group), each
   /// one once even when several components read it.
-  List<HealthDataType> get dataTypes =>
-      components.isEmpty ? [dataType] : components.expand((c) => c.dataTypes).toSet().toList();
+  List<HealthDataType> get dataTypes {
+    final type = dataType;
+    return type != null ? [type] : components.expand((c) => c.dataTypes).toSet().toList();
+  }
 }
 
 /// One component of a multi-value metric (e.g. systolic), imported into its
@@ -168,9 +184,8 @@ const List<HealthMetric> healthMetrics = [
     toCategoryValue: _identity,
     enabled: true,
   ),
-  HealthMetric(
+  HealthMetric.group(
     metricType: MetricType.bloodPressure,
-    dataType: HealthDataType.BLOOD_PRESSURE_SYSTOLIC,
     toCategoryValue: _identity,
     // Both platforms report mmHg; a reading is the systolic/diastolic pair
     // sharing one timestamp.
@@ -201,7 +216,7 @@ const List<HealthMetric> healthMetrics = [
     toCategoryValue: _identity,
     enabled: true,
   ),
-  HealthMetric(
+  HealthMetric.group(
     // SLEEP_ASLEEP is not the whole night, it is the coarsest stage: the
     // plugin filters it down to HealthKit's asleepUnspecified and to Health
     // Connect's STAGE_TYPE_SLEEPING. Anything writing a real hypnogram (an
@@ -210,7 +225,6 @@ const List<HealthMetric> healthMetrics = [
     // total therefore rolls the stages up, and each stage also gets its own
     // category. All types report minutes on both platforms.
     metricType: MetricType.sleep,
-    dataType: HealthDataType.SLEEP_ASLEEP,
     toCategoryValue: _identity,
     components: [
       HealthMetricComponent(

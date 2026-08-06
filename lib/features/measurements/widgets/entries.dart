@@ -82,7 +82,7 @@ class EntriesList extends ConsumerWidget {
 
     // A group carries no entries of its own, its readings live in the
     // components, so everything below would chart an empty list
-    if (category.isGroup) {
+    if (category.hasChildren) {
       return _buildGroup(context, ref, category);
     }
 
@@ -137,13 +137,13 @@ class EntriesList extends ConsumerWidget {
     final settings = category.chartSettings;
     final (:entries, :average) = chartSeriesFor(allPoints, range, settings);
 
-    return getOverviewWidgetsSeries(
-      name,
-      entries,
-      average,
-      planPeriods,
-      unitLabel,
+    return buildSeriesChartSection(
       context,
+      name: name,
+      entriesAll: entries,
+      average: average,
+      unit: unitLabel,
+      planPeriods: planPeriods,
       metricType: category.metricType,
       mainChartTitle: range.chartTitle(AppLocalizations.of(context), name),
       chartType: category.chartType,

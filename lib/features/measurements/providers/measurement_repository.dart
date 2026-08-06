@@ -562,6 +562,17 @@ class MeasurementRepository {
     await _db.into(_db.measurementCategoryTable).insert(category.toCompanion());
   }
 
+  /// Inserts a group together with its components, in a single transaction so
+  /// a group is never left without the children its readings live in.
+  Future<void> addLocalDriftCategoryGroup(List<MeasurementCategory> categories) async {
+    _logger.finer('Adding a local measurement group of ${categories.length} categories');
+    await _db.transaction(() async {
+      for (final category in categories) {
+        await _db.into(_db.measurementCategoryTable).insert(category.toCompanion());
+      }
+    });
+  }
+
   /// Persists the given display order: each category gets its list index as
   /// [MeasurementCategory.order]. Categories whose order is unchanged are not
   /// written, so no sync upload is queued for them.

@@ -13,12 +13,13 @@ import 'package:wger/features/measurements/widgets/chart_range_selector.dart';
 import 'package:wger/features/measurements/widgets/charts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
-List<Widget> getOverviewWidgets(
-  String title,
-  List<MeasurementChartEntry> raw,
-  List<MeasurementChartEntry> avg,
-  String unit,
+/// A titled chart with the overall change below it, for a Column to spread.
+List<Widget> buildChartSection(
   BuildContext context, {
+  required String title,
+  required List<MeasurementChartEntry> raw,
+  required List<MeasurementChartEntry> avg,
+  required String unit,
   MetricType metricType = MetricType.custom,
   List<PlanPeriod> planPeriods = const [],
   List<MeasurementChartEntry>? trend,
@@ -61,13 +62,15 @@ List<Widget> getOverviewWidgets(
   ];
 }
 
-List<Widget> getOverviewWidgetsSeries(
-  String name,
-  List<MeasurementChartEntry> entriesAll,
-  List<MeasurementChartEntry> average,
-  List<PlanPeriod> planPeriods,
-  String unit,
+/// The chart of a measurement series: [buildChartSection] for the chart the
+/// type resolves to, plus the legend naming the lines it draws.
+List<Widget> buildSeriesChartSection(
   BuildContext context, {
+  required String name,
+  required List<MeasurementChartEntry> entriesAll,
+  required List<MeasurementChartEntry> average,
+  required String unit,
+  List<PlanPeriod> planPeriods = const [],
   MetricType metricType = MetricType.custom,
   String? mainChartTitle,
   ChartType chartType = ChartType.auto,
@@ -86,21 +89,21 @@ List<Widget> getOverviewWidgetsSeries(
   if (resolved == ChartType.heatmap ||
       resolved == ChartType.delta ||
       resolved == ChartType.distribution) {
-    return getOverviewWidgets(
+    return buildChartSection(
+      context,
       // The selector right above names the range, so the title says what the
       // bars are instead
-      switch (resolved) {
+      title: switch (resolved) {
         ChartType.delta => AppLocalizations.of(context).chartWeeklyChangeTitle(name),
         ChartType.distribution => AppLocalizations.of(context).chartDistributionTitle(name),
         _ => title,
       },
-      entriesAll,
+      raw: entriesAll,
       // The overall change is the one-number version of the change chart. Over
       // a grid it measures a line that is not drawn, and a summed metric has no
       // level to change.
-      resolved == ChartType.delta && !metricType.isSummedPerDay ? average : const [],
-      unit,
-      context,
+      avg: resolved == ChartType.delta && !metricType.isSummedPerDay ? average : const [],
+      unit: unit,
       metricType: metricType,
       chartType: chartType,
       settings: settings,
@@ -113,12 +116,12 @@ List<Widget> getOverviewWidgetsSeries(
   final summed = metricType.isSummedPerDay;
   final trendAll = summed ? null : smoothedTrendline(entriesAll, period: settings.trend.emaPeriod);
   return [
-    ...getOverviewWidgets(
-      title,
-      entriesAll,
-      average,
-      unit,
+    ...buildChartSection(
       context,
+      title: title,
+      raw: entriesAll,
+      avg: average,
+      unit: unit,
       metricType: metricType,
       planPeriods: planPeriods,
       trend: trendAll,

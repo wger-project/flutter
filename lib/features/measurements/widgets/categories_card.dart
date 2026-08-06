@@ -45,7 +45,7 @@ class CategoriesCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    if (currentCategory.isGroup) {
+    if (currentCategory.hasChildren) {
       return _buildGroupCard(context, ref);
     }
 
