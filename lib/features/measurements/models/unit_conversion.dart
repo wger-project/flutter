@@ -41,25 +41,26 @@ double convertWeight(num value, {required String from, required String to}) {
   return (converted * 100).roundToDouble() / 100;
 }
 
+/// The unit a value was entered in: [stored], falling back to [categoryUnit]
+/// when it is absent or empty (same chain as the server).
+String unitOrFallback(Object? stored, String categoryUnit) =>
+    stored is String && stored.isNotEmpty ? stored : categoryUnit;
+
 extension MeasurementEntryUnit on MeasurementEntry {
-  /// The unit the value was entered in: `extra_data.unit`, falling back to
-  /// [categoryUnit] when absent or empty (same chain as the server).
-  String unitOrFallback(String categoryUnit) {
-    final stored = extraData?['unit'];
-    return stored is String && stored.isNotEmpty ? stored : categoryUnit;
-  }
+  /// The unit this entry's value was entered in.
+  String unitOrFallbackFor(String categoryUnit) => unitOrFallback(extraData?['unit'], categoryUnit);
 
   /// The entry's value in [targetUnit]. The single way to read a measurement
   /// value for display or calculation; a category can hold mixed units, so
   /// the raw value alone is meaningless.
   double valueIn(String targetUnit, {required String categoryUnit}) {
-    return convertWeight(value, from: unitOrFallback(categoryUnit), to: targetUnit);
+    return convertWeight(value, from: unitOrFallbackFor(categoryUnit), to: targetUnit);
   }
 
   /// A number stored in `extra_data` next to [value] in [targetUnit], such as
   /// the bounds of a daily aggregate. They are written in the value's unit, so
   /// they have to follow it through the same conversion.
   double boundIn(num bound, String targetUnit, {required String categoryUnit}) {
-    return convertWeight(bound, from: unitOrFallback(categoryUnit), to: targetUnit);
+    return convertWeight(bound, from: unitOrFallbackFor(categoryUnit), to: targetUnit);
   }
 }

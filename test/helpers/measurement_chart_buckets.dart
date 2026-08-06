@@ -44,6 +44,60 @@ typedef ChartBucketsStub =
       (String, DateTime?, MeasurementBucketLevel),
     );
 
+/// Buckets at the day level: one per calendar day, holding the day's total.
+/// What the query returns for a summed metric, whatever the point count.
+List<MeasurementBucket> dayBuckets(Iterable<MeasurementEntry> entries) {
+  final byDay = <DateTime, List<MeasurementEntry>>{};
+  for (final entry in entries) {
+    final day = DateTime(entry.date.year, entry.date.month, entry.date.day);
+    byDay.putIfAbsent(day, () => []).add(entry);
+  }
+
+  return [
+    for (final MapEntry(key: day, value: ofDay) in byDay.entries)
+      MeasurementBucket(
+        start: day,
+        unit: ofDay.first.extraData?['unit'] as String?,
+        count: ofDay.length,
+        sum: ofDay.map((e) => e.value).reduce((a, b) => a + b),
+        min: ofDay.map((e) => e.value).reduce((a, b) => a < b ? a : b),
+        max: ofDay.map((e) => e.value).reduce((a, b) => a > b ? a : b),
+      ),
+  ]..sort((a, b) => a.start.compareTo(b.start));
+}
+
+/// What `measurementGroupBucketsProvider.overrideWith` takes.
+typedef GroupBucketsStub =
+    Stream<Map<String, List<MeasurementBucket>>> Function(
+      Ref,
+      (String, DateTime?, MeasurementBucketLevel),
+    );
+
+/// The group counterpart of [chartBucketsFrom]: the components of a group,
+/// keyed by component id, from the entries they already carry.
+GroupBucketsStub groupBucketsFrom(List<MeasurementCategory> categories) {
+  final byParent = {
+    for (final category in categories)
+      if (category.children.isNotEmpty) category.id: category,
+  };
+
+  return (ref, args) {
+    final (parentId, since, _) = args;
+    final group = byParent[parentId];
+    if (group == null) {
+      return Stream.value(const {});
+    }
+
+    final summed = group.metricType.isSummedPerDay;
+    return Stream.value({
+      for (final child in group.children)
+        child.id!: summed
+            ? dayBuckets(child.entries.where((e) => since == null || !e.date.isBefore(since)))
+            : entryBuckets(child.entries, since: since),
+    });
+  };
+}
+
 /// Serves the chart query from the entries [categories] already carry, group
 /// components included, so a widget test seeds one list rather than two.
 ChartBucketsStub chartBucketsFrom(List<MeasurementCategory> categories) {

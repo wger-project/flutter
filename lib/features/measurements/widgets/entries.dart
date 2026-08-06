@@ -83,7 +83,7 @@ class EntriesList extends ConsumerWidget {
     // A group carries no entries of its own, its readings live in the
     // components, so everything below would chart an empty list
     if (category.isGroup) {
-      return _buildGroup(context, category);
+      return _buildGroup(context, ref, category);
     }
 
     // Plan periods only matter where a nutrition plan can plausibly move the
@@ -108,13 +108,12 @@ class EntriesList extends ConsumerWidget {
           value: range,
           onChanged: onRangeChanged,
         ),
-        MeasurementChartPoints(
-          category: category,
-          range: range,
+        MeasurementChartArea<List<MeasurementChartEntry>>(
+          identity: category.id!,
           // Values are read through the unit helper; for plain categories
           // without per-entry units this is a pass-through
-          targetUnit: unit,
-          builder: (context, points) => _chart(context, points, name, unitLabel, planPeriods),
+          watch: (ref) => chartPointsFor(ref, category, range, targetUnit: unit),
+          builder: (context, points) => _chart(context, points, name, unit, unitLabel, planPeriods),
           onError: (_, error) => [StreamErrorIndicator(error.toString())],
         ),
         SizedBox(
@@ -195,6 +194,7 @@ class EntriesList extends ConsumerWidget {
     BuildContext context,
     List<MeasurementChartEntry> allPoints,
     String name,
+    String unit,
     String unitLabel,
     List<PlanPeriod> planPeriods,
   ) {
@@ -212,6 +212,12 @@ class EntriesList extends ConsumerWidget {
       mainChartTitle: range.chartTitle(AppLocalizations.of(context), name),
       chartType: category.chartType,
       settings: settings,
+      distribution: MeasurementDistributionChart(
+        category: category,
+        range: range,
+        unitLabel: unitLabel,
+        targetUnit: unit,
+      ),
     );
   }
 
@@ -222,11 +228,10 @@ class EntriesList extends ConsumerWidget {
   /// Readings are shown but not edited here: one of them is several entries,
   /// and the group form only creates. Editing stays on the component screens,
   /// which the legend rows lead to.
-  Widget _buildGroup(BuildContext context, MeasurementCategory category) {
+  Widget _buildGroup(BuildContext context, WidgetRef ref, MeasurementCategory category) {
     final i18n = AppLocalizations.of(context);
     final datetimeFormat = localizedDate(context);
     final cutoff = range.cutoff;
-    final hasData = groupHasData(category, cutoff: cutoff);
     final readings = groupReadings(category, cutoff: cutoff);
     // Only the stacked chart leaves a component out, so the colours of the
     // rows below have to follow the same list
@@ -243,19 +248,26 @@ class EntriesList extends ConsumerWidget {
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.titleLarge,
         ),
-        Container(
-          padding: const EdgeInsets.all(15),
-          height: 220,
-          child: hasData
-              ? buildGroupChart(context, category, cutoff: cutoff)
-              : Center(
-                  child: Text(
-                    i18n.noDataAvailable,
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.7),
+        MeasurementChartArea<Map<String, List<MeasurementChartEntry>>>(
+          identity: category.id!,
+          watch: (ref) => groupPointsFor(ref, category, range),
+          builder: (context, points) => [
+            Container(
+              padding: const EdgeInsets.all(15),
+              height: 220,
+              child: groupHasData(points)
+                  ? buildGroupChart(context, category, points)
+                  : Center(
+                      child: Text(
+                        i18n.noDataAvailable,
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          color: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.7),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
+            ),
+          ],
+          onError: (_, error) => [StreamErrorIndicator(error.toString())],
         ),
         ...category.children.mapIndexed((index, child) {
           final colorIndex = stacked == null ? index : stacked.indexWhere((c) => c.id == child.id);

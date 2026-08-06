@@ -21,18 +21,27 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:wger/features/measurements/models/measurement_category.dart';
+import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
 import 'package:wger/features/measurements/widgets/categories.dart';
 import 'package:wger/features/measurements/widgets/categories_card.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 import '../../../../test_data/measurements.dart';
+import '../../../helpers/measurement_chart_buckets.dart';
 import 'categories_test.mocks.dart';
 
-Widget _wrap(MockMeasurementRepository mockRepo) {
+Widget _wrap(
+  MockMeasurementRepository mockRepo, {
+  List<MeasurementCategory> categories = const [],
+}) {
   return ProviderScope(
     overrides: [
       measurementRepositoryProvider.overrideWithValue(mockRepo),
+      // The cards read their chart points from the aggregated queries
+      measurementChartBucketsProvider.overrideWith(chartBucketsFrom(categories)),
+      measurementGroupBucketsProvider.overrideWith(groupBucketsFrom(categories)),
     ],
     child: const MaterialApp(
       localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -56,7 +65,7 @@ void main() {
         mockRepo.watchAll(entriesSince: anyNamed('entriesSince')),
       ).thenAnswer((_) => Stream.value(getMeasurementCategories()));
 
-      await tester.pumpWidget(_wrap(mockRepo));
+      await tester.pumpWidget(_wrap(mockRepo, categories: getMeasurementCategories()));
       await tester.pumpAndSettle();
 
       expect(find.byType(CategoriesCard), findsNWidgets(2));
@@ -70,7 +79,7 @@ void main() {
         mockRepo.watchAll(entriesSince: anyNamed('entriesSince')),
       ).thenAnswer((_) => Stream.value(getBloodPressureGroup()));
 
-      await tester.pumpWidget(_wrap(mockRepo));
+      await tester.pumpWidget(_wrap(mockRepo, categories: getBloodPressureGroup()));
       await tester.pumpAndSettle();
 
       expect(find.byType(CategoriesCard), findsOneWidget);

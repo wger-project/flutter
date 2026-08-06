@@ -458,92 +458,6 @@ void main() {
     });
   });
 
-  group('downsample', () {
-    /// A day of heart-rate-like sampling: every 5 minutes, alternating between
-    /// a resting and an exerting value
-    List<MeasurementChartEntry> samples(int days) => [
-      for (var day = 0; day < days; day++)
-        for (var i = 0; i < 288; i++)
-          entry(
-            i.isEven ? 50 : 150,
-            DateTime(2026, 1, 1).add(Duration(days: day, minutes: i * 5)),
-          ),
-    ];
-
-    test('leaves a series that already fits untouched', () {
-      final input = samples(1).take(50).toList();
-      expect(downsample(input), same(input));
-    });
-
-    test('condenses a season of samples into one point per day', () {
-      // The case from a real import: two months of raw samples must not be
-      // cut into slices that ignore the daily rhythm
-      final result = downsample(samples(61));
-
-      expect(result, hasLength(61));
-      expect(result.first.date, DateTime(2026, 1, 1));
-      expect(result[1].date, DateTime(2026, 1, 2));
-    });
-
-    test('uses the finest unit that fits, hours for a few days', () {
-      final result = downsample(samples(3));
-
-      // 3 days of hours is 72 points, well under the limit, so no need to
-      // drop all the way to whole days
-      expect(result, hasLength(72));
-      expect(result.first.date, DateTime(2026, 1, 1));
-      expect(result[1].date, DateTime(2026, 1, 1, 1));
-    });
-
-    test('falls back to coarser units for long histories', () {
-      final result = downsample(samples(400));
-
-      // days would be 400 points, so it steps up to weeks
-      expect(result.length, lessThanOrEqualTo(200));
-      expect(result.length, greaterThan(50));
-    });
-
-    test('keeps the extremes as a range instead of averaging them away', () {
-      final result = downsample(samples(61));
-
-      expect(result.every((e) => e.hasRange), isTrue);
-      expect(result.first.min, 50);
-      expect(result.first.max, 150);
-      expect(result.first.value, closeTo(100, 1));
-    });
-
-    test('stays in chronological order', () {
-      final dates = downsample(samples(61)).map((e) => e.date).toList();
-      expect(dates.isSorted((a, b) => a.compareTo(b)), isTrue);
-    });
-
-    test('carries the bounds of entries that are already ranges', () {
-      final input = [
-        for (var i = 0; i < 1000; i++)
-          MeasurementChartEntry(
-            100,
-            DateTime(2026, 1, 1).add(Duration(minutes: i)),
-            min: 40,
-            max: 190,
-          ),
-      ];
-
-      final result = downsample(input);
-      // condensing an aggregate must not shrink it to its averages
-      expect(result.first.min, 40);
-      expect(result.first.max, 190);
-    });
-
-    test('condenses entries that all share one timestamp into one point', () {
-      final input = List.generate(500, (i) => entry(i, DateTime(2026, 1, 1)));
-      final result = downsample(input);
-
-      expect(result, hasLength(1));
-      expect(result.single.min, 0);
-      expect(result.single.max, 499);
-    });
-  });
-
   group('MeasurementChartWidgetFl dot size', () {
     double dotRadius(WidgetTester tester) {
       final data = tester.widget<LineChart>(find.byType(LineChart)).data;
@@ -980,12 +894,52 @@ void main() {
     });
   });
 
-  group('buildHistogram', () {
+  group('buildWeightedHistogram', () {
+    test('counts a value as often as it occurred', () {
+      // What the aggregated query hands over: a year of readings arrives as
+      // the distinct values it covers, with their counts
+      final result = buildWeightedHistogram(
+        [(value: 60, count: 30), (value: 61, count: 5)],
+        latest: 61,
+        binWidth: 1,
+      );
+
+      expect(result.counts, [30, 5]);
+    });
+
+    test('the median weighs the counts, not the distinct values', () {
+      // Thirty readings at 60 and one at 90: the middle reading is a 60, which
+      // an unweighted median over the two values would miss
+      final result = buildWeightedHistogram(
+        [(value: 60, count: 30), (value: 90, count: 1)],
+        latest: 90,
+        binWidth: 10,
+      );
+
+      expect(result.median, 60);
+    });
+
+    test('an even number of readings averages the two in the middle', () {
+      final result = buildWeightedHistogram(
+        [(value: 60, count: 1), (value: 70, count: 1)],
+        latest: 70,
+        binWidth: 10,
+      );
+
+      expect(result.median, 65);
+    });
+  });
+
+  group('buildWeightedHistogram bins', () {
     test('aligns the bin edges to round multiples of the width', () {
-      final result = buildHistogram([
-        entry(79.7, DateTime(2026, 1, 1)),
-        entry(82.3, DateTime(2026, 1, 2)),
-      ], binWidth: 0.5);
+      final result = buildWeightedHistogram(
+        [
+          (value: 79.7, count: 1),
+          (value: 82.3, count: 1),
+        ],
+        latest: 0,
+        binWidth: 0.5,
+      );
 
       expect(result.firstEdge, 79.5);
       expect(result.lowerEdgeOf(1), 80);
@@ -993,58 +947,64 @@ void main() {
     });
 
     test('keeps empty bins between the occupied ones, a gap is information', () {
-      final result = buildHistogram([
-        entry(60, DateTime(2026, 1, 1)),
-        entry(61, DateTime(2026, 1, 2)),
-        entry(65, DateTime(2026, 1, 3)),
-      ], binWidth: 2);
+      final result = buildWeightedHistogram(
+        [
+          (value: 60, count: 1),
+          (value: 61, count: 1),
+          (value: 65, count: 1),
+        ],
+        latest: 0,
+        binWidth: 2,
+      );
 
       expect(result.counts, [2, 0, 1]);
     });
 
     test('takes the median of the values, odd and even', () {
-      final odd = buildHistogram([
-        entry(60, DateTime(2026, 1, 1)),
-        entry(62, DateTime(2026, 1, 2)),
-        entry(70, DateTime(2026, 1, 3)),
-      ], binWidth: 2);
+      final odd = buildWeightedHistogram(
+        [
+          (value: 60, count: 1),
+          (value: 62, count: 1),
+          (value: 70, count: 1),
+        ],
+        latest: 0,
+        binWidth: 2,
+      );
       expect(odd.median, 62);
 
-      final even = buildHistogram([
-        entry(60, DateTime(2026, 1, 1)),
-        entry(63, DateTime(2026, 1, 2)),
-        entry(65, DateTime(2026, 1, 3)),
-        entry(70, DateTime(2026, 1, 4)),
-      ], binWidth: 2);
+      final even = buildWeightedHistogram(
+        [
+          (value: 60, count: 1),
+          (value: 63, count: 1),
+          (value: 65, count: 1),
+          (value: 70, count: 1),
+        ],
+        latest: 0,
+        binWidth: 2,
+      );
       expect(even.median, 64);
     });
 
-    test('the latest value follows the dates, not the list order', () {
-      final result = buildHistogram([
-        entry(70, DateTime(2026, 1, 3)),
-        entry(60, DateTime(2026, 1, 5)),
-        entry(65, DateTime(2026, 1, 1)),
-      ], binWidth: 5);
-
-      expect(result.latest, 60);
-    });
-
     test('derives a width from the span when the type brings none', () {
-      final result = buildHistogram([
-        entry(59.3, DateTime(2026, 1, 1)),
-        entry(73.9, DateTime(2026, 1, 2)),
-      ]);
+      final result = buildWeightedHistogram([
+        (value: 59.3, count: 1),
+        (value: 73.9, count: 1),
+      ], latest: 0);
 
       expect(result.binWidth, 1);
     });
 
     test('doubles the width until an outlier no longer stretches it into hundreds of bins', () {
       // 20 to 350 at 0.5 kg would be 661 bins; doubling keeps the edges round
-      final result = buildHistogram([
-        entry(20, DateTime(2026, 1, 1)),
-        entry(80, DateTime(2026, 1, 2)),
-        entry(350, DateTime(2026, 1, 3)),
-      ], binWidth: 0.5);
+      final result = buildWeightedHistogram(
+        [
+          (value: 20, count: 1),
+          (value: 80, count: 1),
+          (value: 350, count: 1),
+        ],
+        latest: 0,
+        binWidth: 0.5,
+      );
 
       expect(result.binWidth, 4);
       expect(result.counts.length, lessThanOrEqualTo(100));
@@ -1053,14 +1013,16 @@ void main() {
   });
 
   group('MeasurementDistributionWidgetFl', () {
-    final values = [
-      entry(60, DateTime(2026, 1, 1)),
-      entry(61, DateTime(2026, 1, 2)),
-      entry(65, DateTime(2026, 1, 3)),
+    const counted = <ValueCount>[
+      (value: 60, count: 1),
+      (value: 61, count: 1),
+      (value: 65, count: 1),
     ];
 
     testWidgets('renders nothing for no values instead of crashing', (tester) async {
-      await tester.pumpWidget(_wrap(const MeasurementDistributionWidgetFl([], 'kg')));
+      await tester.pumpWidget(
+        _wrap(const MeasurementDistributionWidgetFl([], latest: 0, unit: 'kg')),
+      );
       await tester.pumpAndSettle();
 
       expect(tester.takeException(), isNull);
@@ -1069,7 +1031,9 @@ void main() {
     testWidgets('reads out the median and the newest value, which the lines only place', (
       tester,
     ) async {
-      await tester.pumpWidget(_wrap(MeasurementDistributionWidgetFl(values, 'kg', binWidth: 2)));
+      await tester.pumpWidget(
+        _wrap(const MeasurementDistributionWidgetFl(counted, latest: 65, unit: 'kg', binWidth: 2)),
+      );
       await tester.pumpAndSettle();
 
       expect(find.textContaining('Median: 61 kg', findRichText: true), findsOneWidget);
@@ -1087,7 +1051,9 @@ void main() {
     }
 
     testWidgets('a tapped bin reads out as its range and count', (tester) async {
-      await tester.pumpWidget(_wrap(MeasurementDistributionWidgetFl(values, 'kg', binWidth: 2)));
+      await tester.pumpWidget(
+        _wrap(const MeasurementDistributionWidgetFl(counted, latest: 65, unit: 'kg', binWidth: 2)),
+      );
       await tester.pumpAndSettle();
 
       // Bins are [60-62): 2, [62-64): 0, [64-66): 1
@@ -1105,7 +1071,13 @@ void main() {
     testWidgets('counts read as days for a metric summed per day', (tester) async {
       await tester.pumpWidget(
         _wrap(
-          MeasurementDistributionWidgetFl(values, 'kg', binWidth: 2, countsAreDays: true),
+          const MeasurementDistributionWidgetFl(
+            counted,
+            latest: 65,
+            unit: 'kg',
+            binWidth: 2,
+            countsAreDays: true,
+          ),
         ),
       );
       await tester.pumpAndSettle();

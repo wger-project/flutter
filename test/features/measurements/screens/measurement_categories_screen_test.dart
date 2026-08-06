@@ -47,6 +47,7 @@ void main() {
         // The charts read their points from the aggregated query, not from
         // the entries the categories carry
         measurementChartBucketsProvider.overrideWith(chartBucketsFrom(categories)),
+        measurementGroupBucketsProvider.overrideWith(groupBucketsFrom(categories)),
       ],
       child: MaterialApp(
         locale: Locale(locale),

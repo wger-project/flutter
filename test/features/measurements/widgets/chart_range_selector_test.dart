@@ -37,6 +37,25 @@ void main() {
 
       expect(ChartRange.lastMonth.cutoff!.difference(read).inDays, greaterThanOrEqualTo(29));
     });
+
+    test('the count cutoff is the range itself, with no lead', () {
+      final count = ChartRange.lastMonth.countCutoff!;
+
+      expect(ChartRange.lastMonth.cutoff!.difference(count).inHours, lessThan(24));
+      expect(count.isAfter(ChartRange.lastMonth.readCutoff!), isTrue);
+    });
+
+    test('the query cutoffs stay the same across rebuilds', () {
+      // They identify a provider: derived from the current instant, every
+      // rebuild would watch a new one, re-query the database and drop what it
+      // was showing. Unlike cutoff, which is only ever compared against.
+      for (final range in ChartRange.values) {
+        expect(range.readCutoff, range.readCutoff);
+        expect(range.countCutoff, range.countCutoff);
+      }
+      expect(ChartRange.lastMonth.countCutoff!.hour, 0);
+      expect(ChartRange.lastMonth.countCutoff!.minute, 0);
+    });
   });
 
   testWidgets('every range is offered', (tester) async {

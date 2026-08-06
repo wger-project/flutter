@@ -73,7 +73,7 @@ class _WeightFormState extends riverpod.ConsumerState<WeightForm> {
     // entered); new entries default to the profile unit
     final entry = widget._entry;
     _unit = entry != null
-        ? entry.unitOrFallback(widget._category.unit)
+        ? entry.unitOrFallbackFor(widget._category.unit)
         : weightDisplayUnit(ref.read(userProfileProvider).value?.isMetric ?? true);
   }
 

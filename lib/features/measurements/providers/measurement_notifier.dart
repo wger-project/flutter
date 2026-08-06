@@ -71,6 +71,35 @@ Stream<List<MeasurementBucket>> measurementChartBuckets(
       .watchEntryBuckets(categoryId, since: since, level: level);
 }
 
+/// The chart points of a group's components, keyed by component id.
+///
+/// One query for the whole group, and one calendar unit: a component condensed
+/// on its own would put the halves of a reading in different buckets.
+@riverpod
+Stream<Map<String, List<MeasurementBucket>>> measurementGroupBuckets(
+  Ref ref,
+  String parentId,
+  DateTime? since,
+  MeasurementBucketLevel level,
+) {
+  return ref
+      .read(measurementRepositoryProvider)
+      .watchGroupBuckets(parentId, since: since, level: level);
+}
+
+/// How often each value of a category occurred, for the histogram.
+@riverpod
+Stream<List<MeasurementValueCount>> measurementValueCounts(
+  Ref ref,
+  String categoryId,
+  DateTime? since,
+  bool summedPerDay,
+) {
+  return ref
+      .read(measurementRepositoryProvider)
+      .watchValueCounts(categoryId, since: since, summedPerDay: summedPerDay);
+}
+
 /// One category with its children and the entries from [since] on, null while
 /// it does not exist (or no longer does).
 @riverpod

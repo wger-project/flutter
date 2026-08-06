@@ -183,9 +183,8 @@ String _$latestMeasurementEntriesHash() => r'87b87ef6ca747e9f47855692f9e687b85f8
 /// The chart points of one category, condensed by SQLite.
 ///
 /// Kept apart from the category streams, which hand over the entries
-/// themselves: a chart shows a few hundred points, and a watch-fed metric
-/// holds tens of thousands a year. [level] is what the chart in question needs,
-/// see `chartBucketLevel`.
+/// themselves. [level] is what the chart in question needs, see
+/// `chartBucketLevel`.
 
 @ProviderFor(measurementChartBuckets)
 final measurementChartBucketsProvider = MeasurementChartBucketsFamily._();
@@ -193,9 +192,8 @@ final measurementChartBucketsProvider = MeasurementChartBucketsFamily._();
 /// The chart points of one category, condensed by SQLite.
 ///
 /// Kept apart from the category streams, which hand over the entries
-/// themselves: a chart shows a few hundred points, and a watch-fed metric
-/// holds tens of thousands a year. [level] is what the chart in question needs,
-/// see `chartBucketLevel`.
+/// themselves. [level] is what the chart in question needs, see
+/// `chartBucketLevel`.
 
 final class MeasurementChartBucketsProvider
     extends
@@ -208,9 +206,8 @@ final class MeasurementChartBucketsProvider
   /// The chart points of one category, condensed by SQLite.
   ///
   /// Kept apart from the category streams, which hand over the entries
-  /// themselves: a chart shows a few hundred points, and a watch-fed metric
-  /// holds tens of thousands a year. [level] is what the chart in question needs,
-  /// see `chartBucketLevel`.
+  /// themselves. [level] is what the chart in question needs, see
+  /// `chartBucketLevel`.
   MeasurementChartBucketsProvider._({
     required MeasurementChartBucketsFamily super.from,
     required (String, DateTime?, MeasurementBucketLevel) super.argument,
@@ -260,9 +257,8 @@ String _$measurementChartBucketsHash() => r'90698be9ec4f287fc4764549bc6cbcb5b793
 /// The chart points of one category, condensed by SQLite.
 ///
 /// Kept apart from the category streams, which hand over the entries
-/// themselves: a chart shows a few hundred points, and a watch-fed metric
-/// holds tens of thousands a year. [level] is what the chart in question needs,
-/// see `chartBucketLevel`.
+/// themselves. [level] is what the chart in question needs, see
+/// `chartBucketLevel`.
 
 final class MeasurementChartBucketsFamily extends $Family
     with
@@ -282,9 +278,8 @@ final class MeasurementChartBucketsFamily extends $Family
   /// The chart points of one category, condensed by SQLite.
   ///
   /// Kept apart from the category streams, which hand over the entries
-  /// themselves: a chart shows a few hundred points, and a watch-fed metric
-  /// holds tens of thousands a year. [level] is what the chart in question needs,
-  /// see `chartBucketLevel`.
+  /// themselves. [level] is what the chart in question needs, see
+  /// `chartBucketLevel`.
 
   MeasurementChartBucketsProvider call(
     String categoryId,
@@ -297,6 +292,209 @@ final class MeasurementChartBucketsFamily extends $Family
 
   @override
   String toString() => r'measurementChartBucketsProvider';
+}
+
+/// The chart points of a group's components, keyed by component id.
+///
+/// One query for the whole group, and one calendar unit: a component condensed
+/// on its own would put the halves of a reading in different buckets.
+
+@ProviderFor(measurementGroupBuckets)
+final measurementGroupBucketsProvider = MeasurementGroupBucketsFamily._();
+
+/// The chart points of a group's components, keyed by component id.
+///
+/// One query for the whole group, and one calendar unit: a component condensed
+/// on its own would put the halves of a reading in different buckets.
+
+final class MeasurementGroupBucketsProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<Map<String, List<MeasurementBucket>>>,
+          Map<String, List<MeasurementBucket>>,
+          Stream<Map<String, List<MeasurementBucket>>>
+        >
+    with
+        $FutureModifier<Map<String, List<MeasurementBucket>>>,
+        $StreamProvider<Map<String, List<MeasurementBucket>>> {
+  /// The chart points of a group's components, keyed by component id.
+  ///
+  /// One query for the whole group, and one calendar unit: a component condensed
+  /// on its own would put the halves of a reading in different buckets.
+  MeasurementGroupBucketsProvider._({
+    required MeasurementGroupBucketsFamily super.from,
+    required (String, DateTime?, MeasurementBucketLevel) super.argument,
+  }) : super(
+         retry: null,
+         name: r'measurementGroupBucketsProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$measurementGroupBucketsHash();
+
+  @override
+  String toString() {
+    return r'measurementGroupBucketsProvider'
+        ''
+        '$argument';
+  }
+
+  @$internal
+  @override
+  $StreamProviderElement<Map<String, List<MeasurementBucket>>> $createElement(
+    $ProviderPointer pointer,
+  ) => $StreamProviderElement(pointer);
+
+  @override
+  Stream<Map<String, List<MeasurementBucket>>> create(Ref ref) {
+    final argument = this.argument as (String, DateTime?, MeasurementBucketLevel);
+    return measurementGroupBuckets(ref, argument.$1, argument.$2, argument.$3);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is MeasurementGroupBucketsProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$measurementGroupBucketsHash() => r'c266e55762bf15490b557a3dae3de909eee55ea0';
+
+/// The chart points of a group's components, keyed by component id.
+///
+/// One query for the whole group, and one calendar unit: a component condensed
+/// on its own would put the halves of a reading in different buckets.
+
+final class MeasurementGroupBucketsFamily extends $Family
+    with
+        $FunctionalFamilyOverride<
+          Stream<Map<String, List<MeasurementBucket>>>,
+          (String, DateTime?, MeasurementBucketLevel)
+        > {
+  MeasurementGroupBucketsFamily._()
+    : super(
+        retry: null,
+        name: r'measurementGroupBucketsProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  /// The chart points of a group's components, keyed by component id.
+  ///
+  /// One query for the whole group, and one calendar unit: a component condensed
+  /// on its own would put the halves of a reading in different buckets.
+
+  MeasurementGroupBucketsProvider call(
+    String parentId,
+    DateTime? since,
+    MeasurementBucketLevel level,
+  ) => MeasurementGroupBucketsProvider._(
+    argument: (parentId, since, level),
+    from: this,
+  );
+
+  @override
+  String toString() => r'measurementGroupBucketsProvider';
+}
+
+/// How often each value of a category occurred, for the histogram.
+
+@ProviderFor(measurementValueCounts)
+final measurementValueCountsProvider = MeasurementValueCountsFamily._();
+
+/// How often each value of a category occurred, for the histogram.
+
+final class MeasurementValueCountsProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<List<MeasurementValueCount>>,
+          List<MeasurementValueCount>,
+          Stream<List<MeasurementValueCount>>
+        >
+    with
+        $FutureModifier<List<MeasurementValueCount>>,
+        $StreamProvider<List<MeasurementValueCount>> {
+  /// How often each value of a category occurred, for the histogram.
+  MeasurementValueCountsProvider._({
+    required MeasurementValueCountsFamily super.from,
+    required (String, DateTime?, bool) super.argument,
+  }) : super(
+         retry: null,
+         name: r'measurementValueCountsProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$measurementValueCountsHash();
+
+  @override
+  String toString() {
+    return r'measurementValueCountsProvider'
+        ''
+        '$argument';
+  }
+
+  @$internal
+  @override
+  $StreamProviderElement<List<MeasurementValueCount>> $createElement(
+    $ProviderPointer pointer,
+  ) => $StreamProviderElement(pointer);
+
+  @override
+  Stream<List<MeasurementValueCount>> create(Ref ref) {
+    final argument = this.argument as (String, DateTime?, bool);
+    return measurementValueCounts(ref, argument.$1, argument.$2, argument.$3);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is MeasurementValueCountsProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$measurementValueCountsHash() => r'a92e20ad52075b37e2faaa754ff9fd7619a36be7';
+
+/// How often each value of a category occurred, for the histogram.
+
+final class MeasurementValueCountsFamily extends $Family
+    with $FunctionalFamilyOverride<Stream<List<MeasurementValueCount>>, (String, DateTime?, bool)> {
+  MeasurementValueCountsFamily._()
+    : super(
+        retry: null,
+        name: r'measurementValueCountsProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  /// How often each value of a category occurred, for the histogram.
+
+  MeasurementValueCountsProvider call(
+    String categoryId,
+    DateTime? since,
+    bool summedPerDay,
+  ) => MeasurementValueCountsProvider._(
+    argument: (categoryId, since, summedPerDay),
+    from: this,
+  );
+
+  @override
+  String toString() => r'measurementValueCountsProvider';
 }
 
 /// One category with its children and the entries from [since] on, null while

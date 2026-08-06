@@ -16,11 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/// Points a chart is condensed to.
-///
-/// Shared by the two implementations of the same ladder: the SQL one in
-/// `MeasurementRepository.watchEntryBuckets` and `downsample`, which still
-/// serves the paths that read entries rather than buckets.
+/// Points a chart is condensed to. Plotting more than the chart has pixels
+/// only overdraws: a season of raw heart rate samples is tens of thousands of
+/// values on a few hundred pixels, and comes out as a solid block.
 const measurementChartMaxPoints = 200;
 
 /// Calendar units a category's entries are condensed into, finest first.
@@ -51,6 +49,27 @@ enum MeasurementBucketLevel {
 
   /// One point per calendar week (starting Monday).
   week,
+}
+
+/// How often one value occurred, the histogram's counterpart to a bucket.
+///
+/// Grouped by the unit it was entered in for the same reason: the value still
+/// goes through the conversion helper before it is binned.
+class MeasurementValueCount {
+  const MeasurementValueCount({
+    required this.value,
+    required this.unit,
+    required this.count,
+    required this.newest,
+  });
+
+  final num value;
+  final String? unit;
+  final int count;
+
+  /// Newest entry holding this value, so the histogram can mark where the user
+  /// stands today.
+  final DateTime newest;
 }
 
 /// One calendar bucket of a category's entries, as SQLite aggregated it.

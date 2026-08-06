@@ -99,6 +99,39 @@ class MockMeasurementRepository extends _i1.Mock implements _i2.MeasurementRepos
           as _i3.Stream<List<_i6.MeasurementBucket>>);
 
   @override
+  _i3.Stream<Map<String, List<_i6.MeasurementBucket>>> watchGroupBuckets(
+    String? parentId, {
+    DateTime? since,
+    _i6.MeasurementBucketLevel? level = _i6.MeasurementBucketLevel.auto,
+    int? maxPoints = 200,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #watchGroupBuckets,
+              [parentId],
+              {#since: since, #level: level, #maxPoints: maxPoints},
+            ),
+            returnValue: _i3.Stream<Map<String, List<_i6.MeasurementBucket>>>.empty(),
+          )
+          as _i3.Stream<Map<String, List<_i6.MeasurementBucket>>>);
+
+  @override
+  _i3.Stream<List<_i6.MeasurementValueCount>> watchValueCounts(
+    String? categoryId, {
+    DateTime? since,
+    bool? summedPerDay = false,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #watchValueCounts,
+              [categoryId],
+              {#since: since, #summedPerDay: summedPerDay},
+            ),
+            returnValue: _i3.Stream<List<_i6.MeasurementValueCount>>.empty(),
+          )
+          as _i3.Stream<List<_i6.MeasurementValueCount>>);
+
+  @override
   _i3.Future<List<_i4.MeasurementCategory>> getAllOnce() =>
       (super.noSuchMethod(
             Invocation.method(#getAllOnce, []),

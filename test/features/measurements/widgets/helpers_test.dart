@@ -27,6 +27,8 @@ import 'package:wger/features/measurements/widgets/charts.dart';
 import 'package:wger/features/measurements/widgets/helpers.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
+import '../../../helpers/measurement_chart_buckets.dart';
+
 Widget _wrapChart(Widget chart) => MaterialApp(
   localizationsDelegates: AppLocalizations.localizationsDelegates,
   supportedLocales: AppLocalizations.supportedLocales,
@@ -276,12 +278,17 @@ void main() {
     });
 
     testWidgets('a condensed history draws one band, around the values', (tester) async {
-      // Past ~200 points both the values and their average are condensed, and
-      // condensing attaches a range to every point. Only the values may be
-      // given a band; the average must not get a second one.
+      // Condensed points carry the range they stand for, and the average
+      // derived from them inherits it. Only the values may be given a band;
+      // the average must not get a second one.
       final many = [
-        for (var i = 0; i < 400; i++)
-          MeasurementChartEntry(60 + i % 7, DateTime(2026, 1, 1).add(Duration(days: i))),
+        for (var i = 0; i < 40; i++)
+          MeasurementChartEntry(
+            60 + i % 7,
+            DateTime(2026, 1, 1).add(Duration(days: i)),
+            min: 55,
+            max: 70,
+          ),
       ];
       final widget = buildChartForMetricType(
         MetricType.custom,
@@ -372,6 +379,12 @@ void main() {
         [],
         'kg',
         chartType: ChartType.distribution,
+        // Built by the caller, which is where the counted values are read
+        distribution: MeasurementDistributionWidgetFl(
+          [for (final point in history) (value: point.value, count: 1)],
+          latest: history.last.value,
+          unit: 'kg',
+        ),
       );
       await tester.pumpWidget(_wrapChart(widget));
       await tester.pumpAndSettle();
@@ -507,6 +520,16 @@ void main() {
       ],
     );
 
+    /// The points the aggregated query returns for [group], which is one
+    /// bucket per entry unless the metric is summed per day
+    Map<String, List<MeasurementChartEntry>> pointsOf(MeasurementCategory group) =>
+        groupComponentPoints(group, {
+          for (final child in group.children)
+            child.id!: group.metricType.isSummedPerDay
+                ? dayBuckets(child.entries)
+                : entryBuckets(child.entries),
+        });
+
     test('the roll-up component is left out of the stack', () {
       // Total sleep covers the stages, so stacking it would count the night
       // twice
@@ -519,7 +542,7 @@ void main() {
 
     test('stacked entries carry one value per component and day', () {
       final components = stackableComponents(sleepGroup());
-      final stacked = groupStackedEntries(components);
+      final stacked = groupStackedEntries(components, pointsOf(sleepGroup()));
 
       expect(stacked, hasLength(1));
       expect(stacked.single.date, DateTime(2026, 1, 2));
@@ -549,7 +572,7 @@ void main() {
         ],
       );
 
-      expect(groupStackedEntries(group.children).single.values, [110]);
+      expect(groupStackedEntries(group.children, pointsOf(group)).single.values, [110]);
     });
 
     test('readings pair the components on their shared timestamp', () {
@@ -563,7 +586,9 @@ void main() {
 
     testWidgets('a summed group stacks its components', (tester) async {
       await tester.pumpWidget(
-        _wrapChart(Builder(builder: (ctx) => buildGroupChart(ctx, sleepGroup()))),
+        _wrapChart(
+          Builder(builder: (ctx) => buildGroupChart(ctx, sleepGroup(), pointsOf(sleepGroup()))),
+        ),
       );
       await tester.pumpAndSettle();
 
@@ -572,7 +597,11 @@ void main() {
 
     testWidgets('a two-component group is a floating bar per reading', (tester) async {
       await tester.pumpWidget(
-        _wrapChart(Builder(builder: (ctx) => buildGroupChart(ctx, bloodPressure()))),
+        _wrapChart(
+          Builder(
+            builder: (ctx) => buildGroupChart(ctx, bloodPressure(), pointsOf(bloodPressure())),
+          ),
+        ),
       );
       await tester.pumpAndSettle();
 
@@ -585,7 +614,13 @@ void main() {
       // to the line chart keeps the card from going blank while data exists
       await tester.pumpWidget(
         _wrapChart(
-          Builder(builder: (ctx) => buildGroupChart(ctx, sleepGroup(withStages: false))),
+          Builder(
+            builder: (ctx) => buildGroupChart(
+              ctx,
+              sleepGroup(withStages: false),
+              pointsOf(sleepGroup(withStages: false)),
+            ),
+          ),
         ),
       );
       await tester.pumpAndSettle();
@@ -729,6 +764,12 @@ void main() {
         ctx,
         metricType: MetricType.bodyWeight,
         chartType: ChartType.distribution,
+        // Built by the caller, which is where the counted values are read
+        distribution: MeasurementDistributionWidgetFl(
+          [for (final point in history) (value: point.value, count: 1)],
+          latest: history.last.value,
+          unit: 'kg',
+        ),
       ),
     );
 

@@ -26,7 +26,6 @@ import 'package:intl/intl.dart';
 import 'package:wger/core/charts.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/formatting/formatting.dart';
-import 'package:wger/features/measurements/models/measurement_bucket.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 class MeasurementOverallChangeWidget extends StatelessWidget {
@@ -560,78 +559,9 @@ List<MeasurementChartEntry> movingAverage(List<MeasurementChartEntry> vals, {int
   return out;
 }
 
-/// Time units a dense series is condensed into, finest first.
-///
-/// Buckets follow the calendar instead of being equal slices of the total
-/// span: these metrics have a daily rhythm (asleep, awake, a workout), so
-/// slices that do not line up with a day each catch a different phase of it,
-/// and the result oscillates at the slice frequency instead of showing the
-/// shape of the data.
-final _bucketUnits = <DateTime Function(DateTime)>[
-  (d) => DateTime(d.year, d.month, d.day, d.hour),
-  (d) => DateTime(d.year, d.month, d.day),
-  weekStart,
-  (d) => DateTime(d.year, d.month),
-];
-
 /// The Monday of the week [date] falls into, at midnight.
 DateTime weekStart(DateTime date) =>
     DateTime(date.year, date.month, date.day).subtract(Duration(days: date.weekday - 1));
-
-/// Reduces a dense series to at most [maxPoints], keeping its shape.
-///
-/// Plotting more points than the chart has pixels only overdraws: a season of
-/// raw heart rate samples is tens of thousands of values on a few hundred
-/// pixels, which comes out as a solid block. Entries are therefore condensed
-/// into the finest calendar unit that gets under [maxPoints]; each unit
-/// becomes one point at its mean, carrying its minimum and maximum so the
-/// chart draws the spread as a band. That keeps exactly the information a line
-/// through every single sample buries.
-///
-/// Series that already fit are returned unchanged.
-///
-/// The same ladder exists in SQL, in `MeasurementRepository.watchEntryBuckets`,
-/// which is where a category's own chart points come from. This one serves what
-/// reads entries instead: the distribution and the group components. The two
-/// must agree, or the same data draws differently depending on the path.
-List<MeasurementChartEntry> downsample(
-  List<MeasurementChartEntry> entries, {
-  int maxPoints = measurementChartMaxPoints,
-}) {
-  if (entries.length <= maxPoints) {
-    return entries;
-  }
-
-  for (final truncate in _bucketUnits) {
-    final grouped = groupBy(entries, (MeasurementChartEntry e) => truncate(e.date));
-    if (grouped.length <= maxPoints || truncate == _bucketUnits.last) {
-      return [
-        for (final start in grouped.keys.toList()..sort()) _summarise(start, grouped[start]!),
-      ];
-    }
-  }
-  return entries;
-}
-
-/// Condenses one bucket into a single point: the mean value at the start of
-/// the bucket, spanning the values it stands for.
-MeasurementChartEntry _summarise(DateTime start, List<MeasurementChartEntry> bucket) {
-  final value = bucket.map((e) => e.value).average;
-  // An entry that already carries a range contributes its bounds, not just
-  // its value, so re-condensing an aggregate keeps the true extremes
-  final low = bucket.map((e) => e.min ?? e.value).min;
-  final high = bucket.map((e) => e.max ?? e.value).max;
-  // A lone reading in its bucket has no spread, and a zero-width band is a
-  // line drawn twice
-  final hasRange = low < value || high > value;
-
-  return MeasurementChartEntry(
-    value,
-    start,
-    min: hasRange ? low : null,
-    max: hasRange ? high : null,
-  );
-}
 
 /// Sums entries per calendar day. Used for metric types where individual
 /// samples aren't meaningful on their own (steps, distance, energy, sleep) —
@@ -1561,19 +1491,30 @@ class MeasurementHistogram {
   num upperEdgeOf(int bin) => firstEdge + (bin + 1) * binWidth;
 }
 
-/// Bins [entries] into a histogram of [binWidth]-wide bins aligned to round
+/// One value and how often it occurred.
+typedef ValueCount = ({num value, int count});
+
+/// Bins values into a histogram of [binWidth]-wide bins aligned to round
 /// boundaries; without a width (free-form categories) one is derived from the
 /// span, see [niceBinWidth].
+///
+/// Values arrive counted rather than one by one, which is how the aggregated
+/// query reads them. [latest] is where the user stands today; it cannot be
+/// derived here, since counting a value throws away when it was measured.
 ///
 /// What one value stands for (a reading, a daily total) is the caller's
 /// decision, the same split as for the heatmap: the summed types distribute
 /// their days, the sample types every reading.
-MeasurementHistogram buildHistogram(List<MeasurementChartEntry> entries, {num? binWidth}) {
-  assert(entries.isNotEmpty, 'a histogram of nothing has no bins');
+MeasurementHistogram buildWeightedHistogram(
+  List<ValueCount> values, {
+  required num latest,
+  num? binWidth,
+}) {
+  assert(values.isNotEmpty, 'a histogram of nothing has no bins');
 
-  final values = entries.map((e) => e.value).toList()..sort();
-  final minValue = values.first;
-  final maxValue = values.last;
+  final sorted = [...values]..sort((a, b) => a.value.compareTo(b.value));
+  final minValue = sorted.first.value;
+  final maxValue = sorted.last.value;
 
   var width = binWidth ?? niceBinWidth(minValue, maxValue);
   // Doubling keeps the edges round, unlike recomputing a fitted width
@@ -1583,19 +1524,36 @@ MeasurementHistogram buildHistogram(List<MeasurementChartEntry> entries, {num? b
 
   final firstBin = (minValue / width).floor();
   final counts = List<int>.filled((maxValue / width).floor() - firstBin + 1, 0);
-  for (final value in values) {
-    counts[(value / width).floor() - firstBin]++;
+  for (final entry in sorted) {
+    counts[(entry.value / width).floor() - firstBin] += entry.count;
   }
 
   return MeasurementHistogram(
     firstEdge: firstBin * width,
     binWidth: width,
     counts: counts,
-    median: values.length.isOdd
-        ? values[values.length ~/ 2]
-        : (values[values.length ~/ 2 - 1] + values[values.length ~/ 2]) / 2,
-    latest: entries.reduce((a, b) => b.date.isAfter(a.date) ? b : a).value,
+    median: _weightedMedian(sorted),
+    latest: latest,
   );
+}
+
+/// The middle value of [sorted], counting each of them as often as it occurred.
+num _weightedMedian(List<ValueCount> sorted) {
+  final total = sorted.map((e) => e.count).sum;
+  final firstHalf = _valueAt(sorted, (total - 1) ~/ 2);
+
+  return total.isOdd ? firstHalf : (firstHalf + _valueAt(sorted, total ~/ 2)) / 2;
+}
+
+num _valueAt(List<ValueCount> sorted, int index) {
+  var seen = 0;
+  for (final entry in sorted) {
+    seen += entry.count;
+    if (index < seen) {
+      return entry.value;
+    }
+  }
+  return sorted.last.value;
 }
 
 /// Histogram of how often each value occurred: the values of the selected
@@ -1606,8 +1564,9 @@ MeasurementHistogram buildHistogram(List<MeasurementChartEntry> entries, {num? b
 /// newest value places today within that. Painted by hand like the heatmap:
 /// fl_chart's BarChart cannot draw the vertical marker lines.
 class MeasurementDistributionWidgetFl extends StatefulWidget {
-  /// One entry per binned value, see [buildHistogram].
-  final List<MeasurementChartEntry> values;
+  /// The values with how often each occurred, and where the user stands today.
+  final List<ValueCount> values;
+  final num latest;
   final String unit;
 
   /// Width of one bin, null to derive it from the data.
@@ -1618,8 +1577,9 @@ class MeasurementDistributionWidgetFl extends StatefulWidget {
   final bool countsAreDays;
 
   const MeasurementDistributionWidgetFl(
-    this.values,
-    this.unit, {
+    this.values, {
+    required this.latest,
+    required this.unit,
     this.binWidth,
     this.countsAreDays = false,
   });
@@ -1638,7 +1598,11 @@ class _MeasurementDistributionWidgetFlState extends State<MeasurementDistributio
       return const SizedBox.shrink();
     }
 
-    final histogram = buildHistogram(widget.values, binWidth: widget.binWidth);
+    final histogram = buildWeightedHistogram(
+      widget.values,
+      latest: widget.latest,
+      binWidth: widget.binWidth,
+    );
     final theme = Theme.of(context);
     // Tapping outside the grid clears the selection, so a stale bin does not
     // stick around after the histogram underneath changed

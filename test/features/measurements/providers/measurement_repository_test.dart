@@ -421,6 +421,147 @@ void main() {
     });
   });
 
+  group('watchGroupBuckets', () {
+    Future<void> seedBloodPressure(List<(DateTime, num, num)> readings) async {
+      for (final category in getBloodPressureGroup()) {
+        await repo.addLocalDriftCategory(category);
+      }
+      for (final (index, (date, systolic, diastolic)) in readings.indexed) {
+        await repo.addLocalDriftGroupEntries([
+          MeasurementEntry(
+            id: 's$index',
+            categoryId: 'sys',
+            date: date,
+            value: systolic,
+            notes: '',
+          ),
+          MeasurementEntry(
+            id: 'd$index',
+            categoryId: 'dia',
+            date: date,
+            value: diastolic,
+            notes: '',
+          ),
+        ]);
+      }
+    }
+
+    test('returns the buckets of every component, keyed by component', () async {
+      await seedBloodPressure([(DateTime(2026, 5, 4, 8), 120, 80)]);
+
+      final buckets = await repo.watchGroupBuckets('bp').first;
+
+      expect(buckets.keys.toSet(), {'sys', 'dia'});
+      expect(buckets['sys']!.single.sum, 120);
+      expect(buckets['dia']!.single.sum, 80);
+    });
+
+    test('all components share one calendar unit', () async {
+      // Condensing per component would put the halves of a reading in
+      // different buckets, and the chart could not pair them any more
+      await seedBloodPressure([
+        for (var day = 1; day <= 10; day++)
+          for (var hour = 6; hour < 12; hour++) (DateTime(2026, 5, day, hour), 120, 80),
+      ]);
+
+      final buckets = await repo.watchGroupBuckets('bp', maxPoints: 20).first;
+
+      expect(buckets['sys']!.map((b) => b.start), buckets['dia']!.map((b) => b.start));
+      expect(buckets['sys']!.first.start, DateTime(2026, 5, 1));
+    });
+
+    test('a category that is not a group has no components', () async {
+      await seedBloodPressure([(DateTime(2026, 5, 4, 8), 120, 80)]);
+
+      expect(await repo.watchGroupBuckets('sys').first, isEmpty);
+    });
+  });
+
+  group('watchValueCounts', () {
+    Future<void> seedValues(List<(DateTime, num)> readings) async {
+      await db
+          .into(db.measurementCategoryTable)
+          .insert(MeasurementCategory(id: '1', name: 'Heart rate', unit: 'bpm').toCompanion());
+      for (final (index, (date, value)) in readings.indexed) {
+        await db
+            .into(db.measurementEntryTable)
+            .insert(
+              MeasurementEntry(
+                id: 'e$index',
+                categoryId: '1',
+                date: date,
+                value: value,
+                notes: '',
+              ).toCompanion(),
+            );
+      }
+    }
+
+    test('counts how often each value occurred', () async {
+      // What makes the histogram cheap: a year of readings comes back as the
+      // distinct values it covers
+      await seedValues([
+        (DateTime(2026, 5, 4, 8), 60),
+        (DateTime(2026, 5, 4, 9), 60),
+        (DateTime(2026, 5, 5, 8), 75),
+      ]);
+
+      final counts = await repo.watchValueCounts('1').first;
+
+      expect(counts.map((c) => (c.value, c.count)), [(60, 2), (75, 1)]);
+    });
+
+    test('carries the newest date a value was measured on', () async {
+      await seedValues([
+        (DateTime(2026, 5, 4, 8), 60),
+        (DateTime(2026, 5, 6, 8), 60),
+      ]);
+
+      final counts = await repo.watchValueCounts('1').first;
+
+      expect(counts.single.newest, DateTime(2026, 5, 6, 8));
+    });
+
+    test('counts daily totals for a summed metric', () async {
+      await seedValues([
+        (DateTime(2026, 5, 4, 8), 3000),
+        (DateTime(2026, 5, 4, 20), 2000),
+        (DateTime(2026, 5, 5, 8), 5000),
+      ]);
+
+      final counts = await repo.watchValueCounts('1', summedPerDay: true).first;
+
+      // Both days total 5000, so the histogram sees one value twice
+      expect(counts.single.value, 5000);
+      expect(counts.single.count, 2);
+    });
+
+    test('mixed units are kept apart', () async {
+      await db
+          .into(db.measurementCategoryTable)
+          .insert(MeasurementCategory(id: '1', name: 'Weight', unit: 'kg').toCompanion());
+      for (final (index, (value, unit)) in [(80, 'kg'), (80, 'lb')].indexed) {
+        await db
+            .into(db.measurementEntryTable)
+            .insert(
+              MeasurementEntry(
+                id: 'e$index',
+                categoryId: '1',
+                date: DateTime(2026, 5, 4, 8 + index),
+                value: value,
+                notes: '',
+                extraData: {'unit': unit},
+              ).toCompanion(),
+            );
+      }
+
+      final counts = await repo.watchValueCounts('1').first;
+
+      expect(counts.map((c) => c.unit), ['kg', 'lb']);
+      expect(counts.every((c) => c.count == 1), isTrue);
+    });
+  });
+
   group('watchLocalDriftCategoryById', () {
     test('returns the matching category', () async {
       await seedCategoriesAndEntries();

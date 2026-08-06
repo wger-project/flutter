@@ -46,18 +46,23 @@ enum ChartRange {
 
   /// Oldest entry to read from the database, null for the full history.
   ///
-  /// Rounded down to midnight, and deliberately so: this identifies a provider
-  /// and has to stay the same across rebuilds, which a bound derived from the
-  /// current instant would not.
-  DateTime? get readCutoff {
-    final from = cutoff;
-    if (from == null) {
-      return null;
-    }
+  /// Reaches [_averageLeadDays] beyond [cutoff], and is rounded down to
+  /// midnight like [countCutoff], for the same reason.
+  DateTime? get readCutoff => _atMidnight(Duration(days: _averageLeadDays));
 
-    final lead = from.subtract(Duration(days: _averageLeadDays));
+  /// Oldest entry to count, null for the full history: the range itself, with
+  /// no lead, for the queries that summarise exactly what is on screen.
+  DateTime? get countCutoff => _atMidnight(Duration.zero);
 
-    return DateTime(lead.year, lead.month, lead.day);
+  /// [cutoff] minus [lead], rounded down to midnight.
+  ///
+  /// The rounding is deliberate: these identify a provider and have to stay
+  /// the same across rebuilds, which a bound derived from the current instant
+  /// would not.
+  DateTime? _atMidnight(Duration lead) {
+    final from = cutoff?.subtract(lead);
+
+    return from == null ? null : DateTime(from.year, from.month, from.day);
   }
 
   /// Label for the selector, counted rather than one string per range, so a

@@ -41,6 +41,7 @@ Widget _wrap(
     // The chart reads its points from the aggregated query, not from the
     // entries the category carries
     measurementChartBucketsProvider.overrideWith(chartBucketsFrom(categories)),
+    measurementGroupBucketsProvider.overrideWith(groupBucketsFrom(categories)),
   ],
   child: MaterialApp(
     localizationsDelegates: AppLocalizations.localizationsDelegates,

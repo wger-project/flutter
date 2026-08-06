@@ -51,15 +51,15 @@ void main() {
   });
 
   group('MeasurementEntryUnit', () {
-    test('unitOrFallback prefers the stamped unit', () {
-      expect(entry(80, extraData: {'unit': 'lb'}).unitOrFallback('kg'), 'lb');
+    test('unitOrFallbackFor prefers the stamped unit', () {
+      expect(entry(80, extraData: {'unit': 'lb'}).unitOrFallbackFor('kg'), 'lb');
     });
 
-    test('unitOrFallback uses the category unit when absent or empty', () {
-      expect(entry(80).unitOrFallback('kg'), 'kg');
-      expect(entry(80, extraData: {}).unitOrFallback('kg'), 'kg');
+    test('unitOrFallbackFor uses the category unit when absent or empty', () {
+      expect(entry(80).unitOrFallbackFor('kg'), 'kg');
+      expect(entry(80, extraData: {}).unitOrFallbackFor('kg'), 'kg');
       // Same chain as the server: an empty string counts as absent
-      expect(entry(80, extraData: {'unit': ''}).unitOrFallback('kg'), 'kg');
+      expect(entry(80, extraData: {'unit': ''}).unitOrFallbackFor('kg'), 'kg');
     });
 
     test('valueIn converts a stamped entry to the target unit', () {

@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wger/core/widgets/error.dart';
 import 'package:wger/core/widgets/progress_indicator.dart';
 import 'package:wger/features/measurements/measurements.dart';
 import 'package:wger/features/measurements/models/measurement_bucket.dart';
@@ -23,6 +24,7 @@ List<Widget> getOverviewWidgets(
   List<MeasurementChartEntry>? trend,
   ChartType chartType = ChartType.auto,
   ChartSettings settings = const ChartSettings(),
+  Widget? distribution,
 }) {
   return [
     Text(
@@ -51,6 +53,7 @@ List<Widget> getOverviewWidgets(
               trend: trend,
               chartType: chartType,
               settings: settings,
+              distribution: distribution,
             ),
     ),
     if (avg.isNotEmpty) MeasurementOverallChangeWidget(avg.first, avg.last, unit),
@@ -69,6 +72,7 @@ List<Widget> getOverviewWidgetsSeries(
   String? mainChartTitle,
   ChartType chartType = ChartType.auto,
   ChartSettings settings = const ChartSettings(),
+  Widget? distribution,
 }) {
   final title = mainChartTitle ?? AppLocalizations.of(context).chartAllTimeTitle(name);
 
@@ -100,19 +104,18 @@ List<Widget> getOverviewWidgetsSeries(
       metricType: metricType,
       chartType: chartType,
       settings: settings,
+      distribution: distribution,
     );
   }
 
-  // Condensed once: the chart draws these points directly, and the trend is
-  // derived from them rather than from the raw values. With dense metrics
-  // these full-series passes dominate the build.
+  // The points arrive condensed, so the trend follows the shape across weeks
+  // rather than the swings within a single day
   final summed = metricType.isSummedPerDay;
-  final points = summed ? entriesAll : downsample(entriesAll);
-  final trendAll = summed ? null : smoothedTrendline(points, period: settings.trend.emaPeriod);
+  final trendAll = summed ? null : smoothedTrendline(entriesAll, period: settings.trend.emaPeriod);
   return [
     ...getOverviewWidgets(
       title,
-      points,
+      entriesAll,
       average,
       unit,
       context,
@@ -209,15 +212,14 @@ List<MeasurementChartEntry> chartEntriesFor(
   );
 }).toList();
 
-/// The point level a category's chart needs, null when it needs the entries
-/// themselves.
+/// The point level a category's chart needs.
 ///
 /// Two charts are built on a calendar unit and fix it: a heatmap draws days, a
-/// week-over-week chart weeks. A distribution bins the values, and binning
-/// condensed means would narrow the histogram, so it stays on raw entries.
-MeasurementBucketLevel? chartBucketLevel(MetricType metricType, ChartType chartType) =>
+/// week-over-week chart weeks. A distribution has no time axis and reads
+/// counted values of its own; the points it gets here are what its fallback
+/// draws when there are too few values to bin.
+MeasurementBucketLevel chartBucketLevel(MetricType metricType, ChartType chartType) =>
     switch (metricType.resolveChartType(chartType)) {
-      ChartType.distribution => null,
       ChartType.heatmap => MeasurementBucketLevel.day,
       ChartType.delta => MeasurementBucketLevel.week,
       // The summed types are drawn as daily totals whatever the range
@@ -238,15 +240,6 @@ AsyncValue<List<MeasurementChartEntry>> chartPointsFor(
   final unit = targetUnit ?? category.unit;
   final level = chartBucketLevel(category.metricType, category.chartType);
 
-  // The distribution and its fallback for a series too short to bin read the
-  // entries the category was loaded with, which at that length is what a
-  // bucket would hold anyway
-  if (level == null) {
-    return AsyncValue.data(
-      chartEntriesFor(category.entries, targetUnit: unit, categoryUnit: category.unit),
-    );
-  }
-
   return ref
       .watch(measurementChartBucketsProvider(category.id!, range.readCutoff, level))
       .whenData(
@@ -259,71 +252,151 @@ AsyncValue<List<MeasurementChartEntry>> chartPointsFor(
       );
 }
 
-/// Draws a category's chart from the aggregated query, keeping what it last
-/// drew while another range loads.
+/// Draws a chart from the aggregated queries, keeping what it last drew while
+/// another range loads.
 ///
 /// Picking a range watches a different provider, which starts out loading:
 /// without this the chart would blank for a frame, which is what the range
 /// switch used to look like.
-class MeasurementChartPoints extends ConsumerStatefulWidget {
-  const MeasurementChartPoints({
-    required this.category,
-    required this.range,
+class MeasurementChartArea<T> extends ConsumerStatefulWidget {
+  const MeasurementChartArea({
+    required this.identity,
+    required this.watch,
     required this.builder,
     required this.onError,
-    this.targetUnit,
+    this.loading = const SizedBox(height: 220, child: BoxedProgressIndicator()),
     super.key,
   });
 
-  final MeasurementCategory category;
-  final ChartRange range;
+  /// What the kept data belongs to. Another category in the same slot of a
+  /// list has nothing to do with what is on screen.
+  final Object identity;
 
-  /// Unit the values are converted to, the category's own by default.
-  final String? targetUnit;
+  final AsyncValue<T> Function(WidgetRef ref) watch;
 
-  /// Draws the chart for the points that arrived.
-  final List<Widget> Function(BuildContext context, List<MeasurementChartEntry> points) builder;
+  /// Draws the chart for the data that arrived.
+  final List<Widget> Function(BuildContext context, T data) builder;
 
   /// Drawn when nothing could be read and there is nothing to keep: a card
   /// leaves the space empty, a detail screen names the error.
   final List<Widget> Function(BuildContext context, Object error) onError;
 
+  /// Placeholder for the first load, before there is anything to keep.
+  final Widget loading;
+
   @override
-  ConsumerState<MeasurementChartPoints> createState() => _MeasurementChartPointsState();
+  ConsumerState<MeasurementChartArea<T>> createState() => _MeasurementChartAreaState<T>();
 }
 
-class _MeasurementChartPointsState extends ConsumerState<MeasurementChartPoints> {
-  List<MeasurementChartEntry>? _last;
+class _MeasurementChartAreaState<T> extends ConsumerState<MeasurementChartArea<T>> {
+  T? _last;
 
   @override
-  void didUpdateWidget(covariant MeasurementChartPoints oldWidget) {
+  void didUpdateWidget(covariant MeasurementChartArea<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // Another category in the same slot of a list has nothing to do with what
-    // is on screen
-    if (oldWidget.category.id != widget.category.id) {
+    if (oldWidget.identity != widget.identity) {
       _last = null;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final points = chartPointsFor(
-      ref,
-      widget.category,
-      widget.range,
-      targetUnit: widget.targetUnit,
-    );
-    if (points.hasValue) {
-      _last = points.value;
+    final data = widget.watch(ref);
+    if (data.hasValue) {
+      _last = data.value;
     }
 
     return Column(
       mainAxisSize: MainAxisSize.min,
-      children: switch ((points, _last)) {
-        (_, final List<MeasurementChartEntry> last) => widget.builder(context, last),
+      children: switch ((data, _last)) {
+        (_, final T last) => widget.builder(context, last),
         (AsyncError(:final error), _) => widget.onError(context, error),
-        _ => const [SizedBox(height: 220, child: BoxedProgressIndicator())],
+        _ => [widget.loading],
       },
+    );
+  }
+}
+
+/// The chart points of a group's components, keyed by component id, over the
+/// range they are read for.
+AsyncValue<Map<String, List<MeasurementChartEntry>>> groupPointsFor(
+  WidgetRef ref,
+  MeasurementCategory group,
+  ChartRange range,
+) {
+  final level = group.metricType.isSummedPerDay
+      ? MeasurementBucketLevel.day
+      : MeasurementBucketLevel.auto;
+
+  return ref
+      .watch(measurementGroupBucketsProvider(group.id!, range.readCutoff, level))
+      .whenData((buckets) => groupComponentPoints(group, buckets, cutoff: range.cutoff));
+}
+
+/// The histogram of a category, read as counted values rather than as
+/// readings.
+///
+/// The one chart with its own query: it has no time axis, so it needs every
+/// value rather than a condensed series, and counting them is what keeps that
+/// from being every row.
+class MeasurementDistributionChart extends ConsumerWidget {
+  const MeasurementDistributionChart({
+    required this.category,
+    required this.range,
+    required this.unitLabel,
+    required this.targetUnit,
+    super.key,
+  });
+
+  final MeasurementCategory category;
+  final ChartRange range;
+
+  /// Label the values are shown with, and the unit they are converted to.
+  final String unitLabel;
+  final String targetUnit;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final summed = category.metricType.isSummedPerDay;
+
+    return MeasurementChartArea<List<MeasurementValueCount>>(
+      identity: category.id!,
+      watch: (ref) =>
+          ref.watch(measurementValueCountsProvider(category.id!, range.countCutoff, summed)),
+      loading: const CenteredProgressIndicator(),
+      builder: (context, counts) => [_histogram(counts, summed)],
+      onError: (_, error) => [StreamErrorIndicator(error.toString())],
+    );
+  }
+
+  Widget _histogram(List<MeasurementValueCount> counts, bool summed) {
+    if (counts.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    // Values are counted per unit they were entered in, so each goes through
+    // the conversion helper before equal ones are added up
+    num inTargetUnit(MeasurementValueCount count) => convertWeight(
+      count.value,
+      from: unitOrFallback(count.unit, category.unit),
+      to: targetUnit,
+    );
+
+    final merged = <num, int>{};
+    for (final count in counts) {
+      merged.update(
+        inTargetUnit(count),
+        (existing) => existing + count.count,
+        ifAbsent: () => count.count,
+      );
+    }
+
+    return MeasurementDistributionWidgetFl(
+      [for (final MapEntry(:key, :value) in merged.entries) (value: key, count: value)],
+      latest: inTargetUnit(counts.reduce((a, b) => b.newest.isAfter(a.newest) ? b : a)),
+      unit: unitLabel,
+      binWidth: category.metricType.binWidth(targetUnit),
+      countsAreDays: summed,
     );
   }
 }
@@ -383,11 +456,8 @@ MeasurementChartEntry _mergeSlices(
   required String categoryUnit,
   required bool summed,
 }) {
-  double convert(num value, String? from) => convertWeight(
-    value,
-    from: from == null || from.isEmpty ? categoryUnit : from,
-    to: targetUnit,
-  );
+  double convert(num value, String? from) =>
+      convertWeight(value, from: unitOrFallback(from, categoryUnit), to: targetUnit);
 
   final total = slices.map((s) => convert(s.sum, s.unit)).sum;
   if (summed) {
@@ -407,27 +477,47 @@ MeasurementChartEntry _mergeSlices(
   );
 }
 
-/// The readings of a two-component group as ranges: one point per timestamp,
+/// The points of every component of [group], keyed by component id.
+///
+/// All components are condensed at one calendar unit, which is what lets the
+/// halves of a reading still meet on the same point.
+Map<String, List<MeasurementChartEntry>> groupComponentPoints(
+  MeasurementCategory group,
+  Map<String, List<MeasurementBucket>> buckets, {
+  DateTime? cutoff,
+}) {
+  List<MeasurementChartEntry> pointsOf(MeasurementCategory child) {
+    final points = chartEntriesForBuckets(
+      buckets[child.id] ?? const [],
+      targetUnit: child.unit,
+      categoryUnit: child.unit,
+      // A stage the night was slept in twice is that night's total, not the
+      // average of its two stretches
+      summed: child.metricType.isSummedPerDay,
+    );
+
+    return cutoff == null ? points : points.whereDate(cutoff, null);
+  }
+
+  return {for (final child in group.children) child.id!: pointsOf(child)};
+}
+
+/// The readings of a two-component group as ranges: one point per bucket,
 /// spanning from the lower component to the upper one.
 ///
 /// A reading is one event, so it is drawn as a single bar (diastolic to
 /// systolic) rather than as two lines: the components belong together, and
-/// nothing was measured between two readings. Components are paired by their
-/// shared timestamp, which is how both the importer and the group form write
-/// them; an unpaired half-reading is skipped, it has no range.
-///
-/// Only readings from [cutoff] on are returned; null covers the full history.
-List<MeasurementChartEntry> groupRangeEntries(MeasurementCategory group, {DateTime? cutoff}) {
+/// nothing was measured between two readings. An unpaired half-reading is
+/// skipped, it has no range.
+List<MeasurementChartEntry> groupRangeEntries(Map<String, List<MeasurementChartEntry>> points) {
   final byDate = <DateTime, List<num>>{};
-  for (final child in group.children) {
-    for (final entry in child.entries) {
-      byDate
-          .putIfAbsent(entry.date, () => [])
-          .add(entry.valueIn(child.unit, categoryUnit: child.unit));
+  for (final component in points.values) {
+    for (final point in component) {
+      byDate.putIfAbsent(point.date, () => []).add(point.value);
     }
   }
 
-  final ranges = [
+  return [
     for (final MapEntry(key: date, value: values) in byDate.entries)
       if (values.length > 1)
         MeasurementChartEntry(
@@ -437,37 +527,25 @@ List<MeasurementChartEntry> groupRangeEntries(MeasurementCategory group, {DateTi
           max: values.max,
         ),
   ]..sort((a, b) => a.date.compareTo(b.date));
-
-  return cutoff == null ? ranges : ranges.whereDate(cutoff, null);
 }
 
 /// One line per component of a multi-value group, in the children's in-group
 /// order and named after them.
 ///
 /// All components share the same range, so their lines cover the same span
-/// even when one of them has fewer readings. Only readings from [cutoff] on
-/// are returned; null covers the full history.
-///
-/// Each component is condensed on its own, like every other dense series: a
-/// year of blood pressure readings drawn point by point is a picket fence.
+/// even when one of them has fewer readings.
 List<MeasurementChartSeries> groupComponentSeries(
   BuildContext context,
-  MeasurementCategory group, {
-  DateTime? cutoff,
-}) {
-  List<MeasurementChartEntry> pointsOf(MeasurementCategory child) =>
-      chartEntriesFor(child.entries, targetUnit: child.unit, categoryUnit: child.unit);
-
-  return group.children
-      .map(
-        (child) => MeasurementChartSeries(
-          downsample(cutoff == null ? pointsOf(child) : pointsOf(child).whereDate(cutoff, null)),
-          MeasurementSeriesRole.component,
-          label: child.displayName(context),
-        ),
-      )
-      .toList();
-}
+  MeasurementCategory group,
+  Map<String, List<MeasurementChartEntry>> points,
+) => [
+  for (final child in group.children)
+    MeasurementChartSeries(
+      points[child.id] ?? const [],
+      MeasurementSeriesRole.component,
+      label: child.displayName(context),
+    ),
+];
 
 /// The components of [group] that stack into one whole, i.e. everything but a
 /// roll-up component (see [MetricType.isGroupTotal]).
@@ -477,26 +555,20 @@ List<MeasurementCategory> stackableComponents(MeasurementCategory group) =>
 /// One stacked bar per day for [components], stacked in the order they are
 /// given.
 ///
-/// Only days that any component reported are returned. Values are read through
-/// the unit helper, like everywhere else, so a component holding mixed units
-/// still stacks correctly. Only readings from [cutoff] on are included; null
-/// covers the full history.
+/// Only days that any component reported are returned; the query already
+/// summed a component's readings for the day the bar shows.
 List<MeasurementStackedEntry> groupStackedEntries(
-  List<MeasurementCategory> components, {
-  DateTime? cutoff,
-}) {
+  List<MeasurementCategory> components,
+  Map<String, List<MeasurementChartEntry>> points,
+) {
   final byDay = <DateTime, List<num?>>{};
   for (final (index, child) in components.indexed) {
-    for (final entry in child.entries) {
-      if (cutoff != null && entry.date.isBefore(cutoff)) {
-        continue;
-      }
-      final day = DateTime(entry.date.year, entry.date.month, entry.date.day);
-      final values = byDay.putIfAbsent(day, () => List<num?>.filled(components.length, null));
-      final value = entry.valueIn(child.unit, categoryUnit: child.unit);
-      // A component can hold several entries for one day (a nap next to the
-      // night), and the bar shows the day, so they add up
-      values[index] = (values[index] ?? 0) + value;
+    for (final point in points[child.id] ?? const <MeasurementChartEntry>[]) {
+      final values = byDay.putIfAbsent(
+        point.date,
+        () => List<num?>.filled(components.length, null),
+      );
+      values[index] = (values[index] ?? 0) + point.value;
     }
   }
 
@@ -517,10 +589,14 @@ List<MeasurementStackedEntry> groupStackedEntries(
 /// become one floating bar spanning them. Everything else, and anything the
 /// first two have no data for, falls back to one line per component so the
 /// card never goes blank while there is something to show.
-Widget buildGroupChart(BuildContext context, MeasurementCategory group, {DateTime? cutoff}) {
+Widget buildGroupChart(
+  BuildContext context,
+  MeasurementCategory group,
+  Map<String, List<MeasurementChartEntry>> points,
+) {
   if (group.metricType.isSummedPerDay) {
     final components = stackableComponents(group);
-    final stacked = groupStackedEntries(components, cutoff: cutoff);
+    final stacked = groupStackedEntries(components, points);
     if (stacked.isNotEmpty) {
       return MeasurementStackedBarChartWidgetFl(
         stacked,
@@ -531,16 +607,13 @@ Widget buildGroupChart(BuildContext context, MeasurementCategory group, {DateTim
   }
 
   final ranges = group.children.length == 2
-      ? groupRangeEntries(group, cutoff: cutoff)
+      ? groupRangeEntries(points)
       : const <MeasurementChartEntry>[];
   if (ranges.isNotEmpty) {
     return MeasurementBarChartWidgetFl(ranges, group.unit);
   }
 
-  return MeasurementChartWidgetFl(
-    groupComponentSeries(context, group, cutoff: cutoff),
-    group.unit,
-  );
+  return MeasurementChartWidgetFl(groupComponentSeries(context, group, points), group.unit);
 }
 
 /// The readings of a group, newest first: one per timestamp, with what each
@@ -570,11 +643,9 @@ List<(DateTime, Map<String, num>)> groupReadings(MeasurementCategory group, {Dat
     ..sort((a, b) => b.$1.compareTo(a.$1));
 }
 
-/// Whether [group] has anything to draw at all, i.e. any component holds a
-/// reading within [cutoff].
-bool groupHasData(MeasurementCategory group, {DateTime? cutoff}) => group.children.any(
-  (child) => child.entries.any((e) => cutoff == null || !e.date.isBefore(cutoff)),
-);
+/// Whether a group has anything to draw at all.
+bool groupHasData(Map<String, List<MeasurementChartEntry>> points) =>
+    points.values.any((component) => component.isNotEmpty);
 
 /// The chart [picked] resolves to, given the data it would draw.
 ///
@@ -583,6 +654,11 @@ bool groupHasData(MeasurementCategory group, {DateTime? cutoff}) => group.childr
 /// handful is noise with gaps, so it falls back to the derived default. The
 /// criterion lives here so every dispatch point applies it identically, or
 /// the overview card and the detail screen would draw different charts.
+///
+/// It counts the condensed points rather than the values the histogram itself
+/// reads, so a burst of readings within a few hours can fall back although
+/// there would be plenty to bin. Deliberate: the fallback needs a time series,
+/// which the counted values are not.
 ChartType resolveChartTypeForData(
   MetricType metricType,
   ChartType picked,
@@ -608,6 +684,7 @@ Widget buildChartForMetricType(
   List<MeasurementChartEntry>? trend,
   ChartType chartType = ChartType.auto,
   ChartSettings settings = const ChartSettings(),
+  Widget? distribution,
 }) {
   final summed = metricType.isSummedPerDay;
 
@@ -616,17 +693,10 @@ Widget buildChartForMetricType(
   final resolved = resolveChartTypeForData(metricType, chartType, raw);
 
   if (resolved == ChartType.distribution) {
-    // Not condensed: condensing 400 values into 200 bucket means narrows the
-    // distribution artificially, and binning is a single O(n) pass anyway.
-    // What is binned mirrors the heatmap's split: the summed types distribute
-    // their daily totals, the sample types every reading (three weigh-ins on
-    // one day are all part of the distribution).
-    return MeasurementDistributionWidgetFl(
-      summed ? aggregatePerDay(raw) : raw,
-      unit,
-      binWidth: metricType.binWidth(unit),
-      countsAreDays: summed,
-    );
+    // Its own query, since a histogram needs every value and the points here
+    // are condensed. What is counted mirrors the heatmap's split: the summed
+    // types distribute their daily totals, the sample types every reading.
+    return distribution ?? const SizedBox.shrink();
   }
 
   if (resolved == ChartType.delta) {
@@ -649,12 +719,11 @@ Widget buildChartForMetricType(
   // Condense before anything is derived from the points: a trend line over
   // raw samples follows the swings within a single day instead of the trend
   // across weeks, and the average is as dense as the values it summarises
-  final points = downsample(raw);
   return MeasurementChartWidgetFl.singleMeasurement(
-    points,
+    raw,
     unit,
-    avgs: downsample(avg),
-    trend: trend ?? smoothedTrendline(points, period: settings.trend.emaPeriod),
+    avgs: avg,
+    trend: trend ?? smoothedTrendline(raw, period: settings.trend.emaPeriod),
     planPeriods: planPeriods,
   );
 }

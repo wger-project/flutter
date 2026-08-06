@@ -65,9 +65,9 @@ class CategoriesCard extends ConsumerWidget {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-            MeasurementChartPoints(
-              category: currentCategory,
-              range: range,
+            MeasurementChartArea<List<MeasurementChartEntry>>(
+              identity: currentCategory.id!,
+              watch: (ref) => chartPointsFor(ref, currentCategory, range),
               builder: _chart,
               // The card is one of many on the overview; a failing query takes
               // its chart, not the way into the category
@@ -134,6 +134,12 @@ class CategoriesCard extends ConsumerWidget {
           currentCategory.unit,
           chartType: currentCategory.chartType,
           settings: settings,
+          distribution: MeasurementDistributionChart(
+            category: currentCategory,
+            range: range,
+            unitLabel: currentCategory.unit,
+            targetUnit: currentCategory.unit,
+          ),
         ),
       ),
       if (average.isNotEmpty && !currentCategory.metricType.isSummedPerDay)
@@ -145,18 +151,15 @@ class CategoriesCard extends ConsumerWidget {
     ];
   }
 
-  /// Card for a multi-value group (e.g. blood pressure): all components in one
-  /// chart, then one row per component with its latest reading; new readings
-  /// are entered for all components at once.
-  Widget _buildGroupCard(BuildContext context, WidgetRef ref) {
-    final cutoff = range.cutoff;
-    final hasData = groupHasData(currentCategory, cutoff: cutoff);
+  /// The group's chart and one row per component with its latest reading.
+  List<Widget> _groupChartAndRows(
+    BuildContext context,
+    Map<String, List<MeasurementChartEntry>> points,
+  ) {
     // A range is a single bar whose ends speak for themselves, and a stacked
     // bar's segments carry the component colours; only the line chart needs
     // the dots on the rows below to tie a component to its line.
-    final asRange =
-        currentCategory.children.length == 2 &&
-        groupRangeEntries(currentCategory, cutoff: cutoff).isNotEmpty;
+    final asRange = currentCategory.children.length == 2 && groupRangeEntries(points).isNotEmpty;
     // The stacked chart draws only the components that are parts of the whole,
     // so a row's colour has to come from that list rather than from its
     // position among all children
@@ -164,6 +167,72 @@ class CategoriesCard extends ConsumerWidget {
         ? stackableComponents(currentCategory)
         : null;
 
+    return [
+      if (groupHasData(points))
+        Container(
+          padding: const EdgeInsets.all(10),
+          height: 220,
+          child: buildGroupChart(context, currentCategory, points),
+        ),
+      // One watch for all the rows: every emission rebuilds them together
+      // anyway. Read separately from the chart above, whose points cover the
+      // charted range, while a component measured less often than that still
+      // has a last known value worth showing.
+      Consumer(
+        builder: (context, ref, _) {
+          final latest = ref.watch(latestMeasurementEntriesProvider).value ?? const {};
+
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: currentCategory.children.mapIndexed((index, child) {
+              final colorIndex = stacked == null
+                  ? index
+                  : stacked.indexWhere((c) => c.id == child.id);
+              final value = latest[child.id];
+
+              return ListTile(
+                dense: true,
+                // The dot ties the row to its part of the chart above. A range
+                // is a single bar, where the ends speak for themselves, and a
+                // roll-up component is no segment of the stack.
+                leading: asRange || colorIndex < 0
+                    ? null
+                    : Container(
+                        width: 12,
+                        height: 12,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: componentColor(context, colorIndex),
+                        ),
+                      ),
+                title: Text(child.displayName(context)),
+                trailing: Text(
+                  value != null
+                      ? measurementWithUnit(
+                          context,
+                          value.valueIn(child.unit, categoryUnit: child.unit),
+                          child.unit,
+                        )
+                      : '—',
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+                onTap: () => Navigator.pushNamed(
+                  context,
+                  MeasurementEntriesScreen.routeName,
+                  arguments: child.id,
+                ),
+              );
+            }).toList(),
+          );
+        },
+      ),
+    ];
+  }
+
+  /// Card for a multi-value group (e.g. blood pressure): all components in one
+  /// chart, then one row per component with its latest reading; new readings
+  /// are entered for all components at once.
+  Widget _buildGroupCard(BuildContext context, WidgetRef ref) {
     return Card(
       elevation: elevation,
       // Scrolls like the leaf card above: a group of five components (the
@@ -183,53 +252,14 @@ class CategoriesCard extends ConsumerWidget {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-            if (hasData)
-              Container(
-                padding: const EdgeInsets.all(10),
-                height: 220,
-                child: buildGroupChart(context, currentCategory, cutoff: cutoff),
-              ),
-            ...currentCategory.children.mapIndexed((index, child) {
-              // Read separately rather than taken from the entries above: those
-              // cover the charted range, and a component measured less often
-              // than that still has a last known value worth showing
-              final latest = ref.watch(latestMeasurementEntriesProvider).value?[child.id];
-              final colorIndex = stacked == null
-                  ? index
-                  : stacked.indexWhere((c) => c.id == child.id);
-              return ListTile(
-                dense: true,
-                // The dot ties the row to its part of the chart above. A range
-                // is a single bar, where the ends speak for themselves, and a
-                // roll-up component is no segment of the stack.
-                leading: asRange || colorIndex < 0
-                    ? null
-                    : Container(
-                        width: 12,
-                        height: 12,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: componentColor(context, colorIndex),
-                        ),
-                      ),
-                title: Text(child.displayName(context)),
-                trailing: Text(
-                  latest != null
-                      ? measurementWithUnit(
-                          context,
-                          latest.valueIn(child.unit, categoryUnit: child.unit),
-                          child.unit,
-                        )
-                      : '—',
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
-                onTap: () => Navigator.pushNamed(
-                  context,
-                  MeasurementEntriesScreen.routeName,
-                  arguments: child.id,
-                ),
-              );
-            }),
+            MeasurementChartArea<Map<String, List<MeasurementChartEntry>>>(
+              identity: currentCategory.id!,
+              watch: (ref) => groupPointsFor(ref, currentCategory, range),
+              builder: _groupChartAndRows,
+              // The rows are the way into the components, so a failing query
+              // takes the chart above them and nothing else
+              onError: (context, _) => _groupChartAndRows(context, const {}),
+            ),
             const Divider(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

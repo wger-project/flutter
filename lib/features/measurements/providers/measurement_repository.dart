@@ -184,9 +184,6 @@ class MeasurementRepository {
   /// [level] fixes the unit for the charts built on one; `auto` takes the
   /// finest that keeps the series under [maxPoints], down to one bucket per
   /// entry. [since] bounds the entries read, null covers the full history.
-  ///
-  /// The ladder is the same one `downsample` walks in Dart for the paths that
-  /// read entries; the two must stay in step.
   Stream<List<MeasurementBucket>> watchEntryBuckets(
     String categoryId, {
     DateTime? since,
@@ -195,15 +192,54 @@ class MeasurementRepository {
   }) {
     _logger.finer('Watching $level buckets of measurement category $categoryId');
 
-    final variables = [
-      Variable.withString(categoryId),
+    return _watchBucketRows(
       // Encoded the way drift writes the column (UTC ISO-8601 text), so this
       // reads the same rows as the typed queries above
-      if (since != null) Variable.withString(since.toUtc().toIso8601String()),
-    ];
-    final where = 'WHERE category_id = ?1${since == null ? '' : ' AND date >= ?2'}';
+      where: 'WHERE category_id = ?1${since == null ? '' : ' AND date >= ?2'}',
+      variables: _bucketVariables(categoryId, since),
+      level: level,
+      maxPoints: maxPoints,
+    ).map(_toBuckets);
+  }
 
-    // Only `auto` reads the probe, so a fixed level does not pay for it
+  /// Chart points for every child of [parentId], keyed by child, all at one
+  /// calendar unit.
+  ///
+  /// One unit for the whole group rather than one per component: the halves of
+  /// a reading are paired on their shared bucket, and a component condensed on
+  /// its own would put them in different ones.
+  Stream<Map<String, List<MeasurementBucket>>> watchGroupBuckets(
+    String parentId, {
+    DateTime? since,
+    MeasurementBucketLevel level = MeasurementBucketLevel.auto,
+    int maxPoints = measurementChartMaxPoints,
+  }) {
+    _logger.finer('Watching $level buckets of measurement group $parentId');
+
+    return _watchBucketRows(
+      where:
+          'WHERE category_id IN ('
+          'SELECT id FROM ${_db.measurementCategoryTable.actualTableName} WHERE parent_id = ?1) '
+          '${since == null ? '' : 'AND date >= ?2'}',
+      variables: _bucketVariables(parentId, since),
+      level: level,
+      maxPoints: maxPoints,
+      perCategory: true,
+    ).map(_toBucketsByCategory);
+  }
+
+  /// The aggregated rows of whatever [where] selects, at the calendar unit
+  /// [level] asks for: fixed for the charts built on one, otherwise the finest
+  /// that keeps the series under [maxPoints].
+  ///
+  /// Only `auto` reads the probe, so a fixed level does not pay for it.
+  Stream<List<QueryRow>> _watchBucketRows({
+    required String where,
+    required List<Variable> variables,
+    required MeasurementBucketLevel level,
+    required int maxPoints,
+    bool perCategory = false,
+  }) {
     final fixed = switch (level) {
       MeasurementBucketLevel.day => MeasurementBucketUnit.day,
       MeasurementBucketLevel.week => MeasurementBucketUnit.week,
@@ -214,28 +250,81 @@ class MeasurementRepository {
         fixed,
         where,
         variables,
-      ).watch().debounce(_emitDebounce, leading: true).map(_toBuckets);
+        perCategory: perCategory,
+      ).watch().debounce(_emitDebounce, leading: true);
     }
 
-    // Every unit's point count in one pass, so picking one costs no scan
-    // per candidate
-    final probe = _db.customSelect(
-      'SELECT COUNT(*) AS entries, '
-      'COUNT(DISTINCT ${_bucketExpression(MeasurementBucketUnit.hour)}) AS hours, '
-      'COUNT(DISTINCT ${_bucketExpression(MeasurementBucketUnit.day)}) AS days, '
-      'COUNT(DISTINCT ${_bucketExpression(MeasurementBucketUnit.week)}) AS weeks '
-      'FROM ${_db.measurementEntryTable.actualTableName} $where',
-      variables: variables,
-      readsFrom: {_db.measurementEntryTable},
-    );
-
-    return probe
+    return _probeQuery(where, variables)
         .watchSingle()
         .debounce(_emitDebounce, leading: true)
         .asyncMap(
-          (row) async => _toBuckets(
-            await _bucketQuery(_ladderUnit(row, maxPoints), where, variables).get(),
-          ),
+          (row) => _bucketQuery(
+            _ladderUnit(row, maxPoints),
+            where,
+            variables,
+            perCategory: perCategory,
+          ).get(),
+        );
+  }
+
+  /// The id the query is scoped to, and the date bound when there is one.
+  List<Variable> _bucketVariables(String id, DateTime? since) => [
+    Variable.withString(id),
+    if (since != null) Variable.withString(since.toUtc().toIso8601String()),
+  ];
+
+  /// How often each value occurred in [categoryId], for the histogram.
+  ///
+  /// Not bucketed by time but by value, which is the granularity a histogram
+  /// bins at anyway: a year of heart rate is tens of thousands of readings
+  /// over some two hundred distinct bpm. Counting instead of binning in SQL
+  /// keeps the conversion of a mixed-unit category exact, since the values
+  /// still go through the one helper. [summedPerDay] counts daily totals
+  /// rather than single readings, for the metrics whose samples mean nothing
+  /// on their own.
+  Stream<List<MeasurementValueCount>> watchValueCounts(
+    String categoryId, {
+    DateTime? since,
+    bool summedPerDay = false,
+  }) {
+    _logger.finer('Watching the value counts of measurement category $categoryId');
+
+    final variables = [
+      Variable.withString(categoryId),
+      if (since != null) Variable.withString(since.toUtc().toIso8601String()),
+    ];
+    final where = 'WHERE category_id = ?1${since == null ? '' : ' AND date >= ?2'}';
+    final day = _bucketExpression(MeasurementBucketUnit.day);
+    final source = summedPerDay
+        ? 'SELECT '
+              r"json_extract(extra_data, '$.unit') AS unit, "
+              'SUM(value) AS v, MAX(date) AS newest '
+              'FROM ${_db.measurementEntryTable.actualTableName} $where '
+              'GROUP BY $day, unit'
+        : 'SELECT '
+              r"json_extract(extra_data, '$.unit') AS unit, "
+              'value AS v, date AS newest '
+              'FROM ${_db.measurementEntryTable.actualTableName} $where';
+
+    return _db
+        .customSelect(
+          'SELECT unit, v, COUNT(*) AS n, MAX(newest) AS newest FROM ($source) '
+          'GROUP BY unit, v ORDER BY v',
+          variables: variables,
+          readsFrom: {_db.measurementEntryTable},
+        )
+        .watch()
+        .debounce(_emitDebounce, leading: true)
+        .map(
+          (rows) => [
+            for (final row in rows)
+              MeasurementValueCount(
+                value: row.read<double>('v'),
+                unit: row.read<String?>('unit'),
+                count: row.read<int>('n'),
+                newest: _parseDbDate(row.read<String>('newest')),
+              ),
+          ],
         );
   }
 
@@ -245,35 +334,57 @@ class MeasurementRepository {
   Selectable<QueryRow> _bucketQuery(
     MeasurementBucketUnit unit,
     String where,
-    List<Variable> variables,
-  ) => _db.customSelect(
-    'SELECT ${_bucketExpression(unit)} AS bucket, '
-    r"json_extract(extra_data, '$.unit') AS unit, "
-    'COUNT(*) AS n, '
-    'SUM(value) AS total, '
-    // A daily aggregate contributes the range it summarises, not its mean
-    r"MIN(COALESCE(json_extract(extra_data, '$.min'), value)) AS low, "
-    r"MAX(COALESCE(json_extract(extra_data, '$.max'), value)) AS high "
-    'FROM ${_db.measurementEntryTable.actualTableName} $where '
-    'GROUP BY bucket, unit ORDER BY bucket',
+    List<Variable> variables, {
+    bool perCategory = false,
+  }) {
+    final by = perCategory ? 'category_id, ' : '';
+    return _db.customSelect(
+      'SELECT $by${_bucketExpression(unit)} AS bucket, '
+      r"json_extract(extra_data, '$.unit') AS unit, "
+      'COUNT(*) AS n, '
+      'SUM(value) AS total, '
+      // A daily aggregate contributes the range it summarises, not its mean
+      r"MIN(COALESCE(json_extract(extra_data, '$.min'), value)) AS low, "
+      r"MAX(COALESCE(json_extract(extra_data, '$.max'), value)) AS high "
+      'FROM ${_db.measurementEntryTable.actualTableName} $where '
+      'GROUP BY ${by}bucket, unit ORDER BY bucket',
+      variables: variables,
+      readsFrom: {_db.measurementEntryTable},
+    );
+  }
+
+  /// Every unit's point count in one pass, so picking one costs no scan per
+  /// candidate.
+  Selectable<QueryRow> _probeQuery(String where, List<Variable> variables) => _db.customSelect(
+    'SELECT COUNT(*) AS entries, '
+    'COUNT(DISTINCT ${_bucketExpression(MeasurementBucketUnit.hour)}) AS hours, '
+    'COUNT(DISTINCT ${_bucketExpression(MeasurementBucketUnit.day)}) AS days, '
+    'COUNT(DISTINCT ${_bucketExpression(MeasurementBucketUnit.week)}) AS weeks '
+    'FROM ${_db.measurementEntryTable.actualTableName} $where',
     variables: variables,
     readsFrom: {_db.measurementEntryTable},
   );
 
-  List<MeasurementBucket> _toBuckets(List<QueryRow> rows) => [
-    for (final row in rows)
-      MeasurementBucket(
-        start: _parseBucketStart(row.read<String>('bucket')),
-        unit: row.read<String?>('unit'),
-        count: row.read<int>('n'),
-        sum: row.read<double>('total'),
-        min: row.read<double>('low'),
-        max: row.read<double>('high'),
-      ),
-  ];
+  MeasurementBucket _toBucket(QueryRow row) => MeasurementBucket(
+    start: _parseDbDate(row.read<String>('bucket')),
+    unit: row.read<String?>('unit'),
+    count: row.read<int>('n'),
+    sum: row.read<double>('total'),
+    min: row.read<double>('low'),
+    max: row.read<double>('high'),
+  );
 
-  /// The finest unit that keeps the series under [maxPoints], mirroring the
-  /// ladder `downsample` walks in Dart.
+  List<MeasurementBucket> _toBuckets(List<QueryRow> rows) => rows.map(_toBucket).toList();
+
+  Map<String, List<MeasurementBucket>> _toBucketsByCategory(List<QueryRow> rows) {
+    final out = <String, List<MeasurementBucket>>{};
+    for (final row in rows) {
+      out.putIfAbsent(row.read<String>('category_id'), () => []).add(_toBucket(row));
+    }
+    return out;
+  }
+
+  /// The finest unit that keeps the series under [maxPoints].
   MeasurementBucketUnit _ladderUnit(QueryRow probe, int maxPoints) {
     for (final (unit, points) in [
       (MeasurementBucketUnit.entry, probe.read<int>('entries')),
@@ -303,10 +414,10 @@ class MeasurementRepository {
     MeasurementBucketUnit.month => "strftime('%Y-%m-01T00:00:00', date, 'localtime')",
   };
 
-  /// A bucket key as a local [DateTime]. The entry level hands back the stored
-  /// column, which is UTC and marked as such; the other units are already
-  /// local.
-  DateTime _parseBucketStart(String value) {
+  /// A date column or bucket key as a local [DateTime]. A stored date is UTC
+  /// and marked as such; a bucket key was already shifted to the local zone by
+  /// the query.
+  DateTime _parseDbDate(String value) {
     final parsed = DateTime.parse(value);
     return parsed.isUtc ? parsed.toLocal() : parsed;
   }
