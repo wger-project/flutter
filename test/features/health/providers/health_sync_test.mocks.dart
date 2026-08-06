@@ -146,6 +146,24 @@ class MockMeasurementRepository extends _i1.Mock implements _i7.MeasurementRepos
           as _i4.Stream<List<_i8.MeasurementCategory>>);
 
   @override
+  _i4.Stream<List<_i8.MeasurementCategory>> watchAllWithoutEntries() =>
+      (super.noSuchMethod(
+            Invocation.method(#watchAllWithoutEntries, []),
+            returnValue: _i4.Stream<List<_i8.MeasurementCategory>>.empty(),
+          )
+          as _i4.Stream<List<_i8.MeasurementCategory>>);
+
+  @override
+  _i4.Stream<_i8.MeasurementCategory?> watchCategoryWithoutEntries(
+    String? id,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#watchCategoryWithoutEntries, [id]),
+            returnValue: _i4.Stream<_i8.MeasurementCategory?>.empty(),
+          )
+          as _i4.Stream<_i8.MeasurementCategory?>);
+
+  @override
   _i4.Stream<_i8.MeasurementCategory?> watchLocalDriftCategoryById(
     String? id, {
     DateTime? entriesSince,
@@ -163,14 +181,38 @@ class MockMeasurementRepository extends _i1.Mock implements _i7.MeasurementRepos
   @override
   _i4.Stream<_i8.MeasurementCategory?> watchOfficialBodyWeightCategory({
     DateTime? entriesSince,
+    bool? withEntries = true,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#watchOfficialBodyWeightCategory, [], {
               #entriesSince: entriesSince,
+              #withEntries: withEntries,
             }),
             returnValue: _i4.Stream<_i8.MeasurementCategory?>.empty(),
           )
           as _i4.Stream<_i8.MeasurementCategory?>);
+
+  @override
+  _i4.Stream<List<_i9.MeasurementEntry>> watchEntries(
+    String? categoryId, {
+    required int? limit,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#watchEntries, [categoryId], {#limit: limit}),
+            returnValue: _i4.Stream<List<_i9.MeasurementEntry>>.empty(),
+          )
+          as _i4.Stream<List<_i9.MeasurementEntry>>);
+
+  @override
+  _i4.Stream<List<_i9.MeasurementEntry>> watchGroupEntries(
+    String? parentId, {
+    required int? limit,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#watchGroupEntries, [parentId], {#limit: limit}),
+            returnValue: _i4.Stream<List<_i9.MeasurementEntry>>.empty(),
+          )
+          as _i4.Stream<List<_i9.MeasurementEntry>>);
 
   @override
   _i4.Stream<Map<String, _i9.MeasurementEntry>> watchLatestEntries() =>

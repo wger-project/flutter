@@ -30,6 +30,7 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 
 import '../../../../test_data/measurements.dart';
 import '../../../helpers/measurement_chart_buckets.dart';
+import '../../../helpers/measurement_repository_stubs.dart';
 import 'measurement_categories_screen_test.mocks.dart';
 
 @GenerateMocks([MeasurementRepository])
@@ -40,6 +41,7 @@ void main() {
     when(
       mockRepo.watchAll(entriesSince: anyNamed('entriesSince')),
     ).thenAnswer((_) => Stream<List<MeasurementCategory>>.value(categories));
+    stubMeasurementReads(mockRepo, categories);
 
     return ProviderScope(
       overrides: [

@@ -32,6 +32,7 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 
 import '../../../../test_data/measurements.dart';
 import '../../../helpers/measurement_chart_buckets.dart';
+import '../../../helpers/measurement_repository_stubs.dart';
 import 'measurement_entries_screen_test.mocks.dart';
 
 @GenerateMocks([MeasurementRepository, NutritionRepository, IngredientRepository])
@@ -54,9 +55,7 @@ void main() {
 
   setUp(() {
     mockMeasurementRepo = MockMeasurementRepository();
-    when(
-      mockMeasurementRepo.watchLocalDriftCategoryById(any, entriesSince: anyNamed('entriesSince')),
-    ).thenAnswer((_) => Stream<MeasurementCategory>.value(getMeasurementCategories()[0]));
+    stubMeasurementReads(mockMeasurementRepo, [getMeasurementCategories()[0]]);
 
     mockNutritionRepo = MockNutritionRepository();
     mockIngredientRepo = MockIngredientRepository();
@@ -66,12 +65,7 @@ void main() {
   Widget createEntriesScreen({locale = 'en', MeasurementCategory? category}) {
     final key = GlobalKey<NavigatorState>();
     if (category != null) {
-      when(
-        mockMeasurementRepo.watchLocalDriftCategoryById(
-          any,
-          entriesSince: anyNamed('entriesSince'),
-        ),
-      ).thenAnswer((_) => Stream<MeasurementCategory>.value(category));
+      stubMeasurementReads(mockMeasurementRepo, [category]);
     }
 
     return ProviderScope(
@@ -111,8 +105,8 @@ void main() {
     // Nav bar
     expect(find.text('Body fat'), findsOneWidget);
 
-    // Entries
-    expect(find.text('30 %'), findsNWidgets(1));
+    // Entries, newest first
+    expect(find.text('23 %'), findsNWidgets(1));
   });
 
   testWidgets('switching the range keeps the screen it already drew', (tester) async {
@@ -139,9 +133,9 @@ void main() {
     await tester.tap(find.byType(TextButton));
     await tester.pumpAndSettle();
 
-    // From the entries list and from the chart
-    expect(find.text('9/10/2022'), findsWidgets);
-    expect(find.text('10/5/2022'), findsWidgets);
+    // From the entries list, which shows the newest first
+    expect(find.text('11/15/2022'), findsWidgets);
+    expect(find.text('11/10/2022'), findsWidgets);
   });
 
   testWidgets('Tests the localization of dates - DE', (WidgetTester tester) async {
@@ -149,8 +143,8 @@ void main() {
     await tester.tap(find.byType(TextButton));
     await tester.pumpAndSettle();
 
-    // From the entries list and from the chart
-    expect(find.text('10.9.2022'), findsWidgets);
-    expect(find.text('5.10.2022'), findsWidgets);
+    // From the entries list, which shows the newest first
+    expect(find.text('15.11.2022'), findsWidgets);
+    expect(find.text('10.11.2022'), findsWidgets);
   });
 }

@@ -58,6 +58,27 @@ class MeasurementRepository {
     return _watchCategories(entriesSince: entriesSince);
   }
 
+  /// Watches all categories with their children, but without their entries.
+  ///
+  /// For the screens that read what they show through the aggregated queries:
+  /// the entries of a watch-fed metric are tens of thousands of rows a year,
+  /// and building an object per row to then chart a few hundred points is the
+  /// cost this avoids.
+  Stream<List<MeasurementCategory>> watchAllWithoutEntries() {
+    _logger.finer('Watching all measurement categories');
+    return _watchCategories(withEntries: false);
+  }
+
+  /// One category with its children, without their entries. See
+  /// [watchAllWithoutEntries].
+  Stream<MeasurementCategory?> watchCategoryWithoutEntries(String id) {
+    _logger.finer('Watching measurement category $id');
+    return _watchCategories(
+      filter: (table) => table.id.equals(id) | table.parentId.equals(id),
+      withEntries: false,
+    ).map((categories) => categories.firstWhereOrNull((c) => c.id == id));
+  }
+
   /// Watches the categories matching [filter] (all of them when it is null),
   /// each populated with its entries and, for group parents, its children.
   ///
@@ -66,10 +87,19 @@ class MeasurementRepository {
   Stream<List<MeasurementCategory>> _watchCategories({
     Expression<bool> Function($MeasurementCategoryTableTable table)? filter,
     DateTime? entriesSince,
+    bool withEntries = true,
   }) {
     final select = _db.select(_db.measurementCategoryTable);
     if (filter != null) {
       select.where(filter);
+    }
+
+    if (!withEntries) {
+      select.orderBy([
+        (t) => OrderingTerm(expression: t.order),
+        (t) => OrderingTerm(expression: t.name),
+      ]);
+      return select.watch().debounce(_emitDebounce, leading: true).map(_attachChildren);
     }
 
     // The date bound belongs into the join condition, not into a where: as a
@@ -110,18 +140,19 @@ class MeasurementRepository {
         }
       }
 
-      final categories = map.values
-          .map((c) => c.copyWith(entries: List<MeasurementEntry>.from(c.entries)))
-          .toList();
+      return _attachChildren(
+        map.values.map((c) => c.copyWith(entries: List<MeasurementEntry>.from(c.entries))).toList(),
+      );
+    });
+  }
 
-      // Attach children to their group parents (rows are already sorted by
-      // order/name, so insertion order is the display order).
-      return categories.map((c) {
+  /// Attaches the children of every group parent. The rows arrive sorted by
+  /// order and name, so insertion order is the display order.
+  List<MeasurementCategory> _attachChildren(List<MeasurementCategory> categories) =>
+      categories.map((c) {
         final children = categories.where((other) => other.parentId == c.id).toList();
         return children.isEmpty ? c : c.copyWith(children: children);
       }).toList();
-    });
-  }
 
   /// Watches a single category with its entries, and its children when it is
   /// a group parent.
@@ -133,19 +164,75 @@ class MeasurementRepository {
     ).map((categories) => categories.firstWhereOrNull((c) => c.id == id));
   }
 
-  /// Watches the user's official body weight category with its entries.
+  /// Watches the user's official body weight category, with its entries unless
+  /// [withEntries] says otherwise.
   ///
   /// The category has no fixed id (the server assigns it), so it is selected
   /// by its type in the query rather than picked out of every category
   /// afterwards: reading all of them would materialise every other category's
   /// entries as well, and the health sync writes five sleep rows a night.
-  Stream<MeasurementCategory?> watchOfficialBodyWeightCategory({DateTime? entriesSince}) {
+  Stream<MeasurementCategory?> watchOfficialBodyWeightCategory({
+    DateTime? entriesSince,
+    bool withEntries = true,
+  }) {
     _logger.finer('Watching the official body weight category');
     return _watchCategories(
       filter: (table) =>
           table.isOfficial.equals(true) & table.metricType.equalsValue(MetricType.bodyWeight),
       entriesSince: entriesSince,
+      withEntries: withEntries,
     ).map((categories) => categories.firstOrNull);
+  }
+
+  /// The newest entries of [categoryId], at most [limit] of them.
+  ///
+  /// For the lists, which show a page at a time rather than a history that
+  /// runs into five figures. Ordered by date and, among the rows sharing one,
+  /// by id: the sync writes entries on the same timestamp (a day aggregate at
+  /// midnight, the components of a reading at its exact time), and a limit
+  /// over an ambiguous order picks a different row on every read.
+  Stream<List<MeasurementEntry>> watchEntries(String categoryId, {required int limit}) {
+    _logger.finer('Watching $limit entries of measurement category $categoryId');
+
+    final query = _db.select(_db.measurementEntryTable)
+      ..where((t) => t.categoryId.equals(categoryId))
+      ..orderBy([
+        (t) => OrderingTerm.desc(t.date),
+        (t) => OrderingTerm.desc(t.id),
+      ])
+      ..limit(limit);
+
+    return query.watch().debounce(_emitDebounce, leading: true);
+  }
+
+  /// The newest entries of every component of the group [parentId], at most
+  /// [limit] of them, in the order [watchEntries] describes.
+  ///
+  /// One query over the components rather than one each: the readings are
+  /// paired afterwards, and a page has to cover the same span for all of them.
+  Stream<List<MeasurementEntry>> watchGroupEntries(String parentId, {required int limit}) {
+    _logger.finer('Watching $limit entries of measurement group $parentId');
+
+    final query =
+        _db.select(_db.measurementEntryTable).join([
+            innerJoin(
+              _db.measurementCategoryTable,
+              _db.measurementCategoryTable.id.equalsExp(_db.measurementEntryTable.categoryId),
+            ),
+          ])
+          ..where(_db.measurementCategoryTable.parentId.equals(parentId))
+          ..orderBy([
+            OrderingTerm.desc(_db.measurementEntryTable.date),
+            OrderingTerm.desc(_db.measurementEntryTable.id),
+          ])
+          ..limit(limit);
+
+    return query
+        .watch()
+        .debounce(_emitDebounce, leading: true)
+        .map(
+          (rows) => rows.map((row) => row.readTable(_db.measurementEntryTable)).toList(),
+        );
   }
 
   /// The newest entry of every category, keyed by category id.

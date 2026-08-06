@@ -100,8 +100,6 @@ class EntriesList extends ConsumerWidget {
           ]
         : const <PlanPeriod>[];
 
-    final datetimeFormat = localizedDate(context);
-
     return Column(
       children: [
         ChartRangeSelector(
@@ -116,73 +114,11 @@ class EntriesList extends ConsumerWidget {
           builder: (context, points) => _chart(context, points, name, unit, unitLabel, planPeriods),
           onError: (_, error) => [StreamErrorIndicator(error.toString())],
         ),
-        SizedBox(
-          height: 300,
-          child: ListView.builder(
-            padding: const EdgeInsets.all(10.0),
-            itemCount: category.entries.length,
-            itemBuilder: (context, index) {
-              final currentEntry = category.entries[index];
-
-              return Card(
-                child: ListTile(
-                  title: Text(
-                    '${measurementValue(context, currentEntry.valueIn(unit, categoryUnit: category.unit), unit)} '
-                    '${measurementUnit(unitLabel)}',
-                  ),
-                  subtitle: Text(datetimeFormat.format(currentEntry.date)),
-                  // Imported entries are read-only; changes belong in the
-                  // source app, deletes would reappear on the next import
-                  trailing: currentEntry.source != 'user'
-                      ? Tooltip(
-                          message: AppLocalizations.of(context).importedEntry,
-                          child: const Icon(Icons.monitor_heart_outlined),
-                        )
-                      : PopupMenuButton(
-                          itemBuilder: (BuildContext context) {
-                            return [
-                              PopupMenuItem(
-                                child: Text(AppLocalizations.of(context).edit),
-                                onTap: () => Navigator.pushNamed(
-                                  context,
-                                  FormScreen.routeName,
-                                  arguments: FormScreenArguments(
-                                    AppLocalizations.of(context).edit,
-                                    editFormBuilder?.call(currentEntry) ??
-                                        MeasurementEntryForm(
-                                          category.id!,
-                                          currentEntry,
-                                        ),
-                                  ),
-                                ),
-                              ),
-                              PopupMenuItem(
-                                child: Text(AppLocalizations.of(context).delete),
-                                onTap: () async {
-                                  // Read here rather than in build: the
-                                  // notifier holds the unbounded query, and
-                                  // this list is shown for a range
-                                  await ref
-                                      .read(measurementProvider.notifier)
-                                      .deleteEntry(currentEntry.id!);
-
-                                  // and inform the user
-                                  if (context.mounted) {
-                                    showSnackbar(
-                                      context,
-                                      AppLocalizations.of(context).successfullyDeleted,
-                                      center: true,
-                                    );
-                                  }
-                                },
-                              ),
-                            ];
-                          },
-                        ),
-                ),
-              );
-            },
-          ),
+        _EntryList(
+          category: category,
+          unit: unit,
+          unitLabel: unitLabel,
+          editFormBuilder: editFormBuilder,
         ),
       ],
     );
@@ -230,9 +166,6 @@ class EntriesList extends ConsumerWidget {
   /// which the legend rows lead to.
   Widget _buildGroup(BuildContext context, WidgetRef ref, MeasurementCategory category) {
     final i18n = AppLocalizations.of(context);
-    final datetimeFormat = localizedDate(context);
-    final cutoff = range.cutoff;
-    final readings = groupReadings(category, cutoff: cutoff);
     // Only the stacked chart leaves a component out, so the colours of the
     // rows below have to follow the same list
     final stacked = category.metricType.isSummedPerDay ? stackableComponents(category) : null;
@@ -293,46 +226,206 @@ class EntriesList extends ConsumerWidget {
           );
         }),
         const Divider(),
-        SizedBox(
-          height: 300,
-          child: ListView.builder(
-            padding: const EdgeInsets.all(10.0),
-            itemCount: readings.length,
-            itemBuilder: (context, index) {
-              final (date, values) = readings[index];
-              final total = category.children
-                  .firstWhereOrNull((c) => c.metricType.isGroupTotal)
-                  ?.id;
-              // A roll-up leads and the parts explain it; without one the
-              // values are the reading itself, written the way it is read
-              // (a blood pressure as 120/80)
-              String formatted(num value) => measurementValue(context, value, category.unit);
-              final headline = total != null && values.containsKey(total)
-                  ? '${formatted(values[total]!)} ${measurementUnit(category.unit)}'
-                  : '${values.values.sorted((a, b) => b.compareTo(a)).map(formatted).join('/')} '
-                        '${measurementUnit(category.unit)}';
-              final componentsById = {for (final c in category.children) c.id!: c};
-              final parts = [
-                for (final MapEntry(key: id, value: value) in values.entries)
-                  if (id != total)
-                    '${componentsById[id]!.displayName(context)} ${formatted(value)}',
-              ];
-
-              return Card(
-                child: ListTile(
-                  title: Text(headline),
-                  subtitle: Text(
-                    [
-                      datetimeFormat.format(date),
-                      if (parts.isNotEmpty) parts.join(', '),
-                    ].join(' · '),
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
+        _GroupReadingsList(category),
       ],
+    );
+  }
+}
+
+/// A category's entries, newest first, read one page at a time.
+///
+/// A history that runs into five figures is not a list anyone scrolls to the
+/// end of, and reading it whole is what the aggregated queries were introduced
+/// to stop. The page grows as it is scrolled.
+class _EntryList extends ConsumerStatefulWidget {
+  const _EntryList({
+    required this.category,
+    required this.unit,
+    required this.unitLabel,
+    this.editFormBuilder,
+  });
+
+  final MeasurementCategory category;
+  final String unit;
+  final String unitLabel;
+  final Widget Function(MeasurementEntry entry)? editFormBuilder;
+
+  @override
+  ConsumerState<_EntryList> createState() => _EntryListState();
+}
+
+class _EntryListState extends ConsumerState<_EntryList> with _GrowsWhileScrolled {
+  @override
+  Widget build(BuildContext context) {
+    final category = widget.category;
+    final page = ref.watch(measurementEntriesPageProvider(category.id!, limit));
+    if (page case AsyncError(:final error)) {
+      return StreamErrorIndicator(error.toString());
+    }
+    final entries = page.value ?? const <MeasurementEntry>[];
+    final datetimeFormat = localizedDate(context);
+
+    return _pagedBox(
+      itemCount: entries.length,
+      hasMore: entries.length >= limit,
+      itemBuilder: (context, index) {
+        final currentEntry = entries[index];
+
+        return Card(
+          child: ListTile(
+            title: Text(
+              '${measurementValue(context, currentEntry.valueIn(widget.unit, categoryUnit: category.unit), widget.unit)} '
+              '${measurementUnit(widget.unitLabel)}',
+            ),
+            subtitle: Text(datetimeFormat.format(currentEntry.date)),
+            // Imported entries are read-only; changes belong in the source
+            // app, deletes would reappear on the next import
+            trailing: currentEntry.source != 'user'
+                ? Tooltip(
+                    message: AppLocalizations.of(context).importedEntry,
+                    child: const Icon(Icons.monitor_heart_outlined),
+                  )
+                : PopupMenuButton(
+                    itemBuilder: (BuildContext context) {
+                      return [
+                        PopupMenuItem(
+                          child: Text(AppLocalizations.of(context).edit),
+                          onTap: () => Navigator.pushNamed(
+                            context,
+                            FormScreen.routeName,
+                            arguments: FormScreenArguments(
+                              AppLocalizations.of(context).edit,
+                              widget.editFormBuilder?.call(currentEntry) ??
+                                  MeasurementEntryForm(category.id!, currentEntry),
+                            ),
+                          ),
+                        ),
+                        PopupMenuItem(
+                          child: Text(AppLocalizations.of(context).delete),
+                          onTap: () async {
+                            await ref
+                                .read(measurementProvider.notifier)
+                                .deleteEntry(currentEntry.id!);
+
+                            if (context.mounted) {
+                              showSnackbar(
+                                context,
+                                AppLocalizations.of(context).successfullyDeleted,
+                                center: true,
+                              );
+                            }
+                          },
+                        ),
+                      ];
+                    },
+                  ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+/// The readings of a group, newest first, read one page at a time.
+///
+/// A page is entries, not readings, so it lists fewer rows than it read: a
+/// blood pressure page of fifty entries is twenty-five readings. Whether there
+/// is more to fetch therefore follows from the entries, not from the list.
+class _GroupReadingsList extends ConsumerStatefulWidget {
+  const _GroupReadingsList(this.category);
+
+  final MeasurementCategory category;
+
+  @override
+  ConsumerState<_GroupReadingsList> createState() => _GroupReadingsListState();
+}
+
+class _GroupReadingsListState extends ConsumerState<_GroupReadingsList> with _GrowsWhileScrolled {
+  @override
+  Widget build(BuildContext context) {
+    final category = widget.category;
+    final page = ref.watch(measurementGroupEntriesPageProvider(category.id!, limit));
+    if (page case AsyncError(:final error)) {
+      return StreamErrorIndicator(error.toString());
+    }
+    final entries = page.value ?? const <MeasurementEntry>[];
+    final readings = groupReadings(category, entries);
+    final datetimeFormat = localizedDate(context);
+    final total = category.children.firstWhereOrNull((c) => c.metricType.isGroupTotal)?.id;
+    final componentsById = {for (final c in category.children) c.id!: c};
+
+    return _pagedBox(
+      itemCount: readings.length,
+      hasMore: entries.length >= limit,
+      itemBuilder: (context, index) {
+        final (date, values) = readings[index];
+        // A roll-up leads and the parts explain it; without one the values are
+        // the reading itself, written the way it is read (a blood pressure as
+        // 120/80)
+        String formatted(num value) => measurementValue(context, value, category.unit);
+        final headline = total != null && values.containsKey(total)
+            ? '${formatted(values[total]!)} ${measurementUnit(category.unit)}'
+            : '${values.values.sorted((a, b) => b.compareTo(a)).map(formatted).join('/')} '
+                  '${measurementUnit(category.unit)}';
+        final parts = [
+          for (final MapEntry(key: id, value: value) in values.entries)
+            if (id != total) '${componentsById[id]!.displayName(context)} ${formatted(value)}',
+        ];
+
+        return Card(
+          child: ListTile(
+            title: Text(headline),
+            subtitle: Text(
+              [
+                datetimeFormat.format(date),
+                if (parts.isNotEmpty) parts.join(', '),
+              ].join(' · '),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+/// A fixed-height list that asks for the next page as it nears its end.
+mixin _GrowsWhileScrolled<T extends ConsumerStatefulWidget> on ConsumerState<T> {
+  static const _pageSize = 50;
+
+  int limit = _pageSize;
+
+  /// [hasMore] says whether the page came back full, i.e. whether asking for
+  /// a larger one can yield anything. It cannot be read off [itemCount], which
+  /// counts what is listed rather than what was read: a group lists one
+  /// reading per several entries.
+  Widget _pagedBox({
+    required int itemCount,
+    required bool hasMore,
+    required Widget? Function(BuildContext context, int index) itemBuilder,
+  }) {
+    // The limit [hasMore] was decided against. A drag sends many notifications
+    // before the rebuild, and without this one gesture would grow the page by
+    // several at once, since the answer to "is there more" cannot change
+    // until the next build.
+    final asked = limit;
+
+    return SizedBox(
+      height: 300,
+      child: NotificationListener<ScrollNotification>(
+        onNotification: (notification) {
+          // Grown before the end is reached, so the next page is there by the
+          // time the user gets to it
+          if (notification.metrics.extentAfter < 200 && hasMore && limit == asked) {
+            setState(() => limit += _pageSize);
+          }
+          return false;
+        },
+        child: ListView.builder(
+          padding: const EdgeInsets.all(10.0),
+          itemCount: itemCount,
+          itemBuilder: itemBuilder,
+        ),
+      ),
     );
   }
 }

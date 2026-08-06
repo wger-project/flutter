@@ -23,7 +23,6 @@ import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/core/widgets/app_bar.dart';
 import 'package:wger/core/widgets/progress_indicator.dart';
 import 'package:wger/features/account/providers/user_profile_notifier.dart';
-import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/unit_conversion.dart';
 import 'package:wger/features/measurements/providers/body_weight_provider.dart';
 import 'package:wger/features/measurements/widgets/chart_range_selector.dart';
@@ -49,25 +48,16 @@ class WeightScreen extends ConsumerStatefulWidget {
 }
 
 class _WeightScreenState extends ConsumerState<WeightScreen> {
-  /// Owned here rather than in the list below, because it bounds the query
-  /// that reads the entries, not only the span the chart draws
+  /// Owned here rather than in the list below, because the selector and the
+  /// charts it drives sit in different widgets
   ChartRange _range = ChartRange.last3Months;
-
-  /// The category as it was last read, kept so picking another range does not
-  /// replace the chart and the list with a spinner, see
-  /// MeasurementEntriesScreen
-  MeasurementCategory? _lastCategory;
 
   @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
     // New entries need the official category, which the server creates and the
     // initial sync delivers; hide the FAB until it is there.
-    final read = ref.watch(bodyWeightCategorySinceProvider(_range.readCutoff)).value;
-    if (read != null) {
-      _lastCategory = read;
-    }
-    final category = read ?? _lastCategory;
+    final category = ref.watch(bodyWeightCategoryOnlyProvider).value;
     // The profile decides the display unit, so nothing can be drawn without it
     final profile = ref.watch(userProfileProvider).value;
 

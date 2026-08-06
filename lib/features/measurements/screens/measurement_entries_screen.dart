@@ -49,16 +49,9 @@ class _MeasurementEntriesScreenState extends ConsumerState<MeasurementEntriesScr
   late final String _categoryId;
   bool _initialised = false;
 
-  /// Owned here rather than in the list below, because it bounds the query
-  /// that reads the entries, not only the span the chart draws
+  /// Owned here rather than in the list below, because the selector and the
+  /// charts it drives sit in different widgets
   ChartRange _range = ChartRange.last3Months;
-
-  /// The category as it was last read.
-  ///
-  /// Picking another range watches a different provider, which starts out
-  /// loading: without this the screen would drop everything it is showing for
-  /// a frame and come back, which is what the range switch used to look like.
-  MeasurementCategory? _lastCategory;
 
   @override
   void didChangeDependencies() {
@@ -73,21 +66,15 @@ class _MeasurementEntriesScreenState extends ConsumerState<MeasurementEntriesScr
 
   @override
   Widget build(BuildContext context) {
-    final categoryValue = ref.watch(
-      measurementCategorySinceProvider(_categoryId, _range.readCutoff),
-    );
+    final categoryValue = ref.watch(measurementCategoryProvider(_categoryId));
 
     // Category was deleted (locally or via PowerSync from another device).
-    // Leave this now-stale screen. Asked of the value that just arrived, not
-    // of the cache, which still holds the category as it was.
+    // Leave this now-stale screen.
     if (categoryValue.hasValue && categoryValue.value == null) {
       return objectGoneRedirect(context);
     }
 
-    final category = categoryValue.value ?? _lastCategory;
-    if (categoryValue.value != null) {
-      _lastCategory = categoryValue.value;
-    }
+    final category = categoryValue.value;
 
     // The scaffold is built whether or not there is data: a bare indicator in
     // its place is a screen without a background, i.e. a black flash

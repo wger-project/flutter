@@ -131,6 +131,8 @@ void main() {
       expect(points.single.value, 75);
       expect(points.single.min, 60);
       expect(points.single.max, 90);
+      // What the point stands for, which the distribution's threshold counts
+      expect(points.single.count, 4);
     });
 
     test('a single reading gets no band', () {
@@ -410,6 +412,30 @@ void main() {
       expect(find.byType(MeasurementChartWidgetFl), findsOneWidget);
     });
 
+    testWidgets('condensed points are counted by what they stand for', (tester) async {
+      // A hundred weigh-ins around one number are a distribution, however few
+      // points they were condensed into
+      final widget = buildChartForMetricType(
+        MetricType.bodyWeight,
+        [
+          for (var i = 0; i < 5; i++)
+            MeasurementChartEntry(80, DateTime(2026, 1, 1 + i), count: 20),
+        ],
+        [],
+        'kg',
+        chartType: ChartType.distribution,
+        distribution: const MeasurementDistributionWidgetFl(
+          [(value: 80, count: 100)],
+          latest: 80,
+          unit: 'kg',
+        ),
+      );
+      await tester.pumpWidget(_wrapChart(widget));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(MeasurementDistributionWidgetFl), findsOneWidget);
+    });
+
     testWidgets('a summed distribution measures its days, not its samples', (tester) async {
       // 30 samples on 5 days are 5 daily totals: not enough for a histogram,
       // whatever the sample count says
@@ -576,7 +602,11 @@ void main() {
     });
 
     test('readings pair the components on their shared timestamp', () {
-      final readings = groupReadings(bloodPressure());
+      final group = bloodPressure();
+      final readings = groupReadings(
+        group,
+        [for (final child in group.children) ...child.entries],
+      );
 
       expect(readings, hasLength(1));
       expect(readings.single.$1, DateTime(2026, 1, 2, 8));

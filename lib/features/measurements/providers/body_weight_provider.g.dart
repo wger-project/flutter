@@ -14,9 +14,9 @@ part of 'body_weight_provider.dart';
 /// only arrives via sync; a `null` value means the initial sync has not
 /// delivered it yet. Mutations go through `measurementProvider`'s notifier.
 ///
-/// Unbounded, for the consumers that need the latest entry whatever its age
-/// (the dashboard card, the nutrition widgets). A screen that shows a range
-/// takes [bodyWeightCategorySince] instead.
+/// Unbounded, for the consumers that walk the entries themselves (the
+/// dashboard card, the nutrition widgets). The body weight screen takes
+/// [bodyWeightCategoryOnly], which reads none.
 
 @ProviderFor(bodyWeightCategory)
 final bodyWeightCategoryProvider = BodyWeightCategoryProvider._();
@@ -27,9 +27,9 @@ final bodyWeightCategoryProvider = BodyWeightCategoryProvider._();
 /// only arrives via sync; a `null` value means the initial sync has not
 /// delivered it yet. Mutations go through `measurementProvider`'s notifier.
 ///
-/// Unbounded, for the consumers that need the latest entry whatever its age
-/// (the dashboard card, the nutrition widgets). A screen that shows a range
-/// takes [bodyWeightCategorySince] instead.
+/// Unbounded, for the consumers that walk the entries themselves (the
+/// dashboard card, the nutrition widgets). The body weight screen takes
+/// [bodyWeightCategoryOnly], which reads none.
 
 final class BodyWeightCategoryProvider
     extends
@@ -45,9 +45,9 @@ final class BodyWeightCategoryProvider
   /// only arrives via sync; a `null` value means the initial sync has not
   /// delivered it yet. Mutations go through `measurementProvider`'s notifier.
   ///
-  /// Unbounded, for the consumers that need the latest entry whatever its age
-  /// (the dashboard card, the nutrition widgets). A screen that shows a range
-  /// takes [bodyWeightCategorySince] instead.
+  /// Unbounded, for the consumers that walk the entries themselves (the
+  /// dashboard card, the nutrition widgets). The body weight screen takes
+  /// [bodyWeightCategoryOnly], which reads none.
   BodyWeightCategoryProvider._()
     : super(
         from: null,
@@ -85,6 +85,53 @@ final class BodyWeightCategoryProvider
 }
 
 String _$bodyWeightCategoryHash() => r'8f2f7da1d4d675e2357428666f2cd9c51d53fcc4';
+
+/// The official body weight category without its entries, for the screen,
+/// which reads its chart and its list through their own queries.
+
+@ProviderFor(bodyWeightCategoryOnly)
+final bodyWeightCategoryOnlyProvider = BodyWeightCategoryOnlyProvider._();
+
+/// The official body weight category without its entries, for the screen,
+/// which reads its chart and its list through their own queries.
+
+final class BodyWeightCategoryOnlyProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<MeasurementCategory?>,
+          MeasurementCategory?,
+          Stream<MeasurementCategory?>
+        >
+    with $FutureModifier<MeasurementCategory?>, $StreamProvider<MeasurementCategory?> {
+  /// The official body weight category without its entries, for the screen,
+  /// which reads its chart and its list through their own queries.
+  BodyWeightCategoryOnlyProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'bodyWeightCategoryOnlyProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$bodyWeightCategoryOnlyHash();
+
+  @$internal
+  @override
+  $StreamProviderElement<MeasurementCategory?> $createElement(
+    $ProviderPointer pointer,
+  ) => $StreamProviderElement(pointer);
+
+  @override
+  Stream<MeasurementCategory?> create(Ref ref) {
+    return bodyWeightCategoryOnly(ref);
+  }
+}
+
+String _$bodyWeightCategoryOnlyHash() => r'1c37663ac8e3c3df145cbc012f374720a2a7386c';
 
 /// The official body weight category with the entries from [since] on, null
 /// covering the full history.

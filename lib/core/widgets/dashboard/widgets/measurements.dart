@@ -26,7 +26,6 @@ import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/measurements/screens/measurement_categories_screen.dart';
 import 'package:wger/features/measurements/widgets/categories_card.dart';
-import 'package:wger/features/measurements/widgets/chart_range_selector.dart';
 import 'package:wger/features/measurements/widgets/forms.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
@@ -44,11 +43,9 @@ class _DashboardMeasurementWidgetState extends ConsumerState<DashboardMeasuremen
   @override
   Widget build(BuildContext context) {
     return AsyncValueWidget<List<MeasurementCategory>>(
-      // Exactly what the cards chart, no more: every entry read here is
-      // materialised on every emission, and the query re-runs on every write
-      // the sync makes. The latest value of a component measured less often
-      // than this comes from its own query, see CategoriesCard
-      value: ref.watch(measurementCategoriesSinceProvider(ChartRange.last3Months.readCutoff)),
+      // The categories alone; a card reads its own points, and the latest
+      // value of a component comes from its own query, see CategoriesCard
+      value: ref.watch(measurementCategoriesProvider),
       loggerName: 'DashboardMeasurementWidget',
       data: (allCategories) {
         // Children of multi-value groups are shown inside their parent's card.

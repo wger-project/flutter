@@ -37,6 +37,7 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import '../../../../test_data/body_weight.dart';
 import '../../../../test_data/profile.dart';
 import '../../../helpers/measurement_chart_buckets.dart';
+import '../../../helpers/measurement_repository_stubs.dart';
 import 'weight_screen_test.mocks.dart';
 
 @GenerateMocks([
@@ -62,6 +63,7 @@ void main() {
     ).thenAnswer((_) => Stream.value(tUserProfile1));
 
     mockMeasurementRepository = MockMeasurementRepository();
+    stubMeasurementReads(mockMeasurementRepository, [getBodyWeightCategory()]);
     when(
       mockMeasurementRepository.watchAll(entriesSince: anyNamed('entriesSince')),
     ).thenAnswer((_) => Stream.value([getBodyWeightCategory()]));
@@ -140,28 +142,20 @@ void main() {
     expect(find.byType(MeasurementChartWidgetFl), findsNothing);
   });
 
-  testWidgets('The chart range bounds the query the entries are read with', (
-    WidgetTester tester,
-  ) async {
+  testWidgets('the category is read once, whatever range is picked', (WidgetTester tester) async {
+    // The range drives the aggregated queries; the category itself carries no
+    // entries, so switching must not re-read it
     await tester.pumpWidget(createWeightScreen());
     await tester.pumpAndSettle();
-
-    // The default range reads from its cutoff on
-    verifyNever(mockMeasurementRepository.watchOfficialBodyWeightCategory(entriesSince: null));
     verify(
-      mockMeasurementRepository.watchOfficialBodyWeightCategory(
-        entriesSince: argThat(isNotNull, named: 'entriesSince'),
-      ),
-    ).called(greaterThanOrEqualTo(1));
+      mockMeasurementRepository.watchOfficialBodyWeightCategory(withEntries: false),
+    ).called(1);
 
     await tester.ensureVisible(find.text('All'));
     await tester.tap(find.text('All'));
     await tester.pumpAndSettle();
 
-    // The full history has no lower bound
-    verify(
-      mockMeasurementRepository.watchOfficialBodyWeightCategory(entriesSince: null),
-    ).called(1);
+    verifyNever(mockMeasurementRepository.watchOfficialBodyWeightCategory(withEntries: false));
   });
 
   testWidgets('Test deleting an item using the Delete button', (WidgetTester tester) async {
@@ -201,6 +195,9 @@ void main() {
     ).thenAnswer(
       (_) => Stream.value(getBodyWeightCategory([testWeightEntryLb, testWeightEntry1])),
     );
+    stubMeasurementReads(mockMeasurementRepository, [
+      getBodyWeightCategory([testWeightEntryLb, testWeightEntry1]),
+    ]);
 
     await tester.pumpWidget(createWeightScreen());
     await tester.pumpAndSettle();
@@ -232,6 +229,9 @@ void main() {
     ).thenAnswer(
       (_) => Stream.value(getBodyWeightCategory([imported, testWeightEntry1])),
     );
+    stubMeasurementReads(mockMeasurementRepository, [
+      getBodyWeightCategory([imported, testWeightEntry1]),
+    ]);
 
     await tester.pumpWidget(createWeightScreen());
     await tester.pumpAndSettle();
@@ -245,9 +245,7 @@ void main() {
     WidgetTester tester,
   ) async {
     when(
-      mockMeasurementRepository.watchOfficialBodyWeightCategory(
-        entriesSince: anyNamed('entriesSince'),
-      ),
+      mockMeasurementRepository.watchOfficialBodyWeightCategory(withEntries: false),
     ).thenAnswer((_) => Stream.value(null));
 
     await tester.pumpWidget(createWeightScreen());

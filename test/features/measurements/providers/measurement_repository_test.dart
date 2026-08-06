@@ -249,6 +249,127 @@ void main() {
     });
   });
 
+  group('watchAllWithoutEntries', () {
+    test('returns the categories and their children, but no entries', () async {
+      await seedCategoriesAndEntries();
+      for (final category in getBloodPressureGroup()) {
+        await repo.addLocalDriftCategory(category);
+      }
+
+      final emitted = await repo.watchAllWithoutEntries().first;
+
+      expect(emitted.every((c) => c.entries.isEmpty), isTrue);
+      expect(emitted.firstWhere((c) => c.id == 'bp').children.map((c) => c.id), ['sys', 'dia']);
+    });
+
+    test('sorts by order before name, like the read with entries', () async {
+      await repo.addLocalDriftCategory(
+        MeasurementCategory(id: 'c1', name: 'Aaa', unit: 'cm', order: 5),
+      );
+      await repo.addLocalDriftCategory(
+        MeasurementCategory(id: 'c2', name: 'Zzz', unit: 'cm', order: 1),
+      );
+
+      expect((await repo.watchAllWithoutEntries().first).map((c) => c.id), ['c2', 'c1']);
+    });
+
+    test('watchCategoryWithoutEntries keeps a group its children', () async {
+      for (final category in getBloodPressureGroup()) {
+        await repo.addLocalDriftCategory(category);
+      }
+
+      final emitted = await repo.watchCategoryWithoutEntries('bp').first;
+
+      expect(emitted!.children.map((c) => c.id), ['sys', 'dia']);
+      expect(emitted.entries, isEmpty);
+    });
+  });
+
+  group('watchEntries', () {
+    test('returns the newest entries first, at most the limit', () async {
+      await seedCategoriesAndEntries();
+
+      final page = await repo.watchEntries('1', limit: 3).first;
+
+      final dates = page.map((e) => e.date).toList();
+      expect(page, hasLength(3));
+      expect(dates, [...dates]..sort((a, b) => b.compareTo(a)));
+      expect(
+        dates.first,
+        getMeasurementCategories()[0].entries
+            .map((e) => e.date)
+            .reduce(
+              (a, b) => a.isAfter(b) ? a : b,
+            ),
+      );
+    });
+
+    test('a growing limit extends the same page', () async {
+      await seedCategoriesAndEntries();
+
+      final short = await repo.watchEntries('1', limit: 2).first;
+      final long = await repo.watchEntries('1', limit: 4).first;
+
+      expect(long.take(2).map((e) => e.id), short.map((e) => e.id));
+    });
+
+    test('entries sharing a timestamp keep a stable order', () async {
+      // The sync writes them: a day aggregate at midnight, the components of a
+      // reading at its exact time. A limit over an ambiguous order would pick
+      // a different row on every read.
+      await db
+          .into(db.measurementCategoryTable)
+          .insert(MeasurementCategory(id: '1', name: 'Sleep', unit: 'min').toCompanion());
+      final shared = DateTime(2026, 5, 4);
+      for (final id in ['a', 'b', 'c']) {
+        await repo.addLocalDrift(
+          MeasurementEntry(id: id, categoryId: '1', date: shared, value: 60, notes: ''),
+        );
+      }
+
+      final first = await repo.watchEntries('1', limit: 2).first;
+      final second = await repo.watchEntries('1', limit: 2).first;
+
+      expect(first.map((e) => e.id), second.map((e) => e.id));
+      expect(first.map((e) => e.id), ['c', 'b']);
+    });
+
+    test('only the requested category is read', () async {
+      await seedCategoriesAndEntries();
+
+      final page = await repo.watchEntries('2', limit: 10).first;
+
+      expect(page.every((e) => e.categoryId == '2'), isTrue);
+    });
+  });
+
+  group('watchGroupEntries', () {
+    test('returns the entries of every component, newest first', () async {
+      for (final category in getBloodPressureGroup()) {
+        await repo.addLocalDriftCategory(category);
+      }
+      for (final (index, date) in [DateTime(2026, 5, 4, 8), DateTime(2026, 5, 5, 8)].indexed) {
+        await repo.addLocalDriftGroupEntries([
+          MeasurementEntry(id: 's$index', categoryId: 'sys', date: date, value: 120, notes: ''),
+          MeasurementEntry(id: 'd$index', categoryId: 'dia', date: date, value: 80, notes: ''),
+        ]);
+      }
+
+      final page = await repo.watchGroupEntries('bp', limit: 2).first;
+
+      expect(page.map((e) => e.categoryId).toSet(), {'sys', 'dia'});
+      expect(page.every((e) => e.date == DateTime(2026, 5, 5, 8)), isTrue);
+    });
+
+    test('a component id yields no group entries', () async {
+      for (final category in getBloodPressureGroup()) {
+        await repo.addLocalDriftCategory(category);
+      }
+
+      expect(await repo.watchGroupEntries('sys', limit: 10).first, isEmpty);
+    });
+  });
+
   group('watchEntryBuckets', () {
     /// Local dates throughout: the query buckets in the local zone, so UTC
     /// fixtures would put a reading in a different day on every machine.

@@ -459,12 +459,13 @@ MeasurementChartEntry _mergeSlices(
   double convert(num value, String? from) =>
       convertWeight(value, from: unitOrFallback(from, categoryUnit), to: targetUnit);
 
+  final readings = slices.map((s) => s.count).sum;
   final total = slices.map((s) => convert(s.sum, s.unit)).sum;
   if (summed) {
-    return MeasurementChartEntry(total, start);
+    return MeasurementChartEntry(total, start, count: readings);
   }
 
-  final value = total / slices.map((s) => s.count).sum;
+  final value = total / readings;
   final low = slices.map((s) => convert(s.min, s.unit)).min;
   final high = slices.map((s) => convert(s.max, s.unit)).max;
   final hasRange = low < value || high > value;
@@ -474,6 +475,7 @@ MeasurementChartEntry _mergeSlices(
     start,
     min: hasRange ? low : null,
     max: hasRange ? high : null,
+    count: readings,
   );
 }
 
@@ -622,21 +624,24 @@ Widget buildGroupChart(
 /// Components are paired by their shared timestamp, which is how the importer
 /// and the group form write them. A reading only some components reported is
 /// kept, listing what there is: for a group whose parts are optional (a night
-/// without deep sleep) that is the normal case, not a broken pair. Only
-/// readings from [cutoff] on are included; null covers the full history.
-List<(DateTime, Map<String, num>)> groupReadings(MeasurementCategory group, {DateTime? cutoff}) {
+/// without deep sleep) that is the normal case, not a broken pair.
+List<(DateTime, Map<String, num>)> groupReadings(
+  MeasurementCategory group,
+  List<MeasurementEntry> entries,
+) {
+  final unitOf = {for (final child in group.children) child.id!: child.unit};
+
   // Keyed by the component id rather than by its name: the name is translated
   // for display, and two components could carry the same one
   final byDate = <DateTime, Map<String, num>>{};
-  for (final child in group.children) {
-    for (final entry in child.entries) {
-      if (cutoff != null && entry.date.isBefore(cutoff)) {
-        continue;
-      }
-      final values = byDate.putIfAbsent(entry.date, () => {});
-      final value = entry.valueIn(child.unit, categoryUnit: child.unit);
-      values[child.id!] = (values[child.id!] ?? 0) + value;
+  for (final entry in entries) {
+    final unit = unitOf[entry.categoryId];
+    if (unit == null) {
+      continue;
     }
+    final values = byDate.putIfAbsent(entry.date, () => {});
+    final value = entry.valueIn(unit, categoryUnit: unit);
+    values[entry.categoryId] = (values[entry.categoryId] ?? 0) + value;
   }
 
   return [for (final MapEntry(key: date, value: values) in byDate.entries) (date, values)]
@@ -650,15 +655,15 @@ bool groupHasData(Map<String, List<MeasurementChartEntry>> points) =>
 /// The chart [picked] resolves to, given the data it would draw.
 ///
 /// On top of [MetricType.resolveChartType]'s rule that a pick has to fit the
-/// type, a distribution needs enough values to be one: a histogram of a
+/// type, a distribution needs enough readings to be one: a histogram of a
 /// handful is noise with gaps, so it falls back to the derived default. The
 /// criterion lives here so every dispatch point applies it identically, or
 /// the overview card and the detail screen would draw different charts.
 ///
-/// It counts the condensed points rather than the values the histogram itself
-/// reads, so a burst of readings within a few hours can fall back although
-/// there would be plenty to bin. Deliberate: the fallback needs a time series,
-/// which the counted values are not.
+/// What is counted is what the histogram bins: readings for the sample types,
+/// days for the summed ones. A condensed point stands for several readings
+/// ([MeasurementChartEntry.count]), so counting points would call a hundred
+/// weigh-ins around one number too few to bin.
 ChartType resolveChartTypeForData(
   MetricType metricType,
   ChartType picked,
@@ -669,10 +674,13 @@ ChartType resolveChartTypeForData(
     return resolved;
   }
 
-  // What would be binned is what has to clear the bar: for the summed types
-  // that is their daily totals, not the samples they are summed from
-  final values = metricType.isSummedPerDay ? aggregatePerDay(raw) : raw;
-  return values.length < distributionMinValues ? metricType.defaultChartType : resolved;
+  // For the summed types the histogram bins their daily totals, so a day is
+  // what counts there; everything else bins the readings themselves
+  final readings = metricType.isSummedPerDay
+      ? aggregatePerDay(raw).length
+      : raw.map((e) => e.count).sum;
+
+  return readings < distributionMinValues ? metricType.defaultChartType : resolved;
 }
 
 Widget buildChartForMetricType(

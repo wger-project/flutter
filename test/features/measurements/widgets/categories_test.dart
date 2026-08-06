@@ -30,6 +30,7 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 
 import '../../../../test_data/measurements.dart';
 import '../../../helpers/measurement_chart_buckets.dart';
+import '../../../helpers/measurement_repository_stubs.dart';
 import 'categories_test.mocks.dart';
 
 Widget _wrap(
@@ -64,6 +65,7 @@ void main() {
       when(
         mockRepo.watchAll(entriesSince: anyNamed('entriesSince')),
       ).thenAnswer((_) => Stream.value(getMeasurementCategories()));
+      stubMeasurementReads(mockRepo, getMeasurementCategories());
 
       await tester.pumpWidget(_wrap(mockRepo, categories: getMeasurementCategories()));
       await tester.pumpAndSettle();
@@ -78,6 +80,7 @@ void main() {
       when(
         mockRepo.watchAll(entriesSince: anyNamed('entriesSince')),
       ).thenAnswer((_) => Stream.value(getBloodPressureGroup()));
+      stubMeasurementReads(mockRepo, getBloodPressureGroup());
 
       await tester.pumpWidget(_wrap(mockRepo, categories: getBloodPressureGroup()));
       await tester.pumpAndSettle();
@@ -91,6 +94,7 @@ void main() {
       when(
         mockRepo.watchAll(entriesSince: anyNamed('entriesSince')),
       ).thenAnswer((_) => Stream.value([]));
+      stubMeasurementReads(mockRepo, []);
 
       await tester.pumpWidget(_wrap(mockRepo));
       await tester.pumpAndSettle();

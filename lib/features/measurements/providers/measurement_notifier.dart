@@ -32,16 +32,28 @@ import 'measurement_repository.dart';
 
 part 'measurement_notifier.g.dart';
 
-/// All categories with the entries from [since] on, null covering the full
-/// history.
+/// All categories with their children, without their entries.
 ///
-/// The bound is applied in the query rather than in the chart, so showing
-/// three months does not read years of entries into memory. Kept apart from
-/// [measurementProvider], which stays unbounded for the consumers that need
-/// the latest entry regardless of its age (the dashboard card).
+/// What the screens watch: everything they draw comes from the aggregated
+/// queries and the paged lists below. Kept apart from [measurementProvider],
+/// which stays unbounded for the consumers that read the entries themselves
+/// (the health importer, the dashboard calendar).
 @riverpod
-Stream<List<MeasurementCategory>> measurementCategoriesSince(Ref ref, DateTime? since) {
-  return ref.read(measurementRepositoryProvider).watchAll(entriesSince: since);
+Stream<List<MeasurementCategory>> measurementCategories(Ref ref) {
+  return ref.read(measurementRepositoryProvider).watchAllWithoutEntries();
+}
+
+/// One page of a category's entries, newest first.
+@riverpod
+Stream<List<MeasurementEntry>> measurementEntriesPage(Ref ref, String categoryId, int limit) {
+  return ref.read(measurementRepositoryProvider).watchEntries(categoryId, limit: limit);
+}
+
+/// One page of the entries of a group's components, newest first, out of which
+/// the readings are paired.
+@riverpod
+Stream<List<MeasurementEntry>> measurementGroupEntriesPage(Ref ref, String parentId, int limit) {
+  return ref.read(measurementRepositoryProvider).watchGroupEntries(parentId, limit: limit);
 }
 
 /// The newest entry of every category, keyed by category id.
@@ -100,13 +112,11 @@ Stream<List<MeasurementValueCount>> measurementValueCounts(
       .watchValueCounts(categoryId, since: since, summedPerDay: summedPerDay);
 }
 
-/// One category with its children and the entries from [since] on, null while
-/// it does not exist (or no longer does).
+/// One category with its children and without their entries, null while it
+/// does not exist (or no longer does).
 @riverpod
-Stream<MeasurementCategory?> measurementCategorySince(Ref ref, String id, DateTime? since) {
-  return ref
-      .read(measurementRepositoryProvider)
-      .watchLocalDriftCategoryById(id, entriesSince: since);
+Stream<MeasurementCategory?> measurementCategory(Ref ref, String id) {
+  return ref.read(measurementRepositoryProvider).watchCategoryWithoutEntries(id);
 }
 
 @riverpod

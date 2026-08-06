@@ -30,6 +30,7 @@ import 'package:wger/features/measurements/widgets/forms.dart';
 import 'package:wger/features/measurements/widgets/metric_picker.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
+import '../../../helpers/measurement_repository_stubs.dart';
 import 'metric_picker_test.mocks.dart';
 
 @GenerateMocks([MeasurementRepository, AuthCredentialsStorage])
@@ -42,6 +43,7 @@ void main() {
     mockCredentials = MockAuthCredentialsStorage();
     when(mockCredentials.dbOwnerUserId()).thenAnswer((_) async => '2');
     when(mockRepo.watchAll()).thenAnswer((_) => Stream.value([]));
+    stubMeasurementReads(mockRepo, []);
     when(mockRepo.addLocalDriftCategory(any)).thenAnswer((_) async {});
   });
 
@@ -81,6 +83,14 @@ void main() {
   });
 
   testWidgets('a metric that already has a category cannot be picked again', (tester) async {
+    stubMeasurementReads(mockRepo, [
+      MeasurementCategory(
+        id: 'hr',
+        name: 'Heart rate',
+        unit: 'bpm',
+        metricType: MetricType.heartRate,
+      ),
+    ]);
     when(mockRepo.watchAll()).thenAnswer(
       (_) => Stream.value([
         MeasurementCategory(
@@ -131,9 +141,9 @@ void main() {
     // The overview is long enough that a new card somewhere in it does not
     // read as "something happened"
     final id = deterministicCategoryId('2', MetricType.restingHeartRate);
-    when(
-      mockRepo.watchLocalDriftCategoryById(id, entriesSince: anyNamed('entriesSince')),
-    ).thenAnswer(
+    // Only the screen behind the tap knows the category, not the picker: it
+    // is created by the tap, and a metric that already exists is disabled
+    when(mockRepo.watchCategoryWithoutEntries(id)).thenAnswer(
       (_) => Stream.value(
         MeasurementCategory(
           id: id,

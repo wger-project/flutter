@@ -28,12 +28,23 @@ part 'body_weight_provider.g.dart';
 /// only arrives via sync; a `null` value means the initial sync has not
 /// delivered it yet. Mutations go through `measurementProvider`'s notifier.
 ///
-/// Unbounded, for the consumers that need the latest entry whatever its age
-/// (the dashboard card, the nutrition widgets). A screen that shows a range
-/// takes [bodyWeightCategorySince] instead.
+/// Unbounded, for the consumers that walk the entries themselves (the
+/// dashboard card, the nutrition widgets). The body weight screen takes
+/// [bodyWeightCategoryOnly], which reads none.
 @riverpod
 AsyncValue<MeasurementCategory?> bodyWeightCategory(Ref ref) {
   return ref.watch(bodyWeightCategorySinceProvider(null));
+}
+
+/// The official body weight category without its entries, for the screen,
+/// which reads its chart and its list through their own queries.
+@riverpod
+Stream<MeasurementCategory?> bodyWeightCategoryOnly(Ref ref) {
+  return ref
+      .read(measurementRepositoryProvider)
+      .watchOfficialBodyWeightCategory(
+        withEntries: false,
+      );
 }
 
 /// The official body weight category with the entries from [since] on, null

@@ -487,7 +487,12 @@ class MeasurementChartEntry {
   num? min;
   num? max;
 
-  MeasurementChartEntry(this.value, this.date, {this.min, this.max});
+  /// How many readings this point stands for, which a condensed one summarises
+  /// several of. Only the distribution asks: a histogram of a handful of
+  /// readings is noise, however many points they were condensed into.
+  int count;
+
+  MeasurementChartEntry(this.value, this.date, {this.min, this.max, this.count = 1});
 
   /// Whether this point carries a range that can be drawn as a band.
   bool get hasRange => min != null && max != null;

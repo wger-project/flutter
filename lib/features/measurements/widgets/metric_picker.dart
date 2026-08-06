@@ -47,7 +47,9 @@ class MetricPickerSheet extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final i18n = AppLocalizations.of(context);
-    final categories = ref.watch(measurementProvider).asData?.value ?? [];
+    // Only the types matter here, so this reads the categories without their
+    // entries rather than every reading of a synced account
+    final categories = ref.watch(measurementCategoriesProvider).value ?? const [];
     final taken = categories.map((c) => c.metricType).toSet();
 
     return SafeArea(

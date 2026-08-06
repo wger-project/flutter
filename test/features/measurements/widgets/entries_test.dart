@@ -33,6 +33,7 @@ import 'package:wger/features/nutrition/providers/nutrition_repository.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 import '../../../helpers/measurement_chart_buckets.dart';
+import '../../../helpers/measurement_repository_stubs.dart';
 import 'entries_test.mocks.dart';
 
 @GenerateMocks([MeasurementRepository, NutritionRepository, IngredientRepository])
@@ -54,9 +55,10 @@ void main() {
     externalId: 'bf-1',
   );
 
-  Widget createEntriesList(MeasurementCategory category) {
-    final mockRepo = MockMeasurementRepository();
+  Widget createEntriesList(MeasurementCategory category, {MockMeasurementRepository? repo}) {
+    final mockRepo = repo ?? MockMeasurementRepository();
     when(mockRepo.watchAll()).thenAnswer((_) => Stream.value([category]));
+    stubMeasurementReads(mockRepo, [category]);
 
     return ProviderScope(
       overrides: [
@@ -148,6 +150,59 @@ void main() {
     expect(find.textContaining('Deep sleep 1:30'), findsOneWidget);
     // Each component is a way into its own screen
     expect(find.byIcon(Icons.chevron_right), findsNWidgets(2));
+  });
+
+  testWidgets('scrolling a group list asks for the next page', (WidgetTester tester) async {
+    // A page is entries, a row is a reading, and a blood pressure page of
+    // fifty entries lists twenty-five: reading "more to come" off the rows
+    // left the list stuck on its first page
+    final readings = [
+      for (var day = 0; day < 40; day++) DateTime.now().subtract(Duration(days: day)),
+    ];
+    MeasurementCategory component(String id, String name, MetricType type, num value) =>
+        MeasurementCategory(
+          id: id,
+          name: name,
+          unit: 'mmHg',
+          metricType: type,
+          parentId: 'bp',
+          entries: [
+            for (final (index, date) in readings.indexed)
+              MeasurementEntry(
+                id: '$id-$index',
+                categoryId: id,
+                date: date,
+                value: value,
+                notes: '',
+              ),
+          ],
+        );
+    final group = MeasurementCategory(
+      id: 'bp',
+      name: 'Blood pressure',
+      unit: 'mmHg',
+      metricType: MetricType.bloodPressure,
+      children: [
+        component('sys', 'Systolic', MetricType.bloodPressureSystolic, 120),
+        component('dia', 'Diastolic', MetricType.bloodPressureDiastolic, 80),
+      ],
+    );
+    final mockRepo = MockMeasurementRepository();
+    // Tall enough that the list below the chart is on screen and can be
+    // dragged rather than the page around it
+    tester.view.physicalSize = const Size(800, 1600);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+
+    await tester.pumpWidget(createEntriesList(group, repo: mockRepo));
+    await tester.pumpAndSettle();
+    verify(mockRepo.watchGroupEntries('bp', limit: 50)).called(greaterThanOrEqualTo(1));
+
+    // Past the end, so the assertion does not hang on a row height
+    await tester.drag(find.byType(ListView).last, const Offset(0, -3000));
+    await tester.pumpAndSettle();
+
+    verify(mockRepo.watchGroupEntries('bp', limit: 100)).called(greaterThanOrEqualTo(1));
   });
 
   testWidgets('A typed category is titled by its metric type, not by the stored name', (

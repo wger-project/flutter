@@ -8,26 +8,24 @@ part of 'measurement_notifier.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// All categories with the entries from [since] on, null covering the full
-/// history.
+/// All categories with their children, without their entries.
 ///
-/// The bound is applied in the query rather than in the chart, so showing
-/// three months does not read years of entries into memory. Kept apart from
-/// [measurementProvider], which stays unbounded for the consumers that need
-/// the latest entry regardless of its age (the dashboard card).
+/// What the screens watch: everything they draw comes from the aggregated
+/// queries and the paged lists below. Kept apart from [measurementProvider],
+/// which stays unbounded for the consumers that read the entries themselves
+/// (the health importer, the dashboard calendar).
 
-@ProviderFor(measurementCategoriesSince)
-final measurementCategoriesSinceProvider = MeasurementCategoriesSinceFamily._();
+@ProviderFor(measurementCategories)
+final measurementCategoriesProvider = MeasurementCategoriesProvider._();
 
-/// All categories with the entries from [since] on, null covering the full
-/// history.
+/// All categories with their children, without their entries.
 ///
-/// The bound is applied in the query rather than in the chart, so showing
-/// three months does not read years of entries into memory. Kept apart from
-/// [measurementProvider], which stays unbounded for the consumers that need
-/// the latest entry regardless of its age (the dashboard card).
+/// What the screens watch: everything they draw comes from the aggregated
+/// queries and the paged lists below. Kept apart from [measurementProvider],
+/// which stays unbounded for the consumers that read the entries themselves
+/// (the health importer, the dashboard calendar).
 
-final class MeasurementCategoriesSinceProvider
+final class MeasurementCategoriesProvider
     extends
         $FunctionalProvider<
           AsyncValue<List<MeasurementCategory>>,
@@ -35,33 +33,25 @@ final class MeasurementCategoriesSinceProvider
           Stream<List<MeasurementCategory>>
         >
     with $FutureModifier<List<MeasurementCategory>>, $StreamProvider<List<MeasurementCategory>> {
-  /// All categories with the entries from [since] on, null covering the full
-  /// history.
+  /// All categories with their children, without their entries.
   ///
-  /// The bound is applied in the query rather than in the chart, so showing
-  /// three months does not read years of entries into memory. Kept apart from
-  /// [measurementProvider], which stays unbounded for the consumers that need
-  /// the latest entry regardless of its age (the dashboard card).
-  MeasurementCategoriesSinceProvider._({
-    required MeasurementCategoriesSinceFamily super.from,
-    required DateTime? super.argument,
-  }) : super(
-         retry: null,
-         name: r'measurementCategoriesSinceProvider',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
+  /// What the screens watch: everything they draw comes from the aggregated
+  /// queries and the paged lists below. Kept apart from [measurementProvider],
+  /// which stays unbounded for the consumers that read the entries themselves
+  /// (the health importer, the dashboard calendar).
+  MeasurementCategoriesProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'measurementCategoriesProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
-  String debugGetCreateSourceHash() => _$measurementCategoriesSinceHash();
-
-  @override
-  String toString() {
-    return r'measurementCategoriesSinceProvider'
-        ''
-        '($argument)';
-  }
+  String debugGetCreateSourceHash() => _$measurementCategoriesHash();
 
   @$internal
   @override
@@ -71,13 +61,64 @@ final class MeasurementCategoriesSinceProvider
 
   @override
   Stream<List<MeasurementCategory>> create(Ref ref) {
-    final argument = this.argument as DateTime?;
-    return measurementCategoriesSince(ref, argument);
+    return measurementCategories(ref);
+  }
+}
+
+String _$measurementCategoriesHash() => r'0fbe4c5b49eed79ffe307763e0fec417a5899356';
+
+/// One page of a category's entries, newest first.
+
+@ProviderFor(measurementEntriesPage)
+final measurementEntriesPageProvider = MeasurementEntriesPageFamily._();
+
+/// One page of a category's entries, newest first.
+
+final class MeasurementEntriesPageProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<List<MeasurementEntry>>,
+          List<MeasurementEntry>,
+          Stream<List<MeasurementEntry>>
+        >
+    with $FutureModifier<List<MeasurementEntry>>, $StreamProvider<List<MeasurementEntry>> {
+  /// One page of a category's entries, newest first.
+  MeasurementEntriesPageProvider._({
+    required MeasurementEntriesPageFamily super.from,
+    required (String, int) super.argument,
+  }) : super(
+         retry: null,
+         name: r'measurementEntriesPageProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$measurementEntriesPageHash();
+
+  @override
+  String toString() {
+    return r'measurementEntriesPageProvider'
+        ''
+        '$argument';
+  }
+
+  @$internal
+  @override
+  $StreamProviderElement<List<MeasurementEntry>> $createElement(
+    $ProviderPointer pointer,
+  ) => $StreamProviderElement(pointer);
+
+  @override
+  Stream<List<MeasurementEntry>> create(Ref ref) {
+    final argument = this.argument as (String, int);
+    return measurementEntriesPage(ref, argument.$1, argument.$2);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is MeasurementCategoriesSinceProvider && other.argument == argument;
+    return other is MeasurementEntriesPageProvider && other.argument == argument;
   }
 
   @override
@@ -86,40 +127,123 @@ final class MeasurementCategoriesSinceProvider
   }
 }
 
-String _$measurementCategoriesSinceHash() => r'6c757af207fe294d5e5e3b638476fd17448a0417';
+String _$measurementEntriesPageHash() => r'6c0e572a7fee33e5905441299d9ed23fcb5b83e2';
 
-/// All categories with the entries from [since] on, null covering the full
-/// history.
-///
-/// The bound is applied in the query rather than in the chart, so showing
-/// three months does not read years of entries into memory. Kept apart from
-/// [measurementProvider], which stays unbounded for the consumers that need
-/// the latest entry regardless of its age (the dashboard card).
+/// One page of a category's entries, newest first.
 
-final class MeasurementCategoriesSinceFamily extends $Family
-    with $FunctionalFamilyOverride<Stream<List<MeasurementCategory>>, DateTime?> {
-  MeasurementCategoriesSinceFamily._()
+final class MeasurementEntriesPageFamily extends $Family
+    with $FunctionalFamilyOverride<Stream<List<MeasurementEntry>>, (String, int)> {
+  MeasurementEntriesPageFamily._()
     : super(
         retry: null,
-        name: r'measurementCategoriesSinceProvider',
+        name: r'measurementEntriesPageProvider',
         dependencies: null,
         $allTransitiveDependencies: null,
         isAutoDispose: true,
       );
 
-  /// All categories with the entries from [since] on, null covering the full
-  /// history.
-  ///
-  /// The bound is applied in the query rather than in the chart, so showing
-  /// three months does not read years of entries into memory. Kept apart from
-  /// [measurementProvider], which stays unbounded for the consumers that need
-  /// the latest entry regardless of its age (the dashboard card).
+  /// One page of a category's entries, newest first.
 
-  MeasurementCategoriesSinceProvider call(DateTime? since) =>
-      MeasurementCategoriesSinceProvider._(argument: since, from: this);
+  MeasurementEntriesPageProvider call(String categoryId, int limit) =>
+      MeasurementEntriesPageProvider._(
+        argument: (categoryId, limit),
+        from: this,
+      );
 
   @override
-  String toString() => r'measurementCategoriesSinceProvider';
+  String toString() => r'measurementEntriesPageProvider';
+}
+
+/// One page of the entries of a group's components, newest first, out of which
+/// the readings are paired.
+
+@ProviderFor(measurementGroupEntriesPage)
+final measurementGroupEntriesPageProvider = MeasurementGroupEntriesPageFamily._();
+
+/// One page of the entries of a group's components, newest first, out of which
+/// the readings are paired.
+
+final class MeasurementGroupEntriesPageProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<List<MeasurementEntry>>,
+          List<MeasurementEntry>,
+          Stream<List<MeasurementEntry>>
+        >
+    with $FutureModifier<List<MeasurementEntry>>, $StreamProvider<List<MeasurementEntry>> {
+  /// One page of the entries of a group's components, newest first, out of which
+  /// the readings are paired.
+  MeasurementGroupEntriesPageProvider._({
+    required MeasurementGroupEntriesPageFamily super.from,
+    required (String, int) super.argument,
+  }) : super(
+         retry: null,
+         name: r'measurementGroupEntriesPageProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$measurementGroupEntriesPageHash();
+
+  @override
+  String toString() {
+    return r'measurementGroupEntriesPageProvider'
+        ''
+        '$argument';
+  }
+
+  @$internal
+  @override
+  $StreamProviderElement<List<MeasurementEntry>> $createElement(
+    $ProviderPointer pointer,
+  ) => $StreamProviderElement(pointer);
+
+  @override
+  Stream<List<MeasurementEntry>> create(Ref ref) {
+    final argument = this.argument as (String, int);
+    return measurementGroupEntriesPage(ref, argument.$1, argument.$2);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is MeasurementGroupEntriesPageProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$measurementGroupEntriesPageHash() => r'd88344f85d8353a89bc662788974a6e43c92c1ac';
+
+/// One page of the entries of a group's components, newest first, out of which
+/// the readings are paired.
+
+final class MeasurementGroupEntriesPageFamily extends $Family
+    with $FunctionalFamilyOverride<Stream<List<MeasurementEntry>>, (String, int)> {
+  MeasurementGroupEntriesPageFamily._()
+    : super(
+        retry: null,
+        name: r'measurementGroupEntriesPageProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  /// One page of the entries of a group's components, newest first, out of which
+  /// the readings are paired.
+
+  MeasurementGroupEntriesPageProvider call(String parentId, int limit) =>
+      MeasurementGroupEntriesPageProvider._(
+        argument: (parentId, limit),
+        from: this,
+      );
+
+  @override
+  String toString() => r'measurementGroupEntriesPageProvider';
 }
 
 /// The newest entry of every category, keyed by category id.
@@ -497,16 +621,16 @@ final class MeasurementValueCountsFamily extends $Family
   String toString() => r'measurementValueCountsProvider';
 }
 
-/// One category with its children and the entries from [since] on, null while
-/// it does not exist (or no longer does).
+/// One category with its children and without their entries, null while it
+/// does not exist (or no longer does).
 
-@ProviderFor(measurementCategorySince)
-final measurementCategorySinceProvider = MeasurementCategorySinceFamily._();
+@ProviderFor(measurementCategory)
+final measurementCategoryProvider = MeasurementCategoryFamily._();
 
-/// One category with its children and the entries from [since] on, null while
-/// it does not exist (or no longer does).
+/// One category with its children and without their entries, null while it
+/// does not exist (or no longer does).
 
-final class MeasurementCategorySinceProvider
+final class MeasurementCategoryProvider
     extends
         $FunctionalProvider<
           AsyncValue<MeasurementCategory?>,
@@ -514,27 +638,27 @@ final class MeasurementCategorySinceProvider
           Stream<MeasurementCategory?>
         >
     with $FutureModifier<MeasurementCategory?>, $StreamProvider<MeasurementCategory?> {
-  /// One category with its children and the entries from [since] on, null while
-  /// it does not exist (or no longer does).
-  MeasurementCategorySinceProvider._({
-    required MeasurementCategorySinceFamily super.from,
-    required (String, DateTime?) super.argument,
+  /// One category with its children and without their entries, null while it
+  /// does not exist (or no longer does).
+  MeasurementCategoryProvider._({
+    required MeasurementCategoryFamily super.from,
+    required String super.argument,
   }) : super(
          retry: null,
-         name: r'measurementCategorySinceProvider',
+         name: r'measurementCategoryProvider',
          isAutoDispose: true,
          dependencies: null,
          $allTransitiveDependencies: null,
        );
 
   @override
-  String debugGetCreateSourceHash() => _$measurementCategorySinceHash();
+  String debugGetCreateSourceHash() => _$measurementCategoryHash();
 
   @override
   String toString() {
-    return r'measurementCategorySinceProvider'
+    return r'measurementCategoryProvider'
         ''
-        '$argument';
+        '($argument)';
   }
 
   @$internal
@@ -545,13 +669,13 @@ final class MeasurementCategorySinceProvider
 
   @override
   Stream<MeasurementCategory?> create(Ref ref) {
-    final argument = this.argument as (String, DateTime?);
-    return measurementCategorySince(ref, argument.$1, argument.$2);
+    final argument = this.argument as String;
+    return measurementCategory(ref, argument);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is MeasurementCategorySinceProvider && other.argument == argument;
+    return other is MeasurementCategoryProvider && other.argument == argument;
   }
 
   @override
@@ -560,30 +684,30 @@ final class MeasurementCategorySinceProvider
   }
 }
 
-String _$measurementCategorySinceHash() => r'fa296a2babc8a16a9fd9177ca93682287efbd49e';
+String _$measurementCategoryHash() => r'9064d6e8ee04c562a1ae1bb8c1f6523f6f22ee9d';
 
-/// One category with its children and the entries from [since] on, null while
-/// it does not exist (or no longer does).
+/// One category with its children and without their entries, null while it
+/// does not exist (or no longer does).
 
-final class MeasurementCategorySinceFamily extends $Family
-    with $FunctionalFamilyOverride<Stream<MeasurementCategory?>, (String, DateTime?)> {
-  MeasurementCategorySinceFamily._()
+final class MeasurementCategoryFamily extends $Family
+    with $FunctionalFamilyOverride<Stream<MeasurementCategory?>, String> {
+  MeasurementCategoryFamily._()
     : super(
         retry: null,
-        name: r'measurementCategorySinceProvider',
+        name: r'measurementCategoryProvider',
         dependencies: null,
         $allTransitiveDependencies: null,
         isAutoDispose: true,
       );
 
-  /// One category with its children and the entries from [since] on, null while
-  /// it does not exist (or no longer does).
+  /// One category with its children and without their entries, null while it
+  /// does not exist (or no longer does).
 
-  MeasurementCategorySinceProvider call(String id, DateTime? since) =>
-      MeasurementCategorySinceProvider._(argument: (id, since), from: this);
+  MeasurementCategoryProvider call(String id) =>
+      MeasurementCategoryProvider._(argument: id, from: this);
 
   @override
-  String toString() => r'measurementCategorySinceProvider';
+  String toString() => r'measurementCategoryProvider';
 }
 
 @ProviderFor(MeasurementNotifier)
