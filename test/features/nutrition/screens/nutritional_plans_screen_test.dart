@@ -26,22 +26,23 @@ import 'package:wger/core/form_screen.dart';
 import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/features/account/models/user_profile.dart';
 import 'package:wger/features/account/providers/user_profile_repository.dart';
+import 'package:wger/features/measurements/providers/measurement_repository.dart';
 import 'package:wger/features/nutrition/models/nutritional_plan.dart';
 import 'package:wger/features/nutrition/providers/ingredient_repository.dart';
 import 'package:wger/features/nutrition/providers/nutrition_repository.dart';
 import 'package:wger/features/nutrition/screens/nutritional_plans_screen.dart';
 import 'package:wger/features/nutrition/widgets/forms.dart';
-import 'package:wger/features/weight/providers/body_weight_repository.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 import '../../../fake_connectivity.dart';
+import '../../../helpers/measurement_repository_stubs.dart';
 import 'nutritional_plans_screen_test.mocks.dart';
 
 @GenerateMocks([
   NutritionRepository,
   IngredientRepository,
   http.Client,
-  BodyWeightRepository,
+  MeasurementRepository,
   UserProfileRepository,
 ])
 void main() {
@@ -49,6 +50,7 @@ void main() {
 
   late MockNutritionRepository mockNutritionRepo;
   late MockIngredientRepository mockIngredientRepo;
+  late MockMeasurementRepository mockMeasurementRepository;
   late MockUserProfileRepository mockUserProfileRepository;
 
   final testProfile = UserProfile(id: 1, weightUnitStr: 'kg');
@@ -74,6 +76,8 @@ void main() {
   setUp(() async {
     mockNutritionRepo = MockNutritionRepository();
     mockIngredientRepo = MockIngredientRepository();
+    mockMeasurementRepository = MockMeasurementRepository();
+    stubMeasurementReads(mockMeasurementRepository, []);
     mockUserProfileRepository = MockUserProfileRepository();
 
     when(
@@ -91,7 +95,7 @@ void main() {
     final container = ProviderContainer.test(
       overrides: [
         networkStatusProvider.overrideWithValue(isOnline),
-        bodyWeightRepositoryProvider.overrideWithValue(MockBodyWeightRepository()),
+        measurementRepositoryProvider.overrideWithValue(mockMeasurementRepository),
         userProfileRepositoryProvider.overrideWithValue(mockUserProfileRepository),
         nutritionRepositoryProvider.overrideWithValue(mockNutritionRepo),
         ingredientRepositoryProvider.overrideWithValue(mockIngredientRepo),

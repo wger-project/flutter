@@ -15,7 +15,15 @@ T _$identity<T>(T value) => value;
 mixin _$MeasurementEntry {
 
 /// Client-generated UUID, is `null` only before the first persist
- String? get id; String get categoryId; DateTime get date; num get value; String get notes;
+ String? get id; String get categoryId; DateTime get date; num get value; String get notes;/// Origin of the reading; one of the server's `source` values
+/// (`user`, `google`, `apple`).
+ String get source;/// Platform record UUID, used to deduplicate re-imports. `null` for manual
+/// entries.
+ String? get externalId;/// Per-entry metadata (server JSONField). The `unit` key holds the unit
+/// [value] was entered in; without it the category unit applies. Raw values
+/// are meaningless without their unit, so display and calculations go
+/// through `valueIn` instead of reading [value] directly.
+ Map<String, dynamic>? get extraData;
 /// Create a copy of MeasurementEntry
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -26,16 +34,16 @@ $MeasurementEntryCopyWith<MeasurementEntry> get copyWith => _$MeasurementEntryCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MeasurementEntry&&(identical(other.id, id) || other.id == id)&&(identical(other.categoryId, categoryId) || other.categoryId == categoryId)&&(identical(other.date, date) || other.date == date)&&(identical(other.value, value) || other.value == value)&&(identical(other.notes, notes) || other.notes == notes));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MeasurementEntry&&(identical(other.id, id) || other.id == id)&&(identical(other.categoryId, categoryId) || other.categoryId == categoryId)&&(identical(other.date, date) || other.date == date)&&(identical(other.value, value) || other.value == value)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.source, source) || other.source == source)&&(identical(other.externalId, externalId) || other.externalId == externalId)&&const DeepCollectionEquality().equals(other.extraData, extraData));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,categoryId,date,value,notes);
+int get hashCode => Object.hash(runtimeType,id,categoryId,date,value,notes,source,externalId,const DeepCollectionEquality().hash(extraData));
 
 @override
 String toString() {
-  return 'MeasurementEntry(id: $id, categoryId: $categoryId, date: $date, value: $value, notes: $notes)';
+  return 'MeasurementEntry(id: $id, categoryId: $categoryId, date: $date, value: $value, notes: $notes, source: $source, externalId: $externalId, extraData: $extraData)';
 }
 
 
@@ -46,7 +54,7 @@ abstract mixin class $MeasurementEntryCopyWith<$Res>  {
   factory $MeasurementEntryCopyWith(MeasurementEntry value, $Res Function(MeasurementEntry) _then) = _$MeasurementEntryCopyWithImpl;
 @useResult
 $Res call({
- String? id, String categoryId, DateTime date, num value, String notes
+ String? id, String categoryId, DateTime date, num value, String notes, String source, String? externalId, Map<String, dynamic>? extraData
 });
 
 
@@ -63,14 +71,17 @@ class _$MeasurementEntryCopyWithImpl<$Res>
 
 /// Create a copy of MeasurementEntry
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? categoryId = null,Object? date = null,Object? value = null,Object? notes = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? categoryId = null,Object? date = null,Object? value = null,Object? notes = null,Object? source = null,Object? externalId = freezed,Object? extraData = freezed,}) {
   return _then(MeasurementEntry(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String?,categoryId: null == categoryId ? _self.categoryId : categoryId // ignore: cast_nullable_to_non_nullable
 as String,date: null == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
 as DateTime,value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
 as num,notes: null == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
-as String,
+as String,source: null == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
+as String,externalId: freezed == externalId ? _self.externalId : externalId // ignore: cast_nullable_to_non_nullable
+as String?,extraData: freezed == extraData ? _self.extraData : extraData // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>?,
   ));
 }
 

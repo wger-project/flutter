@@ -105,10 +105,6 @@
     "cancel": "Abbrechen",
     "save": "Speichern",
     "description": "Beschreibung",
-    "newSet": "Neuer Satz",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
-    },
     "newDay": "Neuer Tag",
     "workoutSession": "Trainingseinheit",
     "@workoutSession": {
@@ -326,16 +322,6 @@
             }
         }
     },
-    "imageFormatNotSupportedDetail": "{imageFormat}-Bilder werden noch nicht unterstützt.",
-    "@imageFormatNotSupportedDetail": {
-        "description": "Label shown on the image preview container when image format is not supported",
-        "type": "text",
-        "placeholders": {
-            "imageFormat": {
-                "type": "String"
-            }
-        }
-    },
     "chooseFromLibrary": "Wähle aus der Bibliothek",
     "takePicture": "Bild aufnehmen",
     "selectImage": "Bitte wähle ein Bild aus",
@@ -417,6 +403,9 @@
         "description": "The value of a measurement entry"
     },
     "measurementCategoriesHelpText": "Messkategorie, z. B. „Bizeps“ oder „Körperfett“",
+    "whatToTrack": "Was möchtest du aufzeichnen?",
+    "customMeasurement": "Eigene Messung",
+    "metricAlreadyTracked": "Wird bereits aufgezeichnet",
     "measurementEntriesHelpText": "Die Einheit, die verwendet wird, um die Kategorie zu messen, wie z.B. „cm“ oder „%“",
     "fatShort": "F",
     "@fatShort": {
@@ -675,7 +664,7 @@
     "noIngredientsDefined": "Noch keine Zutaten definiert",
     "ingredientLogged": "Zutat im Tagebuch protokolliert",
     "selectMealToLog": "Wähle eine Mahlzeit, um sie im Tagebuch zu protokollieren",
-    "chartAllTimeTitle": "{name} aller Zeiten",
+    "chartAllTimeTitle": "{name}, gesamt",
     "@chartAllTimeTitle": {
         "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
         "type": "text",
@@ -685,25 +674,12 @@
             }
         }
     },
-    "chart30DaysTitle": "{name} der letzten 30 Tage",
+    "chart30DaysTitle": "{name}, letzte 30 Tage",
     "@chart30DaysTitle": {
         "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
         "type": "text",
         "placeholders": {
             "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chartDuringPlanTitle": "{chartName} während des Ernährungsplans {planName}",
-    "@chartDuringPlanTitle": {
-        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-        "type": "text",
-        "placeholders": {
-            "chartName": {
-                "type": "String"
-            },
-            "planName": {
                 "type": "String"
             }
         }
@@ -838,6 +814,7 @@
     "@indicatorAvg": {
         "description": "added for localization of Class Indicator's field text"
     },
+    "indicatorTrend": "Trend",
     "themeMode": "Theme Modus",
     "lightMode": "Immer Hellmodus",
     "systemMode": "Systemeinstellungen",
@@ -883,7 +860,6 @@
         "description": "When a nutrition plan has no pre-defined end date"
     },
     "overview": "Überblick",
-    "identicalExercisePleaseDiscard": "Wenn Sie eine Übung entdecken, die mit der von Ihnen hinzugefügten identisch ist, verwerfen Sie bitte Ihren Entwurf und bearbeiten Sie stattdessen diese Übung.",
     "checkInformationBeforeSubmitting": "Bitte überprüfe, ob die eingegebenen Informationen korrekt sind, bevor du die Übung abschickst",
     "imageDetailsTitle": "Bilddetails",
     "@imageDetailsTitle": {
@@ -971,7 +947,6 @@
             }
         }
     },
-    "superset": "Supersatz",
     "isVegan": "Vegan",
     "isVegetarian": "Vegetarisch",
     "filter": "Filtern",
@@ -1157,6 +1132,35 @@
     "endBeforeStart": "Der Endwert darf nicht vor dem Startwert liegen",
     "minLengthRoutine": "Die Routine muss mindestens {number} Wochen lang sein",
     "maxLengthRoutine": "Die Routine darf maximal {number} Wochen lang sein",
+    "metricType": "Metrik-Typ",
+    "reorderCategories": "Kategorien neu anordnen",
+    "metricCustom": "Benutzerdefiniert",
+    "metricBodyWeight": "Körpergewicht",
+    "metricBodyFat": "Körperfett",
+    "metricHeight": "Körpergröße",
+    "metricBloodPressure": "Blutdruck",
+    "metricBloodPressureSystolic": "Systolisch",
+    "metricBloodPressureDiastolic": "Diastolisch",
+    "metricHeartRate": "Herzfrequenz",
+    "metricRestingHeartRate": "Ruhepuls",
+    "metricSteps": "Schritte",
+    "metricDistance": "Distanz",
+    "metricEnergy": "Energie",
+    "metricSleep": "Schlaf",
+    "metricSleepTotal": "Gesamtschlaf",
+    "metricSleepLight": "Leichtschlaf",
+    "metricSleepDeep": "Tiefschlaf",
+    "metricSleepRem": "REM-Schlaf",
+    "metricSleepAwake": "Wach",
+    "noDataAvailable": "Keine Daten vorhanden",
+    "partOfGroup": "Teil der Gruppe",
+    "noGroup": "Keine Gruppe",
+    "healthSync": "Health-Synchronisation",
+    "healthSyncDescription": "Importiert Körpermesswerte aus Apple Health oder Health Connect",
+    "healthSyncSuccess": "{count} Messwerte aus Health importiert",
+    "health": "Gesundheit",
+    "importedEntry": "Dieser Eintrag wurde aus einer Health-App synchronisiert und kann nur dort geändert werden",
+    "healthSyncPermissionDenied": "Zugriff auf die Gesundheitsdaten wurde nicht gewährt",
     "gymModeLogScope": "Frühere Protokolle",
     "gymModeLogScopeHelp": "Welche Protokolle beim Training als Referenz angezeigt werden",
     "gymModeLogScopeCurrentRoutine": "Aktuelle Routine",
@@ -1166,5 +1170,39 @@
     "allowSelfSignedCertsTitle": "Selbstsignierte Zertifikate erlauben",
     "allowSelfSignedCertsDetail": "Deaktiviert die Validierung des TLS-Zertifikats. Aktiviere das nur für einen Server, dem du vertraust.",
     "certsNotVerifiedTitle": "Zertifikatsvalidierung ist deaktiviert",
-    "certsNotVerifiedDetail": "Zertifikate für {host} werden nicht geprüft. Zum Ändern melde dich ab und passe die Option im Anmeldebildschirm an."
+    "certsNotVerifiedDetail": "Zertifikate für {host} werden nicht geprüft. Zum Ändern melde dich ab und passe die Option im Anmeldebildschirm an.",
+    "chartLastYearTitle": "{name}, letztes Jahr",
+    "chartLast3MonthsTitle": "{name}, letzte 3 Monate",
+    "chartRangeAll": "Gesamt",
+    "chartRangeMonths": "{count, plural, one{1 Monat} other{{count} Monate}}",
+    "chartRangeYears": "{count, plural, one{1 Jahr} other{{count} Jahre}}",
+    "chartType": "Diagrammtyp",
+    "chartTypeAuto": "Automatisch",
+    "chartTypeLine": "Linie",
+    "chartTypeBar": "Balken",
+    "chartTypeHeatmap": "Heatmap",
+    "chartTypeDelta": "Veränderung",
+    "chartWeeklyChangeTitle": "{name}, Veränderung pro Woche",
+    "chartTrend": "Trendlinie",
+    "trendReactive": "Reaktiv",
+    "trendBalanced": "Ausgewogen",
+    "trendSluggish": "Geglättet",
+    "chartAverageWindow": "Durchschnitt über",
+    "chartAverageWindowDays": "{days, plural, one{1 Tag} other{{days} Tage}}",
+    "chartTypeDistribution": "Verteilung",
+    "chartDistributionTitle": "{name}, Verteilung",
+    "distributionMedian": "Median",
+    "distributionLatest": "Aktuell",
+    "distributionEntryCount": "{count, plural, one{1 Eintrag} other{{count} Einträge}}",
+    "distributionDayCount": "{count, plural, one{1 Tag} other{{count} Tage}}",
+    "healthSyncNoData": "Es wurden keine Gesundheitsdaten gefunden. Prüfe in {platform}, ob wger deine Daten lesen darf.",
+    "healthSyncStatus": "{count, plural, =0{Letzter Abgleich: {time}, keine neuen Einträge} one{Letzter Abgleich: {time}, 1 neuer Eintrag} other{Letzter Abgleich: {time}, {count} neue Einträge}}",
+    "healthSyncSyncing": "Gesundheitsdaten werden synchronisiert …",
+    "healthSyncNow": "Jetzt synchronisieren",
+    "healthSyncPermissionMissing": "{platform} gibt deine Daten nicht frei",
+    "healthSyncGrantAccess": "Zum erneuten Erlauben antippen",
+    "healthSyncFailed": "Der letzte Abgleich konnte nicht abgeschlossen werden",
+    "healthConnectInstall": "Health Connect installieren",
+    "healthConnectUpdate": "Health Connect aktualisieren",
+    "healthConnectRequired": "Health Connect wird benötigt, um Körpermesswerte zu importieren"
 }

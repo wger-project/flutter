@@ -50,49 +50,203 @@ class _MeasurementCategoryFormState extends ConsumerState<MeasurementCategoryFor
 
   @override
   Widget build(BuildContext context) {
+    // A category with children is a group whatever its metric type says, which
+    // is also how the charts decide. Both the chart type and the parent are
+    // meaningless for one
+    final categories = ref.watch(measurementCategoriesProvider).value ?? const [];
+    final hasChildren = _draft.id != null && categories.any((c) => c.parentId == _draft.id);
+    // Which categories hold entries, for the group check below: the map has a
+    // key exactly for those, and is loaded for the screens anyway
+    final withEntries = ref.watch(latestMeasurementEntriesProvider).value ?? const {};
+
+    // What the chart type picker offers: no override, plus what this metric
+    // type may be drawn as. Empty for a group, whose chart follows from what
+    // its components are to each other rather than from a preference
+    final chartTypes = hasChildren || _draft.metricType.availableChartTypes.isEmpty
+        ? const <ChartType>[]
+        : [ChartType.auto, ..._draft.metricType.availableChartTypes];
+
+    // Name and unit belong to the user only for a free-form category. A typed
+    // one takes both from its metric type, which is also what is shown for it
+    final isCustom = _draft.metricType == MetricType.custom;
+
+    // The trend line and the moving average are parts of the line chart: a
+    // category that can never be drawn as one is not offered them at all, and
+    // one that is currently drawn as something else keeps its settings but
+    // cannot change them
+    final canDrawLine =
+        !hasChildren && _draft.metricType.availableChartTypes.contains(ChartType.line);
+    final drawsLine = _draft.metricType.resolveChartType(_draft.chartType) == ChartType.line;
+    final settings = _draft.chartSettings;
+
     return Form(
       key: _form,
       child: Column(
         children: [
           // Name
-          TextFormField(
-            initialValue: _draft.name,
-            decoration: InputDecoration(
-              labelText: AppLocalizations.of(context).name,
-              helperText: AppLocalizations.of(context).measurementCategoriesHelpText,
+          if (isCustom)
+            TextFormField(
+              initialValue: _draft.name,
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context).name,
+                helperText: AppLocalizations.of(context).measurementCategoriesHelpText,
+              ),
+              maxLength: MeasurementCategory.maxNameChars,
+              onSaved: (value) => _draft = _draft.copyWith(name: value ?? ''),
+              validator: (value) {
+                final i18n = AppLocalizations.of(context);
+                if (value!.isEmpty) {
+                  return i18n.enterValue;
+                }
+                if (value.length > MeasurementCategory.maxNameChars) {
+                  return i18n.enterMaxCharacters(MeasurementCategory.maxNameChars.toString());
+                }
+                return null;
+              },
             ),
-            maxLength: MeasurementCategory.maxNameChars,
-            onSaved: (value) => _draft = _draft.copyWith(name: value ?? ''),
-            validator: (value) {
-              final i18n = AppLocalizations.of(context);
-              if (value!.isEmpty) {
-                return i18n.enterValue;
-              }
-              if (value.length > MeasurementCategory.maxNameChars) {
-                return i18n.enterMaxCharacters(MeasurementCategory.maxNameChars.toString());
-              }
-              return null;
-            },
-          ),
 
           // Unit
-          TextFormField(
-            initialValue: _draft.unit,
-            decoration: InputDecoration(
-              labelText: AppLocalizations.of(context).unit,
-              helperText: AppLocalizations.of(context).measurementEntriesHelpText,
+          if (isCustom)
+            TextFormField(
+              initialValue: _draft.unit,
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context).unit,
+                helperText: AppLocalizations.of(context).measurementEntriesHelpText,
+              ),
+              maxLength: MeasurementCategory.maxUnitChars,
+              onSaved: (value) => _draft = _draft.copyWith(unit: value ?? ''),
+              validator: (value) {
+                final i18n = AppLocalizations.of(context);
+                if (value!.isEmpty) {
+                  return i18n.enterValue;
+                }
+                if (value.length > MeasurementCategory.maxUnitChars) {
+                  return i18n.enterMaxCharacters(MeasurementCategory.maxUnitChars.toString());
+                }
+                return null;
+              },
             ),
-            maxLength: MeasurementCategory.maxUnitChars,
-            onSaved: (value) => _draft = _draft.copyWith(unit: value ?? ''),
-            validator: (value) {
-              final i18n = AppLocalizations.of(context);
-              if (value!.isEmpty) {
-                return i18n.enterValue;
+
+          // The metric type is picked when the category is created (see
+          // MetricPickerSheet) and fixed from then on: the key of a typed
+          // category is derived from it, and the server refuses a change
+
+          // Chart type. Only the shapes that are a matter of taste are offered,
+          // and only those the metric type can actually be drawn as; a group
+          // gets none, its chart follows from what its components are
+          if (chartTypes.isNotEmpty)
+            DropdownButtonFormField(
+              // A type stored by a client that offers more of them than this
+              // one falls back to the derived chart, so it shows as automatic
+              initialValue: chartTypes.contains(_draft.chartType)
+                  ? _draft.chartType
+                  : ChartType.auto,
+              decoration: InputDecoration(labelText: AppLocalizations.of(context).chartType),
+              items: chartTypes
+                  .map((t) => DropdownMenuItem(value: t, child: Text(t.localized(context))))
+                  .toList(),
+              onChanged: (value) {
+                if (value != null) {
+                  setState(() {
+                    _draft = _draft.copyWith(chartType: value);
+                  });
+                }
+              },
+            ),
+
+          // Trend character and average window, disabled while the category is
+          // drawn as something that has neither
+          if (canDrawLine) ...[
+            DropdownButtonFormField<TrendCharacter>(
+              initialValue: settings.trend,
+              decoration: InputDecoration(labelText: AppLocalizations.of(context).chartTrend),
+              items: TrendCharacter.values
+                  .map((t) => DropdownMenuItem(value: t, child: Text(t.localized(context))))
+                  .toList(),
+              onChanged: drawsLine
+                  ? (value) {
+                      if (value != null) {
+                        setState(() {
+                          _draft = _draft.withChartSetting('trend', value.wireValue);
+                        });
+                      }
+                    }
+                  : null,
+            ),
+            DropdownButtonFormField<int>(
+              initialValue: settings.averageWindow,
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context).chartAverageWindow,
+              ),
+              items: ChartSettings.averageWindows
+                  .map(
+                    (days) => DropdownMenuItem(
+                      value: days,
+                      child: Text(AppLocalizations.of(context).chartAverageWindowDays(days)),
+                    ),
+                  )
+                  .toList(),
+              onChanged: drawsLine
+                  ? (value) {
+                      if (value != null) {
+                        setState(() {
+                          _draft = _draft.withChartSetting('average_window', value);
+                        });
+                      }
+                    }
+                  : null,
+            ),
+          ],
+
+          // Parent group (multi-value measurements, e.g. blood pressure).
+          // Mirrors the server rules: only top-level, entry-free categories
+          // can be parents, a category with children cannot be nested, a typed
+          // category stays top-level, and a group takes only its own
+          // components (which it is created with).
+          Builder(
+            builder: (context) {
+              if (hasChildren || _draft.metricType != MetricType.custom) {
+                return const SizedBox.shrink();
               }
-              if (value.length > MeasurementCategory.maxUnitChars) {
-                return i18n.enterMaxCharacters(MeasurementCategory.maxUnitChars.toString());
+
+              final candidates = categories
+                  .where(
+                    (c) =>
+                        c.parentId == null &&
+                        c.id != _draft.id &&
+                        !withEntries.containsKey(c.id) &&
+                        !c.isOfficialBodyWeight &&
+                        !c.metricType.isGroup,
+                  )
+                  .toList();
+              if (candidates.isEmpty) {
+                return const SizedBox.shrink();
               }
-              return null;
+
+              final initialParent = candidates.any((c) => c.id == _draft.parentId)
+                  ? _draft.parentId
+                  : null;
+
+              return DropdownButtonFormField<String?>(
+                initialValue: initialParent,
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context).partOfGroup,
+                ),
+                items: [
+                  DropdownMenuItem<String?>(
+                    value: null,
+                    child: Text(AppLocalizations.of(context).noGroup),
+                  ),
+                  ...candidates.map(
+                    (c) => DropdownMenuItem<String?>(value: c.id, child: Text(c.name)),
+                  ),
+                ],
+                onChanged: (value) {
+                  setState(() {
+                    _draft = _draft.copyWith(parentId: value);
+                  });
+                },
+              );
             },
           ),
           FormSubmitButton(
@@ -157,24 +311,17 @@ class _MeasurementEntryFormState extends ConsumerState<MeasurementEntryForm> {
   @override
   Widget build(BuildContext context) {
     final notifier = ref.read(measurementProvider.notifier);
-    final Future<MeasurementCategory?> categoryFuture = notifier.getCategoryById(
-      widget._categoryId,
-    );
+    // Watched rather than read once: the form only needs name, unit and the
+    // limits, and a re-emission leaves the fields it does not feed alone
+    final categoryAsync = ref.watch(measurementCategoryProvider(widget._categoryId));
 
-    return FutureBuilder(
-      future: categoryFuture,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const BoxedProgressIndicator();
-        }
-        if (snapshot.hasError) {
-          return StreamErrorIndicator(snapshot.error.toString());
-        }
-        if (!snapshot.hasData || snapshot.data == null) {
+    return categoryAsync.when(
+      loading: () => const BoxedProgressIndicator(),
+      error: (error, _) => StreamErrorIndicator(error.toString()),
+      data: (category) {
+        if (category == null) {
           return const Text('Category not found');
         }
-
-        final category = snapshot.data!;
 
         return Form(
           key: _form,
@@ -214,8 +361,8 @@ class _MeasurementEntryFormState extends ConsumerState<MeasurementEntryForm> {
                 labelText: AppLocalizations.of(context).value,
                 suffixText: category.unit,
                 isRequired: true,
-                min: MeasurementEntry.minValue,
-                max: MeasurementEntry.maxValue,
+                min: category.metricType.limits(category.unit).min,
+                max: category.metricType.limits(category.unit).max,
                 onChanged: (value) => _value = value,
               ),
               // Notes
@@ -247,12 +394,18 @@ class _MeasurementEntryFormState extends ConsumerState<MeasurementEntryForm> {
                   }
                   _form.currentState!.save();
 
+                  // Source, external id and extra data are not editable; keep
+                  // the existing values so edits to imported entries stay
+                  // deduplicable and the entered unit survives
                   final entry = MeasurementEntry(
                     id: _existingId,
                     categoryId: category.id!,
                     date: _date,
                     value: _value!,
                     notes: _notes,
+                    source: widget._entry?.source ?? 'user',
+                    externalId: widget._entry?.externalId,
+                    extraData: widget._entry?.extraData,
                   );
                   if (entry.id == null) {
                     await notifier.addEntry(entry);
@@ -269,6 +422,101 @@ class _MeasurementEntryFormState extends ConsumerState<MeasurementEntryForm> {
           ),
         );
       },
+    );
+  }
+}
+
+/// Entry form for a multi-value group (e.g. blood pressure): one value field
+/// per component, saved as one entry per component with a shared timestamp.
+class GroupMeasurementEntryForm extends ConsumerStatefulWidget {
+  final MeasurementCategory _group;
+
+  const GroupMeasurementEntryForm(this._group);
+
+  @override
+  ConsumerState<GroupMeasurementEntryForm> createState() => _GroupMeasurementEntryFormState();
+}
+
+class _GroupMeasurementEntryFormState extends ConsumerState<GroupMeasurementEntryForm> {
+  final _form = GlobalKey<FormState>();
+
+  DateTime _date = DateTime.now();
+  late final Map<String, num?> _values = {
+    for (final child in widget._group.children) child.id!: null,
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: _form,
+      child: Column(
+        children: [
+          // Date and time are shared by all components of the reading
+          DateInputWidget(
+            value: _date,
+            labelText: AppLocalizations.of(context).date,
+            firstDate: DateTime(DateTime.now().year - 10),
+            lastDate: DateTime.now(),
+            onChanged: (date) {
+              _date = _date.copyWith(
+                year: date.year,
+                month: date.month,
+                day: date.day,
+              );
+            },
+          ),
+          TimeInputWidget(
+            value: TimeOfDay.fromDateTime(_date),
+            labelText: AppLocalizations.of(context).time,
+            onChanged: (time) {
+              _date = _date.copyWith(
+                hour: time.hour,
+                minute: time.minute,
+                second: 0,
+              );
+            },
+          ),
+
+          // One value field per component, each bounded by its own type:
+          // systolic and diastolic do not share a range
+          for (final child in widget._group.children)
+            DecimalInputWidget(
+              value: _values[child.id],
+              labelText: child.displayName(context),
+              suffixText: child.unit.isNotEmpty ? child.unit : widget._group.unit,
+              isRequired: true,
+              min: child.metricType.limits(child.unit).min,
+              max: child.metricType.limits(child.unit).max,
+              onChanged: (value) => _values[child.id!] = value,
+            ),
+
+          FormSubmitButton(
+            label: AppLocalizations.of(context).save,
+            onPressed: () async {
+              if (!_form.currentState!.validate()) {
+                return;
+              }
+              _form.currentState!.save();
+
+              final entries = widget._group.children
+                  .map(
+                    (child) => MeasurementEntry(
+                      categoryId: child.id!,
+                      date: _date,
+                      value: _values[child.id]!,
+                      notes: '',
+                    ),
+                  )
+                  .toList();
+              await ref.read(measurementProvider.notifier).addGroupEntries(entries);
+
+              if (context.mounted) {
+                Navigator.of(context).pop();
+              }
+            },
+          ),
+        ],
+      ),
     );
   }
 }

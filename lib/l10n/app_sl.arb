@@ -315,10 +315,6 @@
     "routineDays": "Dnevi v rutini",
     "resultingRoutine": "Končna rutina",
     "newDay": "Nov dan",
-    "newSet": "Nov niz",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
-    },
     "personalRecords": "Osebni rekordi",
     "gymMode": "Način telovadbe",
     "@gymMode": {
@@ -497,19 +493,6 @@
         "type": "text",
         "placeholders": {
             "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chartDuringPlanTitle": "{chartName} – med prehranskim načrtom {planName}",
-    "@chartDuringPlanTitle": {
-        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-        "type": "text",
-        "placeholders": {
-            "chartName": {
-                "type": "String"
-            },
-            "planName": {
                 "type": "String"
             }
         }

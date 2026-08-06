@@ -22,31 +22,34 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/core/form_screen.dart';
 import 'package:wger/features/account/providers/user_profile_repository.dart';
+import 'package:wger/features/measurements/providers/measurement_repository.dart';
+import 'package:wger/features/measurements/screens/weight_screen.dart';
 import 'package:wger/features/nutrition/providers/ingredient_repository.dart';
 import 'package:wger/features/nutrition/providers/nutrition_notifier.dart';
 import 'package:wger/features/nutrition/providers/nutrition_repository.dart';
-import 'package:wger/features/weight/providers/body_weight_repository.dart';
-import 'package:wger/features/weight/screens/weight_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/theme/theme.dart';
 
 import '../../test_data/body_weight.dart';
-import '../../test_data/nutritional_plans.dart';
 import '../../test_data/profile.dart';
+import '../../test_data/screenshots/weight.dart';
+import '../helpers/measurement_repository_stubs.dart';
 import 'screenshots_06_weight.mocks.dart';
 
 @GenerateMocks([
-  BodyWeightRepository,
+  MeasurementRepository,
   UserProfileRepository,
   NutritionRepository,
   IngredientRepository,
 ])
 Widget createWeightScreen({Locale? locale}) {
   locale ??= const Locale('en');
-  final mockBodyWeightRepository = MockBodyWeightRepository();
-  when(
-    mockBodyWeightRepository.watchAllDrift(),
-  ).thenAnswer((_) => Stream.value(getScreenshotWeightEntries()));
+  final mockMeasurementRepository = MockMeasurementRepository();
+  stubMeasurementReads(
+    mockMeasurementRepository,
+    [getBodyWeightCategory()],
+    getScreenshotBodyWeightEntries(),
+  );
 
   final mockUserProfileRepository = MockUserProfileRepository();
   when(
@@ -59,15 +62,16 @@ Widget createWeightScreen({Locale? locale}) {
 
   final container = ProviderContainer(
     overrides: [
-      bodyWeightRepositoryProvider.overrideWithValue(mockBodyWeightRepository),
+      measurementRepositoryProvider.overrideWithValue(mockMeasurementRepository),
       userProfileRepositoryProvider.overrideWithValue(mockUserProfileRepository),
       nutritionRepositoryProvider.overrideWithValue(mockNutritionRepo),
       ingredientRepositoryProvider.overrideWithValue(mockIngredientRepo),
     ],
   );
-  // Seed the nutrition notifier with a plan so the weight overview can show it.
+  // Seed the nutrition notifier with the plans behind the weight phases, so
+  // the chart shows their periods as bands.
   container.read(nutritionProvider.notifier).state = AsyncData(
-    NutritionState(plans: [getNutritionalPlan()]),
+    NutritionState(plans: getScreenshotWeightPlans()),
   );
 
   return MediaQuery(

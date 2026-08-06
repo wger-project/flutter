@@ -135,10 +135,6 @@
   },
   "newDay": "יום חדש",
   "@newDay": {},
-  "newSet": "סט חדש",
-  "@newSet": {
-    "description": "Header when adding a new set to a workout day"
-  },
   "plateCalculator": "צלחות",
   "@plateCalculator": {
     "description": "Label used for the plate calculator in the gym mode"
@@ -874,19 +870,6 @@
     "type": "text",
     "placeholders": {
       "name": {
-        "type": "String"
-      }
-    }
-  },
-  "chartDuringPlanTitle": "{chartName} במסגרת התוכנית התזונתית {planName}",
-  "@chartDuringPlanTitle": {
-    "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-    "type": "text",
-    "placeholders": {
-      "chartName": {
-        "type": "String"
-      },
-      "planName": {
         "type": "String"
       }
     }

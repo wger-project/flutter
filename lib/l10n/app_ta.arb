@@ -11,10 +11,6 @@
             }
         }
     },
-    "newSet": "புதிய தொகுப்பு",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
-    },
     "gymMode": "சிம் பயன்முறை",
     "@gymMode": {
         "description": "Label when starting the gym mode"
@@ -313,19 +309,6 @@
         "type": "text",
         "placeholders": {
             "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chartDuringPlanTitle": "{chartName}ஊட்டச்சத்து திட்டத்தின்போது {planName}",
-    "@chartDuringPlanTitle": {
-        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-        "type": "text",
-        "placeholders": {
-            "chartName": {
-                "type": "String"
-            },
-            "planName": {
                 "type": "String"
             }
         }

@@ -20,27 +20,31 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
-import 'package:wger/features/measurements/models/measurement_category.dart';
+import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
 import 'package:wger/features/measurements/screens/measurement_categories_screen.dart';
 import 'package:wger/features/measurements/widgets/charts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 import '../../../../test_data/measurements.dart';
+import '../../../helpers/measurement_chart_buckets.dart';
+import '../../../helpers/measurement_repository_stubs.dart';
 import 'measurement_categories_screen_test.mocks.dart';
 
 @GenerateMocks([MeasurementRepository])
 void main() {
   Widget createMeasurementScreen({locale = 'en'}) {
+    final categories = [...getMeasurementCategories(), ...getBloodPressureGroup()];
+    final entries = {...getMeasurementEntries(), ...getBloodPressureEntries()};
     final mockRepo = MockMeasurementRepository();
-    when(
-      mockRepo.watchAll(),
-    ).thenAnswer((_) => Stream<List<MeasurementCategory>>.value(getMeasurementCategories()));
+    stubMeasurementReads(mockRepo, categories, entries);
 
     return ProviderScope(
       overrides: [
         measurementRepositoryProvider.overrideWithValue(mockRepo),
+        // The charts read their points from the aggregated query
+        measurementChartBucketsProvider.overrideWith(chartBucketsFrom(entries)),
+        measurementGroupBucketsProvider.overrideWith(groupBucketsFrom(categories, entries)),
       ],
       child: MaterialApp(
         locale: Locale(locale),
@@ -52,13 +56,19 @@ void main() {
   }
 
   testWidgets('Test the widgets on the measurement category screen', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(800, 2200);
+    tester.view.devicePixelRatio = 1.0;
+
     await tester.pumpWidget(createMeasurementScreen());
     await tester.pumpAndSettle();
 
     expect(find.text('Measurements'), findsOneWidget);
     expect(find.text('Body fat'), findsOneWidget);
     expect(find.text('Biceps'), findsOneWidget);
-    expect(find.byType(Card), findsNWidgets(2));
-    expect(find.byType(MeasurementChartWidgetFl), findsNWidgets(2));
+    expect(find.text('Blood pressure'), findsOneWidget);
+    expect(find.text('Systolic'), findsOneWidget);
+    expect(find.text('Diastolic'), findsOneWidget);
+    expect(find.byType(ListTile), findsNWidgets(2)); // Systolic , Diastolic
+    expect(find.byType(MeasurementChartWidgetFl), findsNWidgets(2)); // Body fat, Biceps
   });
 }

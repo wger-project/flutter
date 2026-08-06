@@ -27,12 +27,12 @@ import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/core/network/network_provider.dart';
+import 'package:wger/features/measurements/providers/measurement_repository.dart';
 import 'package:wger/features/nutrition/models/ingredient.dart';
 import 'package:wger/features/nutrition/models/nutritional_plan.dart';
 import 'package:wger/features/nutrition/providers/ingredient_repository.dart';
 import 'package:wger/features/nutrition/providers/nutrition_repository.dart';
 import 'package:wger/features/nutrition/screens/nutritional_plan_screen.dart';
-import 'package:wger/features/weight/providers/body_weight_repository.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 import '../../../../test_data/body_weight.dart';
@@ -40,29 +40,32 @@ import '../../../../test_data/nutritional_plans.dart';
 import '../../../fake_auth_environment.dart';
 import '../../../fake_connectivity.dart';
 import '../../../fixtures/fixture_reader.dart';
+import '../../../helpers/measurement_repository_stubs.dart';
 import 'nutritional_plan_screen_test.mocks.dart';
 
 @GenerateMocks([
   NutritionRepository,
   IngredientRepository,
   http.Client,
-  BodyWeightRepository,
+  MeasurementRepository,
 ])
 void main() {
   installFakeConnectivity();
   installFakeAuthEnvironment();
 
-  late BodyWeightRepository mockBodyWeightRepository;
+  late MockMeasurementRepository mockMeasurementRepository;
   late MockNutritionRepository mockNutritionRepo;
   late MockIngredientRepository mockIngredientRepo;
 
   late Ingredient fetchedIngredient;
 
   setUp(() {
-    mockBodyWeightRepository = MockBodyWeightRepository();
-    when(
-      mockBodyWeightRepository.watchAllDrift(),
-    ).thenAnswer((_) => Stream.value([testWeightEntry1]));
+    mockMeasurementRepository = MockMeasurementRepository();
+    stubMeasurementReads(
+      mockMeasurementRepository,
+      [getBodyWeightCategory()],
+      bodyWeightEntries([testWeightEntry1]),
+    );
 
     mockNutritionRepo = MockNutritionRepository();
     mockIngredientRepo = MockIngredientRepository();
@@ -94,7 +97,7 @@ void main() {
     final container = ProviderContainer(
       overrides: [
         networkStatusProvider.overrideWithValue(isOnline),
-        bodyWeightRepositoryProvider.overrideWithValue(mockBodyWeightRepository),
+        measurementRepositoryProvider.overrideWithValue(mockMeasurementRepository),
         nutritionRepositoryProvider.overrideWithValue(mockNutritionRepo),
         ingredientRepositoryProvider.overrideWithValue(mockIngredientRepo),
       ],

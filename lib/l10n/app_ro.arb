@@ -254,10 +254,6 @@
     },
     "anErrorOccurred": "A apărut o eroare!",
     "timeStartAhead": "Ora de începere nu poate fi după ora de finalizare",
-    "newSet": "Serie nouă",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
-    },
     "measurement": "Măsurătoare",
     "measurementCategoriesHelpText": "Categoria de măsurătoare, cum ar fi 'biceps' sau 'grăsime corporală'",
     "date": "Dată",
@@ -434,19 +430,6 @@
         "type": "text",
         "placeholders": {
             "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chartDuringPlanTitle": "{chartName} pe durata planului nutrițional {planName}",
-    "@chartDuringPlanTitle": {
-        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-        "type": "text",
-        "placeholders": {
-            "chartName": {
-                "type": "String"
-            },
-            "planName": {
                 "type": "String"
             }
         }
@@ -751,7 +734,6 @@
     "@close": {
         "description": "Translation for close"
     },
-    "identicalExercisePleaseDiscard": "Dacă observi un exercițiu identic cu cel pe care îl adaugi, te rugăm să renunți la ciornă și să editezi acel exercițiu în schimb.",
     "checkInformationBeforeSubmitting": "Te rugăm să verifici corectitudinea informațiilor introduse înainte de a trimite exercițiul",
     "add_exercise_image_license": "Imaginile trebuie să fie compatibile cu licența CC BY SA. Dacă ai dubii, încarcă doar fotografii făcute de tine.",
     "imageDetailsTitle": "Detalii imagine",
@@ -803,16 +785,6 @@
             }
         }
     },
-    "imageFormatNotSupportedDetail": "Imaginile de tip {imageFormat} nu sunt încă acceptate.",
-    "@imageFormatNotSupportedDetail": {
-        "description": "Label shown on the image preview container when image format is not supported",
-        "type": "text",
-        "placeholders": {
-            "imageFormat": {
-                "type": "String"
-            }
-        }
-    },
     "add": "adaugă",
     "@add": {
         "description": "Add button text"
@@ -852,7 +824,6 @@
     "fitInWeek": "Program săptămânal fix",
     "fitInWeekHelp": "Dacă este activată, zilele se vor repeta într-un ciclu săptămânal, altfel zilele vor urma secvențial, fără a ține cont de începutul unei noi săptămâni.",
     "addSuperset": "Adaugă superset",
-    "superset": "Superset",
     "setHasProgression": "Seria are progresie",
     "setHasProgressionWarning": "Te rugăm să reții că în acest moment nu este posibil să editezi toate setările pentru o serie în aplicația de mobil sau să configurezi progresia automată. Pentru moment, te rugăm să folosești aplicația web.",
     "setHasNoExercises": "Această serie nu are exerciții încă!",

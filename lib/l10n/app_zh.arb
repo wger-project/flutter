@@ -358,10 +358,6 @@
     "@musclesSecondary": {
         "description": "secondary muscles trained by an exercise"
     },
-    "newSet": "新增训练日",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
-    },
     "plateCalculatorNotDivisible": "达不到预定重量",
     "@plateCalculatorNotDivisible": {
         "description": "Error message when the current weight is not reachable with plates (e.g. 33.1 kg)"
@@ -579,19 +575,6 @@
         "type": "text",
         "placeholders": {
             "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chartDuringPlanTitle": "{chartName} 在计划 \"{planName}\" 期间的改变曲线",
-    "@chartDuringPlanTitle": {
-        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-        "type": "text",
-        "placeholders": {
-            "chartName": {
-                "type": "String"
-            },
-            "planName": {
                 "type": "String"
             }
         }

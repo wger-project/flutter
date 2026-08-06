@@ -394,10 +394,6 @@
     "routineDays": "A gyakorlatsor napjai",
     "resultingRoutine": "Eredményül kapott gyakorlatsor",
     "newDay": "Új nap",
-    "newSet": "Új sorozat",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
-    },
     "personalRecords": "Egyéni rekordok",
     "gymMode": "Edzőtermi mód",
     "@gymMode": {
@@ -544,19 +540,6 @@
         "type": "text",
         "placeholders": {
             "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chartDuringPlanTitle": "{chartName} a(z) {planName} táplálkozási terv időszakában",
-    "@chartDuringPlanTitle": {
-        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-        "type": "text",
-        "placeholders": {
-            "chartName": {
-                "type": "String"
-            },
-            "planName": {
                 "type": "String"
             }
         }
@@ -913,7 +896,6 @@
     "@scanBarcode": {
         "description": "Label for scan barcode button"
     },
-    "identicalExercisePleaseDiscard": "Ha olyan gyakorlatot találsz, amely megegyezik az általad hozzáadottal, töröld a piszkozatot, és inkább azt a gyakorlatot szerkeszd.",
     "checkInformationBeforeSubmitting": "A gyakorlat beküldése előtt ellenőrizd, hogy helyesek-e a megadott adatok",
     "add_exercise_image_license": "A képeknek kompatibilisnek kell lenniük a CC BY-SA licenccel. Ha bizonytalan vagy, csak saját készítésű fényképeket tölts fel.",
     "imageDetailsTitle": "Kép részletei",
@@ -965,16 +947,6 @@
             }
         }
     },
-    "imageFormatNotSupportedDetail": "A(z) {imageFormat} formátumú képek még nem támogatottak.",
-    "@imageFormatNotSupportedDetail": {
-        "description": "Label shown on the image preview container when image format is not supported",
-        "type": "text",
-        "placeholders": {
-            "imageFormat": {
-                "type": "String"
-            }
-        }
-    },
     "add": "Hozzáadás",
     "@add": {
         "description": "Add button text"
@@ -1018,7 +990,6 @@
     "fitInWeek": "Rögzített heti ütemezés",
     "fitInWeekHelp": "Ha engedélyezed, a napok heti ciklusban ismétlődnek; ellenkező esetben egymás után következnek, az új hét kezdetétől függetlenül.",
     "addSuperset": "Szuperszett hozzáadása",
-    "superset": "Szuperszett",
     "setHasNoExercises": "Ez a sorozat még nem tartalmaz gyakorlatokat!",
     "contributeExercise": "Gyakorlat beküldése",
     "translateExercise": "Gyakorlat lefordítása most",

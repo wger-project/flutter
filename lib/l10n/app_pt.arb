@@ -92,10 +92,6 @@
         "description": "Comment, additional information"
     },
     "newDay": "Novo dia",
-    "newSet": "Novo set",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
-    },
     "selectExercises": "Se você quiser fazer um conjunto, você pode procurar vários exercícios, eles serão agrupados",
     "todaysWorkout": "Seu treino hoje",
     "addSet": "Adicionar set",
@@ -692,19 +688,6 @@
             }
         }
     },
-    "chartDuringPlanTitle": "{chartName} Durante o plano nutricional {planName}",
-    "@chartDuringPlanTitle": {
-        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-        "type": "text",
-        "placeholders": {
-            "chartName": {
-                "type": "String"
-            },
-            "planName": {
-                "type": "String"
-            }
-        }
-    },
     "loggedToday": "Registrado hoje",
     "chartAllTimeTitle": "{name} de todo o tempo",
     "@chartAllTimeTitle": {
@@ -847,7 +830,6 @@
     },
     "enterTextInLanguage": "Por favor, introduz o texto la linguagem correta!",
     "checkInformationBeforeSubmitting": "Por favor, verifica que a informação introduzida está correta antes de submeter o exercício",
-    "identicalExercisePleaseDiscard": "Se encontrares um exercício igual ao que estás a introduzir, por favor descarta o teu rascunho e edita antes esse exercício.",
     "overview": "Panorama",
     "dashboardWidgets": "Widgets do Painel de Controle",
     "dayTypeCustom": "Personalizado",
@@ -971,21 +953,10 @@
             }
         }
     },
-    "imageFormatNotSupportedDetail": "{imageFormat} Imagens ainda não são suportadas.",
-    "@imageFormatNotSupportedDetail": {
-        "description": "Label shown on the image preview container when image format is not supported",
-        "type": "text",
-        "placeholders": {
-            "imageFormat": {
-                "type": "String"
-            }
-        }
-    },
     "add": "Adicionar texto ao botão",
     "@add": {
         "description": "Add button text"
     },
-    "superset": "Super Série",
     "endWorkout": "Fim do treino",
     "@endWorkout": {
         "description": "Use the imperative, label on button to finish the current workout in gym mode"
