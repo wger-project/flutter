@@ -244,7 +244,7 @@ AsyncValue<List<MeasurementChartEntry>> chartPointsFor(
   final level = chartBucketLevel(category.metricType, category.chartType);
 
   return ref
-      .watch(measurementChartBucketsProvider(category.id!, range.readCutoff, level))
+      .watch(measurementChartBucketsProvider(category.id!, range.readCutoff, null, level))
       .whenData(
         (buckets) => chartEntriesForBuckets(
           buckets,

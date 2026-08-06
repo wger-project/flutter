@@ -28,8 +28,10 @@ import 'package:wger/features/nutrition/screens/nutritional_plan_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/theme/theme.dart';
 
+import '../../test_data/body_weight.dart';
 import '../../test_data/screenshots/nutrition.dart';
 import '../../test_data/screenshots/weight.dart';
+import '../helpers/measurement_repository_stubs.dart';
 import 'screenshots_05_nutritional_plan.mocks.dart';
 
 @GenerateMocks([NutritionRepository, IngredientRepository, MeasurementRepository])
@@ -44,9 +46,11 @@ Widget createNutritionalPlanScreen({Locale? locale}) {
   when(mockIngredientRepo.getById(any)).thenAnswer((_) async => null);
 
   final mockMeasurementRepository = MockMeasurementRepository();
-  when(
-    mockMeasurementRepository.watchAll(),
-  ).thenAnswer((_) => Stream.value([getScreenshotBodyWeightCategory()]));
+  stubMeasurementReads(
+    mockMeasurementRepository,
+    [getBodyWeightCategory()],
+    getScreenshotBodyWeightEntries(),
+  );
 
   final container = ProviderContainer.test(
     overrides: [

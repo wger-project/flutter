@@ -40,6 +40,7 @@ import '../../../../test_data/nutritional_plans.dart';
 import '../../../fake_auth_environment.dart';
 import '../../../fake_connectivity.dart';
 import '../../../fixtures/fixture_reader.dart';
+import '../../../helpers/measurement_repository_stubs.dart';
 import 'nutritional_plan_screen_test.mocks.dart';
 
 @GenerateMocks([
@@ -60,12 +61,10 @@ void main() {
 
   setUp(() {
     mockMeasurementRepository = MockMeasurementRepository();
-    when(
-      mockMeasurementRepository.watchAll(),
-    ).thenAnswer(
-      (_) => Stream.value([
-        getBodyWeightCategory([testWeightEntry1]),
-      ]),
+    stubMeasurementReads(
+      mockMeasurementRepository,
+      [getBodyWeightCategory()],
+      bodyWeightEntries([testWeightEntry1]),
     );
 
     mockNutritionRepo = MockNutritionRepository();

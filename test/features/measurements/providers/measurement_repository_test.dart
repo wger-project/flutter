@@ -45,142 +45,11 @@ void main() {
   Future<void> seedCategoriesAndEntries() async {
     for (final category in getMeasurementCategories()) {
       await db.into(db.measurementCategoryTable).insert(category.toCompanion());
-      for (final entry in category.entries) {
+      for (final entry in getMeasurementEntries()[category.id] ?? const []) {
         await db.into(db.measurementEntryTable).insert(entry.toCompanion());
       }
     }
   }
-
-  group('watchAll', () {
-    test('groups entries under their category', () async {
-      await seedCategoriesAndEntries();
-
-      final emitted = await repo.watchAll().first;
-
-      expect(emitted, hasLength(2));
-      final bodyFat = emitted.firstWhere((c) => c.name == 'Body fat');
-      final biceps = emitted.firstWhere((c) => c.name == 'Biceps');
-      expect(bodyFat.entries, hasLength(6));
-      expect(biceps.entries, hasLength(2));
-      expect(bodyFat.entries.every((e) => e.categoryId == '1'), isTrue);
-      expect(biceps.entries.every((e) => e.categoryId == '2'), isTrue);
-    });
-
-    test('returns categories without entries when no entries exist', () async {
-      // Seed only the categories, no entries.
-      await db
-          .into(db.measurementCategoryTable)
-          .insert(
-            MeasurementCategory(id: '1', name: 'Body fat', unit: '%').toCompanion(),
-          );
-
-      final emitted = await repo.watchAll().first;
-
-      expect(emitted, hasLength(1));
-      expect(emitted.first.entries, isEmpty);
-    });
-
-    test('entriesSince bounds the entries in the query', () async {
-      await db
-          .into(db.measurementCategoryTable)
-          .insert(MeasurementCategory(id: '1', name: 'Body fat', unit: '%').toCompanion());
-      for (final date in [DateTime(2026, 1, 1), DateTime(2026, 6, 1), DateTime(2026, 6, 10)]) {
-        await db
-            .into(db.measurementEntryTable)
-            .insert(
-              MeasurementEntry(
-                id: 'e-${date.toIso8601String()}',
-                categoryId: '1',
-                date: date,
-                value: 20,
-                notes: '',
-              ).toCompanion(),
-            );
-      }
-
-      final emitted = await repo.watchAll(entriesSince: DateTime(2026, 5, 1)).first;
-
-      expect(emitted.single.entries.map((e) => e.date), [
-        DateTime(2026, 6, 10),
-        DateTime(2026, 6, 1),
-      ]);
-    });
-
-    test('a category with no entry in range is still returned', () async {
-      // The bound belongs into the join condition: as a where it would turn
-      // the outer join into an inner one and drop the category entirely
-      await seedCategoriesAndEntries();
-
-      final emitted = await repo.watchAll(entriesSince: DateTime(2100)).first;
-
-      expect(emitted, hasLength(2));
-      expect(emitted.every((c) => c.entries.isEmpty), isTrue);
-    });
-
-    test('emits entries newest first within each category', () async {
-      await seedCategoriesAndEntries();
-
-      final emitted = await repo.watchAll().first;
-
-      final bodyFat = emitted.firstWhere((c) => c.name == 'Body fat');
-      final dates = bodyFat.entries.map((e) => e.date).toList();
-      final sorted = [...dates]..sort((a, b) => b.compareTo(a));
-      expect(dates, sorted);
-    });
-
-    test('re-emits when an entry is added', () async {
-      await seedCategoriesAndEntries();
-      final stream = repo.watchAll();
-      final iter = StreamIterator(stream);
-
-      await iter.moveNext();
-      final initial = iter.current.firstWhere((c) => c.name == 'Body fat').entries.length;
-
-      await repo.addLocalDrift(
-        MeasurementEntry(
-          categoryId: '1',
-          date: DateTime.utc(2027, 1, 1),
-          value: 99,
-          notes: 'fresh',
-        ),
-      );
-
-      await iter.moveNext();
-      expect(
-        iter.current.firstWhere((c) => c.name == 'Body fat').entries,
-        hasLength(initial + 1),
-      );
-
-      await iter.cancel();
-    });
-
-    test('coalesces a burst of writes into one emission', () async {
-      // What an import looks like from here: a Drift stream fires per write, and
-      // rebuilding every category from the join on each of them is the cost
-      await db
-          .into(db.measurementCategoryTable)
-          .insert(MeasurementCategory(id: '1', name: 'Body fat', unit: '%').toCompanion());
-
-      final emissions = <List<MeasurementCategory>>[];
-      final sub = repo.watchAll().listen(emissions.add);
-
-      // The leading emission is not held back: a screen waits for it
-      await Future<void>.delayed(const Duration(milliseconds: 50));
-      expect(emissions, hasLength(1));
-
-      for (var day = 1; day <= 5; day++) {
-        await repo.addLocalDrift(
-          MeasurementEntry(categoryId: '1', date: DateTime.utc(2026, 1, day), value: 20, notes: ''),
-        );
-      }
-      await Future<void>.delayed(const Duration(milliseconds: 400));
-
-      expect(emissions.length, lessThanOrEqualTo(2));
-      expect(emissions.last.single.entries, hasLength(5));
-
-      await sub.cancel();
-    });
-  });
 
   group('watchLatestEntries', () {
     test('returns the newest entry of every category', () async {
@@ -188,11 +57,11 @@ void main() {
 
       final latest = await repo.watchLatestEntries().first;
 
-      final categories = getMeasurementCategories();
-      expect(latest.keys.toSet(), categories.map((c) => c.id).toSet());
-      for (final category in categories) {
-        final newest = category.entries.reduce((a, b) => b.date.isAfter(a.date) ? b : a);
-        expect(latest[category.id]!.id, newest.id);
+      final entries = getMeasurementEntries();
+      expect(latest.keys.toSet(), entries.keys.toSet());
+      for (final MapEntry(key: id, value: ofCategory) in entries.entries) {
+        final newest = ofCategory.reduce((a, b) => b.date.isAfter(a.date) ? b : a);
+        expect(latest[id]!.id, newest.id);
       }
     });
 
@@ -243,14 +112,54 @@ void main() {
     test('a category without entries is absent', () async {
       await db
           .into(db.measurementCategoryTable)
-          .insert(getMeasurementCategories()[0].copyWith(entries: []).toCompanion());
+          .insert(getMeasurementCategories()[0].toCompanion());
 
       expect(await repo.watchLatestEntries().first, isEmpty);
     });
   });
 
   group('watchAllWithoutEntries', () {
-    test('returns the categories and their children, but no entries', () async {
+    test('reads the categories only, so an entry does not re-emit them', () async {
+      // The screens draw from the aggregated queries; rebuilding every
+      // category because a sleep row arrived is the cost that buys nothing
+      await seedCategoriesAndEntries();
+      final emissions = <List<MeasurementCategory>>[];
+      final sub = repo.watchAllWithoutEntries().listen(emissions.add);
+
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+      expect(emissions, hasLength(1));
+
+      await repo.addLocalDrift(
+        MeasurementEntry(categoryId: '1', date: DateTime.utc(2027, 1, 1), value: 99, notes: ''),
+      );
+      await Future<void>.delayed(const Duration(milliseconds: 400));
+
+      expect(emissions, hasLength(1));
+      await sub.cancel();
+    });
+
+    test('coalesces a burst of writes into one emission', () async {
+      final emissions = <List<MeasurementCategory>>[];
+      final sub = repo.watchAllWithoutEntries().listen(emissions.add);
+
+      // The leading emission is not held back: a screen waits for it
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+      expect(emissions, hasLength(1));
+
+      for (var i = 0; i < 5; i++) {
+        await repo.addLocalDriftCategory(
+          MeasurementCategory(id: 'c$i', name: 'Category $i', unit: 'cm'),
+        );
+      }
+      await Future<void>.delayed(const Duration(milliseconds: 400));
+
+      expect(emissions.length, lessThanOrEqualTo(2));
+      expect(emissions.last, hasLength(5));
+
+      await sub.cancel();
+    });
+
+    test('returns the categories and their children', () async {
       await seedCategoriesAndEntries();
       for (final category in getBloodPressureGroup()) {
         await repo.addLocalDriftCategory(category);
@@ -258,11 +167,10 @@ void main() {
 
       final emitted = await repo.watchAllWithoutEntries().first;
 
-      expect(emitted.every((c) => c.entries.isEmpty), isTrue);
       expect(emitted.firstWhere((c) => c.id == 'bp').children.map((c) => c.id), ['sys', 'dia']);
     });
 
-    test('sorts by order before name, like the read with entries', () async {
+    test('sorts by order before name', () async {
       await repo.addLocalDriftCategory(
         MeasurementCategory(id: 'c1', name: 'Aaa', unit: 'cm', order: 5),
       );
@@ -281,7 +189,23 @@ void main() {
       final emitted = await repo.watchCategoryWithoutEntries('bp').first;
 
       expect(emitted!.children.map((c) => c.id), ['sys', 'dia']);
-      expect(emitted.entries, isEmpty);
+    });
+
+    test('watchCategoryWithoutEntries can watch a component on its own', () async {
+      for (final category in getBloodPressureGroup()) {
+        await repo.addLocalDriftCategory(category);
+      }
+
+      final emitted = await repo.watchCategoryWithoutEntries('sys').first;
+
+      expect(emitted!.name, 'Systolic');
+      expect(emitted.children, isEmpty);
+    });
+
+    test('watchCategoryWithoutEntries is null when no category matches', () async {
+      await seedCategoriesAndEntries();
+
+      expect(await repo.watchCategoryWithoutEntries('does-not-exist').first, isNull);
     });
 
     test('getCategoriesOnce returns one snapshot without entries', () async {
@@ -291,11 +215,8 @@ void main() {
 
       expect(
         categories.map((c) => c.id),
-        (await repo.watchAllWithoutEntries().first).map(
-          (c) => c.id,
-        ),
+        (await repo.watchAllWithoutEntries().first).map((c) => c.id),
       );
-      expect(categories.every((c) => c.entries.isEmpty), isTrue);
     });
   });
 
@@ -374,11 +295,7 @@ void main() {
       expect(dates, [...dates]..sort((a, b) => b.compareTo(a)));
       expect(
         dates.first,
-        getMeasurementCategories()[0].entries
-            .map((e) => e.date)
-            .reduce(
-              (a, b) => a.isAfter(b) ? a : b,
-            ),
+        getMeasurementEntries()['1']!.map((e) => e.date).reduce((a, b) => a.isAfter(b) ? a : b),
       );
     });
 
@@ -589,6 +506,33 @@ void main() {
       expect(buckets.map((b) => b.sum), [80]);
     });
 
+    test('until bounds the entries read, excluding its own day', () async {
+      // What a chart of a finished plan period reads: everything after the
+      // last day belongs to no plan
+      await seedEntries([
+        (DateTime(2026, 1, 1, 12), 60),
+        (DateTime(2026, 5, 4, 12), 80),
+      ]);
+
+      final buckets = await repo.watchEntryBuckets('1', until: DateTime(2026, 5, 4)).first;
+
+      expect(buckets.map((b) => b.sum), [60]);
+    });
+
+    test('since and until bound the entries together', () async {
+      await seedEntries([
+        (DateTime(2026, 1, 1, 12), 60),
+        (DateTime(2026, 3, 4, 12), 70),
+        (DateTime(2026, 5, 4, 12), 80),
+      ]);
+
+      final buckets = await repo
+          .watchEntryBuckets('1', since: DateTime(2026, 2, 1), until: DateTime(2026, 4, 1))
+          .first;
+
+      expect(buckets.map((b) => b.sum), [70]);
+    });
+
     test('only the requested category is read', () async {
       await seedEntries([(DateTime(2026, 5, 4, 12), 60)]);
       await db
@@ -617,6 +561,45 @@ void main() {
       await iter.moveNext();
       expect(iter.current, hasLength(2));
       await iter.cancel();
+    });
+  });
+
+  group('watchDailyBuckets', () {
+    test('returns one bucket per day and category, over all of them', () async {
+      await seedCategoriesAndEntries();
+      // Two readings on one day, which the calendar shows as one event
+      await repo.addLocalDrift(
+        MeasurementEntry(
+          id: 'x1',
+          categoryId: '1',
+          date: DateTime(2026, 5, 4, 8),
+          value: 20,
+          notes: '',
+        ),
+      );
+      await repo.addLocalDrift(
+        MeasurementEntry(
+          id: 'x2',
+          categoryId: '1',
+          date: DateTime(2026, 5, 4, 20),
+          value: 22,
+          notes: '',
+        ),
+      );
+
+      final buckets = await repo.watchDailyBuckets().first;
+
+      expect(buckets.keys.toSet(), {'1', '2'});
+      final day = buckets['1']!.firstWhere((b) => b.start == DateTime(2026, 5, 4));
+      expect(day.count, 2);
+      expect(day.sum, 42);
+      expect(buckets['2'], isNotEmpty);
+    });
+
+    test('a category without entries is absent', () async {
+      await repo.addLocalDriftCategory(MeasurementCategory(id: 'c1', name: 'Waist', unit: 'cm'));
+
+      expect(await repo.watchDailyBuckets().first, isEmpty);
     });
   });
 
@@ -761,82 +744,7 @@ void main() {
     });
   });
 
-  group('watchLocalDriftCategoryById', () {
-    test('returns the matching category', () async {
-      await seedCategoriesAndEntries();
-
-      final emitted = await repo.watchLocalDriftCategoryById('1').first;
-
-      expect(emitted, isNotNull);
-      expect(emitted!.name, 'Body fat');
-      expect(emitted.entries, hasLength(6));
-    });
-
-    test('returns null when no category matches', () async {
-      await seedCategoriesAndEntries();
-
-      final emitted = await repo.watchLocalDriftCategoryById('does-not-exist').first;
-
-      expect(emitted, isNull);
-    });
-
-    test('a group parent keeps its children', () async {
-      // The query is narrowed to one category, which must not cost a group
-      // its components
-      await seedCategoriesAndEntries();
-      for (final category in getBloodPressureGroup()) {
-        await repo.addLocalDriftCategory(category);
-      }
-
-      final emitted = await repo.watchLocalDriftCategoryById('bp').first;
-
-      expect(emitted!.children.map((c) => c.id), ['sys', 'dia']);
-    });
-
-    test('a component can be watched on its own', () async {
-      await seedCategoriesAndEntries();
-      for (final category in getBloodPressureGroup()) {
-        await repo.addLocalDriftCategory(category);
-      }
-
-      final emitted = await repo.watchLocalDriftCategoryById('sys').first;
-
-      expect(emitted!.name, 'Systolic');
-      expect(emitted.children, isEmpty);
-    });
-
-    test('re-emits when one of its own entries changes', () async {
-      await seedCategoriesAndEntries();
-      final iter = StreamIterator(repo.watchLocalDriftCategoryById('1'));
-
-      await iter.moveNext();
-      final initial = iter.current!.entries.length;
-
-      await repo.addLocalDrift(
-        MeasurementEntry(
-          categoryId: '1',
-          date: DateTime.utc(2027, 1, 1),
-          value: 42,
-          notes: '',
-        ),
-      );
-
-      await iter.moveNext();
-      expect(iter.current!.entries, hasLength(initial + 1));
-      await iter.cancel();
-    });
-  });
-
   group('watchOfficialBodyWeightCategory', () {
-    /// The entries with their dates back in UTC.
-    ///
-    /// Drift hands them over in the local zone (UtcDateTimeConverter), and a
-    /// DateTime only equals another one in the same zone, so comparing against
-    /// the UTC fixtures passes in UTC and nowhere else.
-    List<MeasurementEntry> inUtc(Iterable<MeasurementEntry> entries) => [
-      for (final entry in entries) entry.copyWith(date: entry.date.toUtc()),
-    ];
-
     Future<void> seedBodyWeight() async {
       await repo.addLocalDriftCategory(getBodyWeightCategory());
       for (final entry in [testWeightEntry1, testWeightEntry2]) {
@@ -844,14 +752,13 @@ void main() {
       }
     }
 
-    test('returns the official category with its entries', () async {
+    test('returns the official category out of all of them', () async {
       await seedCategoriesAndEntries();
       await seedBodyWeight();
 
       final emitted = await repo.watchOfficialBodyWeightCategory().first;
 
       expect(emitted!.id, testBodyWeightCategoryId);
-      expect(inUtc(emitted.entries), [testWeightEntry2, testWeightEntry1]);
     });
 
     test('a category of the same type that is not official is ignored', () async {
@@ -875,20 +782,10 @@ void main() {
 
       expect(await repo.watchOfficialBodyWeightCategory().first, isNull);
     });
-
-    test('entriesSince bounds the entries', () async {
-      await seedBodyWeight();
-
-      final emitted = await repo
-          .watchOfficialBodyWeightCategory(entriesSince: DateTime.utc(2021, 01, 05))
-          .first;
-
-      expect(inUtc(emitted!.entries), [testWeightEntry2]);
-    });
   });
 
   group('entry CRUD', () {
-    test('addLocalDrift inserts a row visible in watchAll', () async {
+    test('addLocalDrift inserts a row visible in watchEntries', () async {
       await db
           .into(db.measurementCategoryTable)
           .insert(
@@ -897,9 +794,9 @@ void main() {
 
       await repo.addLocalDrift(testMeasurementEntry1);
 
-      final categories = await repo.watchAll().first;
-      expect(categories.first.entries, hasLength(1));
-      expect(categories.first.entries.single.value, 30);
+      final entries = await repo.watchEntries('1', limit: 10).first;
+      expect(entries, hasLength(1));
+      expect(entries.single.value, 30);
     });
 
     test('updateLocalDrift overwrites the row with matching id', () async {
@@ -919,7 +816,7 @@ void main() {
       );
       await repo.updateLocalDrift(updated);
 
-      final entries = (await repo.watchAll().first).first.entries;
+      final entries = await repo.watchEntries('1', limit: 10).first;
       expect(entries.single.value, 99);
       expect(entries.single.notes, 'updated');
     });
@@ -929,19 +826,19 @@ void main() {
 
       await repo.deleteLocalDrift(testMeasurementEntry1.id!);
 
-      final entries = (await repo.watchAll().first).firstWhere((c) => c.name == 'Body fat').entries;
+      final entries = await repo.watchEntries('1', limit: 10).first;
       expect(entries.map((e) => e.id), isNot(contains(testMeasurementEntry1.id)));
       expect(entries, hasLength(5));
     });
   });
 
   group('category CRUD', () {
-    test('addLocalDriftCategory inserts a row visible in watchAll', () async {
+    test('addLocalDriftCategory inserts a row visible in the category stream', () async {
       final category = MeasurementCategory(id: 'c1', name: 'Waist', unit: 'cm');
 
       await repo.addLocalDriftCategory(category);
 
-      final emitted = await repo.watchAll().first;
+      final emitted = await repo.watchAllWithoutEntries().first;
       expect(emitted, hasLength(1));
       expect(emitted.single.name, 'Waist');
       expect(emitted.single.isOfficial, isFalse);
@@ -958,7 +855,7 @@ void main() {
         ),
       );
 
-      final emitted = await repo.watchAll().first;
+      final emitted = await repo.watchAllWithoutEntries().first;
       expect(emitted.single.isOfficial, isTrue);
       expect(emitted.single.metricType, MetricType.bodyWeight);
       expect(emitted.single.isOfficialBodyWeight, isTrue);
@@ -972,7 +869,7 @@ void main() {
         MeasurementCategory(id: 'c1', name: 'Hips', unit: 'inch'),
       );
 
-      final emitted = await repo.watchAll().first;
+      final emitted = await repo.watchAllWithoutEntries().first;
       expect(emitted.single.name, 'Hips');
       expect(emitted.single.unit, 'inch');
     });
@@ -987,7 +884,7 @@ void main() {
 
       await repo.deleteLocalDriftCategory('c1');
 
-      final emitted = await repo.watchAll().first;
+      final emitted = await repo.watchAllWithoutEntries().first;
       expect(emitted.map((c) => c.id), ['c2']);
     });
   });
@@ -999,17 +896,17 @@ void main() {
       }
     }
 
-    test('watchAll attaches children to their parent in group order', () async {
+    test('the category stream attaches children to their parent in group order', () async {
       await seedBloodPressureGroup();
 
-      final emitted = await repo.watchAll().first;
+      final emitted = await repo.watchAllWithoutEntries().first;
 
       final parent = emitted.firstWhere((c) => c.id == 'bp');
       expect(parent.hasChildren, isTrue);
       expect(parent.children.map((c) => c.id), ['sys', 'dia']);
     });
 
-    test('watchAll sorts categories by order before name', () async {
+    test('the category stream sorts categories by order before name', () async {
       await repo.addLocalDriftCategory(
         MeasurementCategory(id: 'c1', name: 'Aaa', unit: 'cm', order: 5),
       );
@@ -1017,7 +914,7 @@ void main() {
         MeasurementCategory(id: 'c2', name: 'Zzz', unit: 'cm', order: 1),
       );
 
-      final emitted = await repo.watchAll().first;
+      final emitted = await repo.watchAllWithoutEntries().first;
 
       expect(emitted.map((c) => c.id), ['c2', 'c1']);
     });
@@ -1031,14 +928,9 @@ void main() {
         MeasurementEntry(id: 'e2', categoryId: 'dia', date: date, value: 80, notes: ''),
       ]);
 
-      final emitted = await repo.watchAll().first;
-      final parent = emitted.firstWhere((c) => c.id == 'bp');
-      expect(parent.children.first.entries.single.value, 120);
-      expect(parent.children.last.entries.single.value, 80);
-      expect(
-        parent.children.first.entries.single.date,
-        parent.children.last.entries.single.date,
-      );
+      final entries = await repo.watchGroupEntries('bp', limit: 10).first;
+      expect(entries.map((e) => e.value).toSet(), {120, 80});
+      expect(entries.first.date, entries.last.date);
     });
 
     test('deleteLocalDriftCategory removes children along with the parent', () async {
@@ -1046,7 +938,7 @@ void main() {
 
       await repo.deleteLocalDriftCategory('bp');
 
-      final emitted = await repo.watchAll().first;
+      final emitted = await repo.watchAllWithoutEntries().first;
       expect(emitted, isEmpty);
     });
   });
@@ -1059,7 +951,7 @@ void main() {
 
       await repo.reorderCategories(['c3', 'c1', 'c2']);
 
-      final emitted = await repo.watchAll().first;
+      final emitted = await repo.watchAllWithoutEntries().first;
       expect(emitted.map((c) => c.id), ['c3', 'c1', 'c2']);
       expect(emitted.map((c) => c.order), [0, 1, 2]);
     });
@@ -1074,7 +966,7 @@ void main() {
 
       await repo.reorderCategories(['c1', 'bp']);
 
-      final emitted = await repo.watchAll().first;
+      final emitted = await repo.watchAllWithoutEntries().first;
       final parent = emitted.firstWhere((c) => c.id == 'bp');
       expect(parent.order, 1);
       expect(parent.children.map((c) => c.id), ['sys', 'dia']);

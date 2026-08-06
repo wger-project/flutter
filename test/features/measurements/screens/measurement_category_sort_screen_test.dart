@@ -25,6 +25,7 @@ import 'package:wger/features/measurements/providers/measurement_repository.dart
 import 'package:wger/features/measurements/screens/measurement_category_sort_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
+import '../../../../test_data/body_weight.dart';
 import '../../../../test_data/measurements.dart';
 import 'measurement_category_sort_screen_test.mocks.dart';
 
@@ -41,7 +42,7 @@ void main() {
 
   setUp(() {
     mockRepo = MockMeasurementRepository();
-    when(mockRepo.watchAll()).thenAnswer((_) => Stream.value(categories));
+    when(mockRepo.watchAllWithoutEntries()).thenAnswer((_) => Stream.value(categories));
     when(mockRepo.reorderCategories(any)).thenAnswer((_) async {});
   });
 
@@ -68,6 +69,20 @@ void main() {
     expect(find.text('Systolic'), findsNothing);
     expect(find.text('Diastolic'), findsNothing);
     expect(find.byIcon(Icons.drag_handle), findsNWidgets(3));
+  });
+
+  testWidgets('the official body weight category is not listed', (tester) async {
+    // It has its own screen and is hidden from the measurements UI, so it must
+    // not take a position in the order either
+    when(mockRepo.watchAllWithoutEntries()).thenAnswer(
+      (_) => Stream.value([getBodyWeightCategory(), ...getMeasurementCategories()]),
+    );
+
+    await tester.pumpWidget(createSortScreen());
+    await tester.pumpAndSettle();
+
+    expect(find.text('Weight'), findsNothing);
+    expect(find.byIcon(Icons.drag_handle), findsNWidgets(2));
   });
 
   testWidgets('dragging an item to the bottom persists the new order', (tester) async {

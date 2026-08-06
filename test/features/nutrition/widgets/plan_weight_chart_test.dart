@@ -31,6 +31,7 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 
 import '../../../../test_data/body_weight.dart';
 import '../../../../test_data/profile.dart';
+import '../../../helpers/measurement_repository_stubs.dart';
 import 'plan_weight_chart_test.mocks.dart';
 
 @GenerateMocks([MeasurementRepository, UserProfileRepository])
@@ -40,16 +41,12 @@ void main() {
 
   setUp(() {
     mockMeasurementRepo = MockMeasurementRepository();
-    // The chart reads the official category through bodyWeightCategoryProvider,
-    // not the whole list
-    when(
-      mockMeasurementRepo.watchOfficialBodyWeightCategory(
-        entriesSince: anyNamed('entriesSince'),
-      ),
-    ).thenAnswer(
-      (_) => Stream.value(
-        getBodyWeightCategory([testWeightEntry2, testWeightEntry1, testWeightEntryLb]),
-      ),
+    // The chart reads the official category and its points through their own
+    // queries, not the whole list
+    stubMeasurementReads(
+      mockMeasurementRepo,
+      [getBodyWeightCategory()],
+      bodyWeightEntries([testWeightEntry2, testWeightEntry1, testWeightEntryLb]),
     );
 
     mockUserProfileRepo = MockUserProfileRepository();

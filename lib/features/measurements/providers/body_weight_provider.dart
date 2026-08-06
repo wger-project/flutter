@@ -22,41 +22,16 @@ import 'package:wger/features/measurements/providers/measurement_repository.dart
 
 part 'body_weight_provider.g.dart';
 
-/// The user's official body weight category, entries sorted newest-first.
+/// The user's official body weight category.
 ///
 /// The category is created by the server (registration / data migration) and
 /// only arrives via sync; a `null` value means the initial sync has not
-/// delivered it yet. Mutations go through `measurementProvider`'s notifier.
+/// delivered it yet. Mutations go through `measurementProvider`'s notifier,
+/// its readings through the aggregated queries, which take its id from here.
 ///
-/// Unbounded, for the consumers that walk the entries themselves (the
-/// dashboard card, the nutrition widgets). The body weight screen takes
-/// [bodyWeightCategoryOnly], which reads none.
-@riverpod
-AsyncValue<MeasurementCategory?> bodyWeightCategory(Ref ref) {
-  return ref.watch(bodyWeightCategorySinceProvider(null));
-}
-
-/// The official body weight category without its entries, for the screen,
-/// which reads its chart and its list through their own queries.
+/// Selected by its type in the query rather than picked out of every category
+/// afterwards: it has no fixed id, the server assigns it.
 @riverpod
 Stream<MeasurementCategory?> bodyWeightCategoryOnly(Ref ref) {
-  return ref
-      .read(measurementRepositoryProvider)
-      .watchOfficialBodyWeightCategory(
-        withEntries: false,
-      );
-}
-
-/// The official body weight category with the entries from [since] on, null
-/// covering the full history.
-///
-/// The bound is applied in the query rather than in the chart, so showing three
-/// months does not read years of entries into memory. So is the category
-/// itself: reading every category and keeping one made a body fat or sleep
-/// entry re-materialise the whole measurement history.
-@riverpod
-Stream<MeasurementCategory?> bodyWeightCategorySince(Ref ref, DateTime? since) {
-  return ref
-      .read(measurementRepositoryProvider)
-      .watchOfficialBodyWeightCategory(entriesSince: since);
+  return ref.read(measurementRepositoryProvider).watchOfficialBodyWeightCategory();
 }

@@ -42,7 +42,6 @@ void main() {
     mockRepo = MockMeasurementRepository();
     mockCredentials = MockAuthCredentialsStorage();
     when(mockCredentials.dbOwnerUserId()).thenAnswer((_) async => '2');
-    when(mockRepo.watchAll()).thenAnswer((_) => Stream.value([]));
     stubMeasurementReads(mockRepo, []);
     when(mockRepo.addLocalDriftCategory(any)).thenAnswer((_) async {});
     when(mockRepo.addLocalDriftCategoryGroup(any)).thenAnswer((_) async {});
@@ -92,16 +91,6 @@ void main() {
         metricType: MetricType.heartRate,
       ),
     ]);
-    when(mockRepo.watchAll()).thenAnswer(
-      (_) => Stream.value([
-        MeasurementCategory(
-          id: 'hr',
-          name: 'Heart rate',
-          unit: 'bpm',
-          metricType: MetricType.heartRate,
-        ),
-      ]),
-    );
 
     await tester.pumpWidget(wrap());
     await tester.pumpAndSettle();

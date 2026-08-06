@@ -17,33 +17,9 @@
  */
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:wger/core/exceptions/no_such_entry_exception.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 
-import '../../../../test_data/measurements.dart';
-
 void main() {
-  late MeasurementCategory category;
-
-  setUp(() {
-    category = getMeasurementCategories()[0];
-  });
-
-  group('findEntryById()', () {
-    test('should find an entry in the entries list', () {
-      // act
-      final result = category.findEntryById('1');
-
-      // assert
-      expect(result.id, '1');
-    });
-
-    test('should throw a NoSuchEntryException if no MeasurementEntry was found', () {
-      // act & assert
-      expect(() => category.findEntryById('abc'), throwsA(isA<NoSuchEntryException>()));
-    });
-  });
-
   group('isOfficialBodyWeight', () {
     test('is true only for the official body weight category', () {
       final official = MeasurementCategory(

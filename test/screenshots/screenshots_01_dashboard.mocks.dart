@@ -410,16 +410,6 @@ class MockMeasurementRepository extends _i1.Mock implements _i21.MeasurementRepo
   }
 
   @override
-  _i10.Stream<List<_i22.MeasurementCategory>> watchAll({
-    DateTime? entriesSince,
-  }) =>
-      (super.noSuchMethod(
-            Invocation.method(#watchAll, [], {#entriesSince: entriesSince}),
-            returnValue: _i10.Stream<List<_i22.MeasurementCategory>>.empty(),
-          )
-          as _i10.Stream<List<_i22.MeasurementCategory>>);
-
-  @override
   _i10.Stream<List<_i22.MeasurementCategory>> watchAllWithoutEntries() =>
       (super.noSuchMethod(
             Invocation.method(#watchAllWithoutEntries, []),
@@ -438,30 +428,9 @@ class MockMeasurementRepository extends _i1.Mock implements _i21.MeasurementRepo
           as _i10.Stream<_i22.MeasurementCategory?>);
 
   @override
-  _i10.Stream<_i22.MeasurementCategory?> watchLocalDriftCategoryById(
-    String? id, {
-    DateTime? entriesSince,
-  }) =>
+  _i10.Stream<_i22.MeasurementCategory?> watchOfficialBodyWeightCategory() =>
       (super.noSuchMethod(
-            Invocation.method(
-              #watchLocalDriftCategoryById,
-              [id],
-              {#entriesSince: entriesSince},
-            ),
-            returnValue: _i10.Stream<_i22.MeasurementCategory?>.empty(),
-          )
-          as _i10.Stream<_i22.MeasurementCategory?>);
-
-  @override
-  _i10.Stream<_i22.MeasurementCategory?> watchOfficialBodyWeightCategory({
-    DateTime? entriesSince,
-    bool? withEntries = true,
-  }) =>
-      (super.noSuchMethod(
-            Invocation.method(#watchOfficialBodyWeightCategory, [], {
-              #entriesSince: entriesSince,
-              #withEntries: withEntries,
-            }),
+            Invocation.method(#watchOfficialBodyWeightCategory, []),
             returnValue: _i10.Stream<_i22.MeasurementCategory?>.empty(),
           )
           as _i10.Stream<_i22.MeasurementCategory?>);
@@ -500,6 +469,7 @@ class MockMeasurementRepository extends _i1.Mock implements _i21.MeasurementRepo
   _i10.Stream<List<_i24.MeasurementBucket>> watchEntryBuckets(
     String? categoryId, {
     DateTime? since,
+    DateTime? until,
     _i24.MeasurementBucketLevel? level = _i24.MeasurementBucketLevel.auto,
     int? maxPoints = 200,
   }) =>
@@ -507,7 +477,12 @@ class MockMeasurementRepository extends _i1.Mock implements _i21.MeasurementRepo
             Invocation.method(
               #watchEntryBuckets,
               [categoryId],
-              {#since: since, #level: level, #maxPoints: maxPoints},
+              {
+                #since: since,
+                #until: until,
+                #level: level,
+                #maxPoints: maxPoints,
+              },
             ),
             returnValue: _i10.Stream<List<_i24.MeasurementBucket>>.empty(),
           )
@@ -526,6 +501,14 @@ class MockMeasurementRepository extends _i1.Mock implements _i21.MeasurementRepo
               [parentId],
               {#since: since, #level: level, #maxPoints: maxPoints},
             ),
+            returnValue: _i10.Stream<Map<String, List<_i24.MeasurementBucket>>>.empty(),
+          )
+          as _i10.Stream<Map<String, List<_i24.MeasurementBucket>>>);
+
+  @override
+  _i10.Stream<Map<String, List<_i24.MeasurementBucket>>> watchDailyBuckets() =>
+      (super.noSuchMethod(
+            Invocation.method(#watchDailyBuckets, []),
             returnValue: _i10.Stream<Map<String, List<_i24.MeasurementBucket>>>.empty(),
           )
           as _i10.Stream<Map<String, List<_i24.MeasurementBucket>>>);

@@ -132,27 +132,33 @@ List<MeasurementCategory> getBloodPressureGroup() {
 
 List<MeasurementCategory> getMeasurementCategories() {
   return [
-    MeasurementCategory(
-      id: '1',
-      name: 'Body fat',
-      unit: '%',
-      entries: [
-        testMeasurementEntry1,
-        testMeasurementEntry2,
-        testMeasurementEntry3,
-        testMeasurementEntry4,
-        testMeasurementEntry5,
-        testMeasurementEntry6,
-      ],
-    ),
-    MeasurementCategory(
-      id: '2',
-      name: 'Biceps',
-      unit: 'cm',
-      entries: [
-        testMeasurementEntry7,
-        testMeasurementEntry8,
-      ],
-    ),
+    MeasurementCategory(id: '1', name: 'Body fat', unit: '%'),
+    MeasurementCategory(id: '2', name: 'Biceps', unit: 'cm'),
   ];
+}
+
+/// The entries of [getMeasurementCategories], keyed by category id.
+///
+/// Apart from the categories, which no longer carry them: what a screen shows
+/// is read through its own query, so a test seeds the two independently.
+Map<String, List<MeasurementEntry>> getMeasurementEntries() {
+  return {
+    '1': [
+      testMeasurementEntry1,
+      testMeasurementEntry2,
+      testMeasurementEntry3,
+      testMeasurementEntry4,
+      testMeasurementEntry5,
+      testMeasurementEntry6,
+    ],
+    '2': [testMeasurementEntry7, testMeasurementEntry8],
+  };
+}
+
+/// The entries of [getBloodPressureGroup], keyed by component id.
+Map<String, List<MeasurementEntry>> getBloodPressureEntries() {
+  return {
+    'sys': [testNeasurementEntry9],
+    'dia': [testNeasurementEntry10],
+  };
 }

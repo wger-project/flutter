@@ -8,22 +8,20 @@ part of 'measurement_notifier.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// All categories with their children, without their entries.
+/// All categories with their children.
 ///
-/// What the screens watch: everything they draw comes from the aggregated
-/// queries and the paged lists below. Kept apart from [measurementProvider],
-/// which stays unbounded for the consumers that read the entries themselves
-/// (the health importer, the dashboard calendar).
+/// The one place the screens read categories from. What they draw on top of
+/// them comes from the aggregated queries and the paged lists below, never
+/// from a category itself, which is why none of these carries entries.
 
 @ProviderFor(measurementCategories)
 final measurementCategoriesProvider = MeasurementCategoriesProvider._();
 
-/// All categories with their children, without their entries.
+/// All categories with their children.
 ///
-/// What the screens watch: everything they draw comes from the aggregated
-/// queries and the paged lists below. Kept apart from [measurementProvider],
-/// which stays unbounded for the consumers that read the entries themselves
-/// (the health importer, the dashboard calendar).
+/// The one place the screens read categories from. What they draw on top of
+/// them comes from the aggregated queries and the paged lists below, never
+/// from a category itself, which is why none of these carries entries.
 
 final class MeasurementCategoriesProvider
     extends
@@ -33,12 +31,11 @@ final class MeasurementCategoriesProvider
           Stream<List<MeasurementCategory>>
         >
     with $FutureModifier<List<MeasurementCategory>>, $StreamProvider<List<MeasurementCategory>> {
-  /// All categories with their children, without their entries.
+  /// All categories with their children.
   ///
-  /// What the screens watch: everything they draw comes from the aggregated
-  /// queries and the paged lists below. Kept apart from [measurementProvider],
-  /// which stays unbounded for the consumers that read the entries themselves
-  /// (the health importer, the dashboard calendar).
+  /// The one place the screens read categories from. What they draw on top of
+  /// them comes from the aggregated queries and the paged lists below, never
+  /// from a category itself, which is why none of these carries entries.
   MeasurementCategoriesProvider._()
     : super(
         from: null,
@@ -308,7 +305,8 @@ String _$latestMeasurementEntriesHash() => r'87b87ef6ca747e9f47855692f9e687b85f8
 ///
 /// Kept apart from the category streams, which hand over the entries
 /// themselves. [level] is what the chart in question needs, see
-/// `chartBucketLevel`.
+/// `chartBucketLevel`; [until] is exclusive and bounds a chart that shows a
+/// closed period rather than everything up to today.
 
 @ProviderFor(measurementChartBuckets)
 final measurementChartBucketsProvider = MeasurementChartBucketsFamily._();
@@ -317,7 +315,8 @@ final measurementChartBucketsProvider = MeasurementChartBucketsFamily._();
 ///
 /// Kept apart from the category streams, which hand over the entries
 /// themselves. [level] is what the chart in question needs, see
-/// `chartBucketLevel`.
+/// `chartBucketLevel`; [until] is exclusive and bounds a chart that shows a
+/// closed period rather than everything up to today.
 
 final class MeasurementChartBucketsProvider
     extends
@@ -331,10 +330,11 @@ final class MeasurementChartBucketsProvider
   ///
   /// Kept apart from the category streams, which hand over the entries
   /// themselves. [level] is what the chart in question needs, see
-  /// `chartBucketLevel`.
+  /// `chartBucketLevel`; [until] is exclusive and bounds a chart that shows a
+  /// closed period rather than everything up to today.
   MeasurementChartBucketsProvider._({
     required MeasurementChartBucketsFamily super.from,
-    required (String, DateTime?, MeasurementBucketLevel) super.argument,
+    required (String, DateTime?, DateTime?, MeasurementBucketLevel) super.argument,
   }) : super(
          retry: null,
          name: r'measurementChartBucketsProvider',
@@ -361,8 +361,14 @@ final class MeasurementChartBucketsProvider
 
   @override
   Stream<List<MeasurementBucket>> create(Ref ref) {
-    final argument = this.argument as (String, DateTime?, MeasurementBucketLevel);
-    return measurementChartBuckets(ref, argument.$1, argument.$2, argument.$3);
+    final argument = this.argument as (String, DateTime?, DateTime?, MeasurementBucketLevel);
+    return measurementChartBuckets(
+      ref,
+      argument.$1,
+      argument.$2,
+      argument.$3,
+      argument.$4,
+    );
   }
 
   @override
@@ -376,19 +382,20 @@ final class MeasurementChartBucketsProvider
   }
 }
 
-String _$measurementChartBucketsHash() => r'90698be9ec4f287fc4764549bc6cbcb5b7933262';
+String _$measurementChartBucketsHash() => r'28d36f1f980010549496808722f116c1ab6db8dd';
 
 /// The chart points of one category, condensed by SQLite.
 ///
 /// Kept apart from the category streams, which hand over the entries
 /// themselves. [level] is what the chart in question needs, see
-/// `chartBucketLevel`.
+/// `chartBucketLevel`; [until] is exclusive and bounds a chart that shows a
+/// closed period rather than everything up to today.
 
 final class MeasurementChartBucketsFamily extends $Family
     with
         $FunctionalFamilyOverride<
           Stream<List<MeasurementBucket>>,
-          (String, DateTime?, MeasurementBucketLevel)
+          (String, DateTime?, DateTime?, MeasurementBucketLevel)
         > {
   MeasurementChartBucketsFamily._()
     : super(
@@ -403,14 +410,16 @@ final class MeasurementChartBucketsFamily extends $Family
   ///
   /// Kept apart from the category streams, which hand over the entries
   /// themselves. [level] is what the chart in question needs, see
-  /// `chartBucketLevel`.
+  /// `chartBucketLevel`; [until] is exclusive and bounds a chart that shows a
+  /// closed period rather than everything up to today.
 
   MeasurementChartBucketsProvider call(
     String categoryId,
     DateTime? since,
+    DateTime? until,
     MeasurementBucketLevel level,
   ) => MeasurementChartBucketsProvider._(
-    argument: (categoryId, since, level),
+    argument: (categoryId, since, until, level),
     from: this,
   );
 
@@ -529,6 +538,61 @@ final class MeasurementGroupBucketsFamily extends $Family
   String toString() => r'measurementGroupBucketsProvider';
 }
 
+/// One point per day and category, keyed by category id.
+///
+/// For the calendar, which marks the days something was measured on rather
+/// than the single readings.
+
+@ProviderFor(measurementDailyBuckets)
+final measurementDailyBucketsProvider = MeasurementDailyBucketsProvider._();
+
+/// One point per day and category, keyed by category id.
+///
+/// For the calendar, which marks the days something was measured on rather
+/// than the single readings.
+
+final class MeasurementDailyBucketsProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<Map<String, List<MeasurementBucket>>>,
+          Map<String, List<MeasurementBucket>>,
+          Stream<Map<String, List<MeasurementBucket>>>
+        >
+    with
+        $FutureModifier<Map<String, List<MeasurementBucket>>>,
+        $StreamProvider<Map<String, List<MeasurementBucket>>> {
+  /// One point per day and category, keyed by category id.
+  ///
+  /// For the calendar, which marks the days something was measured on rather
+  /// than the single readings.
+  MeasurementDailyBucketsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'measurementDailyBucketsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$measurementDailyBucketsHash();
+
+  @$internal
+  @override
+  $StreamProviderElement<Map<String, List<MeasurementBucket>>> $createElement(
+    $ProviderPointer pointer,
+  ) => $StreamProviderElement(pointer);
+
+  @override
+  Stream<Map<String, List<MeasurementBucket>>> create(Ref ref) {
+    return measurementDailyBuckets(ref);
+  }
+}
+
+String _$measurementDailyBucketsHash() => r'3326fa1cdf57148a2eb4d60cd78a26becc6b812e';
+
 /// How often each value of a category occurred, for the histogram.
 
 @ProviderFor(measurementValueCounts)
@@ -621,14 +685,14 @@ final class MeasurementValueCountsFamily extends $Family
   String toString() => r'measurementValueCountsProvider';
 }
 
-/// One category with its children and without their entries, null while it
-/// does not exist (or no longer does).
+/// One category with its children, null while it does not exist (or no longer
+/// does).
 
 @ProviderFor(measurementCategory)
 final measurementCategoryProvider = MeasurementCategoryFamily._();
 
-/// One category with its children and without their entries, null while it
-/// does not exist (or no longer does).
+/// One category with its children, null while it does not exist (or no longer
+/// does).
 
 final class MeasurementCategoryProvider
     extends
@@ -638,8 +702,8 @@ final class MeasurementCategoryProvider
           Stream<MeasurementCategory?>
         >
     with $FutureModifier<MeasurementCategory?>, $StreamProvider<MeasurementCategory?> {
-  /// One category with its children and without their entries, null while it
-  /// does not exist (or no longer does).
+  /// One category with its children, null while it does not exist (or no longer
+  /// does).
   MeasurementCategoryProvider._({
     required MeasurementCategoryFamily super.from,
     required String super.argument,
@@ -686,8 +750,8 @@ final class MeasurementCategoryProvider
 
 String _$measurementCategoryHash() => r'9064d6e8ee04c562a1ae1bb8c1f6523f6f22ee9d';
 
-/// One category with its children and without their entries, null while it
-/// does not exist (or no longer does).
+/// One category with its children, null while it does not exist (or no longer
+/// does).
 
 final class MeasurementCategoryFamily extends $Family
     with $FunctionalFamilyOverride<Stream<MeasurementCategory?>, String> {
@@ -700,8 +764,8 @@ final class MeasurementCategoryFamily extends $Family
         isAutoDispose: true,
       );
 
-  /// One category with its children and without their entries, null while it
-  /// does not exist (or no longer does).
+  /// One category with its children, null while it does not exist (or no longer
+  /// does).
 
   MeasurementCategoryProvider call(String id) =>
       MeasurementCategoryProvider._(argument: id, from: this);
@@ -710,11 +774,17 @@ final class MeasurementCategoryFamily extends $Family
   String toString() => r'measurementCategoryProvider';
 }
 
+/// Writing side of the measurements: what the screens read is watched through
+/// the providers above, which this only changes the data of.
+
 @ProviderFor(MeasurementNotifier)
 final measurementProvider = MeasurementNotifierProvider._();
 
-final class MeasurementNotifierProvider
-    extends $StreamNotifierProvider<MeasurementNotifier, List<MeasurementCategory>> {
+/// Writing side of the measurements: what the screens read is watched through
+/// the providers above, which this only changes the data of.
+final class MeasurementNotifierProvider extends $NotifierProvider<MeasurementNotifier, void> {
+  /// Writing side of the measurements: what the screens read is watched through
+  /// the providers above, which this only changes the data of.
   MeasurementNotifierProvider._()
     : super(
         from: null,
@@ -732,24 +802,29 @@ final class MeasurementNotifierProvider
   @$internal
   @override
   MeasurementNotifier create() => MeasurementNotifier();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(void value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<void>(value),
+    );
+  }
 }
 
-String _$measurementNotifierHash() => r'afc8a100a40967bd8e7ea41bdd1985502878fc12';
+String _$measurementNotifierHash() => r'5dac4662d46ec3d421a0ae6e9d6e8a88d681072a';
 
-abstract class _$MeasurementNotifier extends $StreamNotifier<List<MeasurementCategory>> {
-  Stream<List<MeasurementCategory>> build();
+/// Writing side of the measurements: what the screens read is watched through
+/// the providers above, which this only changes the data of.
+
+abstract class _$MeasurementNotifier extends $Notifier<void> {
+  void build();
   @$mustCallSuper
   @override
   WhenComplete runBuild() {
-    final ref = this.ref as $Ref<AsyncValue<List<MeasurementCategory>>, List<MeasurementCategory>>;
+    final ref = this.ref as $Ref<void, void>;
     final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<AsyncValue<List<MeasurementCategory>>, List<MeasurementCategory>>,
-              AsyncValue<List<MeasurementCategory>>,
-              Object?,
-              Object?
-            >;
+        ref.element as $ClassProviderElement<AnyNotifier<void, void>, void, Object?, Object?>;
     return element.handleCreate(ref, build);
   }
 }

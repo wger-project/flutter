@@ -29,6 +29,7 @@ import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/unit_conversion.dart';
 import 'package:wger/features/measurements/providers/body_weight_provider.dart';
 import 'package:wger/features/measurements/screens/weight_screen.dart';
+import 'package:wger/features/measurements/widgets/chart_range_selector.dart';
 import 'package:wger/features/measurements/widgets/charts.dart';
 import 'package:wger/features/measurements/widgets/helpers.dart';
 import 'package:wger/features/measurements/widgets/weight_form.dart';
@@ -60,7 +61,7 @@ class DashboardWeightWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final categoryAsync = ref.watch(bodyWeightCategoryProvider);
+    final categoryAsync = ref.watch(bodyWeightCategoryOnlyProvider);
     final profileAsync = ref.watch(userProfileProvider);
 
     // Composite loading / error / data resolution. We need both providers
@@ -96,16 +97,30 @@ class DashboardWeightWidget extends ConsumerWidget {
       return _shell(context, const BoxedProgressIndicator());
     }
 
-    return _shell(context, _buildContent(context, category, profile));
+    // The chart is drawn from the aggregated query, so the card condenses the
+    // history in SQL rather than reading an object per entry. Mixed-unit
+    // entries (kg/lb) are normalized to the profile's display unit
+    final pointsAsync = chartPointsFor(
+      ref,
+      category,
+      ChartRange.all,
+      targetUnit: weightDisplayUnit(profile.isMetric),
+    );
+    final points = pointsAsync.value;
+    if (points == null) {
+      return _shell(context, const BoxedProgressIndicator());
+    }
+
+    return _shell(context, _buildContent(context, category, profile, points));
   }
 
   Widget _buildContent(
     BuildContext context,
     MeasurementCategory category,
     UserProfile profile,
+    List<MeasurementChartEntry> points,
   ) {
-    final entriesList = category.entries;
-    if (entriesList.isEmpty) {
+    if (points.isEmpty) {
       return NothingFound(
         AppLocalizations.of(context).noWeightEntries,
         AppLocalizations.of(context).newEntry,
@@ -113,17 +128,8 @@ class DashboardWeightWidget extends ConsumerWidget {
       );
     }
 
-    // Mixed-unit entries (kg/lb) are normalized to the profile's display unit
-    final displayUnit = weightDisplayUnit(profile.isMetric);
     final (entriesAll, average) = sensibleRange(
-      entriesList
-          .map(
-            (e) => MeasurementChartEntry(
-              e.valueIn(displayUnit, categoryUnit: category.unit),
-              e.date,
-            ),
-          )
-          .toList(),
+      points,
       averageDays: category.chartSettings.averageWindow,
     );
 

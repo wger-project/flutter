@@ -485,7 +485,7 @@ void main() {
         MeasurementEntry(categoryId: categoryId, date: date, value: value, notes: '');
 
     /// A sleep group as the importer writes it: the total plus its stages.
-    MeasurementCategory sleepGroup({bool withStages = true}) => MeasurementCategory(
+    MeasurementCategory sleepGroup() => MeasurementCategory(
       id: 'g',
       name: 'Sleep',
       unit: 'min',
@@ -497,7 +497,6 @@ void main() {
           unit: 'min',
           metricType: MetricType.sleepTotal,
           parentId: 'g',
-          entries: [entry('total', DateTime(2026, 1, 2), 480)],
         ),
         MeasurementCategory(
           id: 'deep',
@@ -506,7 +505,6 @@ void main() {
           metricType: MetricType.sleepDeep,
           parentId: 'g',
           order: 1,
-          entries: withStages ? [entry('deep', DateTime(2026, 1, 2), 90)] : const [],
         ),
         MeasurementCategory(
           id: 'rem',
@@ -515,10 +513,15 @@ void main() {
           metricType: MetricType.sleepRem,
           parentId: 'g',
           order: 2,
-          entries: withStages ? [entry('rem', DateTime(2026, 1, 2), 60)] : const [],
         ),
       ],
     );
+
+    Map<String, List<MeasurementEntry>> sleepEntries({bool withStages = true}) => {
+      'total': [entry('total', DateTime(2026, 1, 2), 480)],
+      'deep': withStages ? [entry('deep', DateTime(2026, 1, 2), 90)] : const [],
+      'rem': withStages ? [entry('rem', DateTime(2026, 1, 2), 60)] : const [],
+    };
 
     MeasurementCategory bloodPressure() => MeasurementCategory(
       id: 'bp',
@@ -532,7 +535,6 @@ void main() {
           unit: 'mmHg',
           metricType: MetricType.bloodPressureSystolic,
           parentId: 'bp',
-          entries: [entry('sys', DateTime(2026, 1, 2, 8), 120)],
         ),
         MeasurementCategory(
           id: 'dia',
@@ -541,20 +543,26 @@ void main() {
           metricType: MetricType.bloodPressureDiastolic,
           parentId: 'bp',
           order: 1,
-          entries: [entry('dia', DateTime(2026, 1, 2, 8), 80)],
         ),
       ],
     );
 
+    Map<String, List<MeasurementEntry>> bloodPressureEntries() => {
+      'sys': [entry('sys', DateTime(2026, 1, 2, 8), 120)],
+      'dia': [entry('dia', DateTime(2026, 1, 2, 8), 80)],
+    };
+
     /// The points the aggregated query returns for [group], which is one
     /// bucket per entry unless the metric is summed per day
-    Map<String, List<MeasurementChartEntry>> pointsOf(MeasurementCategory group) =>
-        groupComponentPoints(group, {
-          for (final child in group.children)
-            child.id!: group.metricType.isSummedPerDay
-                ? dayBuckets(child.entries)
-                : entryBuckets(child.entries),
-        });
+    Map<String, List<MeasurementChartEntry>> pointsOf(
+      MeasurementCategory group,
+      Map<String, List<MeasurementEntry>> entries,
+    ) => groupComponentPoints(group, {
+      for (final child in group.children)
+        child.id!: group.metricType.isSummedPerDay
+            ? dayBuckets(entries[child.id] ?? const [])
+            : entryBuckets(entries[child.id] ?? const []),
+    });
 
     test('the roll-up component is left out of the stack', () {
       // Total sleep covers the stages, so stacking it would count the night
@@ -568,7 +576,7 @@ void main() {
 
     test('stacked entries carry one value per component and day', () {
       final components = stackableComponents(sleepGroup());
-      final stacked = groupStackedEntries(components, pointsOf(sleepGroup()));
+      final stacked = groupStackedEntries(components, pointsOf(sleepGroup(), sleepEntries()));
 
       expect(stacked, hasLength(1));
       expect(stacked.single.date, DateTime(2026, 1, 2));
@@ -590,22 +598,24 @@ void main() {
             unit: 'min',
             metricType: MetricType.sleepDeep,
             parentId: 'g',
-            entries: [
-              entry('deep', DateTime(2026, 1, 2, 3), 90),
-              entry('deep', DateTime(2026, 1, 2, 14), 20),
-            ],
           ),
         ],
       );
+      final entries = {
+        'deep': [
+          entry('deep', DateTime(2026, 1, 2, 3), 90),
+          entry('deep', DateTime(2026, 1, 2, 14), 20),
+        ],
+      };
 
-      expect(groupStackedEntries(group.children, pointsOf(group)).single.values, [110]);
+      expect(groupStackedEntries(group.children, pointsOf(group, entries)).single.values, [110]);
     });
 
     test('readings pair the components on their shared timestamp', () {
       final group = bloodPressure();
       final readings = groupReadings(
         group,
-        [for (final child in group.children) ...child.entries],
+        bloodPressureEntries().values.expand((e) => e).toList(),
       );
 
       expect(readings, hasLength(1));
@@ -617,7 +627,10 @@ void main() {
     testWidgets('a summed group stacks its components', (tester) async {
       await tester.pumpWidget(
         _wrapChart(
-          Builder(builder: (ctx) => buildGroupChart(ctx, sleepGroup(), pointsOf(sleepGroup()))),
+          Builder(
+            builder: (ctx) =>
+                buildGroupChart(ctx, sleepGroup(), pointsOf(sleepGroup(), sleepEntries())),
+          ),
         ),
       );
       await tester.pumpAndSettle();
@@ -629,7 +642,11 @@ void main() {
       await tester.pumpWidget(
         _wrapChart(
           Builder(
-            builder: (ctx) => buildGroupChart(ctx, bloodPressure(), pointsOf(bloodPressure())),
+            builder: (ctx) => buildGroupChart(
+              ctx,
+              bloodPressure(),
+              pointsOf(bloodPressure(), bloodPressureEntries()),
+            ),
           ),
         ),
       );
@@ -647,8 +664,8 @@ void main() {
           Builder(
             builder: (ctx) => buildGroupChart(
               ctx,
-              sleepGroup(withStages: false),
-              pointsOf(sleepGroup(withStages: false)),
+              sleepGroup(),
+              pointsOf(sleepGroup(), sleepEntries(withStages: false)),
             ),
           ),
         ),

@@ -34,7 +34,7 @@ void main() {
 
   ProviderContainer buildContainer(MeasurementCategory? category) {
     when(
-      mockRepo.watchOfficialBodyWeightCategory(entriesSince: anyNamed('entriesSince')),
+      mockRepo.watchOfficialBodyWeightCategory(),
     ).thenAnswer((_) => Stream.value(category));
     return ProviderContainer.test(
       overrides: [measurementRepositoryProvider.overrideWithValue(mockRepo)],
@@ -45,22 +45,20 @@ void main() {
     mockRepo = MockMeasurementRepository();
   });
 
-  test('exposes the official body weight category with its entries', () async {
+  test('exposes the official body weight category', () async {
     container = buildContainer(getBodyWeightCategory());
-    container.listen(bodyWeightCategoryProvider, (_, _) {});
+    container.listen(bodyWeightCategoryOnlyProvider, (_, _) {});
     await pumpEventQueue();
 
-    final category = container.read(bodyWeightCategoryProvider).value;
-    expect(category?.id, testBodyWeightCategoryId);
-    expect(category?.entries, [testWeightEntry2, testWeightEntry1]);
+    expect(container.read(bodyWeightCategoryOnlyProvider).value?.id, testBodyWeightCategoryId);
   });
 
   test('is null while no official category has been synced', () async {
     container = buildContainer(null);
-    container.listen(bodyWeightCategoryProvider, (_, _) {});
+    container.listen(bodyWeightCategoryOnlyProvider, (_, _) {});
     await pumpEventQueue();
 
-    final async = container.read(bodyWeightCategoryProvider);
+    final async = container.read(bodyWeightCategoryOnlyProvider);
     expect(async.hasValue, isTrue);
     expect(async.value, isNull);
   });
@@ -68,20 +66,11 @@ void main() {
   test('asks the repository for one category instead of for all of them', () async {
     // Reading every category and keeping one made any other category's entry
     // rebuild the weight screen, and the sync writes five sleep rows a night
-    final since = DateTime.utc(2026, 1, 1);
     container = buildContainer(getBodyWeightCategory());
-    container.listen(bodyWeightCategorySinceProvider(since), (_, _) {});
+    container.listen(bodyWeightCategoryOnlyProvider, (_, _) {});
     await pumpEventQueue();
 
-    verify(mockRepo.watchOfficialBodyWeightCategory(entriesSince: since)).called(1);
-    verifyNever(mockRepo.watchAll(entriesSince: anyNamed('entriesSince')));
-  });
-
-  test('the unbounded provider reads the full history', () async {
-    container = buildContainer(getBodyWeightCategory());
-    container.listen(bodyWeightCategoryProvider, (_, _) {});
-    await pumpEventQueue();
-
-    verify(mockRepo.watchOfficialBodyWeightCategory(entriesSince: null)).called(1);
+    verify(mockRepo.watchOfficialBodyWeightCategory()).called(1);
+    verifyNever(mockRepo.watchAllWithoutEntries());
   });
 }

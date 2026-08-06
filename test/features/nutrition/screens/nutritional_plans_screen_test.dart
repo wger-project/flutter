@@ -26,7 +26,6 @@ import 'package:wger/core/form_screen.dart';
 import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/features/account/models/user_profile.dart';
 import 'package:wger/features/account/providers/user_profile_repository.dart';
-import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
 import 'package:wger/features/nutrition/models/nutritional_plan.dart';
 import 'package:wger/features/nutrition/providers/ingredient_repository.dart';
@@ -36,6 +35,7 @@ import 'package:wger/features/nutrition/widgets/forms.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 import '../../../fake_connectivity.dart';
+import '../../../helpers/measurement_repository_stubs.dart';
 import 'nutritional_plans_screen_test.mocks.dart';
 
 @GenerateMocks([
@@ -77,9 +77,7 @@ void main() {
     mockNutritionRepo = MockNutritionRepository();
     mockIngredientRepo = MockIngredientRepository();
     mockMeasurementRepository = MockMeasurementRepository();
-    when(
-      mockMeasurementRepository.watchAll(),
-    ).thenAnswer((_) => Stream.value(<MeasurementCategory>[]));
+    stubMeasurementReads(mockMeasurementRepository, []);
     mockUserProfileRepository = MockUserProfileRepository();
 
     when(

@@ -53,8 +53,11 @@ class _MeasurementCategoryFormState extends ConsumerState<MeasurementCategoryFor
     // A category with children is a group whatever its metric type says, which
     // is also how the charts decide. Both the chart type and the parent are
     // meaningless for one
-    final categories = ref.watch(measurementProvider).asData?.value ?? [];
+    final categories = ref.watch(measurementCategoriesProvider).value ?? const [];
     final hasChildren = _draft.id != null && categories.any((c) => c.parentId == _draft.id);
+    // Which categories hold entries, for the group check below: the map has a
+    // key exactly for those, and is loaded for the screens anyway
+    final withEntries = ref.watch(latestMeasurementEntriesProvider).value ?? const {};
 
     // What the chart type picker offers: no override, plus what this metric
     // type may be drawn as. Empty for a group, whose chart follows from what
@@ -211,7 +214,7 @@ class _MeasurementCategoryFormState extends ConsumerState<MeasurementCategoryFor
                     (c) =>
                         c.parentId == null &&
                         c.id != _draft.id &&
-                        c.entries.isEmpty &&
+                        !withEntries.containsKey(c.id) &&
                         !c.isOfficialBodyWeight &&
                         !c.metricType.isGroup,
                   )
@@ -291,17 +294,12 @@ class _MeasurementEntryFormState extends ConsumerState<MeasurementEntryForm> {
   num? _value;
   String _notes = '';
 
-  /// Read once: a future built in build() is a new one on every rebuild, which
-  /// sends the FutureBuilder back to its loading state.
-  late final Future<MeasurementCategory?> _categoryFuture;
-
   @override
   void initState() {
     super.initState();
     _value = widget._entry?.value;
     _notes = widget._entry?.notes ?? '';
     _notesController.text = _notes;
-    _categoryFuture = ref.read(measurementProvider.notifier).getCategoryById(widget._categoryId);
   }
 
   @override
@@ -313,21 +311,17 @@ class _MeasurementEntryFormState extends ConsumerState<MeasurementEntryForm> {
   @override
   Widget build(BuildContext context) {
     final notifier = ref.read(measurementProvider.notifier);
+    // Watched rather than read once: the form only needs name, unit and the
+    // limits, and a re-emission leaves the fields it does not feed alone
+    final categoryAsync = ref.watch(measurementCategoryProvider(widget._categoryId));
 
-    return FutureBuilder(
-      future: _categoryFuture,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const BoxedProgressIndicator();
-        }
-        if (snapshot.hasError) {
-          return StreamErrorIndicator(snapshot.error.toString());
-        }
-        if (!snapshot.hasData || snapshot.data == null) {
+    return categoryAsync.when(
+      loading: () => const BoxedProgressIndicator(),
+      error: (error, _) => StreamErrorIndicator(error.toString()),
+      data: (category) {
+        if (category == null) {
           return const Text('Category not found');
         }
-
-        final category = snapshot.data!;
 
         return Form(
           key: _form,

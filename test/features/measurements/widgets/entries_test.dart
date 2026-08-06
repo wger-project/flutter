@@ -55,20 +55,22 @@ void main() {
     externalId: 'bf-1',
   );
 
-  Widget createEntriesList(MeasurementCategory category, {MockMeasurementRepository? repo}) {
+  Widget createEntriesList(
+    MeasurementCategory category,
+    Map<String, List<MeasurementEntry>> entries, {
+    MockMeasurementRepository? repo,
+  }) {
     final mockRepo = repo ?? MockMeasurementRepository();
-    when(mockRepo.watchAll()).thenAnswer((_) => Stream.value([category]));
-    stubMeasurementReads(mockRepo, [category]);
+    stubMeasurementReads(mockRepo, [category], entries);
 
     return ProviderScope(
       overrides: [
         measurementRepositoryProvider.overrideWithValue(mockRepo),
         nutritionRepositoryProvider.overrideWithValue(MockNutritionRepository()),
         ingredientRepositoryProvider.overrideWithValue(MockIngredientRepository()),
-        // The chart reads its points from the aggregated query, not from the
-        // entries the category carries
-        measurementChartBucketsProvider.overrideWith(chartBucketsFrom([category])),
-        measurementGroupBucketsProvider.overrideWith(groupBucketsFrom([category])),
+        // The chart reads its points from the aggregated query
+        measurementChartBucketsProvider.overrideWith(chartBucketsFrom(entries)),
+        measurementGroupBucketsProvider.overrideWith(groupBucketsFrom([category], entries)),
       ],
       child: MaterialApp(
         localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -93,10 +95,13 @@ void main() {
       id: 'c1',
       name: 'Body fat',
       unit: '%',
-      entries: [userEntry, importedEntry],
     );
 
-    await tester.pumpWidget(createEntriesList(category));
+    await tester.pumpWidget(
+      createEntriesList(category, {
+        'c1': [userEntry, importedEntry],
+      }),
+    );
     await tester.pumpAndSettle();
 
     // Only the manual entry has the menu, the imported one carries the badge
@@ -110,7 +115,7 @@ void main() {
     // The list defaults to the last three months, so a fixed date would fall
     // out of the range as time passes
     final night = DateTime.now().subtract(const Duration(days: 1));
-    MeasurementCategory child(String id, String name, MetricType type, int order, num value) =>
+    MeasurementCategory child(String id, String name, MetricType type, int order) =>
         MeasurementCategory(
           id: id,
           name: name,
@@ -118,15 +123,6 @@ void main() {
           metricType: type,
           parentId: 'sleep',
           order: order,
-          entries: [
-            MeasurementEntry(
-              id: 'e-$id',
-              categoryId: id,
-              date: night,
-              value: value,
-              notes: '',
-            ),
-          ],
         );
     final group = MeasurementCategory(
       id: 'sleep',
@@ -134,12 +130,16 @@ void main() {
       unit: 'min',
       metricType: MetricType.sleep,
       children: [
-        child('total', 'Total sleep', MetricType.sleepTotal, 0, 480),
-        child('deep', 'Deep sleep', MetricType.sleepDeep, 1, 90),
+        child('total', 'Total sleep', MetricType.sleepTotal, 0),
+        child('deep', 'Deep sleep', MetricType.sleepDeep, 1),
       ],
     );
+    final entries = {
+      for (final (id, value) in [('total', 480), ('deep', 90)])
+        id: [MeasurementEntry(id: 'e-$id', categoryId: id, date: night, value: value, notes: '')],
+    };
 
-    await tester.pumpWidget(createEntriesList(group));
+    await tester.pumpWidget(createEntriesList(group, entries));
     await tester.pumpAndSettle();
 
     // The group holds no entries itself, so its own list would be empty: it
@@ -159,34 +159,30 @@ void main() {
     final readings = [
       for (var day = 0; day < 40; day++) DateTime.now().subtract(Duration(days: day)),
     ];
-    MeasurementCategory component(String id, String name, MetricType type, num value) =>
-        MeasurementCategory(
-          id: id,
-          name: name,
-          unit: 'mmHg',
-          metricType: type,
-          parentId: 'bp',
-          entries: [
-            for (final (index, date) in readings.indexed)
-              MeasurementEntry(
-                id: '$id-$index',
-                categoryId: id,
-                date: date,
-                value: value,
-                notes: '',
-              ),
-          ],
-        );
+    MeasurementCategory component(String id, String name, MetricType type) => MeasurementCategory(
+      id: id,
+      name: name,
+      unit: 'mmHg',
+      metricType: type,
+      parentId: 'bp',
+    );
     final group = MeasurementCategory(
       id: 'bp',
       name: 'Blood pressure',
       unit: 'mmHg',
       metricType: MetricType.bloodPressure,
       children: [
-        component('sys', 'Systolic', MetricType.bloodPressureSystolic, 120),
-        component('dia', 'Diastolic', MetricType.bloodPressureDiastolic, 80),
+        component('sys', 'Systolic', MetricType.bloodPressureSystolic),
+        component('dia', 'Diastolic', MetricType.bloodPressureDiastolic),
       ],
     );
+    final entries = {
+      for (final (id, value) in [('sys', 120), ('dia', 80)])
+        id: [
+          for (final (index, date) in readings.indexed)
+            MeasurementEntry(id: '$id-$index', categoryId: id, date: date, value: value, notes: ''),
+        ],
+    };
     final mockRepo = MockMeasurementRepository();
     // Tall enough that the list below the chart is on screen and can be
     // dragged rather than the page around it
@@ -194,7 +190,7 @@ void main() {
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.reset);
 
-    await tester.pumpWidget(createEntriesList(group, repo: mockRepo));
+    await tester.pumpWidget(createEntriesList(group, entries, repo: mockRepo));
     await tester.pumpAndSettle();
     verify(mockRepo.watchGroupEntries('bp', limit: 50)).called(greaterThanOrEqualTo(1));
 
@@ -215,10 +211,13 @@ void main() {
       name: 'Blutdruck',
       unit: 'mmHg',
       metricType: MetricType.bloodPressureSystolic,
-      entries: [userEntry],
     );
 
-    await tester.pumpWidget(createEntriesList(category));
+    await tester.pumpWidget(
+      createEntriesList(category, {
+        'c1': [userEntry],
+      }),
+    );
     await tester.pumpAndSettle();
 
     expect(find.textContaining('Systolic'), findsWidgets);
@@ -232,10 +231,13 @@ void main() {
       id: 'c1',
       name: 'Bizeps',
       unit: 'cm',
-      entries: [userEntry],
     );
 
-    await tester.pumpWidget(createEntriesList(category));
+    await tester.pumpWidget(
+      createEntriesList(category, {
+        'c1': [userEntry],
+      }),
+    );
     await tester.pumpAndSettle();
 
     expect(find.textContaining('Bizeps'), findsWidgets);

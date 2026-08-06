@@ -42,9 +42,8 @@ class MeasurementCategorySortScreen extends ConsumerWidget {
       ),
       body: WidescreenWrapper(
         child: AsyncValueWidget<List<MeasurementCategory>>(
-          value: ref.watch(measurementProvider),
+          value: ref.watch(measurementCategoriesProvider),
           loggerName: 'MeasurementCategorySortScreen',
-          // Must match the list setCategoryOrder reorders, or indices drift
           data: (categories) => _SortableList(
             categories.where((c) => c.parentId == null && !c.isOfficialBodyWeight).toList(),
           ),
@@ -76,7 +75,8 @@ class _SortableList extends ConsumerWidget {
           ),
         );
       },
-      onReorderItem: notifier.setCategoryOrder,
+      onReorderItem: (oldIndex, newIndex) =>
+          notifier.setCategoryOrder(_categories, oldIndex, newIndex),
     );
   }
 }

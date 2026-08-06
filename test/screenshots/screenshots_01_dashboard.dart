@@ -26,7 +26,6 @@ import 'package:wger/core/network/auth_state.dart';
 import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/features/account/providers/user_profile_repository.dart';
 import 'package:wger/features/gallery/providers/gallery_repository.dart';
-import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
 import 'package:wger/features/nutrition/providers/ingredient_repository.dart';
 import 'package:wger/features/nutrition/providers/nutrition_notifier.dart';
@@ -36,6 +35,7 @@ import 'package:wger/features/trophies/providers/trophy_repository.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/theme/theme.dart';
 
+import '../../test_data/body_weight.dart';
 import '../../test_data/gallery.dart';
 import '../../test_data/profile.dart';
 import '../../test_data/screenshots/measurements.dart';
@@ -43,6 +43,7 @@ import '../../test_data/screenshots/nutrition.dart';
 import '../../test_data/screenshots/routines.dart';
 import '../../test_data/screenshots/trophies.dart';
 import '../../test_data/screenshots/weight.dart';
+import '../helpers/measurement_repository_stubs.dart';
 import 'screenshots_01_dashboard.mocks.dart';
 
 class _FakeAuthNotifier extends AuthNotifier {
@@ -74,11 +75,11 @@ Widget createDashboardScreen({Locale? locale}) {
   when(mockIngredientRepo.getById(any)).thenAnswer((_) async => null);
 
   final mockMeasurementRepo = MockMeasurementRepository();
-  when(mockMeasurementRepo.watchAll()).thenAnswer(
-    (_) => Stream<List<MeasurementCategory>>.value([
-      getScreenshotBodyWeightCategory(),
-      ...getScreenshotMeasurementCategories(),
-    ]),
+  final measurements = getScreenshotMeasurements();
+  stubMeasurementReads(
+    mockMeasurementRepo,
+    [getBodyWeightCategory(), ...measurements.categories],
+    {...getScreenshotBodyWeightEntries(), ...measurements.entries},
   );
 
   final mockUserProfileRepo = MockUserProfileRepository();

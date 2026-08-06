@@ -20,8 +20,6 @@
  * Riverpod notifier for measurement entries backed by Drift.
  */
 
-import 'package:collection/collection.dart';
-import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wger/core/network/auth_credentials_storage.dart';
 import 'package:wger/features/measurements/models/measurement_bucket.dart';
@@ -32,12 +30,11 @@ import 'measurement_repository.dart';
 
 part 'measurement_notifier.g.dart';
 
-/// All categories with their children, without their entries.
+/// All categories with their children.
 ///
-/// What the screens watch: everything they draw comes from the aggregated
-/// queries and the paged lists below. Kept apart from [measurementProvider],
-/// which stays unbounded for the consumers that read the entries themselves
-/// (the health importer, the dashboard calendar).
+/// The one place the screens read categories from. What they draw on top of
+/// them comes from the aggregated queries and the paged lists below, never
+/// from a category itself, which is why none of these carries entries.
 @riverpod
 Stream<List<MeasurementCategory>> measurementCategories(Ref ref) {
   return ref.read(measurementRepositoryProvider).watchAllWithoutEntries();
@@ -70,17 +67,19 @@ Stream<Map<String, MeasurementEntry>> latestMeasurementEntries(Ref ref) {
 ///
 /// Kept apart from the category streams, which hand over the entries
 /// themselves. [level] is what the chart in question needs, see
-/// `chartBucketLevel`.
+/// `chartBucketLevel`; [until] is exclusive and bounds a chart that shows a
+/// closed period rather than everything up to today.
 @riverpod
 Stream<List<MeasurementBucket>> measurementChartBuckets(
   Ref ref,
   String categoryId,
   DateTime? since,
+  DateTime? until,
   MeasurementBucketLevel level,
 ) {
   return ref
       .read(measurementRepositoryProvider)
-      .watchEntryBuckets(categoryId, since: since, level: level);
+      .watchEntryBuckets(categoryId, since: since, until: until, level: level);
 }
 
 /// The chart points of a group's components, keyed by component id.
@@ -99,6 +98,15 @@ Stream<Map<String, List<MeasurementBucket>>> measurementGroupBuckets(
       .watchGroupBuckets(parentId, since: since, level: level);
 }
 
+/// One point per day and category, keyed by category id.
+///
+/// For the calendar, which marks the days something was measured on rather
+/// than the single readings.
+@riverpod
+Stream<Map<String, List<MeasurementBucket>>> measurementDailyBuckets(Ref ref) {
+  return ref.read(measurementRepositoryProvider).watchDailyBuckets();
+}
+
 /// How often each value of a category occurred, for the histogram.
 @riverpod
 Stream<List<MeasurementValueCount>> measurementValueCounts(
@@ -112,36 +120,22 @@ Stream<List<MeasurementValueCount>> measurementValueCounts(
       .watchValueCounts(categoryId, since: since, summedPerDay: summedPerDay);
 }
 
-/// One category with its children and without their entries, null while it
-/// does not exist (or no longer does).
+/// One category with its children, null while it does not exist (or no longer
+/// does).
 @riverpod
 Stream<MeasurementCategory?> measurementCategory(Ref ref, String id) {
   return ref.read(measurementRepositoryProvider).watchCategoryWithoutEntries(id);
 }
 
+/// Writing side of the measurements: what the screens read is watched through
+/// the providers above, which this only changes the data of.
 @riverpod
 final class MeasurementNotifier extends _$MeasurementNotifier {
-  final _logger = Logger('MeasurementNotifier');
-
   late MeasurementRepository _repo;
 
   @override
-  Stream<List<MeasurementCategory>> build() {
+  void build() {
     _repo = ref.read(measurementRepositoryProvider);
-    _logger.finer('Building stream');
-
-    return _repo.watchAll();
-  }
-
-  Future<MeasurementCategory?> getCategoryById(String id) async {
-    // Data already loaded
-    final categories = state.asData?.value;
-    if (categories != null) {
-      return categories.firstWhereOrNull((c) => c.id == id);
-    }
-
-    // Read from DB
-    return _repo.watchLocalDriftCategoryById(id).first;
   }
 
   Future<void> deleteEntry(String id) async {
@@ -207,21 +201,19 @@ final class MeasurementNotifier extends _$MeasurementNotifier {
     return parent.id;
   }
 
-  /// Moves the top-level category at [oldIndex] to [newIndex] and renumbers
-  /// all top-level categories accordingly.
+  /// Moves the category at [oldIndex] of [categories] to [newIndex] and
+  /// persists the resulting order.
   ///
-  /// Indices refer to the top-level list only (children of multi-value groups
-  /// keep their in-group order). The official body weight category is not
-  /// part of the list, matching the sort screen it is hidden from.
-  Future<void> setCategoryOrder(int oldIndex, int newIndex) async {
-    final categories = state.asData?.value;
-    if (categories == null) {
-      return;
-    }
-
-    final reordered = categories
-        .where((c) => c.parentId == null && !c.isOfficialBodyWeight)
-        .toList();
+  /// The list is passed in rather than derived here, so the indices are the
+  /// ones of the list the user dragged in. It holds the top-level categories
+  /// only: children of multi-value groups keep their in-group order, and the
+  /// official body weight category is hidden from the sort screen.
+  Future<void> setCategoryOrder(
+    List<MeasurementCategory> categories,
+    int oldIndex,
+    int newIndex,
+  ) async {
+    final reordered = [...categories];
     final moved = reordered.removeAt(oldIndex);
     reordered.insert(newIndex, moved);
 

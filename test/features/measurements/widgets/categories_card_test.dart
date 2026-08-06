@@ -30,18 +30,21 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import '../../../../test_data/measurements.dart';
 import '../../../helpers/measurement_chart_buckets.dart';
 
+/// A category and the entries it holds, which it no longer carries itself.
+typedef _Seed = ({MeasurementCategory category, Map<String, List<MeasurementEntry>> entries});
+
 Widget _wrap(
   Widget child, {
   Map<String, MeasurementEntry> latest = const {},
   List<MeasurementCategory> categories = const [],
+  Map<String, List<MeasurementEntry>> entries = const {},
 }) => ProviderScope(
   overrides: [
     // The component rows read their last known value from its own query
     latestMeasurementEntriesProvider.overrideWith((ref) => Stream.value(latest)),
-    // The chart reads its points from the aggregated query, not from the
-    // entries the category carries
-    measurementChartBucketsProvider.overrideWith(chartBucketsFrom(categories)),
-    measurementGroupBucketsProvider.overrideWith(groupBucketsFrom(categories)),
+    // The chart reads its points from the aggregated query
+    measurementChartBucketsProvider.overrideWith(chartBucketsFrom(entries)),
+    measurementGroupBucketsProvider.overrideWith(groupBucketsFrom(categories, entries)),
   ],
   child: MaterialApp(
     localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -50,31 +53,28 @@ Widget _wrap(
   ),
 );
 
-/// The newest entry per component, i.e. what the query behind the rows returns
-Map<String, MeasurementEntry> _latestOf(MeasurementCategory group) => {
-  for (final child in group.children)
-    if (child.entries.isNotEmpty) child.id!: child.entries.first,
+/// The newest entry per category, i.e. what the query behind the rows returns
+Map<String, MeasurementEntry> _latestOf(Map<String, List<MeasurementEntry>> entries) => {
+  for (final MapEntry(key: id, value: ofCategory) in entries.entries)
+    if (ofCategory.isNotEmpty) id: ofCategory.first,
 };
 
 /// The fixtures have fixed dates, so the card charts the full history instead
 /// of the range it defaults to
-Widget _card(MeasurementCategory category) => _wrap(
-  CategoriesCard(category, range: ChartRange.all),
-  latest: _latestOf(category),
-  categories: [category],
+Widget _card(_Seed seed) => _wrap(
+  CategoriesCard(seed.category, range: ChartRange.all),
+  latest: _latestOf(seed.entries),
+  categories: [seed.category],
+  entries: seed.entries,
 );
 
-MeasurementCategory _bpGroup({bool withEntries = false}) {
-  final sysEntries = withEntries ? [testNeasurementEntry9] : <MeasurementEntry>[];
-  final diaEntries = withEntries ? [testNeasurementEntry10] : <MeasurementEntry>[];
-  final sys = testMeasurementCategorySystolic.copyWith(entries: sysEntries);
-  final dia = testMeasurementCategoryDiastolic.copyWith(entries: diaEntries);
-
-  return testMeasurementCategoryBloodPressure.copyWith(children: [sys, dia]);
-}
+_Seed _bpGroup({bool withEntries = false}) => (
+  category: testMeasurementCategoryBloodPressure,
+  entries: withEntries ? getBloodPressureEntries() : const {},
+);
 
 /// A group with three components, which cannot be read as a low/high range
-MeasurementCategory _tripleGroup() {
+_Seed _tripleGroup() {
   final children = [
     for (var i = 0; i < 3; i++)
       MeasurementCategory(
@@ -83,23 +83,29 @@ MeasurementCategory _tripleGroup() {
         unit: 'mmHg',
         parentId: 'bp',
         order: i,
-        entries: [
+      ),
+  ];
+
+  return (
+    category: testMeasurementCategoryBloodPressure.copyWith(children: children),
+    entries: {
+      for (final (i, child) in children.indexed)
+        child.id!: [
           MeasurementEntry(
             id: 'e$i',
-            categoryId: 'c$i',
+            categoryId: child.id!,
             date: DateTime(2026, 1, 1),
             value: 100 + i * 10,
             notes: '',
           ),
         ],
-      ),
-  ];
-  return testMeasurementCategoryBloodPressure.copyWith(children: children);
+    },
+  );
 }
 
 /// A sleep group: the total plus two stages, all on the same night
-MeasurementCategory _sleepGroup() {
-  MeasurementCategory child(String id, String name, MetricType type, int order, num value) =>
+_Seed _sleepGroup() {
+  MeasurementCategory child(String id, String name, MetricType type, int order) =>
       MeasurementCategory(
         id: id,
         name: name,
@@ -107,27 +113,33 @@ MeasurementCategory _sleepGroup() {
         metricType: type,
         parentId: 'sleep',
         order: order,
-        entries: [
-          MeasurementEntry(
-            id: 'e-$id',
-            categoryId: id,
-            date: DateTime(2026, 1, 2),
-            value: value,
-            notes: '',
-          ),
-        ],
       );
 
-  return MeasurementCategory(
-    id: 'sleep',
-    name: 'Sleep',
-    unit: 'min',
-    metricType: MetricType.sleep,
-    children: [
-      child('total', 'Total sleep', MetricType.sleepTotal, 0, 480),
-      child('deep', 'Deep sleep', MetricType.sleepDeep, 1, 90),
-      child('rem', 'REM sleep', MetricType.sleepRem, 2, 60),
-    ],
+  MeasurementEntry reading(String id, num value) => MeasurementEntry(
+    id: 'e-$id',
+    categoryId: id,
+    date: DateTime(2026, 1, 2),
+    value: value,
+    notes: '',
+  );
+
+  return (
+    category: MeasurementCategory(
+      id: 'sleep',
+      name: 'Sleep',
+      unit: 'min',
+      metricType: MetricType.sleep,
+      children: [
+        child('total', 'Total sleep', MetricType.sleepTotal, 0),
+        child('deep', 'Deep sleep', MetricType.sleepDeep, 1),
+        child('rem', 'REM sleep', MetricType.sleepRem, 2),
+      ],
+    ),
+    entries: {
+      'total': [reading('total', 480)],
+      'deep': [reading('deep', 90)],
+      'rem': [reading('rem', 60)],
+    },
   );
 }
 
@@ -179,15 +191,13 @@ void main() {
       // Editing the date of one half pulls a reading apart, and there is then
       // no range to draw. The card must still show the data it has instead of
       // going blank.
-      final sys = testMeasurementCategorySystolic.copyWith(
-        entries: [testNeasurementEntry9],
+      final group = (
+        category: testMeasurementCategoryBloodPressure,
+        entries: {
+          'sys': [testNeasurementEntry9],
+          'dia': [testNeasurementEntry10.copyWith(date: DateTime(2026, 1, 1, 9, 30))],
+        },
       );
-      final dia = testMeasurementCategoryDiastolic.copyWith(
-        entries: [
-          testNeasurementEntry10.copyWith(date: DateTime(2026, 1, 1, 9, 30)),
-        ],
-      );
-      final group = testMeasurementCategoryBloodPressure.copyWith(children: [sys, dia]);
 
       await tester.pumpWidget(_card(group));
       await tester.pumpAndSettle();
@@ -270,23 +280,27 @@ void main() {
   group('CategoriesCard daily aggregates', () {
     /// A heart rate category as the importer stores it: one entry per day
     /// holding the day's average, with the range it summarises in extra_data.
-    MeasurementCategory heartRate({bool withRange = true}) => MeasurementCategory(
-      id: 'hr',
-      name: 'Heart rate',
-      unit: 'bpm',
-      metricType: MetricType.heartRate,
-      entries: [
-        for (var day = 1; day <= 3; day++)
-          MeasurementEntry(
-            id: 'e$day',
-            categoryId: 'hr',
-            date: DateTime(2026, 1, day),
-            value: 60 + day,
-            notes: '',
-            source: 'apple',
-            extraData: withRange ? {'min': 50 + day, 'max': 90 + day} : const {},
-          ),
-      ],
+    _Seed heartRate({bool withRange = true}) => (
+      category: MeasurementCategory(
+        id: 'hr',
+        name: 'Heart rate',
+        unit: 'bpm',
+        metricType: MetricType.heartRate,
+      ),
+      entries: {
+        'hr': [
+          for (var day = 1; day <= 3; day++)
+            MeasurementEntry(
+              id: 'e$day',
+              categoryId: 'hr',
+              date: DateTime(2026, 1, day),
+              value: 60 + day,
+              notes: '',
+              source: 'apple',
+              extraData: withRange ? {'min': 50 + day, 'max': 90 + day} : const {},
+            ),
+        ],
+      },
     );
 
     testWidgets('draws the summarised range as a band around the line', (tester) async {

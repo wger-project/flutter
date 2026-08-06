@@ -25,7 +25,6 @@ import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
 
-import '../../../../test_data/body_weight.dart';
 import '../../../../test_data/measurements.dart';
 import 'measurement_notifier_test.mocks.dart';
 
@@ -41,7 +40,6 @@ void main() {
     when(mockCredentials.dbOwnerUserId()).thenAnswer((_) async => '2');
 
     // Default stubs
-    when(mockRepo.watchAll()).thenAnswer((_) => Stream.value([]));
     when(mockRepo.deleteLocalDrift(any)).thenAnswer((_) async {});
     when(mockRepo.updateLocalDrift(any)).thenAnswer((_) async {});
     when(mockRepo.addLocalDrift(any)).thenAnswer((_) async {});
@@ -153,10 +151,13 @@ void main() {
       expect(added.last.id, deterministicCategoryId('2', MetricType.bloodPressureDiastolic));
     });
 
-    test('build watches repository stream', () async {
-      container.read(measurementProvider);
+    test('the notifier reads nothing, it only writes', () async {
+      // What the screens show is watched through the providers next to it;
+      // instantiating the notifier to delete an entry must not start a read
+      container.read(measurementProvider.notifier);
 
-      verify(mockRepo.watchAll()).called(1);
+      verifyNever(mockRepo.watchAllWithoutEntries());
+      verifyNever(mockRepo.watchLatestEntries());
     });
   });
 
@@ -178,71 +179,38 @@ void main() {
   });
 
   group('setCategoryOrder', () {
-    // Three top-level categories: Body fat ('1'), Biceps ('2') and the blood
-    // pressure group parent ('bp'), whose children must stay untouched.
+    // The list the sort screen shows: its top-level categories, in the order
+    // they are drawn in. Which categories those are is the screen's business
     final categories = [
       ...getMeasurementCategories(),
-      ...getBloodPressureGroup(),
+      testMeasurementCategoryBloodPressure,
     ];
 
     setUp(() {
-      when(mockRepo.watchAll()).thenAnswer((_) => Stream.value(categories));
       when(mockRepo.reorderCategories(any)).thenAnswer((_) async {});
     });
 
-    // Loads the notifier with its state resolved from the watchAll stream.
-    Future<MeasurementNotifier> loadedNotifier() async {
-      container.listen(measurementProvider, (_, _) {});
-      await pumpEventQueue();
-      return container.read(measurementProvider.notifier);
-    }
-
     test('moves an item down (newIndex already adjusted, onReorderItem semantics)', () async {
-      final notifier = await loadedNotifier();
+      final notifier = container.read(measurementProvider.notifier);
 
-      await notifier.setCategoryOrder(0, 2);
+      await notifier.setCategoryOrder(categories, 0, 2);
       verify(mockRepo.reorderCategories(['2', 'bp', '1'])).called(1);
     });
 
     test('moves an item up', () async {
-      final notifier = await loadedNotifier();
+      final notifier = container.read(measurementProvider.notifier);
 
-      await notifier.setCategoryOrder(2, 0);
+      await notifier.setCategoryOrder(categories, 2, 0);
       verify(mockRepo.reorderCategories(['bp', '1', '2'])).called(1);
     });
 
-    test('excludes children of multi-value groups', () async {
-      // Children interleaved between the top-level categories.
-      when(mockRepo.watchAll()).thenAnswer(
-        (_) => Stream.value([
-          testMeasurementCategorySystolic,
-          ...getMeasurementCategories(),
-          testMeasurementCategoryDiastolic,
-          testMeasurementCategoryBloodPressure,
-        ]),
-      );
-      final notifier = await loadedNotifier();
+    test('leaves the list it was given alone', () async {
+      // It belongs to the screen, which rebuilds from the stream rather than
+      // from a list reordered under it
+      final notifier = container.read(measurementProvider.notifier);
 
-      await notifier.setCategoryOrder(0, 1);
-      verify(mockRepo.reorderCategories(['2', '1', 'bp'])).called(1);
-    });
-
-    test('excludes the official body weight category, matching the sort screen', () async {
-      when(mockRepo.watchAll()).thenAnswer(
-        (_) => Stream.value([getBodyWeightCategory(), ...getMeasurementCategories()]),
-      );
-      final notifier = await loadedNotifier();
-
-      await notifier.setCategoryOrder(0, 1);
-      verify(mockRepo.reorderCategories(['2', '1'])).called(1);
-    });
-
-    test('does nothing while the list is still loading', () async {
-      when(mockRepo.watchAll()).thenAnswer((_) => const Stream.empty());
-      final notifier = await loadedNotifier();
-
-      await notifier.setCategoryOrder(0, 1);
-      verifyNever(mockRepo.reorderCategories(any));
+      await notifier.setCategoryOrder(categories, 0, 2);
+      expect(categories.map((c) => c.id), ['1', '2', 'bp']);
     });
   });
 }

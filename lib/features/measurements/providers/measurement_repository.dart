@@ -46,104 +46,44 @@ class MeasurementRepository {
   /// screen is waiting for the first emission.
   static const _emitDebounce = Duration(milliseconds: 200);
 
-  /// Watches all categories, populated with their appropriate entries.
+  /// Watches all categories with their children.
   ///
   /// The list is flat (children of multi-value groups appear as regular items
   /// with a non-null `parentId`), but group parents additionally get their
   /// [MeasurementCategory.children] attached, sorted by their in-group order.
-  /// [entriesSince] limits the entries to those on or after it; null reads the
-  /// full history. The categories themselves are returned either way.
-  Stream<List<MeasurementCategory>> watchAll({DateTime? entriesSince}) {
-    _logger.finer('Watching all measurement categories with entries');
-    return _watchCategories(entriesSince: entriesSince);
-  }
-
-  /// Watches all categories with their children, but without their entries.
   ///
-  /// For the screens that read what they show through the aggregated queries:
-  /// the entries of a watch-fed metric are tens of thousands of rows a year,
-  /// and building an object per row to then chart a few hundred points is the
-  /// cost this avoids.
+  /// A category never carries its entries: those of a watch-fed metric are
+  /// tens of thousands of rows a year, and building an object per row to then
+  /// chart a few hundred points is the cost the aggregated queries below
+  /// avoid.
   Stream<List<MeasurementCategory>> watchAllWithoutEntries() {
     _logger.finer('Watching all measurement categories');
-    return _watchCategories(withEntries: false);
+    return _watchCategories();
   }
 
-  /// One category with its children, without their entries. See
-  /// [watchAllWithoutEntries].
+  /// One category with its children. See [watchAllWithoutEntries].
   Stream<MeasurementCategory?> watchCategoryWithoutEntries(String id) {
     _logger.finer('Watching measurement category $id');
     return _watchCategories(
       filter: (table) => table.id.equals(id) | table.parentId.equals(id),
-      withEntries: false,
     ).map((categories) => categories.firstWhereOrNull((c) => c.id == id));
   }
 
   /// Watches the categories matching [filter] (all of them when it is null),
-  /// each populated with its entries and, for group parents, its children.
-  ///
-  /// [entriesSince] bounds the entries in the query rather than afterwards, so
-  /// a chart showing three months does not materialise years of rows.
+  /// group parents with their children attached.
   Stream<List<MeasurementCategory>> _watchCategories({
     Expression<bool> Function($MeasurementCategoryTableTable table)? filter,
-    DateTime? entriesSince,
-    bool withEntries = true,
   }) {
     final select = _db.select(_db.measurementCategoryTable);
     if (filter != null) {
       select.where(filter);
     }
+    select.orderBy([
+      (t) => OrderingTerm(expression: t.order),
+      (t) => OrderingTerm(expression: t.name),
+    ]);
 
-    if (!withEntries) {
-      select.orderBy([
-        (t) => OrderingTerm(expression: t.order),
-        (t) => OrderingTerm(expression: t.name),
-      ]);
-      return select.watch().debounce(_emitDebounce, leading: true).map(_attachChildren);
-    }
-
-    // The date bound belongs into the join condition, not into a where: as a
-    // where it would drop the categories that have no entry in the range,
-    // turning the outer join into an inner one.
-    var on = _db.measurementEntryTable.categoryId.equalsExp(_db.measurementCategoryTable.id);
-    if (entriesSince != null) {
-      on = on & _db.measurementEntryTable.date.isBiggerOrEqualValue(entriesSince);
-    }
-
-    final joined =
-        select.join([
-          leftOuterJoin(_db.measurementEntryTable, on),
-        ])..orderBy([
-          OrderingTerm(expression: _db.measurementCategoryTable.order),
-          OrderingTerm(expression: _db.measurementCategoryTable.name),
-          OrderingTerm(expression: _db.measurementEntryTable.date, mode: OrderingMode.desc),
-        ]);
-
-    return joined.watch().debounce(_emitDebounce, leading: true).map((rows) {
-      final Map<String, MeasurementCategory> map = {};
-      // Guards against the same entry being added twice. Scanning the list
-      // built so far would do, but is quadratic, and a category can hold
-      // thousands of entries.
-      final Map<String, Set<String>> seen = {};
-
-      for (final row in rows) {
-        final category = row.readTable(_db.measurementCategoryTable);
-        final entry = row.readTableOrNull(_db.measurementEntryTable);
-
-        final current = map.putIfAbsent(
-          category.id!,
-          () => category.copyWith(entries: []),
-        );
-
-        if (entry != null && seen.putIfAbsent(category.id!, () => {}).add(entry.id!)) {
-          current.entries.add(entry);
-        }
-      }
-
-      return _attachChildren(
-        map.values.map((c) => c.copyWith(entries: List<MeasurementEntry>.from(c.entries))).toList(),
-      );
-    });
+    return select.watch().debounce(_emitDebounce, leading: true).map(_attachChildren);
   }
 
   /// Attaches the children of every group parent. The rows arrive sorted by
@@ -154,33 +94,16 @@ class MeasurementRepository {
         return children.isEmpty ? c : c.copyWith(children: children);
       }).toList();
 
-  /// Watches a single category with its entries, and its children when it is
-  /// a group parent.
-  Stream<MeasurementCategory?> watchLocalDriftCategoryById(String id, {DateTime? entriesSince}) {
-    _logger.finer('Watching local measurement category $id');
-    return _watchCategories(
-      filter: (table) => table.id.equals(id) | table.parentId.equals(id),
-      entriesSince: entriesSince,
-    ).map((categories) => categories.firstWhereOrNull((c) => c.id == id));
-  }
-
-  /// Watches the user's official body weight category, with its entries unless
-  /// [withEntries] says otherwise.
+  /// Watches the user's official body weight category.
   ///
   /// The category has no fixed id (the server assigns it), so it is selected
   /// by its type in the query rather than picked out of every category
-  /// afterwards: reading all of them would materialise every other category's
-  /// entries as well, and the health sync writes five sleep rows a night.
-  Stream<MeasurementCategory?> watchOfficialBodyWeightCategory({
-    DateTime? entriesSince,
-    bool withEntries = true,
-  }) {
+  /// afterwards.
+  Stream<MeasurementCategory?> watchOfficialBodyWeightCategory() {
     _logger.finer('Watching the official body weight category');
     return _watchCategories(
       filter: (table) =>
           table.isOfficial.equals(true) & table.metricType.equalsValue(MetricType.bodyWeight),
-      entriesSince: entriesSince,
-      withEntries: withEntries,
     ).map((categories) => categories.firstOrNull);
   }
 
@@ -270,20 +193,20 @@ class MeasurementRepository {
   ///
   /// [level] fixes the unit for the charts built on one; `auto` takes the
   /// finest that keeps the series under [maxPoints], down to one bucket per
-  /// entry. [since] bounds the entries read, null covers the full history.
+  /// entry. [since] and [until] bound the entries read, null on both covers the
+  /// full history; [until] is exclusive.
   Stream<List<MeasurementBucket>> watchEntryBuckets(
     String categoryId, {
     DateTime? since,
+    DateTime? until,
     MeasurementBucketLevel level = MeasurementBucketLevel.auto,
     int maxPoints = measurementChartMaxPoints,
   }) {
     _logger.finer('Watching $level buckets of measurement category $categoryId');
 
     return _watchBucketRows(
-      // Encoded the way drift writes the column (UTC ISO-8601 text), so this
-      // reads the same rows as the typed queries above
-      where: 'WHERE category_id = ?1${since == null ? '' : ' AND date >= ?2'}',
-      variables: _bucketVariables(categoryId, since),
+      where: 'WHERE category_id = ?1${_bucketRange(since, until)}',
+      variables: _bucketVariables(categoryId, since, until),
       level: level,
       maxPoints: maxPoints,
     ).map(_toBuckets);
@@ -306,11 +229,28 @@ class MeasurementRepository {
     return _watchBucketRows(
       where:
           'WHERE category_id IN ('
-          'SELECT id FROM ${_db.measurementCategoryTable.actualTableName} WHERE parent_id = ?1) '
-          '${since == null ? '' : 'AND date >= ?2'}',
-      variables: _bucketVariables(parentId, since),
+          'SELECT id FROM ${_db.measurementCategoryTable.actualTableName} WHERE parent_id = ?1)'
+          '${_bucketRange(since, null)}',
+      variables: _bucketVariables(parentId, since, null),
       level: level,
       maxPoints: maxPoints,
+      perCategory: true,
+    ).map(_toBucketsByCategory);
+  }
+
+  /// One point per day and category, over every category there is.
+  ///
+  /// For the calendar, which marks days rather than readings: a metric fed by
+  /// a watch writes hundreds of entries onto the same square, and reading them
+  /// to draw one marker is what this avoids.
+  Stream<Map<String, List<MeasurementBucket>>> watchDailyBuckets() {
+    _logger.finer('Watching the day buckets of every measurement category');
+
+    return _watchBucketRows(
+      where: '',
+      variables: [],
+      level: MeasurementBucketLevel.day,
+      maxPoints: measurementChartMaxPoints,
       perCategory: true,
     ).map(_toBucketsByCategory);
   }
@@ -354,11 +294,23 @@ class MeasurementRepository {
         );
   }
 
-  /// The id the query is scoped to, and the date bound when there is one.
-  List<Variable> _bucketVariables(String id, DateTime? since) => [
+  /// The id the query is scoped to, and the date bounds it has.
+  ///
+  /// Encoded the way drift writes the column (UTC ISO-8601 text), so a bucket
+  /// query reads the same rows as the typed ones.
+  List<Variable> _bucketVariables(String id, DateTime? since, DateTime? until) => [
     Variable.withString(id),
     if (since != null) Variable.withString(since.toUtc().toIso8601String()),
+    if (until != null) Variable.withString(until.toUtc().toIso8601String()),
   ];
+
+  /// The date bounds as SQL, against the variables [_bucketVariables] binds
+  /// after the id. The upper one is exclusive, so a caller passes the start of
+  /// the day after the last one it wants.
+  String _bucketRange(DateTime? since, DateTime? until) => [
+    if (since != null) ' AND date >= ?2',
+    if (until != null) ' AND date < ?${since == null ? 2 : 3}',
+  ].join();
 
   /// How often each value occurred in [categoryId], for the histogram.
   ///

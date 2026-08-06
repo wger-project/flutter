@@ -25,9 +25,11 @@ import 'package:wger/features/measurements/models/measurement_entry.dart';
 /// steps and of blood pressure readings, ending today, shaped like a health
 /// import. Deterministic (fixed random seed); only the dates move with today.
 ///
-/// Returned as the flat parent-first list the repository's watchAll() emits,
-/// with the group's children attached to their parent.
-List<MeasurementCategory> getScreenshotMeasurementCategories() {
+/// The categories come as the flat parent-first list the repository emits,
+/// with the group's children attached to their parent; the entries alongside
+/// them, keyed by the category holding them, since a category carries none.
+({List<MeasurementCategory> categories, Map<String, List<MeasurementEntry>> entries})
+getScreenshotMeasurements() {
   final random = Random(7);
   final today = DateTime.now();
 
@@ -61,7 +63,6 @@ List<MeasurementCategory> getScreenshotMeasurementCategories() {
     unit: 'count',
     metricType: MetricType.steps,
     isOfficial: true,
-    entries: stepEntries.reversed.toList(),
   );
 
   // Blood pressure: a morning reading every two to three days, slowly
@@ -101,7 +102,6 @@ List<MeasurementCategory> getScreenshotMeasurementCategories() {
     unit: 'mmHg',
     parentId: 'screenshot-bp',
     order: 0,
-    entries: systolicEntries.reversed.toList(),
   );
   final diastolic = MeasurementCategory(
     id: 'screenshot-dia',
@@ -109,7 +109,6 @@ List<MeasurementCategory> getScreenshotMeasurementCategories() {
     unit: 'mmHg',
     parentId: 'screenshot-bp',
     order: 1,
-    entries: diastolicEntries.reversed.toList(),
   );
   final bloodPressure = MeasurementCategory(
     id: 'screenshot-bp',
@@ -120,5 +119,12 @@ List<MeasurementCategory> getScreenshotMeasurementCategories() {
     children: [systolic, diastolic],
   );
 
-  return [steps, bloodPressure, systolic, diastolic];
+  return (
+    categories: [steps, bloodPressure, systolic, diastolic],
+    entries: {
+      steps.id!: stepEntries.reversed.toList(),
+      systolic.id!: systolicEntries.reversed.toList(),
+      diastolic.id!: diastolicEntries.reversed.toList(),
+    },
+  );
 }

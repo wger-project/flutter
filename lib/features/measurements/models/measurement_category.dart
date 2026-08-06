@@ -20,9 +20,7 @@ import 'package:drift/drift.dart' hide JsonKey;
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:powersync/powersync.dart' as ps;
-import 'package:wger/core/exceptions/no_such_entry_exception.dart';
 import 'package:wger/database/powersync/database.dart';
-import 'package:wger/features/measurements/models/measurement_entry.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 part 'measurement_category.freezed.dart';
@@ -489,9 +487,6 @@ class MeasurementCategory with _$MeasurementCategory {
   @override
   final String unit;
 
-  @override
-  final List<MeasurementEntry> entries;
-
   /// Drives the health-platform mapping (and, later, default unit/aggregation/
   /// chart). [MetricType.custom] for plain user-created categories.
   @override
@@ -535,7 +530,6 @@ class MeasurementCategory with _$MeasurementCategory {
     this.id,
     this.name = '',
     this.unit = '',
-    this.entries = const [],
     this.metricType = MetricType.custom,
     this.chartType = ChartType.auto,
     this.chartConfig,
@@ -570,13 +564,6 @@ class MeasurementCategory with _$MeasurementCategory {
   bool get isEditable =>
       metricType == MetricType.custom ||
       (!hasChildren && metricType.availableChartTypes.isNotEmpty);
-
-  MeasurementEntry findEntryById(String id) {
-    return entries.firstWhere(
-      (entry) => entry.id == id,
-      orElse: () => throw const NoSuchEntryException(),
-    );
-  }
 
   // Boilerplate
   MeasurementCategoryTableCompanion toCompanion() {

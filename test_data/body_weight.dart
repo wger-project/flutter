@@ -48,15 +48,22 @@ final testWeightEntryLb = MeasurementEntry(
   extraData: const {'unit': 'lb'},
 );
 
-/// The official category with [entries] attached. Entries default to the two
-/// test entries, newest first, matching the repository's watchAll() order.
-MeasurementCategory getBodyWeightCategory([List<MeasurementEntry>? entries]) {
+/// The official category. Its entries are seeded apart from it, see
+/// [bodyWeightEntries].
+MeasurementCategory getBodyWeightCategory() {
   return MeasurementCategory(
     id: testBodyWeightCategoryId,
     name: 'Weight',
     unit: 'kg',
     metricType: MetricType.bodyWeight,
     isOfficial: true,
-    entries: entries ?? [testWeightEntry2, testWeightEntry1],
   );
+}
+
+/// [entries] keyed for the official category, as the seeding helpers take
+/// them. Defaults to the two test entries, newest first.
+Map<String, List<MeasurementEntry>> bodyWeightEntries([List<MeasurementEntry>? entries]) {
+  return {
+    testBodyWeightCategoryId: entries ?? [testWeightEntry2, testWeightEntry1],
+  };
 }

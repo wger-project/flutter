@@ -41,7 +41,7 @@ List<MeasurementBucket> entryBuckets(Iterable<MeasurementEntry> entries, {DateTi
 typedef ChartBucketsStub =
     Stream<List<MeasurementBucket>> Function(
       Ref,
-      (String, DateTime?, MeasurementBucketLevel),
+      (String, DateTime?, DateTime?, MeasurementBucketLevel),
     );
 
 /// Buckets at the day level: one per calendar day, holding the day's total.
@@ -74,8 +74,11 @@ typedef GroupBucketsStub =
     );
 
 /// The group counterpart of [chartBucketsFrom]: the components of a group,
-/// keyed by component id, from the entries they already carry.
-GroupBucketsStub groupBucketsFrom(List<MeasurementCategory> categories) {
+/// keyed by component id, from the [entries] of each.
+GroupBucketsStub groupBucketsFrom(
+  List<MeasurementCategory> categories,
+  Map<String, List<MeasurementEntry>> entries,
+) {
   final byParent = {
     for (final category in categories)
       if (category.children.isNotEmpty) category.id: category,
@@ -92,24 +95,24 @@ GroupBucketsStub groupBucketsFrom(List<MeasurementCategory> categories) {
     return Stream.value({
       for (final child in group.children)
         child.id!: summed
-            ? dayBuckets(child.entries.where((e) => since == null || !e.date.isBefore(since)))
-            : entryBuckets(child.entries, since: since),
+            ? dayBuckets(
+                (entries[child.id] ?? const []).where(
+                  (e) => since == null || !e.date.isBefore(since),
+                ),
+              )
+            : entryBuckets(entries[child.id] ?? const [], since: since),
     });
   };
 }
 
-/// Serves the chart query from the entries [categories] already carry, group
-/// components included, so a widget test seeds one list rather than two.
-ChartBucketsStub chartBucketsFrom(List<MeasurementCategory> categories) {
-  final byId = {
-    for (final category in categories) ...{
-      category.id: category,
-      for (final child in category.children) child.id: child,
-    },
-  };
-
+/// Serves the chart query from [entries] keyed by the category holding them,
+/// so a widget test seeds one map for the lists and the charts alike.
+ChartBucketsStub chartBucketsFrom(Map<String, List<MeasurementEntry>> entries) {
   return (ref, args) {
-    final (categoryId, since, _) = args;
-    return Stream.value(entryBuckets(byId[categoryId]?.entries ?? const [], since: since));
+    final (categoryId, since, until, _) = args;
+    final ofCategory = (entries[categoryId] ?? const []).where(
+      (e) => until == null || e.date.isBefore(until),
+    );
+    return Stream.value(entryBuckets(ofCategory, since: since));
   };
 }

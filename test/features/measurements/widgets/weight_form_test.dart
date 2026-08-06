@@ -26,7 +26,6 @@ import 'package:wger/core/consts.dart';
 import 'package:wger/features/account/models/user_profile.dart';
 import 'package:wger/features/account/providers/user_profile_notifier.dart';
 import 'package:wger/features/account/providers/user_profile_repository.dart';
-import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/measurement_entry.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
 import 'package:wger/features/measurements/widgets/weight_form.dart';
@@ -34,6 +33,7 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 
 import '../../../../test_data/body_weight.dart';
 import '../../../../test_data/profile.dart';
+import '../../../helpers/measurement_repository_stubs.dart';
 import 'weight_form_test.mocks.dart';
 
 @GenerateMocks([MeasurementRepository, UserProfileRepository])
@@ -43,7 +43,7 @@ void main() {
 
   setUp(() {
     mockRepo = MockMeasurementRepository();
-    when(mockRepo.watchAll()).thenAnswer((_) => Stream.value(<MeasurementCategory>[]));
+    stubMeasurementReads(mockRepo, [getBodyWeightCategory()]);
     when(mockRepo.addLocalDrift(any)).thenAnswer((_) async {});
     when(mockRepo.updateLocalDrift(any)).thenAnswer((_) async {});
 
@@ -67,7 +67,7 @@ void main() {
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
-          body: SingleChildScrollView(child: WeightForm(getBodyWeightCategory(const []), entry)),
+          body: SingleChildScrollView(child: WeightForm(getBodyWeightCategory(), entry)),
         ),
       ),
     );
@@ -183,7 +183,7 @@ void main() {
             supportedLocales: AppLocalizations.supportedLocales,
             home: Scaffold(
               body: SingleChildScrollView(
-                child: WeightForm(getBodyWeightCategory(const [])),
+                child: WeightForm(getBodyWeightCategory()),
               ),
             ),
           ),
@@ -225,7 +225,7 @@ void main() {
             supportedLocales: AppLocalizations.supportedLocales,
             home: Scaffold(
               body: SingleChildScrollView(
-                child: WeightForm(getBodyWeightCategory(const [])),
+                child: WeightForm(getBodyWeightCategory()),
               ),
             ),
           ),

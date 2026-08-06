@@ -30,8 +30,10 @@ import 'package:wger/features/nutrition/providers/nutrition_repository.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/theme/theme.dart';
 
+import '../../test_data/body_weight.dart';
 import '../../test_data/profile.dart';
 import '../../test_data/screenshots/weight.dart';
+import '../helpers/measurement_repository_stubs.dart';
 import 'screenshots_06_weight.mocks.dart';
 
 @GenerateMocks([
@@ -43,9 +45,11 @@ import 'screenshots_06_weight.mocks.dart';
 Widget createWeightScreen({Locale? locale}) {
   locale ??= const Locale('en');
   final mockMeasurementRepository = MockMeasurementRepository();
-  when(
-    mockMeasurementRepository.watchAll(entriesSince: anyNamed('entriesSince')),
-  ).thenAnswer((_) => Stream.value([getScreenshotBodyWeightCategory()]));
+  stubMeasurementReads(
+    mockMeasurementRepository,
+    [getBodyWeightCategory()],
+    getScreenshotBodyWeightEntries(),
+  );
 
   final mockUserProfileRepository = MockUserProfileRepository();
   when(

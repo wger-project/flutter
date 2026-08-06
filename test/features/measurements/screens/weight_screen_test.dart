@@ -52,6 +52,9 @@ void main() {
   late MockUserProfileRepository mockUserProfileRepository;
   late MockMeasurementRepository mockMeasurementRepository;
 
+  /// The entries seeded for the official category, which no longer carries them
+  late Map<String, List<MeasurementEntry>> entries;
+
   setUp(() {
     mockNutritionRepo = MockNutritionRepository();
     mockIngredientRepo = MockIngredientRepository();
@@ -63,15 +66,8 @@ void main() {
     ).thenAnswer((_) => Stream.value(tUserProfile1));
 
     mockMeasurementRepository = MockMeasurementRepository();
-    stubMeasurementReads(mockMeasurementRepository, [getBodyWeightCategory()]);
-    when(
-      mockMeasurementRepository.watchAll(entriesSince: anyNamed('entriesSince')),
-    ).thenAnswer((_) => Stream.value([getBodyWeightCategory()]));
-    when(
-      mockMeasurementRepository.watchOfficialBodyWeightCategory(
-        entriesSince: anyNamed('entriesSince'),
-      ),
-    ).thenAnswer((_) => Stream.value(getBodyWeightCategory()));
+    entries = bodyWeightEntries();
+    stubMeasurementReads(mockMeasurementRepository, [getBodyWeightCategory()], entries);
     when(
       mockMeasurementRepository.deleteLocalDrift(any),
     ).thenAnswer((_) async => Future.value());
@@ -81,11 +77,8 @@ void main() {
     return ProviderScope(
       overrides: [
         measurementRepositoryProvider.overrideWithValue(mockMeasurementRepository),
-        // The chart reads its points from the aggregated query, not from the
-        // entries the category carries
-        measurementChartBucketsProvider.overrideWith(
-          chartBucketsFrom([getBodyWeightCategory()]),
-        ),
+        // The chart reads its points from the aggregated query
+        measurementChartBucketsProvider.overrideWith(chartBucketsFrom(entries)),
         userProfileRepositoryProvider.overrideWithValue(mockUserProfileRepository),
         nutritionRepositoryProvider.overrideWithValue(mockNutritionRepo),
         ingredientRepositoryProvider.overrideWithValue(mockIngredientRepo),
@@ -147,15 +140,13 @@ void main() {
     // entries, so switching must not re-read it
     await tester.pumpWidget(createWeightScreen());
     await tester.pumpAndSettle();
-    verify(
-      mockMeasurementRepository.watchOfficialBodyWeightCategory(withEntries: false),
-    ).called(1);
+    verify(mockMeasurementRepository.watchOfficialBodyWeightCategory()).called(1);
 
     await tester.ensureVisible(find.text('All'));
     await tester.tap(find.text('All'));
     await tester.pumpAndSettle();
 
-    verifyNever(mockMeasurementRepository.watchOfficialBodyWeightCategory(withEntries: false));
+    verifyNever(mockMeasurementRepository.watchOfficialBodyWeightCategory());
   });
 
   testWidgets('Test deleting an item using the Delete button', (WidgetTester tester) async {
@@ -188,16 +179,8 @@ void main() {
 
   testWidgets('Converts mixed-unit entries to the profile unit', (WidgetTester tester) async {
     // 176.4 lb convert to 80.01 kg for the metric profile; the kg entry stays
-    when(
-      mockMeasurementRepository.watchOfficialBodyWeightCategory(
-        entriesSince: anyNamed('entriesSince'),
-      ),
-    ).thenAnswer(
-      (_) => Stream.value(getBodyWeightCategory([testWeightEntryLb, testWeightEntry1])),
-    );
-    stubMeasurementReads(mockMeasurementRepository, [
-      getBodyWeightCategory([testWeightEntryLb, testWeightEntry1]),
-    ]);
+    entries = bodyWeightEntries([testWeightEntryLb, testWeightEntry1]);
+    stubMeasurementReads(mockMeasurementRepository, [getBodyWeightCategory()], entries);
 
     await tester.pumpWidget(createWeightScreen());
     await tester.pumpAndSettle();
@@ -222,16 +205,8 @@ void main() {
       source: 'apple',
       externalId: 'w-1',
     );
-    when(
-      mockMeasurementRepository.watchOfficialBodyWeightCategory(
-        entriesSince: anyNamed('entriesSince'),
-      ),
-    ).thenAnswer(
-      (_) => Stream.value(getBodyWeightCategory([imported, testWeightEntry1])),
-    );
-    stubMeasurementReads(mockMeasurementRepository, [
-      getBodyWeightCategory([imported, testWeightEntry1]),
-    ]);
+    entries = bodyWeightEntries([imported, testWeightEntry1]);
+    stubMeasurementReads(mockMeasurementRepository, [getBodyWeightCategory()], entries);
 
     await tester.pumpWidget(createWeightScreen());
     await tester.pumpAndSettle();
@@ -245,7 +220,7 @@ void main() {
     WidgetTester tester,
   ) async {
     when(
-      mockMeasurementRepository.watchOfficialBodyWeightCategory(withEntries: false),
+      mockMeasurementRepository.watchOfficialBodyWeightCategory(),
     ).thenAnswer((_) => Stream.value(null));
 
     await tester.pumpWidget(createWeightScreen());

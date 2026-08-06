@@ -25,10 +25,12 @@ import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/core/json.dart';
 import 'package:wger/core/widgets/progress_indicator.dart';
 import 'package:wger/features/account/providers/user_profile_notifier.dart';
+import 'package:wger/features/measurements/models/measurement_bucket.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/unit_conversion.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/measurements/widgets/charts.dart';
+import 'package:wger/features/measurements/widgets/helpers.dart';
 import 'package:wger/features/nutrition/models/nutritional_plan.dart';
 import 'package:wger/features/nutrition/providers/nutrition_notifier.dart';
 import 'package:wger/features/routines/models/session.dart';
@@ -81,6 +83,7 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
     required BuildContext context,
     required bool isMetric,
     required List<MeasurementCategory> categories,
+    required Map<String, List<MeasurementBucket>> dailyBuckets,
     required List<WorkoutSession> sessions,
     required List<NutritionalPlan> plans,
   }) {
@@ -96,13 +99,18 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
       // the conversion needs the wire unit, the label the localized one
       final unitLabel = isBodyWeight ? weightUnit(isMetric, context) : category.unit;
 
-      for (final entry in category.entries) {
-        final date = DateFormatLists.format(entry.date);
-        final value = measurementValue(
-          context,
-          entry.valueIn(displayUnit, categoryUnit: category.unit),
-          displayUnit,
-        );
+      // One event per day, not per reading: an imported metric writes hundreds
+      // of samples onto a day, and they describe that day together
+      final points = chartEntriesForBuckets(
+        dailyBuckets[category.id] ?? const [],
+        targetUnit: displayUnit,
+        categoryUnit: category.unit,
+        summed: category.metricType.isSummedPerDay,
+      );
+
+      for (final point in points) {
+        final date = DateFormatLists.format(point.date);
+        final value = measurementValue(context, point.value, displayUnit);
         final label = measurementUnit(unitLabel);
         events.putIfAbsent(date, () => []);
         events[date]!.add(
@@ -194,14 +202,19 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
 
   @override
   Widget build(BuildContext context) {
-    final categories = ref.watch(measurementProvider).value;
+    final categories = ref.watch(measurementCategoriesProvider).value;
+    final dailyBuckets = ref.watch(measurementDailyBucketsProvider).value;
     final routinesState = ref.watch(routinesRiverpodProvider).value;
     final nutritionState = ref.watch(nutritionProvider).value;
     final profile = ref.watch(userProfileProvider).value;
 
     // Show a spinner until every source has produced at least one value. Same
     // pattern as the other dashboard widgets via [AsyncValueWidget].
-    if (categories == null || routinesState == null || nutritionState == null || profile == null) {
+    if (categories == null ||
+        dailyBuckets == null ||
+        routinesState == null ||
+        nutritionState == null ||
+        profile == null) {
       return _shell(context, const BoxedProgressIndicator());
     }
 
@@ -209,6 +222,7 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
       context: context,
       isMetric: profile.isMetric,
       categories: categories,
+      dailyBuckets: dailyBuckets,
       sessions: routinesState.sessions,
       plans: nutritionState.plans,
     );

@@ -20,8 +20,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
+import 'package:wger/features/measurements/models/measurement_entry.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
 import 'package:wger/features/measurements/widgets/categories.dart';
@@ -36,13 +36,14 @@ import 'categories_test.mocks.dart';
 Widget _wrap(
   MockMeasurementRepository mockRepo, {
   List<MeasurementCategory> categories = const [],
+  Map<String, List<MeasurementEntry>> entries = const {},
 }) {
   return ProviderScope(
     overrides: [
       measurementRepositoryProvider.overrideWithValue(mockRepo),
       // The cards read their chart points from the aggregated queries
-      measurementChartBucketsProvider.overrideWith(chartBucketsFrom(categories)),
-      measurementGroupBucketsProvider.overrideWith(groupBucketsFrom(categories)),
+      measurementChartBucketsProvider.overrideWith(chartBucketsFrom(entries)),
+      measurementGroupBucketsProvider.overrideWith(groupBucketsFrom(categories, entries)),
     ],
     child: const MaterialApp(
       localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -62,12 +63,15 @@ void main() {
 
   group('CategoriesList', () {
     testWidgets('two top-level categories render two CategoriesCard widgets', (tester) async {
-      when(
-        mockRepo.watchAll(entriesSince: anyNamed('entriesSince')),
-      ).thenAnswer((_) => Stream.value(getMeasurementCategories()));
-      stubMeasurementReads(mockRepo, getMeasurementCategories());
+      stubMeasurementReads(mockRepo, getMeasurementCategories(), getMeasurementEntries());
 
-      await tester.pumpWidget(_wrap(mockRepo, categories: getMeasurementCategories()));
+      await tester.pumpWidget(
+        _wrap(
+          mockRepo,
+          categories: getMeasurementCategories(),
+          entries: getMeasurementEntries(),
+        ),
+      );
       await tester.pumpAndSettle();
 
       expect(find.byType(CategoriesCard), findsNWidgets(2));
@@ -77,12 +81,15 @@ void main() {
       tester,
     ) async {
       // Only 'bp' should produce a CategoriesCard; children stay inside it.
-      when(
-        mockRepo.watchAll(entriesSince: anyNamed('entriesSince')),
-      ).thenAnswer((_) => Stream.value(getBloodPressureGroup()));
-      stubMeasurementReads(mockRepo, getBloodPressureGroup());
+      stubMeasurementReads(mockRepo, getBloodPressureGroup(), getBloodPressureEntries());
 
-      await tester.pumpWidget(_wrap(mockRepo, categories: getBloodPressureGroup()));
+      await tester.pumpWidget(
+        _wrap(
+          mockRepo,
+          categories: getBloodPressureGroup(),
+          entries: getBloodPressureEntries(),
+        ),
+      );
       await tester.pumpAndSettle();
 
       expect(find.byType(CategoriesCard), findsOneWidget);
@@ -91,9 +98,6 @@ void main() {
     });
 
     testWidgets('empty list renders no CategoriesCard', (tester) async {
-      when(
-        mockRepo.watchAll(entriesSince: anyNamed('entriesSince')),
-      ).thenAnswer((_) => Stream.value([]));
       stubMeasurementReads(mockRepo, []);
 
       await tester.pumpWidget(_wrap(mockRepo));

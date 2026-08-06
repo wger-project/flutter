@@ -21,7 +21,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:wger/features/measurements/models/measurement_category.dart';
+import 'package:wger/features/measurements/models/measurement_entry.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
 import 'package:wger/features/measurements/screens/measurement_entries_screen.dart';
@@ -41,41 +41,40 @@ void main() {
   late MockNutritionRepository mockNutritionRepo;
   late MockIngredientRepository mockIngredientRepo;
 
-  /// The fixture with its entries moved into the last few days, for the tests
-  /// that need a chart in every range rather than only in the full history
-  MeasurementCategory recentCategory() {
-    final category = getMeasurementCategories()[0];
-    return category.copyWith(
-      entries: [
-        for (final (index, entry) in category.entries.indexed)
-          entry.copyWith(date: DateTime.now().subtract(Duration(days: index))),
-      ],
-    );
-  }
+  /// The fixture's entries moved into the last few days, for the tests that
+  /// need a chart in every range rather than only in the full history
+  Map<String, List<MeasurementEntry>> recentEntries() => {
+    '1': [
+      for (final (index, entry) in getMeasurementEntries()['1']!.indexed)
+        entry.copyWith(date: DateTime.now().subtract(Duration(days: index))),
+    ],
+  };
 
   setUp(() {
     mockMeasurementRepo = MockMeasurementRepository();
-    stubMeasurementReads(mockMeasurementRepo, [getMeasurementCategories()[0]]);
+    stubMeasurementReads(
+      mockMeasurementRepo,
+      [getMeasurementCategories()[0]],
+      getMeasurementEntries(),
+    );
 
     mockNutritionRepo = MockNutritionRepository();
     mockIngredientRepo = MockIngredientRepository();
     when(mockIngredientRepo.getById(any)).thenAnswer((_) async => null);
   });
 
-  Widget createEntriesScreen({locale = 'en', MeasurementCategory? category}) {
+  Widget createEntriesScreen({locale = 'en', Map<String, List<MeasurementEntry>>? entries}) {
     final key = GlobalKey<NavigatorState>();
-    if (category != null) {
-      stubMeasurementReads(mockMeasurementRepo, [category]);
+    final seeded = entries ?? getMeasurementEntries();
+    if (entries != null) {
+      stubMeasurementReads(mockMeasurementRepo, [getMeasurementCategories()[0]], entries);
     }
 
     return ProviderScope(
       overrides: [
         measurementRepositoryProvider.overrideWithValue(mockMeasurementRepo),
-        // The chart reads its points from the aggregated query, not from the
-        // entries the category carries
-        measurementChartBucketsProvider.overrideWith(
-          chartBucketsFrom([category ?? getMeasurementCategories()[0]]),
-        ),
+        // The chart reads its points from the aggregated query
+        measurementChartBucketsProvider.overrideWith(chartBucketsFrom(seeded)),
         nutritionRepositoryProvider.overrideWithValue(mockNutritionRepo),
         ingredientRepositoryProvider.overrideWithValue(mockIngredientRepo),
       ],
@@ -112,7 +111,7 @@ void main() {
   testWidgets('switching the range keeps the screen it already drew', (tester) async {
     // Entries in every range, so the switch is between two ranges that both
     // have something to draw
-    await tester.pumpWidget(createEntriesScreen(category: recentCategory()));
+    await tester.pumpWidget(createEntriesScreen(entries: recentEntries()));
     await tester.tap(find.byType(TextButton));
     await tester.pumpAndSettle();
     expect(find.byType(MeasurementChartWidgetFl), findsOneWidget);

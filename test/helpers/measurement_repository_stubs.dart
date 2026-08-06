@@ -18,16 +18,23 @@
 
 import 'package:collection/collection.dart';
 import 'package:mockito/mockito.dart';
+import 'package:wger/features/measurements/models/measurement_bucket.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/measurement_entry.dart';
 
-/// Answers the four reads a measurement screen does from one seeded list: the
-/// entries-free category streams, and the paged lists, which get the entries
-/// the categories carry.
+import 'measurement_chart_buckets.dart';
+
+/// Answers the reads a measurement screen does: the category streams, the
+/// paged lists and the aggregated queries, all served from [entries] keyed by
+/// the category holding them.
 ///
 /// [repo] is a generated `MockMeasurementRepository`, typed dynamically
 /// because only the mock's own signatures accept mockito's matchers.
-void stubMeasurementReads(dynamic repo, List<MeasurementCategory> categories) {
+void stubMeasurementReads(
+  dynamic repo,
+  List<MeasurementCategory> categories, [
+  Map<String, List<MeasurementEntry>> entries = const {},
+]) {
   // A fixture either carries its children already or is a flat list to be
   // grouped, and both shapes are in use
   final withChildren = [
@@ -37,13 +44,9 @@ void stubMeasurementReads(dynamic repo, List<MeasurementCategory> categories) {
       else
         category.copyWith(children: categories.where((c) => c.parentId == category.id).toList()),
   ];
-  final flat = [
-    for (final category in categories) ...[category, ...category.children],
-  ];
-
   when(repo.watchAllWithoutEntries()).thenAnswer((_) => Stream.value(withChildren));
 
-  when(repo.watchOfficialBodyWeightCategory(withEntries: false)).thenAnswer(
+  when(repo.watchOfficialBodyWeightCategory()).thenAnswer(
     (_) => Stream.value(withChildren.firstWhereOrNull((c) => c.isOfficialBodyWeight)),
   );
 
@@ -54,18 +57,75 @@ void stubMeasurementReads(dynamic repo, List<MeasurementCategory> categories) {
 
   when(repo.watchEntries(any, limit: anyNamed('limit'))).thenAnswer((invocation) {
     final id = invocation.positionalArguments.first as String;
-    final entries = flat.firstWhereOrNull((c) => c.id == id)?.entries ?? const <MeasurementEntry>[];
-    return Stream.value(_newestFirst(entries, invocation.namedArguments[#limit] as int));
+    return Stream.value(
+      _newestFirst(entries[id] ?? const [], invocation.namedArguments[#limit] as int),
+    );
   });
 
   when(repo.watchGroupEntries(any, limit: anyNamed('limit'))).thenAnswer((invocation) {
     final id = invocation.positionalArguments.first as String;
     final group = withChildren.firstWhereOrNull((c) => c.id == id);
-    final entries = [
-      for (final child in group?.children ?? const <MeasurementCategory>[]) ...child.entries,
+    final ofGroup = [
+      for (final child in group?.children ?? const <MeasurementCategory>[]) ...?entries[child.id],
     ];
-    return Stream.value(_newestFirst(entries, invocation.namedArguments[#limit] as int));
+    return Stream.value(_newestFirst(ofGroup, invocation.namedArguments[#limit] as int));
   });
+
+  when(repo.watchLatestEntries()).thenAnswer(
+    (_) => Stream.value({
+      for (final MapEntry(key: id, value: ofCategory) in entries.entries)
+        if (ofCategory.isNotEmpty) id: ofCategory.reduce((a, b) => b.date.isAfter(a.date) ? b : a),
+    }),
+  );
+
+  // The aggregated queries, answered at the level the caller asked for. One
+  // bucket per entry for `auto`: every fixture is short enough not to be
+  // condensed, and condensing is covered where it happens, in the repository
+  List<MeasurementBucket> bucketsOf(String id, DateTime? since, DateTime? until, Object? level) {
+    final ofCategory = (entries[id] ?? const [])
+        .where((e) => since == null || !e.date.isBefore(since))
+        .where((e) => until == null || e.date.isBefore(until));
+
+    return level == MeasurementBucketLevel.auto ? entryBuckets(ofCategory) : dayBuckets(ofCategory);
+  }
+
+  when(
+    repo.watchEntryBuckets(
+      any,
+      since: anyNamed('since'),
+      until: anyNamed('until'),
+      level: anyNamed('level'),
+    ),
+  ).thenAnswer((invocation) {
+    final named = invocation.namedArguments;
+    return Stream.value(
+      bucketsOf(
+        invocation.positionalArguments.first as String,
+        named[#since] as DateTime?,
+        named[#until] as DateTime?,
+        named[#level],
+      ),
+    );
+  });
+
+  when(repo.watchGroupBuckets(any, since: anyNamed('since'), level: anyNamed('level'))).thenAnswer((
+    invocation,
+  ) {
+    final group = withChildren.firstWhereOrNull(
+      (c) => c.id == invocation.positionalArguments.first,
+    );
+    final named = invocation.namedArguments;
+    return Stream.value({
+      for (final child in group?.children ?? const <MeasurementCategory>[])
+        child.id!: bucketsOf(child.id!, named[#since] as DateTime?, null, named[#level]),
+    });
+  });
+
+  when(repo.watchDailyBuckets()).thenAnswer(
+    (_) => Stream.value({
+      for (final id in entries.keys) id: dayBuckets(entries[id]!),
+    }),
+  );
 }
 
 List<MeasurementEntry> _newestFirst(Iterable<MeasurementEntry> entries, int limit) =>

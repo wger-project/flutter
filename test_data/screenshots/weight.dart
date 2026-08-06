@@ -18,7 +18,6 @@
 
 import 'dart:math';
 
-import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/measurement_entry.dart';
 import 'package:wger/features/nutrition/models/nutritional_plan.dart';
 
@@ -31,7 +30,7 @@ import '../body_weight.dart';
 /// story is visible in every chart range.
 ///
 /// Deterministic (fixed random seed); only the dates move with today.
-MeasurementCategory getScreenshotBodyWeightCategory() {
+Map<String, List<MeasurementEntry>> getScreenshotBodyWeightEntries() {
   final random = Random(42);
   final today = DateTime.now();
 
@@ -70,12 +69,12 @@ MeasurementCategory getScreenshotBodyWeightCategory() {
     );
   }
 
-  // newest first, matching the repository's watchAll() order
-  return getBodyWeightCategory(entries.reversed.toList());
+  // newest first, matching the order the paged list reads them in
+  return bodyWeightEntries(entries.reversed.toList());
 }
 
 /// The nutrition plans behind the weight phases of
-/// [getScreenshotBodyWeightCategory]: a finished cut covering the big drop
+/// [getScreenshotBodyWeightEntries]: a finished cut covering the big drop
 /// and a currently active plan. Shown as period bands in the weight chart.
 List<NutritionalPlan> getScreenshotWeightPlans() {
   final today = DateTime.now();

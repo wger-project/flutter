@@ -24,8 +24,10 @@ import 'package:wger/core/widgets/confirm_delete_dialog.dart';
 import 'package:wger/core/widgets/text_prompt.dart';
 import 'package:wger/features/account/providers/user_profile_notifier.dart';
 import 'package:wger/features/measurements/measurements.dart';
+import 'package:wger/features/measurements/models/measurement_bucket.dart';
 import 'package:wger/features/measurements/models/unit_conversion.dart';
 import 'package:wger/features/measurements/providers/body_weight_provider.dart';
+import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/measurements/widgets/charts.dart';
 import 'package:wger/features/measurements/widgets/helpers.dart';
 import 'package:wger/features/nutrition/providers/nutrition_notifier.dart';
@@ -42,7 +44,7 @@ class NutritionalPlansList extends riverpod.ConsumerWidget {
     DateTime startDate,
     DateTime? endDate,
   ) {
-    final category = ref.watch(bodyWeightCategoryProvider).value;
+    final category = ref.watch(bodyWeightCategoryOnlyProvider).value;
     final profile = ref.watch(userProfileProvider).value;
     if (category == null || profile == null) {
       // Not yet loaded, skip the weight-change row entirely. The widget will
@@ -50,10 +52,27 @@ class NutritionalPlansList extends riverpod.ConsumerWidget {
       return const SizedBox.shrink();
     }
 
+    // The whole history rather than the plan's period: the boundary values are
+    // interpolated from the readings around it, which can lie outside. One
+    // point per day, so several readings on one day count once.
+    final buckets = ref
+        .watch(
+          measurementChartBucketsProvider(
+            category.id!,
+            null,
+            null,
+            MeasurementBucketLevel.day,
+          ),
+        )
+        .value;
+    if (buckets == null) {
+      return const SizedBox.shrink();
+    }
+
     // Normalize mixed-unit entries to the display unit before averaging
     final displayUnit = weightDisplayUnit(profile.isMetric);
-    final entriesAll = chartEntriesFor(
-      category.entries,
+    final entriesAll = chartEntriesForBuckets(
+      buckets,
       targetUnit: displayUnit,
       categoryUnit: category.unit,
     );

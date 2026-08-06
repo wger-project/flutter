@@ -19,14 +19,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
-import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
 import 'package:wger/features/measurements/screens/measurement_categories_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/theme/theme.dart';
 
 import '../../test_data/screenshots/measurements.dart';
+import '../helpers/measurement_repository_stubs.dart';
 import 'screenshots_04_measurements.mocks.dart';
 
 @GenerateMocks([MeasurementRepository])
@@ -34,11 +33,8 @@ Widget createMeasurementScreen({Locale? locale}) {
   locale ??= const Locale('en');
 
   final mockMeasurementRepo = MockMeasurementRepository();
-  when(
-    mockMeasurementRepo.watchAll(),
-  ).thenAnswer(
-    (_) => Stream<List<MeasurementCategory>>.value(getScreenshotMeasurementCategories()),
-  );
+  final measurements = getScreenshotMeasurements();
+  stubMeasurementReads(mockMeasurementRepo, measurements.categories, measurements.entries);
 
   final container = ProviderContainer.test(
     overrides: [

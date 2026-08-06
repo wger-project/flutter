@@ -29,6 +29,7 @@ import 'package:wger/features/measurements/widgets/forms.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 import '../../../../test_data/measurements.dart';
+import '../../../helpers/measurement_repository_stubs.dart';
 import 'forms_test.mocks.dart';
 
 @GenerateMocks([MeasurementRepository])
@@ -37,7 +38,7 @@ void main() {
 
   setUp(() {
     mockRepo = MockMeasurementRepository();
-    when(mockRepo.watchAll()).thenAnswer((_) => Stream.value([]));
+    stubMeasurementReads(mockRepo, []);
     when(mockRepo.addLocalDriftGroupEntries(any)).thenAnswer((_) async {});
   });
 
@@ -113,7 +114,7 @@ void main() {
       // what buildGroupChart decides; a pick would have no effect
       final parent = getMeasurementCategories()[1];
       final child = getMeasurementCategories()[0].copyWith(parentId: parent.id);
-      when(mockRepo.watchAll()).thenAnswer((_) => Stream.value([parent, child]));
+      stubMeasurementReads(mockRepo, [parent, child]);
 
       await tester.pumpWidget(wrap(MeasurementCategoryForm(parent)));
       await tester.pumpAndSettle();
@@ -123,7 +124,7 @@ void main() {
 
     testWidgets('a leaf category gets the chart type picker', (tester) async {
       final category = getMeasurementCategories()[1];
-      when(mockRepo.watchAll()).thenAnswer((_) => Stream.value([category]));
+      stubMeasurementReads(mockRepo, [category]);
 
       await tester.pumpWidget(wrap(MeasurementCategoryForm(category)));
       await tester.pumpAndSettle();
@@ -133,7 +134,7 @@ void main() {
 
     testWidgets('a leaf category gets the line chart settings', (tester) async {
       final category = getMeasurementCategories()[1];
-      when(mockRepo.watchAll()).thenAnswer((_) => Stream.value([category]));
+      stubMeasurementReads(mockRepo, [category]);
 
       await tester.pumpWidget(wrap(MeasurementCategoryForm(category)));
       await tester.pumpAndSettle();
@@ -146,7 +147,7 @@ void main() {
       // Its chart is one bar per day, which has neither a trend nor an
       // average, and no pick can turn it into a line
       final steps = getMeasurementCategories()[1].copyWith(metricType: MetricType.steps);
-      when(mockRepo.watchAll()).thenAnswer((_) => Stream.value([steps]));
+      stubMeasurementReads(mockRepo, [steps]);
 
       await tester.pumpWidget(wrap(MeasurementCategoryForm(steps)));
       await tester.pumpAndSettle();
@@ -159,7 +160,7 @@ void main() {
       // Kept rather than hidden: switching the chart type back applies them
       // again, and a field that vanishes takes the reason with it
       final category = getMeasurementCategories()[1].copyWith(chartType: ChartType.delta);
-      when(mockRepo.watchAll()).thenAnswer((_) => Stream.value([category]));
+      stubMeasurementReads(mockRepo, [category]);
 
       await tester.pumpWidget(wrap(MeasurementCategoryForm(category)));
       await tester.pumpAndSettle();
@@ -184,7 +185,7 @@ void main() {
 
     testWidgets('the line settings are enabled while the chart is a line', (tester) async {
       final category = getMeasurementCategories()[1].copyWith(chartType: ChartType.auto);
-      when(mockRepo.watchAll()).thenAnswer((_) => Stream.value([category]));
+      stubMeasurementReads(mockRepo, [category]);
 
       await tester.pumpWidget(wrap(MeasurementCategoryForm(category)));
       await tester.pumpAndSettle();
@@ -201,7 +202,7 @@ void main() {
 
     testWidgets('picking a trend keeps the settings of another client', (tester) async {
       final category = getMeasurementCategories()[1].copyWith(chartConfig: {'goal_line': 75});
-      when(mockRepo.watchAll()).thenAnswer((_) => Stream.value([category]));
+      stubMeasurementReads(mockRepo, [category]);
 
       await tester.pumpWidget(wrap(MeasurementCategoryForm(category)));
       await tester.pumpAndSettle();
@@ -233,10 +234,7 @@ void main() {
   group('MeasurementEntryForm', () {
     testWidgets('editing keeps source and externalId of imported entries', (tester) async {
       final category = getMeasurementCategories()[0];
-      when(mockRepo.watchAll()).thenAnswer((_) => Stream.value([category]));
-      when(
-        mockRepo.watchLocalDriftCategoryById(category.id),
-      ).thenAnswer((_) => Stream.value(category));
+      stubMeasurementReads(mockRepo, [category]);
       when(mockRepo.updateLocalDrift(any)).thenAnswer((_) async {});
 
       final imported = MeasurementEntry(
