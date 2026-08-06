@@ -7,8 +7,9 @@ import 'dart:async' as _i3;
 
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:wger/core/search_options.dart' as _i11;
-import 'package:wger/features/account/models/user_profile.dart' as _i16;
-import 'package:wger/features/account/providers/user_profile_repository.dart' as _i15;
+import 'package:wger/features/account/models/user_profile.dart' as _i17;
+import 'package:wger/features/account/providers/user_profile_repository.dart' as _i16;
+import 'package:wger/features/measurements/models/measurement_bucket.dart' as _i15;
 import 'package:wger/features/measurements/models/measurement_category.dart' as _i13;
 import 'package:wger/features/measurements/models/measurement_entry.dart' as _i14;
 import 'package:wger/features/measurements/providers/measurement_repository.dart' as _i12;
@@ -346,6 +347,23 @@ class MockMeasurementRepository extends _i1.Mock implements _i12.MeasurementRepo
           as _i3.Stream<Map<String, _i14.MeasurementEntry>>);
 
   @override
+  _i3.Stream<List<_i15.MeasurementBucket>> watchEntryBuckets(
+    String? categoryId, {
+    DateTime? since,
+    _i15.MeasurementBucketLevel? level = _i15.MeasurementBucketLevel.auto,
+    int? maxPoints = 200,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #watchEntryBuckets,
+              [categoryId],
+              {#since: since, #level: level, #maxPoints: maxPoints},
+            ),
+            returnValue: _i3.Stream<List<_i15.MeasurementBucket>>.empty(),
+          )
+          as _i3.Stream<List<_i15.MeasurementBucket>>);
+
+  @override
   _i3.Future<List<_i13.MeasurementCategory>> getAllOnce() =>
       (super.noSuchMethod(
             Invocation.method(#getAllOnce, []),
@@ -435,21 +453,21 @@ class MockMeasurementRepository extends _i1.Mock implements _i12.MeasurementRepo
 /// A class which mocks [UserProfileRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockUserProfileRepository extends _i1.Mock implements _i15.UserProfileRepository {
+class MockUserProfileRepository extends _i1.Mock implements _i16.UserProfileRepository {
   MockUserProfileRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i3.Stream<_i16.UserProfile?> watchDrift() =>
+  _i3.Stream<_i17.UserProfile?> watchDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchDrift, []),
-            returnValue: _i3.Stream<_i16.UserProfile?>.empty(),
+            returnValue: _i3.Stream<_i17.UserProfile?>.empty(),
           )
-          as _i3.Stream<_i16.UserProfile?>);
+          as _i3.Stream<_i17.UserProfile?>);
 
   @override
-  _i3.Future<void> editLocalDrift(_i16.UserProfile? profile) =>
+  _i3.Future<void> editLocalDrift(_i17.UserProfile? profile) =>
       (super.noSuchMethod(
             Invocation.method(#editLocalDrift, [profile]),
             returnValue: _i3.Future<void>.value(),

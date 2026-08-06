@@ -24,6 +24,7 @@ import 'package:collection/collection.dart';
 import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wger/core/network/auth_credentials_storage.dart';
+import 'package:wger/features/measurements/models/measurement_bucket.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/measurement_entry.dart';
 
@@ -51,6 +52,23 @@ Stream<List<MeasurementCategory>> measurementCategoriesSince(Ref ref, DateTime? 
 @riverpod
 Stream<Map<String, MeasurementEntry>> latestMeasurementEntries(Ref ref) {
   return ref.read(measurementRepositoryProvider).watchLatestEntries();
+}
+
+/// The chart points of one category, condensed by SQLite.
+///
+/// Kept apart from the category streams, which hand over the entries
+/// themselves. [level] is what the chart in question needs, see
+/// `chartBucketLevel`.
+@riverpod
+Stream<List<MeasurementBucket>> measurementChartBuckets(
+  Ref ref,
+  String categoryId,
+  DateTime? since,
+  MeasurementBucketLevel level,
+) {
+  return ref
+      .read(measurementRepositoryProvider)
+      .watchEntryBuckets(categoryId, since: since, level: level);
 }
 
 /// One category with its children and the entries from [since] on, null while

@@ -22,7 +22,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/core/form_screen.dart';
 import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/core/snackbar.dart';
-import 'package:wger/features/measurements/measurements.dart';
+import 'package:wger/core/widgets/error.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/measurement_entry.dart';
 import 'package:wger/features/measurements/models/unit_conversion.dart';
@@ -74,7 +74,6 @@ class EntriesList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final i18n = AppLocalizations.of(context);
     // The overrides describe a single category and only apply to the leaf
     // branch below; a group is presented through its components
     final name = title ?? category.displayName(context);
@@ -101,22 +100,6 @@ class EntriesList extends ConsumerWidget {
           ]
         : const <PlanPeriod>[];
 
-    // Values are read through the unit helper; for plain categories without
-    // per-entry units this is a pass-through to the category unit
-    final allEntries = chartEntriesFor(
-      category.entries,
-      targetUnit: unit,
-      categoryUnit: category.unit,
-    );
-    // The average is computed over the full history and only then cut, so the
-    // first points of the range average the days before it instead of starting
-    // over at the cutoff
-    final settings = category.chartSettings;
-    final allAverage = movingAverage(allEntries, days: settings.averageWindow);
-    final cutoff = range.cutoff;
-    final entriesAll = cutoff == null ? allEntries : allEntries.whereDate(cutoff, null);
-    final average = cutoff == null ? allAverage : allAverage.whereDate(cutoff, null);
-
     final datetimeFormat = localizedDate(context);
 
     return Column(
@@ -125,17 +108,14 @@ class EntriesList extends ConsumerWidget {
           value: range,
           onChanged: onRangeChanged,
         ),
-        ...getOverviewWidgetsSeries(
-          name,
-          entriesAll,
-          average,
-          planPeriods,
-          unitLabel,
-          context,
-          metricType: category.metricType,
-          mainChartTitle: range.chartTitle(i18n, name),
-          chartType: category.chartType,
-          settings: settings,
+        MeasurementChartPoints(
+          category: category,
+          range: range,
+          // Values are read through the unit helper; for plain categories
+          // without per-entry units this is a pass-through
+          targetUnit: unit,
+          builder: (context, points) => _chart(context, points, name, unitLabel, planPeriods),
+          onError: (_, error) => [StreamErrorIndicator(error.toString())],
         ),
         SizedBox(
           height: 300,
@@ -206,6 +186,32 @@ class EntriesList extends ConsumerWidget {
           ),
         ),
       ],
+    );
+  }
+
+  /// The chart, its overall change and the legend, over the range the points
+  /// were read for.
+  List<Widget> _chart(
+    BuildContext context,
+    List<MeasurementChartEntry> allPoints,
+    String name,
+    String unitLabel,
+    List<PlanPeriod> planPeriods,
+  ) {
+    final settings = category.chartSettings;
+    final (:entries, :average) = chartSeriesFor(allPoints, range, settings);
+
+    return getOverviewWidgetsSeries(
+      name,
+      entries,
+      average,
+      planPeriods,
+      unitLabel,
+      context,
+      metricType: category.metricType,
+      mainChartTitle: range.chartTitle(AppLocalizations.of(context), name),
+      chartType: category.chartType,
+      settings: settings,
     );
   }
 

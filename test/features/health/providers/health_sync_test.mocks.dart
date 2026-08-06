@@ -8,10 +8,11 @@ import 'dart:async' as _i4;
 import 'package:health_bridge/health.dart' as _i5;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i3;
-import 'package:wger/core/network/auth_credentials_storage.dart' as _i10;
-import 'package:wger/core/network/auth_state.dart' as _i11;
+import 'package:wger/core/network/auth_credentials_storage.dart' as _i11;
+import 'package:wger/core/network/auth_state.dart' as _i12;
 import 'package:wger/features/health/models/health_reading.dart' as _i6;
 import 'package:wger/features/health/providers/health_repository.dart' as _i2;
+import 'package:wger/features/measurements/models/measurement_bucket.dart' as _i10;
 import 'package:wger/features/measurements/models/measurement_category.dart' as _i8;
 import 'package:wger/features/measurements/models/measurement_entry.dart' as _i9;
 import 'package:wger/features/measurements/providers/measurement_repository.dart' as _i7;
@@ -180,6 +181,23 @@ class MockMeasurementRepository extends _i1.Mock implements _i7.MeasurementRepos
           as _i4.Stream<Map<String, _i9.MeasurementEntry>>);
 
   @override
+  _i4.Stream<List<_i10.MeasurementBucket>> watchEntryBuckets(
+    String? categoryId, {
+    DateTime? since,
+    _i10.MeasurementBucketLevel? level = _i10.MeasurementBucketLevel.auto,
+    int? maxPoints = 200,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #watchEntryBuckets,
+              [categoryId],
+              {#since: since, #level: level, #maxPoints: maxPoints},
+            ),
+            returnValue: _i4.Stream<List<_i10.MeasurementBucket>>.empty(),
+          )
+          as _i4.Stream<List<_i10.MeasurementBucket>>);
+
+  @override
   _i4.Future<List<_i8.MeasurementCategory>> getAllOnce() =>
       (super.noSuchMethod(
             Invocation.method(#getAllOnce, []),
@@ -269,22 +287,22 @@ class MockMeasurementRepository extends _i1.Mock implements _i7.MeasurementRepos
 /// A class which mocks [AuthCredentialsStorage].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockAuthCredentialsStorage extends _i1.Mock implements _i10.AuthCredentialsStorage {
+class MockAuthCredentialsStorage extends _i1.Mock implements _i11.AuthCredentialsStorage {
   MockAuthCredentialsStorage() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i4.Future<_i10.StoredAuth?> load() =>
+  _i4.Future<_i11.StoredAuth?> load() =>
       (super.noSuchMethod(
             Invocation.method(#load, []),
-            returnValue: _i4.Future<_i10.StoredAuth?>.value(),
+            returnValue: _i4.Future<_i11.StoredAuth?>.value(),
           )
-          as _i4.Future<_i10.StoredAuth?>);
+          as _i4.Future<_i11.StoredAuth?>);
 
   @override
   _i4.Future<void> saveJwt({
-    required _i11.JwtCredential? credential,
+    required _i12.JwtCredential? credential,
     required String? serverUrl,
     String? refreshToken,
   }) =>
@@ -301,7 +319,7 @@ class MockAuthCredentialsStorage extends _i1.Mock implements _i10.AuthCredential
 
   @override
   _i4.Future<void> updateJwt({
-    required _i11.JwtCredential? credential,
+    required _i12.JwtCredential? credential,
     String? refreshToken,
   }) =>
       (super.noSuchMethod(

@@ -11,6 +11,7 @@ import 'package:http/http.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i14;
 import 'package:wger/core/search_options.dart' as _i12;
+import 'package:wger/features/measurements/models/measurement_bucket.dart' as _i19;
 import 'package:wger/features/measurements/models/measurement_category.dart' as _i17;
 import 'package:wger/features/measurements/models/measurement_entry.dart' as _i18;
 import 'package:wger/features/measurements/providers/measurement_repository.dart' as _i16;
@@ -537,6 +538,23 @@ class MockMeasurementRepository extends _i1.Mock implements _i16.MeasurementRepo
             returnValue: _i4.Stream<Map<String, _i18.MeasurementEntry>>.empty(),
           )
           as _i4.Stream<Map<String, _i18.MeasurementEntry>>);
+
+  @override
+  _i4.Stream<List<_i19.MeasurementBucket>> watchEntryBuckets(
+    String? categoryId, {
+    DateTime? since,
+    _i19.MeasurementBucketLevel? level = _i19.MeasurementBucketLevel.auto,
+    int? maxPoints = 200,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #watchEntryBuckets,
+              [categoryId],
+              {#since: since, #level: level, #maxPoints: maxPoints},
+            ),
+            returnValue: _i4.Stream<List<_i19.MeasurementBucket>>.empty(),
+          )
+          as _i4.Stream<List<_i19.MeasurementBucket>>);
 
   @override
   _i4.Future<List<_i17.MeasurementCategory>> getAllOnce() =>

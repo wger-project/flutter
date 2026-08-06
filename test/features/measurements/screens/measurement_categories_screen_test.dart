@@ -22,30 +22,31 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
+import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
 import 'package:wger/features/measurements/screens/measurement_categories_screen.dart';
 import 'package:wger/features/measurements/widgets/charts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 import '../../../../test_data/measurements.dart';
+import '../../../helpers/measurement_chart_buckets.dart';
 import 'measurement_categories_screen_test.mocks.dart';
 
 @GenerateMocks([MeasurementRepository])
 void main() {
   Widget createMeasurementScreen({locale = 'en'}) {
+    final categories = [...getMeasurementCategories(), ...getBloodPressureGroup()];
     final mockRepo = MockMeasurementRepository();
     when(
       mockRepo.watchAll(entriesSince: anyNamed('entriesSince')),
-    ).thenAnswer(
-      (_) => Stream<List<MeasurementCategory>>.value([
-        ...getMeasurementCategories(),
-        ...getBloodPressureGroup(),
-      ]),
-    );
+    ).thenAnswer((_) => Stream<List<MeasurementCategory>>.value(categories));
 
     return ProviderScope(
       overrides: [
         measurementRepositoryProvider.overrideWithValue(mockRepo),
+        // The charts read their points from the aggregated query, not from
+        // the entries the categories carry
+        measurementChartBucketsProvider.overrideWith(chartBucketsFrom(categories)),
       ],
       child: MaterialApp(
         locale: Locale(locale),

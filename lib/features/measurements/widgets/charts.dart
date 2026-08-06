@@ -26,6 +26,7 @@ import 'package:intl/intl.dart';
 import 'package:wger/core/charts.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/formatting/formatting.dart';
+import 'package:wger/features/measurements/models/measurement_bucket.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 class MeasurementOverallChangeWidget extends StatelessWidget {
@@ -588,9 +589,14 @@ DateTime weekStart(DateTime date) =>
 /// through every single sample buries.
 ///
 /// Series that already fit are returned unchanged.
+///
+/// The same ladder exists in SQL, in `MeasurementRepository.watchEntryBuckets`,
+/// which is where a category's own chart points come from. This one serves what
+/// reads entries instead: the distribution and the group components. The two
+/// must agree, or the same data draws differently depending on the path.
 List<MeasurementChartEntry> downsample(
   List<MeasurementChartEntry> entries, {
-  int maxPoints = 200,
+  int maxPoints = measurementChartMaxPoints,
 }) {
   if (entries.length <= maxPoints) {
     return entries;
@@ -610,13 +616,20 @@ List<MeasurementChartEntry> downsample(
 /// Condenses one bucket into a single point: the mean value at the start of
 /// the bucket, spanning the values it stands for.
 MeasurementChartEntry _summarise(DateTime start, List<MeasurementChartEntry> bucket) {
+  final value = bucket.map((e) => e.value).average;
+  // An entry that already carries a range contributes its bounds, not just
+  // its value, so re-condensing an aggregate keeps the true extremes
+  final low = bucket.map((e) => e.min ?? e.value).min;
+  final high = bucket.map((e) => e.max ?? e.value).max;
+  // A lone reading in its bucket has no spread, and a zero-width band is a
+  // line drawn twice
+  final hasRange = low < value || high > value;
+
   return MeasurementChartEntry(
-    bucket.map((e) => e.value).average,
+    value,
     start,
-    // An entry that already carries a range contributes its bounds, not just
-    // its value, so re-condensing an aggregate keeps the true extremes
-    min: bucket.map((e) => e.min ?? e.value).min,
-    max: bucket.map((e) => e.max ?? e.value).max,
+    min: hasRange ? low : null,
+    max: hasRange ? high : null,
   );
 }
 

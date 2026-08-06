@@ -22,13 +22,16 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
+import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
 import 'package:wger/features/measurements/screens/measurement_entries_screen.dart';
+import 'package:wger/features/measurements/widgets/charts.dart';
 import 'package:wger/features/nutrition/providers/ingredient_repository.dart';
 import 'package:wger/features/nutrition/providers/nutrition_repository.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 import '../../../../test_data/measurements.dart';
+import '../../../helpers/measurement_chart_buckets.dart';
 import 'measurement_entries_screen_test.mocks.dart';
 
 @GenerateMocks([MeasurementRepository, NutritionRepository, IngredientRepository])
@@ -36,6 +39,18 @@ void main() {
   late MockMeasurementRepository mockMeasurementRepo;
   late MockNutritionRepository mockNutritionRepo;
   late MockIngredientRepository mockIngredientRepo;
+
+  /// The fixture with its entries moved into the last few days, for the tests
+  /// that need a chart in every range rather than only in the full history
+  MeasurementCategory recentCategory() {
+    final category = getMeasurementCategories()[0];
+    return category.copyWith(
+      entries: [
+        for (final (index, entry) in category.entries.indexed)
+          entry.copyWith(date: DateTime.now().subtract(Duration(days: index))),
+      ],
+    );
+  }
 
   setUp(() {
     mockMeasurementRepo = MockMeasurementRepository();
@@ -48,12 +63,25 @@ void main() {
     when(mockIngredientRepo.getById(any)).thenAnswer((_) async => null);
   });
 
-  Widget createEntriesScreen({locale = 'en'}) {
+  Widget createEntriesScreen({locale = 'en', MeasurementCategory? category}) {
     final key = GlobalKey<NavigatorState>();
+    if (category != null) {
+      when(
+        mockMeasurementRepo.watchLocalDriftCategoryById(
+          any,
+          entriesSince: anyNamed('entriesSince'),
+        ),
+      ).thenAnswer((_) => Stream<MeasurementCategory>.value(category));
+    }
 
     return ProviderScope(
       overrides: [
         measurementRepositoryProvider.overrideWithValue(mockMeasurementRepo),
+        // The chart reads its points from the aggregated query, not from the
+        // entries the category carries
+        measurementChartBucketsProvider.overrideWith(
+          chartBucketsFrom([category ?? getMeasurementCategories()[0]]),
+        ),
         nutritionRepositoryProvider.overrideWithValue(mockNutritionRepo),
         ingredientRepositoryProvider.overrideWithValue(mockIngredientRepo),
       ],
@@ -88,18 +116,22 @@ void main() {
   });
 
   testWidgets('switching the range keeps the screen it already drew', (tester) async {
-    await tester.pumpWidget(createEntriesScreen());
+    // Entries in every range, so the switch is between two ranges that both
+    // have something to draw
+    await tester.pumpWidget(createEntriesScreen(category: recentCategory()));
     await tester.tap(find.byType(TextButton));
     await tester.pumpAndSettle();
+    expect(find.byType(MeasurementChartWidgetFl), findsOneWidget);
 
-    // The new range watches a different provider, which starts out loading:
+    // The new range watches different providers, both starting out loading:
     // this is the frame in which the screen used to drop everything it had
-    await tester.tap(find.text('1 month'));
+    await tester.ensureVisible(find.text('1 year'));
+    await tester.tap(find.text('1 year'));
     await tester.pump();
 
     expect(find.text('Body fat'), findsOneWidget);
-    expect(find.text('30 %'), findsNWidgets(1));
     expect(find.byType(CircularProgressIndicator), findsNothing);
+    expect(find.byType(MeasurementChartWidgetFl), findsOneWidget);
   });
 
   testWidgets('Tests the localization of dates - EN', (WidgetTester tester) async {

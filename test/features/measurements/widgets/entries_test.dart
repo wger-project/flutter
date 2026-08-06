@@ -23,6 +23,7 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/measurement_entry.dart';
+import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
 import 'package:wger/features/measurements/widgets/chart_range_selector.dart';
 import 'package:wger/features/measurements/widgets/charts.dart';
@@ -31,6 +32,7 @@ import 'package:wger/features/nutrition/providers/ingredient_repository.dart';
 import 'package:wger/features/nutrition/providers/nutrition_repository.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
+import '../../../helpers/measurement_chart_buckets.dart';
 import 'entries_test.mocks.dart';
 
 @GenerateMocks([MeasurementRepository, NutritionRepository, IngredientRepository])
@@ -61,6 +63,9 @@ void main() {
         measurementRepositoryProvider.overrideWithValue(mockRepo),
         nutritionRepositoryProvider.overrideWithValue(MockNutritionRepository()),
         ingredientRepositoryProvider.overrideWithValue(MockIngredientRepository()),
+        // The chart reads its points from the aggregated query, not from the
+        // entries the category carries
+        measurementChartBucketsProvider.overrideWith(chartBucketsFrom([category])),
       ],
       child: MaterialApp(
         localizationsDelegates: AppLocalizations.localizationsDelegates,

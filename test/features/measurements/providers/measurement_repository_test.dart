@@ -20,6 +20,7 @@ import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wger/database/powersync/database.dart';
+import 'package:wger/features/measurements/models/measurement_bucket.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/measurement_entry.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
@@ -152,6 +153,33 @@ void main() {
 
       await iter.cancel();
     });
+
+    test('coalesces a burst of writes into one emission', () async {
+      // What an import looks like from here: a Drift stream fires per write, and
+      // rebuilding every category from the join on each of them is the cost
+      await db
+          .into(db.measurementCategoryTable)
+          .insert(MeasurementCategory(id: '1', name: 'Body fat', unit: '%').toCompanion());
+
+      final emissions = <List<MeasurementCategory>>[];
+      final sub = repo.watchAll().listen(emissions.add);
+
+      // The leading emission is not held back: a screen waits for it
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+      expect(emissions, hasLength(1));
+
+      for (var day = 1; day <= 5; day++) {
+        await repo.addLocalDrift(
+          MeasurementEntry(categoryId: '1', date: DateTime.utc(2026, 1, day), value: 20, notes: ''),
+        );
+      }
+      await Future<void>.delayed(const Duration(milliseconds: 400));
+
+      expect(emissions.length, lessThanOrEqualTo(2));
+      expect(emissions.last.single.entries, hasLength(5));
+
+      await sub.cancel();
+    });
   });
 
   group('watchLatestEntries', () {
@@ -218,6 +246,178 @@ void main() {
           .insert(getMeasurementCategories()[0].copyWith(entries: []).toCompanion());
 
       expect(await repo.watchLatestEntries().first, isEmpty);
+    });
+  });
+
+  group('watchEntryBuckets', () {
+    /// Local dates throughout: the query buckets in the local zone, so UTC
+    /// fixtures would put a reading in a different day on every machine.
+    Future<void> seedEntries(
+      List<(DateTime, num)> readings, {
+      Map<String, dynamic>? extraData,
+    }) async {
+      await db
+          .into(db.measurementCategoryTable)
+          .insert(MeasurementCategory(id: '1', name: 'Heart rate', unit: 'bpm').toCompanion());
+      for (final (index, (date, value)) in readings.indexed) {
+        await db
+            .into(db.measurementEntryTable)
+            .insert(
+              MeasurementEntry(
+                id: 'e$index',
+                categoryId: '1',
+                date: date,
+                value: value,
+                notes: '',
+                extraData: extraData,
+              ).toCompanion(),
+            );
+      }
+    }
+
+    test('a series that fits keeps one bucket per entry', () async {
+      await seedEntries([
+        (DateTime(2026, 5, 4, 8, 30), 60),
+        (DateTime(2026, 5, 4, 20, 15), 70),
+      ]);
+
+      final buckets = await repo.watchEntryBuckets('1').first;
+
+      expect(buckets.map((b) => b.start), [
+        DateTime(2026, 5, 4, 8, 30),
+        DateTime(2026, 5, 4, 20, 15),
+      ]);
+      expect(buckets.map((b) => b.count), [1, 1]);
+      expect(buckets.map((b) => b.sum), [60, 70]);
+    });
+
+    test('condenses to the finest calendar unit that fits', () async {
+      // Two readings a day over four days: entry level would be eight points,
+      // the hour level still eight, so the day is the first one under the limit
+      await seedEntries([
+        for (var day = 4; day <= 7; day++) ...[
+          (DateTime(2026, 5, day, 8, 0), 60),
+          (DateTime(2026, 5, day, 20, 0), 80),
+        ],
+      ]);
+
+      final buckets = await repo.watchEntryBuckets('1', maxPoints: 5).first;
+
+      expect(buckets, hasLength(4));
+      expect(buckets.first.start, DateTime(2026, 5, 4));
+      expect(buckets.first.count, 2);
+      expect(buckets.first.sum, 140);
+      expect(buckets.first.min, 60);
+      expect(buckets.first.max, 80);
+    });
+
+    test('a week bucket starts on the Monday of the reading', () async {
+      // 2026-05-04 is a Monday, 2026-05-10 the Sunday closing that week
+      await seedEntries([
+        (DateTime(2026, 5, 4, 12), 60),
+        (DateTime(2026, 5, 10, 12), 80),
+      ]);
+
+      final buckets = await repo.watchEntryBuckets('1', level: MeasurementBucketLevel.week).first;
+
+      expect(buckets.single.start, DateTime(2026, 5, 4));
+      expect(buckets.single.count, 2);
+    });
+
+    test('a day bucket is a calendar day whatever the point count', () async {
+      await seedEntries([
+        (DateTime(2026, 5, 4, 23, 30), 60),
+        (DateTime(2026, 5, 5, 0, 30), 80),
+      ]);
+
+      final buckets = await repo.watchEntryBuckets('1', level: MeasurementBucketLevel.day).first;
+
+      expect(buckets.map((b) => b.start), [DateTime(2026, 5, 4), DateTime(2026, 5, 5)]);
+    });
+
+    test('an aggregate entry contributes its stored bounds, not its value', () async {
+      // What the health sync writes for heart rate: one row a day, holding the
+      // day's average with the range it summarises
+      await seedEntries(
+        [(DateTime(2026, 5, 4, 12), 70)],
+        extraData: {'min': 48, 'max': 165},
+      );
+
+      final buckets = await repo.watchEntryBuckets('1', level: MeasurementBucketLevel.day).first;
+
+      expect(buckets.single.min, 48);
+      expect(buckets.single.max, 165);
+      expect(buckets.single.sum, 70);
+    });
+
+    test('mixed units are kept apart', () async {
+      // A category holding kg and lb entries: one mean over both would be a
+      // number in neither, so the slices come back separately
+      await db
+          .into(db.measurementCategoryTable)
+          .insert(MeasurementCategory(id: '1', name: 'Weight', unit: 'kg').toCompanion());
+      for (final (index, (value, unit)) in [(80, 'kg'), (180, 'lb')].indexed) {
+        await db
+            .into(db.measurementEntryTable)
+            .insert(
+              MeasurementEntry(
+                id: 'e$index',
+                categoryId: '1',
+                date: DateTime(2026, 5, 4, 8 + index),
+                value: value,
+                notes: '',
+                extraData: {'unit': unit},
+              ).toCompanion(),
+            );
+      }
+
+      final buckets = await repo.watchEntryBuckets('1', level: MeasurementBucketLevel.day).first;
+
+      expect(buckets, hasLength(2));
+      expect(buckets.map((b) => b.start).toSet(), {DateTime(2026, 5, 4)});
+      expect(buckets.map((b) => b.unit), ['kg', 'lb']);
+      expect(buckets.map((b) => b.sum), [80, 180]);
+    });
+
+    test('since bounds the entries read', () async {
+      await seedEntries([
+        (DateTime(2026, 1, 1, 12), 60),
+        (DateTime(2026, 5, 4, 12), 80),
+      ]);
+
+      final buckets = await repo.watchEntryBuckets('1', since: DateTime(2026, 3, 1)).first;
+
+      expect(buckets.map((b) => b.sum), [80]);
+    });
+
+    test('only the requested category is read', () async {
+      await seedEntries([(DateTime(2026, 5, 4, 12), 60)]);
+      await db
+          .into(db.measurementCategoryTable)
+          .insert(MeasurementCategory(id: '2', name: 'Other', unit: 'cm').toCompanion());
+      await repo.addLocalDrift(
+        MeasurementEntry(categoryId: '2', date: DateTime(2026, 5, 4, 13), value: 99, notes: ''),
+      );
+
+      final buckets = await repo.watchEntryBuckets('1').first;
+
+      expect(buckets.map((b) => b.sum), [60]);
+    });
+
+    test('re-emits when an entry is added', () async {
+      await seedEntries([(DateTime(2026, 5, 4, 12), 60)]);
+      final iter = StreamIterator(repo.watchEntryBuckets('1'));
+
+      await iter.moveNext();
+      expect(iter.current, hasLength(1));
+
+      await repo.addLocalDrift(
+        MeasurementEntry(categoryId: '1', date: DateTime(2026, 5, 5, 12), value: 80, notes: ''),
+      );
+
+      await iter.moveNext();
+      expect(iter.current, hasLength(2));
+      await iter.cancel();
     });
   });
 

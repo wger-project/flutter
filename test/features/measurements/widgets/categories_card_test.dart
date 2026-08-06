@@ -28,11 +28,19 @@ import 'package:wger/features/measurements/widgets/chart_range_selector.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 import '../../../../test_data/measurements.dart';
+import '../../../helpers/measurement_chart_buckets.dart';
 
-Widget _wrap(Widget child, {Map<String, MeasurementEntry> latest = const {}}) => ProviderScope(
+Widget _wrap(
+  Widget child, {
+  Map<String, MeasurementEntry> latest = const {},
+  List<MeasurementCategory> categories = const [],
+}) => ProviderScope(
   overrides: [
     // The component rows read their last known value from its own query
     latestMeasurementEntriesProvider.overrideWith((ref) => Stream.value(latest)),
+    // The chart reads its points from the aggregated query, not from the
+    // entries the category carries
+    measurementChartBucketsProvider.overrideWith(chartBucketsFrom(categories)),
   ],
   child: MaterialApp(
     localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -49,8 +57,11 @@ Map<String, MeasurementEntry> _latestOf(MeasurementCategory group) => {
 
 /// The fixtures have fixed dates, so the card charts the full history instead
 /// of the range it defaults to
-Widget _card(MeasurementCategory category) =>
-    _wrap(CategoriesCard(category, range: ChartRange.all), latest: _latestOf(category));
+Widget _card(MeasurementCategory category) => _wrap(
+  CategoriesCard(category, range: ChartRange.all),
+  latest: _latestOf(category),
+  categories: [category],
+);
 
 MeasurementCategory _bpGroup({bool withEntries = false}) {
   final sysEntries = withEntries ? [testNeasurementEntry9] : <MeasurementEntry>[];

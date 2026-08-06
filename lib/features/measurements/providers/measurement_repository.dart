@@ -24,7 +24,9 @@ import 'package:collection/collection.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
+import 'package:stream_transform/stream_transform.dart';
 import 'package:wger/database/powersync/database.dart';
+import 'package:wger/features/measurements/models/measurement_bucket.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/measurement_entry.dart';
 
@@ -38,6 +40,11 @@ class MeasurementRepository {
   final DriftPowersyncDatabase _db;
 
   MeasurementRepository(this._db);
+
+  /// Coalesces the bursts a health import writes, so the per-emission work
+  /// below runs once they settle. Leading, unlike the nutrition streams: a
+  /// screen is waiting for the first emission.
+  static const _emitDebounce = Duration(milliseconds: 200);
 
   /// Watches all categories, populated with their appropriate entries.
   ///
@@ -82,7 +89,7 @@ class MeasurementRepository {
           OrderingTerm(expression: _db.measurementEntryTable.date, mode: OrderingMode.desc),
         ]);
 
-    return joined.watch().map((rows) {
+    return joined.watch().debounce(_emitDebounce, leading: true).map((rows) {
       final Map<String, MeasurementCategory> map = {};
       // Guards against the same entry being added twice. Scanning the list
       // built so far would do, but is quadratic, and a category can hold
@@ -165,10 +172,143 @@ class MeasurementRepository {
     // Entries that share the newest timestamp (the importer writes a day
     // aggregate on midnight) collapse onto one, which is what a single latest
     // value means
-    return query.watch().map((rows) {
+    return query.watch().debounce(_emitDebounce, leading: true).map((rows) {
       final entries = rows.map((row) => table.map(row.data));
       return {for (final entry in entries) entry.categoryId: entry};
     });
+  }
+
+  /// Chart points for [categoryId]: one bucket per calendar unit, condensed by
+  /// SQLite instead of by walking every entry in Dart.
+  ///
+  /// [level] fixes the unit for the charts built on one; `auto` takes the
+  /// finest that keeps the series under [maxPoints], down to one bucket per
+  /// entry. [since] bounds the entries read, null covers the full history.
+  ///
+  /// The ladder is the same one `downsample` walks in Dart for the paths that
+  /// read entries; the two must stay in step.
+  Stream<List<MeasurementBucket>> watchEntryBuckets(
+    String categoryId, {
+    DateTime? since,
+    MeasurementBucketLevel level = MeasurementBucketLevel.auto,
+    int maxPoints = measurementChartMaxPoints,
+  }) {
+    _logger.finer('Watching $level buckets of measurement category $categoryId');
+
+    final variables = [
+      Variable.withString(categoryId),
+      // Encoded the way drift writes the column (UTC ISO-8601 text), so this
+      // reads the same rows as the typed queries above
+      if (since != null) Variable.withString(since.toUtc().toIso8601String()),
+    ];
+    final where = 'WHERE category_id = ?1${since == null ? '' : ' AND date >= ?2'}';
+
+    // Only `auto` reads the probe, so a fixed level does not pay for it
+    final fixed = switch (level) {
+      MeasurementBucketLevel.day => MeasurementBucketUnit.day,
+      MeasurementBucketLevel.week => MeasurementBucketUnit.week,
+      MeasurementBucketLevel.auto => null,
+    };
+    if (fixed != null) {
+      return _bucketQuery(
+        fixed,
+        where,
+        variables,
+      ).watch().debounce(_emitDebounce, leading: true).map(_toBuckets);
+    }
+
+    // Every unit's point count in one pass, so picking one costs no scan
+    // per candidate
+    final probe = _db.customSelect(
+      'SELECT COUNT(*) AS entries, '
+      'COUNT(DISTINCT ${_bucketExpression(MeasurementBucketUnit.hour)}) AS hours, '
+      'COUNT(DISTINCT ${_bucketExpression(MeasurementBucketUnit.day)}) AS days, '
+      'COUNT(DISTINCT ${_bucketExpression(MeasurementBucketUnit.week)}) AS weeks '
+      'FROM ${_db.measurementEntryTable.actualTableName} $where',
+      variables: variables,
+      readsFrom: {_db.measurementEntryTable},
+    );
+
+    return probe
+        .watchSingle()
+        .debounce(_emitDebounce, leading: true)
+        .asyncMap(
+          (row) async => _toBuckets(
+            await _bucketQuery(_ladderUnit(row, maxPoints), where, variables).get(),
+          ),
+        );
+  }
+
+  /// The aggregate of a category's entries at [unit], one row per bucket and
+  /// per unit the values were entered in: a mean over kg and lb values would
+  /// be a number in neither.
+  Selectable<QueryRow> _bucketQuery(
+    MeasurementBucketUnit unit,
+    String where,
+    List<Variable> variables,
+  ) => _db.customSelect(
+    'SELECT ${_bucketExpression(unit)} AS bucket, '
+    r"json_extract(extra_data, '$.unit') AS unit, "
+    'COUNT(*) AS n, '
+    'SUM(value) AS total, '
+    // A daily aggregate contributes the range it summarises, not its mean
+    r"MIN(COALESCE(json_extract(extra_data, '$.min'), value)) AS low, "
+    r"MAX(COALESCE(json_extract(extra_data, '$.max'), value)) AS high "
+    'FROM ${_db.measurementEntryTable.actualTableName} $where '
+    'GROUP BY bucket, unit ORDER BY bucket',
+    variables: variables,
+    readsFrom: {_db.measurementEntryTable},
+  );
+
+  List<MeasurementBucket> _toBuckets(List<QueryRow> rows) => [
+    for (final row in rows)
+      MeasurementBucket(
+        start: _parseBucketStart(row.read<String>('bucket')),
+        unit: row.read<String?>('unit'),
+        count: row.read<int>('n'),
+        sum: row.read<double>('total'),
+        min: row.read<double>('low'),
+        max: row.read<double>('high'),
+      ),
+  ];
+
+  /// The finest unit that keeps the series under [maxPoints], mirroring the
+  /// ladder `downsample` walks in Dart.
+  MeasurementBucketUnit _ladderUnit(QueryRow probe, int maxPoints) {
+    for (final (unit, points) in [
+      (MeasurementBucketUnit.entry, probe.read<int>('entries')),
+      (MeasurementBucketUnit.hour, probe.read<int>('hours')),
+      (MeasurementBucketUnit.day, probe.read<int>('days')),
+      (MeasurementBucketUnit.week, probe.read<int>('weeks')),
+    ]) {
+      if (points <= maxPoints) {
+        return unit;
+      }
+    }
+    return MeasurementBucketUnit.month;
+  }
+
+  /// The SQL producing a bucket key, which is also the bucket's start.
+  ///
+  /// Shifted to the local zone, since the column is UTC: a reading half an
+  /// hour after midnight belongs to the day the user had it.
+  String _bucketExpression(MeasurementBucketUnit unit) => switch (unit) {
+    MeasurementBucketUnit.entry => 'date',
+    MeasurementBucketUnit.hour => "strftime('%Y-%m-%dT%H:00:00', date, 'localtime')",
+    MeasurementBucketUnit.day => "strftime('%Y-%m-%dT00:00:00', date, 'localtime')",
+    // 'weekday 1' moves to the next Monday or stays on one, so -6 days
+    // first lands on the Monday of the entry's own week
+    MeasurementBucketUnit.week =>
+      "strftime('%Y-%m-%dT00:00:00', date, 'localtime', '-6 days', 'weekday 1')",
+    MeasurementBucketUnit.month => "strftime('%Y-%m-01T00:00:00', date, 'localtime')",
+  };
+
+  /// A bucket key as a local [DateTime]. The entry level hands back the stored
+  /// column, which is UTC and marked as such; the other units are already
+  /// local.
+  DateTime _parseBucketStart(String value) {
+    final parsed = DateTime.parse(value);
+    return parsed.isUtc ? parsed.toLocal() : parsed;
   }
 
   /// One-shot snapshot of all categories with their entries.

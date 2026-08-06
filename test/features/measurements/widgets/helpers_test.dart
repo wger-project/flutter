@@ -19,8 +19,10 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:wger/features/measurements/models/measurement_bucket.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/measurement_entry.dart';
+import 'package:wger/features/measurements/widgets/chart_range_selector.dart';
 import 'package:wger/features/measurements/widgets/charts.dart';
 import 'package:wger/features/measurements/widgets/helpers.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -97,6 +99,142 @@ void main() {
       );
 
       expect(points.single.hasRange, isFalse);
+    });
+  });
+
+  group('chartEntriesForBuckets', () {
+    MeasurementBucket bucket(
+      num sum, {
+      int count = 1,
+      String? unit,
+      num? min,
+      num? max,
+      DateTime? start,
+    }) => MeasurementBucket(
+      start: start ?? DateTime(2026, 1, 1),
+      unit: unit,
+      count: count,
+      sum: sum,
+      min: min ?? sum / count,
+      max: max ?? sum / count,
+    );
+
+    test('a bucket becomes its mean, spanning the values it stands for', () {
+      final points = chartEntriesForBuckets(
+        [bucket(300, count: 4, min: 60, max: 90)],
+        targetUnit: 'bpm',
+        categoryUnit: 'bpm',
+      );
+
+      expect(points.single.value, 75);
+      expect(points.single.min, 60);
+      expect(points.single.max, 90);
+    });
+
+    test('a single reading gets no band', () {
+      // A zero-width band is a line drawn twice
+      final points = chartEntriesForBuckets(
+        [bucket(80)],
+        targetUnit: 'kg',
+        categoryUnit: 'kg',
+      );
+
+      expect(points.single.value, 80);
+      expect(points.single.hasRange, isFalse);
+    });
+
+    test('slices are converted before they are merged', () {
+      // The kg and lb halves of one day: averaging the stored numbers first
+      // would produce a value in neither unit
+      final points = chartEntriesForBuckets(
+        [
+          bucket(80, unit: 'kg'),
+          bucket(180, unit: 'lb'),
+        ],
+        targetUnit: 'kg',
+        categoryUnit: 'kg',
+      );
+
+      // 180 lb is 81.65 kg, so the day averages the two
+      expect(points.single.value, closeTo(80.83, 0.01));
+      expect(points.single.min, 80);
+      expect(points.single.max, 81.65);
+    });
+
+    test('the mean is weighted by how many readings each slice holds', () {
+      final points = chartEntriesForBuckets(
+        [
+          bucket(300, count: 4, unit: 'kg'),
+          bucket(100, count: 1, unit: 'kg'),
+        ],
+        targetUnit: 'kg',
+        categoryUnit: 'kg',
+      );
+
+      // 400 over five readings, not the 87.5 an unweighted mean would give
+      expect(points.single.value, 80);
+    });
+
+    test('a slice without a unit falls back to the category one', () {
+      final points = chartEntriesForBuckets(
+        [bucket(180)],
+        targetUnit: 'kg',
+        categoryUnit: 'lb',
+      );
+
+      expect(points.single.value, closeTo(81.65, 0.01));
+    });
+
+    test('a summed metric totals its slices and gets no band', () {
+      // A band around a daily step count is a spread the total has not
+      final points = chartEntriesForBuckets(
+        [bucket(6000, count: 3, min: 1000, max: 3000)],
+        targetUnit: 'steps',
+        categoryUnit: 'steps',
+        summed: true,
+      );
+
+      expect(points.single.value, 6000);
+      expect(points.single.hasRange, isFalse);
+    });
+
+    test('buckets of different starts stay separate points', () {
+      final points = chartEntriesForBuckets(
+        [
+          bucket(80, start: DateTime(2026, 1, 1)),
+          bucket(81, start: DateTime(2026, 1, 2)),
+        ],
+        targetUnit: 'kg',
+        categoryUnit: 'kg',
+      );
+
+      expect(points.map((p) => p.date), [DateTime(2026, 1, 1), DateTime(2026, 1, 2)]);
+      expect(points.map((p) => p.value), [80, 81]);
+    });
+  });
+
+  group('chartSeriesFor', () {
+    test('cuts both series at the range, after averaging over all points', () {
+      // The points reach back beyond the range so the first ones in it average
+      // the days before them instead of starting over at the cutoff
+      final points = [
+        for (var day = 0; day < 20; day++)
+          MeasurementChartEntry(
+            day.isEven ? 70 : 80,
+            DateTime.now().subtract(Duration(days: 19 - day)),
+          ),
+      ];
+
+      final (:entries, :average) = chartSeriesFor(
+        points,
+        ChartRange.lastMonth,
+        const ChartSettings(),
+      );
+
+      expect(entries, hasLength(20));
+      expect(average, hasLength(20));
+      // The last point averages a full window, not just itself
+      expect(average.last.value, closeTo(75, 1));
     });
   });
 

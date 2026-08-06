@@ -21,7 +21,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/core/form_screen.dart';
 import 'package:wger/core/formatting/formatting.dart';
-import 'package:wger/features/measurements/measurements.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/unit_conversion.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
@@ -50,20 +49,6 @@ class CategoriesCard extends ConsumerWidget {
       return _buildGroupCard(context, ref);
     }
 
-    final cutoff = range.cutoff;
-    final allEntries = chartEntriesFor(
-      currentCategory.entries,
-      targetUnit: currentCategory.unit,
-      categoryUnit: currentCategory.unit,
-    );
-    // The average is computed over the full history and only then cut, so the
-    // first points of the range average the days before it instead of starting
-    // over at the cutoff
-    final settings = currentCategory.chartSettings;
-    final allAverage = movingAverage(allEntries, days: settings.averageWindow);
-    final entriesAll = cutoff == null ? allEntries : allEntries.whereDate(cutoff, null);
-    final average = cutoff == null ? allAverage : allAverage.whereDate(cutoff, null);
-
     return Card(
       elevation: elevation,
       child: SingleChildScrollView(
@@ -80,24 +65,14 @@ class CategoriesCard extends ConsumerWidget {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-            Container(
-              padding: const EdgeInsets.all(10),
-              height: 220,
-              child: buildChartForMetricType(
-                currentCategory.metricType,
-                entriesAll,
-                average,
-                currentCategory.unit,
-                chartType: currentCategory.chartType,
-                settings: settings,
-              ),
+            MeasurementChartPoints(
+              category: currentCategory,
+              range: range,
+              builder: _chart,
+              // The card is one of many on the overview; a failing query takes
+              // its chart, not the way into the category
+              onError: (_, _) => const [SizedBox(height: 220)],
             ),
-            if (average.isNotEmpty && !currentCategory.metricType.isSummedPerDay)
-              MeasurementOverallChangeWidget(
-                average.first,
-                average.last,
-                currentCategory.unit,
-              ),
             const Divider(),
             LayoutBuilder(
               builder: (context, constraints) {
@@ -141,6 +116,33 @@ class CategoriesCard extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  /// The chart itself and the one-number change below it.
+  List<Widget> _chart(BuildContext context, List<MeasurementChartEntry> allPoints) {
+    final settings = currentCategory.chartSettings;
+    final (:entries, :average) = chartSeriesFor(allPoints, range, settings);
+
+    return [
+      Container(
+        padding: const EdgeInsets.all(10),
+        height: 220,
+        child: buildChartForMetricType(
+          currentCategory.metricType,
+          entries,
+          average,
+          currentCategory.unit,
+          chartType: currentCategory.chartType,
+          settings: settings,
+        ),
+      ),
+      if (average.isNotEmpty && !currentCategory.metricType.isSummedPerDay)
+        MeasurementOverallChangeWidget(
+          average.first,
+          average.last,
+          currentCategory.unit,
+        ),
+    ];
   }
 
   /// Card for a multi-value group (e.g. blood pressure): all components in one

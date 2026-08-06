@@ -1,9 +1,14 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wger/core/widgets/progress_indicator.dart';
 import 'package:wger/features/measurements/measurements.dart';
+import 'package:wger/features/measurements/models/measurement_bucket.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/measurement_entry.dart';
 import 'package:wger/features/measurements/models/unit_conversion.dart';
+import 'package:wger/features/measurements/providers/measurement_notifier.dart';
+import 'package:wger/features/measurements/widgets/chart_range_selector.dart';
 import 'package:wger/features/measurements/widgets/charts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
@@ -204,6 +209,204 @@ List<MeasurementChartEntry> chartEntriesFor(
   );
 }).toList();
 
+/// The point level a category's chart needs, null when it needs the entries
+/// themselves.
+///
+/// Two charts are built on a calendar unit and fix it: a heatmap draws days, a
+/// week-over-week chart weeks. A distribution bins the values, and binning
+/// condensed means would narrow the histogram, so it stays on raw entries.
+MeasurementBucketLevel? chartBucketLevel(MetricType metricType, ChartType chartType) =>
+    switch (metricType.resolveChartType(chartType)) {
+      ChartType.distribution => null,
+      ChartType.heatmap => MeasurementBucketLevel.day,
+      ChartType.delta => MeasurementBucketLevel.week,
+      // The summed types are drawn as daily totals whatever the range
+      _ => metricType.isSummedPerDay ? MeasurementBucketLevel.day : MeasurementBucketLevel.auto,
+    };
+
+/// The points the chart of [category] draws, over the range it is read for.
+///
+/// They reach back beyond the range, so the moving average derived from them
+/// does not start over at the cutoff. [targetUnit] overrides the category
+/// unit, for body weight, which is shown in the profile unit.
+AsyncValue<List<MeasurementChartEntry>> chartPointsFor(
+  WidgetRef ref,
+  MeasurementCategory category,
+  ChartRange range, {
+  String? targetUnit,
+}) {
+  final unit = targetUnit ?? category.unit;
+  final level = chartBucketLevel(category.metricType, category.chartType);
+
+  // The distribution and its fallback for a series too short to bin read the
+  // entries the category was loaded with, which at that length is what a
+  // bucket would hold anyway
+  if (level == null) {
+    return AsyncValue.data(
+      chartEntriesFor(category.entries, targetUnit: unit, categoryUnit: category.unit),
+    );
+  }
+
+  return ref
+      .watch(measurementChartBucketsProvider(category.id!, range.readCutoff, level))
+      .whenData(
+        (buckets) => chartEntriesForBuckets(
+          buckets,
+          targetUnit: unit,
+          categoryUnit: category.unit,
+          summed: category.metricType.isSummedPerDay,
+        ),
+      );
+}
+
+/// Draws a category's chart from the aggregated query, keeping what it last
+/// drew while another range loads.
+///
+/// Picking a range watches a different provider, which starts out loading:
+/// without this the chart would blank for a frame, which is what the range
+/// switch used to look like.
+class MeasurementChartPoints extends ConsumerStatefulWidget {
+  const MeasurementChartPoints({
+    required this.category,
+    required this.range,
+    required this.builder,
+    required this.onError,
+    this.targetUnit,
+    super.key,
+  });
+
+  final MeasurementCategory category;
+  final ChartRange range;
+
+  /// Unit the values are converted to, the category's own by default.
+  final String? targetUnit;
+
+  /// Draws the chart for the points that arrived.
+  final List<Widget> Function(BuildContext context, List<MeasurementChartEntry> points) builder;
+
+  /// Drawn when nothing could be read and there is nothing to keep: a card
+  /// leaves the space empty, a detail screen names the error.
+  final List<Widget> Function(BuildContext context, Object error) onError;
+
+  @override
+  ConsumerState<MeasurementChartPoints> createState() => _MeasurementChartPointsState();
+}
+
+class _MeasurementChartPointsState extends ConsumerState<MeasurementChartPoints> {
+  List<MeasurementChartEntry>? _last;
+
+  @override
+  void didUpdateWidget(covariant MeasurementChartPoints oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Another category in the same slot of a list has nothing to do with what
+    // is on screen
+    if (oldWidget.category.id != widget.category.id) {
+      _last = null;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final points = chartPointsFor(
+      ref,
+      widget.category,
+      widget.range,
+      targetUnit: widget.targetUnit,
+    );
+    if (points.hasValue) {
+      _last = points.value;
+    }
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: switch ((points, _last)) {
+        (_, final List<MeasurementChartEntry> last) => widget.builder(context, last),
+        (AsyncError(:final error), _) => widget.onError(context, error),
+        _ => const [SizedBox(height: 220, child: BoxedProgressIndicator())],
+      },
+    );
+  }
+}
+
+/// What a chart draws over [range]: the points in it, and the moving average
+/// over them.
+///
+/// The average is computed over all of [points], which reach back beyond the
+/// range, and only then cut, so the first ones average the days before them
+/// instead of starting over at the cutoff.
+({List<MeasurementChartEntry> entries, List<MeasurementChartEntry> average}) chartSeriesFor(
+  List<MeasurementChartEntry> points,
+  ChartRange range,
+  ChartSettings settings,
+) {
+  final average = movingAverage(points, days: settings.averageWindow);
+  final cutoff = range.cutoff;
+
+  return cutoff == null
+      ? (entries: points, average: average)
+      : (entries: points.whereDate(cutoff, null), average: average.whereDate(cutoff, null));
+}
+
+/// Turns SQL-condensed buckets into chart points, converting to [targetUnit].
+///
+/// The counterpart of [chartEntriesFor] for the aggregated read path. A bucket
+/// arrives once per unit its entries were written in, so the slices are
+/// converted before they are merged. Their spread becomes the point's range,
+/// left off where it says nothing (a single reading, a [summed] total).
+List<MeasurementChartEntry> chartEntriesForBuckets(
+  List<MeasurementBucket> buckets, {
+  required String targetUnit,
+  required String categoryUnit,
+  bool summed = false,
+}) {
+  return [
+    for (final MapEntry(key: start, value: slices) in groupBy(
+      buckets,
+      (MeasurementBucket b) => b.start,
+    ).entries)
+      _mergeSlices(
+        start,
+        slices,
+        targetUnit: targetUnit,
+        categoryUnit: categoryUnit,
+        summed: summed,
+      ),
+  ];
+}
+
+/// The one point the [slices] of a bucket stand for, each converted from the
+/// unit it was written in first.
+MeasurementChartEntry _mergeSlices(
+  DateTime start,
+  List<MeasurementBucket> slices, {
+  required String targetUnit,
+  required String categoryUnit,
+  required bool summed,
+}) {
+  double convert(num value, String? from) => convertWeight(
+    value,
+    from: from == null || from.isEmpty ? categoryUnit : from,
+    to: targetUnit,
+  );
+
+  final total = slices.map((s) => convert(s.sum, s.unit)).sum;
+  if (summed) {
+    return MeasurementChartEntry(total, start);
+  }
+
+  final value = total / slices.map((s) => s.count).sum;
+  final low = slices.map((s) => convert(s.min, s.unit)).min;
+  final high = slices.map((s) => convert(s.max, s.unit)).max;
+  final hasRange = low < value || high > value;
+
+  return MeasurementChartEntry(
+    value,
+    start,
+    min: hasRange ? low : null,
+    max: hasRange ? high : null,
+  );
+}
+
 /// The readings of a two-component group as ranges: one point per timestamp,
 /// spanning from the lower component to the upper one.
 ///
@@ -244,6 +447,9 @@ List<MeasurementChartEntry> groupRangeEntries(MeasurementCategory group, {DateTi
 /// All components share the same range, so their lines cover the same span
 /// even when one of them has fewer readings. Only readings from [cutoff] on
 /// are returned; null covers the full history.
+///
+/// Each component is condensed on its own, like every other dense series: a
+/// year of blood pressure readings drawn point by point is a picket fence.
 List<MeasurementChartSeries> groupComponentSeries(
   BuildContext context,
   MeasurementCategory group, {
@@ -255,7 +461,7 @@ List<MeasurementChartSeries> groupComponentSeries(
   return group.children
       .map(
         (child) => MeasurementChartSeries(
-          cutoff == null ? pointsOf(child) : pointsOf(child).whereDate(cutoff, null),
+          downsample(cutoff == null ? pointsOf(child) : pointsOf(child).whereDate(cutoff, null)),
           MeasurementSeriesRole.component,
           label: child.displayName(context),
         ),

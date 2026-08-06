@@ -24,6 +24,7 @@ import 'package:mockito/mockito.dart';
 import 'package:wger/core/form_screen.dart';
 import 'package:wger/features/account/providers/user_profile_repository.dart';
 import 'package:wger/features/measurements/models/measurement_entry.dart';
+import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
 import 'package:wger/features/measurements/screens/weight_screen.dart';
 import 'package:wger/features/measurements/widgets/chart_range_selector.dart';
@@ -35,6 +36,7 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 
 import '../../../../test_data/body_weight.dart';
 import '../../../../test_data/profile.dart';
+import '../../../helpers/measurement_chart_buckets.dart';
 import 'weight_screen_test.mocks.dart';
 
 @GenerateMocks([
@@ -77,6 +79,11 @@ void main() {
     return ProviderScope(
       overrides: [
         measurementRepositoryProvider.overrideWithValue(mockMeasurementRepository),
+        // The chart reads its points from the aggregated query, not from the
+        // entries the category carries
+        measurementChartBucketsProvider.overrideWith(
+          chartBucketsFrom([getBodyWeightCategory()]),
+        ),
         userProfileRepositoryProvider.overrideWithValue(mockUserProfileRepository),
         nutritionRepositoryProvider.overrideWithValue(mockNutritionRepo),
         ingredientRepositoryProvider.overrideWithValue(mockIngredientRepo),

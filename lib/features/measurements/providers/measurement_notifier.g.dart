@@ -180,6 +180,125 @@ final class LatestMeasurementEntriesProvider
 
 String _$latestMeasurementEntriesHash() => r'87b87ef6ca747e9f47855692f9e687b85f81e99b';
 
+/// The chart points of one category, condensed by SQLite.
+///
+/// Kept apart from the category streams, which hand over the entries
+/// themselves: a chart shows a few hundred points, and a watch-fed metric
+/// holds tens of thousands a year. [level] is what the chart in question needs,
+/// see `chartBucketLevel`.
+
+@ProviderFor(measurementChartBuckets)
+final measurementChartBucketsProvider = MeasurementChartBucketsFamily._();
+
+/// The chart points of one category, condensed by SQLite.
+///
+/// Kept apart from the category streams, which hand over the entries
+/// themselves: a chart shows a few hundred points, and a watch-fed metric
+/// holds tens of thousands a year. [level] is what the chart in question needs,
+/// see `chartBucketLevel`.
+
+final class MeasurementChartBucketsProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<List<MeasurementBucket>>,
+          List<MeasurementBucket>,
+          Stream<List<MeasurementBucket>>
+        >
+    with $FutureModifier<List<MeasurementBucket>>, $StreamProvider<List<MeasurementBucket>> {
+  /// The chart points of one category, condensed by SQLite.
+  ///
+  /// Kept apart from the category streams, which hand over the entries
+  /// themselves: a chart shows a few hundred points, and a watch-fed metric
+  /// holds tens of thousands a year. [level] is what the chart in question needs,
+  /// see `chartBucketLevel`.
+  MeasurementChartBucketsProvider._({
+    required MeasurementChartBucketsFamily super.from,
+    required (String, DateTime?, MeasurementBucketLevel) super.argument,
+  }) : super(
+         retry: null,
+         name: r'measurementChartBucketsProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$measurementChartBucketsHash();
+
+  @override
+  String toString() {
+    return r'measurementChartBucketsProvider'
+        ''
+        '$argument';
+  }
+
+  @$internal
+  @override
+  $StreamProviderElement<List<MeasurementBucket>> $createElement(
+    $ProviderPointer pointer,
+  ) => $StreamProviderElement(pointer);
+
+  @override
+  Stream<List<MeasurementBucket>> create(Ref ref) {
+    final argument = this.argument as (String, DateTime?, MeasurementBucketLevel);
+    return measurementChartBuckets(ref, argument.$1, argument.$2, argument.$3);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is MeasurementChartBucketsProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$measurementChartBucketsHash() => r'90698be9ec4f287fc4764549bc6cbcb5b7933262';
+
+/// The chart points of one category, condensed by SQLite.
+///
+/// Kept apart from the category streams, which hand over the entries
+/// themselves: a chart shows a few hundred points, and a watch-fed metric
+/// holds tens of thousands a year. [level] is what the chart in question needs,
+/// see `chartBucketLevel`.
+
+final class MeasurementChartBucketsFamily extends $Family
+    with
+        $FunctionalFamilyOverride<
+          Stream<List<MeasurementBucket>>,
+          (String, DateTime?, MeasurementBucketLevel)
+        > {
+  MeasurementChartBucketsFamily._()
+    : super(
+        retry: null,
+        name: r'measurementChartBucketsProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  /// The chart points of one category, condensed by SQLite.
+  ///
+  /// Kept apart from the category streams, which hand over the entries
+  /// themselves: a chart shows a few hundred points, and a watch-fed metric
+  /// holds tens of thousands a year. [level] is what the chart in question needs,
+  /// see `chartBucketLevel`.
+
+  MeasurementChartBucketsProvider call(
+    String categoryId,
+    DateTime? since,
+    MeasurementBucketLevel level,
+  ) => MeasurementChartBucketsProvider._(
+    argument: (categoryId, since, level),
+    from: this,
+  );
+
+  @override
+  String toString() => r'measurementChartBucketsProvider';
+}
+
 /// One category with its children and the entries from [since] on, null while
 /// it does not exist (or no longer does).
 
