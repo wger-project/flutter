@@ -25,6 +25,19 @@ import 'package:wger/features/health/providers/health_repository.dart';
 
 import 'health_repository_test.mocks.dart';
 
+HealthDataPoint dataPoint(HealthDataType type) => HealthDataPoint(
+  uuid: '${type.name}-1',
+  value: NumericHealthValue(numericValue: 60),
+  type: type,
+  unit: HealthDataUnit.MINUTE,
+  dateFrom: DateTime(2026, 1, 2),
+  dateTo: DateTime(2026, 1, 2, 1),
+  sourcePlatform: HealthPlatformType.googleHealthConnect,
+  sourceDeviceId: 'device',
+  sourceId: 'source',
+  sourceName: 'test',
+);
+
 @GenerateMocks([Health])
 void main() {
   late MockHealth health;
@@ -145,6 +158,40 @@ void main() {
           endTime: anyNamed('endTime'),
         ),
       ).called(greaterThan(1));
+    });
+
+    test('a type that fails halfway is dropped whole, windows it did read included', () async {
+      // The watermark moves with what was imported, so half a type would put
+      // the windows that never returned out of reach for good
+      var call = 0;
+      when(
+        health.getHealthDataFromTypes(
+          types: [HealthDataType.SLEEP_DEEP],
+          startTime: anyNamed('startTime'),
+          endTime: anyNamed('endTime'),
+        ),
+      ).thenAnswer((_) async {
+        if (call++ > 0) {
+          throw Exception('boom');
+        }
+        return [dataPoint(HealthDataType.SLEEP_DEEP)];
+      });
+      when(
+        health.getHealthDataFromTypes(
+          types: [HealthDataType.SLEEP_REM],
+          startTime: anyNamed('startTime'),
+          endTime: anyNamed('endTime'),
+        ),
+      ).thenAnswer((_) async => [dataPoint(HealthDataType.SLEEP_REM)]);
+
+      final readings = await repository.read(
+        types: [HealthDataType.SLEEP_DEEP, HealthDataType.SLEEP_REM],
+        start: DateTime(2026, 1, 1),
+        end: DateTime(2026, 4, 1),
+        window: defaultReadWindow,
+      );
+
+      expect(readings.map((r) => r.type).toSet(), {HealthDataType.SLEEP_REM});
     });
 
     test('a wholesale failure still propagates', () async {

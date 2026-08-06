@@ -221,8 +221,10 @@ class HealthRepository {
 
     for (final type in types) {
       try {
+        // Collected per type and only handed over once every window of it
+        // returned, see the catch below
+        final readForType = <HealthDataPoint>[];
         var windowStart = start;
-        var readForType = 0;
         while (windowStart.isBefore(end)) {
           final windowEnd = windowStart.add(window);
           final batch = await _health.getHealthDataFromTypes(
@@ -235,16 +237,16 @@ class HealthRepository {
           // reconstructed from GC lines afterwards
           if (batch.isNotEmpty) {
             _logger.finer('Read ${batch.length} ${type.name} records from $windowStart');
-            readForType += batch.length;
           }
-          points.addAll(batch);
+          readForType.addAll(batch);
           windowStart = windowEnd;
         }
-        if (readForType > 0) {
-          _logger.fine('Read $readForType ${type.name} records in total');
+        if (readForType.isNotEmpty) {
+          _logger.fine('Read ${readForType.length} ${type.name} records in total');
         }
+        points.addAll(readForType);
       } catch (e) {
-        // The whole type counts as failed even when earlier windows delivered:
+        // The whole type is dropped even when earlier windows delivered:
         // importing half a type would let the watermark move past the readings
         // the failing windows never returned
         failed++;
