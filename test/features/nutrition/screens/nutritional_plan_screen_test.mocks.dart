@@ -531,6 +531,14 @@ class MockMeasurementRepository extends _i1.Mock implements _i16.MeasurementRepo
           as _i4.Stream<_i17.MeasurementCategory?>);
 
   @override
+  _i4.Stream<Map<String, _i18.MeasurementEntry>> watchLatestEntries() =>
+      (super.noSuchMethod(
+            Invocation.method(#watchLatestEntries, []),
+            returnValue: _i4.Stream<Map<String, _i18.MeasurementEntry>>.empty(),
+          )
+          as _i4.Stream<Map<String, _i18.MeasurementEntry>>);
+
+  @override
   _i4.Future<List<_i17.MeasurementCategory>> getAllOnce() =>
       (super.noSuchMethod(
             Invocation.method(#getAllOnce, []),

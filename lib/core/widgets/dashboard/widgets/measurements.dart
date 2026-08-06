@@ -44,11 +44,11 @@ class _DashboardMeasurementWidgetState extends ConsumerState<DashboardMeasuremen
   @override
   Widget build(BuildContext context) {
     return AsyncValueWidget<List<MeasurementCategory>>(
-      // The cards chart three months (their own default); a year is read so a
-      // group card still has a latest reading to show per component after a
-      // gap. Reading the full history is what a synced account pays for, the
-      // sleep stages alone write five entries a night
-      value: ref.watch(measurementCategoriesSinceProvider(ChartRange.lastYear.readCutoff)),
+      // Exactly what the cards chart, no more: every entry read here is
+      // materialised on every emission, and the query re-runs on every write
+      // the sync makes. The latest value of a component measured less often
+      // than this comes from its own query, see CategoriesCard
+      value: ref.watch(measurementCategoriesSinceProvider(ChartRange.last3Months.readCutoff)),
       loggerName: 'DashboardMeasurementWidget',
       data: (allCategories) {
         // Children of multi-value groups are shown inside their parent's card.

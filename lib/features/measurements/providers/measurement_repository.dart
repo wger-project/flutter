@@ -141,6 +141,36 @@ class MeasurementRepository {
     ).map((categories) => categories.firstOrNull);
   }
 
+  /// The newest entry of every category, keyed by category id.
+  ///
+  /// For the places that show the last known value without charting anything:
+  /// reading a range wide enough to be sure to contain it would materialise
+  /// every entry in that range, and a metric synced from a watch writes
+  /// hundreds a day.
+  Stream<Map<String, MeasurementEntry>> watchLatestEntries() {
+    _logger.finer('Watching the latest measurement entry per category');
+
+    final table = _db.measurementEntryTable;
+    // Not the typed API: its datetime aggregate goes through UNIXEPOCH and
+    // drops the sub-second part the sync writes, and the NOT EXISTS it can
+    // express wraps both dates in JULIANDAY, losing the index (0.2 s vs 90 s)
+    final query = _db.customSelect(
+      'SELECT entry.* FROM ${table.actualTableName} entry '
+      'WHERE entry.date = ('
+      'SELECT MAX(newest.date) FROM ${table.actualTableName} newest '
+      'WHERE newest.category_id = entry.category_id)',
+      readsFrom: {table},
+    );
+
+    // Entries that share the newest timestamp (the importer writes a day
+    // aggregate on midnight) collapse onto one, which is what a single latest
+    // value means
+    return query.watch().map((rows) {
+      final entries = rows.map((row) => table.map(row.data));
+      return {for (final entry in entries) entry.categoryId: entry};
+    });
+  }
+
   /// One-shot snapshot of all categories with their entries.
   Future<List<MeasurementCategory>> getAllOnce() => watchAll().first;
 

@@ -154,6 +154,73 @@ void main() {
     });
   });
 
+  group('watchLatestEntries', () {
+    test('returns the newest entry of every category', () async {
+      await seedCategoriesAndEntries();
+
+      final latest = await repo.watchLatestEntries().first;
+
+      final categories = getMeasurementCategories();
+      expect(latest.keys.toSet(), categories.map((c) => c.id).toSet());
+      for (final category in categories) {
+        final newest = category.entries.reduce((a, b) => b.date.isAfter(a.date) ? b : a);
+        expect(latest[category.id]!.id, newest.id);
+      }
+    });
+
+    test('reaches past the range a chart would read', () async {
+      // The point of the query: a value older than any range the card charts
+      // is still the last known one
+      final category = getMeasurementCategories()[0];
+      await db.into(db.measurementCategoryTable).insert(category.toCompanion());
+      final old = MeasurementEntry(
+        id: 'ancient',
+        categoryId: category.id!,
+        date: DateTime.now().subtract(const Duration(days: 900)),
+        value: 42,
+        notes: '',
+      );
+      await db.into(db.measurementEntryTable).insert(old.toCompanion());
+
+      final latest = await repo.watchLatestEntries().first;
+
+      expect(latest[category.id]!.id, 'ancient');
+    });
+
+    test('tells sub-second timestamps apart', () async {
+      // What the sync writes: the sleep segments land microseconds apart. A
+      // formulation that compares whole seconds picks the wrong row, or none
+      final category = getMeasurementCategories()[0];
+      await db.into(db.measurementCategoryTable).insert(category.toCompanion());
+      final second = DateTime(2026, 8, 5, 3, 39, 3);
+      for (final (index, micros) in [280477, 775505].indexed) {
+        await db
+            .into(db.measurementEntryTable)
+            .insert(
+              MeasurementEntry(
+                id: 'e$index',
+                categoryId: category.id!,
+                date: second.add(Duration(microseconds: micros)),
+                value: 42,
+                notes: '',
+              ).toCompanion(),
+            );
+      }
+
+      final latest = await repo.watchLatestEntries().first;
+
+      expect(latest[category.id]!.id, 'e1');
+    });
+
+    test('a category without entries is absent', () async {
+      await db
+          .into(db.measurementCategoryTable)
+          .insert(getMeasurementCategories()[0].copyWith(entries: []).toCompanion());
+
+      expect(await repo.watchLatestEntries().first, isEmpty);
+    });
+  });
+
   group('watchLocalDriftCategoryById', () {
     test('returns the matching category', () async {
       await seedCategoriesAndEntries();

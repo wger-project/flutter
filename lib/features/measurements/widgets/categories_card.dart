@@ -18,11 +18,13 @@
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/core/form_screen.dart';
 import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/features/measurements/measurements.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/unit_conversion.dart';
+import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/measurements/screens/measurement_entries_screen.dart';
 import 'package:wger/features/measurements/widgets/chart_range_selector.dart';
 import 'package:wger/features/measurements/widgets/helpers.dart';
@@ -31,7 +33,7 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import 'charts.dart';
 import 'forms.dart';
 
-class CategoriesCard extends StatelessWidget {
+class CategoriesCard extends ConsumerWidget {
   final MeasurementCategory currentCategory;
   final double? elevation;
   final ChartRange range;
@@ -43,9 +45,9 @@ class CategoriesCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     if (currentCategory.isGroup) {
-      return _buildGroupCard(context);
+      return _buildGroupCard(context, ref);
     }
 
     final cutoff = range.cutoff;
@@ -144,7 +146,7 @@ class CategoriesCard extends StatelessWidget {
   /// Card for a multi-value group (e.g. blood pressure): all components in one
   /// chart, then one row per component with its latest reading; new readings
   /// are entered for all components at once.
-  Widget _buildGroupCard(BuildContext context) {
+  Widget _buildGroupCard(BuildContext context, WidgetRef ref) {
     final cutoff = range.cutoff;
     final hasData = groupHasData(currentCategory, cutoff: cutoff);
     // A range is a single bar whose ends speak for themselves, and a stacked
@@ -162,94 +164,101 @@ class CategoriesCard extends StatelessWidget {
 
     return Card(
       elevation: elevation,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-            child: Text(
-              currentCategory.displayName(context),
-              style: Theme.of(context).textTheme.titleLarge,
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
+      // Scrolls like the leaf card above: a group of five components (the
+      // sleep stages) is taller than the box the dashboard carousel gives it
+      child: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              child: Text(
+                currentCategory.displayName(context),
+                style: Theme.of(context).textTheme.titleLarge,
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
-          ),
-          if (hasData)
-            Container(
-              padding: const EdgeInsets.all(10),
-              height: 220,
-              child: buildGroupChart(context, currentCategory, cutoff: cutoff),
-            ),
-          ...currentCategory.children.mapIndexed((index, child) {
-            // Entries arrive sorted by date descending, so first is the latest
-            final latest = child.entries.firstOrNull;
-            final colorIndex = stacked == null
-                ? index
-                : stacked.indexWhere((c) => c.id == child.id);
-            return ListTile(
-              dense: true,
-              // The dot ties the row to its part of the chart above. A range
-              // is a single bar, where the ends speak for themselves, and a
-              // roll-up component is no segment of the stack.
-              leading: asRange || colorIndex < 0
-                  ? null
-                  : Container(
-                      width: 12,
-                      height: 12,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: componentColor(context, colorIndex),
+            if (hasData)
+              Container(
+                padding: const EdgeInsets.all(10),
+                height: 220,
+                child: buildGroupChart(context, currentCategory, cutoff: cutoff),
+              ),
+            ...currentCategory.children.mapIndexed((index, child) {
+              // Read separately rather than taken from the entries above: those
+              // cover the charted range, and a component measured less often
+              // than that still has a last known value worth showing
+              final latest = ref.watch(latestMeasurementEntriesProvider).value?[child.id];
+              final colorIndex = stacked == null
+                  ? index
+                  : stacked.indexWhere((c) => c.id == child.id);
+              return ListTile(
+                dense: true,
+                // The dot ties the row to its part of the chart above. A range
+                // is a single bar, where the ends speak for themselves, and a
+                // roll-up component is no segment of the stack.
+                leading: asRange || colorIndex < 0
+                    ? null
+                    : Container(
+                        width: 12,
+                        height: 12,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: componentColor(context, colorIndex),
+                        ),
                       ),
-                    ),
-              title: Text(child.displayName(context)),
-              trailing: Text(
-                latest != null
-                    ? measurementWithUnit(
-                        context,
-                        latest.valueIn(child.unit, categoryUnit: child.unit),
-                        child.unit,
-                      )
-                    : '—',
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
-              onTap: () => Navigator.pushNamed(
-                context,
-                MeasurementEntriesScreen.routeName,
-                arguments: child.id,
-              ),
-            );
-          }),
-          const Divider(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              TextButton(
-                child: Text(AppLocalizations.of(context).goToDetailPage),
-                onPressed: () {
-                  Navigator.pushNamed(
-                    context,
-                    MeasurementEntriesScreen.routeName,
-                    arguments: currentCategory.id,
-                  );
-                },
-              ),
-              IconButton(
-                onPressed: () async {
-                  await Navigator.pushNamed(
-                    context,
-                    FormScreen.routeName,
-                    arguments: FormScreenArguments(
-                      AppLocalizations.of(context).newEntry,
-                      GroupMeasurementEntryForm(currentCategory),
-                    ),
-                  );
-                },
-                icon: const Icon(Icons.add),
-              ),
-            ],
-          ),
-        ],
+                title: Text(child.displayName(context)),
+                trailing: Text(
+                  latest != null
+                      ? measurementWithUnit(
+                          context,
+                          latest.valueIn(child.unit, categoryUnit: child.unit),
+                          child.unit,
+                        )
+                      : '—',
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+                onTap: () => Navigator.pushNamed(
+                  context,
+                  MeasurementEntriesScreen.routeName,
+                  arguments: child.id,
+                ),
+              );
+            }),
+            const Divider(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                TextButton(
+                  child: Text(AppLocalizations.of(context).goToDetailPage),
+                  onPressed: () {
+                    Navigator.pushNamed(
+                      context,
+                      MeasurementEntriesScreen.routeName,
+                      arguments: currentCategory.id,
+                    );
+                  },
+                ),
+                IconButton(
+                  onPressed: () async {
+                    await Navigator.pushNamed(
+                      context,
+                      FormScreen.routeName,
+                      arguments: FormScreenArguments(
+                        AppLocalizations.of(context).newEntry,
+                        GroupMeasurementEntryForm(currentCategory),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.add),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

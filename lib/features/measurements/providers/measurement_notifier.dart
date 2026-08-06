@@ -43,6 +43,16 @@ Stream<List<MeasurementCategory>> measurementCategoriesSince(Ref ref, DateTime? 
   return ref.read(measurementRepositoryProvider).watchAll(entriesSince: since);
 }
 
+/// The newest entry of every category, keyed by category id.
+///
+/// For the rows that show a last known value next to a chart of a shorter
+/// range: widening the chart's range to reach the value would materialise
+/// every entry in between.
+@riverpod
+Stream<Map<String, MeasurementEntry>> latestMeasurementEntries(Ref ref) {
+  return ref.read(measurementRepositoryProvider).watchLatestEntries();
+}
+
 /// One category with its children and the entries from [since] on, null while
 /// it does not exist (or no longer does).
 @riverpod

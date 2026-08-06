@@ -122,6 +122,64 @@ final class MeasurementCategoriesSinceFamily extends $Family
   String toString() => r'measurementCategoriesSinceProvider';
 }
 
+/// The newest entry of every category, keyed by category id.
+///
+/// For the rows that show a last known value next to a chart of a shorter
+/// range: widening the chart's range to reach the value would materialise
+/// every entry in between.
+
+@ProviderFor(latestMeasurementEntries)
+final latestMeasurementEntriesProvider = LatestMeasurementEntriesProvider._();
+
+/// The newest entry of every category, keyed by category id.
+///
+/// For the rows that show a last known value next to a chart of a shorter
+/// range: widening the chart's range to reach the value would materialise
+/// every entry in between.
+
+final class LatestMeasurementEntriesProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<Map<String, MeasurementEntry>>,
+          Map<String, MeasurementEntry>,
+          Stream<Map<String, MeasurementEntry>>
+        >
+    with
+        $FutureModifier<Map<String, MeasurementEntry>>,
+        $StreamProvider<Map<String, MeasurementEntry>> {
+  /// The newest entry of every category, keyed by category id.
+  ///
+  /// For the rows that show a last known value next to a chart of a shorter
+  /// range: widening the chart's range to reach the value would materialise
+  /// every entry in between.
+  LatestMeasurementEntriesProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'latestMeasurementEntriesProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$latestMeasurementEntriesHash();
+
+  @$internal
+  @override
+  $StreamProviderElement<Map<String, MeasurementEntry>> $createElement(
+    $ProviderPointer pointer,
+  ) => $StreamProviderElement(pointer);
+
+  @override
+  Stream<Map<String, MeasurementEntry>> create(Ref ref) {
+    return latestMeasurementEntries(ref);
+  }
+}
+
+String _$latestMeasurementEntriesHash() => r'87b87ef6ca747e9f47855692f9e687b85f81e99b';
+
 /// One category with its children and the entries from [since] on, null while
 /// it does not exist (or no longer does).
 

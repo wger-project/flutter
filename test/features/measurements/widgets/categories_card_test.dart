@@ -18,25 +18,39 @@
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/measurement_entry.dart';
+import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/measurements/widgets/categories_card.dart';
 import 'package:wger/features/measurements/widgets/chart_range_selector.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 import '../../../../test_data/measurements.dart';
 
-Widget _wrap(Widget child) => MaterialApp(
-  localizationsDelegates: AppLocalizations.localizationsDelegates,
-  supportedLocales: AppLocalizations.supportedLocales,
-  home: Scaffold(body: child),
+Widget _wrap(Widget child, {Map<String, MeasurementEntry> latest = const {}}) => ProviderScope(
+  overrides: [
+    // The component rows read their last known value from its own query
+    latestMeasurementEntriesProvider.overrideWith((ref) => Stream.value(latest)),
+  ],
+  child: MaterialApp(
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    supportedLocales: AppLocalizations.supportedLocales,
+    home: Scaffold(body: child),
+  ),
 );
+
+/// The newest entry per component, i.e. what the query behind the rows returns
+Map<String, MeasurementEntry> _latestOf(MeasurementCategory group) => {
+  for (final child in group.children)
+    if (child.entries.isNotEmpty) child.id!: child.entries.first,
+};
 
 /// The fixtures have fixed dates, so the card charts the full history instead
 /// of the range it defaults to
 Widget _card(MeasurementCategory category) =>
-    _wrap(CategoriesCard(category, range: ChartRange.all));
+    _wrap(CategoriesCard(category, range: ChartRange.all), latest: _latestOf(category));
 
 MeasurementCategory _bpGroup({bool withEntries = false}) {
   final sysEntries = withEntries ? [testNeasurementEntry9] : <MeasurementEntry>[];
