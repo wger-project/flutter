@@ -174,14 +174,42 @@ class MockMeasurementRepository extends _i1.Mock implements _i2.MeasurementRepos
           as _i3.Stream<List<_i6.MeasurementValueCount>>);
 
   @override
-  _i3.Future<List<_i4.MeasurementCategory>> getAllOnce() =>
+  _i3.Future<List<_i4.MeasurementCategory>> getCategoriesOnce() =>
       (super.noSuchMethod(
-            Invocation.method(#getAllOnce, []),
+            Invocation.method(#getCategoriesOnce, []),
             returnValue: _i3.Future<List<_i4.MeasurementCategory>>.value(
               <_i4.MeasurementCategory>[],
             ),
           )
           as _i3.Future<List<_i4.MeasurementCategory>>);
+
+  @override
+  _i3.Future<Set<String>> getExternalIds(String? categoryId) =>
+      (super.noSuchMethod(
+            Invocation.method(#getExternalIds, [categoryId]),
+            returnValue: _i3.Future<Set<String>>.value(<String>{}),
+          )
+          as _i3.Future<Set<String>>);
+
+  @override
+  _i3.Future<Map<String, _i5.MeasurementEntry>> getEntriesByExternalId(
+    String? categoryId,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#getEntriesByExternalId, [categoryId]),
+            returnValue: _i3.Future<Map<String, _i5.MeasurementEntry>>.value(
+              <String, _i5.MeasurementEntry>{},
+            ),
+          )
+          as _i3.Future<Map<String, _i5.MeasurementEntry>>);
+
+  @override
+  _i3.Future<bool> hasEntries(String? categoryId) =>
+      (super.noSuchMethod(
+            Invocation.method(#hasEntries, [categoryId]),
+            returnValue: _i3.Future<bool>.value(false),
+          )
+          as _i3.Future<bool>);
 
   @override
   _i3.Future<void> deleteLocalDrift(String? id) =>
@@ -245,6 +273,17 @@ class MockMeasurementRepository extends _i1.Mock implements _i2.MeasurementRepos
   _i3.Future<void> addLocalDriftCategory(_i4.MeasurementCategory? category) =>
       (super.noSuchMethod(
             Invocation.method(#addLocalDriftCategory, [category]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
+
+  @override
+  _i3.Future<void> addLocalDriftCategoryGroup(
+    List<_i4.MeasurementCategory>? categories,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#addLocalDriftCategoryGroup, [categories]),
             returnValue: _i3.Future<void>.value(),
             returnValueForMissingStub: _i3.Future<void>.value(),
           )

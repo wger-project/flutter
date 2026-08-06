@@ -660,9 +660,12 @@ void main() {
     });
   });
 
-  group('getOverviewWidgets', () {
+  group('buildChartSection', () {
     testWidgets('empty raw shows no-data placeholder', (tester) async {
-      await _pumpWidgetList(tester, (ctx) => getOverviewWidgets('Test', [], [], 'cm', ctx));
+      await _pumpWidgetList(
+        tester,
+        (ctx) => buildChartSection(ctx, title: 'Test', raw: [], avg: [], unit: 'cm'),
+      );
 
       expect(find.text('No data available'), findsOneWidget);
     });
@@ -670,24 +673,24 @@ void main() {
     testWidgets('non-empty avg includes MeasurementOverallChangeWidget', (tester) async {
       await _pumpWidgetList(
         tester,
-        (ctx) => getOverviewWidgets('Test', rawEntries, avgEntries, 'cm', ctx),
+        (ctx) =>
+            buildChartSection(ctx, title: 'Test', raw: rawEntries, avg: avgEntries, unit: 'cm'),
       );
 
       expect(find.byType(MeasurementOverallChangeWidget), findsOneWidget);
     });
   });
 
-  group('getOverviewWidgetsSeries legend', () {
+  group('buildSeriesChartSection legend', () {
     testWidgets('three Indicator widgets for non-summed metric (custom)', (tester) async {
       await _pumpWidgetList(
         tester,
-        (ctx) => getOverviewWidgetsSeries(
-          'Weight',
-          rawEntries,
-          avgEntries,
-          [],
-          'kg',
+        (ctx) => buildSeriesChartSection(
           ctx,
+          name: 'Weight',
+          entriesAll: rawEntries,
+          average: avgEntries,
+          unit: 'kg',
           metricType: MetricType.custom,
         ),
       );
@@ -698,13 +701,12 @@ void main() {
     testWidgets('two Indicator widgets for summed metric (steps, no trend)', (tester) async {
       await _pumpWidgetList(
         tester,
-        (ctx) => getOverviewWidgetsSeries(
-          'Steps',
-          rawEntries,
-          avgEntries,
-          [],
-          'steps',
+        (ctx) => buildSeriesChartSection(
           ctx,
+          name: 'Steps',
+          entriesAll: rawEntries,
+          average: avgEntries,
+          unit: 'steps',
           metricType: MetricType.steps,
         ),
       );
@@ -716,18 +718,18 @@ void main() {
     testWidgets('plan periods add their own indicator', (tester) async {
       await _pumpWidgetList(
         tester,
-        (ctx) => getOverviewWidgetsSeries(
-          'Weight',
-          rawEntries,
-          avgEntries,
-          [
+        (ctx) => buildSeriesChartSection(
+          ctx,
+          name: 'Weight',
+          entriesAll: rawEntries,
+          average: avgEntries,
+          unit: 'kg',
+          planPeriods: [
             (
               range: DateTimeRange(start: DateTime(2026, 1, 2), end: DateTime(2026, 1, 5)),
               name: 'Cut',
             ),
           ],
-          'kg',
-          ctx,
           metricType: MetricType.custom,
         ),
       );
@@ -736,7 +738,7 @@ void main() {
     });
   });
 
-  group('getOverviewWidgetsSeries change chart', () {
+  group('buildSeriesChartSection change chart', () {
     final history = [
       for (var i = 0; i < 100; i++)
         MeasurementChartEntry(60 + (i % 5), DateTime.now().subtract(Duration(days: 99 - i))),
@@ -744,13 +746,12 @@ void main() {
 
     Future<void> pumpDelta(WidgetTester tester) => _pumpWidgetList(
       tester,
-      (ctx) => getOverviewWidgetsSeries(
-        'Weight',
-        history,
-        movingAverage(history),
-        [],
-        'kg',
+      (ctx) => buildSeriesChartSection(
         ctx,
+        name: 'Weight',
+        entriesAll: history,
+        average: movingAverage(history),
+        unit: 'kg',
         metricType: MetricType.bodyWeight,
         chartType: ChartType.delta,
       ),
@@ -777,7 +778,7 @@ void main() {
     });
   });
 
-  group('getOverviewWidgetsSeries distribution chart', () {
+  group('buildSeriesChartSection distribution chart', () {
     final history = [
       for (var i = 0; i < 100; i++)
         MeasurementChartEntry(60 + (i % 5), DateTime.now().subtract(Duration(days: 99 - i))),
@@ -785,13 +786,12 @@ void main() {
 
     Future<void> pumpDistribution(WidgetTester tester) => _pumpWidgetList(
       tester,
-      (ctx) => getOverviewWidgetsSeries(
-        'Weight',
-        history,
-        movingAverage(history),
-        [],
-        'kg',
+      (ctx) => buildSeriesChartSection(
         ctx,
+        name: 'Weight',
+        entriesAll: history,
+        average: movingAverage(history),
+        unit: 'kg',
         metricType: MetricType.bodyWeight,
         chartType: ChartType.distribution,
         // Built by the caller, which is where the counted values are read
@@ -826,13 +826,12 @@ void main() {
     testWidgets('too few values fall back to the usual line chart', (tester) async {
       await _pumpWidgetList(
         tester,
-        (ctx) => getOverviewWidgetsSeries(
-          'Weight',
-          history.take(5).toList(),
-          movingAverage(history.take(5).toList()),
-          [],
-          'kg',
+        (ctx) => buildSeriesChartSection(
           ctx,
+          name: 'Weight',
+          entriesAll: history.take(5).toList(),
+          average: movingAverage(history.take(5).toList()),
+          unit: 'kg',
           metricType: MetricType.bodyWeight,
           chartType: ChartType.distribution,
         ),
@@ -844,15 +843,17 @@ void main() {
     });
   });
 
-  group('getOverviewWidgetsSeries plan periods', () {
+  group('buildSeriesChartSection plan periods', () {
     testWidgets('one chart with bands instead of one chart per plan', (tester) async {
       await _pumpWidgetList(
         tester,
-        (ctx) => getOverviewWidgetsSeries(
-          'Weight',
-          rawEntries,
-          avgEntries,
-          [
+        (ctx) => buildSeriesChartSection(
+          ctx,
+          name: 'Weight',
+          entriesAll: rawEntries,
+          average: avgEntries,
+          unit: 'kg',
+          planPeriods: [
             (
               range: DateTimeRange(start: DateTime(2026, 1, 2), end: DateTime(2026, 1, 5)),
               name: 'Cut',
@@ -862,8 +863,6 @@ void main() {
               name: 'Bulk',
             ),
           ],
-          'kg',
-          ctx,
           metricType: MetricType.custom,
         ),
       );

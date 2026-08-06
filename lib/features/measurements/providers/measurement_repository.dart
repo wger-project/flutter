@@ -509,8 +509,50 @@ class MeasurementRepository {
     return parsed.isUtc ? parsed.toLocal() : parsed;
   }
 
-  /// One-shot snapshot of all categories with their entries.
-  Future<List<MeasurementCategory>> getAllOnce() => watchAll().first;
+  /// One-shot snapshot of all categories with their children, without their
+  /// entries. See [watchAllWithoutEntries].
+  Future<List<MeasurementCategory>> getCategoriesOnce() => watchAllWithoutEntries().first;
+
+  /// The external ids of [categoryId]'s entries.
+  ///
+  /// Only the ids: an import deduplicates by comparing keys and has no use for
+  /// the entries themselves, of which a watch-fed metric writes hundreds a day.
+  Future<Set<String>> getExternalIds(String categoryId) async {
+    _logger.finer('Reading the external ids of measurement category $categoryId');
+
+    final table = _db.measurementEntryTable;
+    final query = _db.selectOnly(table)
+      ..addColumns([table.externalId])
+      ..where(table.categoryId.equals(categoryId) & table.externalId.isNotNull());
+
+    final rows = await query.get();
+    return {for (final row in rows) row.read(table.externalId)!};
+  }
+
+  /// The entries of [categoryId] that carry an external id, keyed by it.
+  ///
+  /// For the day aggregates, which are rewritten when late samples change
+  /// them, so their importer needs the stored row rather than just its key.
+  Future<Map<String, MeasurementEntry>> getEntriesByExternalId(String categoryId) async {
+    _logger.finer('Reading the keyed entries of measurement category $categoryId');
+
+    final query = _db.select(_db.measurementEntryTable)
+      ..where((t) => t.categoryId.equals(categoryId) & t.externalId.isNotNull());
+
+    final entries = await query.get();
+    return {for (final entry in entries) entry.externalId!: entry};
+  }
+
+  /// Whether [categoryId] holds any entry of its own.
+  Future<bool> hasEntries(String categoryId) async {
+    _logger.finer('Checking whether measurement category $categoryId holds entries');
+
+    final query = _db.select(_db.measurementEntryTable)
+      ..where((t) => t.categoryId.equals(categoryId))
+      ..limit(1);
+
+    return await query.getSingleOrNull() != null;
+  }
 
   // Entries
   Future<void> deleteLocalDrift(String id) async {

@@ -98,7 +98,12 @@ void main() {
     when(measurements.addLocalDrift(any)).thenAnswer((_) async {});
     when(measurements.updateLocalDrift(any)).thenAnswer((_) async {});
     when(measurements.addLocalDriftCategory(any)).thenAnswer((_) async {});
-    when(measurements.getAllOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
+    when(measurements.getCategoriesOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
+    when(measurements.getExternalIds(any)).thenAnswer((_) async => <String>{});
+    when(
+      measurements.getEntriesByExternalId(any),
+    ).thenAnswer((_) async => <String, MeasurementEntry>{});
+    when(measurements.hasEntries(any)).thenAnswer((_) async => false);
   });
 
   late ProviderContainer container;
@@ -245,7 +250,7 @@ void main() {
 
     test('persists the preference and runs an initial import', () async {
       await PreferenceHelper.instance.setHealthSyncEnabled(false);
-      when(measurements.getAllOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
+      when(measurements.getCategoriesOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
       stubReadings([
         HealthReading(
           type: HealthDataType.HEIGHT,
@@ -362,7 +367,7 @@ void main() {
       await PreferenceHelper.instance.setHealthSyncReadableTypes([
         HealthDataType.BODY_FAT_PERCENTAGE.name,
       ]);
-      when(measurements.getAllOnce()).thenAnswer((_) async => categoriesForEveryMetric());
+      when(measurements.getCategoriesOnce()).thenAnswer((_) async => categoriesForEveryMetric());
       stubReadings([]);
 
       await createNotifier().sync();
@@ -376,7 +381,7 @@ void main() {
         for (final metric in enabledHealthMetrics)
           for (final type in metric.dataTypes) type.name,
       ]);
-      when(measurements.getAllOnce()).thenAnswer((_) async => categoriesForEveryMetric());
+      when(measurements.getCategoriesOnce()).thenAnswer((_) async => categoriesForEveryMetric());
       stubReadings([]);
 
       await createNotifier().sync();
@@ -426,7 +431,7 @@ void main() {
     test('one failing metric does not cost the others their import', () async {
       // Writing the body fat entry fails; height must still make it in, and
       // the watermark must stay put so the lost readings stay in the window
-      when(measurements.getAllOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
+      when(measurements.getCategoriesOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
       when(measurements.addLocalDrift(any)).thenAnswer((invocation) async {
         final entry = invocation.positionalArguments.first as MeasurementEntry;
         if (entry.value == 20) {
@@ -467,7 +472,7 @@ void main() {
     });
 
     test('imports enabled metrics into new categories with converted values', () async {
-      when(measurements.getAllOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
+      when(measurements.getCategoriesOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
       stubReadings([
         HealthReading(
           type: HealthDataType.BODY_FAT_PERCENTAGE,
@@ -574,7 +579,7 @@ void main() {
     test('folds a non-UUID platform id into a UUID and keeps the original', () async {
       // Health Connect only documents Metadata.id as a String; a non-UUID would
       // be rejected permanently by the server's UUIDField
-      when(measurements.getAllOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
+      when(measurements.getCategoriesOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
       stubReadings([
         HealthReading(
           type: HealthDataType.HEIGHT,
@@ -594,7 +599,7 @@ void main() {
     });
 
     test('passes a valid platform UUID through untouched', () async {
-      when(measurements.getAllOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
+      when(measurements.getCategoriesOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
       stubReadings([
         HealthReading(
           type: HealthDataType.HEIGHT,
@@ -620,7 +625,7 @@ void main() {
         unit: 'cm',
         metricType: MetricType.height,
       );
-      when(measurements.getAllOnce()).thenAnswer((_) async => [existing]);
+      when(measurements.getCategoriesOnce()).thenAnswer((_) async => [existing]);
       stubReadings([
         HealthReading(
           type: HealthDataType.HEIGHT,
@@ -636,22 +641,7 @@ void main() {
               .externalId!;
 
       // Same reading again, with the entry already stored under the folded id
-      when(measurements.getAllOnce()).thenAnswer(
-        (_) async => [
-          existing.copyWith(
-            entries: [
-              MeasurementEntry(
-                id: 'e1',
-                categoryId: _catHrId,
-                date: DateTime(2026, 1, 2),
-                value: 180,
-                notes: '',
-                externalId: firstId,
-              ),
-            ],
-          ),
-        ],
-      );
+      when(measurements.getExternalIds(_catHrId)).thenAnswer((_) async => {firstId});
 
       final count = await createNotifier().sync();
 
@@ -665,18 +655,9 @@ void main() {
         name: 'Body fat',
         unit: '%',
         metricType: MetricType.bodyFat,
-        entries: [
-          MeasurementEntry(
-            id: 'e1',
-            categoryId: 'cat-bf',
-            date: DateTime(2026, 1, 1),
-            value: 20,
-            notes: '',
-            externalId: _idBf1,
-          ),
-        ],
       );
-      when(measurements.getAllOnce()).thenAnswer((_) async => [existing]);
+      when(measurements.getCategoriesOnce()).thenAnswer((_) async => [existing]);
+      when(measurements.getExternalIds('cat-bf')).thenAnswer((_) async => {_idBf1});
       stubReadings([
         HealthReading(
           type: HealthDataType.BODY_FAT_PERCENTAGE,
@@ -742,7 +723,7 @@ void main() {
         metricType: MetricType.bodyWeight,
         isOfficial: true,
       );
-      when(measurements.getAllOnce()).thenAnswer((_) async => [lookalike, official]);
+      when(measurements.getCategoriesOnce()).thenAnswer((_) async => [lookalike, official]);
       stubReadings([
         HealthReading(
           type: HealthDataType.WEIGHT,
@@ -776,7 +757,7 @@ void main() {
         metricType: MetricType.bodyWeight,
         isOfficial: true,
       );
-      when(measurements.getAllOnce()).thenAnswer((_) async => [official]);
+      when(measurements.getCategoriesOnce()).thenAnswer((_) async => [official]);
       stubReadings([
         HealthReading(
           type: HealthDataType.WEIGHT,
@@ -806,7 +787,7 @@ void main() {
     });
 
     test('aggregates heart rate into one entry per day', () async {
-      when(measurements.getAllOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
+      when(measurements.getCategoriesOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
       stubReadings([
         HealthReading(
           type: HealthDataType.HEART_RATE,
@@ -868,7 +849,7 @@ void main() {
     });
 
     test('keeps resting heart rate in its own category, imported raw', () async {
-      when(measurements.getAllOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
+      when(measurements.getCategoriesOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
       stubReadings([
         HealthReading(
           type: HealthDataType.HEART_RATE,
@@ -906,7 +887,7 @@ void main() {
     });
 
     test('sums a night of sleep onto the wake day', () async {
-      when(measurements.getAllOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
+      when(measurements.getCategoriesOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
       stubReadings([
         // One night, split into segments across midnight: everything from
         // 18:00 onwards counts towards the following day
@@ -959,7 +940,7 @@ void main() {
     });
 
     test('splits sleep into separate days at the rollover hour', () async {
-      when(measurements.getAllOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
+      when(measurements.getCategoriesOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
       stubReadings([
         // 17:59 still belongs to the first day, 18:00 already to the next
         HealthReading(
@@ -995,7 +976,7 @@ void main() {
       () async {
         // With +24h the two halves of the night key apart but format to the same
         // date, so both would claim one external id
-        when(measurements.getAllOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
+        when(measurements.getCategoriesOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
         stubReadings([
           HealthReading(
             type: HealthDataType.SLEEP_ASLEEP,
@@ -1027,7 +1008,7 @@ void main() {
     );
 
     test('imports each sleep stage into its own category', () async {
-      when(measurements.getAllOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
+      when(measurements.getCategoriesOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
       stubReadings([
         // A night as a watch records it: stages rather than one asleep block
         HealthReading(
@@ -1082,7 +1063,7 @@ void main() {
     });
 
     test('counts a night reported by two sources once', () async {
-      when(measurements.getAllOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
+      when(measurements.getCategoriesOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
       stubReadings([
         // The phone writes the whole night as undifferentiated sleep while the
         // watch writes the very same night as its stages. Adding the durations
@@ -1128,24 +1109,25 @@ void main() {
         name: 'Heart rate',
         unit: 'bpm',
         metricType: MetricType.heartRate,
-        entries: [
-          MeasurementEntry(
-            id: 'e1',
-            categoryId: _catHrId,
-            date: DateTime(2026, 1, 1),
-            value: 60,
-            notes: '',
-            externalId: dailyAggregateExternalId(_catHrId, DateTime(2026, 1, 1)),
-            extraData: const {
-              'min': 60,
-              'max': 60,
-              'sample_count': 1,
-              'record_type': 'HEART_RATE',
-            },
-          ),
-        ],
       );
-      when(measurements.getAllOnce()).thenAnswer((_) async => [existing]);
+      final stored = MeasurementEntry(
+        id: 'e1',
+        categoryId: _catHrId,
+        date: DateTime(2026, 1, 1),
+        value: 60,
+        notes: '',
+        externalId: dailyAggregateExternalId(_catHrId, DateTime(2026, 1, 1)),
+        extraData: const {
+          'min': 60,
+          'max': 60,
+          'sample_count': 1,
+          'record_type': 'HEART_RATE',
+        },
+      );
+      when(measurements.getCategoriesOnce()).thenAnswer((_) async => [existing]);
+      when(
+        measurements.getEntriesByExternalId(_catHrId),
+      ).thenAnswer((_) async => {stored.externalId!: stored});
       stubReadings([
         HealthReading(
           type: HealthDataType.HEART_RATE,
@@ -1184,24 +1166,25 @@ void main() {
         name: 'Heart rate',
         unit: 'bpm',
         metricType: MetricType.heartRate,
-        entries: [
-          MeasurementEntry(
-            id: 'e1',
-            categoryId: _catHrId,
-            date: DateTime(2026, 1, 1),
-            value: 60,
-            notes: '',
-            externalId: dailyAggregateExternalId(_catHrId, DateTime(2026, 1, 1)),
-            extraData: const {
-              'min': 60,
-              'max': 60,
-              'sample_count': 1,
-              'record_type': 'HEART_RATE',
-            },
-          ),
-        ],
       );
-      when(measurements.getAllOnce()).thenAnswer((_) async => [existing]);
+      final stored = MeasurementEntry(
+        id: 'e1',
+        categoryId: _catHrId,
+        date: DateTime(2026, 1, 1),
+        value: 60,
+        notes: '',
+        externalId: dailyAggregateExternalId(_catHrId, DateTime(2026, 1, 1)),
+        extraData: const {
+          'min': 60,
+          'max': 60,
+          'sample_count': 1,
+          'record_type': 'HEART_RATE',
+        },
+      );
+      when(measurements.getCategoriesOnce()).thenAnswer((_) async => [existing]);
+      when(
+        measurements.getEntriesByExternalId(_catHrId),
+      ).thenAnswer((_) async => {stored.externalId!: stored});
       stubReadings([
         HealthReading(
           type: HealthDataType.HEART_RATE,
@@ -1244,7 +1227,7 @@ void main() {
         parentId: 'bp',
         order: 1,
       );
-      when(measurements.getAllOnce()).thenAnswer((_) async => [parent, upper, lower]);
+      when(measurements.getCategoriesOnce()).thenAnswer((_) async => [parent, upper, lower]);
       stubReadings([
         HealthReading(
           type: HealthDataType.BLOOD_PRESSURE_SYSTOLIC,
@@ -1277,7 +1260,7 @@ void main() {
         // Matching by name made the target depend on the UI language, so a
         // hand-kept category is only used once it carries the metric type
         final handMade = MeasurementCategory(id: 'own', name: 'Body fat', unit: '%');
-        when(measurements.getAllOnce()).thenAnswer((_) async => [handMade]);
+        when(measurements.getCategoriesOnce()).thenAnswer((_) async => [handMade]);
         stubReadings([
           HealthReading(
             type: HealthDataType.BODY_FAT_PERCENTAGE,
@@ -1312,17 +1295,9 @@ void main() {
         name: 'Blood pressure',
         unit: 'mmHg',
         metricType: MetricType.bloodPressure,
-        entries: [
-          MeasurementEntry(
-            id: 'e1',
-            categoryId: 'bp',
-            date: DateTime(2026, 1, 1),
-            value: 118,
-            notes: '',
-          ),
-        ],
       );
-      when(measurements.getAllOnce()).thenAnswer((_) async => [leaf]);
+      when(measurements.getCategoriesOnce()).thenAnswer((_) async => [leaf]);
+      when(measurements.hasEntries('bp')).thenAnswer((_) async => true);
       stubReadings([
         HealthReading(
           type: HealthDataType.BLOOD_PRESSURE_SYSTOLIC,
@@ -1346,7 +1321,7 @@ void main() {
     });
 
     test('duration records keep their interval end as date_to', () async {
-      when(measurements.getAllOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
+      when(measurements.getCategoriesOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
       stubReadings([
         HealthReading(
           type: HealthDataType.HEIGHT,
@@ -1366,7 +1341,7 @@ void main() {
 
     test('skips weight while the official category has not been synced', () async {
       await PreferenceHelper.instance.setLastHealthSyncTimestamp('2020-01-01T00:00:00.000');
-      when(measurements.getAllOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
+      when(measurements.getCategoriesOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
       stubReadings([
         HealthReading(
           type: HealthDataType.WEIGHT,
@@ -1391,7 +1366,7 @@ void main() {
 
     test('keeps the watermark when weight is skipped but other metrics import', () async {
       await PreferenceHelper.instance.setLastHealthSyncTimestamp('2020-01-01T00:00:00.000');
-      when(measurements.getAllOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
+      when(measurements.getCategoriesOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
       stubReadings([
         HealthReading(
           type: HealthDataType.WEIGHT,
@@ -1421,7 +1396,7 @@ void main() {
 
     test('reads with an overlap window before the stored watermark', () async {
       await PreferenceHelper.instance.setLastHealthSyncTimestamp('2026-06-01T12:00:00.000');
-      when(measurements.getAllOnce()).thenAnswer((_) async => categoriesForEveryMetric());
+      when(measurements.getCategoriesOnce()).thenAnswer((_) async => categoriesForEveryMetric());
       stubReadings([]);
 
       await createNotifier().sync();
@@ -1435,7 +1410,7 @@ void main() {
       // No reading means no category, and a metric without one is what asks
       // for the full window: it would do so on every sync, for every metric
       await PreferenceHelper.instance.setLastHealthSyncTimestamp('2026-06-01T12:00:00.000');
-      when(measurements.getAllOnce()).thenAnswer(
+      when(measurements.getCategoriesOnce()).thenAnswer(
         (_) async =>
             categoriesForEveryMetric().where((c) => c.metricType != MetricType.bodyFat).toList(),
       );
@@ -1452,13 +1427,13 @@ void main() {
       // Only a metric without a category is remembered as empty, so deleting
       // the category of one that has data still gets its history back
       await PreferenceHelper.instance.setLastHealthSyncTimestamp('2026-06-01T12:00:00.000');
-      when(measurements.getAllOnce()).thenAnswer((_) async => categoriesForEveryMetric());
+      when(measurements.getCategoriesOnce()).thenAnswer((_) async => categoriesForEveryMetric());
       stubReadings([]);
 
       await createNotifier().sync();
       expect(capturedReadStart(), DateTime(2026, 5, 2, 12));
 
-      when(measurements.getAllOnce()).thenAnswer(
+      when(measurements.getCategoriesOnce()).thenAnswer(
         (_) async =>
             categoriesForEveryMetric().where((c) => c.metricType != MetricType.bodyFat).toList(),
       );
@@ -1472,7 +1447,7 @@ void main() {
       // recomputed from what the window returns: cutting into the day would
       // overwrite that day's stored value with the part that was read
       await PreferenceHelper.instance.setLastHealthSyncTimestamp('2026-06-01T12:00:00.000');
-      when(measurements.getAllOnce()).thenAnswer((_) async => categoriesForEveryMetric());
+      when(measurements.getCategoriesOnce()).thenAnswer((_) async => categoriesForEveryMetric());
       stubReadings([]);
 
       await createNotifier().sync();
@@ -1495,7 +1470,7 @@ void main() {
       final remaining = categoriesForEveryMetric()
           .where((c) => c.metricType != MetricType.bodyFat)
           .toList();
-      when(measurements.getAllOnce()).thenAnswer((_) async => remaining);
+      when(measurements.getCategoriesOnce()).thenAnswer((_) async => remaining);
       stubReadings([]);
 
       await createNotifier().sync();
@@ -1510,7 +1485,7 @@ void main() {
       final remaining = categoriesForEveryMetric()
           .where((c) => c.metricType != MetricType.bloodPressureDiastolic)
           .toList();
-      when(measurements.getAllOnce()).thenAnswer((_) async => remaining);
+      when(measurements.getCategoriesOnce()).thenAnswer((_) async => remaining);
       stubReadings([]);
 
       await createNotifier().sync();

@@ -45,6 +45,7 @@ void main() {
     when(mockRepo.watchAll()).thenAnswer((_) => Stream.value([]));
     stubMeasurementReads(mockRepo, []);
     when(mockRepo.addLocalDriftCategory(any)).thenAnswer((_) async {});
+    when(mockRepo.addLocalDriftCategoryGroup(any)).thenAnswer((_) async {});
   });
 
   Widget wrap() {
@@ -116,7 +117,7 @@ void main() {
 
     await tester.tap(find.text(MetricType.heartRate.localized(context)));
     await tester.pumpAndSettle();
-    verifyNever(mockRepo.addLocalDriftCategory(any));
+    verifyNever(mockRepo.addLocalDriftCategoryGroup(any));
   });
 
   testWidgets('picking a metric creates the category with the name and unit of its type', (
@@ -130,7 +131,9 @@ void main() {
     await tester.pumpAndSettle();
 
     final added =
-        verify(mockRepo.addLocalDriftCategory(captureAny)).captured.single as MeasurementCategory;
+        (verify(mockRepo.addLocalDriftCategoryGroup(captureAny)).captured.single
+                as List<MeasurementCategory>)
+            .single;
     expect(added.metricType, MetricType.restingHeartRate);
     expect(added.name, 'Resting heart rate');
     expect(added.unit, 'bpm');
@@ -177,6 +180,6 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(MeasurementCategoryForm), findsOneWidget);
-    verifyNever(mockRepo.addLocalDriftCategory(any));
+    verifyNever(mockRepo.addLocalDriftCategoryGroup(any));
   });
 }

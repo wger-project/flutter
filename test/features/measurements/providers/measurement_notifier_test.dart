@@ -51,6 +51,7 @@ void main() {
     when(mockRepo.deleteLocalDriftCategory(any)).thenAnswer((_) async {});
     when(mockRepo.updateLocalDriftCategory(any)).thenAnswer((_) async {});
     when(mockRepo.addLocalDriftCategory(any)).thenAnswer((_) async {});
+    when(mockRepo.addLocalDriftCategoryGroup(any)).thenAnswer((_) async {});
 
     container = ProviderContainer(
       overrides: [
@@ -116,9 +117,11 @@ void main() {
         ),
       );
 
-      final added = verify(
-        mockRepo.addLocalDriftCategory(captureAny),
-      ).captured.cast<MeasurementCategory>();
+      final added =
+          verify(
+                mockRepo.addLocalDriftCategoryGroup(captureAny),
+              ).captured.single
+              as List<MeasurementCategory>;
       expect(added.single.id, deterministicCategoryId('2', MetricType.steps));
     });
 
@@ -133,9 +136,11 @@ void main() {
         ),
       );
 
-      final added = verify(
-        mockRepo.addLocalDriftCategory(captureAny),
-      ).captured.cast<MeasurementCategory>();
+      final added =
+          verify(
+                mockRepo.addLocalDriftCategoryGroup(captureAny),
+              ).captured.single
+              as List<MeasurementCategory>;
       expect(
         added.map((c) => (c.metricType, c.name, c.order)),
         [

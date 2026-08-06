@@ -283,6 +283,84 @@ void main() {
       expect(emitted!.children.map((c) => c.id), ['sys', 'dia']);
       expect(emitted.entries, isEmpty);
     });
+
+    test('getCategoriesOnce returns one snapshot without entries', () async {
+      await seedCategoriesAndEntries();
+
+      final categories = await repo.getCategoriesOnce();
+
+      expect(
+        categories.map((c) => c.id),
+        (await repo.watchAllWithoutEntries().first).map(
+          (c) => c.id,
+        ),
+      );
+      expect(categories.every((c) => c.entries.isEmpty), isTrue);
+    });
+  });
+
+  group('the import dedup queries', () {
+    /// An entry of ['1'], keyed by [externalId] unless it is null.
+    Future<void> seedEntry(String id, {String? externalId, double value = 1}) => repo.addLocalDrift(
+      MeasurementEntry(
+        id: id,
+        categoryId: '1',
+        date: DateTime.utc(2026, 1, 1),
+        value: value,
+        notes: '',
+        externalId: externalId,
+      ),
+    );
+
+    test('getExternalIds returns the keys of one category, skipping the unkeyed', () async {
+      await seedEntry('e1', externalId: 'key-1');
+      await seedEntry('e2', externalId: 'key-2');
+      // A hand-entered measurement has no external id
+      await seedEntry('e3');
+      await repo.addLocalDrift(
+        MeasurementEntry(
+          id: 'other',
+          categoryId: '2',
+          date: DateTime.utc(2026, 1, 1),
+          value: 1,
+          notes: '',
+          externalId: 'key-3',
+        ),
+      );
+
+      expect(await repo.getExternalIds('1'), {'key-1', 'key-2'});
+    });
+
+    test('getExternalIds returns nothing for a category without entries', () async {
+      expect(await repo.getExternalIds('1'), isEmpty);
+    });
+
+    test('getEntriesByExternalId keys the entries the importer may update', () async {
+      await seedEntry('e1', externalId: 'key-1', value: 60);
+      await seedEntry('e2');
+
+      final stored = await repo.getEntriesByExternalId('1');
+
+      expect(stored.keys, ['key-1']);
+      // The row itself, not just its key: the update writes it back
+      expect(stored['key-1']!.id, 'e1');
+      expect(stored['key-1']!.value, 60);
+    });
+
+    test('hasEntries answers for the category asked about', () async {
+      await repo.addLocalDrift(
+        MeasurementEntry(
+          id: 'other',
+          categoryId: '2',
+          date: DateTime.utc(2026, 1, 1),
+          value: 1,
+          notes: '',
+        ),
+      );
+
+      expect(await repo.hasEntries('1'), isFalse);
+      expect(await repo.hasEntries('2'), isTrue);
+    });
   });
 
   group('watchEntries', () {
@@ -927,7 +1005,7 @@ void main() {
       final emitted = await repo.watchAll().first;
 
       final parent = emitted.firstWhere((c) => c.id == 'bp');
-      expect(parent.isGroup, isTrue);
+      expect(parent.hasChildren, isTrue);
       expect(parent.children.map((c) => c.id), ['sys', 'dia']);
     });
 

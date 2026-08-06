@@ -245,7 +245,7 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
         return 0;
       }
 
-      final categories = await _measurements.getAllOnce();
+      final categories = await _measurements.getCategoriesOnce();
 
       // Health records can arrive late with past dates (e.g. a scale that
       // only syncs days after the measurement), so the read window reaches
@@ -414,10 +414,7 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
     MeasurementCategory category,
     String source,
   ) async {
-    final seen = {
-      for (final e in category.entries)
-        if (e.externalId != null) e.externalId!,
-    };
+    final seen = await _measurements.getExternalIds(category.id!);
     var synced = 0;
     DateTime? latest;
 
@@ -494,6 +491,9 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
     var synced = 0;
     DateTime? latest;
     final byDay = groupBy(metricReadings, (r) => _dayOf(r.date, metric));
+    // Read once for the whole category: a day is looked up by its key below,
+    // and a full history holds one aggregate per day
+    final stored = await _measurements.getEntriesByExternalId(category.id!);
 
     for (final MapEntry(key: day, value: samples) in byDay.entries) {
       final values = samples.map((r) => metric.toCategoryValue(r.value)).toList();
@@ -523,7 +523,7 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
 
       if (_isInRange(value, category, metric)) {
         final externalId = dailyAggregateExternalId(category.id!, day);
-        final existing = category.entries.firstWhereOrNull((e) => e.externalId == externalId);
+        final existing = stored[externalId];
         if (existing == null) {
           await _measurements.addLocalDrift(
             MeasurementEntry(
@@ -829,7 +829,7 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
     final existing = categories.firstWhereOrNull(
       (c) => c.parentId == null && c.metricType == metric.metricType,
     );
-    if (existing != null && existing.entries.isNotEmpty) {
+    if (existing != null && await _measurements.hasEntries(existing.id!)) {
       _logger.warning(
         'Category "${existing.name}" holds entries itself and cannot become '
         'a ${metric.metricType.name} group, skipping the import',
