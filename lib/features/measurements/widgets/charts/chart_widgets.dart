@@ -25,7 +25,9 @@ import 'package:intl/intl.dart';
 import 'package:wger/core/charts.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/formatting/formatting.dart';
-import 'package:wger/features/measurements/widgets/charts/chart_series.dart';
+import 'package:wger/features/measurements/charts/colors.dart';
+import 'package:wger/features/measurements/charts/data.dart';
+import 'package:wger/features/measurements/charts/series.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 /// Number of dates to label on the x axis

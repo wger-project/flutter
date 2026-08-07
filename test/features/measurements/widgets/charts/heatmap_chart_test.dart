@@ -20,7 +20,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:wger/features/measurements/widgets/charts/chart_series.dart';
+import 'package:wger/features/measurements/charts/data.dart';
+import 'package:wger/features/measurements/charts/series.dart';
 import 'package:wger/features/measurements/widgets/charts/heatmap_chart.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
@@ -34,89 +35,6 @@ Widget _wrap(Widget child) => MaterialApp(
 
 void main() {
   MeasurementChartEntry entry(num value, DateTime date) => MeasurementChartEntry(value, date);
-
-  group('buildHeatmapGrid', () {
-    // 2 March 2026 is a Monday, 18 March a Wednesday
-    final monday = DateTime(2026, 3, 2);
-    final wednesday = DateTime(2026, 3, 18);
-
-    test('starts on the Monday of the oldest week and ends with today', () {
-      final grid = buildHeatmapGrid(
-        [entry(10, monday), entry(20, wednesday)],
-        today: wednesday,
-      );
-
-      expect(grid.start, monday);
-      expect(grid.weeks, 3);
-      expect(grid.dayAt(0, 0), monday);
-      expect(grid.dayAt(2, 2), wednesday);
-    });
-
-    test('leaves days without a measurement empty rather than zero', () {
-      final grid = buildHeatmapGrid([entry(10, monday)], today: monday);
-
-      expect(grid.valueAt(0, 0), 10);
-      expect(grid.valueAt(0, 1), isNull);
-    });
-
-    test('runs up to today, so a stretch without measurements stays visible', () {
-      final grid = buildHeatmapGrid([entry(10, monday)], today: wednesday);
-
-      expect(grid.weeks, 3);
-      expect(grid.valueAt(2, 2), isNull);
-    });
-
-    test('caps a long history at a year of week columns', () {
-      final grid = buildHeatmapGrid(
-        [entry(10, DateTime(2020, 1, 1)), entry(20, wednesday)],
-        today: wednesday,
-      );
-
-      expect(grid.weeks, heatmapMaxWeeks);
-      expect(grid.dayAt(grid.weeks - 1, 2), wednesday);
-    });
-
-    test('anchors on the last measurement when the history ended long ago', () {
-      // Anchoring on today would put the whole history outside the grid and
-      // draw an empty one
-      final grid = buildHeatmapGrid(
-        [entry(10, monday), entry(20, wednesday)],
-        today: DateTime(2028, 1, 1),
-      );
-
-      expect(grid.dayAt(grid.weeks - 1, 2), wednesday);
-      expect(grid.valueAt(grid.weeks - 1, 2), 20);
-    });
-
-    test('takes the top of the colour scale only from the days it shows', () {
-      // A spike outside the window would scale the colours of every visible
-      // cell without being visible itself, washing out the whole grid
-      final grid = buildHeatmapGrid(
-        [entry(45000, DateTime(2024, 1, 3)), entry(8000, wednesday)],
-        today: wednesday,
-      );
-
-      expect(grid.maxValue, 8000);
-      expect(grid.values.containsKey(DateTime(2024, 1, 3)), isFalse);
-    });
-
-    test('takes the top of the colour scale from the largest value', () {
-      final grid = buildHeatmapGrid(
-        [entry(10, monday), entry(8000, wednesday)],
-        today: wednesday,
-      );
-
-      expect(grid.maxValue, 8000);
-    });
-
-    test('is a full grid of the last year when there is nothing to show', () {
-      final grid = buildHeatmapGrid([]);
-
-      expect(grid.weeks, heatmapMaxWeeks);
-      expect(grid.maxValue, 0);
-      expect(grid.valueAt(0, 0), isNull);
-    });
-  });
 
   group('MeasurementHeatmapWidgetFl', () {
     testWidgets('renders without error for empty entries', (tester) async {

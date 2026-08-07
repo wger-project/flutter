@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wger/core/consts.dart';
+import 'package:wger/features/measurements/charts/series.dart';
 import 'package:wger/features/measurements/measurements.dart';
-import 'package:wger/features/measurements/widgets/charts.dart';
 
 void main() {
   group('whereDateWithInterpolation', () {

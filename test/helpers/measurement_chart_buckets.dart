@@ -23,7 +23,7 @@ import 'package:wger/features/measurements/models/measurement_entry.dart';
 
 /// One bucket per entry, oldest first: what the aggregated query returns for a
 /// series short enough not to be condensed, which every widget fixture is.
-/// Condensing is covered where it happens, in the repository and `downsample`.
+/// Condensing is covered where it happens, in the repository.
 List<MeasurementBucket> entryBuckets(Iterable<MeasurementEntry> entries, {DateTime? since}) => [
   for (final entry in entries)
     if (since == null || !entry.date.isBefore(since))

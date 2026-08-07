@@ -18,7 +18,7 @@
 
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/date.dart';
-import 'package:wger/features/measurements/widgets/charts.dart';
+import 'package:wger/features/measurements/charts/series.dart';
 
 extension MeasurementChartEntryListExtensions on List<MeasurementChartEntry> {
   List<MeasurementChartEntry> whereDate(DateTime start, DateTime? end) {

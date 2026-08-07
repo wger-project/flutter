@@ -18,46 +18,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:wger/features/measurements/charts/range.dart';
 import 'package:wger/features/measurements/widgets/chart_range_selector.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 void main() {
-  group('ChartRange', () {
-    test('the month is the shortest range, the full history the longest', () {
-      final now = DateTime.now();
-
-      expect(ChartRange.all.cutoff, isNull);
-      expect(ChartRange.lastMonth.cutoff!.isAfter(ChartRange.last3Months.cutoff!), isTrue);
-      expect(ChartRange.lastMonth.cutoff!.isBefore(now), isTrue);
-    });
-
-    test('the read cutoff leaves room for the widest average window', () {
-      // 30 days of range plus the 30-day window the category may be set to
-      final read = ChartRange.lastMonth.readCutoff!;
-
-      expect(ChartRange.lastMonth.cutoff!.difference(read).inDays, greaterThanOrEqualTo(29));
-    });
-
-    test('the count cutoff is the range itself, with no lead', () {
-      final count = ChartRange.lastMonth.countCutoff!;
-
-      expect(ChartRange.lastMonth.cutoff!.difference(count).inHours, lessThan(24));
-      expect(count.isAfter(ChartRange.lastMonth.readCutoff!), isTrue);
-    });
-
-    test('the query cutoffs stay the same across rebuilds', () {
-      // They identify a provider: derived from the current instant, every
-      // rebuild would watch a new one, re-query the database and drop what it
-      // was showing. Unlike cutoff, which is only ever compared against.
-      for (final range in ChartRange.values) {
-        expect(range.readCutoff, range.readCutoff);
-        expect(range.countCutoff, range.countCutoff);
-      }
-      expect(ChartRange.lastMonth.countCutoff!.hour, 0);
-      expect(ChartRange.lastMonth.countCutoff!.minute, 0);
-    });
-  });
-
   testWidgets('every range is offered', (tester) async {
     var picked = ChartRange.last3Months;
     await tester.pumpWidget(

@@ -16,11 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/// The measurement charts: the series they draw, the fl_chart widgets, and the
-/// two that are painted by hand.
+/// The measurement chart widgets: the fl_chart ones, and the two that are
+/// painted by hand. What they draw is computed in `../charts/`.
 library;
 
-export 'charts/chart_series.dart';
 export 'charts/chart_widgets.dart';
 export 'charts/distribution_chart.dart';
 export 'charts/heatmap_chart.dart';
