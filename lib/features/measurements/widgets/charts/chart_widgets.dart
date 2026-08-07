@@ -355,6 +355,10 @@ class MeasurementChartWidgetFl extends StatelessWidget {
   LineTouchData tooltipData(BuildContext context, Set<int> hidden, Map<int, String?> labels) {
     return LineTouchData(
       touchTooltipData: LineTouchTooltipData(
+        // Kept inside the chart, else the points near an edge show a tooltip
+        // that is cut off by it, or lies outside it entirely
+        fitInsideHorizontally: true,
+        fitInsideVertically: true,
         getTooltipColor: (touchedSpot) => Theme.of(context).colorScheme.primaryContainer,
         getTooltipItems: (touchedSpots) {
           // The plan context belongs to the touched date, not to a series, so
@@ -534,6 +538,10 @@ class MeasurementBarChartWidgetFl extends StatelessWidget {
   BarTouchData tooltipData(BuildContext context) {
     return BarTouchData(
       touchTooltipData: BarTouchTooltipData(
+        // Kept inside the chart, else the bars near an edge show a
+        // tooltip that is cut off by it, or lies outside it entirely
+        fitInsideHorizontally: true,
+        fitInsideVertically: true,
         getTooltipColor: (group) => Theme.of(context).colorScheme.primaryContainer,
         getTooltipItem: (group, groupIndex, rod, rodIndex) {
           if (groupIndex < 0 || groupIndex >= _entries.length) {
@@ -660,6 +668,10 @@ class MeasurementStackedBarChartWidgetFl extends StatelessWidget {
   BarTouchData tooltipData(BuildContext context) {
     return BarTouchData(
       touchTooltipData: BarTouchTooltipData(
+        // Kept inside the chart, else the bars near an edge show a
+        // tooltip that is cut off by it, or lies outside it entirely
+        fitInsideHorizontally: true,
+        fitInsideVertically: true,
         getTooltipColor: (group) => Theme.of(context).colorScheme.primaryContainer,
         getTooltipItem: (group, groupIndex, rod, rodIndex) {
           if (groupIndex < 0 || groupIndex >= _entries.length) {

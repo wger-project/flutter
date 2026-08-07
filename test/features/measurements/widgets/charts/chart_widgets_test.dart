@@ -56,6 +56,23 @@ void main() {
       expect(find.byType(BarChart), findsOneWidget);
     });
 
+    testWidgets('the tooltip stays inside the chart', (tester) async {
+      // Without this the reading at either end shows a tooltip that is cut
+      // off by the chart edge, or lies outside it altogether
+      await tester.pumpWidget(
+        _wrap(MeasurementBarChartWidgetFl([entry(1000, DateTime(2026, 1, 1))], 'steps')),
+      );
+      await tester.pumpAndSettle();
+
+      final tooltip = tester
+          .widget<BarChart>(find.byType(BarChart))
+          .data
+          .barTouchData
+          .touchTooltipData;
+      expect(tooltip.fitInsideHorizontally, isTrue);
+      expect(tooltip.fitInsideVertically, isTrue);
+    });
+
     testWidgets('only labels a few dates on the x axis', (tester) async {
       final entries = List.generate(
         40,
