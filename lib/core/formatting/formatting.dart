@@ -58,9 +58,14 @@ String measurementValue(BuildContext context, num value, String unit) => unit ==
 /// and the symbol stays untranslated like the units of the other categories.
 String measurementUnit(String unit) => unit == durationUnit ? 'h' : unit;
 
+/// An already formatted value followed by its unit, or on its own where there
+/// is none: a step count is a bare number, and so may be a free-form category.
+String unitSuffixed(String formatted, String unit) =>
+    unit.isEmpty ? formatted : '$formatted ${measurementUnit(unit)}';
+
 /// A measured value with its unit.
 String measurementWithUnit(BuildContext context, num value, String unit) =>
-    '${measurementValue(context, value, unit)} ${measurementUnit(unit)}';
+    unitSuffixed(measurementValue(context, value, unit), unit);
 
 /// Ticks a duration axis aims for, few enough that the labels stay apart.
 const _DURATION_TICKS = 6;

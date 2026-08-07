@@ -67,9 +67,13 @@ class MetricPickerSheet extends ConsumerWidget {
             ListTile(
               enabled: !taken.contains(metricType),
               title: Text(metricType.localized(context)),
-              subtitle: Text(
-                taken.contains(metricType) ? i18n.metricAlreadyTracked : metricType.defaultUnit,
-              ),
+              // A metric without a unit gets no subtitle rather than an empty
+              // one, which would still take up its line
+              subtitle: switch ((taken.contains(metricType), metricType.defaultUnit)) {
+                (true, _) => Text(i18n.metricAlreadyTracked),
+                (false, '') => null,
+                (false, final unit) => Text(unit),
+              },
               onTap: () async {
                 final id = await ref
                     .read(measurementProvider.notifier)

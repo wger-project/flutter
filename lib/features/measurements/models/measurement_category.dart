@@ -341,7 +341,8 @@ enum MetricType {
     MetricType.bloodPressureSystolic ||
     MetricType.bloodPressureDiastolic => 'mmHg',
     MetricType.heartRate || MetricType.restingHeartRate => 'bpm',
-    MetricType.steps => 'count',
+    // A step count is a bare number, not a quantity in some unit
+    MetricType.steps => '',
     MetricType.distance => 'km',
     MetricType.energy => 'kcal',
     MetricType.sleep ||

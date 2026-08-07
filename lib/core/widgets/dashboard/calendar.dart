@@ -110,13 +110,15 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
 
       for (final point in points) {
         final date = DateFormatLists.format(point.date);
-        final value = measurementValue(context, point.value, displayUnit);
-        final label = measurementUnit(unitLabel);
+        final value = unitSuffixed(
+          measurementValue(context, point.value, displayUnit),
+          unitLabel,
+        );
         events.putIfAbsent(date, () => []);
         events[date]!.add(
           isBodyWeight
-              ? Event(EventType.weight, '$value $label')
-              : Event(EventType.measurement, '${category.name}: $value $label'),
+              ? Event(EventType.weight, value)
+              : Event(EventType.measurement, '${category.name}: $value'),
         );
       }
     }

@@ -553,7 +553,7 @@ class MeasurementBarChartWidgetFl extends StatelessWidget {
                     '${measurementValue(context, rod.toY, _unit)}';
 
           return BarTooltipItem(
-            '$dateStr: $value ${measurementUnit(_unit)}',
+            '$dateStr: ${unitSuffixed(value, _unit)}',
             TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer),
           );
         },

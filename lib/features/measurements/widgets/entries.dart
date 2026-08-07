@@ -277,8 +277,14 @@ class _EntryListState extends ConsumerState<_EntryList> with _GrowsWhileScrolled
         return Card(
           child: ListTile(
             title: Text(
-              '${measurementValue(context, currentEntry.valueIn(widget.unit, categoryUnit: category.unit), widget.unit)} '
-              '${measurementUnit(widget.unitLabel)}',
+              unitSuffixed(
+                measurementValue(
+                  context,
+                  currentEntry.valueIn(widget.unit, categoryUnit: category.unit),
+                  widget.unit,
+                ),
+                widget.unitLabel,
+              ),
             ),
             subtitle: Text(datetimeFormat.format(currentEntry.date)),
             // Imported entries are read-only; changes belong in the source
@@ -366,10 +372,12 @@ class _GroupReadingsListState extends ConsumerState<_GroupReadingsList> with _Gr
         // the reading itself, written the way it is read (a blood pressure as
         // 120/80)
         String formatted(num value) => measurementValue(context, value, category.unit);
-        final headline = total != null && values.containsKey(total)
-            ? '${formatted(values[total]!)} ${measurementUnit(category.unit)}'
-            : '${values.values.sorted((a, b) => b.compareTo(a)).map(formatted).join('/')} '
-                  '${measurementUnit(category.unit)}';
+        final headline = unitSuffixed(
+          total != null && values.containsKey(total)
+              ? formatted(values[total]!)
+              : values.values.sorted((a, b) => b.compareTo(a)).map(formatted).join('/'),
+          category.unit,
+        );
         final parts = [
           for (final MapEntry(key: id, value: value) in values.entries)
             if (id != total) '${componentsById[id]!.displayName(context)} ${formatted(value)}',

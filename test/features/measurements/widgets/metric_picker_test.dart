@@ -165,6 +165,10 @@ void main() {
       AppLocalizations.of(tester.element(find.byType(MetricPickerSheet))).customMeasurement,
     );
     await tester.dragUntilVisible(custom, find.byType(ListView), const Offset(0, -100));
+    // The drag stops as soon as the tile is built, which can still leave it
+    // just below the fold
+    await tester.ensureVisible(custom);
+    await tester.pumpAndSettle();
     await tester.tap(custom);
     await tester.pumpAndSettle();
 
