@@ -658,26 +658,6 @@
         }
     },
     "settingsExerciseCacheDescription": "Кеш вправ",
-    "chartAllTimeTitle": "{name} за весь час",
-    "@chartAllTimeTitle": {
-        "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chart30DaysTitle": "{name} останні 30 днів",
-    "@chart30DaysTitle": {
-        "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
     "kcalValue": "{value} ккал",
     "@kcalValue": {
         "description": "A value in kcal, e.g. 500 kcal",

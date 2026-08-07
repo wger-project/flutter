@@ -201,29 +201,6 @@ void main() {
     verify(mockRepo.watchGroupEntries('bp', limit: 100)).called(greaterThanOrEqualTo(1));
   });
 
-  testWidgets('A typed category is titled by its metric type, not by the stored name', (
-    WidgetTester tester,
-  ) async {
-    // The server and the importer create typed categories with an English
-    // name; the metric type is what carries the translation
-    final category = MeasurementCategory(
-      id: 'c1',
-      name: 'Blutdruck',
-      unit: 'mmHg',
-      metricType: MetricType.bloodPressureSystolic,
-    );
-
-    await tester.pumpWidget(
-      createEntriesList(category, {
-        'c1': [userEntry],
-      }),
-    );
-    await tester.pumpAndSettle();
-
-    expect(find.textContaining('Systolic'), findsWidgets);
-    expect(find.textContaining('Blutdruck'), findsNothing);
-  });
-
   testWidgets('A distribution category draws its histogram in the chart box', (
     WidgetTester tester,
   ) async {
@@ -250,24 +227,5 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(MeasurementDistributionWidgetFl), findsOneWidget);
-  });
-
-  testWidgets('A free-form category keeps the name the user gave it', (
-    WidgetTester tester,
-  ) async {
-    final category = MeasurementCategory(
-      id: 'c1',
-      name: 'Bizeps',
-      unit: 'cm',
-    );
-
-    await tester.pumpWidget(
-      createEntriesList(category, {
-        'c1': [userEntry],
-      }),
-    );
-    await tester.pumpAndSettle();
-
-    expect(find.textContaining('Bizeps'), findsWidgets);
   });
 }

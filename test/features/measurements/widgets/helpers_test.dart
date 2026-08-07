@@ -521,6 +521,8 @@ void main() {
       );
 
       expect(find.byType(Indicator), findsNWidgets(3));
+      // The screen names the category and the range selector names the range
+      expect(find.textContaining('Weight'), findsNothing);
     });
 
     testWidgets('two Indicator widgets for summed metric (steps, no trend)', (tester) async {

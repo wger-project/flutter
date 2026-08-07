@@ -293,26 +293,6 @@
     "@weight": {
         "description": "The weight of a workout log or body weight entry"
     },
-    "chartAllTimeTitle": "{name} எல்லா நேரத்திலும்",
-    "@chartAllTimeTitle": {
-        "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chart30DaysTitle": "{name} கடைசி 30 நாட்கள்",
-    "@chart30DaysTitle": {
-        "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
     "measurementCategoriesHelpText": "'பைசெப்ச்' அல்லது 'உடல் கொழுப்பு' போன்ற அளவீட்டு வகை",
     "measurementEntriesHelpText": "'செ.மீ' அல்லது '%' போன்ற வகையை அளவிட பயன்படுத்தப்படும் அலகு",
     "date": "திகதி",

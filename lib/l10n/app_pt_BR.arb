@@ -771,26 +771,6 @@
     "@lb": {
         "description": "Generated entry for translation for server strings"
     },
-    "chartAllTimeTitle": "{name} total",
-    "@chartAllTimeTitle": {
-        "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chart30DaysTitle": "{name} últimos 30 dias",
-    "@chart30DaysTitle": {
-        "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
     "settingsIngredientCacheDescription": "Cache de Ingredientes",
     "cacheWarning": "Devido ao cache pode demorar algum tempo até que mudanças estejam visíveis na aplicação.",
     "swiss_ball": "Bola Suíça",

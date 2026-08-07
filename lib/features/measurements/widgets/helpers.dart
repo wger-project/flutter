@@ -13,10 +13,11 @@ import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/measurements/widgets/charts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
-/// A titled chart with the overall change below it, for a Column to spread.
+/// A chart with the overall change below it, for a Column to spread, titled
+/// where [title] says something the screen around it does not.
 List<Widget> buildChartSection(
   BuildContext context, {
-  required String title,
+  String? title,
   required List<MeasurementChartEntry> raw,
   required List<MeasurementChartEntry> avg,
   required String unit,
@@ -28,11 +29,12 @@ List<Widget> buildChartSection(
   Widget? distribution,
 }) {
   return [
-    Text(
-      title,
-      textAlign: TextAlign.center,
-      style: Theme.of(context).textTheme.titleLarge,
-    ),
+    if (title != null)
+      Text(
+        title,
+        textAlign: TextAlign.center,
+        style: Theme.of(context).textTheme.titleLarge,
+      ),
     Container(
       padding: const EdgeInsets.all(15),
       height: 220,
@@ -72,13 +74,10 @@ List<Widget> buildSeriesChartSection(
   required String unit,
   List<PlanPeriod> planPeriods = const [],
   MetricType metricType = MetricType.custom,
-  String? mainChartTitle,
   ChartType chartType = ChartType.auto,
   ChartSettings settings = const ChartSettings(),
   Widget? distribution,
 }) {
-  final title = mainChartTitle ?? AppLocalizations.of(context).chartAllTimeTitle(name);
-
   final resolved = resolveChartTypeForData(metricType, chartType, entriesAll);
 
   // Neither the heatmap nor the change chart nor the distribution is a line
@@ -91,12 +90,12 @@ List<Widget> buildSeriesChartSection(
       resolved == ChartType.distribution) {
     return buildChartSection(
       context,
-      // The selector right above names the range, so the title says what the
-      // bars are instead
+      // The screen names the category and the selector names the range, so a
+      // title is only worth its line where it says what the bars are
       title: switch (resolved) {
         ChartType.delta => AppLocalizations.of(context).chartWeeklyChangeTitle(name),
         ChartType.distribution => AppLocalizations.of(context).chartDistributionTitle(name),
-        _ => title,
+        _ => null,
       },
       raw: entriesAll,
       // The overall change is the one-number version of the change chart. Over
@@ -118,7 +117,6 @@ List<Widget> buildSeriesChartSection(
   return [
     ...buildChartSection(
       context,
-      title: title,
       raw: entriesAll,
       avg: average,
       unit: unit,

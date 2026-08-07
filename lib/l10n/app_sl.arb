@@ -477,26 +477,6 @@
     },
     "min": "Min.",
     "max": "Maks.",
-    "chartAllTimeTitle": "{name} – ves čas",
-    "@chartAllTimeTitle": {
-        "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chart30DaysTitle": "{name} – zadnjih 30 dni",
-    "@chart30DaysTitle": {
-        "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
     "measurement": "Meritve",
     "measurements": "Meritve",
     "@measurements": {

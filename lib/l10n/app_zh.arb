@@ -569,16 +569,6 @@
     "goalTypeMeals": "从饮食出发",
     "goalTypeBasic": "基础",
     "goalTypeAdvanced": "进阶",
-    "chartAllTimeTitle": "{name} 历史记录曲线",
-    "@chartAllTimeTitle": {
-        "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
     "indicatorRaw": "原始值",
     "indicatorAvg": "平均值",
     "textPromptTitle": "准备就绪？",
@@ -640,16 +630,6 @@
     "none__bodyweight_exercise_": "无（自重动作）",
     "@none__bodyweight_exercise_": {
         "description": "Generated entry for translation for server strings"
-    },
-    "chart30DaysTitle": "{name} 过去三十天",
-    "@chart30DaysTitle": {
-        "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
     },
     "oneNamePerLine": "每行一个名字",
     "settingsExerciseCacheDescription": "动作缓存",

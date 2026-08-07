@@ -678,27 +678,7 @@
     "@surplus": {
         "description": "Caloric surplus (either planned or unplanned)"
     },
-    "chart30DaysTitle": "{name} Ultimos 30 dias",
-    "@chart30DaysTitle": {
-        "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
     "loggedToday": "Registrado hoje",
-    "chartAllTimeTitle": "{name} de todo o tempo",
-    "@chartAllTimeTitle": {
-        "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
     "overallChangeWeight": "Mudança geral",
     "@overallChangeWeight": {
         "description": "Overall change in weight, added for localization"

@@ -854,26 +854,6 @@
   "@toAddMealsToThePlanGoToNutritionalPlanDetails": {
     "description": "Message shown to guide users to the nutritional plan details page to add meals"
   },
-  "chartAllTimeTitle": "{name} בכל הזמנים",
-  "@chartAllTimeTitle": {
-    "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-    "type": "text",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "chart30DaysTitle": "{name} ב־30 הימים האחרונים",
-  "@chart30DaysTitle": {
-    "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-    "type": "text",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
   "aboutDonateText": "בעוד המיזם הזה חופשי ותמיד יישאר כך, תפעול השרת כן עולה לנו כסף! גם הפיתוח דורש השקעה משמעותית של זמן ומאמץ של מתנדבים. התרומה שלך תלך ישירות לכיסוי העלויות האלה, המאפשרות לספק את השירות שלנו נאמנה.",
   "@aboutDonateText": {},
   "aboutContributeText": "אנחנו מעודדים את כל סוגי התרומה. בין אם היא מתבטאת בפיתוח קוד, תרגום, או אפילו רק תשוקה לכושר, אנו מעריכים כל סוג של תמיכה!",

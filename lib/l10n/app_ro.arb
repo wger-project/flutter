@@ -414,26 +414,6 @@
     "copyToClipboard": "Copiază în clipboard",
     "min": "Min",
     "max": "Max",
-    "chartAllTimeTitle": "{name} dintotdeauna",
-    "@chartAllTimeTitle": {
-        "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chart30DaysTitle": "{name} ultimele 30 de zile",
-    "@chart30DaysTitle": {
-        "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
     "endDate": "Data de sfârșit",
     "@endDate": {
         "description": "The End date of a nutritional plan or routine"

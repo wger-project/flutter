@@ -529,46 +529,6 @@
   "@weight": {
     "description": "The weight of a workout log or body weight entry"
   },
-  "chartAllTimeTitle": "{name}, all-time",
-  "@chartAllTimeTitle": {
-    "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-    "type": "text",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "chart30DaysTitle": "{name}, last 30 days",
-  "@chart30DaysTitle": {
-    "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-    "type": "text",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "chartLastYearTitle": "{name}, last year",
-  "@chartLastYearTitle": {
-    "description": "last year chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-    "type": "text",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "chartLast3MonthsTitle": "{name}, last 3 months",
-  "@chartLast3MonthsTitle": {
-    "description": "last 3 months chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-    "type": "text",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
   "chartRangeAll": "All",
   "@chartRangeAll": {
     "description": "Label for the chart time-range selector option showing all data"

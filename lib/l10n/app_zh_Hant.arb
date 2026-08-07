@@ -795,26 +795,6 @@
     "darkMode": "保持深色模式",
     "lightMode": "保持淺色模式",
     "systemMode": "系統設定",
-    "chartAllTimeTitle": "{name} 歷史紀錄",
-    "@chartAllTimeTitle": {
-        "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chart30DaysTitle": "{name} 最近 30 天",
-    "@chart30DaysTitle": {
-        "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
     "noIngredientsDefined": "尚未定義食材",
     "ingredientLogged": "食材已紀錄到日記",
     "selectMealToLog": "選擇要紀錄到日記的餐點",

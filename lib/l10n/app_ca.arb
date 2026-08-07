@@ -906,26 +906,6 @@
     "copyToClipboard": "Copia al porta-retalls",
     "min": "Mínim",
     "max": "Màxim",
-    "chartAllTimeTitle": "Històric: {name}",
-    "@chartAllTimeTitle": {
-        "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chart30DaysTitle": "Últims 30 dies: {name}",
-    "@chart30DaysTitle": {
-        "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
     "endDate": "Data fi",
     "@endDate": {
         "description": "The End date of a nutritional plan or routine"

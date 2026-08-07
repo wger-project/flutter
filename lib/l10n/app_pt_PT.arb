@@ -295,26 +295,6 @@
     },
     "min": "Mín",
     "max": "Máx",
-    "chartAllTimeTitle": "{name} total",
-    "@chartAllTimeTitle": {
-        "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chart30DaysTitle": "{name} últimos 30 dias",
-    "@chart30DaysTitle": {
-        "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
     "measurement": "Medição",
     "measurementCategoriesHelpText": "Categoria de medição, como 'bíceps' ou 'gordura corporal'",
     "measurementEntriesHelpText": "Unidade usada para medir, como 'cm' ou '%'",

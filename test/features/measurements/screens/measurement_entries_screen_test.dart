@@ -21,6 +21,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/measurement_entry.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
@@ -101,11 +102,37 @@ void main() {
     await tester.tap(find.byType(TextButton));
     await tester.pumpAndSettle();
 
-    // Nav bar
+    // Nav bar, with the name a free-form category was given
     expect(find.text('Body fat'), findsOneWidget);
 
     // Entries, newest first
     expect(find.text('23 %'), findsNWidgets(1));
+  });
+
+  testWidgets('A typed category is titled by its metric type, not by the stored name', (
+    tester,
+  ) async {
+    // The server and the importer create typed categories with an English
+    // name; the metric type is what carries the translation
+    stubMeasurementReads(
+      mockMeasurementRepo,
+      [
+        MeasurementCategory(
+          id: '1',
+          name: 'Blutdruck',
+          unit: 'mmHg',
+          metricType: MetricType.bloodPressureSystolic,
+        ),
+      ],
+      getMeasurementEntries(),
+    );
+
+    await tester.pumpWidget(createEntriesScreen());
+    await tester.tap(find.byType(TextButton));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Systolic'), findsOneWidget);
+    expect(find.text('Blutdruck'), findsNothing);
   });
 
   testWidgets('switching the range keeps the screen it already drew', (tester) async {

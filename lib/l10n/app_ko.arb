@@ -218,16 +218,6 @@
         "description": "The weight of a workout log or body weight entry"
     },
     "min": "최소",
-    "chart30DaysTitle": "{name} 지난 30일",
-    "@chart30DaysTitle": {
-        "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
     "measurements": "측정",
     "@measurements": {
         "description": "Categories for the measurements such as biceps size, body fat, etc."
@@ -541,16 +531,6 @@
     "anErrorOccurred": "오류가 발생했습니다!",
     "onlyLoggingHelpText": "칼로리만 기록하고 특정 식사에 대한 자세한 영양 계획을 세우고 싶지 않은 경우 상자를 체크하세요",
     "measurement": "측정",
-    "chartAllTimeTitle": "{name} 역대",
-    "@chartAllTimeTitle": {
-        "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
     "energy": "에너지",
     "@energy": {
         "description": "Energy in a meal, ingredient etc. e.g. in kJ"

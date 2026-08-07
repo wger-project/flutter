@@ -738,16 +738,6 @@
             }
         }
     },
-    "chart30DaysTitle": "{name} آخر 30 يوم",
-    "@chart30DaysTitle": {
-        "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
     "copyToClipboard": "النسخ إلى clipboard",
     "workoutCompleted": "تم الانتهاء من التمرين",
     "onlyLoggingHelpText": "ضع علامة في المربع إذا كنت ترغب فقط في تسجيل سعراتك الحرارية ولا ترغب في إعداد خطة غذائية مفصلة تتضمن وجبات محددة",

@@ -524,26 +524,6 @@
     "errorViewDetails": "Technikai részletek",
     "applicationLogs": "Alkalmazásnaplók",
     "errorCouldNotConnectToServer": "Nem sikerült kapcsolódni a szerverhez",
-    "chartAllTimeTitle": "{name} – teljes időszak",
-    "@chartAllTimeTitle": {
-        "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chart30DaysTitle": "{name} – elmúlt 30 nap",
-    "@chart30DaysTitle": {
-        "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
     "measurement": "Mérés",
     "measurements": "Mérések",
     "@measurements": {

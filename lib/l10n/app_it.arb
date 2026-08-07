@@ -718,16 +718,6 @@
     "settingsCacheDeletedSnackbar": "Cache svuotata con successo",
     "done": "Fatto",
     "ingredientLogged": "Ingrediente registrato nel diario",
-    "chart30DaysTitle": "{name} ultimi 30 giorni",
-    "@chart30DaysTitle": {
-        "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
     "goalMacro": "Obiettivi dei macronutrienti",
     "@goalMacro": {
         "description": "The goal for macronutrients"
@@ -808,16 +798,6 @@
     "deficit": "deficit",
     "@deficit": {
         "description": "Caloric deficit (either planned or unplanned)"
-    },
-    "chartAllTimeTitle": "{name} storico",
-    "@chartAllTimeTitle": {
-        "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
     },
     "darkMode": "Sempre in modalità scura",
     "routines": "Routine",

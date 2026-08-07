@@ -148,7 +148,6 @@ class EntriesList extends ConsumerWidget {
       unit: unitLabel,
       planPeriods: planPeriods,
       metricType: category.metricType,
-      mainChartTitle: range.chartTitle(AppLocalizations.of(context), name),
       chartType: category.chartType,
       settings: settings,
       distribution: MeasurementDistributionChart(
@@ -178,11 +177,6 @@ class EntriesList extends ConsumerWidget {
         ChartRangeSelector(
           value: range,
           onChanged: onRangeChanged,
-        ),
-        Text(
-          range.chartTitle(i18n, category.displayName(context)),
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.titleLarge,
         ),
         MeasurementChartArea<Map<String, List<MeasurementChartEntry>>>(
           identity: category.id!,

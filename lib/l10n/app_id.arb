@@ -576,26 +576,6 @@
     "errorCouldNotConnectToServer": "Tidak dapat terhubung ke server",
     "errorInfoDescription": "Maaf, terjadi kesalahan. Anda dapat membantu kami memperbaikinya dengan melaporkan masalah ini di GitHub.",
     "min": "Minimal",
-    "chartAllTimeTitle": "{name}Sepanjang waktu",
-    "@chartAllTimeTitle": {
-        "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chart30DaysTitle": "{name} 30 hari terakhir",
-    "@chart30DaysTitle": {
-        "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
     "aboutWhySupportTitle": "Bersifat open source & gratis ❤️",
     "aboutSourceListTitle": "Lihat kode sumber",
     "aboutJoinCommunityTitle": "Gabung komunitas",

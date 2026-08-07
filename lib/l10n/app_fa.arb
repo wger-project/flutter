@@ -271,26 +271,6 @@
     "@min": {},
     "max": "حداکثر",
     "@max": {},
-    "chartAllTimeTitle": "نمودار کلی {name}",
-    "@chartAllTimeTitle": {
-        "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chart30DaysTitle": "نمودار 30 روزه {name}",
-    "@chart30DaysTitle": {
-        "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
     "measurement": "اندازه گیری",
     "@measurement": {},
     "measurements": "اندازه گیری ها",

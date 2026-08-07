@@ -354,26 +354,6 @@
     },
     "min": "Min",
     "max": "Max",
-    "chartAllTimeTitle": "{name} door de tijd heen",
-    "@chartAllTimeTitle": {
-        "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chart30DaysTitle": "{name} afgelopen 30 dagen",
-    "@chart30DaysTitle": {
-        "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
     "measurement": "Meting",
     "measurements": "Metingen",
     "@measurements": {

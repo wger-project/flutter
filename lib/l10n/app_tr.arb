@@ -810,26 +810,6 @@
   "@noIngredientsDefined": {},
   "settingsIngredientCacheDescription": "Malzeme önbelleği",
   "@settingsIngredientCacheDescription": {},
-  "chartAllTimeTitle": "tüm zamanlar {name}",
-  "@chartAllTimeTitle": {
-    "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-    "type": "text",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "chart30DaysTitle": "son 30 gün {name}",
-  "@chart30DaysTitle": {
-    "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-    "type": "text",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
   "endBeforeStart": "Son değer, başlangıç değerinden önce olamaz",
   "minLengthRoutine": "Program en az {number} hafta sürmelidir",
   "maxLengthRoutine": "Bu program en fazla {number} hafta sürebilir"

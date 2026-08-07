@@ -793,26 +793,6 @@
     "noIngredientsDefined": "Ингредиенты пока не определены",
     "ingredientLogged": "Ингредиент занесен в дневник",
     "selectMealToLog": "Выберите прием пищи для записи в дневник",
-    "chartAllTimeTitle": "{name} за все время",
-    "@chartAllTimeTitle": {
-        "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chart30DaysTitle": "{name} последние 30 дней",
-    "@chart30DaysTitle": {
-        "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
     "settingsIngredientCacheDescription": "Кэш ингредиентов",
     "isRestDayHelp": "Пожалуйста, имейте в виду, что если вы отметите этот день как день отдыха, все подходы и упражнения будут удалены.",
     "routines": "Тренировки",
