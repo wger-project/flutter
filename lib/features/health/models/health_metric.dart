@@ -160,11 +160,14 @@ double _heightToCm(double raw) => raw < 3 ? raw * 100 : raw;
 
 double _identity(double raw) => raw;
 
+/// Both platforms report a distance in meters, the category stores kilometers.
+double _metersToKm(double raw) => raw / 1000;
+
 /// The V1 metric set (see `plan-measurements-health-v27.md`).
 ///
-/// Only [HealthMetric.enabled] entries are imported. The rest are declared so
-/// the mapping is visible in one place; each is blocked on groundwork noted in
-/// its [HealthMetric.disabledReason].
+/// Only [HealthMetric.enabled] entries are imported. A disabled one stays
+/// declared so the mapping is visible in one place, with the groundwork it
+/// waits for in its [HealthMetric.disabledReason].
 const List<HealthMetric> healthMetrics = [
   HealthMetric(
     metricType: MetricType.bodyFat,
@@ -248,11 +251,36 @@ const List<HealthMetric> healthMetrics = [
     dayRollsOverAtHour: 18,
     enabled: true,
   ),
+  // The three cumulative types below are counters, not measurements: a single
+  // record covers a few minutes and means nothing on its own, so only the
+  // day's total is stored. Both platforms can aggregate them themselves, which
+  // would replace the raw read with one row per day; until the importer has
+  // that path, they are read raw in small windows and summed here.
   HealthMetric(
     metricType: MetricType.steps,
     dataType: HealthDataType.STEPS,
     toCategoryValue: _identity,
-    disabledReason: 'High-volume cumulative type, parked behind a load test.',
+    dailyAggregation: DailyAggregation.sum,
+    enabled: true,
+    readWindow: highVolumeReadWindow,
+  ),
+  HealthMetric(
+    metricType: MetricType.distance,
+    dataType: HealthDataType.DISTANCE_DELTA,
+    toCategoryValue: _metersToKm,
+    dailyAggregation: DailyAggregation.sum,
+    enabled: true,
+    readWindow: highVolumeReadWindow,
+  ),
+  HealthMetric(
+    // Active energy only: the basal part is a platform estimate the user never
+    // recorded, and adding it in would make the day's number depend on which
+    // platform wrote it.
+    metricType: MetricType.energy,
+    dataType: HealthDataType.ACTIVE_ENERGY_BURNED,
+    toCategoryValue: _identity,
+    dailyAggregation: DailyAggregation.sum,
+    enabled: true,
     readWindow: highVolumeReadWindow,
   ),
 ];

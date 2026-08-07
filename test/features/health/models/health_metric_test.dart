@@ -16,7 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:collection/collection.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:health_bridge/health.dart';
 import 'package:wger/features/health/models/health_metric.dart';
@@ -26,7 +25,7 @@ HealthMetric _metric(MetricType type) => healthMetrics.firstWhere((m) => m.metri
 
 void main() {
   group('Enabled metric set', () {
-    test('only the V1 sample metrics are imported', () {
+    test('every declared metric is imported', () {
       expect(
         enabledHealthMetrics.map((m) => m.metricType),
         containsAll([
@@ -37,9 +36,12 @@ void main() {
           MetricType.heartRate,
           MetricType.restingHeartRate,
           MetricType.sleep,
+          MetricType.steps,
+          MetricType.distance,
+          MetricType.energy,
         ]),
       );
-      expect(enabledHealthMetrics.length, 7);
+      expect(enabledHealthMetrics.length, 10);
     });
 
     test('daily aggregation is set per metric', () {
@@ -49,6 +51,21 @@ void main() {
       expect(_metric(MetricType.sleep).dailyAggregation, DailyAggregation.mergedDuration);
       // The platforms compute the resting rate per day themselves
       expect(_metric(MetricType.restingHeartRate).dailyAggregation, isNull);
+      // One record of a counter covers minutes, only the day's total is a
+      // measurement
+      for (final type in [MetricType.steps, MetricType.distance, MetricType.energy]) {
+        expect(_metric(type).dailyAggregation, DailyAggregation.sum);
+      }
+    });
+
+    test('the cumulative types are read in small windows', () {
+      for (final type in [MetricType.steps, MetricType.distance, MetricType.energy]) {
+        expect(_metric(type).readWindow, highVolumeReadWindow);
+      }
+    });
+
+    test('a distance arrives in meters and is stored in kilometers', () {
+      expect(_metric(MetricType.distance).toCategoryValue(5300), closeTo(5.3, 0.001));
     });
 
     test('sleep is attributed to the wake day', () {
@@ -73,9 +90,9 @@ void main() {
     });
 
     test('every disabled metric explains why', () {
-      final disabled = healthMetrics.where((m) => !m.enabled);
-      expect(disabled, isNotEmpty);
-      expect(disabled.every((m) => m.disabledReason != null), isTrue);
+      // Nothing is parked at the moment; the rule is for the next type that is
+      // declared before its groundwork exists
+      expect(healthMetrics.where((m) => !m.enabled).every((m) => m.disabledReason != null), isTrue);
     });
 
     test('metric types are unique', () {
@@ -113,7 +130,5 @@ void main() {
       enabledHealthMetrics,
       healthMetrics.where((m) => m.enabled).toList(),
     );
-    // sanity: the disabled ones really are excluded
-    expect(enabledHealthMetrics.firstWhereOrNull((m) => m.metricType == MetricType.steps), isNull);
   });
 }
