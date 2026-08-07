@@ -179,6 +179,7 @@ enum MetricType {
   custom('custom'),
   bodyWeight('body_weight'),
   bodyFat('body_fat'),
+  leanBodyMass('lean_body_mass'),
   height('height'),
   bloodPressure('blood_pressure'),
   bloodPressureSystolic('blood_pressure_systolic'),
@@ -306,6 +307,7 @@ enum MetricType {
     MetricType.custom => '',
     MetricType.bodyWeight => 'Weight',
     MetricType.bodyFat => 'Body fat',
+    MetricType.leanBodyMass => 'Lean body mass',
     MetricType.height => 'Height',
     MetricType.bloodPressure => 'Blood pressure',
     MetricType.bloodPressureSystolic => 'Systolic',
@@ -332,7 +334,7 @@ enum MetricType {
   /// follows the profile.
   String get defaultUnit => switch (this) {
     MetricType.custom => '',
-    MetricType.bodyWeight => 'kg',
+    MetricType.bodyWeight || MetricType.leanBodyMass => 'kg',
     MetricType.bodyFat || MetricType.bloodOxygen => '%',
     MetricType.height => 'cm',
     MetricType.bloodPressure ||
@@ -364,7 +366,10 @@ enum MetricType {
   /// context. Custom categories are typically hand-kept body measurements
   /// (waist, biceps), so they qualify; the typed health metrics do not.
   bool get correlatesWithNutrition => switch (this) {
-    MetricType.bodyWeight || MetricType.bodyFat || MetricType.custom => true,
+    MetricType.bodyWeight ||
+    MetricType.bodyFat ||
+    MetricType.leanBodyMass ||
+    MetricType.custom => true,
     _ => false,
   };
 
@@ -380,6 +385,8 @@ enum MetricType {
     MetricType.bodyWeight =>
       unit == 'lb' ? const MetricLimits(44, 770, 66, 661) : const MetricLimits(20, 350, 30, 300),
     MetricType.bodyFat => const MetricLimits(2, 60, 5, 50),
+    // Always below the body weight it is part of, so the floor can sit lower
+    MetricType.leanBodyMass => const MetricLimits(10, 250, 30, 90),
     MetricType.height => const MetricLimits(50, 250, 140, 210),
     MetricType.bloodPressureSystolic => const MetricLimits(50, 250, 90, 180),
     MetricType.bloodPressureDiastolic => const MetricLimits(30, 150, 50, 110),
@@ -420,6 +427,7 @@ enum MetricType {
   num? binWidth([String? unit]) => switch (this) {
     MetricType.bodyWeight => unit == 'lb' ? 1 : 0.5,
     MetricType.bodyFat => 0.5,
+    MetricType.leanBodyMass => 0.5,
     MetricType.height => 1,
     MetricType.bloodPressureSystolic || MetricType.bloodPressureDiastolic => 5,
     MetricType.heartRate => 2,
@@ -445,6 +453,7 @@ extension MeasurementMetricTypeL10n on MetricType {
       MetricType.custom => l10n.metricCustom,
       MetricType.bodyWeight => l10n.metricBodyWeight,
       MetricType.bodyFat => l10n.metricBodyFat,
+      MetricType.leanBodyMass => l10n.metricLeanBodyMass,
       MetricType.height => l10n.metricHeight,
       MetricType.bloodPressure => l10n.metricBloodPressure,
       MetricType.bloodPressureSystolic => l10n.metricBloodPressureSystolic,

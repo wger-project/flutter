@@ -1146,6 +1146,7 @@
     "reorderCategories": "Réorganiser les catégories",
     "metricCustom": "Personnalisé",
     "metricBodyWeight": "Poids corporel",
+    "metricLeanBodyMass": "Masse maigre",
     "metricBodyFat": "Graisse corporelle",
     "metricHeight": "Taille",
     "metricBloodPressure": "Pression artérielle",

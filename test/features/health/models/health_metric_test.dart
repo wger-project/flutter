@@ -30,6 +30,7 @@ void main() {
         enabledHealthMetrics.map((m) => m.metricType),
         containsAll([
           MetricType.bodyFat,
+          MetricType.leanBodyMass,
           MetricType.height,
           MetricType.bodyWeight,
           MetricType.bloodPressure,
@@ -42,7 +43,7 @@ void main() {
           MetricType.energy,
         ]),
       );
-      expect(enabledHealthMetrics.length, 11);
+      expect(enabledHealthMetrics.length, 12);
     });
 
     test('daily aggregation is set per metric', () {

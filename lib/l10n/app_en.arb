@@ -730,6 +730,10 @@
   "@metricBodyWeight": {
     "description": "Label for body weight measurement"
   },
+  "metricLeanBodyMass": "Lean body mass",
+  "@metricLeanBodyMass": {
+    "description": "Label for lean body mass measurement"
+  },
   "metricBodyFat": "Body fat",
   "@metricBodyFat": {
     "description": "Label for body fat percentage measurement"

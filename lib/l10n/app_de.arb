@@ -1136,6 +1136,7 @@
     "reorderCategories": "Kategorien neu anordnen",
     "metricCustom": "Benutzerdefiniert",
     "metricBodyWeight": "Körpergewicht",
+    "metricLeanBodyMass": "Magermasse",
     "metricBodyFat": "Körperfett",
     "metricHeight": "Körpergröße",
     "metricBloodPressure": "Blutdruck",

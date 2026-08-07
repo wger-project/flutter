@@ -15,6 +15,7 @@
          metric its import. Guarded by health_manifest_test.dart -->
     <uses-permission android:name="android.permission.health.READ_WEIGHT"/>
     <uses-permission android:name="android.permission.health.READ_BODY_FAT"/>
+    <uses-permission android:name="android.permission.health.READ_LEAN_BODY_MASS"/>
     <uses-permission android:name="android.permission.health.READ_HEIGHT"/>
     <uses-permission android:name="android.permission.health.READ_BLOOD_PRESSURE"/>
     <uses-permission android:name="android.permission.health.READ_HEART_RATE"/>

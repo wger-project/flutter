@@ -29,6 +29,7 @@ import 'package:wger/features/health/models/health_metric.dart';
 const _readPermissions = {
   HealthDataType.WEIGHT: 'android.permission.health.READ_WEIGHT',
   HealthDataType.BODY_FAT_PERCENTAGE: 'android.permission.health.READ_BODY_FAT',
+  HealthDataType.LEAN_BODY_MASS: 'android.permission.health.READ_LEAN_BODY_MASS',
   HealthDataType.HEIGHT: 'android.permission.health.READ_HEIGHT',
   HealthDataType.BLOOD_PRESSURE_SYSTOLIC: 'android.permission.health.READ_BLOOD_PRESSURE',
   HealthDataType.BLOOD_PRESSURE_DIASTOLIC: 'android.permission.health.READ_BLOOD_PRESSURE',

@@ -181,6 +181,15 @@ const List<HealthMetric> healthMetrics = [
     enabled: true,
   ),
   HealthMetric(
+    // Both platforms report kilograms, like body weight. Unlike it, the
+    // category holds only kg: the per-entry unit of locked decision #9 is
+    // body weight's alone.
+    metricType: MetricType.leanBodyMass,
+    dataType: HealthDataType.LEAN_BODY_MASS,
+    toCategoryValue: _identity,
+    enabled: true,
+  ),
+  HealthMetric(
     metricType: MetricType.height,
     dataType: HealthDataType.HEIGHT,
     toCategoryValue: _heightToCm,
