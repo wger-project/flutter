@@ -23,7 +23,7 @@ import 'package:wger/core/dashboard.dart';
 import 'package:wger/core/material.dart';
 import 'package:wger/features/gallery/screens/gallery_screen.dart';
 import 'package:wger/features/health/providers/health_sync.dart';
-import 'package:wger/features/measurements/screens/weight_screen.dart';
+import 'package:wger/features/measurements/screens/measurement_categories_screen.dart';
 import 'package:wger/features/nutrition/screens/nutritional_plans_screen.dart';
 import 'package:wger/features/routines/screens/routine_list_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -74,7 +74,7 @@ class _HomeTabsScreenState extends ConsumerState<HomeTabsScreen>
     const DashboardScreen(),
     const RoutineListScreen(),
     const NutritionalPlansScreen(),
-    const WeightScreen(),
+    const MeasurementCategoriesScreen(),
     const GalleryScreen(),
   ];
 
@@ -95,7 +95,7 @@ class _HomeTabsScreenState extends ConsumerState<HomeTabsScreen>
       ),
       NavigationDestination(
         icon: const FaIcon(FontAwesomeIcons.weightScale, size: 20),
-        label: AppLocalizations.of(context).weight,
+        label: AppLocalizations.of(context).labelBottomNavBody,
       ),
       NavigationDestination(
         icon: const Icon(Icons.photo_library),

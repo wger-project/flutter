@@ -1194,5 +1194,6 @@
     "healthSyncFailed": "La dernière synchronisation n'a pas pu être terminée",
     "healthConnectInstall": "Installer Health Connect",
     "healthConnectUpdate": "Mettre à jour Health Connect",
-    "healthConnectRequired": "Health Connect est nécessaire pour importer les mensurations"
+    "healthConnectRequired": "Health Connect est nécessaire pour importer les mensurations",
+    "labelBottomNavBody": "Corps"
 }

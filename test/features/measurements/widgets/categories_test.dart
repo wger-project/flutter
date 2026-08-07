@@ -20,6 +20,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
+import 'package:wger/features/account/providers/user_profile_repository.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/measurement_entry.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
@@ -28,7 +30,9 @@ import 'package:wger/features/measurements/widgets/categories.dart';
 import 'package:wger/features/measurements/widgets/categories_card.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
+import '../../../../test_data/body_weight.dart';
 import '../../../../test_data/measurements.dart';
+import '../../../../test_data/profile.dart';
 import '../../../helpers/measurement_chart_buckets.dart';
 import '../../../helpers/measurement_repository_stubs.dart';
 import 'categories_test.mocks.dart';
@@ -38,9 +42,15 @@ Widget _wrap(
   List<MeasurementCategory> categories = const [],
   Map<String, List<MeasurementEntry>> entries = const {},
 }) {
+  // The weight card needs the display unit, so it only appears once the
+  // profile is there
+  final mockProfileRepo = MockUserProfileRepository();
+  when(mockProfileRepo.watchDrift()).thenAnswer((_) => Stream.value(tUserProfile1));
+
   return ProviderScope(
     overrides: [
       measurementRepositoryProvider.overrideWithValue(mockRepo),
+      userProfileRepositoryProvider.overrideWithValue(mockProfileRepo),
       // The cards read their chart points from the aggregated queries
       measurementChartBucketsProvider.overrideWith(chartBucketsFrom(entries)),
       measurementGroupBucketsProvider.overrideWith(groupBucketsFrom(categories, entries)),
@@ -53,7 +63,7 @@ Widget _wrap(
   );
 }
 
-@GenerateMocks([MeasurementRepository])
+@GenerateMocks([MeasurementRepository, UserProfileRepository])
 void main() {
   late MockMeasurementRepository mockRepo;
 
@@ -95,6 +105,29 @@ void main() {
       expect(find.byType(CategoriesCard), findsOneWidget);
       expect(find.text('Systolic'), findsOneWidget);
       expect(find.text('Diastolic'), findsOneWidget);
+    });
+
+    testWidgets('body weight leads the list, wherever it is sorted', (tester) async {
+      // The card is the way into the weight screen, so it stays on top rather
+      // than taking the position the category order gives it
+      final categories = [...getMeasurementCategories(), getBodyWeightCategory()];
+      final entries = {...getMeasurementEntries(), ...bodyWeightEntries()};
+      stubMeasurementReads(mockRepo, categories, entries);
+      // Tall enough for all three cards; the list builds only what it shows
+      tester.view.physicalSize = const Size(800, 2200);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.reset);
+
+      await tester.pumpWidget(_wrap(mockRepo, categories: categories, entries: entries));
+      await tester.pumpAndSettle();
+
+      // Once, at the top: the official category is left out of the list below
+      expect(find.byType(CategoriesCard), findsNWidgets(3));
+      expect(find.text('Weight'), findsOneWidget);
+      expect(
+        tester.getTopLeft(find.text('Weight')).dy,
+        lessThan(tester.getTopLeft(find.text('Body fat')).dy),
+      );
     });
 
     testWidgets('empty list renders no CategoriesCard', (tester) async {

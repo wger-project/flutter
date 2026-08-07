@@ -62,7 +62,7 @@ void main() {
     await tester.pumpWidget(createMeasurementScreen());
     await tester.pumpAndSettle();
 
-    expect(find.text('Measurements'), findsOneWidget);
+    expect(find.text('Body'), findsOneWidget);
     expect(find.text('Body fat'), findsOneWidget);
     expect(find.text('Biceps'), findsOneWidget);
     expect(find.text('Blood pressure'), findsOneWidget);

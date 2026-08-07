@@ -82,28 +82,14 @@ class _WeightScreenState extends ConsumerState<WeightScreen> {
         child: SingleChildScrollView(
           child: category == null || profile == null
               ? const BoxedProgressIndicator()
-              : Column(
-                  children: [
-                    EntriesList(
-                      category,
-                      range: _range,
-                      onRangeChanged: (range) => setState(() => _range = range),
-                      title: i18n.weight,
-                      displayUnit: weightDisplayUnit(profile.isMetric),
-                      displayUnitLabel: weightUnit(profile.isMetric, context),
-                      editFormBuilder: (entry) => WeightForm(category, entry),
-                    ),
-                    TextButton(
-                      onPressed: () => Navigator.pushNamed(context, '/measurement-categories'),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Text(i18n.measurements),
-                          const Icon(Icons.chevron_right),
-                        ],
-                      ),
-                    ),
-                  ],
+              : EntriesList(
+                  category,
+                  range: _range,
+                  onRangeChanged: (range) => setState(() => _range = range),
+                  title: i18n.weight,
+                  displayUnit: weightDisplayUnit(profile.isMetric),
+                  displayUnitLabel: weightUnit(profile.isMetric, context),
+                  editFormBuilder: (entry) => WeightForm(category, entry),
                 ),
         ),
       ),

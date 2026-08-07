@@ -1184,5 +1184,6 @@
     "healthSyncFailed": "Der letzte Abgleich konnte nicht abgeschlossen werden",
     "healthConnectInstall": "Health Connect installieren",
     "healthConnectUpdate": "Health Connect aktualisieren",
-    "healthConnectRequired": "Health Connect wird benötigt, um Körpermesswerte zu importieren"
+    "healthConnectRequired": "Health Connect wird benötigt, um Körpermesswerte zu importieren",
+    "labelBottomNavBody": "Körper"
 }

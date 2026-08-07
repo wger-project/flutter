@@ -647,6 +647,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get labelBottomNavBody =>
+      (super.noSuchMethod(
+            Invocation.getter(#labelBottomNavBody),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#labelBottomNavBody),
+            ),
+          )
+          as String);
+
+  @override
   String get labelWorkoutLogs =>
       (super.noSuchMethod(
             Invocation.getter(#labelWorkoutLogs),
@@ -2347,6 +2358,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get metricLeanBodyMass =>
+      (super.noSuchMethod(
+            Invocation.getter(#metricLeanBodyMass),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#metricLeanBodyMass),
+            ),
+          )
+          as String);
+
+  @override
   String get metricBodyFat =>
       (super.noSuchMethod(
             Invocation.getter(#metricBodyFat),
@@ -2419,6 +2441,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.getter(#metricRestingHeartRate),
+            ),
+          )
+          as String);
+
+  @override
+  String get metricBloodOxygen =>
+      (super.noSuchMethod(
+            Invocation.getter(#metricBloodOxygen),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#metricBloodOxygen),
             ),
           )
           as String);
@@ -5343,50 +5376,6 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.method(#planStartDate, [startDate]),
-            ),
-          )
-          as String);
-
-  @override
-  String chartAllTimeTitle(String? name) =>
-      (super.noSuchMethod(
-            Invocation.method(#chartAllTimeTitle, [name]),
-            returnValue: _i3.dummyValue<String>(
-              this,
-              Invocation.method(#chartAllTimeTitle, [name]),
-            ),
-          )
-          as String);
-
-  @override
-  String chart30DaysTitle(String? name) =>
-      (super.noSuchMethod(
-            Invocation.method(#chart30DaysTitle, [name]),
-            returnValue: _i3.dummyValue<String>(
-              this,
-              Invocation.method(#chart30DaysTitle, [name]),
-            ),
-          )
-          as String);
-
-  @override
-  String chartLastYearTitle(String? name) =>
-      (super.noSuchMethod(
-            Invocation.method(#chartLastYearTitle, [name]),
-            returnValue: _i3.dummyValue<String>(
-              this,
-              Invocation.method(#chartLastYearTitle, [name]),
-            ),
-          )
-          as String);
-
-  @override
-  String chartLast3MonthsTitle(String? name) =>
-      (super.noSuchMethod(
-            Invocation.method(#chartLast3MonthsTitle, [name]),
-            returnValue: _i3.dummyValue<String>(
-              this,
-              Invocation.method(#chartLast3MonthsTitle, [name]),
             ),
           )
           as String);

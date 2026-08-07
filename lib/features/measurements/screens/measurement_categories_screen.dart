@@ -33,7 +33,7 @@ class MeasurementCategoriesScreen extends StatelessWidget {
     final i18n = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).measurements),
+        title: Text(i18n.labelBottomNavBody),
         actions: [
           IconButton(
             icon: const Icon(Icons.sort),

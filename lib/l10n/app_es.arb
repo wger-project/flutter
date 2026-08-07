@@ -1223,5 +1223,6 @@
     "healthSyncFailed": "No se ha podido completar la última sincronización",
     "healthConnectInstall": "Instalar Health Connect",
     "healthConnectUpdate": "Actualizar Health Connect",
-    "healthConnectRequired": "Health Connect es necesario para importar medidas corporales"
+    "healthConnectRequired": "Health Connect es necesario para importar medidas corporales",
+    "labelBottomNavBody": "Cuerpo"
 }

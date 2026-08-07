@@ -40,10 +40,35 @@ class CategoriesCard extends ConsumerWidget {
   final double? elevation;
   final ChartRange range;
 
+  /// Name the card is titled with, `category.displayName` by default. Body
+  /// weight is titled like the screen it leads to.
+  final String? title;
+
+  /// Unit the values are converted to, `category.unit` by default. Body weight
+  /// is shown in the profile unit, since its entries can be stored in either.
+  final String? displayUnit;
+
+  /// Label for [displayUnit], the unit itself by default. The two differ where
+  /// the unit is translated (kg reads كغم in Arabic).
+  final String? displayUnitLabel;
+
+  /// Form the add action opens, [MeasurementEntryForm] by default. Body weight
+  /// has one of its own, with quick steppers and a unit dropdown.
+  final Widget? newEntryForm;
+
+  /// What the detail link opens, the entries screen of the category by
+  /// default. Body weight has a screen of its own.
+  final VoidCallback? onShowDetails;
+
   const CategoriesCard(
     this.currentCategory, {
     this.elevation,
     this.range = ChartRange.last3Months,
+    this.title,
+    this.displayUnit,
+    this.displayUnitLabel,
+    this.newEntryForm,
+    this.onShowDetails,
   });
 
   @override
@@ -61,7 +86,7 @@ class CategoriesCard extends ConsumerWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               child: Text(
-                currentCategory.displayName(context),
+                title ?? currentCategory.displayName(context),
                 style: Theme.of(context).textTheme.titleLarge,
                 textAlign: TextAlign.center,
                 maxLines: 2,
@@ -70,7 +95,7 @@ class CategoriesCard extends ConsumerWidget {
             ),
             MeasurementChartArea<List<MeasurementChartEntry>>(
               identity: currentCategory.id!,
-              watch: (ref) => chartPointsFor(ref, currentCategory, range),
+              watch: (ref) => chartPointsFor(ref, currentCategory, range, targetUnit: displayUnit),
               builder: _chart,
               // The card is one of many on the overview; a failing query takes
               // its chart, not the way into the category
@@ -87,14 +112,16 @@ class CategoriesCard extends ConsumerWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         TextButton(
+                          onPressed:
+                              onShowDetails ??
+                              () {
+                                Navigator.pushNamed(
+                                  context,
+                                  MeasurementEntriesScreen.routeName,
+                                  arguments: currentCategory.id,
+                                );
+                              },
                           child: Text(AppLocalizations.of(context).goToDetailPage),
-                          onPressed: () {
-                            Navigator.pushNamed(
-                              context,
-                              MeasurementEntriesScreen.routeName,
-                              arguments: currentCategory.id,
-                            );
-                          },
                         ),
                         IconButton(
                           onPressed: () async {
@@ -103,7 +130,7 @@ class CategoriesCard extends ConsumerWidget {
                               FormScreen.routeName,
                               arguments: FormScreenArguments(
                                 AppLocalizations.of(context).newEntry,
-                                MeasurementEntryForm(currentCategory.id!),
+                                newEntryForm ?? MeasurementEntryForm(currentCategory.id!),
                               ),
                             );
                           },
@@ -125,6 +152,8 @@ class CategoriesCard extends ConsumerWidget {
   List<Widget> _chart(BuildContext context, List<MeasurementChartEntry> allPoints) {
     final settings = currentCategory.chartSettings;
     final (:entries, :average) = chartSeriesFor(allPoints, range, settings);
+    final unit = displayUnit ?? currentCategory.unit;
+    final unitLabel = displayUnitLabel ?? unit;
 
     return [
       Container(
@@ -134,14 +163,14 @@ class CategoriesCard extends ConsumerWidget {
           currentCategory.metricType,
           entries,
           average,
-          currentCategory.unit,
+          unitLabel,
           chartType: currentCategory.chartType,
           settings: settings,
           distribution: MeasurementDistributionChart(
             category: currentCategory,
             range: range,
-            unitLabel: currentCategory.unit,
-            targetUnit: currentCategory.unit,
+            unitLabel: unitLabel,
+            targetUnit: unit,
           ),
         ),
       ),
@@ -149,7 +178,7 @@ class CategoriesCard extends ConsumerWidget {
         MeasurementOverallChangeWidget(
           average.first,
           average.last,
-          currentCategory.unit,
+          unitLabel,
         ),
     ];
   }
