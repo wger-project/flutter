@@ -5806,6 +5806,15 @@ class $WorkoutLogTableTable extends WorkoutLogTable with TableInfo<$WorkoutLogTa
     type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   late final GeneratedColumnWithTypeConverter<DateTime, DateTime> date = GeneratedColumn<DateTime>(
     'date',
@@ -5830,6 +5839,7 @@ class $WorkoutLogTableTable extends WorkoutLogTable with TableInfo<$WorkoutLogTa
     weight,
     weightTarget,
     weightUnitId,
+    notes,
     date,
   ];
   @override
@@ -5945,6 +5955,12 @@ class $WorkoutLogTableTable extends WorkoutLogTable with TableInfo<$WorkoutLogTa
         ),
       );
     }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
     return context;
   }
 
@@ -6010,6 +6026,10 @@ class $WorkoutLogTableTable extends WorkoutLogTable with TableInfo<$WorkoutLogTa
         DriftSqlType.int,
         data['${effectivePrefix}weight_unit_id'],
       ),
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      ),
       date: $WorkoutLogTableTable.$converterdate.fromSql(
         attachedDatabase.typeMapping.read(
           DriftSqlType.dateTime,
@@ -6042,6 +6062,7 @@ class WorkoutLogTableCompanion extends UpdateCompanion<Log> {
   final Value<double?> weight;
   final Value<double?> weightTarget;
   final Value<int?> weightUnitId;
+  final Value<String?> notes;
   final Value<DateTime> date;
   final Value<int> rowid;
   const WorkoutLogTableCompanion({
@@ -6059,6 +6080,7 @@ class WorkoutLogTableCompanion extends UpdateCompanion<Log> {
     this.weight = const Value.absent(),
     this.weightTarget = const Value.absent(),
     this.weightUnitId = const Value.absent(),
+    this.notes = const Value.absent(),
     this.date = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -6077,6 +6099,7 @@ class WorkoutLogTableCompanion extends UpdateCompanion<Log> {
     this.weight = const Value.absent(),
     this.weightTarget = const Value.absent(),
     this.weightUnitId = const Value.absent(),
+    this.notes = const Value.absent(),
     required DateTime date,
     this.rowid = const Value.absent(),
   }) : exerciseId = Value(exerciseId),
@@ -6096,6 +6119,7 @@ class WorkoutLogTableCompanion extends UpdateCompanion<Log> {
     Expression<double>? weight,
     Expression<double>? weightTarget,
     Expression<int>? weightUnitId,
+    Expression<String>? notes,
     Expression<DateTime>? date,
     Expression<int>? rowid,
   }) {
@@ -6114,6 +6138,7 @@ class WorkoutLogTableCompanion extends UpdateCompanion<Log> {
       if (weight != null) 'weight': weight,
       if (weightTarget != null) 'weight_target': weightTarget,
       if (weightUnitId != null) 'weight_unit_id': weightUnitId,
+      if (notes != null) 'notes': notes,
       if (date != null) 'date': date,
       if (rowid != null) 'rowid': rowid,
     });
@@ -6134,6 +6159,7 @@ class WorkoutLogTableCompanion extends UpdateCompanion<Log> {
     Value<double?>? weight,
     Value<double?>? weightTarget,
     Value<int?>? weightUnitId,
+    Value<String?>? notes,
     Value<DateTime>? date,
     Value<int>? rowid,
   }) {
@@ -6152,6 +6178,7 @@ class WorkoutLogTableCompanion extends UpdateCompanion<Log> {
       weight: weight ?? this.weight,
       weightTarget: weightTarget ?? this.weightTarget,
       weightUnitId: weightUnitId ?? this.weightUnitId,
+      notes: notes ?? this.notes,
       date: date ?? this.date,
       rowid: rowid ?? this.rowid,
     );
@@ -6202,6 +6229,9 @@ class WorkoutLogTableCompanion extends UpdateCompanion<Log> {
     if (weightUnitId.present) {
       map['weight_unit_id'] = Variable<int>(weightUnitId.value);
     }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
     if (date.present) {
       map['date'] = Variable<DateTime>(
         $WorkoutLogTableTable.$converterdate.toSql(date.value),
@@ -6230,6 +6260,7 @@ class WorkoutLogTableCompanion extends UpdateCompanion<Log> {
           ..write('weight: $weight, ')
           ..write('weightTarget: $weightTarget, ')
           ..write('weightUnitId: $weightUnitId, ')
+          ..write('notes: $notes, ')
           ..write('date: $date, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -17265,6 +17296,7 @@ typedef $$WorkoutLogTableTableCreateCompanionBuilder =
       Value<double?> weight,
       Value<double?> weightTarget,
       Value<int?> weightUnitId,
+      Value<String?> notes,
       required DateTime date,
       Value<int> rowid,
     });
@@ -17284,6 +17316,7 @@ typedef $$WorkoutLogTableTableUpdateCompanionBuilder =
       Value<double?> weight,
       Value<double?> weightTarget,
       Value<int?> weightUnitId,
+      Value<String?> notes,
       Value<DateTime> date,
       Value<int> rowid,
     });
@@ -17366,6 +17399,9 @@ class $$WorkoutLogTableTableFilterComposer
     column: $table.weightUnitId,
     builder: (column) => ColumnFilters(column),
   );
+
+  ColumnFilters<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => ColumnFilters(column));
 
   ColumnWithTypeConverterFilters<DateTime, DateTime, DateTime> get date => $composableBuilder(
     column: $table.date,
@@ -17452,6 +17488,9 @@ class $$WorkoutLogTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<DateTime> get date => $composableBuilder(
     column: $table.date,
     builder: (column) => ColumnOrderings(column),
@@ -17523,6 +17562,9 @@ class $$WorkoutLogTableTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+
   GeneratedColumnWithTypeConverter<DateTime, DateTime> get date =>
       $composableBuilder(column: $table.date, builder: (column) => column);
 }
@@ -17574,6 +17616,7 @@ class $$WorkoutLogTableTableTableManager
                 Value<double?> weight = const Value.absent(),
                 Value<double?> weightTarget = const Value.absent(),
                 Value<int?> weightUnitId = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
                 Value<DateTime> date = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => WorkoutLogTableCompanion(
@@ -17591,6 +17634,7 @@ class $$WorkoutLogTableTableTableManager
                 weight: weight,
                 weightTarget: weightTarget,
                 weightUnitId: weightUnitId,
+                notes: notes,
                 date: date,
                 rowid: rowid,
               ),
@@ -17610,6 +17654,7 @@ class $$WorkoutLogTableTableTableManager
                 Value<double?> weight = const Value.absent(),
                 Value<double?> weightTarget = const Value.absent(),
                 Value<int?> weightUnitId = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
                 required DateTime date,
                 Value<int> rowid = const Value.absent(),
               }) => WorkoutLogTableCompanion.insert(
@@ -17627,6 +17672,7 @@ class $$WorkoutLogTableTableTableManager
                 weight: weight,
                 weightTarget: weightTarget,
                 weightUnitId: weightUnitId,
+                notes: notes,
                 date: date,
                 rowid: rowid,
               ),

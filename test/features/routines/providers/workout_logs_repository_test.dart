@@ -373,4 +373,58 @@ void main() {
       await sub.cancel();
     });
   });
+
+  group('notes field', () {
+    test('persists notes through the database round-trip', () async {
+      await seedUnits();
+      final log = Log(
+        exerciseId: 1,
+        routineId: 100,
+        weight: 80,
+        repetitions: 5,
+        date: DateTime.utc(2026, 4, 15),
+        notes: 'Heavy day, form felt good',
+      );
+
+      await db.into(db.workoutLogTable).insert(log.toCompanion());
+
+      final rows = await readLogs();
+      expect(rows, hasLength(1));
+      expect(rows.first.notes, 'Heavy day, form felt good');
+    });
+
+    test('stores null notes when not provided', () async {
+      await seedUnits();
+      final log = Log(
+        exerciseId: 1,
+        routineId: 100,
+        weight: 80,
+        repetitions: 5,
+        date: DateTime.utc(2026, 4, 15),
+      );
+
+      await db.into(db.workoutLogTable).insert(log.toCompanion());
+
+      final rows = await readLogs();
+      expect(rows.first.notes, isNull);
+    });
+
+    test('addLocalDrift persists notes', () async {
+      await seedUnits();
+      final log = Log(
+        exerciseId: 1,
+        routineId: 100,
+        sessionId: 'session-1',
+        weight: 80,
+        repetitions: 5,
+        date: DateTime.utc(2026, 4, 15),
+        notes: 'PR attempt',
+      );
+
+      await repo.addLocalDrift(log);
+
+      final rows = await readLogs();
+      expect(rows.first.notes, 'PR attempt');
+    });
+  });
 }

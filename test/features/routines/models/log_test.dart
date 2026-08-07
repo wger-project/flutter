@@ -254,6 +254,74 @@ void main() {
     });
   });
 
+  group('Log notes field', () {
+    test('defaults to null when not provided', () {
+      final log = Log(exerciseId: 1, weight: 50, repetitions: 10, rir: null);
+      expect(log.notes, isNull);
+    });
+
+    test('is set when provided to constructor', () {
+      final log = Log(
+        exerciseId: 1,
+        weight: 50,
+        repetitions: 10,
+        rir: null,
+        notes: 'Felt strong today',
+      );
+      expect(log.notes, 'Felt strong today');
+    });
+
+    test('copyWith preserves notes when not overridden', () {
+      final log = Log(
+        exerciseId: 1,
+        weight: 50,
+        repetitions: 10,
+        rir: null,
+        notes: 'Original note',
+      );
+      final copy = log.copyWith(weight: 60);
+      expect(copy.notes, 'Original note');
+    });
+
+    test('copyWith updates notes when provided', () {
+      final log = Log(
+        exerciseId: 1,
+        weight: 50,
+        repetitions: 10,
+        rir: null,
+        notes: 'Original note',
+      );
+      final copy = log.copyWith(notes: 'Updated note');
+      expect(copy.notes, 'Updated note');
+    });
+
+    test('toCompanion includes notes when set', () {
+      final log = Log(
+        exerciseId: 1,
+        weight: 50,
+        repetitions: 10,
+        rir: null,
+        date: DateTime.utc(2026, 1, 1),
+        notes: 'Test note',
+      );
+      final companion = log.toCompanion();
+      expect(companion.notes.present, isTrue);
+      expect(companion.notes.value, 'Test note');
+    });
+
+    test('toCompanion omits notes when null', () {
+      final log = Log(
+        exerciseId: 1,
+        weight: 50,
+        repetitions: 10,
+        rir: null,
+        date: DateTime.utc(2026, 1, 1),
+      );
+      final companion = log.toCompanion();
+      expect(companion.notes.present, isFalse);
+    });
+  });
+
   group('Test the workout log model', () {
     late Log log1;
     late Log log2;

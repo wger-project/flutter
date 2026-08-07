@@ -80,6 +80,7 @@ class WorkoutLogTable extends Table {
   RealColumn get weight => real().nullable()();
   RealColumn get weightTarget => real().nullable().named('weight_target')();
   IntColumn get weightUnitId => integer().nullable().named('weight_unit_id')();
+  TextColumn get notes => text().nullable()();
 
   DateTimeColumn get date => dateTime().map(const UtcDateTimeConverter())();
 }
@@ -100,6 +101,7 @@ const PowersyncWorkoutLogTable = ps.Table(
     ps.Column.real('weight'),
     ps.Column.real('weight_target'),
     ps.Column.integer('weight_unit_id'),
+    ps.Column.text('notes'),
     ps.Column.text('date'),
   ],
   indexes: [
