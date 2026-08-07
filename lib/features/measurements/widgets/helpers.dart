@@ -296,7 +296,9 @@ class MeasurementDistributionChart extends ConsumerWidget {
       watch: (ref) =>
           ref.watch(measurementValueCountsProvider(category.id!, range.countCutoff, summed)),
       loading: const CenteredProgressIndicator(),
-      builder: (context, counts) => [_histogram(counts, summed)],
+      // The histogram fills the height it is given; the column around it would
+      // otherwise offer it an unbounded one
+      builder: (context, counts) => [Expanded(child: _histogram(counts, summed))],
       onError: (_, error) => [StreamErrorIndicator(error.toString())],
     );
   }

@@ -121,6 +121,28 @@ void stubMeasurementReads(
     });
   });
 
+  // Counted over the whole fixture: the cutoff and the daily summing are the
+  // repository's own, and covered where they happen
+  when(
+    repo.watchValueCounts(any, since: anyNamed('since'), summedPerDay: anyNamed('summedPerDay')),
+  ).thenAnswer((invocation) {
+    final ofCategory = entries[invocation.positionalArguments.first as String] ?? const [];
+    final byValue = <num, List<MeasurementEntry>>{};
+    for (final entry in ofCategory) {
+      byValue.putIfAbsent(entry.value, () => []).add(entry);
+    }
+
+    return Stream.value([
+      for (final MapEntry(:key, :value) in byValue.entries)
+        MeasurementValueCount(
+          value: key,
+          unit: null,
+          count: value.length,
+          newest: value.map((e) => e.date).reduce((a, b) => b.isAfter(a) ? b : a),
+        ),
+    ]);
+  });
+
   when(repo.watchDailyBuckets()).thenAnswer(
     (_) => Stream.value({
       for (final id in entries.keys) id: dayBuckets(entries[id]!),

@@ -224,6 +224,34 @@ void main() {
     expect(find.textContaining('Blutdruck'), findsNothing);
   });
 
+  testWidgets('A distribution category draws its histogram in the chart box', (
+    WidgetTester tester,
+  ) async {
+    // The histogram fills the height it is given, and the list around it is a
+    // scrollable: an unbounded box reaching it is a layout error
+    final category = MeasurementCategory(
+      id: 'c1',
+      name: 'Bizeps',
+      unit: 'cm',
+      chartType: ChartType.distribution,
+    );
+    final entries = [
+      for (var day = 0; day < 30; day++)
+        MeasurementEntry(
+          id: 'e-$day',
+          categoryId: 'c1',
+          date: DateTime.now().subtract(Duration(days: day)),
+          value: 30 + day % 5,
+          notes: '',
+        ),
+    ];
+
+    await tester.pumpWidget(createEntriesList(category, {'c1': entries}));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(MeasurementDistributionWidgetFl), findsOneWidget);
+  });
+
   testWidgets('A free-form category keeps the name the user gave it', (
     WidgetTester tester,
   ) async {
