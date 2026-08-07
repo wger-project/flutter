@@ -336,36 +336,9 @@ class _MeasurementEntryFormState extends ConsumerState<MeasurementEntryForm> {
           key: _form,
           child: Column(
             children: [
-              // Date
-              DateInputWidget(
+              DateTimeInputWidget(
                 value: _draft.date,
-                labelText: AppLocalizations.of(context).date,
-                firstDate: DateTime(DateTime.now().year - 10),
-                lastDate: DateTime.now(),
-                onChanged: (date) {
-                  _draft = _draft.copyWith(
-                    date: _draft.date.copyWith(
-                      year: date.year,
-                      month: date.month,
-                      day: date.day,
-                    ),
-                  );
-                },
-              ),
-
-              // Time
-              TimeInputWidget(
-                value: TimeOfDay.fromDateTime(_draft.date),
-                labelText: AppLocalizations.of(context).time,
-                onChanged: (time) {
-                  _draft = _draft.copyWith(
-                    date: _draft.date.copyWith(
-                      hour: time.hour,
-                      minute: time.minute,
-                      second: 0,
-                    ),
-                  );
-                },
+                onChanged: (date) => _draft = _draft.copyWith(date: date),
               ),
 
               // Value
@@ -456,29 +429,9 @@ class _GroupMeasurementEntryFormState extends ConsumerState<GroupMeasurementEntr
       child: Column(
         children: [
           // Date and time are shared by all components of the reading
-          DateInputWidget(
+          DateTimeInputWidget(
             value: _date,
-            labelText: AppLocalizations.of(context).date,
-            firstDate: DateTime(DateTime.now().year - 10),
-            lastDate: DateTime.now(),
-            onChanged: (date) {
-              _date = _date.copyWith(
-                year: date.year,
-                month: date.month,
-                day: date.day,
-              );
-            },
-          ),
-          TimeInputWidget(
-            value: TimeOfDay.fromDateTime(_date),
-            labelText: AppLocalizations.of(context).time,
-            onChanged: (time) {
-              _date = _date.copyWith(
-                hour: time.hour,
-                minute: time.minute,
-                second: 0,
-              );
-            },
+            onChanged: (date) => _date = date,
           ),
 
           // One value field per component, each bounded by its own type:

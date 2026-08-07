@@ -18,11 +18,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:wger/core/consts.dart';
-import 'package:wger/core/formatting/formatting.dart';
-import 'package:wger/core/number_input.dart';
 import 'package:wger/core/widgets/datetime_input.dart';
+import 'package:wger/core/widgets/decimal_input.dart';
 import 'package:wger/core/widgets/form_submit_button.dart';
 import 'package:wger/features/account/providers/user_profile_notifier.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
@@ -54,20 +52,15 @@ class WeightForm extends riverpod.ConsumerStatefulWidget {
 class _WeightFormState extends riverpod.ConsumerState<WeightForm> {
   final _form = GlobalKey<FormState>();
 
-  // Controller instead of initialValue because the quick +/- buttons write
-  // into the field. Seeded in didChangeDependencies (needs the locale).
-  final _weightController = TextEditingController();
-  bool _seeded = false;
-
   late DateTime _date;
-  num _weight = 0;
+  num? _weight;
   late String _unit;
 
   @override
   void initState() {
     super.initState();
     _date = widget._entry?.date ?? DateTime.now();
-    _weight = widget._entry?.value ?? 0;
+    _weight = widget._entry?.value;
 
     // Existing entries keep their stored unit (the value is shown exactly as
     // entered); new entries default to the profile unit
@@ -77,137 +70,31 @@ class _WeightFormState extends riverpod.ConsumerState<WeightForm> {
         : weightDisplayUnit(ref.read(userProfileProvider).value?.isMetric ?? true);
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (!_seeded) {
-      _seeded = true;
-      if (widget._entry != null) {
-        _weightController.text = localizedNumberFormat(context).format(widget._entry!.value);
-      }
-    }
-  }
-
-  @override
-  void dispose() {
-    _weightController.dispose();
-    super.dispose();
-  }
-
   /// The bounds of the unit the value is currently entered in
   MetricLimits get _limits => MetricType.bodyWeight.limits(_unit);
 
-  /// `true` when [value] (in the currently selected unit) is plausible
-  bool _isInRange(num value) => _limits.contains(value);
-
-  /// Adds [delta] to the field's current value, clamped to the valid range
-  void _step(num delta) {
-    final numberFormat = localizedNumberFormat(context);
-    final parsed = numberFormat.tryParse(_weightController.text);
-    if (parsed == null) {
-      return;
-    }
-    final newValue = parsed + delta;
-    if (!_isInRange(newValue)) {
-      return;
-    }
-    _weightController.text = numberFormat.format(newValue);
-  }
-
   @override
   Widget build(BuildContext context) {
-    final numberFormat = localizedNumberFormat(context);
-
     return Form(
       key: _form,
       child: Column(
         children: [
-          DateInputWidget(
-            key: const Key('dateInput'),
+          DateTimeInputWidget(
+            key: const Key('dateTimeInput'),
             value: _date,
-            labelText: AppLocalizations.of(context).date,
-            firstDate: DateTime(DateTime.now().year - 10),
-            lastDate: DateTime.now(),
-            onChanged: (date) {
-              _date = _date.copyWith(
-                year: date.year,
-                month: date.month,
-                day: date.day,
-              );
-            },
-          ),
-          TimeInputWidget(
-            key: const Key('timeInput'),
-            value: TimeOfDay.fromDateTime(_date),
-            labelText: AppLocalizations.of(context).time,
-            onChanged: (time) {
-              _date = _date.copyWith(
-                hour: time.hour,
-                minute: time.minute,
-                second: 0,
-              );
-            },
+            onChanged: (value) => _date = value,
           ),
 
           // Weight
-          TextFormField(
+          DecimalInputWidget(
             key: const Key('weightInput'),
-            decoration: InputDecoration(
-              labelText: AppLocalizations.of(context).weight,
-              prefix: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    key: const Key('quickMinus'),
-                    icon: const FaIcon(FontAwesomeIcons.circleMinus),
-                    onPressed: () => _step(-_stepperBig),
-                  ),
-                  IconButton(
-                    key: const Key('quickMinusSmall'),
-                    icon: const FaIcon(FontAwesomeIcons.minus),
-                    onPressed: () => _step(-_stepperSmall),
-                  ),
-                ],
-              ),
-              suffix: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    key: const Key('quickPlusSmall'),
-                    icon: const FaIcon(FontAwesomeIcons.plus),
-                    onPressed: () => _step(_stepperSmall),
-                  ),
-                  IconButton(
-                    key: const Key('quickPlus'),
-                    icon: const FaIcon(FontAwesomeIcons.circlePlus),
-                    onPressed: () => _step(_stepperBig),
-                  ),
-                ],
-              ),
-            ),
-            controller: _weightController,
-            keyboardType: textInputTypeDecimal,
-            inputFormatters: [LocalizedDecimalInputFormatter(numberFormat.symbols.DECIMAL_SEP)],
-            onSaved: (newValue) {
-              _weight = numberFormat.parse(newValue!);
-            },
-            validator: (value) {
-              final i18n = AppLocalizations.of(context);
-              if (value!.isEmpty) {
-                return i18n.enterValue;
-              }
-              final parsed = numberFormat.tryParse(value);
-              if (parsed == null) {
-                return i18n.enterValidNumber;
-              }
-              if (!_isInRange(parsed)) {
-                return i18n.formMinMaxValues(
-                  _limits.min.toInt(),
-                  _limits.max.toInt(),
-                );
-              }
-              return null;
-            },
+            value: _weight,
+            labelText: AppLocalizations.of(context).weight,
+            isRequired: true,
+            min: _limits.min,
+            max: _limits.max,
+            steppers: const [_stepperBig, _stepperSmall],
+            onChanged: (value) => _weight = value,
           ),
 
           // Unit the value is entered in, stamped onto the entry when saving
@@ -241,7 +128,7 @@ class _WeightFormState extends riverpod.ConsumerState<WeightForm> {
                 id: widget._entry?.id,
                 categoryId: widget._category.id!,
                 date: _date,
-                value: _weight,
+                value: _weight!,
                 notes: widget._entry?.notes ?? '',
                 source: widget._entry?.source ?? 'user',
                 externalId: widget._entry?.externalId,

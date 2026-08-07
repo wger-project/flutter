@@ -95,16 +95,16 @@ void main() {
     await tester.pumpWidget(createWeightForm(entry: testWeightEntry1));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byKey(const Key('quickMinus')));
+    await tester.tap(find.byKey(const Key('stepper-minus-0')));
     expect(find.text('79'), findsOneWidget);
 
-    await tester.tap(find.byKey(const Key('quickMinusSmall')));
+    await tester.tap(find.byKey(const Key('stepper-minus-1')));
     expect(find.text('78.9'), findsOneWidget);
 
-    await tester.tap(find.byKey(const Key('quickPlus')));
+    await tester.tap(find.byKey(const Key('stepper-plus-0')));
     expect(find.text('79.9'), findsOneWidget);
 
-    await tester.tap(find.byKey(const Key('quickPlusSmall')));
+    await tester.tap(find.byKey(const Key('stepper-plus-1')));
     expect(find.text('80'), findsOneWidget);
   });
 
@@ -117,7 +117,7 @@ void main() {
     expect(find.text('shiba inu'), findsNothing);
 
     // Quick-change still works on the now-empty field
-    await tester.tap(find.byKey(const Key('quickMinus')));
+    await tester.tap(find.byKey(const Key('stepper-minus-0')));
     await tester.pumpAndSettle();
     expect(find.text('shiba inu'), findsNothing);
   });
