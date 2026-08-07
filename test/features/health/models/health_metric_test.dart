@@ -35,17 +35,20 @@ void main() {
           MetricType.bloodPressure,
           MetricType.heartRate,
           MetricType.restingHeartRate,
+          MetricType.bloodOxygen,
           MetricType.sleep,
           MetricType.steps,
           MetricType.distance,
           MetricType.energy,
         ]),
       );
-      expect(enabledHealthMetrics.length, 10);
+      expect(enabledHealthMetrics.length, 11);
     });
 
     test('daily aggregation is set per metric', () {
       expect(_metric(MetricType.heartRate).dailyAggregation, DailyAggregation.average);
+      // Measured through the night, so a single saturation says little
+      expect(_metric(MetricType.bloodOxygen).dailyAggregation, DailyAggregation.average);
       // A night arrives as segments from possibly several sources, so the
       // time they cover is counted once rather than added up
       expect(_metric(MetricType.sleep).dailyAggregation, DailyAggregation.mergedDuration);
@@ -110,6 +113,18 @@ void main() {
 
     test('Health Connect percentage is kept as-is', () {
       expect(bodyFat.toCategoryValue(15), closeTo(15, 0.001));
+    });
+  });
+
+  group('Blood oxygen conversion', () {
+    final bloodOxygen = _metric(MetricType.bloodOxygen);
+
+    test('iOS fraction is scaled to a percentage', () {
+      expect(bloodOxygen.toCategoryValue(0.95), closeTo(95, 0.001));
+    });
+
+    test('Health Connect percentage is kept as-is', () {
+      expect(bloodOxygen.toCategoryValue(95), closeTo(95, 0.001));
     });
   });
 

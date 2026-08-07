@@ -1143,6 +1143,7 @@
     "metricBloodPressureDiastolic": "Diastolisch",
     "metricHeartRate": "Herzfrequenz",
     "metricRestingHeartRate": "Ruhepuls",
+    "metricBloodOxygen": "Sauerstoffsättigung",
     "metricSteps": "Schritte",
     "metricDistance": "Distanz",
     "metricEnergy": "Energie",

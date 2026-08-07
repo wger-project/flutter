@@ -158,6 +158,11 @@ double _bodyFatToPercent(double raw) => raw <= 1.5 ? raw * 100 : raw;
 /// value that already arrived in centimeters.
 double _heightToCm(double raw) => raw < 3 ? raw * 100 : raw;
 
+/// Blood oxygen has the same fraction-vs-percent split as body fat, with even
+/// more room between the two: a saturation worth recording is above 70, a
+/// fraction never reaches 1.01.
+double _saturationToPercent(double raw) => raw <= 1.5 ? raw * 100 : raw;
+
 double _identity(double raw) => raw;
 
 /// Both platforms report a distance in meters, the category stores kilometers.
@@ -218,6 +223,17 @@ const List<HealthMetric> healthMetrics = [
     dataType: HealthDataType.RESTING_HEART_RATE,
     toCategoryValue: _identity,
     enabled: true,
+  ),
+  HealthMetric(
+    // A single saturation says little on its own, and a wearable measures it
+    // through the night, so the day's mean is what is stored. The window is
+    // the small one until the log says how densely it actually arrives.
+    metricType: MetricType.bloodOxygen,
+    dataType: HealthDataType.BLOOD_OXYGEN,
+    toCategoryValue: _saturationToPercent,
+    dailyAggregation: DailyAggregation.average,
+    enabled: true,
+    readWindow: highVolumeReadWindow,
   ),
   HealthMetric.group(
     // SLEEP_ASLEEP is not the whole night, it is the coarsest stage: the

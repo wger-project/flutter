@@ -758,6 +758,10 @@
   "@metricRestingHeartRate": {
     "description": "Label for resting heart rate measurement"
   },
+  "metricBloodOxygen": "Blood oxygen",
+  "@metricBloodOxygen": {
+    "description": "Label for blood oxygen saturation measurement"
+  },
   "metricSteps": "Steps",
   "@metricSteps": {
     "description": "Label for step count measurement"

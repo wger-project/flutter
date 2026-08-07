@@ -185,6 +185,7 @@ enum MetricType {
   bloodPressureDiastolic('blood_pressure_diastolic'),
   heartRate('heart_rate'),
   restingHeartRate('resting_heart_rate'),
+  bloodOxygen('blood_oxygen'),
   steps('steps'),
   distance('distance'),
   energy('energy'),
@@ -311,6 +312,7 @@ enum MetricType {
     MetricType.bloodPressureDiastolic => 'Diastolic',
     MetricType.heartRate => 'Heart rate',
     MetricType.restingHeartRate => 'Resting heart rate',
+    MetricType.bloodOxygen => 'Blood oxygen',
     MetricType.steps => 'Steps',
     MetricType.distance => 'Distance',
     MetricType.energy => 'Energy',
@@ -331,7 +333,7 @@ enum MetricType {
   String get defaultUnit => switch (this) {
     MetricType.custom => '',
     MetricType.bodyWeight => 'kg',
-    MetricType.bodyFat => '%',
+    MetricType.bodyFat || MetricType.bloodOxygen => '%',
     MetricType.height => 'cm',
     MetricType.bloodPressure ||
     MetricType.bloodPressureSystolic ||
@@ -383,6 +385,9 @@ enum MetricType {
     MetricType.bloodPressureDiastolic => const MetricLimits(30, 150, 50, 110),
     MetricType.heartRate => const MetricLimits(30, 250, 40, 200),
     MetricType.restingHeartRate => const MetricLimits(30, 120, 40, 100),
+    // A saturation cannot exceed 100 %, and the floor is deliberately far
+    // below what a pulse oximeter still displays
+    MetricType.bloodOxygen => const MetricLimits(50, 100, 90, 100),
     // The cumulative types hold a whole day, and a rest day really is 0 steps
     MetricType.steps => const MetricLimits(0, 100000, 0, 30000),
     MetricType.distance => const MetricLimits(0, 500, 0, 30),
@@ -419,6 +424,7 @@ enum MetricType {
     MetricType.bloodPressureSystolic || MetricType.bloodPressureDiastolic => 5,
     MetricType.heartRate => 2,
     MetricType.restingHeartRate => 1,
+    MetricType.bloodOxygen => 1,
     MetricType.steps => 1000,
     MetricType.distance => 1,
     MetricType.energy => 100,
@@ -445,6 +451,7 @@ extension MeasurementMetricTypeL10n on MetricType {
       MetricType.bloodPressureDiastolic => l10n.metricBloodPressureDiastolic,
       MetricType.heartRate => l10n.metricHeartRate,
       MetricType.restingHeartRate => l10n.metricRestingHeartRate,
+      MetricType.bloodOxygen => l10n.metricBloodOxygen,
       MetricType.steps => l10n.metricSteps,
       MetricType.distance => l10n.metricDistance,
       MetricType.energy => l10n.metricEnergy,

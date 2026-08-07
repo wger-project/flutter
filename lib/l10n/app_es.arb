@@ -1182,6 +1182,7 @@
     "metricBloodPressureDiastolic": "Diastólica",
     "metricHeartRate": "Frecuencia cardíaca",
     "metricRestingHeartRate": "Frecuencia cardíaca en reposo",
+    "metricBloodOxygen": "Saturación de oxígeno",
     "metricSteps": "Pasos",
     "metricDistance": "Distancia",
     "metricEnergy": "Energía",
