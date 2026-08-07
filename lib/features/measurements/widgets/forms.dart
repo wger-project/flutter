@@ -289,17 +289,26 @@ class _MeasurementEntryFormState extends ConsumerState<MeasurementEntryForm> {
   final _form = GlobalKey<FormState>();
   final _notesController = TextEditingController();
 
-  late final String? _existingId = widget._entry?.id;
-  late DateTime _date = widget._entry?.date ?? DateTime.now();
+  late MeasurementEntry _draft;
+
+  /// The one field kept outside [_draft]: an entry's value is non-null, while
+  /// the field starts empty for a new one and only has a value once it passes
+  /// validation. Folded into the draft on save.
   num? _value;
-  String _notes = '';
 
   @override
   void initState() {
     super.initState();
+    _draft =
+        widget._entry ??
+        MeasurementEntry(
+          categoryId: widget._categoryId,
+          date: DateTime.now(),
+          value: 0,
+          notes: '',
+        );
     _value = widget._entry?.value;
-    _notes = widget._entry?.notes ?? '';
-    _notesController.text = _notes;
+    _notesController.text = _draft.notes;
   }
 
   @override
@@ -329,28 +338,32 @@ class _MeasurementEntryFormState extends ConsumerState<MeasurementEntryForm> {
             children: [
               // Date
               DateInputWidget(
-                value: _date,
+                value: _draft.date,
                 labelText: AppLocalizations.of(context).date,
                 firstDate: DateTime(DateTime.now().year - 10),
                 lastDate: DateTime.now(),
                 onChanged: (date) {
-                  _date = _date.copyWith(
-                    year: date.year,
-                    month: date.month,
-                    day: date.day,
+                  _draft = _draft.copyWith(
+                    date: _draft.date.copyWith(
+                      year: date.year,
+                      month: date.month,
+                      day: date.day,
+                    ),
                   );
                 },
               ),
 
               // Time
               TimeInputWidget(
-                value: TimeOfDay.fromDateTime(_date),
+                value: TimeOfDay.fromDateTime(_draft.date),
                 labelText: AppLocalizations.of(context).time,
                 onChanged: (time) {
-                  _date = _date.copyWith(
-                    hour: time.hour,
-                    minute: time.minute,
-                    second: 0,
+                  _draft = _draft.copyWith(
+                    date: _draft.date.copyWith(
+                      hour: time.hour,
+                      minute: time.minute,
+                      second: 0,
+                    ),
                   );
                 },
               ),
@@ -370,7 +383,7 @@ class _MeasurementEntryFormState extends ConsumerState<MeasurementEntryForm> {
                 decoration: InputDecoration(labelText: AppLocalizations.of(context).notes),
                 controller: _notesController,
                 onSaved: (newValue) {
-                  _notes = newValue ?? '';
+                  _draft = _draft.copyWith(notes: newValue ?? '');
                 },
                 validator: (value) {
                   const minLength = 0;
@@ -394,19 +407,10 @@ class _MeasurementEntryFormState extends ConsumerState<MeasurementEntryForm> {
                   }
                   _form.currentState!.save();
 
-                  // Source, external id and extra data are not editable; keep
-                  // the existing values so edits to imported entries stay
-                  // deduplicable and the entered unit survives
-                  final entry = MeasurementEntry(
-                    id: _existingId,
-                    categoryId: category.id!,
-                    date: _date,
-                    value: _value!,
-                    notes: _notes,
-                    source: widget._entry?.source ?? 'user',
-                    externalId: widget._entry?.externalId,
-                    extraData: widget._entry?.extraData,
-                  );
+                  // The draft carries what the form does not offer (source,
+                  // external id, extra data), so an edited import stays
+                  // deduplicable and the unit it was entered in survives
+                  final entry = _draft.copyWith(value: _value!);
                   if (entry.id == null) {
                     await notifier.addEntry(entry);
                   } else {
