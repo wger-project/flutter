@@ -23,3 +23,4 @@ library;
 export 'charts/chart_widgets.dart';
 export 'charts/distribution_chart.dart';
 export 'charts/heatmap_chart.dart';
+export 'charts/spark_charts.dart';

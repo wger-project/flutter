@@ -2248,6 +2248,28 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get sparkTrendStable =>
+      (super.noSuchMethod(
+            Invocation.getter(#sparkTrendStable),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#sparkTrendStable),
+            ),
+          )
+          as String);
+
+  @override
+  String get trackNewMetric =>
+      (super.noSuchMethod(
+            Invocation.getter(#trackNewMetric),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#trackNewMetric),
+            ),
+          )
+          as String);
+
+  @override
   String get measurement =>
       (super.noSuchMethod(
             Invocation.getter(#measurement),
@@ -5381,6 +5403,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String chartRangeWeeks(int? count) =>
+      (super.noSuchMethod(
+            Invocation.method(#chartRangeWeeks, [count]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#chartRangeWeeks, [count]),
+            ),
+          )
+          as String);
+
+  @override
   String chartRangeMonths(int? count) =>
       (super.noSuchMethod(
             Invocation.method(#chartRangeMonths, [count]),
@@ -5453,6 +5486,28 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.method(#distributionDayCount, [count]),
+            ),
+          )
+          as String);
+
+  @override
+  String sparkAverage(String? value) =>
+      (super.noSuchMethod(
+            Invocation.method(#sparkAverage, [value]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#sparkAverage, [value]),
+            ),
+          )
+          as String);
+
+  @override
+  String sparkTrendPerWeek(String? value) =>
+      (super.noSuchMethod(
+            Invocation.method(#sparkTrendPerWeek, [value]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#sparkTrendPerWeek, [value]),
             ),
           )
           as String);

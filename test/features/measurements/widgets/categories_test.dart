@@ -28,6 +28,7 @@ import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
 import 'package:wger/features/measurements/widgets/categories.dart';
 import 'package:wger/features/measurements/widgets/categories_card.dart';
+import 'package:wger/features/measurements/widgets/measurement_tile.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 import '../../../../test_data/body_weight.dart';
@@ -72,7 +73,7 @@ void main() {
   });
 
   group('CategoriesList', () {
-    testWidgets('two top-level categories render two CategoriesCard widgets', (tester) async {
+    testWidgets('two top-level categories render two grid tiles', (tester) async {
       stubMeasurementReads(mockRepo, getMeasurementCategories(), getMeasurementEntries());
 
       await tester.pumpWidget(
@@ -84,13 +85,13 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.byType(CategoriesCard), findsNWidgets(2));
+      expect(find.byType(MeasurementTile), findsNWidgets(2));
     });
 
-    testWidgets('children of multi-value groups are not rendered as own list items', (
+    testWidgets('children of multi-value groups are not rendered as own tiles', (
       tester,
     ) async {
-      // Only 'bp' should produce a CategoriesCard; children stay inside it.
+      // Only 'bp' should produce a tile; the components live behind it.
       stubMeasurementReads(mockRepo, getBloodPressureGroup(), getBloodPressureEntries());
 
       await tester.pumpWidget(
@@ -102,18 +103,17 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.byType(CategoriesCard), findsOneWidget);
-      expect(find.text('Systolic'), findsOneWidget);
-      expect(find.text('Diastolic'), findsOneWidget);
+      expect(find.byType(MeasurementTile), findsOneWidget);
+      expect(find.text('Blood pressure'), findsOneWidget);
     });
 
-    testWidgets('body weight leads the list, wherever it is sorted', (tester) async {
-      // The card is the way into the weight screen, so it stays on top rather
-      // than taking the position the category order gives it
+    testWidgets('body weight keeps its full card on top of the grid', (tester) async {
+      // The card is the way into the weight screen and stays a card, the one
+      // format decision the grid does not touch
       final categories = [...getMeasurementCategories(), getBodyWeightCategory()];
       final entries = {...getMeasurementEntries(), ...bodyWeightEntries()};
       stubMeasurementReads(mockRepo, categories, entries);
-      // Tall enough for all three cards; the list builds only what it shows
+      // Tall enough for the card and the grid together
       tester.view.physicalSize = const Size(800, 2200);
       tester.view.devicePixelRatio = 1.0;
       addTearDown(tester.view.reset);
@@ -121,8 +121,9 @@ void main() {
       await tester.pumpWidget(_wrap(mockRepo, categories: categories, entries: entries));
       await tester.pumpAndSettle();
 
-      // Once, at the top: the official category is left out of the list below
-      expect(find.byType(CategoriesCard), findsNWidgets(3));
+      // Once, on top: the official category is left out of the grid below
+      expect(find.byType(CategoriesCard), findsOneWidget);
+      expect(find.byType(MeasurementTile), findsNWidgets(2));
       expect(find.text('Weight'), findsOneWidget);
       expect(
         tester.getTopLeft(find.text('Weight')).dy,
@@ -130,13 +131,14 @@ void main() {
       );
     });
 
-    testWidgets('empty list renders no CategoriesCard', (tester) async {
+    testWidgets('empty list renders neither card nor tiles', (tester) async {
       stubMeasurementReads(mockRepo, []);
 
       await tester.pumpWidget(_wrap(mockRepo));
       await tester.pumpAndSettle();
 
       expect(find.byType(CategoriesCard), findsNothing);
+      expect(find.byType(MeasurementTile), findsNothing);
     });
   });
 }

@@ -1195,5 +1195,10 @@
     "healthConnectInstall": "Installer Health Connect",
     "healthConnectUpdate": "Mettre à jour Health Connect",
     "healthConnectRequired": "Health Connect est nécessaire pour importer les mensurations",
-    "labelBottomNavBody": "Corps"
+    "labelBottomNavBody": "Corps",
+    "sparkAverage": "moy. {value}",
+    "sparkTrendPerWeek": "{value}/semaine",
+    "sparkTrendStable": "stable",
+    "trackNewMetric": "Suivre autre chose",
+    "chartRangeWeeks": "{count, plural, one{1 semaine} other{{count} semaines}}"
 }

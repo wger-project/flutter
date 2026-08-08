@@ -367,9 +367,7 @@ class _GroupReadingsListState extends ConsumerState<_GroupReadingsList> with _Gr
         // 120/80)
         String formatted(num value) => measurementValue(context, value, category.unit);
         final headline = unitSuffixed(
-          total != null && values.containsKey(total)
-              ? formatted(values[total]!)
-              : values.values.sorted((a, b) => b.compareTo(a)).map(formatted).join('/'),
+          quoteGroupReading(category, values, formatted),
           category.unit,
         );
         final parts = [

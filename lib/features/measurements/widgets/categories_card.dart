@@ -244,6 +244,7 @@ class CategoriesCard extends ConsumerWidget {
                           context,
                           value.valueIn(child.unit, categoryUnit: child.unit),
                           child.unit,
+                          decimals: child.metricType.displayDecimals,
                         )
                       : '—',
                   style: Theme.of(context).textTheme.bodyLarge,

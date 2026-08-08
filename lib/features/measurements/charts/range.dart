@@ -28,7 +28,10 @@ enum ChartRange {
   all(null),
   lastYear(365),
   last3Months(90),
-  lastMonth(30);
+  lastMonth(30),
+  // Six, not seven: the cutoff lands at midnight six days back, so the window
+  // is today plus the six days before it, i.e. one week of calendar days
+  lastWeek(6);
 
   const ChartRange(this._days);
 
@@ -71,5 +74,6 @@ enum ChartRange {
     ChartRange.lastYear => i18n.chartRangeYears(1),
     ChartRange.last3Months => i18n.chartRangeMonths(3),
     ChartRange.lastMonth => i18n.chartRangeMonths(1),
+    ChartRange.lastWeek => i18n.chartRangeWeeks(1),
   };
 }

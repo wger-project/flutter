@@ -20,6 +20,7 @@ import 'dart:math';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:wger/features/measurements/charts/calendar.dart';
 import 'package:wger/features/measurements/charts/range.dart';
 import 'package:wger/features/measurements/charts/series.dart';
 import 'package:wger/features/measurements/measurements.dart';
@@ -105,10 +106,6 @@ List<MeasurementChartEntry> smoothedTrendline(
 
   return out;
 }
-
-/// The Monday of the week [date] falls into, at midnight.
-DateTime weekStart(DateTime date) =>
-    DateTime(date.year, date.month, date.day).subtract(Duration(days: date.weekday - 1));
 
 /// Sums entries per calendar day. Used for metric types where individual
 /// samples aren't meaningful on their own (steps, distance, energy, sleep) —
@@ -434,6 +431,25 @@ List<MeasurementStackedEntry> groupStackedEntries(
   ]..sort((a, b) => a.date.compareTo(b.date));
 }
 
+/// How one reading of [group] is quoted: the roll-up total alone where there
+/// is one, otherwise the values joined the way the reading is read (a blood
+/// pressure as 120/80, largest first).
+///
+/// The one place this rule lives: the overview tile and the entries screen
+/// quote through it, so they can never disagree. [values] holds what was
+/// measured, keyed by component id; [format] renders one value.
+String quoteGroupReading(
+  MeasurementCategory group,
+  Map<String, num> values,
+  String Function(num) format,
+) {
+  final total = group.children.firstWhereOrNull((c) => c.metricType.isGroupTotal)?.id;
+  if (total != null && values.containsKey(total)) {
+    return format(values[total]!);
+  }
+  return values.values.sorted((a, b) => b.compareTo(a)).map(format).join('/');
+}
+
 /// The readings of a group, newest first: one per timestamp, with what each
 /// component holds for it.
 ///
@@ -689,22 +705,12 @@ MeasurementHeatmapGrid buildHeatmapGrid(
   int maxWeeks = heatmapMaxWeeks,
   DateTime? today,
 }) {
-  // Calendar arithmetic, not Duration: a DST day is 23 or 25 hours long
-  DateTime dayOf(DateTime date) => DateTime(date.year, date.month, date.day);
-  DateTime shift(DateTime day, int days) => DateTime(day.year, day.month, day.day + days);
-  DateTime mondayOf(DateTime date) => shift(date, -(date.weekday - 1));
-  int daysBetween(DateTime from, DateTime to) => DateTime.utc(
-    to.year,
-    to.month,
-    to.day,
-  ).difference(DateTime.utc(from.year, from.month, from.day)).inDays;
-
   final values = {for (final day in days) dayOf(day.date): day.value};
   final now = dayOf(today ?? DateTime.now());
 
   if (values.isEmpty) {
     return MeasurementHeatmapGrid(
-      start: shift(mondayOf(now), -7 * (maxWeeks - 1)),
+      start: shiftDays(weekStart(now), -7 * (maxWeeks - 1)),
       weeks: maxWeeks,
       values: const {},
       maxValue: 0,
@@ -713,13 +719,13 @@ MeasurementHeatmapGrid buildHeatmapGrid(
 
   final first = values.keys.reduce((a, b) => a.isBefore(b) ? a : b);
   final last = values.keys.reduce((a, b) => a.isAfter(b) ? a : b);
-  final oldestVisible = shift(mondayOf(now), -7 * (maxWeeks - 1));
-  final end = mondayOf(last).isBefore(oldestVisible) ? last : now;
+  final oldestVisible = shiftDays(weekStart(now), -7 * (maxWeeks - 1));
+  final end = weekStart(last).isBefore(oldestVisible) ? last : now;
 
-  final endMonday = mondayOf(end);
-  final weeks = min(maxWeeks, daysBetween(mondayOf(first), endMonday) ~/ 7 + 1);
-  final start = shift(endMonday, -7 * (weeks - 1));
-  final lastDay = shift(start, 7 * weeks - 1);
+  final endMonday = weekStart(end);
+  final weeks = min(maxWeeks, daysBetween(weekStart(first), endMonday) ~/ 7 + 1);
+  final start = shiftDays(endMonday, -7 * (weeks - 1));
+  final lastDay = shiftDays(start, 7 * weeks - 1);
 
   // Only the days the grid actually shows. A history longer than the grid is
   // wide keeps its older days out of the window, and a spike among them would

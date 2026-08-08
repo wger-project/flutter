@@ -1185,5 +1185,10 @@
     "healthConnectInstall": "Health Connect installieren",
     "healthConnectUpdate": "Health Connect aktualisieren",
     "healthConnectRequired": "Health Connect wird benötigt, um Körpermesswerte zu importieren",
-    "labelBottomNavBody": "Körper"
+    "labelBottomNavBody": "Körper",
+    "sparkAverage": "Ø {value}",
+    "sparkTrendPerWeek": "{value}/Woche",
+    "sparkTrendStable": "stabil",
+    "trackNewMetric": "Etwas Neues aufzeichnen",
+    "chartRangeWeeks": "{count, plural, one{1 Woche} other{{count} Wochen}}"
 }

@@ -1224,5 +1224,10 @@
     "healthConnectInstall": "Instalar Health Connect",
     "healthConnectUpdate": "Actualizar Health Connect",
     "healthConnectRequired": "Health Connect es necesario para importar medidas corporales",
-    "labelBottomNavBody": "Cuerpo"
+    "labelBottomNavBody": "Cuerpo",
+    "sparkAverage": "prom. {value}",
+    "sparkTrendPerWeek": "{value}/semana",
+    "sparkTrendStable": "estable",
+    "trackNewMetric": "Registrar algo nuevo",
+    "chartRangeWeeks": "{count, plural, one{1 semana} other{{count} semanas}}"
 }

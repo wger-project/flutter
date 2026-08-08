@@ -28,6 +28,7 @@ import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/measurements/screens/weight_screen.dart';
 import 'package:wger/features/measurements/widgets/chart_range_selector.dart';
 import 'package:wger/features/measurements/widgets/charts.dart';
+import 'package:wger/features/measurements/widgets/measurement_tile.dart';
 import 'package:wger/features/measurements/widgets/weight_form.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
@@ -54,16 +55,12 @@ class _CategoriesListState extends ConsumerState<CategoriesList> {
       loggerName: 'CategoriesList',
       data: (categoriesList) {
         // Children of multi-value groups are rendered inside their parent's
-        // card, not as own list items. Body weight leads the list below
-        // instead of taking its position among the others.
+        // tile, not as own grid items. Body weight keeps its full card on top
+        // of the grid instead of becoming a tile among the others.
         final topLevel = categoriesList
             .where((c) => c.parentId == null && !c.isOfficialBodyWeight)
             .toList();
-
-        final cards = [
-          ?_weightCard(),
-          for (final category in topLevel) CategoriesCard(category, range: _range),
-        ];
+        final weightCard = _weightCard();
 
         return Column(
           children: [
@@ -73,10 +70,31 @@ class _CategoriesListState extends ConsumerState<CategoriesList> {
               onChanged: (range) => setState(() => _range = range),
             ),
             Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.all(10.0),
-                itemCount: cards.length,
-                itemBuilder: (context, index) => cards[index],
+              child: CustomScrollView(
+                slivers: [
+                  if (weightCard != null)
+                    SliverPadding(
+                      padding: const EdgeInsets.all(10),
+                      sliver: SliverToBoxAdapter(child: weightCard),
+                    ),
+                  SliverPadding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    sliver: SliverGrid(
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        mainAxisExtent: measurementTileExtent,
+                        mainAxisSpacing: 10,
+                        crossAxisSpacing: 10,
+                      ),
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) => MeasurementTile(topLevel[index], range: _range),
+                        childCount: topLevel.length,
+                      ),
+                    ),
+                  ),
+                  // Keeps the last row clear of the FAB
+                  const SliverToBoxAdapter(child: SizedBox(height: 88)),
+                ],
               ),
             ),
           ],

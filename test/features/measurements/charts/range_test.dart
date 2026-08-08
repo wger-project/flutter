@@ -21,12 +21,22 @@ import 'package:wger/features/measurements/charts/range.dart';
 
 void main() {
   group('ChartRange', () {
-    test('the month is the shortest range, the full history the longest', () {
+    test('the week is the shortest range, the full history the longest', () {
       final now = DateTime.now();
 
       expect(ChartRange.all.cutoff, isNull);
       expect(ChartRange.lastMonth.cutoff!.isAfter(ChartRange.last3Months.cutoff!), isTrue);
-      expect(ChartRange.lastMonth.cutoff!.isBefore(now), isTrue);
+      expect(ChartRange.lastWeek.cutoff!.isAfter(ChartRange.lastMonth.cutoff!), isTrue);
+      expect(ChartRange.lastWeek.cutoff!.isBefore(now), isTrue);
+    });
+
+    test('the week covers today plus the six days before it', () {
+      // Seven calendar days in all: the count cutoff sits at midnight six
+      // days back, so a weekday axis gets one letter per day
+      final count = ChartRange.lastWeek.countCutoff!;
+      final now = DateTime.now();
+
+      expect(DateTime(now.year, now.month, now.day - 6), count);
     });
 
     test('the read cutoff leaves room for the widest average window', () {

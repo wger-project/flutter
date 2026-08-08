@@ -23,7 +23,8 @@ import 'package:mockito/annotations.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
 import 'package:wger/features/measurements/screens/measurement_categories_screen.dart';
-import 'package:wger/features/measurements/widgets/charts.dart';
+import 'package:wger/features/measurements/widgets/measurement_fab.dart';
+import 'package:wger/features/measurements/widgets/measurement_tile.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 import '../../../../test_data/measurements.dart';
@@ -63,12 +64,12 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Body'), findsOneWidget);
-    expect(find.text('Body fat'), findsOneWidget);
-    expect(find.text('Biceps'), findsOneWidget);
-    expect(find.text('Blood pressure'), findsOneWidget);
-    expect(find.text('Systolic'), findsOneWidget);
-    expect(find.text('Diastolic'), findsOneWidget);
-    expect(find.byType(ListTile), findsNWidgets(2)); // Systolic , Diastolic
-    expect(find.byType(MeasurementChartWidgetFl), findsNWidgets(2)); // Body fat, Biceps
+    // One tile per top-level category; the components live behind the group's.
+    // hitTestable: the closed FAB menu holds the same names, invisibly.
+    expect(find.byType(MeasurementTile), findsNWidgets(3));
+    expect(find.text('Body fat').hitTestable(), findsOneWidget);
+    expect(find.text('Biceps').hitTestable(), findsOneWidget);
+    expect(find.text('Blood pressure').hitTestable(), findsOneWidget);
+    expect(find.byType(MeasurementsFab), findsOneWidget);
   });
 }

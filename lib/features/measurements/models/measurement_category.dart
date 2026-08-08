@@ -412,6 +412,23 @@ enum MetricType {
     _ => const MetricLimits(0, measurementSchemaMaxValue),
   };
 
+  /// Most decimals a value of this type is shown with at a glance: the tile
+  /// hero, its chips and the group rows. Detail screens, forms and tooltips
+  /// keep the stored value.
+  ///
+  /// Follows the resolution the metric is measured at, like [binWidth]: a
+  /// pulse has no meaningful tenths, a body weight does, and a short walk
+  /// needs its hundredths of a kilometre. Durations never ask, they are read
+  /// as hours and minutes.
+  int get displayDecimals => switch (this) {
+    MetricType.bodyWeight ||
+    MetricType.leanBodyMass ||
+    MetricType.bodyFat ||
+    MetricType.custom => 1,
+    MetricType.distance => 2,
+    _ => 0,
+  };
+
   /// Width of one distribution-histogram bin, in the unit the type is stored
   /// in. Body weight is the only type that comes in more than one unit, so it
   /// is the only one [unit] matters for. Null for the types nothing is known

@@ -50,9 +50,17 @@ String hoursAndMinutes(num minutes, String locale) {
 
 /// A measured value on its own, formatted the way its unit is read. For the
 /// ends of a range, where only the last one carries the unit.
-String measurementValue(BuildContext context, num value, String unit) => unit == durationUnit
+///
+/// [decimals] caps the fraction digits, for at-a-glance readings; without it
+/// the locale default (up to three) applies. A duration ignores it, hours and
+/// minutes have no decimals to cap.
+String measurementValue(BuildContext context, num value, String unit, {int? decimals}) =>
+    unit == durationUnit
     ? hoursAndMinutes(value, Localizations.localeOf(context).toString())
-    : localizedNumberFormat(context).format(value);
+    : (decimals == null
+              ? localizedNumberFormat(context)
+              : (localizedNumberFormat(context)..maximumFractionDigits = decimals))
+          .format(value);
 
 /// The unit as it is shown. A duration is stored in minutes but read in hours,
 /// and the symbol stays untranslated like the units of the other categories.
@@ -63,9 +71,9 @@ String measurementUnit(String unit) => unit == durationUnit ? 'h' : unit;
 String unitSuffixed(String formatted, String unit) =>
     unit.isEmpty ? formatted : '$formatted ${measurementUnit(unit)}';
 
-/// A measured value with its unit.
-String measurementWithUnit(BuildContext context, num value, String unit) =>
-    unitSuffixed(measurementValue(context, value, unit), unit);
+/// A measured value with its unit. [decimals] as in [measurementValue].
+String measurementWithUnit(BuildContext context, num value, String unit, {int? decimals}) =>
+    unitSuffixed(measurementValue(context, value, unit, decimals: decimals), unit);
 
 /// Ticks a duration axis aims for, few enough that the labels stay apart.
 const _DURATION_TICKS = 6;

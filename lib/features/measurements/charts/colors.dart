@@ -23,11 +23,18 @@ import 'package:wger/features/measurements/charts/series.dart';
 Color planBandColor(BuildContext context) =>
     Theme.of(context).colorScheme.primary.withValues(alpha: 0.15);
 
+/// The component colours in order: what [componentColor] indexes into, and
+/// what the spark painters take as a whole. One list, so a spark segment, its
+/// full-chart line and the legend never drift apart.
+List<Color> componentPalette(BuildContext context) {
+  final scheme = Theme.of(context).colorScheme;
+  return [scheme.primary, scheme.tertiary, scheme.secondary, scheme.error];
+}
+
 /// Colour of the [index]-th [MeasurementSeriesRole.component] line. Shared
 /// with the legend so a component's colour matches its line.
 Color componentColor(BuildContext context, int index) {
-  final scheme = Theme.of(context).colorScheme;
-  final colors = [scheme.primary, scheme.tertiary, scheme.secondary, scheme.error];
+  final colors = componentPalette(context);
   return colors[index % colors.length];
 }
 

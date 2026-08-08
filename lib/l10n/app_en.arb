@@ -537,6 +537,15 @@
   "@chartRangeAll": {
     "description": "Label for the chart time-range selector option showing all data"
   },
+  "chartRangeWeeks": "{count, plural, one{1 week} other{{count} weeks}}",
+  "@chartRangeWeeks": {
+    "description": "Chart time-range selector option covering a number of weeks",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "chartRangeMonths": "{count, plural, one{1 month} other{{count} months}}",
   "@chartRangeMonths": {
     "description": "Chart time-range selector option covering a number of months",
@@ -657,6 +666,32 @@
         "type": "int"
       }
     }
+  },
+  "sparkAverage": "avg {value}",
+  "@sparkAverage": {
+    "description": "Chip on an overview tile: the average over the charted days, e.g. 'avg 7:05' for sleep",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "sparkTrendPerWeek": "{value}/week",
+  "@sparkTrendPerWeek": {
+    "description": "Chip on an overview tile: how much the value changes per week, shown after a direction arrow",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "sparkTrendStable": "stable",
+  "@sparkTrendStable": {
+    "description": "Chip on an overview tile when the value barely changes, shown after a right arrow"
+  },
+  "trackNewMetric": "Track something new",
+  "@trackNewMetric": {
+    "description": "Action in the overview's expanding + button that opens the sheet for starting a new measurement category"
   },
   "measurement": "Measurement",
   "@measurement": {},

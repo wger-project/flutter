@@ -142,6 +142,18 @@ void main() {
     });
   });
 
+  group('displayDecimals', () {
+    test('follows the resolution the metric is measured at', () {
+      expect(MetricType.restingHeartRate.displayDecimals, 0);
+      expect(MetricType.bloodPressureSystolic.displayDecimals, 0);
+      expect(MetricType.energy.displayDecimals, 0);
+      expect(MetricType.bodyWeight.displayDecimals, 1);
+      expect(MetricType.bodyFat.displayDecimals, 1);
+      expect(MetricType.custom.displayDecimals, 1);
+      expect(MetricType.distance.displayDecimals, 2);
+    });
+  });
+
   group('MetricType', () {
     test('fromWire maps a known wire value to its enum case', () {
       expect(MetricType.fromWire('body_fat'), MetricType.bodyFat);

@@ -20,7 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/features/measurements/screens/measurement_category_sort_screen.dart';
 import 'package:wger/features/measurements/widgets/categories.dart';
-import 'package:wger/features/measurements/widgets/metric_picker.dart';
+import 'package:wger/features/measurements/widgets/measurement_fab.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 class MeasurementCategoriesScreen extends StatelessWidget {
@@ -43,10 +43,7 @@ class MeasurementCategoriesScreen extends StatelessWidget {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add, color: Colors.white),
-        onPressed: () => showMetricPicker(context),
-      ),
+      floatingActionButton: const MeasurementsFab(),
       body: const WidescreenWrapper(
         child: CategoriesList(),
       ),
