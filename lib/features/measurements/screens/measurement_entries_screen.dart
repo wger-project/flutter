@@ -24,8 +24,8 @@ import 'package:wger/core/widgets/confirm_delete_dialog.dart';
 import 'package:wger/core/widgets/error.dart';
 import 'package:wger/core/widgets/object_gone_redirect.dart';
 import 'package:wger/core/widgets/progress_indicator.dart';
-import 'package:wger/features/measurements/charts/range.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
+import 'package:wger/features/measurements/providers/chart_range_setting.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/measurements/widgets/entries.dart';
 import 'package:wger/features/measurements/widgets/forms.dart';
@@ -48,10 +48,6 @@ class MeasurementEntriesScreen extends ConsumerStatefulWidget {
 class _MeasurementEntriesScreenState extends ConsumerState<MeasurementEntriesScreen> {
   late final String _categoryId;
   bool _initialised = false;
-
-  /// Owned here rather than in the list below, because the selector and the
-  /// charts it drives sit in different widgets
-  ChartRange _range = ChartRange.last3Months;
 
   @override
   void didChangeDependencies() {
@@ -150,8 +146,10 @@ class _MeasurementEntriesScreenState extends ConsumerState<MeasurementEntriesScr
           (final MeasurementCategory category, _) => SingleChildScrollView(
             child: EntriesList(
               category,
-              range: _range,
-              onRangeChanged: (range) => setState(() => _range = range),
+              // Shared with the overview: the range picked there follows the
+              // user in here, and a pick here follows them back out
+              range: ref.watch(chartRangeSettingProvider),
+              onRangeChanged: (range) => ref.read(chartRangeSettingProvider.notifier).set(range),
             ),
           ),
           (_, AsyncError(:final error)) => StreamErrorIndicator(error.toString()),

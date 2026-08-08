@@ -23,9 +23,9 @@ import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/core/widgets/app_bar.dart';
 import 'package:wger/core/widgets/progress_indicator.dart';
 import 'package:wger/features/account/providers/user_profile_notifier.dart';
-import 'package:wger/features/measurements/charts/range.dart';
 import 'package:wger/features/measurements/models/unit_conversion.dart';
 import 'package:wger/features/measurements/providers/body_weight_provider.dart';
+import 'package:wger/features/measurements/providers/chart_range_setting.dart';
 import 'package:wger/features/measurements/widgets/charts.dart';
 import 'package:wger/features/measurements/widgets/entries.dart';
 import 'package:wger/features/measurements/widgets/weight_form.dart';
@@ -38,22 +38,13 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 /// are shown in the profile unit (entries can be stored in kg or lb), the
 /// title is translated rather than taken from the server-created category, and
 /// the entry form is the one with the quick steppers.
-class WeightScreen extends ConsumerStatefulWidget {
+class WeightScreen extends ConsumerWidget {
   const WeightScreen();
 
   static const routeName = '/weight';
 
   @override
-  ConsumerState<WeightScreen> createState() => _WeightScreenState();
-}
-
-class _WeightScreenState extends ConsumerState<WeightScreen> {
-  /// Owned here rather than in the list below, because the selector and the
-  /// charts it drives sit in different widgets
-  ChartRange _range = ChartRange.last3Months;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final i18n = AppLocalizations.of(context);
     // New entries need the official category, which the server creates and the
     // initial sync delivers; hide the FAB until it is there.
@@ -84,8 +75,10 @@ class _WeightScreenState extends ConsumerState<WeightScreen> {
               ? const BoxedProgressIndicator()
               : EntriesList(
                   category,
-                  range: _range,
-                  onRangeChanged: (range) => setState(() => _range = range),
+                  // Shared with the whole measurements tab, see ChartRangeSetting
+                  range: ref.watch(chartRangeSettingProvider),
+                  onRangeChanged: (range) =>
+                      ref.read(chartRangeSettingProvider.notifier).set(range),
                   title: i18n.weight,
                   displayUnit: weightDisplayUnit(profile.isMetric),
                   displayUnitLabel: weightUnit(profile.isMetric, context),

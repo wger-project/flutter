@@ -24,6 +24,7 @@ import 'package:wger/features/measurements/charts/range.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/unit_conversion.dart';
 import 'package:wger/features/measurements/providers/body_weight_provider.dart';
+import 'package:wger/features/measurements/providers/chart_range_setting.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/measurements/screens/weight_screen.dart';
 import 'package:wger/features/measurements/widgets/chart_range_selector.dart';
@@ -34,20 +35,15 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 
 import 'categories_card.dart';
 
-class CategoriesList extends ConsumerStatefulWidget {
+class CategoriesList extends ConsumerWidget {
   const CategoriesList();
 
   @override
-  ConsumerState<CategoriesList> createState() => _CategoriesListState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    // One range for the whole screen, shared with the detail screens through
+    // the provider: picking it per card would put three buttons on every tile
+    final range = ref.watch(chartRangeSettingProvider);
 
-class _CategoriesListState extends ConsumerState<CategoriesList> {
-  // One range for all cards: picking it per card would put three buttons on
-  // every entry of the list
-  ChartRange _range = ChartRange.last3Months;
-
-  @override
-  Widget build(BuildContext context) {
     return AsyncValueWidget<List<MeasurementCategory>>(
       // The categories alone: the cards read what they draw through the
       // aggregated queries
@@ -60,14 +56,14 @@ class _CategoriesListState extends ConsumerState<CategoriesList> {
         final topLevel = categoriesList
             .where((c) => c.parentId == null && !c.isOfficialBodyWeight)
             .toList();
-        final weightCard = _weightCard();
+        final weightCard = _weightCard(context, ref, range);
 
         return Column(
           children: [
             const SizedBox(height: 10),
             ChartRangeSelector(
-              value: _range,
-              onChanged: (range) => setState(() => _range = range),
+              value: range,
+              onChanged: (range) => ref.read(chartRangeSettingProvider.notifier).set(range),
             ),
             Expanded(
               child: CustomScrollView(
@@ -87,7 +83,7 @@ class _CategoriesListState extends ConsumerState<CategoriesList> {
                         crossAxisSpacing: 10,
                       ),
                       delegate: SliverChildBuilderDelegate(
-                        (context, index) => MeasurementTile(topLevel[index], range: _range),
+                        (context, index) => MeasurementTile(topLevel[index], range: range),
                         childCount: topLevel.length,
                       ),
                     ),
@@ -108,7 +104,7 @@ class _CategoriesListState extends ConsumerState<CategoriesList> {
   /// Presented like the weight screen it leads to rather than like the
   /// category it is stored as: the values are shown in the profile unit
   /// (entries can be stored in kg or lb) and entered with the quick steppers.
-  Widget? _weightCard() {
+  Widget? _weightCard(BuildContext context, WidgetRef ref, ChartRange range) {
     final category = ref.watch(bodyWeightCategoryOnlyProvider).value;
     final profile = ref.watch(userProfileProvider).value;
     if (category == null || profile == null) {
@@ -117,7 +113,7 @@ class _CategoriesListState extends ConsumerState<CategoriesList> {
 
     return CategoriesCard(
       category,
-      range: _range,
+      range: range,
       title: AppLocalizations.of(context).weight,
       displayUnit: weightDisplayUnit(profile.isMetric),
       displayUnitLabel: weightUnit(profile.isMetric, context),
