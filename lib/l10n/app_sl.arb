@@ -574,5 +574,863 @@
     "timeEnd": "Končni čas",
     "@timeEnd": {
         "description": "The end time of a workout"
+    },
+    "endWorkout": "Zaključi trening",
+    "@endWorkout": {
+        "description": "Use the imperative, label on button to finish the current workout in gym mode"
+    },
+    "preview": "Predogled",
+    "close": "Zapri",
+    "@close": {
+        "description": "Translation for close"
+    },
+    "total": "Skupno",
+    "@total": {
+        "description": "Label used for total sums of e.g. calories or similar"
+    },
+    "images": "Slike",
+    "allowSelfSignedCertsTitle": "Dovoli samo-podpisana potrdila",
+    "allowSelfSignedCertsDetail": "Onemogoči potrjevanje potrdil TLS. To omogočite samo za strežnik, ki mu zaupate.",
+    "certsNotVerifiedTitle": "Potrjevanje potrdil je izklopljeno",
+    "@certsNotVerifiedTitle": {
+        "description": "Warning shown in the settings while the app accepts invalid TLS certificates from the server the user is logged into."
+    },
+    "certsNotVerifiedDetail": "Potrdila za {host} niso preverjena. Da to spremenite, se odjavite in prilagodite možnost na prijavnem zaslonu.",
+    "@certsNotVerifiedDetail": {
+        "description": "Explains the certificate warning. The option can only be set before logging in, hence the hint to log out.",
+        "type": "text",
+        "placeholders": {
+            "host": {
+                "type": "String"
+            }
+        }
+    },
+    "meal": "Obrok",
+    "timeStartAhead": "Začetni čas mora biti pred končnim časom",
+    "ingredient": "Sestavina",
+    "@ingredient": {
+        "description": "Singular label for an ingredient"
+    },
+    "energy": "Energija",
+    "@energy": {
+        "description": "Energy in a meal, ingredient etc. e.g. in kJ"
+    },
+    "energyShort": "E",
+    "@energyShort": {
+        "description": "The first letter or short name of the word 'Energy', used in overviews"
+    },
+    "dietaryInformation": "Podatki o prehranskih vrednostih",
+    "macronutrients": "Makrohranila",
+    "planned": "Načrtovano",
+    "@planned": {
+        "description": "Header for the column of 'planned' nutritional values, i.e. what should be eaten"
+    },
+    "logged": "Zabeleženo",
+    "@logged": {
+        "description": "Header for the column of 'logged' nutritional values, i.e. what was eaten"
+    },
+    "today": "Danes",
+    "loggedToday": "Zabeleženo danes",
+    "weekAverage": "7-dnevno povprečje",
+    "@weekAverage": {
+        "description": "Header for the column of '7 day average' nutritional values, i.e. what was logged last week"
+    },
+    "surplus": "presežek",
+    "@surplus": {
+        "description": "Caloric surplus (either planned or unplanned)"
+    },
+    "deficit": "manjko",
+    "@deficit": {
+        "description": "Caloric deficit (either planned or unplanned)"
+    },
+    "difference": "Razlika",
+    "percentEnergy": "Odstotek energije",
+    "gPerBodyKg": "g na kg telesa",
+    "@gPerBodyKg": {
+        "description": "Label used for total sums of e.g. calories or similar in grams per Kg of body weight"
+    },
+    "kcal": "kcal",
+    "@kcal": {
+        "description": "Energy in a meal in kilocalories, kcal"
+    },
+    "kcalValue": "{value} kcal",
+    "@kcalValue": {
+        "description": "A value in kcal, e.g. 500 kcal",
+        "type": "text",
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    },
+    "kJ": "kJ",
+    "@kJ": {
+        "description": "Energy in a meal in kilo joules, kJ"
+    },
+    "g": "g",
+    "@g": {
+        "description": "Abbreviation for gram"
+    },
+    "gValue": "{value} g",
+    "@gValue": {
+        "description": "A value in grams, e.g. 5 g",
+        "type": "text",
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    },
+    "percentValue": "{value} %",
+    "@percentValue": {
+        "description": "A value in percent, e.g. 10 %",
+        "type": "text",
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    },
+    "protein": "Beljakovine",
+    "proteinShort": "B",
+    "@proteinShort": {
+        "description": "The first letter or short name of the word 'Protein', used in overviews"
+    },
+    "carbohydrates": "Ogljikovi hidrati",
+    "carbohydratesShort": "OH",
+    "@carbohydratesShort": {
+        "description": "The first letter or short name of the word 'Carbohydrates', used in overviews"
+    },
+    "sugars": "Sladkorji",
+    "fat": "Maščobe",
+    "fatShort": "M",
+    "@fatShort": {
+        "description": "The first letter or short name of the word 'Fat', used in overviews"
+    },
+    "saturatedFat": "Nasičene maščobe",
+    "fiber": "Prehranska vlakna",
+    "sodium": "Sol",
+    "carbohydratesSugar": "Sladkorji (ogljikovi hidrati)",
+    "@carbohydratesSugar": {
+        "description": "Label for the carbohydrates sugar"
+    },
+    "amount": "Količina",
+    "@amount": {
+        "description": "The amount (e.g. in grams) of an ingredient in a meal"
+    },
+    "unit": "Enota",
+    "@unit": {
+        "description": "The unit used for a repetition (kg, time, etc.)"
+    },
+    "newEntry": "Nov vnos",
+    "@newEntry": {
+        "description": "Title when adding a new entry such as a weight or log entry"
+    },
+    "noTrophies": "Nimate še nobene trofeje",
+    "noWeightEntries": "Nimate še nobenega vnosa teže",
+    "@noWeightEntries": {
+        "description": "Message shown when the user has no logged weight entries"
+    },
+    "moreMeasurementEntries": "Dodaj novo meritev",
+    "@moreMeasurementEntries": {
+        "description": "Message shown when the user wants to add new measurement"
+    },
+    "edit": "Uredi",
+    "delete": "Izbriši",
+    "confirmDelete": "Ali res želite izbrisati »{toDelete}'?«?",
+    "@confirmDelete": {
+        "description": "Confirmation text before the user deletes an object",
+        "type": "text",
+        "placeholders": {
+            "toDelete": {
+                "type": "String"
+            }
+        }
+    },
+    "newNutritionalPlan": "Nov prehranski načrt",
+    "overview": "Pregled",
+    "toggleDetails": "Preklopi podrobnosti",
+    "@toggleDetails": {
+        "description": "Switch to toggle detail / overview"
+    },
+    "goToDetailPage": "Pojdi na stran s podrobnostmi",
+    "aboutWhySupportTitle": "Svobodno, odprto-kodno in brezplačno ❤️",
+    "aboutDescription": "Hvala, ker uporabljate wger! To je sodelovalni odprto-kodni projekt, ki so ga ustvarili navdušenci nad fitnesom z vsega sveta.",
+    "@aboutDescription": {
+        "description": "Text in the about dialog"
+    },
+    "aboutDonateTitle": "Donirajte denar",
+    "aboutDonateText": "Čeprav je program brezplačen in bo tak vedno ostal, poganjanje strežnika ni brezplačno. V razvoj je prav tako vloženega ogromno časa in truda prostovoljcev. Z vašim denarnim vložkom neposredno podpirate plačilo teh neizogibnih stroškov in pomagate ohranjati storitev zanesljivo.",
+    "aboutContributeTitle": "Prispevajte",
+    "aboutContributeText": "Dobrodošle so vse vrste prispevkov. Ne glede na to ali ste programer, prevajalec, ali samo strastni glede fitnesa, vsaka oblika podpore je cenjena!",
+    "aboutBugsListTitle": "Poročajte o napaki ali predlagajte zmožnost",
+    "aboutTranslationListTitle": "Prevedite program",
+    "aboutSourceListTitle": "Prikaži izvorno kodo",
+    "aboutJoinCommunityTitle": "Pridružite se skupnosti",
+    "aboutMastodonTitle": "Mastodon",
+    "aboutDiscordTitle": "Discord",
+    "aboutViewDocsTitle": "Odpri dokumentacijo",
+    "aboutViewLicensesTitle": "Prikaži licence",
+    "others": "Drugi",
+    "calendar": "Koledar",
+    "enterValue": "Vnesite vrednost",
+    "@enterValue": {
+        "description": "Error message when the user hasn't entered a value on a required field"
+    },
+    "selectEntry": "Izberite vnos",
+    "selectExercise": "Izberite vajo",
+    "@selectExercise": {
+        "description": "Error message when the user hasn't selected an exercise in the form"
+    },
+    "enterCharacters": "Vnesite od {min} do {max} znakov",
+    "@enterCharacters": {
+        "description": "Error message when the user hasn't entered the correct number of characters in a form",
+        "type": "text",
+        "placeholders": {
+            "min": {
+                "type": "String"
+            },
+            "max": {
+                "type": "String"
+            }
+        }
+    },
+    "formMinMaxValues": "Vnesite vrednost od {min} do {max}",
+    "@formMinMaxValues": {
+        "description": "Error message when the user needs to enter a value between min and max",
+        "type": "text",
+        "placeholders": {
+            "min": {
+                "type": "int"
+            },
+            "max": {
+                "type": "int"
+            }
+        }
+    },
+    "enterMinCharacters": "Vnesite vsaj {min} znakov",
+    "@enterMinCharacters": {
+        "description": "Error message when the user hasn't entered the minimum amount characters in a form",
+        "type": "text",
+        "placeholders": {
+            "min": {
+                "type": "String"
+            }
+        }
+    },
+    "enterMaxCharacters": "Vnesite največ {max} znakov",
+    "@enterMaxCharacters": {
+        "description": "Error message when the user has entered more than the allowed amount of characters in a form",
+        "type": "text",
+        "placeholders": {
+            "max": {
+                "type": "String"
+            }
+        }
+    },
+    "baseNameEnglish": "Vse vaje potrebujejo osnovno ime v angleščini",
+    "nrOfSets": "Nizi na vajo: {nrOfSets}",
+    "@nrOfSets": {
+        "description": "Label shown on the slider where the user selects the nr of sets",
+        "type": "text",
+        "placeholders": {
+            "nrOfSets": {
+                "type": "String"
+            }
+        }
+    },
+    "enterValidNumber": "Vnesite veljavno število",
+    "@enterValidNumber": {
+        "description": "Error message when the user has submitted an invalid number (e.g. '3,.,.,.')"
+    },
+    "selectIngredient": "Izberite sestavino",
+    "@selectIngredient": {
+        "description": "Error message when the user hasn't selected an ingredient from the autocompleter"
+    },
+    "recentlyUsedIngredients": "Nedavno dodane sestavine",
+    "@recentlyUsedIngredients": {
+        "description": "A message when a user adds a new ingredient to a meal."
+    },
+    "selectImage": "Izberite sliko",
+    "@selectImage": {
+        "description": "Label and error message when the user hasn't selected an image to save"
+    },
+    "optionsLabel": "Možnosti",
+    "@optionsLabel": {
+        "description": "Label for the popup with general app options"
+    },
+    "takePicture": "Slikaj",
+    "chooseFromLibrary": "Izberi iz knjižnice fotografij",
+    "gallery": "Galerija",
+    "addImage": "Dodaj sliko",
+    "dataCopied": "Podatki so bili skopirani v nov vnos",
+    "@dataCopied": {
+        "description": "Snackbar message to show on copying data to a new log entry"
+    },
+    "appUpdateTitle": "Potrebna je posodobitev",
+    "appUpdateContent": "Ta različica aplikacije ni združljiva s strežnikom. Posodobite aplikacijo.",
+    "serverUpdateTitle": "Potrebna je nadgradnja strežnika",
+    "serverUpdateContent": "Strežnik, na katerega ste povezani, je prestar za to različico aplikacije. Skrbnika strežnika prosite, da nadgradi vsaj na različico {minVersion}.",
+    "@serverUpdateContent": {
+        "description": "Message shown when the server version is too old. minVersion is the minimum required server version string.",
+        "type": "text",
+        "placeholders": {
+            "minVersion": {
+                "type": "String"
+            }
+        }
+    },
+    "powerSyncUnreachableTitle": "Usklajevalna storitev ni dosegljiva",
+    "powerSyncUnreachableContent": "Vaš strežnik wger je dosegljiv, a (ločena) storitev, ki upravlja z usklajevanjem podatkov iz časa brez povezave, se ne odziva. Če sami gostite strežnik wger, preverite nastavitve in se prepičajte, da storitev PowerSync teče pravilno.",
+    "serverUnreachableRetry": "Poskusi znova",
+    "@serverUnreachableRetry": {
+        "description": "Button that re-runs the auto-login attempt against the saved server."
+    },
+    "productFound": "Izdelek je bil najden",
+    "@productFound": {
+        "description": "Header label for dialog when product is found with barcode"
+    },
+    "productFoundDescription": "Črtna koda ustreza temu izdelku: »{productName}«. Ali želite nadaljevati?",
+    "@productFoundDescription": {
+        "description": "Dialog info when product is found with barcode",
+        "type": "text",
+        "placeholders": {
+            "productName": {
+                "type": "String"
+            }
+        }
+    },
+    "productNotFound": "Izdelek ni bil najden",
+    "@productNotFound": {
+        "description": "Header label for dialog when product is not found with barcode"
+    },
+    "productNotFoundDescription": "Izedelka s prebrano črtno kodo »{barcode}« ni bilo moč najti v podatkovni zbirki wger-ja",
+    "@productNotFoundDescription": {
+        "description": "Dialog info when product is not found with barcode",
+        "type": "text",
+        "placeholders": {
+            "barcode": {
+                "type": "String"
+            }
+        }
+    },
+    "scanBarcode": "Preberi črtno kodo",
+    "@scanBarcode": {
+        "description": "Label for scan barcode button"
+    },
+    "identicalExercisePleaseDiscard": "Če opazite vajo, ki je (skoraj) enaka tej, ki jo dodajate, zavržite svoj osnutek in namesto tega uredite že obstoječo vajo.",
+    "checkInformationBeforeSubmitting": "Pred dodajanjem vaje preverite, da so podatki, ki ste jih vnesli, pravilni",
+    "add_exercise_image_license": "Slike morajo biti združljive z licenco CC-BY-SA. Če ste v dvomih, naložite samo fotografije, ki ste jih posneli sami.",
+    "imageDetailsTitle": "Podrobnosti slike",
+    "@imageDetailsTitle": {
+        "description": "Title for image details form"
+    },
+    "imageDetailsLicenseTitle": "Naslov",
+    "@imageDetailsLicenseTitle": {
+        "description": "Label for image title field"
+    },
+    "imageDetailsLicenseTitleHint": "Vnesite naslov slike",
+    "@imageDetailsLicenseTitleHint": {
+        "description": "Hint text for image title field"
+    },
+    "imageDetailsSourceLink": "Povezava do izvorne spletne strani",
+    "@imageDetailsSourceLink": {
+        "description": "Label for source link field"
+    },
+    "author": "Avtor(ji)",
+    "authorHint": "Vnesite ime avtorja",
+    "@authorHint": {
+        "description": "Hint text for author field"
+    },
+    "imageDetailsAuthorLink": "Povezava do spletne strani ali profila avtorja",
+    "@imageDetailsAuthorLink": {
+        "description": "Label for author link field"
+    },
+    "imageDetailsDerivativeSource": "Povezava do prvotnega vira, če je to izvedeno delo",
+    "@imageDetailsDerivativeSource": {
+        "description": "Label for derivative source field"
+    },
+    "imageDetailsDerivativeHelp": "Izvedeno delo temelji na predhodnem delu, a vsebuje zadosti nove, ustvarjalne vsebine, ki upraviči lastne avtorske pravice.",
+    "@imageDetailsDerivativeHelp": {
+        "description": "Helper text explaining derivative works"
+    },
+    "imageDetailsImageType": "Vrsta slike",
+    "@imageDetailsImageType": {
+        "description": "Label for image type selector"
+    },
+    "imageDetailsLicenseNotice": "Z nalaganjem te slike se strinjate, da jo izdate pod licenco CC-BY-SA-4. Slika more biti vaše lastno delo ali pa jo je avtor moral izdati pod licenco, ki je združljiva s CC-BY-SA-4.",
+    "imageDetailsLicenseNoticeLinkToLicense": "Oglejte si besedilo licence.",
+    "imageFormatNotSupported": "Zapis {imageFormat} ni podprt",
+    "@imageFormatNotSupported": {
+        "description": "Label shown on the error container when image format is not supported",
+        "type": "text",
+        "placeholders": {
+            "imageFormat": {
+                "type": "String"
+            }
+        }
+    },
+    "imageFormatNotSupportedDetail": "Slike v zapisu {imageFormat} še niso podprte.",
+    "@imageFormatNotSupportedDetail": {
+        "description": "Label shown on the image preview container when image format is not supported",
+        "type": "text",
+        "placeholders": {
+            "imageFormat": {
+                "type": "String"
+            }
+        }
+    },
+    "add": "dodaj",
+    "@add": {
+        "description": "Add button text"
+    },
+    "increase": "Povečaj",
+    "@increase": {
+        "description": "Tooltip / screen-reader label for a button that increases a numeric input by one step"
+    },
+    "decrease": "Zmanjšaj",
+    "@decrease": {
+        "description": "Tooltip / screen-reader label for a button that decreases a numeric input by one step"
+    },
+    "variations": "Različice",
+    "@variations": {
+        "description": "Variations of one exercise (e.g. benchpress and benchpress narrow)"
+    },
+    "alsoKnownAs": "Znana tudi kot: {aliases}",
+    "@alsoKnownAs": {
+        "placeholders": {
+            "aliases": {
+                "type": "String"
+            }
+        },
+        "description": "List of alternative names for an exercise"
+    },
+    "verifiedEmail": "Potrjena e-pošta",
+    "unVerifiedEmail": "Nepotrjena e-pošta",
+    "verifiedEmailInfo": "Potrditveno sporočilo je bilo poslano na {email}",
+    "@verifiedEmailInfo": {
+        "placeholders": {
+            "email": {
+                "type": "String"
+            }
+        }
+    },
+    "alternativeNames": "Alternativna imena",
+    "oneNamePerLine": "Vsako ime v svoji vrstici",
+    "whatVariationsExist": "Katere različice te vaje obstajajo, če sploh?",
+    "previous": "Predhodna",
+    "next": "Naslednja",
+    "language": "Jezik",
+    "addExercise": "Dodaj vajo",
+    "fitInWeek": "Fiksni tedenski razpored",
+    "fitInWeekHelp": "Če je omogočeno, se bodo dnevi ponoviliv tedenskem ciklu. V nasprotnem bodo dnevi sledili zaporedno in ne glede na začetek tedna.",
+    "addSuperset": "Dodaj superniz",
+    "superset": "Superniz",
+    "setHasNoExercises": "Ta niz še nima vaj!",
+    "contributeExercise": "Prispevajte vajo",
+    "translation": "Prevajanje",
+    "translateExercise": "Prevedite to vajo zdaj",
+    "baseData": "Osnove v angleščini",
+    "@baseData": {
+        "description": "The base data for an exercise such as category, trained muscles, etc."
+    },
+    "useBasicMarkdown": "Za oblikovanje besedila lahko uporabite osnovni Markdown",
+    "editorBold": "Krepko",
+    "@editorBold": {
+        "description": "Label for bold formatting"
+    },
+    "editorItalic": "Ležeče",
+    "editorList": "Seznam",
+    "enterTextInLanguage": "Besedilo vnesite v pravem jeziku!",
+    "settingsTitle": "Nastavitve",
+    "settingsCacheTitle": "Predpomnilnik",
+    "settingsImageCacheDescription": "Predpomnilnik slik",
+    "settingsCacheDeletedSnackbar": "Predpomnilnik je bil uspešno izbrisan",
+    "settingsDataTitle": "Zasebnost",
+    "settingsKeepDataOnLogout": "Po odjavi obdrži podatke",
+    "settingsKeepDataOnLogoutDescription": "Krajevna podatkovna zbirka ostane na vaši napravi dokler se ne prijavi drug račun.",
+    "aboutPageTitle": "O nas in podpora",
+    "contributeExerciseWarning": "Vaje lahko prispevate, ko je vaš račun starejši od {days} dni in ste potrdili vašo e-pošto",
+    "@contributeExerciseWarning": {
+        "description": "Number of days before which a person can add exercise",
+        "placeholders": {
+            "days": {
+                "type": "String",
+                "example": "14"
+            }
+        }
+    },
+    "simpleMode": "Preprost način",
+    "simpleModeHelp": "Skrijte nekatere naprednejše nastavitve med urejanjem vaj",
+    "progressionRules": "Ta vaja vsebuje pravila napredovanja in je ni moč urejati v mobilni aplikaciji. Za urejanje te vaje uporabite spletno stran.",
+    "cacheWarning": "Zaradi shranjevanja v predpomnilniku lahko traja nekaj časa, preden bodo spremembe vidne v celotni aplikaciji.",
+    "textPromptTitle": "Ali ste pripravljeni na začetek?",
+    "textPromptSubheading": "Da začnete, pritisnite gumb",
+    "abs": "Trebušne mišice",
+    "@abs": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "arms": "Roke",
+    "@arms": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "back": "Hrbet",
+    "@back": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "barbell": "Dvoročna palica",
+    "@barbell": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "bench": "Klop",
+    "@bench": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "biceps": "Biceps",
+    "@biceps": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "body_weight": "Telesna teža",
+    "@body_weight": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "calves": "Meča",
+    "@calves": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "cardio": "Kardio",
+    "@cardio": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "chest": "Prsni koš",
+    "@chest": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "dumbbell": "Ročka",
+    "@dumbbell": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "glutes": "Zadnjične mišice",
+    "@glutes": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "gym_mat": "Telovadna podloga",
+    "@gym_mat": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "hamstrings": "Zadnje stegenske mišice",
+    "@hamstrings": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "incline_bench": "Klop z naklonom",
+    "@incline_bench": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "kettlebell": "Kettlebell/girja",
+    "@kettlebell": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "kilometers": "Kilometri",
+    "@kilometers": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "kilometers_per_hour": "Kilometri na uro",
+    "@kilometers_per_hour": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "lats": "Široki hrbtni mišici",
+    "@lats": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "legs": "Noge",
+    "@legs": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "lower_back": "Spodnji del hrbta",
+    "@lower_back": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "max_reps": "Najv. ponovitev",
+    "@max_reps": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "miles": "Milje",
+    "@miles": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "miles_per_hour": "Milje na uro",
+    "@miles_per_hour": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "minutes": "Minute",
+    "@minutes": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "plates": "Plošče",
+    "@plates": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "pull_up_bar": "Prečka za vzgib",
+    "@pull_up_bar": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "quads": "Štiriglava stegenska mišica",
+    "@quads": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "repetitions": "Ponovitve",
+    "@repetitions": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "resistance_band": "Elastični trak",
+    "@resistance_band": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "sz_bar": "SZ-prečka",
+    "@sz_bar": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "seconds": "Sekunde",
+    "@seconds": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "shoulders": "Ramena",
+    "@shoulders": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "swiss_ball": "Švicarska žoga",
+    "@swiss_ball": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "triceps": "Troglava nadlaktna mišica",
+    "@triceps": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "until_failure": "Do neuspeha",
+    "@until_failure": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "kg": "kg",
+    "@kg": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "lb": "funt",
+    "@lb": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "none__bodyweight_exercise_": "brez (vaja z lastno telesno težo)",
+    "@none__bodyweight_exercise_": {
+        "description": "Generated entry for translation for server strings"
+    },
+    "log": "Zabeleži",
+    "@log": {
+        "description": "Log a specific meal (imperative form)"
+    },
+    "done": "Opravljeno",
+    "overallChangeWeight": "Skupna sprememba",
+    "@overallChangeWeight": {
+        "description": "Overall change in weight, added for localization"
+    },
+    "goalTypeMeals": "Iz obrokov",
+    "@goalTypeMeals": {
+        "description": "added for localization of Class GoalType's filed meals"
+    },
+    "goalTypeBasic": "Osnovno",
+    "@goalTypeBasic": {
+        "description": "added for localization of Class GoalType's filed basic"
+    },
+    "goalTypeAdvanced": "Napredno",
+    "@goalTypeAdvanced": {
+        "description": "added for localization of Class GoalType's filed advanced"
+    },
+    "indicatorRaw": "surovo",
+    "@indicatorRaw": {
+        "description": "added for localization of Class Indicator's field text"
+    },
+    "indicatorAvg": "povpr.",
+    "@indicatorAvg": {
+        "description": "added for localization of Class Indicator's field text"
+    },
+    "themeMode": "Način téme",
+    "darkMode": "Vedno temen način",
+    "lightMode": "Vedno svetel način",
+    "systemMode": "Sistemske nastavitve",
+    "useDynamicColor": "Uporabi dinamične barve",
+    "@useDynamicColor": {
+        "description": "Settings toggle to follow the system wallpaper colors (Material You) on supported platforms"
+    },
+    "youAreOffline": "Ste brez povezave",
+    "appLanguage": "Jezik aplikacije",
+    "@appLanguage": {
+        "description": "Label for the in-app language selector in settings"
+    },
+    "appLanguageSystem": "Privzeti sistemski",
+    "@appLanguageSystem": {
+        "description": "Dropdown entry that follows the device system language"
+    },
+    "productNotFoundOpenFoodFacts": "Ta izdelek lahko dodate v Open Food Facts in pomagate skupnosti!",
+    "@productNotFoundOpenFoodFacts": {
+        "description": "Label shown when product is not found to encourage users to go on Open Food Facts and add it themselves"
+    },
+    "addToOpenFoodFacts": "Dodaj v Open Food facts",
+    "@addToOpenFoodFacts": {
+        "description": "Label shown as the clickable link to go on Open Food Facts"
+    },
+    "isVegan": "Vegansko",
+    "@isVegan": {
+        "description": "Label for vegan toggle"
+    },
+    "isVegetarian": "Vegetarijansko",
+    "@isVegetarian": {
+        "description": "Label for vegetarian toggle"
+    },
+    "filter": "Filter",
+    "@filter": {
+        "description": "Label for filter button"
+    },
+    "searchLanguageCurrent": "Samo v trenutnem jeziku ({lang})",
+    "@searchLanguageCurrent": {
+        "type": "text",
+        "placeholders": {
+            "lang": {
+                "type": "String"
+            }
+        }
+    },
+    "searchLanguageEnglish": "Trenutni jezik ({lang}) in angleščina",
+    "@searchLanguageEnglish": {
+        "type": "text",
+        "placeholders": {
+            "lang": {
+                "type": "String"
+            }
+        }
+    },
+    "searchLanguageAll": "V vseh jezikih",
+    "@searchLanguageAll": {
+        "description": "Label used in the language selector to indicate no specific language filter is applied"
+    },
+    "exerciseSearchMode": "Način iskanja",
+    "@exerciseSearchMode": {
+        "description": "Heading above the segmented control that lets the user pick between fuzzy and exact name matching"
+    },
+    "searchModeFuzzy": "Ohlapno",
+    "@searchModeFuzzy": {
+        "description": "Label for the search mode that performs a fuzzy/substring search on exercise names"
+    },
+    "searchModeExact": "Točno",
+    "@searchModeExact": {
+        "description": "Label for the search mode that only matches exercises with this exact name"
+    },
+    "syncStatusConnected": "Povezano",
+    "@syncStatusConnected": {
+        "description": "Tooltip on the sync icon when the app is online and idle (no upload or download in progress)"
+    },
+    "syncStatusConnecting": "Povezovanje …",
+    "@syncStatusConnecting": {
+        "description": "Tooltip on the sync icon while the app is establishing a connection to the sync service"
+    },
+    "syncStatusDisconnected": "Brez povezave",
+    "@syncStatusDisconnected": {
+        "description": "Tooltip on the sync icon when the app has no active connection to the sync service"
+    },
+    "syncStatusUploading": "Pošiljanje …",
+    "@syncStatusUploading": {
+        "description": "Tooltip on the sync icon while local changes are being uploaded to the server"
+    },
+    "syncStatusDownloading": "Prejemanje …",
+    "@syncStatusDownloading": {
+        "description": "Tooltip on the sync icon while remote changes are being downloaded from the server"
+    },
+    "syncStatusSyncing": "Usklajevanje …",
+    "@syncStatusSyncing": {
+        "description": "Tooltip on the sync icon when the app is uploading and downloading at the same time"
+    },
+    "syncStatusError": "Napaka usklajevanja",
+    "@syncStatusError": {
+        "description": "Status label shown in the sync status dialog when the latest sync attempt failed"
+    },
+    "syncStatusDialogTitle": "Stanje usklajevanja",
+    "@syncStatusDialogTitle": {
+        "description": "Title of the dialog opened by tapping the sync icon in the app bar"
+    },
+    "syncStatusLastSynced": "Zadnja uskladitev",
+    "@syncStatusLastSynced": {
+        "description": "Label in the sync status dialog above the timestamp of the last successful sync"
+    },
+    "syncStatusErrorDetails": "Podrobnosti napake",
+    "@syncStatusErrorDetails": {
+        "description": "Header of the expandable section in the sync status dialog that reveals the raw error message"
+    },
+    "syncStatusStalledHint": "Zdi se, da je povezava s storitvijo za usklajevanje blokirana. VPN, blokiranje oglasov, antivirus ali požarni zid v tem omrežju morda moti povezavo.",
+    "@syncStatusStalledHint": {
+        "description": "Hint shown in the sync status dialog when the app keeps connecting but never receives any sync data, which usually means something on the network is blocking the connection"
+    },
+    "syncStatusReconnect": "Znova se poveži",
+    "@syncStatusReconnect": {
+        "description": "Button in the sync status dialog that drops the stuck connection to the sync service and opens a fresh one"
+    },
+    "syncStatusPendingUploads": "{count, plural, one {Na pošiljanje čaka {count} krajevna sprememba} two {Na pošiljanje čakata {count} krajevni spremembi} few {Na pošiljanje čakajo {count} krajevne spremembe} other {Na pošiljanje čaka {count} krajevnih sprememb}}",
+    "@syncStatusPendingUploads": {
+        "description": "Line in the sync status dialog showing how many local changes have not reached the server yet",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "syncStatusNeverSynced": "Še ni usklajeno",
+    "@syncStatusNeverSynced": {
+        "description": "Shown in the sync status dialog instead of the last-sync timestamp when this device has never completed a synchronisation"
+    },
+    "filterNutriscore": "Filter Nutri-Score",
+    "@filterNutriscore": {
+        "description": "Heading for the Nutri-Score slider in the ingredient search filter dialog"
+    },
+    "filterNutriscoreOff": "Izklopljeno",
+    "@filterNutriscoreOff": {
+        "description": "Label for the first slider stop, which disables the Nutri-Score filter"
+    },
+    "filterNutriscoreNoFilter": "Brez filtra",
+    "@filterNutriscoreNoFilter": {
+        "description": "Helper text shown under the Nutri-Score slider when it is at the Off position"
+    },
+    "filterNutriscoreOrBetter": "{grade} ali boljše",
+    "@filterNutriscoreOrBetter": {
+        "description": "Helper text shown under the Nutri-Score slider when a grade is selected (e.g. 'C or better')",
+        "placeholders": {
+            "grade": {
+                "type": "String",
+                "example": "C"
+            }
+        }
+    },
+    "serverConfigIssueTitle": "Težava z nastavitvami strežnika",
+    "@serverConfigIssueTitle": {
+        "description": "Title of the dialog shown when server misconfiguration is detected"
+    },
+    "serverConfigIssueMessage": "Zaznane so napačne nastavitve strežnika. Glave se ne posredujejo pravilno. Preglejte dokumentacijo.",
+    "@serverConfigIssueMessage": {
+        "description": "Message explaining server misconfiguration and linking to documentation"
+    },
+    "understand": "Razumem",
+    "@understand": {
+        "description": "Button label to acknowledge and dismiss the server configuration warning"
+    },
+    "viewDocumentation": "Prikaži dokumentacijo",
+    "@viewDocumentation": {
+        "description": "Button label to open the documentation about server configuration"
+    },
+    "sessionExpired": "Vaša seja je potekla. Prijavite se še enkrat.",
+    "@sessionExpired": {
+        "description": "Snackbar message shown when the saved login token is no longer valid"
+    },
+    "weightOrRepsRequired": "Vnesite težo, ponovitve ali oboje",
+    "@weightOrRepsRequired": {
+        "description": "Validation error when both weight and repetitions are empty in a workout log"
+    },
+    "timeStartEndBothOrNeither": "Nastavite tako začetni kot končni čas ali pa oba pustite prazna",
+    "@timeStartEndBothOrNeither": {
+        "description": "Validation error when only one of start/end time is set on a workout session"
     }
 }
