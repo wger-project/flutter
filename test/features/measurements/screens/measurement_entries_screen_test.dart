@@ -21,6 +21,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
+import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
+import 'package:wger/core/app_settings_notifier.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/measurement_entry.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
@@ -52,6 +56,8 @@ void main() {
   };
 
   setUp(() {
+    // The shared chart range hydrates from SharedPreferences on first read
+    SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
     mockMeasurementRepo = MockMeasurementRepository();
     stubMeasurementReads(
       mockMeasurementRepo,
@@ -74,6 +80,9 @@ void main() {
     return ProviderScope(
       overrides: [
         measurementRepositoryProvider.overrideWithValue(mockMeasurementRepo),
+        // A fresh accessor per test: the app-wide singleton keeps the
+        // in-memory store of the first test alive across the file
+        appSettingsPrefsProvider.overrideWithValue(SharedPreferencesAsync()),
         // The chart reads its points from the aggregated query
         measurementChartBucketsProvider.overrideWith(chartBucketsFrom(seeded)),
         nutritionRepositoryProvider.overrideWithValue(mockNutritionRepo),

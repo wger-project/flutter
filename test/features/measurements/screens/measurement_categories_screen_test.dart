@@ -20,6 +20,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
+import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
+import 'package:wger/core/app_settings_notifier.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
 import 'package:wger/features/measurements/screens/measurement_categories_screen.dart';
@@ -34,6 +38,11 @@ import 'measurement_categories_screen_test.mocks.dart';
 
 @GenerateMocks([MeasurementRepository])
 void main() {
+  setUp(() {
+    // The shared chart range hydrates from SharedPreferences on first read
+    SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+  });
+
   Widget createMeasurementScreen({locale = 'en'}) {
     final categories = [...getMeasurementCategories(), ...getBloodPressureGroup()];
     final entries = {...getMeasurementEntries(), ...getBloodPressureEntries()};
@@ -43,6 +52,9 @@ void main() {
     return ProviderScope(
       overrides: [
         measurementRepositoryProvider.overrideWithValue(mockRepo),
+        // A fresh accessor per test: the app-wide singleton keeps the
+        // in-memory store of the first test alive across the file
+        appSettingsPrefsProvider.overrideWithValue(SharedPreferencesAsync()),
         // The charts read their points from the aggregated query
         measurementChartBucketsProvider.overrideWith(chartBucketsFrom(entries)),
         measurementGroupBucketsProvider.overrideWith(groupBucketsFrom(categories, entries)),

@@ -21,6 +21,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
+import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/core/form_screen.dart';
 import 'package:wger/core/network/auth_credentials_storage.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
@@ -39,6 +41,8 @@ void main() {
   late MockAuthCredentialsStorage mockCredentials;
 
   setUp(() {
+    // The entries screen a new category opens reads the shared chart range
+    SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
     mockRepo = MockMeasurementRepository();
     mockCredentials = MockAuthCredentialsStorage();
     when(mockCredentials.dbOwnerUserId()).thenAnswer((_) async => '2');

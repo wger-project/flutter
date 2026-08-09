@@ -18,12 +18,19 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
+import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/features/measurements/widgets/categories_card.dart';
 import 'package:wger/features/measurements/widgets/measurement_tile.dart';
 
 import 'screenshots_04_measurements.dart';
 
 void main() {
+  setUp(() {
+    // The overview reads the shared chart range, which hydrates from prefs
+    SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+  });
+
   testWidgets('the store scene fills the grid: weight card plus one tile per form', (
     tester,
   ) async {

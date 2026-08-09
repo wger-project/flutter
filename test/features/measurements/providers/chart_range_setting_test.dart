@@ -18,23 +18,78 @@
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
+import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
+import 'package:wger/core/app_settings_notifier.dart';
+import 'package:wger/core/consts.dart';
 import 'package:wger/features/measurements/charts/range.dart';
 import 'package:wger/features/measurements/providers/chart_range_setting.dart';
 
 void main() {
-  group('ChartRangeSetting', () {
-    test('starts at the default the screens used to seed themselves with', () {
-      final container = ProviderContainer.test();
+  late SharedPreferencesAsync prefs;
+  late ProviderContainer container;
 
+  setUp(() {
+    SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+    prefs = SharedPreferencesAsync();
+    container = ProviderContainer.test(
+      overrides: [appSettingsPrefsProvider.overrideWithValue(prefs)],
+    );
+  });
+
+  group('ChartRangeSetting', () {
+    test('starts at the default while nothing is stored', () async {
+      expect(container.read(chartRangeSettingProvider), ChartRange.last3Months);
+
+      await pumpEventQueue();
       expect(container.read(chartRangeSettingProvider), ChartRange.last3Months);
     });
 
-    test('a pick is what every watcher reads afterwards', () {
-      final container = ProviderContainer.test();
-
+    test('a pick is what every watcher reads afterwards, and it is persisted', () async {
       container.read(chartRangeSettingProvider.notifier).set(ChartRange.lastWeek);
 
       expect(container.read(chartRangeSettingProvider), ChartRange.lastWeek);
+      await pumpEventQueue();
+      expect(await prefs.getString(PREFS_CHART_RANGE), 'lastWeek');
+    });
+
+    test('the stored pick survives a restart', () async {
+      await prefs.setString(PREFS_CHART_RANGE, 'lastMonth');
+
+      // A fresh container stands in for the next app run
+      final restarted = ProviderContainer.test(
+        overrides: [appSettingsPrefsProvider.overrideWithValue(prefs)],
+      );
+      restarted.listen(chartRangeSettingProvider, (_, _) {});
+      await pumpEventQueue();
+
+      expect(restarted.read(chartRangeSettingProvider), ChartRange.lastMonth);
+    });
+
+    test('a value this release does not know leaves the default', () async {
+      await prefs.setString(PREFS_CHART_RANGE, 'lastDecade');
+
+      final restarted = ProviderContainer.test(
+        overrides: [appSettingsPrefsProvider.overrideWithValue(prefs)],
+      );
+      restarted.listen(chartRangeSettingProvider, (_, _) {});
+      await pumpEventQueue();
+
+      expect(restarted.read(chartRangeSettingProvider), ChartRange.last3Months);
+    });
+
+    test('a pick made before the stored value arrives is not overwritten', () async {
+      await prefs.setString(PREFS_CHART_RANGE, 'lastMonth');
+
+      final restarted = ProviderContainer.test(
+        overrides: [appSettingsPrefsProvider.overrideWithValue(prefs)],
+      );
+      // Picked in the very first frame, before the async load lands
+      restarted.read(chartRangeSettingProvider.notifier).set(ChartRange.all);
+      await pumpEventQueue();
+
+      expect(restarted.read(chartRangeSettingProvider), ChartRange.all);
     });
   });
 }

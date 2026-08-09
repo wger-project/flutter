@@ -69,6 +69,9 @@ const PREFS_LAST_SERVER = 'lastServer';
 const PREFS_USE_DYNAMIC_COLOR = 'useDynamicColor';
 const USE_DYNAMIC_COLOR_DEFAULT = false;
 
+/// The chart range the measurement screens share, held as `ChartRange.name`
+const PREFS_CHART_RANGE = 'measurementChartRange';
+
 /// Headless JWT auth: SharedPreferences keys.
 ///
 /// Read in parallel with the legacy `PREFS_USER` blob during the migration

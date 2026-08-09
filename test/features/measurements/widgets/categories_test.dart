@@ -21,6 +21,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
+import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
+import 'package:wger/core/app_settings_notifier.dart';
 import 'package:wger/features/account/providers/user_profile_repository.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/measurement_entry.dart';
@@ -52,6 +56,9 @@ Widget _wrap(
     overrides: [
       measurementRepositoryProvider.overrideWithValue(mockRepo),
       userProfileRepositoryProvider.overrideWithValue(mockProfileRepo),
+      // A fresh accessor per test: the app-wide singleton keeps the
+      // in-memory store of the first test alive across the file
+      appSettingsPrefsProvider.overrideWithValue(SharedPreferencesAsync()),
       // The cards read their chart points from the aggregated queries
       measurementChartBucketsProvider.overrideWith(chartBucketsFrom(entries)),
       measurementGroupBucketsProvider.overrideWith(groupBucketsFrom(categories, entries)),
@@ -69,6 +76,8 @@ void main() {
   late MockMeasurementRepository mockRepo;
 
   setUp(() {
+    // The shared chart range hydrates from SharedPreferences on first read
+    SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
     mockRepo = MockMeasurementRepository();
   });
 
