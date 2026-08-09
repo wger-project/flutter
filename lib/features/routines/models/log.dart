@@ -27,13 +27,6 @@ import 'package:wger/features/routines/models/repetition_unit.dart';
 import 'package:wger/features/routines/models/set_config_data.dart';
 import 'package:wger/features/routines/models/weight_unit.dart';
 
-enum LogTargetStatus {
-  lessThanTarget,
-  atTarget,
-  moreThanTarget,
-  notSet,
-}
-
 class Log {
   /// Max value the backend stores for weight / repetitions
   /// (in the backend: DecimalField max_digits=6, decimal_places=2)
@@ -275,32 +268,6 @@ class Log {
       return weight! * repetitions!;
     }
     return 0;
-  }
-
-  LogTargetStatus get targetStatus {
-    if (weightTarget == null && repetitionsTarget == null && rirTarget == null) {
-      return LogTargetStatus.notSet;
-    }
-
-    final weightOk = weightTarget == null || (weight != null && weight! >= weightTarget!);
-    final repsOk =
-        repetitionsTarget == null || (repetitions != null && repetitions! >= repetitionsTarget!);
-    final rirOk = rirTarget == null || (rir != null && rir! <= rirTarget!);
-
-    if (weightOk && repsOk && rirOk) {
-      return LogTargetStatus.atTarget;
-    }
-
-    final weightMore = weightTarget != null && weight != null && weight! > weightTarget!;
-    final repsMore =
-        repetitionsTarget != null && repetitions != null && repetitions! > repetitionsTarget!;
-    final rirLess = rirTarget != null && rir != null && rir! < rirTarget!;
-
-    if (weightMore || repsMore || rirLess) {
-      return LogTargetStatus.moreThanTarget;
-    }
-
-    return LogTargetStatus.lessThanTarget;
   }
 
   /// Override the equals operator
