@@ -75,7 +75,7 @@ import 'package:wger/theme/dynamic_color.dart';
 import 'package:wger/theme/theme.dart';
 
 void _setupLogging() {
-  Logger.root.level = kDebugMode ? Level.ALL : Level.INFO;
+  applyVerboseLogging(false);
   Logger.root.onRecord.listen((record) {
     // ignore: avoid_print
     print('${record.level.name}: ${record.time} [${record.loggerName}] ${record.message}');
@@ -114,6 +114,12 @@ void main() async {
 
   // SharedPreferences to SharedPreferencesAsync migration function
   await PreferenceHelper.instance.migrationSupportFunctionForSharedPreferences();
+
+  // Seed the log level from the prefs, the phase right after a cold start is
+  // the interesting one; AppSettingsNotifier keeps it in sync from here on.
+  applyVerboseLogging(
+    await PreferenceHelper.asyncPref.getBool(PREFS_VERBOSE_LOGGING) ?? VERBOSE_LOGGING_DEFAULT,
+  );
 
   // Seed the certificate opt-in from the prefs so the auto-login probe already
   // honours it; AppSettingsNotifier keeps it in sync from here on.

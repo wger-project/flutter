@@ -23,6 +23,7 @@ import 'package:wger/features/account/widgets/settings/data_privacy.dart';
 import 'package:wger/features/account/widgets/settings/image_cache.dart';
 import 'package:wger/features/account/widgets/settings/language.dart';
 import 'package:wger/features/account/widgets/settings/theme.dart';
+import 'package:wger/features/account/widgets/settings/verbose_logging.dart';
 import 'package:wger/features/routines/screens/settings_plates_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
@@ -67,6 +68,7 @@ class SettingsPage extends StatelessWidget {
               },
               trailing: const Icon(Icons.chevron_right),
             ),
+            const SettingsVerboseLogging(),
           ],
         ),
       ),

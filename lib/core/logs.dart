@@ -16,7 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
+
+/// Sets the root log level. With [verbose] everything is logged, otherwise
+/// INFO and above. Debug builds always log everything.
+void applyVerboseLogging(bool verbose) {
+  Logger.root.level = verbose || kDebugMode ? Level.ALL : Level.INFO;
+}
 
 /// Characters of the error text kept per formatted entry. Some exceptions
 /// embed whole response bodies and the logs also go into a bug report URL.
