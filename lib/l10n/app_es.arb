@@ -1229,5 +1229,9 @@
     "sparkTrendPerWeek": "{value}/semana",
     "sparkTrendStable": "estable",
     "trackNewMetric": "Registrar algo nuevo",
-    "chartRangeWeeks": "{count, plural, one{1 semana} other{{count} semanas}}"
+    "chartRangeWeeks": "{count, plural, one{1 semana} other{{count} semanas}}",
+    "relativeDaysAgo": "{count, plural, =0{hoy} =1{ayer} other{hace {count} días}}",
+    "relativeWeeksAgo": "{count, plural, one{hace 1 semana} other{hace {count} semanas}}",
+    "relativeMonthsAgo": "{count, plural, one{hace 1 mes} other{hace {count} meses}}",
+    "relativeYearsAgo": "{count, plural, one{hace 1 año} other{hace {count} años}}"
 }

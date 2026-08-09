@@ -16,8 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:math';
+
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 
 /// A short date format (`DateFormat.yMd`) bound to the current locale's
 /// language. Chain further patterns (e.g. `.add_Hm()`) as needed.
@@ -27,6 +30,40 @@ DateFormat localizedDate(BuildContext context) =>
 /// A decimal number format bound to the current locale.
 NumberFormat localizedNumberFormat(BuildContext context) =>
     NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
+
+/// A date in the past as a relative phrase ("today", "3 weeks ago").
+///
+/// Counts calendar days rather than elapsed hours, so an entry from late
+/// yesterday still reads as yesterday this morning. The unit grows with the
+/// distance: days within a week, then weeks, months, years. Matches react's
+/// dateToRelative for past dates, which reaches the same output through Intl.
+///
+/// A date ahead of [now] reads as today: the pickers do not offer one, so it
+/// only ever arrives through clock skew between devices, and the phrases for
+/// it (react has them from Intl) would be four more strings to translate for
+/// a case nobody is looking at.
+String relativeDate(BuildContext context, DateTime date, {DateTime? now}) {
+  final today = now ?? DateTime.now();
+  // Calendar arithmetic in UTC, so a DST day is not 23 or 25 hours long
+  final elapsed = DateTime.utc(
+    today.year,
+    today.month,
+    today.day,
+  ).difference(DateTime.utc(date.year, date.month, date.day)).inDays;
+  final days = max(0, elapsed);
+
+  final i18n = AppLocalizations.of(context);
+  if (days < DateTime.daysPerWeek) {
+    return i18n.relativeDaysAgo(days);
+  }
+  if (days < 31) {
+    return i18n.relativeWeeksAgo((days / 7).round());
+  }
+  if (days < 365) {
+    return i18n.relativeMonthsAgo((days / 30).round());
+  }
+  return i18n.relativeYearsAgo((days / 365).round());
+}
 
 /// The unit a duration is stored in, which is what the health platforms deliver.
 const durationUnit = 'min';

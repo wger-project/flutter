@@ -39,6 +39,11 @@ import 'package:wger/features/measurements/widgets/helpers.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 /// Height of a tile in the overview grid, shared with the grid delegate.
+///
+/// Holds the rows a tile stacks (name, value, spark, axis, chip) with room to
+/// spare: they are laid out at their natural heights, so a tile sized to
+/// exactly fit them overflows as soon as the text does not render at the size
+/// it was measured at.
 const measurementTileExtent = 172.0;
 
 /// Height of the spark chart inside a tile.
@@ -75,11 +80,26 @@ class MeasurementTile extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                category.displayName(context),
-                style: Theme.of(context).textTheme.titleSmall,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+              // How old the reading is rides on the name's line: it qualifies
+              // the value below, but a row of its own costs the tile more
+              // height than it can spare, and next to the value it would push
+              // a wide reading (a blood pressure) into an ellipsis
+              Row(
+                children: [
+                  // Expanded, not Flexible: the name keeps the width the date
+                  // leaves, which pushes the date to the far edge instead of
+                  // crowding it against the name
+                  Expanded(
+                    child: Text(
+                      category.displayName(context),
+                      style: Theme.of(context).textTheme.titleSmall,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  _MeasuredAt(_newestOf(latest)),
+                ],
               ),
               _heroValue(context, latest),
               const Spacer(),
@@ -237,15 +257,11 @@ class MeasurementTile extends ConsumerWidget {
             child: SparkLineChart(points, start: start, days: days, dots: sparse),
           ),
           _axis(start, days, weekly: false),
-          // A handful of readings has no trend to quote, but a date is honest
-          if (sparse)
-            _LastMeasured(latest[category.id])
-          else
-            _TrendChip(
-              points: points,
-              unit: category.unit,
-              decimals: category.metricType.displayDecimals,
-            ),
+          _TrendChip(
+            points: points,
+            unit: category.unit,
+            decimals: category.metricType.displayDecimals,
+          ),
         ];
     }
   }
@@ -315,7 +331,9 @@ class MeasurementTile extends ConsumerWidget {
       return [
         _SparkArea(child: SparkBarChart(data)),
         _axis(start, window.days!, weekly: window.weekly),
-        _LastMeasured(_newestOf(category.children, latest)),
+        // A range spans a reading rather than tracking a level, so the spread
+        // is what a chip could quote; the hero already says how recent it is
+        const SizedBox.shrink(),
       ];
     }
 
@@ -329,17 +347,22 @@ class MeasurementTile extends ConsumerWidget {
         child: SparkLineChart(fallback ?? const [], start: start, days: window.days!),
       ),
       _axis(start, window.days!, weekly: window.weekly),
-      _LastMeasured(_newestOf(category.children, latest)),
+      const SizedBox.shrink(),
     ];
   }
 
-  MeasurementEntry? _newestOf(
-    List<MeasurementCategory> children,
-    Map<String, MeasurementEntry> latest,
-  ) => children
-      .map((c) => latest[c.id])
-      .nonNulls
-      .fold(null, (a, b) => a == null || b.date.isAfter(a.date) ? b : a);
+  /// The entry the hero value comes from: the category's own for a leaf, the
+  /// newest of the components for a group.
+  MeasurementEntry? _newestOf(Map<String, MeasurementEntry> latest) {
+    final candidates = category.hasChildren
+        ? category.children.map((child) => latest[child.id])
+        : [latest[category.id]];
+
+    return candidates.nonNulls.fold(
+      null,
+      (newest, entry) => newest == null || entry.date.isAfter(newest.date) ? entry : newest,
+    );
+  }
 }
 
 /// The axis row under a spark: one weekday letter per day where the window is
@@ -523,10 +546,14 @@ class _AverageChip extends StatelessWidget {
   }
 }
 
-/// When the category was last measured, the honest footer of a tile whose
-/// chart says little about that (sparse dots, unpaired readings).
-class _LastMeasured extends StatelessWidget {
-  const _LastMeasured(this.entry);
+/// How long ago the value below was measured: for a category the health sync
+/// feeds every now and then, this is what says an old-looking chart is not a
+/// broken one.
+///
+/// Sizes to its text, so the row it sits in decides what happens when the
+/// two do not fit; it cannot ellipsify itself.
+class _MeasuredAt extends StatelessWidget {
+  const _MeasuredAt(this.entry);
 
   final MeasurementEntry? entry;
 
@@ -538,7 +565,7 @@ class _LastMeasured extends StatelessWidget {
     }
 
     return Text(
-      localizedDate(context).format(entry!.date),
+      relativeDate(context, entry!.date),
       style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onSurfaceVariant),
     );
   }

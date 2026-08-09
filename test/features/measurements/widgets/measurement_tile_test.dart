@@ -19,7 +19,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:intl/intl.dart';
 import 'package:mockito/annotations.dart';
 import 'package:wger/features/measurements/charts/range.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
@@ -123,10 +122,9 @@ void main() {
       expect(find.textContaining('↗'), findsOneWidget);
     });
 
-    testWidgets('sparse tile: dots, months and the last-measured date', (tester) async {
-      final lastMeasured = _day(21);
+    testWidgets('sparse tile: dots and the month axis', (tester) async {
       final entries = {
-        'biceps': [_entry('biceps', 38.5, lastMeasured)],
+        'biceps': [_entry('biceps', 38.5, _day(21))],
       };
       final biceps = MeasurementCategory(id: 'biceps', name: 'Biceps', unit: 'cm');
 
@@ -136,7 +134,36 @@ void main() {
       expect(find.text('38.5 cm'), findsOneWidget);
       final dots = tester.widget<SparkLineChart>(find.byType(SparkLineChart));
       expect(dots.dots, isTrue);
-      expect(find.text(DateFormat.yMd('en').format(lastMeasured)), findsOneWidget);
+    });
+
+    testWidgets('the hero says how long ago it was measured', (tester) async {
+      // Right under the value, since it qualifies the value rather than the
+      // chart; a stale-looking spark is then readable as "not measured since"
+      await tester.pumpWidget(
+        _wrap(
+          restingHeartRate,
+          entries: {
+            'rhr': [_entry('rhr', 61, _day(0))],
+          },
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('today'), findsOneWidget);
+    });
+
+    testWidgets('a value measured a while back says so in weeks', (tester) async {
+      await tester.pumpWidget(
+        _wrap(
+          restingHeartRate,
+          entries: {
+            'rhr': [_entry('rhr', 61, _day(21))],
+          },
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('3 weeks ago'), findsOneWidget);
     });
 
     testWidgets('summed tile: bars and the window average', (tester) async {

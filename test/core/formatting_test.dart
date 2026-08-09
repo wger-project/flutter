@@ -16,8 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wger/core/formatting/formatting.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 
 void main() {
   group('hoursAndMinutes', () {
@@ -79,6 +81,83 @@ void main() {
 
     test('leaves every other unit alone', () {
       expect(measurementUnit('kg'), 'kg');
+    });
+  });
+
+  group('relativeDate', () {
+    final today = DateTime(2026, 8, 8, 14, 30);
+
+    /// [relativeDate] for a date [daysAgo] days back, read in [locale].
+    Future<String> phraseFor(WidgetTester tester, int daysAgo, {String locale = 'en'}) async {
+      late String phrase;
+      await tester.pumpWidget(
+        MaterialApp(
+          locale: Locale(locale),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Builder(
+            builder: (context) {
+              phrase = relativeDate(
+                context,
+                DateTime(today.year, today.month, today.day - daysAgo, 6),
+                now: today,
+              );
+              return const SizedBox();
+            },
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      return phrase;
+    }
+
+    testWidgets('names the days close by instead of counting them', (tester) async {
+      expect(await phraseFor(tester, 0), 'today');
+      expect(await phraseFor(tester, 1), 'yesterday');
+      expect(await phraseFor(tester, 3), '3 days ago');
+    });
+
+    testWidgets('the unit grows with the distance', (tester) async {
+      expect(await phraseFor(tester, 21), '3 weeks ago');
+      expect(await phraseFor(tester, 60), '2 months ago');
+      expect(await phraseFor(tester, 400), '1 year ago');
+    });
+
+    testWidgets('counts calendar days, so this morning still reads as yesterday', (tester) async {
+      // The entry is 20 hours old but fell on yesterday's calendar day
+      late String phrase;
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Builder(
+            builder: (context) {
+              phrase = relativeDate(
+                context,
+                DateTime(2026, 8, 7, 18),
+                now: DateTime(2026, 8, 8, 9),
+              );
+              return const SizedBox();
+            },
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(phrase, 'yesterday');
+    });
+
+    testWidgets('a date ahead of now reads as today rather than counting down', (tester) async {
+      // Only reachable through clock skew between devices, and the plural
+      // messages have no phrases for it: "-1 days ago" is what it used to say
+      expect(await phraseFor(tester, -1), 'today');
+      expect(await phraseFor(tester, -10), 'today');
+      expect(await phraseFor(tester, -400), 'today');
+    });
+
+    testWidgets('speaks the locale it is read in', (tester) async {
+      expect(await phraseFor(tester, 0, locale: 'de'), 'heute');
+      expect(await phraseFor(tester, 21, locale: 'de'), 'vor 3 Wochen');
     });
   });
 }

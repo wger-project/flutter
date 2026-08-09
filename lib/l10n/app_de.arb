@@ -1190,5 +1190,9 @@
     "sparkTrendPerWeek": "{value}/Woche",
     "sparkTrendStable": "stabil",
     "trackNewMetric": "Etwas Neues aufzeichnen",
-    "chartRangeWeeks": "{count, plural, one{1 Woche} other{{count} Wochen}}"
+    "chartRangeWeeks": "{count, plural, one{1 Woche} other{{count} Wochen}}",
+    "relativeDaysAgo": "{count, plural, =0{heute} =1{gestern} other{vor {count} Tagen}}",
+    "relativeWeeksAgo": "{count, plural, one{vor 1 Woche} other{vor {count} Wochen}}",
+    "relativeMonthsAgo": "{count, plural, one{vor 1 Monat} other{vor {count} Monaten}}",
+    "relativeYearsAgo": "{count, plural, one{vor 1 Jahr} other{vor {count} Jahren}}"
 }

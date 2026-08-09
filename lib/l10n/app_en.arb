@@ -667,6 +667,42 @@
       }
     }
   },
+  "relativeDaysAgo": "{count, plural, =0{today} =1{yesterday} other{{count} days ago}}",
+  "@relativeDaysAgo": {
+    "description": "How long ago something was measured, for distances below a week",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "relativeWeeksAgo": "{count, plural, one{1 week ago} other{{count} weeks ago}}",
+  "@relativeWeeksAgo": {
+    "description": "How long ago something was measured, for distances below a month",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "relativeMonthsAgo": "{count, plural, one{1 month ago} other{{count} months ago}}",
+  "@relativeMonthsAgo": {
+    "description": "How long ago something was measured, for distances below a year",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "relativeYearsAgo": "{count, plural, one{1 year ago} other{{count} years ago}}",
+  "@relativeYearsAgo": {
+    "description": "How long ago something was measured, for distances of a year and more",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "sparkAverage": "avg {value}",
   "@sparkAverage": {
     "description": "Chip on an overview tile: the average over the charted days, e.g. 'avg 7:05' for sleep",
