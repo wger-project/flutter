@@ -35,6 +35,7 @@ import 'package:wger/core/home_tabs_screen.dart';
 import 'package:wger/core/http_overrides.dart';
 import 'package:wger/core/keys.dart';
 import 'package:wger/core/locale.dart';
+import 'package:wger/core/log_file_store.dart';
 import 'package:wger/core/logs.dart';
 import 'package:wger/core/network/auth_notifier.dart';
 import 'package:wger/core/network/auth_state.dart';
@@ -96,6 +97,7 @@ void _setupLogging() {
     }
 
     InMemoryLogStore().add(record);
+    PersistentLogStore().add(record);
   });
 }
 
@@ -120,6 +122,10 @@ void main() async {
   applyVerboseLogging(
     await PreferenceHelper.asyncPref.getBool(PREFS_VERBOSE_LOGGING) ?? VERBOSE_LOGGING_DEFAULT,
   );
+
+  // Picks up the entries of the previous run and starts a new file for this
+  // one. The records logged until here are buffered and land in it as well.
+  await initPersistentLogs();
 
   // Seed the certificate opt-in from the prefs so the auto-login probe already
   // honours it; AppSettingsNotifier keeps it in sync from here on.

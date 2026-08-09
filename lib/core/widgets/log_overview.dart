@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/core/error_dialogs.dart' show CopyToClipboardButton;
 import 'package:wger/core/errors.dart' show buildGithubIssueUrl;
+import 'package:wger/core/log_file_store.dart';
 import 'package:wger/core/logs.dart';
 import 'package:wger/core/misc.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -40,13 +41,21 @@ class _LogOverviewPageState extends State<LogOverviewPage> {
   @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
-    // Filtering on the formatted entry, so the query matches exactly what
-    // is on screen, error text included
+    // Both sections filter on the formatted entry, so the same query behaves
+    // the same way everywhere: you filter what you see
     final query = _filter.toLowerCase();
     final logs = InMemoryLogStore().logs.reversed
         .where((log) => formatLogRecord(log).toLowerCase().contains(query))
         .toList();
-    final copyText = logs.map(formatLogRecord).join('\n');
+    // Entries from before the last restart, at the end of the list because
+    // the newest ones are on top
+    final previousRun = PersistentLogStore().previousRunLines.reversed
+        .where((entry) => entry.toLowerCase().contains(query))
+        .toList();
+    final copyText = [
+      ...logs.map(formatLogRecord),
+      ...previousRun,
+    ].join('\n');
 
     return Scaffold(
       appBar: AppBar(
@@ -88,11 +97,23 @@ class _LogOverviewPageState extends State<LogOverviewPage> {
             ),
           ),
           Expanded(
-            child: logs.isEmpty
+            child: logs.isEmpty && previousRun.isEmpty
                 ? const Center(child: Text('No logs available.'))
                 : ListView.builder(
-                    itemCount: logs.length,
+                    itemCount: logs.length + previousRun.length,
                     itemBuilder: (context, index) {
+                      // The restored entries are already formatted text, all
+                      // that is known about them is what the line says
+                      if (index >= logs.length) {
+                        final entry = previousRun[index - logs.length];
+                        return ListTile(
+                          dense: true,
+                          leading: const Icon(Icons.history),
+                          title: Text(entry),
+                          trailing: CopyToClipboardButton(text: entry, iconOnly: true),
+                        );
+                      }
+
                       final log = logs[index];
                       return ListTile(
                         dense: true,
