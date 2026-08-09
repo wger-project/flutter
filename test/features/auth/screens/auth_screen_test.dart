@@ -118,7 +118,7 @@ void main() {
     when(mockSecureStorage.writeRefreshToken(any)).thenAnswer((_) async {});
 
     // Default: online. The offline test overrides this.
-    reachabilityCheck = (_, _, _) async => true;
+    reachabilityCheck = (_, _, _) async => (reachable: true, reason: 'test');
 
     SharedPreferences.setMockInitialValues({});
     SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
@@ -306,7 +306,7 @@ void main() {
 
     testWidgets('Login button is disabled when offline', (WidgetTester tester) async {
       // Arrange: no connectivity.
-      reachabilityCheck = (_, _, _) async => false;
+      reachabilityCheck = (_, _, _) async => (reachable: false, reason: 'test');
       await tester.pumpWidget(getWidget());
       await tester.pumpAndSettle();
 

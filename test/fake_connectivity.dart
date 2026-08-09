@@ -40,7 +40,7 @@ void installFakeConnectivity() {
   // NetworkStatus registers an AppLifecycleListener, which needs a binding.
   TestWidgetsFlutterBinding.ensureInitialized();
   ConnectivityPlatform.instance = _FakeConnectivityPlatform();
-  reachabilityCheck = (_, _, _) async => true;
+  reachabilityCheck = (_, _, _) async => (reachable: true, reason: 'stub');
 }
 
 class _FakeConnectivityPlatform extends ConnectivityPlatform with MockPlatformInterfaceMixin {

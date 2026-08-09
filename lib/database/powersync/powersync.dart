@@ -74,7 +74,31 @@ Future<PowerSyncDatabase> powerSyncInstance(Ref ref) async {
 
   final client = ref.read(authenticatedHttpClientProvider);
   final watchdog = ref.read(syncWatchdogProvider);
-  final statusSubscription = db.statusStream.listen(watchdog.onStatus);
+
+  // Whether any data ever arrived is the first question in every sync support
+  // case, so the first checkpoint of this app run gets a log line. Later ones
+  // would only repeat it. The progress is remembered from the events before
+  // the checkpoint, it is already cleared again once the download finishes.
+  var loggedFirstCheckpoint = false;
+  SyncDownloadProgress? lastProgress;
+  final statusSubscription = db.statusStream.listen((status) {
+    watchdog.onStatus(status);
+    lastProgress = status.downloadProgress ?? lastProgress;
+
+    if (!loggedFirstCheckpoint && status.lastSyncedAt != null) {
+      loggedFirstCheckpoint = true;
+      final operations = lastProgress == null
+          ? ''
+          : ', ${lastProgress!.downloadedOperations} of '
+                '${lastProgress!.totalOperations} operations downloaded';
+      // On a warm start this is the checkpoint of an earlier run, replayed
+      // from the local database, hence the timestamp.
+      _logger.info(
+        'Sync checkpoint received, last synced at '
+        '${status.lastSyncedAt!.toUtc().toIso8601String()}$operations',
+      );
+    }
+  });
 
   // Connect to the sync service only while the device is online. PowerSync's
   // own retry loop would otherwise log a credential error on every iteration
@@ -83,9 +107,13 @@ Future<PowerSyncDatabase> powerSyncInstance(Ref ref) async {
     if (isOnline) {
       final serverUrl = ref.read(wgerBaseProvider).serverUrl;
       if (serverUrl != null) {
+        _logger.info('Device online, connecting to the sync service');
         connectPowerSync(db, serverUrl, client);
+      } else {
+        _logger.info('Device online, but no server configured: not connecting');
       }
     } else {
+      _logger.info('Device offline, disconnecting from the sync service');
       db.disconnect();
       // Deliberate disconnect: an offline device is not a blocked stream.
       watchdog.reset();
