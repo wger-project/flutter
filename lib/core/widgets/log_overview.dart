@@ -18,26 +18,43 @@
 
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
+import 'package:wger/core/error_dialogs.dart' show CopyToClipboardButton;
 import 'package:wger/core/errors.dart' show buildGithubIssueUrl;
 import 'package:wger/core/logs.dart';
 import 'package:wger/core/misc.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/powersync/sync_diagnostics.dart' show collectSyncDiagnostics;
 
-class LogOverviewPage extends StatelessWidget {
+class LogOverviewPage extends StatefulWidget {
   static String routeName = '/LogOverviewPage';
 
   const LogOverviewPage({super.key});
 
   @override
+  State<LogOverviewPage> createState() => _LogOverviewPageState();
+}
+
+class _LogOverviewPageState extends State<LogOverviewPage> {
+  String _filter = '';
+
+  @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
-    final logs = InMemoryLogStore().logs.reversed.toList();
+    // Filtering on the formatted entry, so the query matches exactly what
+    // is on screen, error text included
+    final query = _filter.toLowerCase();
+    final logs = InMemoryLogStore().logs.reversed
+        .where((log) => formatLogRecord(log).toLowerCase().contains(query))
+        .toList();
+    final copyText = logs.map(formatLogRecord).join('\n');
 
     return Scaffold(
       appBar: AppBar(
         title: Text(i18n.applicationLogs),
         actions: [
+          // Copies everything the filter currently lets through, so a report
+          // isn't limited to what fits on a screenshot
+          CopyToClipboardButton(text: copyText, iconOnly: true),
           // Opens a pre-filled GitHub issue with these logs and the current
           // sync snapshot
           IconButton(
@@ -55,21 +72,44 @@ class LogOverviewPage extends StatelessWidget {
           ),
         ],
       ),
-      body: logs.isEmpty
-          ? const Center(child: Text('No logs available.'))
-          : ListView.builder(
-              itemCount: logs.length,
-              itemBuilder: (context, index) {
-                final log = logs[index];
-                return ListTile(
-                  dense: true,
-                  leading: Icon(_iconForLevel(log.level)),
-                  title: Text('[${log.level.name}] ${log.message}'),
-                  subtitle: Text('${log.loggerName}\n${log.time.toIso8601String()}'),
-                  isThreeLine: true,
-                );
-              },
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: TextField(
+              key: const ValueKey('logFilterField'),
+              decoration: InputDecoration(
+                isDense: true,
+                border: const OutlineInputBorder(),
+                prefixIcon: const Icon(Icons.search),
+                labelText: i18n.filter,
+              ),
+              onChanged: (value) => setState(() => _filter = value),
             ),
+          ),
+          Expanded(
+            child: logs.isEmpty
+                ? const Center(child: Text('No logs available.'))
+                : ListView.builder(
+                    itemCount: logs.length,
+                    itemBuilder: (context, index) {
+                      final log = logs[index];
+                      return ListTile(
+                        dense: true,
+                        leading: Icon(_iconForLevel(log.level)),
+                        title: Text('[${log.level.name}] ${formatLogDetails(log)}'),
+                        subtitle: Text('${log.loggerName}\n${log.time.toUtc().toIso8601String()}'),
+                        trailing: CopyToClipboardButton(
+                          text: formatLogRecord(log),
+                          iconOnly: true,
+                        ),
+                        isThreeLine: true,
+                      );
+                    },
+                  ),
+          ),
+        ],
+      ),
     );
   }
 }
