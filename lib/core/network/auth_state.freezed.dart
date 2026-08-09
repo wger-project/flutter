@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$AuthState {
 
- AuthStatus get status; AuthCredential? get credential; String? get serverUrl; String? get serverVersion; PackageInfo? get applicationVersion; bool get serverConfigWarning;/// True when the previous session ended involuntarily (expired or
+ AuthStatus get status; JwtCredential? get credential; String? get serverUrl; String? get serverVersion; PackageInfo? get applicationVersion; bool get serverConfigWarning;/// True when the previous session ended involuntarily (expired or
 /// revoked tokens). The login screen shows a hint so the user knows
 /// why they have to log in again. Reset by the next login, which
 /// builds a fresh state.
@@ -49,11 +49,11 @@ abstract mixin class $AuthStateCopyWith<$Res>  {
   factory $AuthStateCopyWith(AuthState value, $Res Function(AuthState) _then) = _$AuthStateCopyWithImpl;
 @useResult
 $Res call({
- AuthStatus status, AuthCredential? credential, String? serverUrl, String? serverVersion, PackageInfo? applicationVersion, bool serverConfigWarning, bool sessionExpired
+ AuthStatus status, JwtCredential? credential, String? serverUrl, String? serverVersion, PackageInfo? applicationVersion, bool serverConfigWarning, bool sessionExpired
 });
 
 
-$AuthCredentialCopyWith<$Res>? get credential;
+$JwtCredentialCopyWith<$Res>? get credential;
 
 }
 /// @nodoc
@@ -70,7 +70,7 @@ class _$AuthStateCopyWithImpl<$Res>
   return _then(_self.copyWith(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as AuthStatus,credential: freezed == credential ? _self.credential : credential // ignore: cast_nullable_to_non_nullable
-as AuthCredential?,serverUrl: freezed == serverUrl ? _self.serverUrl : serverUrl // ignore: cast_nullable_to_non_nullable
+as JwtCredential?,serverUrl: freezed == serverUrl ? _self.serverUrl : serverUrl // ignore: cast_nullable_to_non_nullable
 as String?,serverVersion: freezed == serverVersion ? _self.serverVersion : serverVersion // ignore: cast_nullable_to_non_nullable
 as String?,applicationVersion: freezed == applicationVersion ? _self.applicationVersion : applicationVersion // ignore: cast_nullable_to_non_nullable
 as PackageInfo?,serverConfigWarning: null == serverConfigWarning ? _self.serverConfigWarning : serverConfigWarning // ignore: cast_nullable_to_non_nullable
@@ -82,12 +82,12 @@ as bool,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$AuthCredentialCopyWith<$Res>? get credential {
+$JwtCredentialCopyWith<$Res>? get credential {
     if (_self.credential == null) {
     return null;
   }
 
-  return $AuthCredentialCopyWith<$Res>(_self.credential!, (value) {
+  return $JwtCredentialCopyWith<$Res>(_self.credential!, (value) {
     return _then(_self.copyWith(credential: value));
   });
 }
@@ -169,7 +169,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( AuthStatus status,  AuthCredential? credential,  String? serverUrl,  String? serverVersion,  PackageInfo? applicationVersion,  bool serverConfigWarning,  bool sessionExpired)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( AuthStatus status,  JwtCredential? credential,  String? serverUrl,  String? serverVersion,  PackageInfo? applicationVersion,  bool serverConfigWarning,  bool sessionExpired)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AuthState() when $default != null:
 return $default(_that.status,_that.credential,_that.serverUrl,_that.serverVersion,_that.applicationVersion,_that.serverConfigWarning,_that.sessionExpired);case _:
@@ -190,7 +190,7 @@ return $default(_that.status,_that.credential,_that.serverUrl,_that.serverVersio
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( AuthStatus status,  AuthCredential? credential,  String? serverUrl,  String? serverVersion,  PackageInfo? applicationVersion,  bool serverConfigWarning,  bool sessionExpired)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( AuthStatus status,  JwtCredential? credential,  String? serverUrl,  String? serverVersion,  PackageInfo? applicationVersion,  bool serverConfigWarning,  bool sessionExpired)  $default,) {final _that = this;
 switch (_that) {
 case _AuthState():
 return $default(_that.status,_that.credential,_that.serverUrl,_that.serverVersion,_that.applicationVersion,_that.serverConfigWarning,_that.sessionExpired);}
@@ -207,7 +207,7 @@ return $default(_that.status,_that.credential,_that.serverUrl,_that.serverVersio
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( AuthStatus status,  AuthCredential? credential,  String? serverUrl,  String? serverVersion,  PackageInfo? applicationVersion,  bool serverConfigWarning,  bool sessionExpired)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( AuthStatus status,  JwtCredential? credential,  String? serverUrl,  String? serverVersion,  PackageInfo? applicationVersion,  bool serverConfigWarning,  bool sessionExpired)?  $default,) {final _that = this;
 switch (_that) {
 case _AuthState() when $default != null:
 return $default(_that.status,_that.credential,_that.serverUrl,_that.serverVersion,_that.applicationVersion,_that.serverConfigWarning,_that.sessionExpired);case _:
@@ -226,7 +226,7 @@ class _AuthState extends AuthState {
   
 
 @override@JsonKey() final  AuthStatus status;
-@override final  AuthCredential? credential;
+@override final  JwtCredential? credential;
 @override final  String? serverUrl;
 @override final  String? serverVersion;
 @override final  PackageInfo? applicationVersion;
@@ -267,11 +267,11 @@ abstract mixin class _$AuthStateCopyWith<$Res> implements $AuthStateCopyWith<$Re
   factory _$AuthStateCopyWith(_AuthState value, $Res Function(_AuthState) _then) = __$AuthStateCopyWithImpl;
 @override @useResult
 $Res call({
- AuthStatus status, AuthCredential? credential, String? serverUrl, String? serverVersion, PackageInfo? applicationVersion, bool serverConfigWarning, bool sessionExpired
+ AuthStatus status, JwtCredential? credential, String? serverUrl, String? serverVersion, PackageInfo? applicationVersion, bool serverConfigWarning, bool sessionExpired
 });
 
 
-@override $AuthCredentialCopyWith<$Res>? get credential;
+@override $JwtCredentialCopyWith<$Res>? get credential;
 
 }
 /// @nodoc
@@ -288,7 +288,7 @@ class __$AuthStateCopyWithImpl<$Res>
   return _then(_AuthState(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as AuthStatus,credential: freezed == credential ? _self.credential : credential // ignore: cast_nullable_to_non_nullable
-as AuthCredential?,serverUrl: freezed == serverUrl ? _self.serverUrl : serverUrl // ignore: cast_nullable_to_non_nullable
+as JwtCredential?,serverUrl: freezed == serverUrl ? _self.serverUrl : serverUrl // ignore: cast_nullable_to_non_nullable
 as String?,serverVersion: freezed == serverVersion ? _self.serverVersion : serverVersion // ignore: cast_nullable_to_non_nullable
 as String?,applicationVersion: freezed == applicationVersion ? _self.applicationVersion : applicationVersion // ignore: cast_nullable_to_non_nullable
 as PackageInfo?,serverConfigWarning: null == serverConfigWarning ? _self.serverConfigWarning : serverConfigWarning // ignore: cast_nullable_to_non_nullable
@@ -301,12 +301,12 @@ as bool,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$AuthCredentialCopyWith<$Res>? get credential {
+$JwtCredentialCopyWith<$Res>? get credential {
     if (_self.credential == null) {
     return null;
   }
 
-  return $AuthCredentialCopyWith<$Res>(_self.credential!, (value) {
+  return $JwtCredentialCopyWith<$Res>(_self.credential!, (value) {
     return _then(_self.copyWith(credential: value));
   });
 }

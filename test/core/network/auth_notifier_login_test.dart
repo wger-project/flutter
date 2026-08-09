@@ -186,7 +186,7 @@ void main() {
   });
 
   group('login: headless happy path', () {
-    test('200 → stores headless JWT bundle, wipes legacy PREFS_USER, state has tokens', () async {
+    test('200 → stores headless JWT bundle, state has tokens', () async {
       final accessJwt = makeJwt({'sub': '7', 'exp': 1900000000});
       when(
         mockClient.post(tHeadlessLogin, headers: anyNamed('headers'), body: anyNamed('body')),
@@ -202,16 +202,8 @@ void main() {
       );
 
       final container = makeContainer();
-      // Let auto-login settle as logged-out (no PREFS_USER yet).
+      // Let auto-login settle as logged-out (nothing stored yet).
       await container.read(authProvider.future);
-
-      // Seed a stale legacy blob *after* auto-login, so we can assert
-      // login() wipes it on success without auto-login itself trying to
-      // probe with it.
-      await PreferenceHelper.asyncPref.setString(
-        PREFS_USER,
-        jsonEncode({'token': 'stale-legacy', 'serverUrl': serverUrl}),
-      );
 
       final result = await container
           .read(authProvider.notifier)
@@ -230,12 +222,8 @@ void main() {
       // logged-in user so the next login can detect a user-switch.
       final prefs = PreferenceHelper.asyncPref;
       expect(await prefs.getString(PREFS_ACCESS_TOKEN), accessJwt);
-      expect(await prefs.getString(PREFS_TOKEN_TYPE), AuthTokenType.headlessJwt.name);
       expect(await prefs.getString(PREFS_SERVER_URL), serverUrl);
       expect(await prefs.getString(PREFS_DB_OWNER_USER_ID), '7');
-
-      // Stale legacy blob wiped.
-      expect(await prefs.containsKey(PREFS_USER), false);
 
       // No prior session, so the user-switch wipe path must not have fired.
       expect(container.read(authProvider.notifier).userSwitchWipeCount, 0);

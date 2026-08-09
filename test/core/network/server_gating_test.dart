@@ -140,7 +140,7 @@ void main() {
 
   group('isPowerSyncReachable', () {
     const serverUrl = 'https://wger.example.com';
-    const credential = AuthCredential.legacy('abc123');
+    const credential = JwtCredential(accessToken: 'abc123');
 
     /// Gating whose token endpoint answers [tokenBody] and whose liveness
     /// probes answer 200 only for [liveUrl]. Every requested URL is

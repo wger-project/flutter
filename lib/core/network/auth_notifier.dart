@@ -30,7 +30,6 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/error_dialogs.dart';
-import 'package:wger/core/errors.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/core/exceptions/mfa_required_exception.dart';
 import 'package:wger/core/helpers.dart';
@@ -58,11 +57,6 @@ const HEADLESS_TOKENS_REFRESH_PATH = 'tokens/refresh';
 const HEADLESS_AUTH_LOGIN_PATH = 'auth/login';
 const HEADLESS_AUTH_SIGNUP_PATH = 'auth/signup';
 const HEADLESS_AUTH_MFA_AUTHENTICATE_PATH = 'auth/2fa/authenticate';
-
-/// `/api/v2/<this>` endpoint that mints a headless-JWT refresh token for the
-/// authenticated user. Used by the one-shot legacy-DRF → JWT migration on
-/// app start.
-const ISSUE_REFRESH_TOKEN_PATH = 'issue-refresh-token';
 
 /// Header that carries the short-lived `session_token` returned by
 /// `auth/login` when a follow-up step (currently only 2FA) is still pending.
@@ -417,12 +411,7 @@ class AuthNotifier extends _$AuthNotifier {
   }
 
   Future<AuthState> _tryAutoLogin() async {
-    // One-shot migration: if a legacy DRF token is still on disk, swap it
-    // for a JWT bundle now so the rest of the auto-login can take the
-    // JWT happy path. On any failure the legacy blob is left alone and the
-    // user falls back to the still-supported legacy code path; the next
-    // start will try again.
-    await _maybeMigrateLegacyToJwt();
+    await _storage.clearLegacyDrfToken();
     final stored = await _storage.load();
     if (stored == null) {
       _logger.info('autologin failed, no saved session');
@@ -432,111 +421,9 @@ class AuthNotifier extends _$AuthNotifier {
     return _resolveStoredSession(stored, appVersion);
   }
 
-  /// Exchanges a legacy DRF API token for a headless-JWT bundle and
-  /// persists the result. No-op when no legacy blob is present.
-  ///
-  /// Sequence:
-  /// 1. POST to [ISSUE_REFRESH_TOKEN_PATH] authenticated with the legacy
-  ///    `Token <key>` header. The server mints a long-lived refresh token
-  ///    backed by a fresh Django session.
-  /// 2. Exchange that refresh token at the standard headless
-  ///    `tokens/refresh` endpoint for the full access bundle (reuses
-  ///    [_exchangePastedRefreshToken]).
-  /// 3. Persist the bundle. [AuthCredentialsStorage.saveJwt] wipes the
-  ///    legacy `PREFS_USER` blob as a side effect, so the next load sees
-  ///    the JWT path.
-  ///
-  /// Failure handling — all branches log and return without touching
-  /// state, so a re-attempt happens on the next app start:
-  /// - Network error: keep the DRF token, the user continues working
-  ///   against the legacy code path until connectivity returns.
-  /// - 401 / 403: the DRF token has been revoked server-side. Wipe the
-  ///   legacy blob so the user is routed to login (they have no usable
-  ///   credential left).
-  /// - 5xx / malformed body / refresh exchange failure: keep the legacy
-  ///   blob and retry on the next start. The server-side session row
-  ///   minted in step 1 stays orphaned but is harmless.
-  Future<void> _maybeMigrateLegacyToJwt() async {
-    final stored = await _storage.load();
-    if (stored == null || stored.credential is! LegacyCredential) {
-      return;
-    }
-    final legacyCred = stored.credential as LegacyCredential;
-    final serverUrl = stored.serverUrl;
-    final appVersion = await PackageInfo.fromPlatform();
-
-    _logger.info('Legacy DRF token present, attempting JWT migration');
-
-    final http.Response response;
-    try {
-      response = await _client.post(
-        makeUri(serverUrl, ISSUE_REFRESH_TOKEN_PATH, trailingSlash: false),
-        headers: jsonApiHeaders(appVersion, {
-          HttpHeaders.authorizationHeader: legacyCred.authHeaderValue,
-        }),
-      );
-    } on Exception catch (e, s) {
-      if (isNetworkError(e)) {
-        _logger.info('Legacy migration: server unreachable, keeping DRF token');
-        return;
-      }
-      _logger.warning('Legacy migration: exchange POST threw', e, s);
-      return;
-    }
-
-    if (_isAuthRejection(response.statusCode)) {
-      _logger.warning(
-        'Legacy migration: DRF token rejected (${response.statusCode}), wiping legacy blob',
-      );
-      await _storage.clearLegacy();
-      return;
-    }
-    if (response.statusCode != 200) {
-      _logger.warning(
-        'Legacy migration: unexpected status ${response.statusCode}, will retry next start',
-      );
-      return;
-    }
-
-    final String refreshToken;
-    try {
-      final body = json.decode(response.body) as Map<String, dynamic>;
-      refreshToken = body['refresh_token'] as String;
-    } catch (e, s) {
-      _logger.warning('Legacy migration: malformed response body', e, s);
-      return;
-    }
-    if (refreshToken.isEmpty) {
-      _logger.warning('Legacy migration: empty refresh_token in response');
-      return;
-    }
-
-    final _FreshCredentials freshCreds;
-    try {
-      freshCreds = await _exchangePastedRefreshToken(refreshToken, serverUrl, appVersion);
-    } on Exception catch (e, s) {
-      _logger.warning('Legacy migration: refresh token exchange failed', e, s);
-      return;
-    }
-
-    await _storage.saveJwt(
-      credential: freshCreds.credential,
-      refreshToken: freshCreds.refreshToken,
-      serverUrl: serverUrl,
-    );
-    // Claim DB ownership for the migrated user: this path logs in without
-    // going through _completeLogin, so otherwise the marker would stay null
-    // and a later different-user login wouldn't wipe.
-    final migratedUserId = freshCreds.credential.userId;
-    if (migratedUserId != null) {
-      await _storage.setDbOwnerUserId(migratedUserId);
-    }
-    _logger.info('Legacy migration: successful, DRF token replaced with JWT');
-  }
-
-  /// Common path for both the headless-JWT and the legacy auto-login flows:
-  /// probe the server, then run the full gating chain. Wipes the matching
-  /// stored credentials on a definitive 4xx so the user is routed to login.
+  /// Auto-login path for a session that has never synced: probe the server,
+  /// then run the full gating chain. Wipes the stored credentials on a
+  /// definitive 4xx so the user is routed to login.
   Future<AuthState> _autoLoginWith(StoredAuth stored, PackageInfo appVersion) async {
     final response = await _gating.probe(
       credential: stored.credential,
@@ -550,12 +437,12 @@ class AuthNotifier extends _$AuthNotifier {
       return _restoredSessionState(stored, appVersion);
     }
 
-    // The server actively rejected our token: wipe the matching credential
-    // bundle and route to login. Only 401/403 count, a transient 5xx must not
-    // log the user out.
+    // The server actively rejected our token: wipe the stored credentials and
+    // route to login. Only 401/403 count, a transient 5xx must not log the
+    // user out.
     if (_isAuthRejection(response.statusCode)) {
       _logger.info('autologin failed, token rejected: ${response.statusCode}');
-      await _clearStoredCredential(stored.credential);
+      await _storage.clearCredentials();
       return AuthState(applicationVersion: appVersion);
     }
 
@@ -602,8 +489,7 @@ class AuthNotifier extends _$AuthNotifier {
     return _restoredSessionState(stored, appVersion);
   }
 
-  /// Builds a logged-in [AuthState] for a stored session. Polymorphism in
-  /// [AuthCredential] keeps this branch-free across credential variants.
+  /// Builds a logged-in [AuthState] for a stored session.
   AuthState _restoredSessionState(StoredAuth stored, PackageInfo appVersion) {
     return AuthState(
       status: AuthStatus.loggedIn,
@@ -616,15 +502,6 @@ class AuthNotifier extends _$AuthNotifier {
   /// Whether [statusCode] means the server actively rejected our token, as
   /// opposed to a transient error that must not invalidate the session.
   bool _isAuthRejection(int statusCode) => statusCode == 401 || statusCode == 403;
-
-  /// Clears only the storage rows that back the given credential. Used on a
-  /// definitive auth-rejection by the server so the next start routes the
-  /// user to the login screen without touching the *other* credential
-  /// shape (which a parallel user on the same device might still rely on).
-  Future<void> _clearStoredCredential(AuthCredential credential) => switch (credential) {
-    LegacyCredential() => _storage.clearLegacy(),
-    JwtCredential() => _storage.clearJwt(),
-  };
 
   /// Schedules a non-blocking revalidation of the restored session.
   ///
@@ -677,9 +554,7 @@ class AuthNotifier extends _$AuthNotifier {
       // If the access token has expired (typical after a longer offline
       // period) refresh first, so a still-valid refresh token isn't wasted
       // by a 401 on the probe below. The refresh's own failure paths will
-      // clear the session if the refresh token is also dead. Legacy
-      // credentials are no-op here ([AuthCredential.needsRefresh] returns
-      // false for them).
+      // clear the session if the refresh token is also dead.
       if (current.credential?.needsRefresh(refreshLeeway) ?? false) {
         _logger.fine('revalidation: access token within leeway, refreshing first');
         await refreshAccessToken();
