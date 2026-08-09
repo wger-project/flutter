@@ -34,12 +34,16 @@ final _logger = Logger('powersync');
 /// `SyncStatus.anyError` stays null. The UI shows "Connecting" forever
 /// without a trace.
 ///
+/// It also covers the noisier variant of the same problem: a connection that
+/// fails in a loop every few seconds. The error is in the status dialog, but
+/// nothing tells the user that no data has arrived for minutes.
+///
 /// The watchdog arms a timer while the client wants to sync but has not
 /// received a checkpoint in this connection epoch. Checkpoint progress
-/// disarms it until [reset]; an active download or a surfaced error pauses
-/// it (those cases are visible through other channels). If the timer
-/// survives [timeout], [stalled] flips to true (the sync status dialog
-/// shows a hint) and a WARNING lands in the app logs.
+/// disarms it until [reset]; only an active download pauses it, as that is
+/// data actually flowing. If the timer survives [timeout], [stalled] flips
+/// to true (the sync status dialog shows a hint) and a WARNING lands in the
+/// app logs.
 class SyncStreamWatchdog {
   SyncStreamWatchdog({this.timeout = const Duration(minutes: 2)});
 
@@ -51,6 +55,11 @@ class SyncStreamWatchdog {
   Timer? _timer;
   DateTime? _lastCheckpoint;
   bool _sawStatus = false;
+
+  /// Last error seen since the watchdog was armed, for the warning. Kept
+  /// across status events: a retry loop clears the error while it reconnects
+  /// and sets it again on the next failure.
+  Object? _lastError;
 
   /// Set once a checkpoint arrived; the watchdog then stays quiet so a later
   /// idle connection (status events stop while nothing changes) cannot
@@ -68,6 +77,7 @@ class SyncStreamWatchdog {
 
     if (madeProgress) {
       _disarmed = true;
+      _lastError = null;
       _cancelTimer();
       if (stalled.value) {
         _logger.info('Sync stream recovered, checkpoint received');
@@ -76,20 +86,23 @@ class SyncStreamWatchdog {
       return;
     }
 
-    // Downloading means data is flowing (a first checkpoint on a large
-    // account can take a while); an error is already surfaced by the sync
-    // status dialog. Neither is the silent failure we are watching for.
-    if (status.downloading || status.anyError != null) {
+    // Downloading means data is flowing, a first checkpoint on a large
+    // account can take a while.
+    if (status.downloading) {
       _cancelTimer();
       return;
     }
+
+    _lastError = status.anyError ?? _lastError;
 
     // A `connecting` flag briefly dropping between two retry iterations must
     // NOT clear the timer: the silent connect/EOF loop would reset it on
     // every cycle. Only [reset] (deliberate disconnect) clears it. While
     // already stalled there is nothing new to detect (and no reason to log
     // the warning again), so the timer stays off until recovery.
-    if (!_disarmed && !stalled.value && (status.connecting || status.connected)) {
+    if (!_disarmed &&
+        !stalled.value &&
+        (status.connecting || status.connected || _lastError != null)) {
       _timer ??= Timer(timeout, _onTimeout);
     }
   }
@@ -99,6 +112,7 @@ class SyncStreamWatchdog {
   void reset() {
     _cancelTimer();
     _disarmed = false;
+    _lastError = null;
     stalled.value = false;
   }
 
@@ -110,6 +124,16 @@ class SyncStreamWatchdog {
   void _onTimeout() {
     _timer = null;
     stalled.value = true;
+
+    if (_lastError case final error?) {
+      _logger.warning(
+        'Sync has been failing for ${timeout.inMinutes} minutes without '
+        'receiving any data.',
+        error,
+      );
+      return;
+    }
+
     _logger.warning(
       'Sync stream keeps terminating without receiving any data. The '
       'connection to the sync service may be blocked by a VPN, ad blocker, '
