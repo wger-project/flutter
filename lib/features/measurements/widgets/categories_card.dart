@@ -63,7 +63,7 @@ class CategoriesCard extends ConsumerWidget {
   const CategoriesCard(
     this.currentCategory, {
     this.elevation,
-    this.range = ChartRange.last3Months,
+    this.range = defaultChartRange,
     this.title,
     this.displayUnit,
     this.displayUnitLabel,

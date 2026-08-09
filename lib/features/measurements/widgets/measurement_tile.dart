@@ -52,7 +52,7 @@ const _heatmapHeight = 58.0;
 /// as context over the range the filter selects. A tap opens the category's
 /// entries screen; everything beyond a glance lives there.
 class MeasurementTile extends ConsumerWidget {
-  const MeasurementTile(this.category, {this.range = ChartRange.last3Months, super.key});
+  const MeasurementTile(this.category, {this.range = defaultChartRange, super.key});
 
   final MeasurementCategory category;
   final ChartRange range;

@@ -43,7 +43,7 @@ class ChartRangeSetting extends _$ChartRangeSetting {
   @override
   ChartRange build() {
     unawaited(_load());
-    return ChartRange.last3Months;
+    return defaultChartRange;
   }
 
   /// The stored pick, applied once it is read; a value this release does not

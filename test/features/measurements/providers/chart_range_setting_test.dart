@@ -40,10 +40,10 @@ void main() {
 
   group('ChartRangeSetting', () {
     test('starts at the default while nothing is stored', () async {
-      expect(container.read(chartRangeSettingProvider), ChartRange.last3Months);
+      expect(container.read(chartRangeSettingProvider), defaultChartRange);
 
       await pumpEventQueue();
-      expect(container.read(chartRangeSettingProvider), ChartRange.last3Months);
+      expect(container.read(chartRangeSettingProvider), defaultChartRange);
     });
 
     test('a pick is what every watcher reads afterwards, and it is persisted', () async {
@@ -55,7 +55,8 @@ void main() {
     });
 
     test('the stored pick survives a restart', () async {
-      await prefs.setString(PREFS_CHART_RANGE, 'lastMonth');
+      // Deliberately not the default, or the test would pass without loading
+      await prefs.setString(PREFS_CHART_RANGE, 'lastYear');
 
       // A fresh container stands in for the next app run
       final restarted = ProviderContainer.test(
@@ -64,7 +65,7 @@ void main() {
       restarted.listen(chartRangeSettingProvider, (_, _) {});
       await pumpEventQueue();
 
-      expect(restarted.read(chartRangeSettingProvider), ChartRange.lastMonth);
+      expect(restarted.read(chartRangeSettingProvider), ChartRange.lastYear);
     });
 
     test('a value this release does not know leaves the default', () async {
@@ -76,11 +77,11 @@ void main() {
       restarted.listen(chartRangeSettingProvider, (_, _) {});
       await pumpEventQueue();
 
-      expect(restarted.read(chartRangeSettingProvider), ChartRange.last3Months);
+      expect(restarted.read(chartRangeSettingProvider), defaultChartRange);
     });
 
     test('a pick made before the stored value arrives is not overwritten', () async {
-      await prefs.setString(PREFS_CHART_RANGE, 'lastMonth');
+      await prefs.setString(PREFS_CHART_RANGE, 'lastYear');
 
       final restarted = ProviderContainer.test(
         overrides: [appSettingsPrefsProvider.overrideWithValue(prefs)],

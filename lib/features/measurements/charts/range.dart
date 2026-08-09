@@ -20,10 +20,10 @@ import 'package:collection/collection.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
+/// The range the charts cover until the user picks another one.
+const defaultChartRange = ChartRange.lastMonth;
+
 /// Time range the user can pick to limit how far back the charts go.
-///
-/// The default is the shortest one: a chart is only readable if the span it
-/// covers is, and the recent values are what tracking progress is about.
 enum ChartRange {
   all(null),
   lastYear(365),
