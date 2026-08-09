@@ -5491,6 +5491,50 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String relativeDaysAgo(int? count) =>
+      (super.noSuchMethod(
+            Invocation.method(#relativeDaysAgo, [count]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#relativeDaysAgo, [count]),
+            ),
+          )
+          as String);
+
+  @override
+  String relativeWeeksAgo(int? count) =>
+      (super.noSuchMethod(
+            Invocation.method(#relativeWeeksAgo, [count]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#relativeWeeksAgo, [count]),
+            ),
+          )
+          as String);
+
+  @override
+  String relativeMonthsAgo(int? count) =>
+      (super.noSuchMethod(
+            Invocation.method(#relativeMonthsAgo, [count]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#relativeMonthsAgo, [count]),
+            ),
+          )
+          as String);
+
+  @override
+  String relativeYearsAgo(int? count) =>
+      (super.noSuchMethod(
+            Invocation.method(#relativeYearsAgo, [count]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#relativeYearsAgo, [count]),
+            ),
+          )
+          as String);
+
+  @override
   String sparkAverage(String? value) =>
       (super.noSuchMethod(
             Invocation.method(#sparkAverage, [value]),

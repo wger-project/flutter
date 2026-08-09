@@ -573,6 +573,31 @@ class MeasurementCategory with _$MeasurementCategory {
     this.children = const [],
   });
 
+  /// Maps a row of the local database. Rows synced before the 2.7 schema
+  /// change lack the new columns and read as NULL; they fall back to the
+  /// defaults until the full re-sync replaces them.
+  MeasurementCategory.fromDb({
+    required String id,
+    required String name,
+    required String unit,
+    required ChartType chartType,
+    MetricType? metricType,
+    Map<String, dynamic>? chartConfig,
+    String? parentId,
+    int? order,
+    bool? isOfficial,
+  }) : this(
+         id: id,
+         name: name,
+         unit: unit,
+         metricType: metricType ?? MetricType.custom,
+         chartType: chartType,
+         chartConfig: chartConfig,
+         parentId: parentId,
+         order: order ?? 0,
+         isOfficial: isOfficial ?? false,
+       );
+
   /// How this category is drawn, beyond the chart type: see [ChartSettings].
   ChartSettings get chartSettings => ChartSettings.fromConfig(chartConfig);
 

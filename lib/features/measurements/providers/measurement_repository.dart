@@ -575,7 +575,8 @@ class MeasurementRepository {
     await _db.transaction(() async {
       for (var i = 0; i < orderedIds.length; i++) {
         final stmt = _db.update(_db.measurementCategoryTable)
-          ..where((t) => t.id.equals(orderedIds[i]) & t.order.equals(i).not());
+          // IS NOT so legacy rows with a NULL order still get written
+          ..where((t) => t.id.equals(orderedIds[i]) & t.order.isNotValue(i));
         await stmt.write(MeasurementCategoryTableCompanion(order: Value(i)));
       }
     });

@@ -68,6 +68,29 @@ class MeasurementEntry with _$MeasurementEntry {
     this.extraData,
   });
 
+  /// Maps a row of the local database. Rows synced before the 2.7 schema
+  /// change lack the new columns and read as NULL; they fall back to the
+  /// defaults until the full re-sync replaces them.
+  MeasurementEntry.fromDb({
+    required String id,
+    required String categoryId,
+    required DateTime date,
+    required double value,
+    required String notes,
+    String? source,
+    String? externalId,
+    Map<String, dynamic>? extraData,
+  }) : this(
+         id: id,
+         categoryId: categoryId,
+         date: date,
+         value: value,
+         notes: notes,
+         source: source ?? 'user',
+         externalId: externalId,
+         extraData: extraData,
+       );
+
   // Boilerplate
   MeasurementEntryTableCompanion toCompanion() {
     return MeasurementEntryTableCompanion(

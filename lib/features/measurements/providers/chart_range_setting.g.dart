@@ -10,30 +10,33 @@ part of 'chart_range_setting.dart';
 // ignore_for_file: type=lint, type=warning
 /// The time range the measurement charts cover, shared by the overview, the
 /// category detail screens and the weight screen: a pick follows the user
-/// through them instead of every screen starting over at its own default.
+/// through them instead of every screen starting over at its own default,
+/// and it is persisted
 ///
 /// keepAlive on purpose: autoDispose would reset the pick whenever no screen
 /// is listening for a moment (a tab switch), which is exactly the surprise
-/// this provider removes. It holds for the session; a restart starts over.
+/// this provider removes.
 
 @ProviderFor(ChartRangeSetting)
 final chartRangeSettingProvider = ChartRangeSettingProvider._();
 
 /// The time range the measurement charts cover, shared by the overview, the
 /// category detail screens and the weight screen: a pick follows the user
-/// through them instead of every screen starting over at its own default.
+/// through them instead of every screen starting over at its own default,
+/// and it is persisted
 ///
 /// keepAlive on purpose: autoDispose would reset the pick whenever no screen
 /// is listening for a moment (a tab switch), which is exactly the surprise
-/// this provider removes. It holds for the session; a restart starts over.
+/// this provider removes.
 final class ChartRangeSettingProvider extends $NotifierProvider<ChartRangeSetting, ChartRange> {
   /// The time range the measurement charts cover, shared by the overview, the
   /// category detail screens and the weight screen: a pick follows the user
-  /// through them instead of every screen starting over at its own default.
+  /// through them instead of every screen starting over at its own default,
+  /// and it is persisted
   ///
   /// keepAlive on purpose: autoDispose would reset the pick whenever no screen
   /// is listening for a moment (a tab switch), which is exactly the surprise
-  /// this provider removes. It holds for the session; a restart starts over.
+  /// this provider removes.
   ChartRangeSettingProvider._()
     : super(
         from: null,
@@ -61,15 +64,16 @@ final class ChartRangeSettingProvider extends $NotifierProvider<ChartRangeSettin
   }
 }
 
-String _$chartRangeSettingHash() => r'ca0074ed6745f437866cdddccf93eec3b6e1dd7b';
+String _$chartRangeSettingHash() => r'1baa3a7e0c1a7643fa93631c51f8f3672b54e30f';
 
 /// The time range the measurement charts cover, shared by the overview, the
 /// category detail screens and the weight screen: a pick follows the user
-/// through them instead of every screen starting over at its own default.
+/// through them instead of every screen starting over at its own default,
+/// and it is persisted
 ///
 /// keepAlive on purpose: autoDispose would reset the pick whenever no screen
 /// is listening for a moment (a tab switch), which is exactly the surprise
-/// this provider removes. It holds for the session; a restart starts over.
+/// this provider removes.
 
 abstract class _$ChartRangeSetting extends $Notifier<ChartRange> {
   ChartRange build();

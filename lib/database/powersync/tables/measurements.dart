@@ -25,7 +25,7 @@ import 'package:wger/database/converters/utc_datetime_converter.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/measurement_entry.dart';
 
-@UseRowClass(MeasurementCategory)
+@UseRowClass(MeasurementCategory, constructor: 'fromDb')
 class MeasurementCategoryTable extends Table {
   @override
   String get tableName => 'measurements_category';
@@ -34,8 +34,12 @@ class MeasurementCategoryTable extends Table {
 
   TextColumn get name => text()();
   TextColumn get unit => text()();
+  // The new 2.7 columns (metricType, order, isOfficial, source) are nullable:
+  // rows synced before the schema change lack the keys in their local ps_data
+  // and read as NULL until the full re-sync replaces them. The `fromDb`
+  // constructors map NULL to the defaults so the UI keeps working meanwhile.
   TextColumn get metricType =>
-      text().named('metric_type').map(const MeasurementMetricTypeConverter())();
+      text().named('metric_type').map(const MeasurementMetricTypeConverter()).nullable()();
 
   /// Chart the user picked, NULL for the one derived from the metric type.
   TextColumn get chartType =>
@@ -52,11 +56,12 @@ class MeasurementCategoryTable extends Table {
       text().named('parent_id').nullable().references(MeasurementCategoryTable, #id)();
 
   /// Position in the category list; for children, the position within the group
-  IntColumn get order => integer().withDefault(const Constant(0))();
+  IntColumn get order => integer().withDefault(const Constant(0)).nullable()();
 
   /// Server-managed official category (max. one per metric type and user).
   /// Body weight entries live in the official `body_weight` category.
-  BoolColumn get isOfficial => boolean().named('is_official').withDefault(const Constant(false))();
+  BoolColumn get isOfficial =>
+      boolean().named('is_official').withDefault(const Constant(false)).nullable()();
 }
 
 const PowersyncMeasurementCategoryTable = ps.Table(
@@ -78,7 +83,7 @@ const PowersyncMeasurementCategoryTable = ps.Table(
   ],
 );
 
-@UseRowClass(MeasurementEntry)
+@UseRowClass(MeasurementEntry, constructor: 'fromDb')
 class MeasurementEntryTable extends Table {
   @override
   String get tableName => 'measurements_measurement';
@@ -93,7 +98,7 @@ class MeasurementEntryTable extends Table {
 
   /// Where the reading came from; one of the server's `source` values:
   /// `user` for manual entries or a health platform (`apple`, `google`).
-  TextColumn get source => text().withDefault(const Constant('user'))();
+  TextColumn get source => text().withDefault(const Constant('user')).nullable()();
 
   /// Platform record UUID, used to deduplicate re-imports. `null` for manual
   /// entries.

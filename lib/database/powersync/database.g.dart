@@ -4709,15 +4709,15 @@ class $MeasurementCategoryTableTable extends MeasurementCategoryTable
     requiredDuringInsert: true,
   );
   @override
-  late final GeneratedColumnWithTypeConverter<MetricType, String> metricType =
+  late final GeneratedColumnWithTypeConverter<MetricType?, String> metricType =
       GeneratedColumn<String>(
         'metric_type',
         aliasedName,
-        false,
+        true,
         type: DriftSqlType.string,
-        requiredDuringInsert: true,
-      ).withConverter<MetricType>(
-        $MeasurementCategoryTableTable.$convertermetricType,
+        requiredDuringInsert: false,
+      ).withConverter<MetricType?>(
+        $MeasurementCategoryTableTable.$convertermetricTypen,
       );
   @override
   late final GeneratedColumnWithTypeConverter<ChartType, String> chartType =
@@ -4760,7 +4760,7 @@ class $MeasurementCategoryTableTable extends MeasurementCategoryTable
   late final GeneratedColumn<int> order = GeneratedColumn<int>(
     'order',
     aliasedName,
-    false,
+    true,
     type: DriftSqlType.int,
     requiredDuringInsert: false,
     defaultValue: const Constant(0),
@@ -4772,7 +4772,7 @@ class $MeasurementCategoryTableTable extends MeasurementCategoryTable
   late final GeneratedColumn<bool> isOfficial = GeneratedColumn<bool>(
     'is_official',
     aliasedName,
-    false,
+    true,
     type: DriftSqlType.bool,
     requiredDuringInsert: false,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
@@ -4849,7 +4849,7 @@ class $MeasurementCategoryTableTable extends MeasurementCategoryTable
   @override
   MeasurementCategory map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return MeasurementCategory(
+    return MeasurementCategory.fromDb(
       id: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}id'],
@@ -4862,16 +4862,16 @@ class $MeasurementCategoryTableTable extends MeasurementCategoryTable
         DriftSqlType.string,
         data['${effectivePrefix}unit'],
       )!,
-      metricType: $MeasurementCategoryTableTable.$convertermetricType.fromSql(
-        attachedDatabase.typeMapping.read(
-          DriftSqlType.string,
-          data['${effectivePrefix}metric_type'],
-        )!,
-      ),
       chartType: $MeasurementCategoryTableTable.$converterchartType.fromSql(
         attachedDatabase.typeMapping.read(
           DriftSqlType.string,
           data['${effectivePrefix}chart_type'],
+        ),
+      ),
+      metricType: $MeasurementCategoryTableTable.$convertermetricTypen.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}metric_type'],
         ),
       ),
       chartConfig: $MeasurementCategoryTableTable.$converterchartConfign.fromSql(
@@ -4887,11 +4887,11 @@ class $MeasurementCategoryTableTable extends MeasurementCategoryTable
       order: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}order'],
-      )!,
+      ),
       isOfficial: attachedDatabase.typeMapping.read(
         DriftSqlType.bool,
         data['${effectivePrefix}is_official'],
-      )!,
+      ),
     );
   }
 
@@ -4902,6 +4902,9 @@ class $MeasurementCategoryTableTable extends MeasurementCategoryTable
 
   static TypeConverter<MetricType, String> $convertermetricType =
       const MeasurementMetricTypeConverter();
+  static TypeConverter<MetricType?, String?> $convertermetricTypen = NullAwareTypeConverter.wrap(
+    $convertermetricType,
+  );
   static TypeConverter<ChartType, String?> $converterchartType =
       const MeasurementChartTypeConverter();
   static TypeConverter<Map<String, dynamic>, String> $converterchartConfig =
@@ -4914,12 +4917,12 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
   final Value<String> id;
   final Value<String> name;
   final Value<String> unit;
-  final Value<MetricType> metricType;
+  final Value<MetricType?> metricType;
   final Value<ChartType> chartType;
   final Value<Map<String, dynamic>?> chartConfig;
   final Value<String?> parentId;
-  final Value<int> order;
-  final Value<bool> isOfficial;
+  final Value<int?> order;
+  final Value<bool?> isOfficial;
   final Value<int> rowid;
   const MeasurementCategoryTableCompanion({
     this.id = const Value.absent(),
@@ -4937,7 +4940,7 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
     this.id = const Value.absent(),
     required String name,
     required String unit,
-    required MetricType metricType,
+    this.metricType = const Value.absent(),
     this.chartType = const Value.absent(),
     this.chartConfig = const Value.absent(),
     this.parentId = const Value.absent(),
@@ -4945,8 +4948,7 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
     this.isOfficial = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : name = Value(name),
-       unit = Value(unit),
-       metricType = Value(metricType);
+       unit = Value(unit);
   static Insertable<MeasurementCategory> custom({
     Expression<String>? id,
     Expression<String>? name,
@@ -4977,12 +4979,12 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
     Value<String>? id,
     Value<String>? name,
     Value<String>? unit,
-    Value<MetricType>? metricType,
+    Value<MetricType?>? metricType,
     Value<ChartType>? chartType,
     Value<Map<String, dynamic>?>? chartConfig,
     Value<String?>? parentId,
-    Value<int>? order,
-    Value<bool>? isOfficial,
+    Value<int?>? order,
+    Value<bool?>? isOfficial,
     Value<int>? rowid,
   }) {
     return MeasurementCategoryTableCompanion(
@@ -5013,7 +5015,7 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
     }
     if (metricType.present) {
       map['metric_type'] = Variable<String>(
-        $MeasurementCategoryTableTable.$convertermetricType.toSql(
+        $MeasurementCategoryTableTable.$convertermetricTypen.toSql(
           metricType.value,
         ),
       );
@@ -5126,7 +5128,7 @@ class $MeasurementEntryTableTable extends MeasurementEntryTable
   late final GeneratedColumn<String> source = GeneratedColumn<String>(
     'source',
     aliasedName,
-    false,
+    true,
     type: DriftSqlType.string,
     requiredDuringInsert: false,
     defaultValue: const Constant('user'),
@@ -5223,7 +5225,7 @@ class $MeasurementEntryTableTable extends MeasurementEntryTable
   @override
   MeasurementEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return MeasurementEntry(
+    return MeasurementEntry.fromDb(
       id: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}id'],
@@ -5249,7 +5251,7 @@ class $MeasurementEntryTableTable extends MeasurementEntryTable
       source: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}source'],
-      )!,
+      ),
       externalId: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}external_id'],
@@ -5280,7 +5282,7 @@ class MeasurementEntryTableCompanion extends UpdateCompanion<MeasurementEntry> {
   final Value<DateTime> date;
   final Value<double> value;
   final Value<String> notes;
-  final Value<String> source;
+  final Value<String?> source;
   final Value<String?> externalId;
   final Value<Map<String, dynamic>?> extraData;
   final Value<int> rowid;
@@ -5339,7 +5341,7 @@ class MeasurementEntryTableCompanion extends UpdateCompanion<MeasurementEntry> {
     Value<DateTime>? date,
     Value<double>? value,
     Value<String>? notes,
-    Value<String>? source,
+    Value<String?>? source,
     Value<String?>? externalId,
     Value<Map<String, dynamic>?>? extraData,
     Value<int>? rowid,
@@ -16349,12 +16351,12 @@ typedef $$MeasurementCategoryTableTableCreateCompanionBuilder =
       Value<String> id,
       required String name,
       required String unit,
-      required MetricType metricType,
+      Value<MetricType?> metricType,
       Value<ChartType> chartType,
       Value<Map<String, dynamic>?> chartConfig,
       Value<String?> parentId,
-      Value<int> order,
-      Value<bool> isOfficial,
+      Value<int?> order,
+      Value<bool?> isOfficial,
       Value<int> rowid,
     });
 typedef $$MeasurementCategoryTableTableUpdateCompanionBuilder =
@@ -16362,12 +16364,12 @@ typedef $$MeasurementCategoryTableTableUpdateCompanionBuilder =
       Value<String> id,
       Value<String> name,
       Value<String> unit,
-      Value<MetricType> metricType,
+      Value<MetricType?> metricType,
       Value<ChartType> chartType,
       Value<Map<String, dynamic>?> chartConfig,
       Value<String?> parentId,
-      Value<int> order,
-      Value<bool> isOfficial,
+      Value<int?> order,
+      Value<bool?> isOfficial,
       Value<int> rowid,
     });
 
@@ -16449,7 +16451,7 @@ class $$MeasurementCategoryTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnWithTypeConverterFilters<MetricType, MetricType, String> get metricType =>
+  ColumnWithTypeConverterFilters<MetricType?, MetricType, String> get metricType =>
       $composableBuilder(
         column: $table.metricType,
         builder: (column) => ColumnWithTypeConverterFilters(column),
@@ -16613,7 +16615,7 @@ class $$MeasurementCategoryTableTableAnnotationComposer
   GeneratedColumn<String> get unit =>
       $composableBuilder(column: $table.unit, builder: (column) => column);
 
-  GeneratedColumnWithTypeConverter<MetricType, String> get metricType => $composableBuilder(
+  GeneratedColumnWithTypeConverter<MetricType?, String> get metricType => $composableBuilder(
     column: $table.metricType,
     builder: (column) => column,
   );
@@ -16724,12 +16726,12 @@ class $$MeasurementCategoryTableTableTableManager
                 Value<String> id = const Value.absent(),
                 Value<String> name = const Value.absent(),
                 Value<String> unit = const Value.absent(),
-                Value<MetricType> metricType = const Value.absent(),
+                Value<MetricType?> metricType = const Value.absent(),
                 Value<ChartType> chartType = const Value.absent(),
                 Value<Map<String, dynamic>?> chartConfig = const Value.absent(),
                 Value<String?> parentId = const Value.absent(),
-                Value<int> order = const Value.absent(),
-                Value<bool> isOfficial = const Value.absent(),
+                Value<int?> order = const Value.absent(),
+                Value<bool?> isOfficial = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => MeasurementCategoryTableCompanion(
                 id: id,
@@ -16748,12 +16750,12 @@ class $$MeasurementCategoryTableTableTableManager
                 Value<String> id = const Value.absent(),
                 required String name,
                 required String unit,
-                required MetricType metricType,
+                Value<MetricType?> metricType = const Value.absent(),
                 Value<ChartType> chartType = const Value.absent(),
                 Value<Map<String, dynamic>?> chartConfig = const Value.absent(),
                 Value<String?> parentId = const Value.absent(),
-                Value<int> order = const Value.absent(),
-                Value<bool> isOfficial = const Value.absent(),
+                Value<int?> order = const Value.absent(),
+                Value<bool?> isOfficial = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => MeasurementCategoryTableCompanion.insert(
                 id: id,
@@ -16864,7 +16866,7 @@ typedef $$MeasurementEntryTableTableCreateCompanionBuilder =
       required DateTime date,
       required double value,
       required String notes,
-      Value<String> source,
+      Value<String?> source,
       Value<String?> externalId,
       Value<Map<String, dynamic>?> extraData,
       Value<int> rowid,
@@ -16876,7 +16878,7 @@ typedef $$MeasurementEntryTableTableUpdateCompanionBuilder =
       Value<DateTime> date,
       Value<double> value,
       Value<String> notes,
-      Value<String> source,
+      Value<String?> source,
       Value<String?> externalId,
       Value<Map<String, dynamic>?> extraData,
       Value<int> rowid,
@@ -17143,7 +17145,7 @@ class $$MeasurementEntryTableTableTableManager
                 Value<DateTime> date = const Value.absent(),
                 Value<double> value = const Value.absent(),
                 Value<String> notes = const Value.absent(),
-                Value<String> source = const Value.absent(),
+                Value<String?> source = const Value.absent(),
                 Value<String?> externalId = const Value.absent(),
                 Value<Map<String, dynamic>?> extraData = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
@@ -17165,7 +17167,7 @@ class $$MeasurementEntryTableTableTableManager
                 required DateTime date,
                 required double value,
                 required String notes,
-                Value<String> source = const Value.absent(),
+                Value<String?> source = const Value.absent(),
                 Value<String?> externalId = const Value.absent(),
                 Value<Map<String, dynamic>?> extraData = const Value.absent(),
                 Value<int> rowid = const Value.absent(),

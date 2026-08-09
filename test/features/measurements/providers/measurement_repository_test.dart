@@ -218,6 +218,27 @@ void main() {
         (await repo.watchAllWithoutEntries().first).map((c) => c.id),
       );
     });
+
+    test('maps the NULL columns of a pre-2.7 row to the defaults', () async {
+      // A row synced before the 2.7 schema change carries no value for the new
+      // columns and reads NULL until a re-sync replaces it
+      await db.customStatement(
+        'INSERT INTO measurements_category (id, name, unit, metric_type, "order", is_official) '
+        "VALUES ('legacy', 'Old category', 'cm', NULL, NULL, NULL)",
+      );
+      await db.customStatement(
+        'INSERT INTO measurements_measurement (id, category_id, date, value, notes, source) '
+        "VALUES ('legacy-entry', 'legacy', '2026-01-01T00:00:00.000Z', 42, '', NULL)",
+      );
+
+      final category = (await repo.watchAllWithoutEntries().first).single;
+      expect(category.metricType, MetricType.custom);
+      expect(category.order, 0);
+      expect(category.isOfficial, isFalse);
+
+      final entry = (await repo.watchEntries('legacy', limit: 10).first).single;
+      expect(entry.source, 'user');
+    });
   });
 
   group('the import dedup queries', () {
