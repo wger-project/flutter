@@ -347,11 +347,43 @@ class CopyToClipboardButton extends StatelessWidget {
   final logger = Logger('CopyToClipboardButton');
   final String text;
 
-  CopyToClipboardButton({required this.text, super.key});
+  /// Renders as an icon button instead of a labelled one, for places where
+  /// the button sits in a toolbar or is repeated in a list.
+  final bool iconOnly;
+
+  CopyToClipboardButton({required this.text, this.iconOnly = false, super.key});
+
+  void _copy(BuildContext context) {
+    Clipboard.setData(ClipboardData(text: text))
+        .then((_) {
+          if (context.mounted) {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(const SnackBar(content: Text('Details copied to clipboard!')));
+          }
+        })
+        .catchError((copyError) {
+          logger.warning('Error copying to clipboard: $copyError');
+
+          if (context.mounted) {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(const SnackBar(content: Text('Could not copy details.')));
+          }
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
+
+    if (iconOnly) {
+      return IconButton(
+        icon: const Icon(Icons.copy_all_outlined),
+        tooltip: i18n.copyToClipboard,
+        onPressed: () => _copy(context),
+      );
+    }
 
     return TextButton.icon(
       icon: const Icon(Icons.copy_all_outlined, size: 18),
@@ -360,25 +392,7 @@ class CopyToClipboardButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
-      onPressed: () {
-        Clipboard.setData(ClipboardData(text: text))
-            .then((_) {
-              if (context.mounted) {
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(const SnackBar(content: Text('Details copied to clipboard!')));
-              }
-            })
-            .catchError((copyError) {
-              logger.warning('Error copying to clipboard: $copyError');
-
-              if (context.mounted) {
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(const SnackBar(content: Text('Could not copy details.')));
-              }
-            });
-      },
+      onPressed: () => _copy(context),
     );
   }
 }

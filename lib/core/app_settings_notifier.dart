@@ -27,6 +27,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/http_overrides.dart';
 import 'package:wger/core/locale.dart';
+import 'package:wger/core/logs.dart';
 import 'package:wger/core/shared_preferences.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
@@ -92,6 +93,9 @@ sealed class AppSettings with _$AppSettings {
     /// (system wallpaper on Android 12+) instead of the fixed wger seeds.
     /// A no-op on platforms without dynamic color support.
     @Default(USE_DYNAMIC_COLOR_DEFAULT) bool useDynamicColor,
+
+    /// When true, everything is logged instead of only INFO and above.
+    @Default(VERBOSE_LOGGING_DEFAULT) bool verboseLogging,
   }) = _AppSettings;
 }
 
@@ -113,6 +117,7 @@ class AppSettingsNotifier extends _$AppSettingsNotifier {
     final keepDataOnLogout = await _loadKeepDataOnLogout();
     final allowSelfSignedCerts = await _loadAllowSelfSignedCerts();
     final useDynamicColor = await _loadUseDynamicColor();
+    final verboseLogging = await _loadVerboseLogging();
     return AppSettings(
       themeMode: themeMode,
       userLocale: userLocale,
@@ -120,6 +125,7 @@ class AppSettingsNotifier extends _$AppSettingsNotifier {
       keepDataOnLogout: keepDataOnLogout,
       allowSelfSignedCerts: allowSelfSignedCerts,
       useDynamicColor: useDynamicColor,
+      verboseLogging: verboseLogging,
     );
   }
 
@@ -236,6 +242,25 @@ class AppSettingsNotifier extends _$AppSettingsNotifier {
     final current = state.asData?.value ?? const AppSettings();
     state = AsyncData(current.copyWith(useDynamicColor: value));
     await _prefs.setBool(PREFS_USE_DYNAMIC_COLOR, value);
+  }
+
+  //
+  // Verbose logging
+  //
+
+  Future<bool> _loadVerboseLogging() async {
+    final value = (await _prefs.getBool(PREFS_VERBOSE_LOGGING)) ?? VERBOSE_LOGGING_DEFAULT;
+    // main() already seeds the level from the same key, applying it here as
+    // well keeps the two from drifting apart.
+    applyVerboseLogging(value);
+    return value;
+  }
+
+  Future<void> setVerboseLogging(bool value) async {
+    final current = state.asData?.value ?? const AppSettings();
+    state = AsyncData(current.copyWith(verboseLogging: value));
+    applyVerboseLogging(value);
+    await _prefs.setBool(PREFS_VERBOSE_LOGGING, value);
   }
 
   //

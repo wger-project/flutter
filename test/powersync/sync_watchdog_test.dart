@@ -91,9 +91,29 @@ void main() {
     });
   });
 
-  test('a surfaced sync error holds the watchdog off', () {
+  test('flags a connection that only produces errors', () {
     fakeAsync((async) {
-      watchdog.onStatus(buildSyncStatus(connecting: true, downloadError: Exception('boom')));
+      // Error loop in the five second rhythm of the SDK's retry: visible in
+      // the sync dialog, but no checkpoint ever arrives.
+      for (var i = 0; i < 30; i++) {
+        watchdog.onStatus(buildSyncStatus(connecting: true));
+        async.elapse(const Duration(seconds: 2));
+        watchdog.onStatus(buildSyncStatus(downloadError: Exception('boom')));
+        async.elapse(const Duration(seconds: 3));
+      }
+
+      expect(watchdog.stalled.value, isTrue);
+      final warnings = logLines(Level.WARNING, 'has been failing');
+      expect(warnings, hasLength(1));
+      expect(warnings.first.error.toString(), contains('boom'));
+    });
+  });
+
+  test('an error while data is downloading does not flag anything', () {
+    fakeAsync((async) {
+      watchdog.onStatus(
+        buildSyncStatus(connected: true, downloading: true, uploadError: Exception('boom')),
+      );
       async.elapse(watchdog.timeout * 2);
 
       expect(watchdog.stalled.value, isFalse);

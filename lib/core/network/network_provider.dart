@@ -29,6 +29,10 @@ import 'package:wger/core/network/wger_base.dart';
 
 part 'network_provider.g.dart';
 
+/// Outcome of a reachability probe: whether the backend answered plus a short
+/// reason, which ends up in the log line for the state change.
+typedef ProbeResult = ({bool reachable, String reason});
+
 /// Returns whether the wger backend is actually reachable.
 ///
 /// Given `probeUri` any HTTP response counts as reachable, only a
@@ -40,10 +44,10 @@ part 'network_provider.g.dart';
 /// Tests can swap this for a deterministic stub via `installFakeConnectivity()`
 /// so the test runner doesn't make real network calls.
 @visibleForTesting
-Future<bool> Function(Uri? probeUri, String? userAgent, Duration timeout) reachabilityCheck =
+Future<ProbeResult> Function(Uri? probeUri, String? userAgent, Duration timeout) reachabilityCheck =
     _defaultReachabilityCheck;
 
-Future<bool> _defaultReachabilityCheck(
+Future<ProbeResult> _defaultReachabilityCheck(
   Uri? probeUri,
   String? userAgent,
   Duration timeout,
@@ -52,9 +56,13 @@ Future<bool> _defaultReachabilityCheck(
   if (probeUri == null) {
     try {
       final result = await InternetAddress.lookup('google.com').timeout(timeout);
-      return result.isNotEmpty && result.first.rawAddress.isNotEmpty;
-    } catch (_) {
-      return false;
+      final found = result.isNotEmpty && result.first.rawAddress.isNotEmpty;
+      return (
+        reachable: found,
+        reason: found ? 'DNS lookup succeeded' : 'DNS lookup returned no address',
+      );
+    } catch (e) {
+      return (reachable: false, reason: 'DNS lookup failed: $e');
     }
   }
 
@@ -68,10 +76,14 @@ Future<bool> _defaultReachabilityCheck(
           headers: userAgent != null ? {HttpHeaders.userAgentHeader: userAgent} : null,
         )
         .timeout(timeout);
-    return true;
+    return (reachable: true, reason: 'probe answered');
+  } on TimeoutException {
+    // Caught before the generic branch below, isNetworkError() covers
+    // timeouts as well and the distinction matters for the log.
+    return (reachable: false, reason: 'probe timed out after ${timeout.inMilliseconds}ms');
   } catch (e) {
     if (isNetworkError(e)) {
-      return false;
+      return (reachable: false, reason: 'probe failed: $e');
     }
     rethrow;
   } finally {
@@ -92,6 +104,10 @@ class NetworkStatus extends _$NetworkStatus {
   StreamSubscription<List<ConnectivityResult>>? _sub;
   Timer? _probeTimer;
   AppLifecycleListener? _lifecycleListener;
+
+  /// Mirrors [state] for the change detection in [_setState]. Reading [state]
+  /// itself is not an option, it is not available while the notifier builds.
+  bool _lastState = true;
 
   @override
   bool build() {
@@ -153,18 +169,29 @@ class NetworkStatus extends _$NetworkStatus {
     // has to prove real reachability via the probe below. An empty list
     // counts as "no connection" too.
     if (conn.every((c) => c == ConnectivityResult.none)) {
-      state = false;
+      _setState(false, 'no network adapter');
       return false;
     }
 
     if (optimistic) {
-      state = true;
+      _setState(true, 'network adapter available, probe pending');
     }
 
     final base = ref.read(wgerBaseProvider);
     final probeUri = base.serverUrl != null ? base.makeUrl('version') : null;
-    final ok = await reachabilityCheck(probeUri, base.getAppNameHeaderValue(), timeout);
-    state = ok;
-    return ok;
+    final probe = await reachabilityCheck(probeUri, base.getAppNameHeaderValue(), timeout);
+    _setState(probe.reachable, probe.reason);
+    return probe.reachable;
+  }
+
+  /// Updates the state and logs genuine changes, so a connection that drops
+  /// and comes back every few seconds is visible in the logs. Repetitions of
+  /// the same value stay silent.
+  void _setState(bool isOnline, String reason) {
+    if (isOnline != _lastState) {
+      _logger.info('Network status: ${isOnline ? 'online' : 'offline'} ($reason)');
+    }
+    _lastState = isOnline;
+    state = isOnline;
   }
 }

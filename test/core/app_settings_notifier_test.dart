@@ -21,6 +21,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:logging/logging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
@@ -394,6 +395,51 @@ void main() {
 
       expect(container.read(appSettingsProvider).requireValue.useDynamicColor, true);
       expect(await prefs.getBool(PREFS_USE_DYNAMIC_COLOR), true);
+    });
+  });
+
+  group('verbose logging', () {
+    // The setting drives a global, so put it back the way the test found it
+    setUp(() {
+      final level = Logger.root.level;
+      addTearDown(() => Logger.root.level = level);
+    });
+
+    test('defaults to false', () async {
+      final settings = await container.read(appSettingsProvider.future);
+      expect(settings.verboseLogging, false);
+    });
+
+    test('loading it from the prefs raises the log level', () async {
+      SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+      final prefs = SharedPreferencesAsync();
+      await prefs.setBool(PREFS_VERBOSE_LOGGING, true);
+
+      container.dispose();
+      container = ProviderContainer(
+        overrides: [appSettingsPrefsProvider.overrideWithValue(prefs)],
+      );
+
+      final settings = await container.read(appSettingsProvider.future);
+      expect(settings.verboseLogging, true);
+      expect(Logger.root.level, Level.ALL);
+    });
+
+    test('setVerboseLogging persists the toggle and applies the level', () async {
+      SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+      final prefs = SharedPreferencesAsync();
+
+      container.dispose();
+      container = ProviderContainer(
+        overrides: [appSettingsPrefsProvider.overrideWithValue(prefs)],
+      );
+
+      await container.read(appSettingsProvider.future);
+      await container.read(appSettingsProvider.notifier).setVerboseLogging(true);
+
+      expect(container.read(appSettingsProvider).requireValue.verboseLogging, true);
+      expect(await prefs.getBool(PREFS_VERBOSE_LOGGING), true);
+      expect(Logger.root.level, Level.ALL);
     });
   });
 }
