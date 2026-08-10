@@ -32,6 +32,8 @@ import 'package:shared_preferences_platform_interface/shared_preferences_async_p
 import 'package:wger/core/network/auth_notifier.dart';
 import 'package:wger/core/network/secure_token_storage.dart';
 import 'package:wger/core/shared_preferences.dart';
+import 'package:wger/core/update_app_screen.dart';
+import 'package:wger/core/update_server_screen.dart';
 import 'package:wger/features/auth/screens/mfa_challenge_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
@@ -228,6 +230,122 @@ void main() {
       ).captured;
       expect((captured[0] as Map<String, String>)['X-Session-Token'], 'flow-handle');
       expect(jsonDecode(captured[1] as String), {'code': '123456'});
+    });
+
+    testWidgets('submitting the code field sends the same request as the button', (tester) async {
+      // This screen deliberately does not use the shared FormSubmitButton
+      // because the code field has to trigger the submit as well. That is the
+      // whole reason for the deviation, so it needs to stay covered.
+      final accessJwt = makeJwt({'exp': 1900000000});
+      when(
+        mockClient.post(tMfa, headers: anyNamed('headers'), body: anyNamed('body')),
+      ).thenAnswer(
+        (_) async => Response(
+          jsonEncode({
+            'status': 200,
+            'data': {},
+            'meta': {'access_token': accessJwt, 'refresh_token': 'r'},
+          }),
+          200,
+        ),
+      );
+
+      await openScreen(
+        tester,
+        const MfaChallengeScreen(
+          sessionToken: 'flow-handle',
+          serverUrl: serverUrl,
+          availableFactors: ['totp'],
+        ),
+      );
+
+      await tester.enterText(find.byKey(const ValueKey('inputMfaCode')), '123456');
+      await tester.testTextInput.receiveAction(TextInputAction.done);
+      await tester.pumpAndSettle();
+
+      expect(find.text('OPEN'), findsOneWidget, reason: 'the screen popped after submitting');
+      final captured = verify(
+        mockClient.post(
+          tMfa,
+          headers: captureAnyNamed('headers'),
+          body: captureAnyNamed('body'),
+        ),
+      ).captured;
+      expect((captured[0] as Map<String, String>)['X-Session-Token'], 'flow-handle');
+      expect(jsonDecode(captured[1] as String), {'code': '123456'});
+    });
+
+    testWidgets('an empty code field submitted with the keyboard does not call the server', (
+      tester,
+    ) async {
+      await openScreen(
+        tester,
+        const MfaChallengeScreen(
+          sessionToken: 'flow-handle',
+          serverUrl: serverUrl,
+          availableFactors: ['totp'],
+        ),
+      );
+
+      await tester.testTextInput.receiveAction(TextInputAction.done);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Please enter a code'), findsOneWidget);
+      verifyNever(
+        mockClient.post(tMfa, headers: anyNamed('headers'), body: anyNamed('body')),
+      );
+    });
+
+    /// Answers the 2FA endpoint with a valid session so the gating chain runs.
+    void stubAcceptedCode() {
+      final accessJwt = makeJwt({'exp': 1900000000});
+      when(
+        mockClient.post(tMfa, headers: anyNamed('headers'), body: anyNamed('body')),
+      ).thenAnswer(
+        (_) async => Response(
+          jsonEncode({
+            'status': 200,
+            'data': {},
+            'meta': {'access_token': accessJwt, 'refresh_token': 'r'},
+          }),
+          200,
+        ),
+      );
+    }
+
+    Future<void> submitValidCode(WidgetTester tester) async {
+      await openScreen(
+        tester,
+        const MfaChallengeScreen(
+          sessionToken: 'flow-handle',
+          serverUrl: serverUrl,
+          availableFactors: ['totp'],
+        ),
+      );
+      await tester.enterText(find.byKey(const ValueKey('inputMfaCode')), '123456');
+      await tester.tap(find.byKey(const Key('mfaSubmitButton')));
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('an outdated server routes to the update-server screen', (tester) async {
+      // The version gate runs after the code was accepted, so the user lands
+      // on the update screen instead of back on the login form
+      stubAcceptedCode();
+      when(mockClient.get(tVersion)).thenAnswer((_) async => Response('"1.0.0"', 200));
+
+      await submitValidCode(tester);
+
+      expect(find.byType(UpdateServerScreen), findsOneWidget);
+      expect(find.text('OPEN'), findsNothing, reason: 'the screen was replaced, not popped');
+    });
+
+    testWidgets('an outdated app routes to the update-app screen', (tester) async {
+      stubAcceptedCode();
+      when(mockClient.get(tMinAppVersion)).thenAnswer((_) async => Response('"99.0.0"', 200));
+
+      await submitValidCode(tester);
+
+      expect(find.byType(UpdateAppScreen), findsOneWidget);
     });
 
     testWidgets('empty code: validation error, no network call', (tester) async {

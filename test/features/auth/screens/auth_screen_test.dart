@@ -38,6 +38,7 @@ import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/core/network/secure_token_storage.dart';
 import 'package:wger/core/shared_preferences.dart';
 import 'package:wger/features/auth/screens/auth_screen.dart';
+import 'package:wger/features/auth/screens/mfa_challenge_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 import '../../../fake_connectivity.dart';
@@ -229,6 +230,45 @@ void main() {
           body: json.encode({'username': 'testuser', 'password': 'short'}),
         ),
       );
+    });
+
+    testWidgets('Login - a 2FA challenge opens the code screen', (WidgetTester tester) async {
+      // The notifier turning the 401 into an MfaRequiredException is covered in
+      // auth_notifier_login_test; this is the seam, i.e. that the card catches
+      // it and hands the session token and the offered factors on.
+      when(
+        mockClient.post(tHeadlessLogin, headers: anyNamed('headers'), body: anyNamed('body')),
+      ).thenAnswer(
+        (_) async => Response(
+          json.encode({
+            'status': 401,
+            'data': {
+              'flows': [
+                {
+                  'id': 'mfa_authenticate',
+                  'is_pending': true,
+                  'types': ['totp', 'recovery_codes'],
+                },
+              ],
+            },
+            'meta': {'session_token': 'flow-handle-xyz', 'is_authenticated': false},
+          }),
+          401,
+        ),
+      );
+
+      await tester.pumpWidget(getWidget());
+      await tester.pumpAndSettle();
+
+      await tester.enterText(find.byKey(const Key('inputUsername')), 'testuser');
+      await tester.enterText(find.byKey(const Key('inputPassword')), '123456789');
+      await tester.tap(find.byKey(const Key('actionButton')));
+      await tester.pumpAndSettle();
+
+      final screen = tester.widget<MfaChallengeScreen>(find.byType(MfaChallengeScreen));
+      expect(screen.sessionToken, 'flow-handle-xyz');
+      expect(screen.availableFactors, ['totp', 'recovery_codes']);
+      expect(find.textContaining('An Error Occurred'), findsNothing);
     });
 
     testWidgets('Login - wrong username & password', (WidgetTester tester) async {
