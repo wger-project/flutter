@@ -45,16 +45,8 @@ import '../../test_data/nutritional_plans.dart';
 import '../../test_data/profile.dart';
 import '../../test_data/routines.dart';
 import '../../test_data/trophies.dart';
+import '../helpers/fake_auth_notifier.dart';
 import 'screenshots_01_dashboard.mocks.dart';
-
-class _FakeAuthNotifier extends AuthNotifier {
-  _FakeAuthNotifier(this._state);
-
-  final AuthState _state;
-
-  @override
-  Future<AuthState> build() async => _state;
-}
 
 @GenerateMocks([
   GalleryRepository,
@@ -122,7 +114,7 @@ Widget createDashboardScreen({Locale? locale}) {
     overrides: [
       bodyWeightRepositoryProvider.overrideWithValue(mockBodyWeightRepository),
       measurementRepositoryProvider.overrideWithValue(mockMeasurementRepo),
-      authProvider.overrideWith(() => _FakeAuthNotifier(loggedInAuth)),
+      authProvider.overrideWith(() => FakeAuthNotifier(loggedInAuth)),
       userProfileRepositoryProvider.overrideWithValue(mockUserProfileRepo),
       nutritionRepositoryProvider.overrideWithValue(mockNutritionRepo),
       ingredientRepositoryProvider.overrideWithValue(mockIngredientRepo),

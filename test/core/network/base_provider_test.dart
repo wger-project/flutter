@@ -29,14 +29,13 @@ import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/core/network/base_provider.dart';
 
 import '../../fixtures/fixture_reader.dart';
-import '../../utils.dart';
 import 'base_provider_test.mocks.dart';
 
 @GenerateMocks([http.Client])
 void main() {
   group('test base provider', () {
     test('Test the makeUrl helper', () {
-      final WgerBaseProvider provider = buildTestBaseProvider();
+      final WgerBaseProvider provider = WgerBaseProvider(serverUrl: 'https://localhost');
 
       expect(
         Uri.https('localhost', '/api/v2/endpoint/'),
@@ -70,9 +69,7 @@ void main() {
 
     test('Test the makeUrl helper with sub url', () {
       // Trailing slash is removed when saving the server URL
-      final WgerBaseProvider provider = buildTestBaseProvider(
-        serverUrl: 'https://example.com/wger-url',
-      );
+      final WgerBaseProvider provider = WgerBaseProvider(serverUrl: 'https://example.com/wger-url');
 
       expect(
         Uri.https('example.com', '/wger-url/api/v2/endpoint/'),
@@ -141,7 +138,10 @@ void main() {
       ).thenAnswer((_) => Future.value(response3));
 
       // Act
-      final WgerBaseProvider provider = buildTestBaseProvider(client: mockHttpClient);
+      final WgerBaseProvider provider = WgerBaseProvider(
+        serverUrl: 'https://localhost',
+        client: mockHttpClient,
+      );
       final data = await provider.fetchPaginated(paginationUri1);
 
       // Assert
@@ -160,7 +160,7 @@ void main() {
 
     setUp(() {
       mockClient = MockClient();
-      repo = buildTestBaseProvider(client: mockClient);
+      repo = WgerBaseProvider(serverUrl: 'https://localhost', client: mockClient);
     });
 
     final uri = Uri.https('localhost', '/api/v2/endpoint/');

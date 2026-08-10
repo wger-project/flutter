@@ -34,7 +34,7 @@ import 'package:wger/features/nutrition/widgets/forms.dart';
 import 'package:wger/features/weight/providers/body_weight_repository.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
-import '../../../fake_connectivity.dart';
+import '../../../helpers/fake_connectivity.dart';
 import 'nutritional_plans_screen_test.mocks.dart';
 
 @GenerateMocks([

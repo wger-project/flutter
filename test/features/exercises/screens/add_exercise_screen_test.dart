@@ -37,7 +37,7 @@ import 'package:wger/features/exercises/widgets/add_exercise/steps/step_1_basics
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 import '../../../../test_data/exercises.dart';
-import '../../../fake_connectivity.dart';
+import '../../../helpers/fake_connectivity.dart';
 import 'add_exercise_screen_test.mocks.dart';
 
 /// Test suite for the exercise-contribution screen.

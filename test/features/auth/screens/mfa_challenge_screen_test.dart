@@ -25,23 +25,19 @@ import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:package_info_plus/package_info_plus.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
-import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/core/network/auth_notifier.dart';
 import 'package:wger/core/network/secure_token_storage.dart';
-import 'package:wger/core/shared_preferences.dart';
 import 'package:wger/core/update_app_screen.dart';
 import 'package:wger/core/update_server_screen.dart';
 import 'package:wger/features/auth/screens/mfa_challenge_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
+import '../../../helpers/fake_auth_environment.dart';
 import 'mfa_challenge_screen_test.mocks.dart';
 
 @GenerateMocks([http.Client, SecureTokenStorage])
 void main() {
-  SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+  installFakeAuthEnvironment();
 
   late MockClient mockClient;
   late MockSecureTokenStorage mockSecureStorage;
@@ -94,16 +90,6 @@ void main() {
     when(mockSecureStorage.deleteRefreshToken()).thenAnswer((_) async {});
     when(mockSecureStorage.readRefreshToken()).thenAnswer((_) async => null);
     when(mockSecureStorage.writeRefreshToken(any)).thenAnswer((_) async {});
-
-    SharedPreferences.setMockInitialValues({});
-    PackageInfo.setMockInitialValues(
-      appName: 'wger',
-      packageName: 'com.example.example',
-      version: '1.2.3',
-      buildNumber: '2',
-      buildSignature: 'buildSignature',
-    );
-    await PreferenceHelper.asyncPref.clear();
 
     // Gating-chain happy-path stubs so a successful completeMfa reaches
     // AuthStatus.loggedIn rather than getting stuck on a probe.

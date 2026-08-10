@@ -26,10 +26,6 @@ import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:package_info_plus/package_info_plus.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
-import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/core/exceptions/mfa_required_exception.dart';
@@ -42,6 +38,7 @@ import 'package:wger/features/account/models/account.dart';
 import 'package:wger/features/account/providers/account_notifier.dart';
 import 'package:wger/features/account/providers/account_repository.dart';
 
+import '../../helpers/fake_auth_environment.dart';
 import 'auth_notifier_login_test.mocks.dart';
 
 /// Storage that simulates the process dying at the moment login claims DB
@@ -65,7 +62,7 @@ void main() {
   // Needed to install the path_provider mock channel below.
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+  installFakeAuthEnvironment();
 
   late MockClient mockClient;
   late MockSecureTokenStorage mockSecureStorage;
@@ -143,16 +140,6 @@ void main() {
         tmpDir.deleteSync(recursive: true);
       }
     });
-
-    SharedPreferences.setMockInitialValues({});
-    PackageInfo.setMockInitialValues(
-      appName: 'wger',
-      packageName: 'com.example.example',
-      version: '1.2.3',
-      buildNumber: '2',
-      buildSignature: 'buildSignature',
-    );
-    await PreferenceHelper.asyncPref.clear();
 
     // Default gating-chain mocks (happy path). Login-flow tests override
     // only what they care about.

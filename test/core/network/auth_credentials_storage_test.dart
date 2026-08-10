@@ -29,7 +29,7 @@ import 'package:wger/core/network/auth_credentials_storage.dart';
 import 'package:wger/core/network/secure_token_storage.dart';
 import 'package:wger/core/shared_preferences.dart';
 
-import '../../fake_auth_environment.dart';
+import '../../helpers/fake_auth_environment.dart';
 import 'auth_credentials_storage_test.mocks.dart';
 
 @GenerateMocks([SecureTokenStorage])

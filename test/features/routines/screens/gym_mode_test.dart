@@ -54,7 +54,7 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 
 import '../../../../test_data/exercises.dart';
 import '../../../../test_data/routines.dart';
-import '../../../fake_connectivity.dart';
+import '../../../helpers/fake_connectivity.dart';
 import 'gym_mode_test.mocks.dart';
 
 @GenerateMocks([

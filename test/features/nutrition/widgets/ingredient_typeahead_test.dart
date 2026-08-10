@@ -33,7 +33,7 @@ import 'package:wger/features/nutrition/widgets/widgets.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 import '../../../../test_data/nutritional_plans.dart';
-import '../../../fake_connectivity.dart';
+import '../../../helpers/fake_connectivity.dart';
 import 'ingredient_typeahead_test.mocks.dart';
 
 @GenerateMocks([IngredientRepository])

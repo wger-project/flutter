@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c)  2026 wger Team
+ * Copyright (c) 2026 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,17 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:http/http.dart' as http;
-import 'package:wger/core/network/base_provider.dart';
+import 'package:wger/core/network/auth_notifier.dart';
+import 'package:wger/core/network/auth_state.dart';
 
-/// Builds a [WgerBaseProvider] pre-configured for tests with a fixed server
-/// URL. Pass a mocked [http.Client] to intercept requests. Authentication is
-/// the client's responsibility now, the test client is unauthenticated, so
-/// tests that assert on the `Authorization` header have to stub the client
-/// directly (or use a wrapped `AuthHttpClient`).
-WgerBaseProvider buildTestBaseProvider({
-  http.Client? client,
-  String serverUrl = 'https://localhost',
-}) {
-  return WgerBaseProvider(serverUrl: serverUrl, client: client);
+/// An [AuthNotifier] that resolves to a fixed state.
+///
+/// Use it via `authProvider.overrideWith(() => FakeAuthNotifier(state))` in
+/// widget tests instead of seeding preferences and stubbing every request the
+/// real notifier makes on its eager build.
+class FakeAuthNotifier extends AuthNotifier {
+  FakeAuthNotifier(this._state);
+
+  final AuthState _state;
+
+  @override
+  Future<AuthState> build() async => _state;
 }

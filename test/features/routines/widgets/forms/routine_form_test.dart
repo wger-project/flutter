@@ -44,7 +44,7 @@ import 'package:wger/features/routines/widgets/forms/routine.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 import '../../../../../test_data/routines.dart';
-import '../../../../fake_connectivity.dart';
+import '../../../../helpers/fake_connectivity.dart';
 import './routine_form_test.mocks.dart';
 
 @GenerateMocks([

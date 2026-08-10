@@ -25,11 +25,7 @@ import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
-import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:url_launcher_platform_interface/url_launcher_platform_interface.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/http_overrides.dart';
@@ -41,7 +37,8 @@ import 'package:wger/features/auth/screens/auth_screen.dart';
 import 'package:wger/features/auth/screens/mfa_challenge_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
-import '../../../fake_connectivity.dart';
+import '../../../helpers/fake_auth_environment.dart';
+import '../../../helpers/fake_connectivity.dart';
 import 'auth_screen_test.mocks.dart';
 
 /// Captures `launchUrl(...)` calls so the web-handoff test can inspect the
@@ -62,6 +59,9 @@ void main() {
   // The auth screen watches networkStatusProvider to gate the action button.
   // Stub connectivity so that probe is deterministic.
   installFakeConnectivity();
+  // Installs the prefs/PackageInfo fakes and clears the store between tests,
+  // so values a test writes (e.g. PREFS_LAST_SERVER) don't leak into the next.
+  installFakeAuthEnvironment();
 
   late MockClient mockClient;
   late MockSecureTokenStorage mockSecureStorage;
@@ -120,20 +120,6 @@ void main() {
 
     // Default: online. The offline test overrides this.
     reachabilityCheck = (_, _, _) async => (reachable: true, reason: 'test');
-
-    SharedPreferences.setMockInitialValues({});
-    SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
-    // PreferenceHelper caches its SharedPreferencesAsync, so swapping the
-    // platform instance above does not isolate it; clear the store so values a
-    // test writes (e.g. PREFS_LAST_SERVER) don't leak into the next one.
-    await PreferenceHelper.asyncPref.clear();
-    PackageInfo.setMockInitialValues(
-      appName: 'wger',
-      packageName: 'com.example.example',
-      version: '1.2.3',
-      buildNumber: '2',
-      buildSignature: 'buildSignature',
-    );
 
     // Happy-path stubs for the headless login / signup endpoints; tests
     // that exercise error responses override these as needed.

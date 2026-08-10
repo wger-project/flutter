@@ -40,7 +40,7 @@ import 'package:wger/features/routines/providers/routines_repository.dart';
 
 import '../../../../test_data/exercises.dart';
 import '../../../../test_data/routines.dart';
-import '../../../fake_connectivity.dart';
+import '../../../helpers/fake_connectivity.dart';
 import '../helpers/routine_form_test_overrides.dart';
 import 'routines_notifier_test.mocks.dart';
 

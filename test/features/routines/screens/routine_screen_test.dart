@@ -29,7 +29,7 @@ import 'package:wger/features/routines/screens/routine_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 import '../../../../test_data/routines.dart';
-import '../../../fake_auth_environment.dart';
+import '../../../helpers/fake_auth_environment.dart';
 
 class _StubRoutinesRiverpod extends RoutinesRiverpod {
   _StubRoutinesRiverpod(this._routines);
