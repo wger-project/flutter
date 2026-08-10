@@ -88,6 +88,7 @@ void main() {
     (WidgetTester tester) async {
       tester.view.physicalSize = const Size(500, 1000);
       tester.view.devicePixelRatio = 1.0; // Ensure correct pixel ratio
+      addTearDown(tester.view.reset);
 
       await tester.pumpWidget(renderWidget());
       await tester.tap(find.byType(TextButton));

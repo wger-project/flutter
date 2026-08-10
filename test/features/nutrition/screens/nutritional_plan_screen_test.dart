@@ -133,6 +133,7 @@ void main() {
     (tester) async {
       tester.view.physicalSize = const Size(500, 1000);
       tester.view.devicePixelRatio = 1.0; // Ensure correct pixel ratio
+      addTearDown(tester.view.reset);
 
       final container = makeContainer();
       await tester.pumpWidget(createNutritionalPlan(container: container));

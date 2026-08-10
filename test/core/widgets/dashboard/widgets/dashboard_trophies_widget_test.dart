@@ -25,7 +25,7 @@ import 'package:wger/core/widgets/dashboard/widgets/trophies.dart';
 import 'package:wger/features/trophies/providers/trophy_notifier.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
-import '../../../../test_data/trophies.dart';
+import '../../../../../test_data/trophies.dart';
 
 void main() {
   Future<void> pumpOverview(WidgetTester tester, [List<Override> overrides = const []]) async {
