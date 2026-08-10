@@ -245,6 +245,7 @@ class DetailContentWidget extends StatelessWidget {
                       const Icon(Icons.hotel)
                     else
                       IconButton(
+                        tooltip: AppLocalizations.of(context).gymMode,
                         icon: const Icon(Icons.play_arrow),
                         color: Theme.of(context).colorScheme.primary,
                         onPressed: () {

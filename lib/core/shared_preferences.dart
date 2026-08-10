@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences/util/legacy_to_async_migration_util.dart';
 import 'package:wger/core/search_options.dart';
@@ -131,5 +133,73 @@ class PreferenceHelper {
       (e) => e.name == value,
       orElse: () => fallback.searchMode,
     );
+  }
+
+  // --- Health sync ---
+
+  static const _healthSyncEnabledKey = 'healthSyncEnabled';
+  static const _healthSyncWatermarksKey = 'healthSyncWatermarks';
+  static const _healthSyncReadableTypesKey = 'healthSyncReadableTypes';
+  static const _healthSyncEmptyMetricsKey = 'healthSyncEmptyMetrics';
+
+  Future<void> setHealthSyncEnabled(bool value) async {
+    await PreferenceHelper.asyncPref.setBool(_healthSyncEnabledKey, value);
+  }
+
+  Future<bool> getHealthSyncEnabled() async {
+    final value = await PreferenceHelper.asyncPref.getBool(_healthSyncEnabledKey);
+    return value ?? false;
+  }
+
+  /// How far each metric has been imported, keyed by `MetricType.name` and
+  /// held as ISO-8601 timestamps.
+  ///
+  /// Per metric rather than one for all of them, so an import interrupted
+  /// halfway resumes where each metric got to instead of starting over, and
+  /// so that a metric that cannot be imported holds nobody else back.
+  Future<void> setHealthSyncWatermarks(Map<String, String> value) async {
+    await PreferenceHelper.asyncPref.setString(_healthSyncWatermarksKey, jsonEncode(value));
+  }
+
+  Future<Map<String, String>> getHealthSyncWatermarks() async {
+    final stored = await PreferenceHelper.asyncPref.getString(_healthSyncWatermarksKey);
+    if (stored == null) {
+      return {};
+    }
+    return (jsonDecode(stored) as Map<String, dynamic>).cast<String, String>();
+  }
+
+  /// The health data types the platform let us read during the last sync.
+  ///
+  /// A type that was not readable then has no history in wger, so the sync
+  /// reads the full window once it becomes readable, instead of starting at
+  /// the watermark and leaving everything before it missing.
+  Future<void> setHealthSyncReadableTypes(List<String> value) async {
+    await PreferenceHelper.asyncPref.setStringList(_healthSyncReadableTypesKey, value);
+  }
+
+  Future<List<String>?> getHealthSyncReadableTypes() async {
+    return PreferenceHelper.asyncPref.getStringList(_healthSyncReadableTypesKey);
+  }
+
+  /// The metrics the platform had nothing at all for when their full history
+  /// was last read.
+  ///
+  /// Such a metric never gets a category, and a missing category is what sends
+  /// the sync back to the full window; without this it would do so on every
+  /// run, for every metric.
+  Future<void> setHealthSyncEmptyMetrics(List<String> value) async {
+    await PreferenceHelper.asyncPref.setStringList(_healthSyncEmptyMetricsKey, value);
+  }
+
+  Future<List<String>?> getHealthSyncEmptyMetrics() async {
+    return PreferenceHelper.asyncPref.getStringList(_healthSyncEmptyMetricsKey);
+  }
+
+  Future<void> clearHealthSyncPreferences() async {
+    await PreferenceHelper.asyncPref.remove(_healthSyncEnabledKey);
+    await PreferenceHelper.asyncPref.remove(_healthSyncWatermarksKey);
+    await PreferenceHelper.asyncPref.remove(_healthSyncReadableTypesKey);
+    await PreferenceHelper.asyncPref.remove(_healthSyncEmptyMetricsKey);
   }
 }

@@ -504,6 +504,39 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get allowSelfSignedCertsTitle =>
+      (super.noSuchMethod(
+            Invocation.getter(#allowSelfSignedCertsTitle),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#allowSelfSignedCertsTitle),
+            ),
+          )
+          as String);
+
+  @override
+  String get allowSelfSignedCertsDetail =>
+      (super.noSuchMethod(
+            Invocation.getter(#allowSelfSignedCertsDetail),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#allowSelfSignedCertsDetail),
+            ),
+          )
+          as String);
+
+  @override
+  String get certsNotVerifiedTitle =>
+      (super.noSuchMethod(
+            Invocation.getter(#certsNotVerifiedTitle),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#certsNotVerifiedTitle),
+            ),
+          )
+          as String);
+
+  @override
   String get authOptionPasswordTitle =>
       (super.noSuchMethod(
             Invocation.getter(#authOptionPasswordTitle),
@@ -609,6 +642,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.getter(#labelBottomNavNutrition),
+            ),
+          )
+          as String);
+
+  @override
+  String get labelBottomNavBody =>
+      (super.noSuchMethod(
+            Invocation.getter(#labelBottomNavBody),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#labelBottomNavBody),
             ),
           )
           as String);
@@ -1317,17 +1361,6 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
-  String get newSet =>
-      (super.noSuchMethod(
-            Invocation.getter(#newSet),
-            returnValue: _i3.dummyValue<String>(
-              this,
-              Invocation.getter(#newSet),
-            ),
-          )
-          as String);
-
-  @override
   String get personalRecords =>
       (super.noSuchMethod(
             Invocation.getter(#personalRecords),
@@ -1659,6 +1692,14 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
               this,
               Invocation.getter(#addMeal),
             ),
+          )
+          as String);
+
+  @override
+  String get meal =>
+      (super.noSuchMethod(
+            Invocation.getter(#meal),
+            returnValue: _i3.dummyValue<String>(this, Invocation.getter(#meal)),
           )
           as String);
 
@@ -2042,6 +2083,193 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get chartRangeAll =>
+      (super.noSuchMethod(
+            Invocation.getter(#chartRangeAll),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#chartRangeAll),
+            ),
+          )
+          as String);
+
+  @override
+  String get chartType =>
+      (super.noSuchMethod(
+            Invocation.getter(#chartType),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#chartType),
+            ),
+          )
+          as String);
+
+  @override
+  String get chartTypeAuto =>
+      (super.noSuchMethod(
+            Invocation.getter(#chartTypeAuto),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#chartTypeAuto),
+            ),
+          )
+          as String);
+
+  @override
+  String get chartTypeLine =>
+      (super.noSuchMethod(
+            Invocation.getter(#chartTypeLine),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#chartTypeLine),
+            ),
+          )
+          as String);
+
+  @override
+  String get chartTypeBar =>
+      (super.noSuchMethod(
+            Invocation.getter(#chartTypeBar),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#chartTypeBar),
+            ),
+          )
+          as String);
+
+  @override
+  String get chartTypeHeatmap =>
+      (super.noSuchMethod(
+            Invocation.getter(#chartTypeHeatmap),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#chartTypeHeatmap),
+            ),
+          )
+          as String);
+
+  @override
+  String get chartTypeDelta =>
+      (super.noSuchMethod(
+            Invocation.getter(#chartTypeDelta),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#chartTypeDelta),
+            ),
+          )
+          as String);
+
+  @override
+  String get chartTrend =>
+      (super.noSuchMethod(
+            Invocation.getter(#chartTrend),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#chartTrend),
+            ),
+          )
+          as String);
+
+  @override
+  String get trendReactive =>
+      (super.noSuchMethod(
+            Invocation.getter(#trendReactive),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#trendReactive),
+            ),
+          )
+          as String);
+
+  @override
+  String get trendBalanced =>
+      (super.noSuchMethod(
+            Invocation.getter(#trendBalanced),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#trendBalanced),
+            ),
+          )
+          as String);
+
+  @override
+  String get trendSluggish =>
+      (super.noSuchMethod(
+            Invocation.getter(#trendSluggish),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#trendSluggish),
+            ),
+          )
+          as String);
+
+  @override
+  String get chartAverageWindow =>
+      (super.noSuchMethod(
+            Invocation.getter(#chartAverageWindow),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#chartAverageWindow),
+            ),
+          )
+          as String);
+
+  @override
+  String get chartTypeDistribution =>
+      (super.noSuchMethod(
+            Invocation.getter(#chartTypeDistribution),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#chartTypeDistribution),
+            ),
+          )
+          as String);
+
+  @override
+  String get distributionMedian =>
+      (super.noSuchMethod(
+            Invocation.getter(#distributionMedian),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#distributionMedian),
+            ),
+          )
+          as String);
+
+  @override
+  String get distributionLatest =>
+      (super.noSuchMethod(
+            Invocation.getter(#distributionLatest),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#distributionLatest),
+            ),
+          )
+          as String);
+
+  @override
+  String get sparkTrendStable =>
+      (super.noSuchMethod(
+            Invocation.getter(#sparkTrendStable),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#sparkTrendStable),
+            ),
+          )
+          as String);
+
+  @override
+  String get trackNewMetric =>
+      (super.noSuchMethod(
+            Invocation.getter(#trackNewMetric),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#trackNewMetric),
+            ),
+          )
+          as String);
+
+  @override
   String get measurement =>
       (super.noSuchMethod(
             Invocation.getter(#measurement),
@@ -2075,12 +2303,320 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get whatToTrack =>
+      (super.noSuchMethod(
+            Invocation.getter(#whatToTrack),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#whatToTrack),
+            ),
+          )
+          as String);
+
+  @override
+  String get customMeasurement =>
+      (super.noSuchMethod(
+            Invocation.getter(#customMeasurement),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#customMeasurement),
+            ),
+          )
+          as String);
+
+  @override
+  String get metricAlreadyTracked =>
+      (super.noSuchMethod(
+            Invocation.getter(#metricAlreadyTracked),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#metricAlreadyTracked),
+            ),
+          )
+          as String);
+
+  @override
+  String get metricType =>
+      (super.noSuchMethod(
+            Invocation.getter(#metricType),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#metricType),
+            ),
+          )
+          as String);
+
+  @override
+  String get reorderCategories =>
+      (super.noSuchMethod(
+            Invocation.getter(#reorderCategories),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#reorderCategories),
+            ),
+          )
+          as String);
+
+  @override
+  String get metricCustom =>
+      (super.noSuchMethod(
+            Invocation.getter(#metricCustom),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#metricCustom),
+            ),
+          )
+          as String);
+
+  @override
+  String get metricBodyWeight =>
+      (super.noSuchMethod(
+            Invocation.getter(#metricBodyWeight),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#metricBodyWeight),
+            ),
+          )
+          as String);
+
+  @override
+  String get metricLeanBodyMass =>
+      (super.noSuchMethod(
+            Invocation.getter(#metricLeanBodyMass),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#metricLeanBodyMass),
+            ),
+          )
+          as String);
+
+  @override
+  String get metricBodyFat =>
+      (super.noSuchMethod(
+            Invocation.getter(#metricBodyFat),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#metricBodyFat),
+            ),
+          )
+          as String);
+
+  @override
+  String get metricHeight =>
+      (super.noSuchMethod(
+            Invocation.getter(#metricHeight),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#metricHeight),
+            ),
+          )
+          as String);
+
+  @override
+  String get metricBloodPressure =>
+      (super.noSuchMethod(
+            Invocation.getter(#metricBloodPressure),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#metricBloodPressure),
+            ),
+          )
+          as String);
+
+  @override
+  String get metricBloodPressureSystolic =>
+      (super.noSuchMethod(
+            Invocation.getter(#metricBloodPressureSystolic),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#metricBloodPressureSystolic),
+            ),
+          )
+          as String);
+
+  @override
+  String get metricBloodPressureDiastolic =>
+      (super.noSuchMethod(
+            Invocation.getter(#metricBloodPressureDiastolic),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#metricBloodPressureDiastolic),
+            ),
+          )
+          as String);
+
+  @override
+  String get metricHeartRate =>
+      (super.noSuchMethod(
+            Invocation.getter(#metricHeartRate),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#metricHeartRate),
+            ),
+          )
+          as String);
+
+  @override
+  String get metricRestingHeartRate =>
+      (super.noSuchMethod(
+            Invocation.getter(#metricRestingHeartRate),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#metricRestingHeartRate),
+            ),
+          )
+          as String);
+
+  @override
+  String get metricBloodOxygen =>
+      (super.noSuchMethod(
+            Invocation.getter(#metricBloodOxygen),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#metricBloodOxygen),
+            ),
+          )
+          as String);
+
+  @override
+  String get metricSteps =>
+      (super.noSuchMethod(
+            Invocation.getter(#metricSteps),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#metricSteps),
+            ),
+          )
+          as String);
+
+  @override
+  String get metricDistance =>
+      (super.noSuchMethod(
+            Invocation.getter(#metricDistance),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#metricDistance),
+            ),
+          )
+          as String);
+
+  @override
+  String get metricEnergy =>
+      (super.noSuchMethod(
+            Invocation.getter(#metricEnergy),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#metricEnergy),
+            ),
+          )
+          as String);
+
+  @override
+  String get metricSleep =>
+      (super.noSuchMethod(
+            Invocation.getter(#metricSleep),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#metricSleep),
+            ),
+          )
+          as String);
+
+  @override
+  String get noDataAvailable =>
+      (super.noSuchMethod(
+            Invocation.getter(#noDataAvailable),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#noDataAvailable),
+            ),
+          )
+          as String);
+
+  @override
+  String get metricSleepTotal =>
+      (super.noSuchMethod(
+            Invocation.getter(#metricSleepTotal),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#metricSleepTotal),
+            ),
+          )
+          as String);
+
+  @override
+  String get metricSleepLight =>
+      (super.noSuchMethod(
+            Invocation.getter(#metricSleepLight),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#metricSleepLight),
+            ),
+          )
+          as String);
+
+  @override
+  String get metricSleepDeep =>
+      (super.noSuchMethod(
+            Invocation.getter(#metricSleepDeep),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#metricSleepDeep),
+            ),
+          )
+          as String);
+
+  @override
+  String get metricSleepRem =>
+      (super.noSuchMethod(
+            Invocation.getter(#metricSleepRem),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#metricSleepRem),
+            ),
+          )
+          as String);
+
+  @override
+  String get metricSleepAwake =>
+      (super.noSuchMethod(
+            Invocation.getter(#metricSleepAwake),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#metricSleepAwake),
+            ),
+          )
+          as String);
+
+  @override
   String get measurementEntriesHelpText =>
       (super.noSuchMethod(
             Invocation.getter(#measurementEntriesHelpText),
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.getter(#measurementEntriesHelpText),
+            ),
+          )
+          as String);
+
+  @override
+  String get partOfGroup =>
+      (super.noSuchMethod(
+            Invocation.getter(#partOfGroup),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#partOfGroup),
+            ),
+          )
+          as String);
+
+  @override
+  String get noGroup =>
+      (super.noSuchMethod(
+            Invocation.getter(#noGroup),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#noGroup),
             ),
           )
           as String);
@@ -3085,17 +3621,6 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
-  String get identicalExercisePleaseDiscard =>
-      (super.noSuchMethod(
-            Invocation.getter(#identicalExercisePleaseDiscard),
-            returnValue: _i3.dummyValue<String>(
-              this,
-              Invocation.getter(#identicalExercisePleaseDiscard),
-            ),
-          )
-          as String);
-
-  @override
   String get checkInformationBeforeSubmitting =>
       (super.noSuchMethod(
             Invocation.getter(#checkInformationBeforeSubmitting),
@@ -3431,17 +3956,6 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
-  String get superset =>
-      (super.noSuchMethod(
-            Invocation.getter(#superset),
-            returnValue: _i3.dummyValue<String>(
-              this,
-              Invocation.getter(#superset),
-            ),
-          )
-          as String);
-
-  @override
   String get setHasNoExercises =>
       (super.noSuchMethod(
             Invocation.getter(#setHasNoExercises),
@@ -3624,6 +4138,28 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.getter(#settingsKeepDataOnLogoutDescription),
+            ),
+          )
+          as String);
+
+  @override
+  String get settingsVerboseLogging =>
+      (super.noSuchMethod(
+            Invocation.getter(#settingsVerboseLogging),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#settingsVerboseLogging),
+            ),
+          )
+          as String);
+
+  @override
+  String get settingsVerboseLoggingDescription =>
+      (super.noSuchMethod(
+            Invocation.getter(#settingsVerboseLoggingDescription),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#settingsVerboseLoggingDescription),
             ),
           )
           as String);
@@ -4196,6 +4732,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get indicatorTrend =>
+      (super.noSuchMethod(
+            Invocation.getter(#indicatorTrend),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#indicatorTrend),
+            ),
+          )
+          as String);
+
+  @override
   String get endWorkout =>
       (super.noSuchMethod(
             Invocation.getter(#endWorkout),
@@ -4246,6 +4793,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.getter(#systemMode),
+            ),
+          )
+          as String);
+
+  @override
+  String get useDynamicColor =>
+      (super.noSuchMethod(
+            Invocation.getter(#useDynamicColor),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#useDynamicColor),
             ),
           )
           as String);
@@ -4493,6 +5051,39 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get syncStatusStalledHint =>
+      (super.noSuchMethod(
+            Invocation.getter(#syncStatusStalledHint),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#syncStatusStalledHint),
+            ),
+          )
+          as String);
+
+  @override
+  String get syncStatusReconnect =>
+      (super.noSuchMethod(
+            Invocation.getter(#syncStatusReconnect),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#syncStatusReconnect),
+            ),
+          )
+          as String);
+
+  @override
+  String get syncStatusNeverSynced =>
+      (super.noSuchMethod(
+            Invocation.getter(#syncStatusNeverSynced),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#syncStatusNeverSynced),
+            ),
+          )
+          as String);
+
+  @override
   String get filterNutriscore =>
       (super.noSuchMethod(
             Invocation.getter(#filterNutriscore),
@@ -4603,6 +5194,149 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get healthSync =>
+      (super.noSuchMethod(
+            Invocation.getter(#healthSync),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#healthSync),
+            ),
+          )
+          as String);
+
+  @override
+  String get healthSyncDescription =>
+      (super.noSuchMethod(
+            Invocation.getter(#healthSyncDescription),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#healthSyncDescription),
+            ),
+          )
+          as String);
+
+  @override
+  String get healthSyncPermissionDenied =>
+      (super.noSuchMethod(
+            Invocation.getter(#healthSyncPermissionDenied),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#healthSyncPermissionDenied),
+            ),
+          )
+          as String);
+
+  @override
+  String get healthSyncSyncing =>
+      (super.noSuchMethod(
+            Invocation.getter(#healthSyncSyncing),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#healthSyncSyncing),
+            ),
+          )
+          as String);
+
+  @override
+  String get healthSyncNow =>
+      (super.noSuchMethod(
+            Invocation.getter(#healthSyncNow),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#healthSyncNow),
+            ),
+          )
+          as String);
+
+  @override
+  String get healthSyncGrantAccess =>
+      (super.noSuchMethod(
+            Invocation.getter(#healthSyncGrantAccess),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#healthSyncGrantAccess),
+            ),
+          )
+          as String);
+
+  @override
+  String get healthSyncFailed =>
+      (super.noSuchMethod(
+            Invocation.getter(#healthSyncFailed),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#healthSyncFailed),
+            ),
+          )
+          as String);
+
+  @override
+  String get healthConnectInstall =>
+      (super.noSuchMethod(
+            Invocation.getter(#healthConnectInstall),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#healthConnectInstall),
+            ),
+          )
+          as String);
+
+  @override
+  String get healthConnectUpdate =>
+      (super.noSuchMethod(
+            Invocation.getter(#healthConnectUpdate),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#healthConnectUpdate),
+            ),
+          )
+          as String);
+
+  @override
+  String get healthConnectRequired =>
+      (super.noSuchMethod(
+            Invocation.getter(#healthConnectRequired),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#healthConnectRequired),
+            ),
+          )
+          as String);
+
+  @override
+  String get health =>
+      (super.noSuchMethod(
+            Invocation.getter(#health),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#health),
+            ),
+          )
+          as String);
+
+  @override
+  String get importedEntry =>
+      (super.noSuchMethod(
+            Invocation.getter(#importedEntry),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#importedEntry),
+            ),
+          )
+          as String);
+
+  @override
+  String certsNotVerifiedDetail(String? host) =>
+      (super.noSuchMethod(
+            Invocation.method(#certsNotVerifiedDetail, [host]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#certsNotVerifiedDetail, [host]),
+            ),
+          )
+          as String);
+
+  @override
   String exerciseNr(String? nr) =>
       (super.noSuchMethod(
             Invocation.method(#exerciseNr, [nr]),
@@ -4691,34 +5425,155 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
-  String chartAllTimeTitle(String? name) =>
+  String chartRangeWeeks(int? count) =>
       (super.noSuchMethod(
-            Invocation.method(#chartAllTimeTitle, [name]),
+            Invocation.method(#chartRangeWeeks, [count]),
             returnValue: _i3.dummyValue<String>(
               this,
-              Invocation.method(#chartAllTimeTitle, [name]),
+              Invocation.method(#chartRangeWeeks, [count]),
             ),
           )
           as String);
 
   @override
-  String chart30DaysTitle(String? name) =>
+  String chartRangeMonths(int? count) =>
       (super.noSuchMethod(
-            Invocation.method(#chart30DaysTitle, [name]),
+            Invocation.method(#chartRangeMonths, [count]),
             returnValue: _i3.dummyValue<String>(
               this,
-              Invocation.method(#chart30DaysTitle, [name]),
+              Invocation.method(#chartRangeMonths, [count]),
             ),
           )
           as String);
 
   @override
-  String chartDuringPlanTitle(String? chartName, String? planName) =>
+  String chartRangeYears(int? count) =>
       (super.noSuchMethod(
-            Invocation.method(#chartDuringPlanTitle, [chartName, planName]),
+            Invocation.method(#chartRangeYears, [count]),
             returnValue: _i3.dummyValue<String>(
               this,
-              Invocation.method(#chartDuringPlanTitle, [chartName, planName]),
+              Invocation.method(#chartRangeYears, [count]),
+            ),
+          )
+          as String);
+
+  @override
+  String chartWeeklyChangeTitle(String? name) =>
+      (super.noSuchMethod(
+            Invocation.method(#chartWeeklyChangeTitle, [name]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#chartWeeklyChangeTitle, [name]),
+            ),
+          )
+          as String);
+
+  @override
+  String chartAverageWindowDays(int? days) =>
+      (super.noSuchMethod(
+            Invocation.method(#chartAverageWindowDays, [days]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#chartAverageWindowDays, [days]),
+            ),
+          )
+          as String);
+
+  @override
+  String chartDistributionTitle(String? name) =>
+      (super.noSuchMethod(
+            Invocation.method(#chartDistributionTitle, [name]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#chartDistributionTitle, [name]),
+            ),
+          )
+          as String);
+
+  @override
+  String distributionEntryCount(int? count) =>
+      (super.noSuchMethod(
+            Invocation.method(#distributionEntryCount, [count]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#distributionEntryCount, [count]),
+            ),
+          )
+          as String);
+
+  @override
+  String distributionDayCount(int? count) =>
+      (super.noSuchMethod(
+            Invocation.method(#distributionDayCount, [count]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#distributionDayCount, [count]),
+            ),
+          )
+          as String);
+
+  @override
+  String relativeDaysAgo(int? count) =>
+      (super.noSuchMethod(
+            Invocation.method(#relativeDaysAgo, [count]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#relativeDaysAgo, [count]),
+            ),
+          )
+          as String);
+
+  @override
+  String relativeWeeksAgo(int? count) =>
+      (super.noSuchMethod(
+            Invocation.method(#relativeWeeksAgo, [count]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#relativeWeeksAgo, [count]),
+            ),
+          )
+          as String);
+
+  @override
+  String relativeMonthsAgo(int? count) =>
+      (super.noSuchMethod(
+            Invocation.method(#relativeMonthsAgo, [count]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#relativeMonthsAgo, [count]),
+            ),
+          )
+          as String);
+
+  @override
+  String relativeYearsAgo(int? count) =>
+      (super.noSuchMethod(
+            Invocation.method(#relativeYearsAgo, [count]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#relativeYearsAgo, [count]),
+            ),
+          )
+          as String);
+
+  @override
+  String sparkAverage(String? value) =>
+      (super.noSuchMethod(
+            Invocation.method(#sparkAverage, [value]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#sparkAverage, [value]),
+            ),
+          )
+          as String);
+
+  @override
+  String sparkTrendPerWeek(String? value) =>
+      (super.noSuchMethod(
+            Invocation.method(#sparkTrendPerWeek, [value]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#sparkTrendPerWeek, [value]),
             ),
           )
           as String);
@@ -4889,17 +5744,6 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
-  String imageFormatNotSupportedDetail(String? imageFormat) =>
-      (super.noSuchMethod(
-            Invocation.method(#imageFormatNotSupportedDetail, [imageFormat]),
-            returnValue: _i3.dummyValue<String>(
-              this,
-              Invocation.method(#imageFormatNotSupportedDetail, [imageFormat]),
-            ),
-          )
-          as String);
-
-  @override
   String alsoKnownAs(String? aliases) =>
       (super.noSuchMethod(
             Invocation.method(#alsoKnownAs, [aliases]),
@@ -4955,12 +5799,67 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String syncStatusPendingUploads(int? count) =>
+      (super.noSuchMethod(
+            Invocation.method(#syncStatusPendingUploads, [count]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#syncStatusPendingUploads, [count]),
+            ),
+          )
+          as String);
+
+  @override
   String filterNutriscoreOrBetter(String? grade) =>
       (super.noSuchMethod(
             Invocation.method(#filterNutriscoreOrBetter, [grade]),
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.method(#filterNutriscoreOrBetter, [grade]),
+            ),
+          )
+          as String);
+
+  @override
+  String healthSyncSuccess(int? count) =>
+      (super.noSuchMethod(
+            Invocation.method(#healthSyncSuccess, [count]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#healthSyncSuccess, [count]),
+            ),
+          )
+          as String);
+
+  @override
+  String healthSyncNoData(String? platform) =>
+      (super.noSuchMethod(
+            Invocation.method(#healthSyncNoData, [platform]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#healthSyncNoData, [platform]),
+            ),
+          )
+          as String);
+
+  @override
+  String healthSyncStatus(int? count, String? time) =>
+      (super.noSuchMethod(
+            Invocation.method(#healthSyncStatus, [count, time]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#healthSyncStatus, [count, time]),
+            ),
+          )
+          as String);
+
+  @override
+  String healthSyncPermissionMissing(String? platform) =>
+      (super.noSuchMethod(
+            Invocation.method(#healthSyncPermissionMissing, [platform]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#healthSyncPermissionMissing, [platform]),
             ),
           )
           as String);

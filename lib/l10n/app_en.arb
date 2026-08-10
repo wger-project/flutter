@@ -174,6 +174,10 @@
   "@labelBottomNavNutrition": {
     "description": "Label used in bottom navigation, use a short word"
   },
+  "labelBottomNavBody": "Body",
+  "@labelBottomNavBody": {
+    "description": "Label used in bottom navigation and as the title of the screen holding the body weight and the other measurements, use a short word"
+  },
   "labelWorkoutLogs": "Training logs",
   "@labelWorkoutLogs": {
     "description": "(Workout) logs"
@@ -358,10 +362,6 @@
   "resultingRoutine": "Resulting routine",
   "newDay": "New day",
   "@newDay": {},
-  "newSet": "New set",
-  "@newSet": {
-    "description": "Header when adding a new set to a workout day"
-  },
   "personalRecords": "Personal records",
   "gymMode": "Gym mode",
   "@gymMode": {
@@ -432,16 +432,16 @@
     "description": "Label for the button that adds a set (to a workout day)"
   },
   
-"gymModeLogScope": "Previous logs",
-"gymModeLogScopeHelp": "Which logs to show as reference while training",
-"gymModeLogScopeCurrentRoutine": "Current routine",
-"gymModeLogScopeWeeks": "Last {weeks} weeks",
-"@gymModeLogScopeWeeks": {
+  "gymModeLogScope": "Previous logs",
+  "gymModeLogScopeHelp": "Which logs to show as reference while training",
+  "gymModeLogScopeCurrentRoutine": "Current routine",
+  "gymModeLogScopeWeeks": "Last {weeks} weeks",
+  "@gymModeLogScopeWeeks": {
   "placeholders": {
     "weeks": { "type": "int" }
   }
 },
-"gymModeDistinctLogs": "Hide duplicate values",
+  "gymModeDistinctLogs": "Hide duplicate values",
   "addMeal": "Add meal",
   "@addMeal": {},
   "meal": "Meal",
@@ -533,9 +533,64 @@
   "@weight": {
     "description": "The weight of a workout log or body weight entry"
   },
-  "chartAllTimeTitle": "{name} all-time",
-  "@chartAllTimeTitle": {
-    "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+  "chartRangeAll": "All",
+  "@chartRangeAll": {
+    "description": "Label for the chart time-range selector option showing all data"
+  },
+  "chartRangeWeeks": "{count, plural, one{1 week} other{{count} weeks}}",
+  "@chartRangeWeeks": {
+    "description": "Chart time-range selector option covering a number of weeks",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chartRangeMonths": "{count, plural, one{1 month} other{{count} months}}",
+  "@chartRangeMonths": {
+    "description": "Chart time-range selector option covering a number of months",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chartRangeYears": "{count, plural, one{1 year} other{{count} years}}",
+  "@chartRangeYears": {
+    "description": "Chart time-range selector option covering a number of years",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "chartType": "Chart type",
+  "@chartType": {
+    "description": "Label of the chart type picker of a measurement category"
+  },
+  "chartTypeAuto": "Automatic",
+  "@chartTypeAuto": {
+    "description": "Chart type option that leaves the chart to the metric type of the category"
+  },
+  "chartTypeLine": "Line",
+  "@chartTypeLine": {
+    "description": "Chart type option: a line through the measured values"
+  },
+  "chartTypeBar": "Bars",
+  "@chartTypeBar": {
+    "description": "Chart type option: one bar per day"
+  },
+  "chartTypeHeatmap": "Heatmap",
+  "@chartTypeHeatmap": {
+    "description": "Chart type option: a calendar grid with one coloured cell per day"
+  },
+  "chartTypeDelta": "Change",
+  "@chartTypeDelta": {
+    "description": "Chart type option: one bar per week, showing how much the value changed"
+  },
+  "chartWeeklyChangeTitle": "{name}, change per week",
+  "@chartWeeklyChangeTitle": {
+    "description": "Title of the chart showing the weekly change of 'name' (e.g. 'weight', 'body fat' etc.)",
     "type": "text",
     "placeholders": {
       "name": {
@@ -543,9 +598,42 @@
       }
     }
   },
-  "chart30DaysTitle": "{name} last 30 days",
-  "@chart30DaysTitle": {
-    "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+  "chartTrend": "Trend line",
+  "@chartTrend": {
+    "description": "Label of the setting for how closely the trend line follows the values"
+  },
+  "trendReactive": "Reactive",
+  "@trendReactive": {
+    "description": "Trend line option: follows the values closely"
+  },
+  "trendBalanced": "Balanced",
+  "@trendBalanced": {
+    "description": "Trend line option: the default, between reactive and sluggish"
+  },
+  "trendSluggish": "Smooth",
+  "@trendSluggish": {
+    "description": "Trend line option: ignores short-term swings"
+  },
+  "chartAverageWindow": "Average over",
+  "@chartAverageWindow": {
+    "description": "Label of the setting for how many days the moving average covers"
+  },
+  "chartAverageWindowDays": "{days, plural, one{1 day} other{{days} days}}",
+  "@chartAverageWindowDays": {
+    "description": "One option of the average window setting, e.g. '7 days'",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "chartTypeDistribution": "Distribution",
+  "@chartTypeDistribution": {
+    "description": "Chart type option: a histogram of how often each value occurred"
+  },
+  "chartDistributionTitle": "{name}, distribution",
+  "@chartDistributionTitle": {
+    "description": "Title of the histogram showing how the values of 'name' (e.g. 'weight') are distributed",
     "type": "text",
     "placeholders": {
       "name": {
@@ -553,18 +641,93 @@
       }
     }
   },
-  "chartDuringPlanTitle": "{chartName} during nutritional plan {planName}",
-  "@chartDuringPlanTitle": {
-    "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-    "type": "text",
+  "distributionMedian": "Median",
+  "@distributionMedian": {
+    "description": "Label of the median marker in the distribution histogram"
+  },
+  "distributionLatest": "Latest",
+  "@distributionLatest": {
+    "description": "Label of the marker for the most recent value in the distribution histogram"
+  },
+  "distributionEntryCount": "{count, plural, one{1 entry} other{{count} entries}}",
+  "@distributionEntryCount": {
+    "description": "How many measurements fall into the tapped histogram bin",
     "placeholders": {
-      "chartName": {
-        "type": "String"
-      },
-      "planName": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "distributionDayCount": "{count, plural, one{1 day} other{{count} days}}",
+  "@distributionDayCount": {
+    "description": "How many days fall into the tapped histogram bin, for metrics summed per day",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "relativeDaysAgo": "{count, plural, =0{today} =1{yesterday} other{{count} days ago}}",
+  "@relativeDaysAgo": {
+    "description": "How long ago something was measured, for distances below a week",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "relativeWeeksAgo": "{count, plural, one{1 week ago} other{{count} weeks ago}}",
+  "@relativeWeeksAgo": {
+    "description": "How long ago something was measured, for distances below a month",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "relativeMonthsAgo": "{count, plural, one{1 month ago} other{{count} months ago}}",
+  "@relativeMonthsAgo": {
+    "description": "How long ago something was measured, for distances below a year",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "relativeYearsAgo": "{count, plural, one{1 year ago} other{{count} years ago}}",
+  "@relativeYearsAgo": {
+    "description": "How long ago something was measured, for distances of a year and more",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sparkAverage": "avg {value}",
+  "@sparkAverage": {
+    "description": "Chip on an overview tile: the average over the charted days, e.g. 'avg 7:05' for sleep",
+    "placeholders": {
+      "value": {
         "type": "String"
       }
     }
+  },
+  "sparkTrendPerWeek": "{value}/week",
+  "@sparkTrendPerWeek": {
+    "description": "Chip on an overview tile: how much the value changes per week, shown after a direction arrow",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "sparkTrendStable": "stable",
+  "@sparkTrendStable": {
+    "description": "Chip on an overview tile when the value barely changes, shown after a right arrow"
+  },
+  "trackNewMetric": "Track something new",
+  "@trackNewMetric": {
+    "description": "Action in the overview's expanding + button that opens the sheet for starting a new measurement category"
   },
   "measurement": "Measurement",
   "@measurement": {},
@@ -574,8 +737,120 @@
   },
   "measurementCategoriesHelpText": "Measurement category, such as 'biceps' or 'body fat'",
   "@measurementCategoriesHelpText": {},
+  "whatToTrack": "What do you want to track?",
+  "@whatToTrack": {
+    "description": "Title of the sheet that starts a new measurement category"
+  },
+  "customMeasurement": "Custom measurement",
+  "@customMeasurement": {
+    "description": "Option that creates a free-form measurement category with its own name and unit"
+  },
+  "metricAlreadyTracked": "Already tracked",
+  "@metricAlreadyTracked": {
+    "description": "Shown for a metric the user already has a category for, which cannot be picked twice"
+  },
+  "metricType": "Metric Type",
+  "@metricType": {
+    "description": "Metric type for a measurement category"
+  },
+  "reorderCategories": "Reorder categories",
+  "@reorderCategories": {
+    "description": "measurement categories reordering"
+  },
+  "metricCustom": "Custom",
+  "@metricCustom": {
+    "description": "Label for custom metric type"
+  },
+  "metricBodyWeight": "Body weight",
+  "@metricBodyWeight": {
+    "description": "Label for body weight measurement"
+  },
+  "metricLeanBodyMass": "Lean body mass",
+  "@metricLeanBodyMass": {
+    "description": "Label for lean body mass measurement"
+  },
+  "metricBodyFat": "Body fat",
+  "@metricBodyFat": {
+    "description": "Label for body fat percentage measurement"
+  },
+  "metricHeight": "Height",
+  "@metricHeight": {
+    "description": "Label for height measurement"
+  },
+  "metricBloodPressure": "Blood pressure",
+  "@metricBloodPressure": {
+    "description": "Label for blood pressure measurement"
+  },
+  "metricBloodPressureSystolic": "Systolic",
+  "@metricBloodPressureSystolic": {
+    "description": "Label for the systolic component of a blood pressure reading"
+  },
+  "metricBloodPressureDiastolic": "Diastolic",
+  "@metricBloodPressureDiastolic": {
+    "description": "Label for the diastolic component of a blood pressure reading"
+  },
+  "metricHeartRate": "Heart rate",
+  "@metricHeartRate": {
+    "description": "Label for heart rate measurement"
+  },
+  "metricRestingHeartRate": "Resting heart rate",
+  "@metricRestingHeartRate": {
+    "description": "Label for resting heart rate measurement"
+  },
+  "metricBloodOxygen": "Blood oxygen",
+  "@metricBloodOxygen": {
+    "description": "Label for blood oxygen saturation measurement"
+  },
+  "metricSteps": "Steps",
+  "@metricSteps": {
+    "description": "Label for step count measurement"
+  },
+  "metricDistance": "Distance",
+  "@metricDistance": {
+    "description": "Label for distance measurement"
+  },
+  "metricEnergy": "Energy",
+  "@metricEnergy": {
+    "description": "Label for energy/calories burned measurement"
+  },
+  "metricSleep": "Sleep",
+  "@metricSleep": {
+    "description": "Label for sleep duration measurement"
+  },
+  "noDataAvailable": "No data available",
+  "@noDataAvailable": {
+    "description": "Shown in place of a chart when the category has no entries in the selected range"
+  },
+  "metricSleepTotal": "Total sleep",
+  "@metricSleepTotal": {
+    "description": "Label for the total time asleep in a night, all sleep stages together"
+  },
+  "metricSleepLight": "Light sleep",
+  "@metricSleepLight": {
+    "description": "Label for the light sleep stage"
+  },
+  "metricSleepDeep": "Deep sleep",
+  "@metricSleepDeep": {
+    "description": "Label for the deep sleep stage"
+  },
+  "metricSleepRem": "REM sleep",
+  "@metricSleepRem": {
+    "description": "Label for the REM (rapid eye movement) sleep stage"
+  },
+  "metricSleepAwake": "Awake",
+  "@metricSleepAwake": {
+    "description": "Label for the time spent awake during a night, not counted as sleep"
+  },
   "measurementEntriesHelpText": "The unit used to measure the category such as 'cm' or '%'",
   "@measurementEntriesHelpText": {},
+  "partOfGroup": "Part of group",
+  "@partOfGroup": {
+    "description": "Dropdown label: makes a measurement category a component of a multi-value group (e.g. blood pressure)"
+  },
+  "noGroup": "No group",
+  "@noGroup": {
+    "description": "Dropdown option for a measurement category that is not part of any group"
+  },
   "date": "Date",
   "@date": {
     "description": "The date of a workout log or body weight entry"
@@ -969,7 +1244,6 @@
   "@close": {
     "description": "Translation for close"
   },
-  "identicalExercisePleaseDiscard": "If you notice an exercise that is identical to the one you're adding, please discard your draft and edit that exercise instead.",
   "checkInformationBeforeSubmitting": "Please check that the information you entered is correct before submitting the exercise",
   "add_exercise_image_license": "Images must be compatible with the CC BY SA license. If in doubt, upload only photos you've taken yourself.",
   "imageDetailsTitle": "Image details",
@@ -1024,16 +1298,6 @@
           }
       }
   },
-  "imageFormatNotSupportedDetail": "{imageFormat} images are not supported yet.",
-  "@imageFormatNotSupportedDetail": {
-      "description": "Label shown on the image preview container when image format is not supported",
-      "type": "text",
-      "placeholders": {
-          "imageFormat": {
-              "type": "String"
-          }
-      }
-  },
   "add": "add",
   "@add": {
     "description": "Add button text"
@@ -1080,7 +1344,6 @@
   "fitInWeek": "Fixed weekly schedule",
   "fitInWeekHelp": "If enabled, the days will repeat in a weekly cycle, otherwise the days will follow sequentially without regards to the start of a new week.",
   "addSuperset": "Add superset",
-  "superset": "Superset",
   "setHasNoExercises": "This set has no exercises yet!",
   "contributeExercise": "Contribute an exercise",
   "translation": "Translation",
@@ -1311,6 +1574,10 @@
   "@indicatorAvg": {
     "description": "added for localization of Class Indicator's field text"
   },
+  "indicatorTrend": "trend",
+  "@indicatorTrend": {
+    "description": "Legend label for the smoothed trendline on measurement charts"
+  },
   "endWorkout": "End workout",
   "@endWorkout": {
     "description": "Use the imperative, label on button to finish the current workout in gym mode"
@@ -1496,5 +1763,95 @@
   "timeStartEndBothOrNeither": "Either set both start and end time or leave both empty",
   "@timeStartEndBothOrNeither": {
     "description": "Validation error when only one of start/end time is set on a workout session"
+  },
+  "healthSync": "Health sync",
+  "@healthSync": {
+    "description": "Title for the health platform sync setting"
+  },
+  "healthSyncDescription": "Import body measurements from Apple Health or Health Connect",
+  "@healthSyncDescription": {
+    "description": "Subtitle for the health platform sync setting"
+  },
+  "healthSyncSuccess": "Imported {count} measurements from Health",
+  "@healthSyncSuccess": {
+    "description": "Snackbar message after successful health sync",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "healthSyncPermissionDenied": "Access to health data was not granted",
+  "@healthSyncPermissionDenied": {
+    "description": "Snackbar shown when enabling health sync fails because the platform permissions were denied"
+  },
+  "healthSyncNoData": "No health data was found. Check in {platform} that wger is allowed to read your data.",
+  "@healthSyncNoData": {
+    "description": "Snackbar shown when enabling health sync imported nothing, pointing at the platform's permission settings",
+    "placeholders": {
+      "platform": {
+        "type": "String",
+        "example": "Apple Health"
+      }
+    }
+  },
+  "healthSyncStatus": "{count, plural, =0{Last sync: {time}, no new entries} one{Last sync: {time}, 1 new entry} other{Last sync: {time}, {count} new entries}}",
+  "@healthSyncStatus": {
+    "description": "Status line under the health sync toggle showing when the last sync ran and how many entries it imported",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "time": {
+        "type": "String",
+        "example": "7/31/2026 14:32"
+      }
+    }
+  },
+  "healthSyncSyncing": "Syncing health data…",
+  "@healthSyncSyncing": {
+    "description": "Status line under the health sync toggle while a sync is running"
+  },
+  "healthSyncNow": "Sync now",
+  "@healthSyncNow": {
+    "description": "Label of the manual health sync action in the settings"
+  },
+  "healthSyncPermissionMissing": "{platform} is not sharing your data",
+  "@healthSyncPermissionMissing": {
+    "description": "Status line under the health sync toggle when the platform refuses to hand over data",
+    "placeholders": {
+      "platform": {
+        "type": "String",
+        "example": "Apple Health"
+      }
+    }
+  },
+  "healthSyncGrantAccess": "Tap to grant access again",
+  "@healthSyncGrantAccess": {
+    "description": "Action hint below the missing-permission status line"
+  },
+  "healthSyncFailed": "The last sync could not be completed",
+  "@healthSyncFailed": {
+    "description": "Status line under the health sync toggle after a failed sync"
+  },
+  "healthConnectInstall": "Install Health Connect",
+  "@healthConnectInstall": {
+    "description": "Action shown instead of the health sync toggle when Health Connect is missing on Android"
+  },
+  "healthConnectUpdate": "Update Health Connect",
+  "@healthConnectUpdate": {
+    "description": "Action shown instead of the health sync toggle when the installed Health Connect is too old"
+  },
+  "healthConnectRequired": "Health Connect is needed to import body measurements",
+  "@healthConnectRequired": {
+    "description": "Explanation below the install/update Health Connect action"
+  },
+  "health": "Health",
+  "@health": {
+    "description": "Section header for health-related settings"
+  },
+  "importedEntry": "This entry was synced from a health app and can only be changed there",
+  "@importedEntry": {
+    "description": "Tooltip on the badge of a measurement entry imported from Apple Health / Health Connect; such entries cannot be edited or deleted in the app"
   }
 }

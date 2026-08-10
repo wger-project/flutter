@@ -24,7 +24,7 @@ import 'package:intl/intl.dart';
 /// Bump this value whenever you depend on API changes that are only available
 /// in a newer server release. The check is performed during login and
 /// auto-login and mirrors what the server does with MIN_APP_VERSION.
-const MIN_SERVER_VERSION = '2.6';
+const MIN_SERVER_VERSION = '2.7';
 
 /// Size for the "smaller" icons, e.g. when they belong to less important items
 /// and we don't want to fill the whole screen
@@ -68,6 +68,9 @@ const PREFS_LAST_SERVER = 'lastServer';
 /// reports true.
 const PREFS_USE_DYNAMIC_COLOR = 'useDynamicColor';
 const USE_DYNAMIC_COLOR_DEFAULT = false;
+
+/// The chart range the measurement screens share, held as `ChartRange.name`
+const PREFS_CHART_RANGE = 'measurementChartRange';
 
 /// Headless JWT auth: SharedPreferences keys.
 ///

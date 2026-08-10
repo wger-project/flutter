@@ -43,9 +43,17 @@ class _DashboardMeasurementWidgetState extends ConsumerState<DashboardMeasuremen
   @override
   Widget build(BuildContext context) {
     return AsyncValueWidget<List<MeasurementCategory>>(
-      value: ref.watch(measurementProvider),
+      // The categories alone; a card reads its own points, and the latest
+      // value of a component comes from its own query, see CategoriesCard
+      value: ref.watch(measurementCategoriesProvider),
       loggerName: 'DashboardMeasurementWidget',
-      data: (categoriesList) {
+      data: (allCategories) {
+        // Children of multi-value groups are shown inside their parent's card.
+        // Body weight has its own dashboard widget.
+        final categoriesList = allCategories
+            .where((c) => c.parentId == null && !c.isOfficialBodyWeight)
+            .toList();
+
         if (categoriesList.isEmpty) {
           return NothingFound(
             AppLocalizations.of(context).moreMeasurementEntries,

@@ -315,10 +315,6 @@
     "routineDays": "Dnevi v rutini",
     "resultingRoutine": "Končna rutina",
     "newDay": "Nov dan",
-    "newSet": "Nov niz",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
-    },
     "personalRecords": "Osebni rekordi",
     "gymMode": "Način telovadbe",
     "@gymMode": {
@@ -481,39 +477,6 @@
     },
     "min": "Min.",
     "max": "Maks.",
-    "chartAllTimeTitle": "{name} – ves čas",
-    "@chartAllTimeTitle": {
-        "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chart30DaysTitle": "{name} – zadnjih 30 dni",
-    "@chart30DaysTitle": {
-        "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chartDuringPlanTitle": "{chartName} – med prehranskim načrtom {planName}",
-    "@chartDuringPlanTitle": {
-        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-        "type": "text",
-        "placeholders": {
-            "chartName": {
-                "type": "String"
-            },
-            "planName": {
-                "type": "String"
-            }
-        }
-    },
     "measurement": "Meritve",
     "measurements": "Meritve",
     "@measurements": {

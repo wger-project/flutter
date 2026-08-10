@@ -108,10 +108,6 @@
     "@invalidUsername": {
         "description": "Error message when the user enters an invalid username"
     },
-    "newSet": "مجموعة جديدة",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
-    },
     "impression": "انطباع",
     "@impression": {
         "description": "General impression (e.g. for a workout session) such as good, bad, etc."
@@ -742,16 +738,6 @@
             }
         }
     },
-    "chart30DaysTitle": "{name} آخر 30 يوم",
-    "@chart30DaysTitle": {
-        "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
     "copyToClipboard": "النسخ إلى clipboard",
     "workoutCompleted": "تم الانتهاء من التمرين",
     "onlyLoggingHelpText": "ضع علامة في المربع إذا كنت ترغب فقط في تسجيل سعراتك الحرارية ولا ترغب في إعداد خطة غذائية مفصلة تتضمن وجبات محددة",
@@ -880,19 +866,6 @@
     "errorCouldNotConnectToServer": "لم يتمكن التطبيق من الاتصال بالخادم",
     "max": "الاقصى",
     "min": "الادنى",
-    "chartDuringPlanTitle": "{chartName} خلال الخطة الغذائية {planName}",
-    "@chartDuringPlanTitle": {
-        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-        "type": "text",
-        "placeholders": {
-            "chartName": {
-                "type": "String"
-            },
-            "planName": {
-                "type": "String"
-            }
-        }
-    },
     "endDate": "تاريخ الانتهاء",
     "@endDate": {
         "description": "The End date of a nutritional plan or routine"
@@ -954,7 +927,6 @@
             }
         }
     },
-    "identicalExercisePleaseDiscard": "إذا لاحظت وجود تمرين مطابق للتمرين الذي تضيفه، فيرجى حذف مسودتك وتعديل ذلك التمرين بدلاً من ذلك.",
     "imageDetailsTitle": "إذا لاحظت وجود تمرين مطابق للتمرين الذي تضيفه، فيرجى حذف مسودتك وتعديل ذلك التمرين بدلاً من ذلك.",
     "@imageDetailsTitle": {
         "description": "Title for image details form"
@@ -1004,16 +976,6 @@
             }
         }
     },
-    "imageFormatNotSupportedDetail": "لا يتم دعم الصور بصيغة {imageFormat} حتى الآن.",
-    "@imageFormatNotSupportedDetail": {
-        "description": "Label shown on the image preview container when image format is not supported",
-        "type": "text",
-        "placeholders": {
-            "imageFormat": {
-                "type": "String"
-            }
-        }
-    },
     "add": "اضفة",
     "@add": {
         "description": "Add button text"
@@ -1021,7 +983,6 @@
     "fitInWeek": "جدول أسبوعي ثابت",
     "fitInWeekHelp": "في حالة التفعيل، ستتكرر الأيام في دورة أسبوعية، وإلا ستتبع الأيام بالتسلسل دون مراعاة بداية أسبوع جديد.",
     "addSuperset": "أضف مجموعة فائقة",
-    "superset": "مجموعة فائقة",
     "setHasProgression": "تتضمن المجموعة تقدمًا",
     "setHasProgressionWarning": "يرجى العلم أنه لا يمكن حاليًا تعديل جميع إعدادات المجموعة على تطبيق الهاتف المحمول أو ضبط التقدم التلقائي. لذا، يُرجى استخدام تطبيق الويب في الوقت الحالي.",
     "setHasNoExercises": "لا تحتوي هذه المجموعة على أي تمارين حتى الآن!",

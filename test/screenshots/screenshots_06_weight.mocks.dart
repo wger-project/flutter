@@ -6,19 +6,21 @@
 import 'dart:async' as _i3;
 
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:wger/core/search_options.dart' as _i15;
-import 'package:wger/features/account/models/user_profile.dart' as _i6;
-import 'package:wger/features/account/providers/user_profile_repository.dart' as _i5;
-import 'package:wger/features/nutrition/models/ingredient.dart' as _i13;
-import 'package:wger/features/nutrition/models/ingredient_filters.dart' as _i14;
-import 'package:wger/features/nutrition/models/log.dart' as _i11;
-import 'package:wger/features/nutrition/models/meal.dart' as _i9;
-import 'package:wger/features/nutrition/models/meal_item.dart' as _i10;
-import 'package:wger/features/nutrition/models/nutritional_plan.dart' as _i8;
-import 'package:wger/features/nutrition/providers/ingredient_repository.dart' as _i12;
-import 'package:wger/features/nutrition/providers/nutrition_repository.dart' as _i7;
-import 'package:wger/features/weight/models/weight_entry.dart' as _i4;
-import 'package:wger/features/weight/providers/body_weight_repository.dart' as _i2;
+import 'package:wger/core/search_options.dart' as _i17;
+import 'package:wger/features/account/models/user_profile.dart' as _i8;
+import 'package:wger/features/account/providers/user_profile_repository.dart' as _i7;
+import 'package:wger/features/measurements/models/measurement_bucket.dart' as _i6;
+import 'package:wger/features/measurements/models/measurement_category.dart' as _i4;
+import 'package:wger/features/measurements/models/measurement_entry.dart' as _i5;
+import 'package:wger/features/measurements/providers/measurement_repository.dart' as _i2;
+import 'package:wger/features/nutrition/models/ingredient.dart' as _i15;
+import 'package:wger/features/nutrition/models/ingredient_filters.dart' as _i16;
+import 'package:wger/features/nutrition/models/log.dart' as _i13;
+import 'package:wger/features/nutrition/models/meal.dart' as _i11;
+import 'package:wger/features/nutrition/models/meal_item.dart' as _i12;
+import 'package:wger/features/nutrition/models/nutritional_plan.dart' as _i10;
+import 'package:wger/features/nutrition/providers/ingredient_repository.dart' as _i14;
+import 'package:wger/features/nutrition/providers/nutrition_repository.dart' as _i9;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -35,21 +37,171 @@ import 'package:wger/features/weight/providers/body_weight_repository.dart' as _
 // ignore_for_file: subtype_of_sealed_class
 // ignore_for_file: invalid_use_of_internal_member
 
-/// A class which mocks [BodyWeightRepository].
+/// A class which mocks [MeasurementRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockBodyWeightRepository extends _i1.Mock implements _i2.BodyWeightRepository {
-  MockBodyWeightRepository() {
+class MockMeasurementRepository extends _i1.Mock implements _i2.MeasurementRepository {
+  MockMeasurementRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i3.Stream<List<_i4.WeightEntry>> watchAllDrift() =>
+  _i3.Stream<List<_i4.MeasurementCategory>> watchAllWithoutEntries() =>
       (super.noSuchMethod(
-            Invocation.method(#watchAllDrift, []),
-            returnValue: _i3.Stream<List<_i4.WeightEntry>>.empty(),
+            Invocation.method(#watchAllWithoutEntries, []),
+            returnValue: _i3.Stream<List<_i4.MeasurementCategory>>.empty(),
           )
-          as _i3.Stream<List<_i4.WeightEntry>>);
+          as _i3.Stream<List<_i4.MeasurementCategory>>);
+
+  @override
+  _i3.Stream<_i4.MeasurementCategory?> watchCategoryWithoutEntries(
+    String? id,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#watchCategoryWithoutEntries, [id]),
+            returnValue: _i3.Stream<_i4.MeasurementCategory?>.empty(),
+          )
+          as _i3.Stream<_i4.MeasurementCategory?>);
+
+  @override
+  _i3.Stream<_i4.MeasurementCategory?> watchOfficialBodyWeightCategory() =>
+      (super.noSuchMethod(
+            Invocation.method(#watchOfficialBodyWeightCategory, []),
+            returnValue: _i3.Stream<_i4.MeasurementCategory?>.empty(),
+          )
+          as _i3.Stream<_i4.MeasurementCategory?>);
+
+  @override
+  _i3.Stream<List<_i5.MeasurementEntry>> watchEntries(
+    String? categoryId, {
+    required int? limit,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#watchEntries, [categoryId], {#limit: limit}),
+            returnValue: _i3.Stream<List<_i5.MeasurementEntry>>.empty(),
+          )
+          as _i3.Stream<List<_i5.MeasurementEntry>>);
+
+  @override
+  _i3.Stream<List<_i5.MeasurementEntry>> watchGroupEntries(
+    String? parentId, {
+    required int? limit,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#watchGroupEntries, [parentId], {#limit: limit}),
+            returnValue: _i3.Stream<List<_i5.MeasurementEntry>>.empty(),
+          )
+          as _i3.Stream<List<_i5.MeasurementEntry>>);
+
+  @override
+  _i3.Stream<Map<String, _i5.MeasurementEntry>> watchLatestEntries() =>
+      (super.noSuchMethod(
+            Invocation.method(#watchLatestEntries, []),
+            returnValue: _i3.Stream<Map<String, _i5.MeasurementEntry>>.empty(),
+          )
+          as _i3.Stream<Map<String, _i5.MeasurementEntry>>);
+
+  @override
+  _i3.Stream<List<_i6.MeasurementBucket>> watchEntryBuckets(
+    String? categoryId, {
+    DateTime? since,
+    DateTime? until,
+    _i6.MeasurementBucketLevel? level = _i6.MeasurementBucketLevel.auto,
+    int? maxPoints = 200,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #watchEntryBuckets,
+              [categoryId],
+              {
+                #since: since,
+                #until: until,
+                #level: level,
+                #maxPoints: maxPoints,
+              },
+            ),
+            returnValue: _i3.Stream<List<_i6.MeasurementBucket>>.empty(),
+          )
+          as _i3.Stream<List<_i6.MeasurementBucket>>);
+
+  @override
+  _i3.Stream<Map<String, List<_i6.MeasurementBucket>>> watchGroupBuckets(
+    String? parentId, {
+    DateTime? since,
+    _i6.MeasurementBucketLevel? level = _i6.MeasurementBucketLevel.auto,
+    int? maxPoints = 200,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #watchGroupBuckets,
+              [parentId],
+              {#since: since, #level: level, #maxPoints: maxPoints},
+            ),
+            returnValue: _i3.Stream<Map<String, List<_i6.MeasurementBucket>>>.empty(),
+          )
+          as _i3.Stream<Map<String, List<_i6.MeasurementBucket>>>);
+
+  @override
+  _i3.Stream<Map<String, List<_i6.MeasurementBucket>>> watchDailyBuckets() =>
+      (super.noSuchMethod(
+            Invocation.method(#watchDailyBuckets, []),
+            returnValue: _i3.Stream<Map<String, List<_i6.MeasurementBucket>>>.empty(),
+          )
+          as _i3.Stream<Map<String, List<_i6.MeasurementBucket>>>);
+
+  @override
+  _i3.Stream<List<_i6.MeasurementValueCount>> watchValueCounts(
+    String? categoryId, {
+    DateTime? since,
+    bool? summedPerDay = false,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #watchValueCounts,
+              [categoryId],
+              {#since: since, #summedPerDay: summedPerDay},
+            ),
+            returnValue: _i3.Stream<List<_i6.MeasurementValueCount>>.empty(),
+          )
+          as _i3.Stream<List<_i6.MeasurementValueCount>>);
+
+  @override
+  _i3.Future<List<_i4.MeasurementCategory>> getCategoriesOnce() =>
+      (super.noSuchMethod(
+            Invocation.method(#getCategoriesOnce, []),
+            returnValue: _i3.Future<List<_i4.MeasurementCategory>>.value(
+              <_i4.MeasurementCategory>[],
+            ),
+          )
+          as _i3.Future<List<_i4.MeasurementCategory>>);
+
+  @override
+  _i3.Future<Set<String>> getExternalIds(String? categoryId) =>
+      (super.noSuchMethod(
+            Invocation.method(#getExternalIds, [categoryId]),
+            returnValue: _i3.Future<Set<String>>.value(<String>{}),
+          )
+          as _i3.Future<Set<String>>);
+
+  @override
+  _i3.Future<Map<String, _i5.MeasurementEntry>> getEntriesByExternalId(
+    String? categoryId,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#getEntriesByExternalId, [categoryId]),
+            returnValue: _i3.Future<Map<String, _i5.MeasurementEntry>>.value(
+              <String, _i5.MeasurementEntry>{},
+            ),
+          )
+          as _i3.Future<Map<String, _i5.MeasurementEntry>>);
+
+  @override
+  _i3.Future<bool> hasEntries(String? categoryId) =>
+      (super.noSuchMethod(
+            Invocation.method(#hasEntries, [categoryId]),
+            returnValue: _i3.Future<bool>.value(false),
+          )
+          as _i3.Future<bool>);
 
   @override
   _i3.Future<void> deleteLocalDrift(String? id) =>
@@ -61,7 +213,7 @@ class MockBodyWeightRepository extends _i1.Mock implements _i2.BodyWeightReposit
           as _i3.Future<void>);
 
   @override
-  _i3.Future<void> updateLocalDrift(_i4.WeightEntry? entry) =>
+  _i3.Future<void> updateLocalDrift(_i5.MeasurementEntry? entry) =>
       (super.noSuchMethod(
             Invocation.method(#updateLocalDrift, [entry]),
             returnValue: _i3.Future<void>.value(),
@@ -70,9 +222,69 @@ class MockBodyWeightRepository extends _i1.Mock implements _i2.BodyWeightReposit
           as _i3.Future<void>);
 
   @override
-  _i3.Future<void> addLocalDrift(_i4.WeightEntry? entry) =>
+  _i3.Future<void> addLocalDrift(_i5.MeasurementEntry? entry) =>
       (super.noSuchMethod(
             Invocation.method(#addLocalDrift, [entry]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
+
+  @override
+  _i3.Future<void> addLocalDriftGroupEntries(
+    List<_i5.MeasurementEntry>? entries,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#addLocalDriftGroupEntries, [entries]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
+
+  @override
+  _i3.Future<void> deleteLocalDriftCategory(String? id) =>
+      (super.noSuchMethod(
+            Invocation.method(#deleteLocalDriftCategory, [id]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
+
+  @override
+  _i3.Future<void> updateLocalDriftCategory(
+    _i4.MeasurementCategory? category,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#updateLocalDriftCategory, [category]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
+
+  @override
+  _i3.Future<void> addLocalDriftCategory(_i4.MeasurementCategory? category) =>
+      (super.noSuchMethod(
+            Invocation.method(#addLocalDriftCategory, [category]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
+
+  @override
+  _i3.Future<void> addLocalDriftCategoryGroup(
+    List<_i4.MeasurementCategory>? categories,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#addLocalDriftCategoryGroup, [categories]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
+
+  @override
+  _i3.Future<void> reorderCategories(List<String>? orderedIds) =>
+      (super.noSuchMethod(
+            Invocation.method(#reorderCategories, [orderedIds]),
             returnValue: _i3.Future<void>.value(),
             returnValueForMissingStub: _i3.Future<void>.value(),
           )
@@ -82,21 +294,21 @@ class MockBodyWeightRepository extends _i1.Mock implements _i2.BodyWeightReposit
 /// A class which mocks [UserProfileRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockUserProfileRepository extends _i1.Mock implements _i5.UserProfileRepository {
+class MockUserProfileRepository extends _i1.Mock implements _i7.UserProfileRepository {
   MockUserProfileRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i3.Stream<_i6.UserProfile?> watchDrift() =>
+  _i3.Stream<_i8.UserProfile?> watchDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchDrift, []),
-            returnValue: _i3.Stream<_i6.UserProfile?>.empty(),
+            returnValue: _i3.Stream<_i8.UserProfile?>.empty(),
           )
-          as _i3.Stream<_i6.UserProfile?>);
+          as _i3.Stream<_i8.UserProfile?>);
 
   @override
-  _i3.Future<void> editLocalDrift(_i6.UserProfile? profile) =>
+  _i3.Future<void> editLocalDrift(_i8.UserProfile? profile) =>
       (super.noSuchMethod(
             Invocation.method(#editLocalDrift, [profile]),
             returnValue: _i3.Future<void>.value(),
@@ -108,21 +320,21 @@ class MockUserProfileRepository extends _i1.Mock implements _i5.UserProfileRepos
 /// A class which mocks [NutritionRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockNutritionRepository extends _i1.Mock implements _i7.NutritionRepository {
+class MockNutritionRepository extends _i1.Mock implements _i9.NutritionRepository {
   MockNutritionRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i3.Stream<List<_i8.NutritionalPlan>> watchAllDrift() =>
+  _i3.Stream<List<_i10.NutritionalPlan>> watchAllDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchAllDrift, []),
-            returnValue: _i3.Stream<List<_i8.NutritionalPlan>>.empty(),
+            returnValue: _i3.Stream<List<_i10.NutritionalPlan>>.empty(),
           )
-          as _i3.Stream<List<_i8.NutritionalPlan>>);
+          as _i3.Stream<List<_i10.NutritionalPlan>>);
 
   @override
-  _i3.Future<void> addPlanLocalDrift(_i8.NutritionalPlan? plan) =>
+  _i3.Future<void> addPlanLocalDrift(_i10.NutritionalPlan? plan) =>
       (super.noSuchMethod(
             Invocation.method(#addPlanLocalDrift, [plan]),
             returnValue: _i3.Future<void>.value(),
@@ -131,7 +343,7 @@ class MockNutritionRepository extends _i1.Mock implements _i7.NutritionRepositor
           as _i3.Future<void>);
 
   @override
-  _i3.Future<void> editLocalDrift(_i8.NutritionalPlan? plan) =>
+  _i3.Future<void> editLocalDrift(_i10.NutritionalPlan? plan) =>
       (super.noSuchMethod(
             Invocation.method(#editLocalDrift, [plan]),
             returnValue: _i3.Future<void>.value(),
@@ -149,15 +361,15 @@ class MockNutritionRepository extends _i1.Mock implements _i7.NutritionRepositor
           as _i3.Future<void>);
 
   @override
-  _i3.Stream<List<_i9.Meal>> watchAllMealsHydrated() =>
+  _i3.Stream<List<_i11.Meal>> watchAllMealsHydrated() =>
       (super.noSuchMethod(
             Invocation.method(#watchAllMealsHydrated, []),
-            returnValue: _i3.Stream<List<_i9.Meal>>.empty(),
+            returnValue: _i3.Stream<List<_i11.Meal>>.empty(),
           )
-          as _i3.Stream<List<_i9.Meal>>);
+          as _i3.Stream<List<_i11.Meal>>);
 
   @override
-  _i3.Future<void> addMealLocalDrift(_i9.Meal? meal) =>
+  _i3.Future<void> addMealLocalDrift(_i11.Meal? meal) =>
       (super.noSuchMethod(
             Invocation.method(#addMealLocalDrift, [meal]),
             returnValue: _i3.Future<void>.value(),
@@ -166,7 +378,7 @@ class MockNutritionRepository extends _i1.Mock implements _i7.NutritionRepositor
           as _i3.Future<void>);
 
   @override
-  _i3.Future<void> editMealLocalDrift(_i9.Meal? meal) =>
+  _i3.Future<void> editMealLocalDrift(_i11.Meal? meal) =>
       (super.noSuchMethod(
             Invocation.method(#editMealLocalDrift, [meal]),
             returnValue: _i3.Future<void>.value(),
@@ -184,7 +396,7 @@ class MockNutritionRepository extends _i1.Mock implements _i7.NutritionRepositor
           as _i3.Future<void>);
 
   @override
-  _i3.Future<void> addMealItemLocalDrift(_i10.MealItem? item) =>
+  _i3.Future<void> addMealItemLocalDrift(_i12.MealItem? item) =>
       (super.noSuchMethod(
             Invocation.method(#addMealItemLocalDrift, [item]),
             returnValue: _i3.Future<void>.value(),
@@ -193,7 +405,7 @@ class MockNutritionRepository extends _i1.Mock implements _i7.NutritionRepositor
           as _i3.Future<void>);
 
   @override
-  _i3.Future<void> editMealItemLocalDrift(_i10.MealItem? item) =>
+  _i3.Future<void> editMealItemLocalDrift(_i12.MealItem? item) =>
       (super.noSuchMethod(
             Invocation.method(#editMealItemLocalDrift, [item]),
             returnValue: _i3.Future<void>.value(),
@@ -211,15 +423,15 @@ class MockNutritionRepository extends _i1.Mock implements _i7.NutritionRepositor
           as _i3.Future<void>);
 
   @override
-  _i3.Stream<List<_i11.LogItem>> watchAllLogsHydrated() =>
+  _i3.Stream<List<_i13.LogItem>> watchAllLogsHydrated() =>
       (super.noSuchMethod(
             Invocation.method(#watchAllLogsHydrated, []),
-            returnValue: _i3.Stream<List<_i11.LogItem>>.empty(),
+            returnValue: _i3.Stream<List<_i13.LogItem>>.empty(),
           )
-          as _i3.Stream<List<_i11.LogItem>>);
+          as _i3.Stream<List<_i13.LogItem>>);
 
   @override
-  _i3.Future<void> addLogLocalDrift(_i11.LogItem? log) =>
+  _i3.Future<void> addLogLocalDrift(_i13.LogItem? log) =>
       (super.noSuchMethod(
             Invocation.method(#addLogLocalDrift, [log]),
             returnValue: _i3.Future<void>.value(),
@@ -240,43 +452,43 @@ class MockNutritionRepository extends _i1.Mock implements _i7.NutritionRepositor
 /// A class which mocks [IngredientRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockIngredientRepository extends _i1.Mock implements _i12.IngredientRepository {
+class MockIngredientRepository extends _i1.Mock implements _i14.IngredientRepository {
   MockIngredientRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i3.Stream<_i13.Ingredient?> watchById(int? id) =>
+  _i3.Stream<_i15.Ingredient?> watchById(int? id) =>
       (super.noSuchMethod(
             Invocation.method(#watchById, [id]),
-            returnValue: _i3.Stream<_i13.Ingredient?>.empty(),
+            returnValue: _i3.Stream<_i15.Ingredient?>.empty(),
           )
-          as _i3.Stream<_i13.Ingredient?>);
+          as _i3.Stream<_i15.Ingredient?>);
 
   @override
-  _i3.Stream<List<_i13.Ingredient>> watchAllDrift({
-    _i14.IngredientFilters? filters = const _i14.IngredientFilters(),
+  _i3.Stream<List<_i15.Ingredient>> watchAllDrift({
+    _i16.IngredientFilters? filters = const _i16.IngredientFilters(),
   }) =>
       (super.noSuchMethod(
             Invocation.method(#watchAllDrift, [], {#filters: filters}),
-            returnValue: _i3.Stream<List<_i13.Ingredient>>.empty(),
+            returnValue: _i3.Stream<List<_i15.Ingredient>>.empty(),
           )
-          as _i3.Stream<List<_i13.Ingredient>>);
+          as _i3.Stream<List<_i15.Ingredient>>);
 
   @override
-  _i3.Future<_i13.Ingredient?> getById(int? id) =>
+  _i3.Future<_i15.Ingredient?> getById(int? id) =>
       (super.noSuchMethod(
             Invocation.method(#getById, [id]),
-            returnValue: _i3.Future<_i13.Ingredient?>.value(),
+            returnValue: _i3.Future<_i15.Ingredient?>.value(),
           )
-          as _i3.Future<_i13.Ingredient?>);
+          as _i3.Future<_i15.Ingredient?>);
 
   @override
-  _i3.Future<List<_i13.Ingredient>> searchIngredientLocal(
+  _i3.Future<List<_i15.Ingredient>> searchIngredientLocal(
     String? term, {
     bool? isVegan = false,
     bool? isVegetarian = false,
-    _i13.NutriScore? nutriscoreMax,
+    _i15.NutriScore? nutriscoreMax,
     int? limit = 100,
   }) =>
       (super.noSuchMethod(
@@ -290,20 +502,20 @@ class MockIngredientRepository extends _i1.Mock implements _i12.IngredientReposi
                 #limit: limit,
               },
             ),
-            returnValue: _i3.Future<List<_i13.Ingredient>>.value(
-              <_i13.Ingredient>[],
+            returnValue: _i3.Future<List<_i15.Ingredient>>.value(
+              <_i15.Ingredient>[],
             ),
           )
-          as _i3.Future<List<_i13.Ingredient>>);
+          as _i3.Future<List<_i15.Ingredient>>);
 
   @override
-  _i3.Future<List<_i13.Ingredient>> searchIngredientServer(
+  _i3.Future<List<_i15.Ingredient>> searchIngredientServer(
     String? name, {
     String? languageCode = 'en',
-    _i15.SearchLanguage? searchLanguage = _i15.SearchLanguage.current,
+    _i17.SearchLanguage? searchLanguage = _i17.SearchLanguage.current,
     bool? isVegan = false,
     bool? isVegetarian = false,
-    _i13.NutriScore? nutriscoreMax,
+    _i15.NutriScore? nutriscoreMax,
   }) =>
       (super.noSuchMethod(
             Invocation.method(
@@ -317,21 +529,21 @@ class MockIngredientRepository extends _i1.Mock implements _i12.IngredientReposi
                 #nutriscoreMax: nutriscoreMax,
               },
             ),
-            returnValue: _i3.Future<List<_i13.Ingredient>>.value(
-              <_i13.Ingredient>[],
+            returnValue: _i3.Future<List<_i15.Ingredient>>.value(
+              <_i15.Ingredient>[],
             ),
           )
-          as _i3.Future<List<_i13.Ingredient>>);
+          as _i3.Future<List<_i15.Ingredient>>);
 
   @override
-  _i3.Future<List<_i13.Ingredient>> search(
+  _i3.Future<List<_i15.Ingredient>> search(
     String? name, {
     required bool? isOnline,
     String? languageCode = 'en',
-    _i15.SearchLanguage? searchLanguage = _i15.SearchLanguage.current,
+    _i17.SearchLanguage? searchLanguage = _i17.SearchLanguage.current,
     bool? isVegan = false,
     bool? isVegetarian = false,
-    _i13.NutriScore? nutriscoreMax,
+    _i15.NutriScore? nutriscoreMax,
   }) =>
       (super.noSuchMethod(
             Invocation.method(
@@ -346,17 +558,17 @@ class MockIngredientRepository extends _i1.Mock implements _i12.IngredientReposi
                 #nutriscoreMax: nutriscoreMax,
               },
             ),
-            returnValue: _i3.Future<List<_i13.Ingredient>>.value(
-              <_i13.Ingredient>[],
+            returnValue: _i3.Future<List<_i15.Ingredient>>.value(
+              <_i15.Ingredient>[],
             ),
           )
-          as _i3.Future<List<_i13.Ingredient>>);
+          as _i3.Future<List<_i15.Ingredient>>);
 
   @override
-  _i3.Future<_i13.Ingredient?> searchIngredientByBarcode(String? barcode) =>
+  _i3.Future<_i15.Ingredient?> searchIngredientByBarcode(String? barcode) =>
       (super.noSuchMethod(
             Invocation.method(#searchIngredientByBarcode, [barcode]),
-            returnValue: _i3.Future<_i13.Ingredient?>.value(),
+            returnValue: _i3.Future<_i15.Ingredient?>.value(),
           )
-          as _i3.Future<_i13.Ingredient?>);
+          as _i3.Future<_i15.Ingredient?>);
 }

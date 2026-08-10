@@ -25,12 +25,16 @@ import 'package:wger/core/widgets/error.dart';
 import 'package:wger/core/widgets/progress_indicator.dart';
 import 'package:wger/features/account/models/user_profile.dart';
 import 'package:wger/features/account/providers/user_profile_notifier.dart';
+import 'package:wger/features/measurements/charts/data.dart';
+import 'package:wger/features/measurements/charts/range.dart';
+import 'package:wger/features/measurements/charts/series.dart';
+import 'package:wger/features/measurements/models/measurement_category.dart';
+import 'package:wger/features/measurements/models/unit_conversion.dart';
+import 'package:wger/features/measurements/providers/body_weight_provider.dart';
+import 'package:wger/features/measurements/screens/weight_screen.dart';
 import 'package:wger/features/measurements/widgets/charts.dart';
 import 'package:wger/features/measurements/widgets/helpers.dart';
-import 'package:wger/features/weight/models/weight_entry.dart';
-import 'package:wger/features/weight/providers/body_weight_notifier.dart';
-import 'package:wger/features/weight/screens/weight_screen.dart';
-import 'package:wger/features/weight/widgets/forms.dart';
+import 'package:wger/features/measurements/widgets/weight_form.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 class DashboardWeightWidget extends ConsumerWidget {
@@ -59,21 +63,21 @@ class DashboardWeightWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final entriesAsync = ref.watch(weightEntryProvider);
+    final categoryAsync = ref.watch(bodyWeightCategoryOnlyProvider);
     final profileAsync = ref.watch(userProfileProvider);
 
     // Composite loading / error / data resolution. We need both providers
-    // ready before we can render the chart (entries → series, profile →
+    // ready before we can render the chart (category → series, profile →
     // unit). Treating them independently with a nested .when() is what gave
     // us the eternal-spinner bug when fetchProfile() returned null, so we
     // funnel everything through a single decision tree here.
-    if (entriesAsync.isLoading || profileAsync.isLoading) {
+    if (categoryAsync.isLoading || profileAsync.isLoading) {
       return _shell(context, const BoxedProgressIndicator());
     }
-    if (entriesAsync.hasError) {
+    if (categoryAsync.hasError) {
       return _shell(
         context,
-        StreamErrorIndicator(entriesAsync.error!, stacktrace: entriesAsync.stackTrace),
+        StreamErrorIndicator(categoryAsync.error!, stacktrace: categoryAsync.stackTrace),
       );
     }
     if (profileAsync.hasError) {
@@ -91,41 +95,63 @@ class DashboardWeightWidget extends ConsumerWidget {
       // permanent-looking error; the widget rebuilds once the row lands.
       return _shell(context, const BoxedProgressIndicator());
     }
+    final category = categoryAsync.value;
+    if (category == null) {
+      // The official body weight category is created by the server; it is
+      // missing only while the initial sync is still running.
+      return _shell(context, const BoxedProgressIndicator());
+    }
 
-    return _shell(context, _buildContent(context, entriesAsync.value!, profile));
+    // The chart is drawn from the aggregated query, so the card condenses the
+    // history in SQL rather than reading an object per entry. Mixed-unit
+    // entries (kg/lb) are normalized to the profile's display unit
+    final pointsAsync = chartPointsFor(
+      ref,
+      category,
+      ChartRange.all,
+      targetUnit: weightDisplayUnit(profile.isMetric),
+    );
+    final points = pointsAsync.value;
+    if (points == null) {
+      return _shell(context, const BoxedProgressIndicator());
+    }
+
+    return _shell(context, _buildContent(context, category, profile, points));
   }
 
   Widget _buildContent(
     BuildContext context,
-    List<WeightEntry> entriesList,
+    MeasurementCategory category,
     UserProfile profile,
+    List<MeasurementChartEntry> points,
   ) {
-    if (entriesList.isEmpty) {
+    if (points.isEmpty) {
       return NothingFound(
         AppLocalizations.of(context).noWeightEntries,
         AppLocalizations.of(context).newEntry,
-        WeightForm(),
+        WeightForm(category),
       );
     }
 
-    final (entriesAll, entries7dAvg) = sensibleRange(
-      entriesList.map((e) => MeasurementChartEntry(e.weight, e.date)).toList(),
+    final (entriesAll, average) = sensibleRange(
+      points,
+      averageDays: category.chartSettings.averageWindow,
     );
 
     return Column(
       children: [
         SizedBox(
           height: 200,
-          child: MeasurementChartWidgetFl(
+          child: MeasurementChartWidgetFl.singleMeasurement(
             entriesAll,
             weightUnit(profile.isMetric, context),
-            avgs: entries7dAvg,
+            avgs: average,
           ),
         ),
-        if (entries7dAvg.isNotEmpty)
+        if (average.isNotEmpty)
           MeasurementOverallChangeWidget(
-            entries7dAvg.first,
-            entries7dAvg.last,
+            average.first,
+            average.last,
             weightUnit(profile.isMetric, context),
           ),
         LayoutBuilder(
@@ -154,7 +180,7 @@ class DashboardWeightWidget extends ConsumerWidget {
                           FormScreen.routeName,
                           arguments: FormScreenArguments(
                             AppLocalizations.of(context).newEntry,
-                            WeightForm(),
+                            WeightForm(category),
                           ),
                         );
                       },
