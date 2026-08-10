@@ -16,30 +16,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:drift/drift.dart' show DriftSqlType;
+import 'package:drift/drift.dart' show DriftSqlType, Table, TableInfo;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wger/database/powersync/database.dart';
 import 'package:wger/database/powersync/powersync.dart';
 import 'package:wger/powersync/schema.dart';
 
-import '../../helpers/in_memory_drift.dart';
-
 /// PowerSync manages the JSON view tables itself, but the raw tables are
 /// materialised from hand-written DDL. Nothing fails loudly when that DDL and
 /// the Drift definitions drift apart: the column is simply not there, and
 /// every read of it comes back empty.
 void main() {
-  late DriftPowersyncDatabase driftDb;
+  /// Deliberately without `createMigrator().createAll()`: the raw tables have
+  /// to come from the DDL under test. On a database that already carries
+  /// Drift's own schema the `CREATE TABLE IF NOT EXISTS` would be a no-op and
+  /// the comparison would check Drift against itself.
+  late DriftPowersyncDatabase db;
 
-  setUp(() async => driftDb = await openTestDatabase());
-  tearDown(() => driftDb.close());
+  setUp(() => db = DriftPowersyncDatabase(NativeDatabase.memory()));
+  tearDown(() => db.close());
+
+  TableInfo<Table, Object?> driftTable(String name) =>
+      db.allTables.firstWhere((table) => table.actualTableName == name);
 
   /// Column name to SQLite type, as the DDL actually creates them.
-  Future<Map<String, String>> columnsOf(String table) async {
-    final db = DriftPowersyncDatabase(NativeDatabase.memory());
-    addTearDown(db.close);
-
+  Future<Map<String, String>> createdColumns(String table) async {
     await db.customStatement(rawTableStatements[table]!);
     final rows = await db.customSelect('PRAGMA table_info($table)').get();
 
@@ -57,14 +59,9 @@ void main() {
 
   test('the created columns match the Drift definitions', () async {
     for (final table in rawTableStatements.keys) {
-      final created = await columnsOf(table);
-      final driftTable = driftDb.allTables.firstWhere(
-        (candidate) => candidate.actualTableName == table,
-      );
-
       expect(
-        created.keys.toSet(),
-        driftTable.$columns.map((column) => column.name).toSet(),
+        (await createdColumns(table)).keys.toSet(),
+        driftTable(table).$columns.map((column) => column.name).toSet(),
         reason: 'the raw table $table does not carry every Drift column',
       );
     }
@@ -80,12 +77,9 @@ void main() {
     };
 
     for (final table in rawTableStatements.keys) {
-      final created = await columnsOf(table);
-      final driftTable = driftDb.allTables.firstWhere(
-        (candidate) => candidate.actualTableName == table,
-      );
+      final created = await createdColumns(table);
 
-      for (final column in driftTable.$columns) {
+      for (final column in driftTable(table).$columns) {
         final expected = expectedAffinity[column.type];
         expect(
           expected,

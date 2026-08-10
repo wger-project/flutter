@@ -74,7 +74,7 @@ void main() {
     expect(find.text('legs'), findsNWidgets(2), reason: 'description');
 
     // Edit the first day
-    expect(find.byElementType(DayFormWidget), findsNothing);
+    expect(find.byType(DayFormWidget), findsNothing);
     expect(find.byIcon(Icons.edit), findsNWidgets(2));
     expect(find.byIcon(Icons.edit_off), findsNothing);
     expect(find.byKey(const ValueKey('edit-day-1')), findsOne);

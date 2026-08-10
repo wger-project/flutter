@@ -122,19 +122,22 @@ void main() {
     expect(find.byType(WeightForm), findsOneWidget);
   });
 
+  // The chart axis titles are not asserted: with only two points they are
+  // suppressed to avoid overlapping labels. The entry list carries the same
+  // dates and is stable to assert on.
   testWidgets('Tests the localization of dates - EN', (WidgetTester tester) async {
     await tester.pumpWidget(createWeightScreen());
     await tester.pumpAndSettle();
-    // these don't work because we only have 2 points, and to prevent overlaps we don't display their titles
-    // expect(find.text('1/1'), findsOneWidget);
-    //  expect(find.text('1/10'), findsOneWidget);
+
+    expect(find.text('1/1/2021 15:30'), findsOneWidget);
+    expect(find.text('1/10/2021 10:00'), findsOneWidget);
   });
 
   testWidgets('Tests the localization of dates - DE', (WidgetTester tester) async {
     await tester.pumpWidget(createWeightScreen(locale: 'de'));
     await tester.pumpAndSettle();
-    // these don't work because we only have 2 points, and to prevent overlaps we don't display their titles
-    // expect(find.text('1.1.'), findsOneWidget);
-    // expect(find.text('10.1.'), findsOneWidget);
+
+    expect(find.text('1.1.2021 15:30'), findsOneWidget);
+    expect(find.text('10.1.2021 10:00'), findsOneWidget);
   });
 }

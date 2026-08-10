@@ -170,16 +170,36 @@ void main() {
   group('GymStateNotifier.replaceExercises', () {
     test('Correctly swaps an exercise', () {
       // Arrange
-      final slotPage = notifier.state.pages[1].slotPages[1];
+      final page = notifier.state.pages[1];
+      final slotPage = page.slotPages[1];
       expect(slotPage.type, SlotPageType.log);
-      notifier.state.pages.every((p) => p.exercises.every((s) => s.id != testSquats.id));
+      expect(
+        notifier.state.pages.every((p) => p.exercises.every((e) => e.id != testSquats.id)),
+        isTrue,
+        reason: 'the new exercise is not part of the routine yet',
+      );
 
       // Act
-      notifier.replaceExercises(slotPage.uuid, originalExerciseId: 1, newExercise: testSquats);
-      // print(notifier.readPageStructure());
+      notifier.replaceExercises(page.uuid, originalExerciseId: 1, newExercise: testSquats);
 
-      // Assert
-      expect(notifier.state.pages[1].exercises.first.id, testSquats.id);
+      // Assert: every slot page of that page carries the new exercise, and the
+      // routine itself was rebuilt too (the log draft reads from it)
+      final updated = notifier.state.pages[1];
+      expect(
+        updated.slotPages
+            .where((s) => s.setConfigData != null)
+            .map((s) => s.setConfigData!.exercise.id),
+        everyElement(testSquats.id),
+      );
+      expect(updated.exercises.map((e) => e.id), everyElement(testSquats.id));
+      expect(
+        notifier.state.routine.dayDataGym
+            .expand((d) => d.slots)
+            .expand((s) => s.setConfigs)
+            .every((c) => c.exerciseId != 1),
+        isTrue,
+        reason: 'the replaced exercise is gone from the routine',
+      );
     });
   });
 

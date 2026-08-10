@@ -266,6 +266,36 @@ void main() {
           throwsA(isA<SocketException>()),
         );
       });
+
+      test('retries on a SocketException and eventually succeeds', () async {
+        var calls = 0;
+        when(mockClient.get(uri, headers: anyNamed('headers'))).thenAnswer((_) async {
+          calls++;
+          if (calls < 2) {
+            throw const SocketException('no network');
+          }
+          return Response(jsonEncode({'ok': true}), 200);
+        });
+
+        final result = await repo.fetch(uri, initialDelay: const Duration(milliseconds: 1));
+
+        expect(result, {'ok': true});
+        expect(calls, 2);
+      });
+
+      test('without maxRetries it tries four times in total', () async {
+        var calls = 0;
+        when(mockClient.get(uri, headers: anyNamed('headers'))).thenAnswer((_) async {
+          calls++;
+          throw ClientException('conn fail');
+        });
+
+        await expectLater(
+          repo.fetch(uri, initialDelay: const Duration(milliseconds: 1)),
+          throwsA(isA<ClientException>()),
+        );
+        expect(calls, 4, reason: 'the initial attempt plus the three default retries');
+      });
     });
 
     group('post', () {

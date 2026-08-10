@@ -192,8 +192,9 @@ void main() {
       expect(editableFields, findsWidgets);
       final repText = tester.widget<EditableText>(editableFields.at(0)).controller.text;
       final weightText = tester.widget<EditableText>(editableFields.at(1)).controller.text;
-      expect(repText, contains('10'));
-      expect(weightText, contains('10'));
+      // `contains` would also pass on the prefilled weight of 100
+      expect(repText, '10');
+      expect(weightText, '10');
       expect(find.byType(SnackBar), findsOneWidget);
     });
 
