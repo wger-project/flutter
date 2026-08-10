@@ -514,6 +514,21 @@ void main() {
       expect(await PreferenceHelper.asyncPref.containsKey(PREFS_USER), false);
     });
 
+    test('Django HEAD returns 403 → loggedOut and saved user wiped', () async {
+      // The API answers a rejected token with 403, not 401, because
+      // SessionAuthentication runs before the JWT authenticator. Both have to
+      // count as "token rejected", or a revoked session survives every start.
+      when(
+        mockClient.head(tProbe, headers: anyNamed('headers')),
+      ).thenAnswer((_) async => Response('Forbidden', 403));
+
+      final container = makeContainer();
+      final state = await container.read(authProvider.future);
+
+      expect(state.status, AuthStatus.loggedOut);
+      expect(await PreferenceHelper.asyncPref.containsKey(PREFS_USER), false);
+    });
+
     test('Django HEAD returns 500 → stays logged in, session kept', () async {
       when(
         mockClient.head(tProbe, headers: anyNamed('headers')),

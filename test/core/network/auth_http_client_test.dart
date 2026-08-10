@@ -18,17 +18,55 @@
 
 import 'dart:io';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/core/network/auth_http_client.dart';
+import 'package:wger/core/network/auth_notifier.dart';
 import 'package:wger/core/network/auth_state.dart';
 
 import 'auth_http_client_test.mocks.dart';
 
+/// Records the calls the provider's closures are supposed to route to the
+/// notifier, and hands out a credential that a refresh can replace.
+class _RecordingAuthNotifier extends AuthNotifier {
+  _RecordingAuthNotifier(this._initial);
+
+  AuthState _initial;
+  int refreshCalls = 0;
+  int clearSessionCalls = 0;
+  AuthState? refreshResult;
+
+  @override
+  Future<AuthState> build() async => _initial;
+
+  @override
+  Future<void> refreshAccessToken() async {
+    refreshCalls++;
+    final refreshed = refreshResult;
+    if (refreshed != null) {
+      _initial = refreshed;
+      state = AsyncData(refreshed);
+    }
+  }
+
+  @override
+  Future<void> clearSessionOnly() async {
+    clearSessionCalls++;
+    _initial = const AuthState();
+    state = const AsyncData(AuthState());
+  }
+}
+
 @GenerateMocks([http.Client])
 void main() {
+  // The provider's onSessionExpired shows a snackbar through
+  // scaffoldMessengerKey. Initialising the binding makes that key return null
+  // (no widget tree), so the snackbar is skipped instead of throwing.
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   late MockClient inner;
   late AuthState? auth;
   late int refreshCalls;
@@ -299,6 +337,30 @@ void main() {
       expect(refreshCalls, 0);
     });
 
+    test('403 → no refresh, no retry, the response surfaces unchanged', () async {
+      // The API answers an auth failure with 403, not 401, because
+      // SessionAuthentication runs first. Only the refresh path logs the user
+      // out; a 403 here has to reach the caller as it is.
+      auth = AuthState(
+        credential: JwtCredential(
+          accessToken: 'access',
+          expiresAt: DateTime.now().toUtc().add(const Duration(hours: 1)),
+        ),
+      );
+      when(inner.send(any)).thenAnswer(
+        (_) async => http.StreamedResponse(Stream.value(<int>[]), 403),
+      );
+
+      final response = await buildClient().send(
+        http.Request('GET', Uri.parse('https://wger.example/api/v2/routine/')),
+      );
+
+      expect(response.statusCode, 403);
+      expect(refreshCalls, 0);
+      expect(sessionExpiredCalls, 0);
+      verify(inner.send(any)).called(1);
+    });
+
     test('MultipartRequest 401 → no retry (body not replayable)', () async {
       auth = AuthState(
         credential: JwtCredential(
@@ -319,6 +381,84 @@ void main() {
       expect(response.statusCode, 401);
       expect(refreshCalls, 0);
       verify(inner.send(any)).called(1);
+    });
+  });
+
+  group('authenticatedHttpClientProvider', () {
+    // The tests above build the client with hand-written closures. These cover
+    // the wiring the app actually runs: the closures the provider hands to
+    // AuthHttpClient have to reach the notifier, or every request goes out
+    // unauthenticated and an expired session is never noticed.
+    late _RecordingAuthNotifier notifier;
+
+    JwtCredential jwt(String token) => JwtCredential(
+      accessToken: token,
+      expiresAt: DateTime.now().toUtc().add(const Duration(hours: 1)),
+    );
+
+    http.Client buildFromProvider(AuthState initial) {
+      notifier = _RecordingAuthNotifier(initial);
+      final container = ProviderContainer.test(
+        overrides: [
+          authHttpClientProvider.overrideWithValue(inner),
+          authProvider.overrideWith(() => notifier),
+        ],
+      );
+      // The provider reads authProvider synchronously, so the state has to be
+      // resolved before the first request
+      container.read(authProvider);
+      return container.read(authenticatedHttpClientProvider);
+    }
+
+    test('signs requests with the credential held by authProvider', () async {
+      final client = buildFromProvider(AuthState(credential: jwt('from-notifier')));
+      await pumpEventQueue();
+      when(inner.send(any)).thenAnswer(
+        (_) async => http.StreamedResponse(Stream.value(<int>[]), 200),
+      );
+
+      await client.send(http.Request('GET', Uri.parse('https://wger.example/api/v2/routine/')));
+
+      final captured = verify(inner.send(captureAny)).captured.single as http.BaseRequest;
+      expect(captured.headers[HttpHeaders.authorizationHeader], 'Bearer from-notifier');
+    });
+
+    test('a 401 refreshes through the notifier and retries with the new token', () async {
+      final client = buildFromProvider(AuthState(credential: jwt('stale')));
+      await pumpEventQueue();
+      notifier.refreshResult = AuthState(credential: jwt('refreshed'));
+      var call = 0;
+      when(inner.send(any)).thenAnswer(
+        (_) async => http.StreamedResponse(Stream.value(<int>[]), ++call == 1 ? 401 : 200),
+      );
+
+      final response = await client.send(
+        http.Request('GET', Uri.parse('https://wger.example/api/v2/routine/')),
+      );
+
+      expect(response.statusCode, 200);
+      expect(notifier.refreshCalls, 1);
+      final captured = verify(inner.send(captureAny)).captured;
+      expect(
+        (captured.last as http.BaseRequest).headers[HttpHeaders.authorizationHeader],
+        'Bearer refreshed',
+      );
+    });
+
+    test('a 401 that survives the refresh clears the session', () async {
+      final client = buildFromProvider(AuthState(credential: jwt('stale')));
+      await pumpEventQueue();
+      notifier.refreshResult = AuthState(credential: jwt('also-stale'));
+      when(inner.send(any)).thenAnswer(
+        (_) async => http.StreamedResponse(Stream.value(<int>[]), 401),
+      );
+
+      final response = await client.send(
+        http.Request('GET', Uri.parse('https://wger.example/api/v2/routine/')),
+      );
+
+      expect(response.statusCode, 401);
+      expect(notifier.clearSessionCalls, 1);
     });
   });
 }
