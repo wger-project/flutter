@@ -527,7 +527,7 @@
     "swiss_ball": "Bola suíça",
     "kettlebell": "Kettlebell",
     "none__bodyweight_exercise_": "nenhum (somente peso do corpo)",
-    "aboutPageTitle": "Sobre nós & suporte",
+    "aboutPageTitle": "Sobre o nós & Suporte",
     "enterMinCharacters": "Por favor, selecione ao menos {min} de caracteres",
     "@enterMinCharacters": {
         "description": "Error message when the user hasn't entered the minimum amount characters in a form",
@@ -569,7 +569,7 @@
     "@success": {
         "description": "Message when an action completed successfully, usually used as a heading"
     },
-    "contributeExerciseWarning": "Só podes contribuir com exercícios se a tua conta tiver mais de {days} dias e tiveres verificado o teu e-mail",
+    "contributeExerciseWarning": "Podes contribuir com exercícios se a tua conta tiver mais de {days} dias e se tiveres verificado o e-mail",
     "@contributeExerciseWarning": {
         "description": "Number of days before which a person can add exercise",
         "placeholders": {
@@ -1109,5 +1109,15 @@
     },
     "endBeforeStart": "O valor de fim não pode anteceder o início",
     "minLengthRoutine": "A rotina tem de ser, pelo menos, de {number} semanas",
-    "maxLengthRoutine": "A rotina pode ser, no máximo, de {number} semanas"
+    "maxLengthRoutine": "A rotina pode ser, no máximo, de {number} semanas",
+    "settingsVerboseLoggingDescription": "Útil, quando reportando problemas persistentes.",
+    "useDynamicColor": "Usa cores dinâmicas",
+    "@useDynamicColor": {
+        "description": "Settings toggle to follow the system wallpaper colors (Material You) on supported platforms"
+    },
+    "youAreOffline": "Estás \"offline\"",
+    "settingsVerboseLogging": "Registos detalhados",
+    "@settingsVerboseLogging": {
+        "description": "Title of the setting that makes the app write detailed diagnostic entries to the application log"
+    }
 }
