@@ -149,6 +149,21 @@ void main() {
     verify(mockRoutinesRepository.deleteLocalDrift(routine1.id)).called(1);
   });
 
+  testWidgets('Creating a routine is blocked when offline', (WidgetTester tester) async {
+    // The counterpart of the delete above: creation goes through REST, so the
+    // FAB has to be inert offline instead of opening a form that cannot save.
+    await tester.pumpWidget(renderWidget(isOnline: false));
+    await tester.pumpAndSettle();
+
+    final fab = tester.widget<FloatingActionButton>(find.byType(FloatingActionButton));
+    expect(fab.onPressed, isNull);
+
+    await tester.tap(find.byType(FloatingActionButton));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(RoutineForm), findsNothing);
+  });
+
   testWidgets('Test the form on the workout plan screen', (WidgetTester tester) async {
     await tester.pumpWidget(renderWidget());
 

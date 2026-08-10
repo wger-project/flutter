@@ -21,6 +21,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/features/routines/models/slot.dart';
 import 'package:wger/features/routines/models/slot_entry.dart';
 import 'package:wger/features/routines/providers/routines_notifier.dart';
@@ -149,10 +150,11 @@ void main() {
       when(mockRepo.fetchAndSetRoutineFullServer(any)).thenAnswer((_) async => routine);
     });
 
-    Widget buildWidget(List<Slot> slots) {
+    Widget buildWidget(List<Slot> slots, {bool isOnline = true}) {
       final container = ProviderContainer.test(
         overrides: [
           routinesRepositoryProvider.overrideWithValue(mockRepo),
+          networkStatusProvider.overrideWithValue(isOnline),
           ...routineFormAmbientOverrides(),
         ],
       );
@@ -255,6 +257,19 @@ void main() {
 
       // Name appears exactly once (subtitle of Set 1), not on Set 2 or Set 3
       expect(find.text(exerciseName), findsOne);
+    });
+
+    testWidgets('"Add Set" is blocked when offline', (tester) async {
+      // Adding a set goes through REST (addSlot + addSlotEntry), so the button
+      // has to be inert offline instead of firing calls that cannot succeed.
+      await tester.pumpWidget(buildWidget([day.slots[0]], isOnline: false));
+      await tester.pumpAndSettle();
+
+      final addSet = tester.widget<IconButton>(
+        find.widgetWithIcon(IconButton, Icons.content_copy).first,
+      );
+      expect(addSet.onPressed, isNull);
+      verifyNever(mockRepo.addSlotServer(any));
     });
 
     testWidgets('shows "Add Set" button for single-entry slot', (tester) async {
