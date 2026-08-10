@@ -25,11 +25,7 @@ import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
-import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:url_launcher_platform_interface/url_launcher_platform_interface.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/http_overrides.dart';
@@ -38,9 +34,11 @@ import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/core/network/secure_token_storage.dart';
 import 'package:wger/core/shared_preferences.dart';
 import 'package:wger/features/auth/screens/auth_screen.dart';
+import 'package:wger/features/auth/screens/mfa_challenge_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
-import '../../../fake_connectivity.dart';
+import '../../../helpers/fake_auth_environment.dart';
+import '../../../helpers/fake_connectivity.dart';
 import 'auth_screen_test.mocks.dart';
 
 /// Captures `launchUrl(...)` calls so the web-handoff test can inspect the
@@ -61,6 +59,9 @@ void main() {
   // The auth screen watches networkStatusProvider to gate the action button.
   // Stub connectivity so that probe is deterministic.
   installFakeConnectivity();
+  // Installs the prefs/PackageInfo fakes and clears the store between tests,
+  // so values a test writes (e.g. PREFS_LAST_SERVER) don't leak into the next.
+  installFakeAuthEnvironment();
 
   late MockClient mockClient;
   late MockSecureTokenStorage mockSecureStorage;
@@ -118,21 +119,7 @@ void main() {
     when(mockSecureStorage.writeRefreshToken(any)).thenAnswer((_) async {});
 
     // Default: online. The offline test overrides this.
-    reachabilityCheck = (_, _, _) async => true;
-
-    SharedPreferences.setMockInitialValues({});
-    SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
-    // PreferenceHelper caches its SharedPreferencesAsync, so swapping the
-    // platform instance above does not isolate it; clear the store so values a
-    // test writes (e.g. PREFS_LAST_SERVER) don't leak into the next one.
-    await PreferenceHelper.asyncPref.clear();
-    PackageInfo.setMockInitialValues(
-      appName: 'wger',
-      packageName: 'com.example.example',
-      version: '1.2.3',
-      buildNumber: '2',
-      buildSignature: 'buildSignature',
-    );
+    reachabilityCheck = (_, _, _) async => (reachable: true, reason: 'test');
 
     // Happy-path stubs for the headless login / signup endpoints; tests
     // that exercise error responses override these as needed.
@@ -231,6 +218,45 @@ void main() {
       );
     });
 
+    testWidgets('Login - a 2FA challenge opens the code screen', (WidgetTester tester) async {
+      // The notifier turning the 401 into an MfaRequiredException is covered in
+      // auth_notifier_login_test; this is the seam, i.e. that the card catches
+      // it and hands the session token and the offered factors on.
+      when(
+        mockClient.post(tHeadlessLogin, headers: anyNamed('headers'), body: anyNamed('body')),
+      ).thenAnswer(
+        (_) async => Response(
+          json.encode({
+            'status': 401,
+            'data': {
+              'flows': [
+                {
+                  'id': 'mfa_authenticate',
+                  'is_pending': true,
+                  'types': ['totp', 'recovery_codes'],
+                },
+              ],
+            },
+            'meta': {'session_token': 'flow-handle-xyz', 'is_authenticated': false},
+          }),
+          401,
+        ),
+      );
+
+      await tester.pumpWidget(getWidget());
+      await tester.pumpAndSettle();
+
+      await tester.enterText(find.byKey(const Key('inputUsername')), 'testuser');
+      await tester.enterText(find.byKey(const Key('inputPassword')), '123456789');
+      await tester.tap(find.byKey(const Key('actionButton')));
+      await tester.pumpAndSettle();
+
+      final screen = tester.widget<MfaChallengeScreen>(find.byType(MfaChallengeScreen));
+      expect(screen.sessionToken, 'flow-handle-xyz');
+      expect(screen.availableFactors, ['totp', 'recovery_codes']);
+      expect(find.textContaining('An Error Occurred'), findsNothing);
+    });
+
     testWidgets('Login - wrong username & password', (WidgetTester tester) async {
       // Arrange
       await tester.binding.setSurfaceSize(const Size(1080, 1920));
@@ -306,7 +332,7 @@ void main() {
 
     testWidgets('Login button is disabled when offline', (WidgetTester tester) async {
       // Arrange: no connectivity.
-      reachabilityCheck = (_, _, _) async => false;
+      reachabilityCheck = (_, _, _) async => (reachable: false, reason: 'test');
       await tester.pumpWidget(getWidget());
       await tester.pumpAndSettle();
 

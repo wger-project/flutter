@@ -225,10 +225,6 @@ class SlotEntry {
     this.repetitionUnitId = repetitionUnitId ?? REP_UNIT_REPETITIONS_ID;
   }
 
-  String get rir {
-    return 'DELETE ME! RIR';
-  }
-
   bool get hasProgressionRules {
     return weightConfigs.length > 1 ||
         repetitionsConfigs.length > 1 ||

@@ -22,7 +22,8 @@ mixin _$AppSettings {
  bool get allowSelfSignedCerts;/// When true, the app palette follows the platform dynamic colors
 /// (system wallpaper on Android 12+) instead of the fixed wger seeds.
 /// A no-op on platforms without dynamic color support.
- bool get useDynamicColor;
+ bool get useDynamicColor;/// When true, everything is logged instead of only INFO and above.
+ bool get verboseLogging;
 /// Create a copy of AppSettings
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -33,16 +34,16 @@ $AppSettingsCopyWith<AppSettings> get copyWith => _$AppSettingsCopyWithImpl<AppS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppSettings&&(identical(other.themeMode, themeMode) || other.themeMode == themeMode)&&const DeepCollectionEquality().equals(other.dashboardItems, dashboardItems)&&(identical(other.userLocale, userLocale) || other.userLocale == userLocale)&&(identical(other.keepDataOnLogout, keepDataOnLogout) || other.keepDataOnLogout == keepDataOnLogout)&&(identical(other.allowSelfSignedCerts, allowSelfSignedCerts) || other.allowSelfSignedCerts == allowSelfSignedCerts)&&(identical(other.useDynamicColor, useDynamicColor) || other.useDynamicColor == useDynamicColor));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppSettings&&(identical(other.themeMode, themeMode) || other.themeMode == themeMode)&&const DeepCollectionEquality().equals(other.dashboardItems, dashboardItems)&&(identical(other.userLocale, userLocale) || other.userLocale == userLocale)&&(identical(other.keepDataOnLogout, keepDataOnLogout) || other.keepDataOnLogout == keepDataOnLogout)&&(identical(other.allowSelfSignedCerts, allowSelfSignedCerts) || other.allowSelfSignedCerts == allowSelfSignedCerts)&&(identical(other.useDynamicColor, useDynamicColor) || other.useDynamicColor == useDynamicColor)&&(identical(other.verboseLogging, verboseLogging) || other.verboseLogging == verboseLogging));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,themeMode,const DeepCollectionEquality().hash(dashboardItems),userLocale,keepDataOnLogout,allowSelfSignedCerts,useDynamicColor);
+int get hashCode => Object.hash(runtimeType,themeMode,const DeepCollectionEquality().hash(dashboardItems),userLocale,keepDataOnLogout,allowSelfSignedCerts,useDynamicColor,verboseLogging);
 
 @override
 String toString() {
-  return 'AppSettings(themeMode: $themeMode, dashboardItems: $dashboardItems, userLocale: $userLocale, keepDataOnLogout: $keepDataOnLogout, allowSelfSignedCerts: $allowSelfSignedCerts, useDynamicColor: $useDynamicColor)';
+  return 'AppSettings(themeMode: $themeMode, dashboardItems: $dashboardItems, userLocale: $userLocale, keepDataOnLogout: $keepDataOnLogout, allowSelfSignedCerts: $allowSelfSignedCerts, useDynamicColor: $useDynamicColor, verboseLogging: $verboseLogging)';
 }
 
 
@@ -53,7 +54,7 @@ abstract mixin class $AppSettingsCopyWith<$Res>  {
   factory $AppSettingsCopyWith(AppSettings value, $Res Function(AppSettings) _then) = _$AppSettingsCopyWithImpl;
 @useResult
 $Res call({
- ThemeMode themeMode, List<DashboardItem> dashboardItems, Locale? userLocale, bool keepDataOnLogout, bool allowSelfSignedCerts, bool useDynamicColor
+ ThemeMode themeMode, List<DashboardItem> dashboardItems, Locale? userLocale, bool keepDataOnLogout, bool allowSelfSignedCerts, bool useDynamicColor, bool verboseLogging
 });
 
 
@@ -70,7 +71,7 @@ class _$AppSettingsCopyWithImpl<$Res>
 
 /// Create a copy of AppSettings
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? themeMode = null,Object? dashboardItems = null,Object? userLocale = freezed,Object? keepDataOnLogout = null,Object? allowSelfSignedCerts = null,Object? useDynamicColor = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? themeMode = null,Object? dashboardItems = null,Object? userLocale = freezed,Object? keepDataOnLogout = null,Object? allowSelfSignedCerts = null,Object? useDynamicColor = null,Object? verboseLogging = null,}) {
   return _then(_self.copyWith(
 themeMode: null == themeMode ? _self.themeMode : themeMode // ignore: cast_nullable_to_non_nullable
 as ThemeMode,dashboardItems: null == dashboardItems ? _self.dashboardItems : dashboardItems // ignore: cast_nullable_to_non_nullable
@@ -78,6 +79,7 @@ as List<DashboardItem>,userLocale: freezed == userLocale ? _self.userLocale : us
 as Locale?,keepDataOnLogout: null == keepDataOnLogout ? _self.keepDataOnLogout : keepDataOnLogout // ignore: cast_nullable_to_non_nullable
 as bool,allowSelfSignedCerts: null == allowSelfSignedCerts ? _self.allowSelfSignedCerts : allowSelfSignedCerts // ignore: cast_nullable_to_non_nullable
 as bool,useDynamicColor: null == useDynamicColor ? _self.useDynamicColor : useDynamicColor // ignore: cast_nullable_to_non_nullable
+as bool,verboseLogging: null == verboseLogging ? _self.verboseLogging : verboseLogging // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }
@@ -160,10 +162,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( ThemeMode themeMode,  List<DashboardItem> dashboardItems,  Locale? userLocale,  bool keepDataOnLogout,  bool allowSelfSignedCerts,  bool useDynamicColor)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( ThemeMode themeMode,  List<DashboardItem> dashboardItems,  Locale? userLocale,  bool keepDataOnLogout,  bool allowSelfSignedCerts,  bool useDynamicColor,  bool verboseLogging)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AppSettings() when $default != null:
-return $default(_that.themeMode,_that.dashboardItems,_that.userLocale,_that.keepDataOnLogout,_that.allowSelfSignedCerts,_that.useDynamicColor);case _:
+return $default(_that.themeMode,_that.dashboardItems,_that.userLocale,_that.keepDataOnLogout,_that.allowSelfSignedCerts,_that.useDynamicColor,_that.verboseLogging);case _:
   return orElse();
 
 }
@@ -181,10 +183,10 @@ return $default(_that.themeMode,_that.dashboardItems,_that.userLocale,_that.keep
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( ThemeMode themeMode,  List<DashboardItem> dashboardItems,  Locale? userLocale,  bool keepDataOnLogout,  bool allowSelfSignedCerts,  bool useDynamicColor)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( ThemeMode themeMode,  List<DashboardItem> dashboardItems,  Locale? userLocale,  bool keepDataOnLogout,  bool allowSelfSignedCerts,  bool useDynamicColor,  bool verboseLogging)  $default,) {final _that = this;
 switch (_that) {
 case _AppSettings():
-return $default(_that.themeMode,_that.dashboardItems,_that.userLocale,_that.keepDataOnLogout,_that.allowSelfSignedCerts,_that.useDynamicColor);}
+return $default(_that.themeMode,_that.dashboardItems,_that.userLocale,_that.keepDataOnLogout,_that.allowSelfSignedCerts,_that.useDynamicColor,_that.verboseLogging);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -198,10 +200,10 @@ return $default(_that.themeMode,_that.dashboardItems,_that.userLocale,_that.keep
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( ThemeMode themeMode,  List<DashboardItem> dashboardItems,  Locale? userLocale,  bool keepDataOnLogout,  bool allowSelfSignedCerts,  bool useDynamicColor)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( ThemeMode themeMode,  List<DashboardItem> dashboardItems,  Locale? userLocale,  bool keepDataOnLogout,  bool allowSelfSignedCerts,  bool useDynamicColor,  bool verboseLogging)?  $default,) {final _that = this;
 switch (_that) {
 case _AppSettings() when $default != null:
-return $default(_that.themeMode,_that.dashboardItems,_that.userLocale,_that.keepDataOnLogout,_that.allowSelfSignedCerts,_that.useDynamicColor);case _:
+return $default(_that.themeMode,_that.dashboardItems,_that.userLocale,_that.keepDataOnLogout,_that.allowSelfSignedCerts,_that.useDynamicColor,_that.verboseLogging);case _:
   return null;
 
 }
@@ -213,7 +215,7 @@ return $default(_that.themeMode,_that.dashboardItems,_that.userLocale,_that.keep
 
 
 class _AppSettings implements AppSettings {
-  const _AppSettings({this.themeMode = ThemeMode.system, final  List<DashboardItem> dashboardItems = const [], this.userLocale, this.keepDataOnLogout = KEEP_DATA_ON_LOGOUT_DEFAULT, this.allowSelfSignedCerts = ALLOW_SELF_SIGNED_CERTS_DEFAULT, this.useDynamicColor = USE_DYNAMIC_COLOR_DEFAULT}): _dashboardItems = dashboardItems;
+  const _AppSettings({this.themeMode = ThemeMode.system, final  List<DashboardItem> dashboardItems = const [], this.userLocale, this.keepDataOnLogout = KEEP_DATA_ON_LOGOUT_DEFAULT, this.allowSelfSignedCerts = ALLOW_SELF_SIGNED_CERTS_DEFAULT, this.useDynamicColor = USE_DYNAMIC_COLOR_DEFAULT, this.verboseLogging = VERBOSE_LOGGING_DEFAULT}): _dashboardItems = dashboardItems;
   
 
 @override@JsonKey() final  ThemeMode themeMode;
@@ -236,6 +238,8 @@ class _AppSettings implements AppSettings {
 /// (system wallpaper on Android 12+) instead of the fixed wger seeds.
 /// A no-op on platforms without dynamic color support.
 @override@JsonKey() final  bool useDynamicColor;
+/// When true, everything is logged instead of only INFO and above.
+@override@JsonKey() final  bool verboseLogging;
 
 /// Create a copy of AppSettings
 /// with the given fields replaced by the non-null parameter values.
@@ -247,16 +251,16 @@ _$AppSettingsCopyWith<_AppSettings> get copyWith => __$AppSettingsCopyWithImpl<_
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppSettings&&(identical(other.themeMode, themeMode) || other.themeMode == themeMode)&&const DeepCollectionEquality().equals(other._dashboardItems, _dashboardItems)&&(identical(other.userLocale, userLocale) || other.userLocale == userLocale)&&(identical(other.keepDataOnLogout, keepDataOnLogout) || other.keepDataOnLogout == keepDataOnLogout)&&(identical(other.allowSelfSignedCerts, allowSelfSignedCerts) || other.allowSelfSignedCerts == allowSelfSignedCerts)&&(identical(other.useDynamicColor, useDynamicColor) || other.useDynamicColor == useDynamicColor));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppSettings&&(identical(other.themeMode, themeMode) || other.themeMode == themeMode)&&const DeepCollectionEquality().equals(other._dashboardItems, _dashboardItems)&&(identical(other.userLocale, userLocale) || other.userLocale == userLocale)&&(identical(other.keepDataOnLogout, keepDataOnLogout) || other.keepDataOnLogout == keepDataOnLogout)&&(identical(other.allowSelfSignedCerts, allowSelfSignedCerts) || other.allowSelfSignedCerts == allowSelfSignedCerts)&&(identical(other.useDynamicColor, useDynamicColor) || other.useDynamicColor == useDynamicColor)&&(identical(other.verboseLogging, verboseLogging) || other.verboseLogging == verboseLogging));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,themeMode,const DeepCollectionEquality().hash(_dashboardItems),userLocale,keepDataOnLogout,allowSelfSignedCerts,useDynamicColor);
+int get hashCode => Object.hash(runtimeType,themeMode,const DeepCollectionEquality().hash(_dashboardItems),userLocale,keepDataOnLogout,allowSelfSignedCerts,useDynamicColor,verboseLogging);
 
 @override
 String toString() {
-  return 'AppSettings(themeMode: $themeMode, dashboardItems: $dashboardItems, userLocale: $userLocale, keepDataOnLogout: $keepDataOnLogout, allowSelfSignedCerts: $allowSelfSignedCerts, useDynamicColor: $useDynamicColor)';
+  return 'AppSettings(themeMode: $themeMode, dashboardItems: $dashboardItems, userLocale: $userLocale, keepDataOnLogout: $keepDataOnLogout, allowSelfSignedCerts: $allowSelfSignedCerts, useDynamicColor: $useDynamicColor, verboseLogging: $verboseLogging)';
 }
 
 
@@ -267,7 +271,7 @@ abstract mixin class _$AppSettingsCopyWith<$Res> implements $AppSettingsCopyWith
   factory _$AppSettingsCopyWith(_AppSettings value, $Res Function(_AppSettings) _then) = __$AppSettingsCopyWithImpl;
 @override @useResult
 $Res call({
- ThemeMode themeMode, List<DashboardItem> dashboardItems, Locale? userLocale, bool keepDataOnLogout, bool allowSelfSignedCerts, bool useDynamicColor
+ ThemeMode themeMode, List<DashboardItem> dashboardItems, Locale? userLocale, bool keepDataOnLogout, bool allowSelfSignedCerts, bool useDynamicColor, bool verboseLogging
 });
 
 
@@ -284,7 +288,7 @@ class __$AppSettingsCopyWithImpl<$Res>
 
 /// Create a copy of AppSettings
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? themeMode = null,Object? dashboardItems = null,Object? userLocale = freezed,Object? keepDataOnLogout = null,Object? allowSelfSignedCerts = null,Object? useDynamicColor = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? themeMode = null,Object? dashboardItems = null,Object? userLocale = freezed,Object? keepDataOnLogout = null,Object? allowSelfSignedCerts = null,Object? useDynamicColor = null,Object? verboseLogging = null,}) {
   return _then(_AppSettings(
 themeMode: null == themeMode ? _self.themeMode : themeMode // ignore: cast_nullable_to_non_nullable
 as ThemeMode,dashboardItems: null == dashboardItems ? _self._dashboardItems : dashboardItems // ignore: cast_nullable_to_non_nullable
@@ -292,6 +296,7 @@ as List<DashboardItem>,userLocale: freezed == userLocale ? _self.userLocale : us
 as Locale?,keepDataOnLogout: null == keepDataOnLogout ? _self.keepDataOnLogout : keepDataOnLogout // ignore: cast_nullable_to_non_nullable
 as bool,allowSelfSignedCerts: null == allowSelfSignedCerts ? _self.allowSelfSignedCerts : allowSelfSignedCerts // ignore: cast_nullable_to_non_nullable
 as bool,useDynamicColor: null == useDynamicColor ? _self.useDynamicColor : useDynamicColor // ignore: cast_nullable_to_non_nullable
+as bool,verboseLogging: null == verboseLogging ? _self.verboseLogging : verboseLogging // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }

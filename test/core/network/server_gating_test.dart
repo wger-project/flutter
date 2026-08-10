@@ -28,7 +28,7 @@ import 'package:wger/core/network/auth_credentials_storage.dart';
 import 'package:wger/core/network/secure_token_storage.dart';
 import 'package:wger/core/network/server_gating.dart';
 
-import '../../fake_auth_environment.dart';
+import '../../helpers/fake_auth_environment.dart';
 
 /// The version gates don't touch storage; this stand-in satisfies the
 /// constructor without pulling in secure-storage plumbing.

@@ -1194,5 +1194,7 @@
     "relativeDaysAgo": "{count, plural, =0{heute} =1{gestern} other{vor {count} Tagen}}",
     "relativeWeeksAgo": "{count, plural, one{vor 1 Woche} other{vor {count} Wochen}}",
     "relativeMonthsAgo": "{count, plural, one{vor 1 Monat} other{vor {count} Monaten}}",
-    "relativeYearsAgo": "{count, plural, one{vor 1 Jahr} other{vor {count} Jahren}}"
+    "relativeYearsAgo": "{count, plural, one{vor 1 Jahr} other{vor {count} Jahren}}",
+    "settingsVerboseLogging": "Ausführliches Protokoll",
+    "settingsVerboseLoggingDescription": "Hilfreich, wenn du anhaltende Probleme meldest."
 }

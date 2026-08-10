@@ -29,7 +29,7 @@ import 'package:wger/features/routines/screens/routine_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 import '../../../../test_data/routines.dart';
-import '../../../fake_auth_environment.dart';
+import '../../../helpers/fake_auth_environment.dart';
 
 class _StubRoutinesRiverpod extends RoutinesRiverpod {
   _StubRoutinesRiverpod(this._routines);
@@ -88,6 +88,7 @@ void main() {
     (WidgetTester tester) async {
       tester.view.physicalSize = const Size(500, 1000);
       tester.view.devicePixelRatio = 1.0; // Ensure correct pixel ratio
+      addTearDown(tester.view.reset);
 
       await tester.pumpWidget(renderWidget());
       await tester.tap(find.byType(TextButton));

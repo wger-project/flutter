@@ -96,8 +96,8 @@ class WorkoutSession with _$WorkoutSession {
   WorkoutSessionTableCompanion toCompanion() {
     return WorkoutSessionTableCompanion(
       id: id != null ? drift.Value(id!) : const drift.Value.absent(),
-      routineId: routineId != null ? drift.Value(routineId) : const drift.Value.absent(),
-      dayId: dayId != null ? drift.Value(dayId) : const drift.Value.absent(),
+      routineId: drift.Value(routineId),
+      dayId: drift.Value(dayId),
       // Server-side `date` is a `DateField` (no time, no TZ). We  send here the
       // calendar day the user picked, packaged as midnight-UTC so it round-trips
       // through PowerSync's ISO8601 wire format and lands on the right day on
@@ -105,8 +105,9 @@ class WorkoutSession with _$WorkoutSession {
       date: drift.Value(DateTime.utc(date.year, date.month, date.day)),
       notes: drift.Value(notes),
       impression: drift.Value(impression),
-      timeStart: timeStart != null ? drift.Value(timeStart) : const drift.Value.absent(),
-      timeEnd: timeEnd != null ? drift.Value(timeEnd) : const drift.Value.absent(),
+      // Explicit NULL, not absent: clearing a time has to clear the column too
+      timeStart: drift.Value(timeStart),
+      timeEnd: drift.Value(timeEnd),
     );
   }
 

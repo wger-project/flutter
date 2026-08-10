@@ -301,6 +301,53 @@ void main() {
       );
     });
 
+    test('a failed submit keeps the state so the user can retry', () async {
+      // Clearing here would drop the whole wizard input, and the user would
+      // have to fill in six steps again after a hiccup on the server
+      final n = container.read(addExerciseProvider.notifier);
+      n.setAuthor('Alice');
+      n.setExerciseNameEn('Bench Press');
+      n.setDescriptionEn('English desc');
+      n.setLanguageEn(testEnglish);
+      n.setCategory(testCategoryArms);
+      n.setPrimaryMuscles([tMuscle1]);
+
+      when(mockRepo.submit(any)).thenThrow(Exception('server said no'));
+
+      await expectLater(n.postExerciseToServer(), throwsException);
+
+      final state = container.read(addExerciseProvider);
+      expect(state.author, 'Alice');
+      expect(state.exerciseNameEn, 'Bench Press');
+      expect(state.category, testCategoryArms);
+    });
+
+    test('a failed image upload propagates and keeps the state', () async {
+      // The exercise itself was created, but the user has to learn that the
+      // images did not make it
+      final n = container.read(addExerciseProvider.notifier);
+      n.setAuthor('Alice');
+      n.setExerciseNameEn('Bench Press');
+      n.setDescriptionEn('English desc');
+      n.setLanguageEn(testEnglish);
+      n.setCategory(testCategoryArms);
+      n.setPrimaryMuscles([tMuscle1]);
+      n.addExerciseImages([ExerciseSubmissionImage(imageFile: File('/tmp/img1.jpg'))]);
+
+      when(mockRepo.submit(any)).thenAnswer((_) async => 7);
+      when(
+        mockRepo.uploadImage(
+          exerciseId: anyNamed('exerciseId'),
+          image: anyNamed('image'),
+          author: anyNamed('author'),
+        ),
+      ).thenThrow(Exception('upload failed'));
+
+      await expectLater(n.postExerciseToServer(), throwsException);
+
+      expect(container.read(addExerciseProvider).exerciseImages, hasLength(1));
+    });
+
     test('passes the same payload that exerciseApiObject builds', () async {
       final n = container.read(addExerciseProvider.notifier);
       n.setAuthor('Alice');

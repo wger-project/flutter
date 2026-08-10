@@ -19,6 +19,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:drift/drift.dart' show GeneratedColumnWithTypeConverter;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
@@ -26,9 +27,11 @@ import 'package:logging/logging.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:powersync/powersync.dart';
+import 'package:wger/database/converters/date_only_text_converter.dart';
 import 'package:wger/powersync/api_client.dart';
 import 'package:wger/powersync/connector.dart';
 
+import '../helpers/in_memory_drift.dart';
 import 'connector_test.mocks.dart';
 
 @GenerateMocks([ApiClient])
@@ -173,6 +176,35 @@ void main() {
         );
         expect(out['start'], '2024-11-01');
         expect(out['end'], isNull);
+      });
+
+      test('trims every date-only column in the Drift schema', () async {
+        // The registry of date-only fields is maintained by hand, so a new
+        // table backed by a Django `DateField` can be forgotten, and the push
+        // then fails on a value the backend cannot parse. Derive the columns
+        // from the schema instead of listing them here again.
+        final db = await openTestDatabase();
+        addTearDown(db.close);
+
+        final dateOnlyColumns = <(String, String)>[];
+        for (final table in db.allTables) {
+          for (final column in table.$columns) {
+            if (column is GeneratedColumnWithTypeConverter &&
+                column.converter is DateOnlyTextConverter) {
+              dateOnlyColumns.add((table.actualTableName, column.name));
+            }
+          }
+        }
+        expect(dateOnlyColumns, isNotEmpty);
+
+        for (final (table, column) in dateOnlyColumns) {
+          final out = connector.genericTransform(table, {column: '2024-11-01T00:00:00.000Z'}, '1');
+          expect(
+            out[column],
+            '2024-11-01',
+            reason: '$table.$column is not registered as a date-only field',
+          );
+        }
       });
     });
   });
@@ -476,13 +508,15 @@ void main() {
       completed = false;
     });
 
-    CrudTransaction txWith(CrudEntry entry) => CrudTransaction(
+    CrudTransaction txWithAll(List<CrudEntry> entries) => CrudTransaction(
       transactionId: 1,
-      crud: [entry],
+      crud: entries,
       complete: ({String? writeCheckpoint}) async {
         completed = true;
       },
     );
+
+    CrudTransaction txWith(CrudEntry entry) => txWithAll([entry]);
 
     test('uploads a put through the transform and completes on success', () async {
       when(api.upsert(any)).thenAnswer((_) async => http.Response('{}', 200));
@@ -527,6 +561,46 @@ void main() {
       );
 
       expect(completed, isTrue);
+    });
+
+    test('a rejected op does not stop the ops behind it', () async {
+      // One bad op must not block the queue: the rest of the transaction is
+      // still sent and the transaction completes.
+      when(api.upsert(any)).thenAnswer(
+        (_) async => http.Response(json.encode({'error': 'invalid'}), 200),
+      );
+      when(api.update(any)).thenAnswer((_) async => http.Response('{}', 200));
+
+      await conn.processTransaction(
+        txWithAll([
+          CrudEntry(1, UpdateType.put, 'manager_routine', 'r1', 1, {'name': 'x'}),
+          CrudEntry(2, UpdateType.patch, 'manager_routine', 'r2', 1, {'name': 'y'}),
+        ]),
+      );
+
+      verify(api.update(any)).called(1);
+      expect(completed, isTrue);
+    });
+
+    test('a retryable op leaves the whole transaction queued for a replay', () async {
+      // The op ahead of it was already sent, so the replay re-sends it: this is
+      // the at-least-once delivery the backend handlers have to be idempotent
+      // for.
+      when(api.upsert(any)).thenAnswer((_) async => http.Response('{}', 200));
+      when(api.update(any)).thenAnswer((_) async => http.Response('', 503));
+
+      await expectLater(
+        conn.processTransaction(
+          txWithAll([
+            CrudEntry(1, UpdateType.put, 'manager_routine', 'r1', 1, {'name': 'x'}),
+            CrudEntry(2, UpdateType.patch, 'manager_routine', 'r2', 1, {'name': 'y'}),
+          ]),
+        ),
+        throwsA(isA<RetryableUploadException>()),
+      );
+
+      verify(api.upsert(any)).called(1);
+      expect(completed, isFalse);
     });
 
     test('rethrows and leaves the transaction queued when the backend is unreachable', () async {

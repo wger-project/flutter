@@ -105,7 +105,7 @@ class Meal {
       id: id != null ? drift.Value(id!) : const drift.Value.absent(),
       planId: drift.Value(planId),
       order: drift.Value(order),
-      time: time == null ? const drift.Value.absent() : drift.Value(time),
+      time: drift.Value(time),
       name: drift.Value(name),
     );
   }

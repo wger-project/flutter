@@ -17,11 +17,18 @@
  */
 
 /// Returns a list of [DateTime] objects from [first] to [last], inclusive.
+///
+/// Counts calendar days, not elapsed time: the range is measured between the
+/// two days as UTC midnights, so a daylight-saving switch inside it cannot
+/// swallow the last day.
 List<DateTime> daysInRange(DateTime first, DateTime last) {
-  final dayCount = last.difference(first).inDays + 1;
+  final start = DateTime.utc(first.year, first.month, first.day);
+  final end = DateTime.utc(last.year, last.month, last.day);
+
+  final dayCount = end.difference(start).inDays + 1;
   return List.generate(
     dayCount,
-    (index) => DateTime.utc(first.year, first.month, first.day + index),
+    (index) => DateTime.utc(start.year, start.month, start.day + index),
   );
 }
 

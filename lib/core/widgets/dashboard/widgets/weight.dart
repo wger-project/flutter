@@ -88,9 +88,12 @@ class DashboardWeightWidget extends ConsumerWidget {
     }
     final profile = profileAsync.value;
     if (profile == null) {
-      // Loaded successfully but the API returned no profile, treat the same
-      // way we treat a server error so the user isn't stuck on a spinner.
-      return _shell(context, const StreamErrorIndicator('User profile is unavailable'));
+      // The profile stream can legitimately emit null right after login,
+      // before the local `user_profile` PowerSync bucket has finished its
+      // first sync (see WeightOverview / NutritionalPlansList, which treat
+      // this the same way). Keep showing the spinner instead of a
+      // permanent-looking error; the widget rebuilds once the row lands.
+      return _shell(context, const BoxedProgressIndicator());
     }
     final category = categoryAsync.value;
     if (category == null) {

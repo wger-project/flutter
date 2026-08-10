@@ -40,7 +40,7 @@ import 'package:wger/features/routines/providers/routines_repository.dart';
 
 import '../../../../test_data/exercises.dart';
 import '../../../../test_data/routines.dart';
-import '../../../fake_connectivity.dart';
+import '../../../helpers/fake_connectivity.dart';
 import '../helpers/routine_form_test_overrides.dart';
 import 'routines_notifier_test.mocks.dart';
 
@@ -215,6 +215,76 @@ void main() {
         verify(mockRepo.fetchAndSetRoutineFullServer(routineId)).called(1);
       },
     );
+  });
+
+  group('carry-forward across stream emissions', () {
+    // The plan structure (days, slots, set configs) comes from REST, not from
+    // PowerSync, so every further emission of the Drift stream would arrive
+    // without it. build() copies it over from the previous state; without
+    // that, an unrelated remote edit wipes the structure and the dashboard
+    // re-hydrates in a loop.
+
+    /// Feeds [emissions] through one controller so the notifier sees a second
+    /// value the way a remote edit would deliver it.
+    Future<RoutinesState?> emitAll(List<List<Routine>> emissions) async {
+      final controller = StreamController<List<Routine>>();
+      addTearDown(controller.close);
+      when(mockRepo.watchAllDrift()).thenAnswer((_) => controller.stream);
+
+      final container = ProviderContainer.test(
+        overrides: [
+          routinesRepositoryProvider.overrideWithValue(mockRepo),
+          ...ambientOverrides(),
+        ],
+      );
+      container.listen(routinesRiverpodProvider, (_, _) {});
+
+      for (final emission in emissions) {
+        controller.add(emission);
+        await pumpEventQueue();
+      }
+      return container.read(routinesRiverpodProvider).value;
+    }
+
+    /// A routine as PowerSync delivers it: no structure, not hydrated.
+    Routine bare({String name = 'Routine'}) => Routine(
+      id: 101,
+      name: name,
+      description: '',
+      created: DateTime(2026, 1, 1),
+      start: DateTime(2026, 1, 1),
+      end: DateTime(2026, 3, 1),
+    );
+
+    test('keeps the REST-loaded structure when the same routine is re-emitted', () async {
+      final hydrated = bare()
+        ..days = [testDay]
+        ..dayData = [DayData(iteration: 1, date: DateTime(2026, 1, 2), day: testDay)]
+        ..isHydrated = true;
+
+      final state = await emitAll([
+        [hydrated],
+        // The remote edit only changes a column PowerSync knows about
+        [bare(name: 'renamed')],
+      ]);
+
+      final routine = state!.routines.single;
+      expect(routine.name, 'renamed');
+      expect(routine.days, [testDay]);
+      expect(routine.dayData, hasLength(1));
+      expect(routine.isHydrated, isTrue);
+    });
+
+    test('a routine that appears later starts unhydrated', () async {
+      final state = await emitAll([
+        [bare()],
+        [bare(), bare(name: 'second')..id = 102],
+      ]);
+
+      final fresh = state!.routines.firstWhere((r) => r.id == 102);
+      expect(fresh.isHydrated, isFalse);
+      expect(fresh.days, isEmpty);
+    });
   });
 
   group('hydration via fetchAndSetRoutineFull', () {

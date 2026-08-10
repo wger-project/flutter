@@ -43,8 +43,8 @@ import 'package:wger/features/nutrition/widgets/forms.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 import '../../../../test_data/nutritional_plans.dart';
-import '../../../fake_connectivity.dart';
 import '../../../fixtures/fixture_reader.dart';
+import '../../../helpers/fake_connectivity.dart';
 import 'nutritional_meal_item_form_test.mocks.dart';
 
 @GenerateMocks([http.Client, IngredientRepository, NutritionRepository])

@@ -38,7 +38,7 @@ import 'package:wger/features/trophies/providers/trophy_repository.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 import '../../../../test_data/routines.dart';
-import '../../../test_data/trophies.dart';
+import '../../../../test_data/trophies.dart';
 import 'routine_logs_screen_test.mocks.dart';
 
 class _StubRoutinesRiverpod extends RoutinesRiverpod {
@@ -123,6 +123,7 @@ void main() {
     (WidgetTester tester) async {
       tester.view.physicalSize = const Size(500, 1000);
       tester.view.devicePixelRatio = 1.0; // Ensure correct pixel ratio
+      addTearDown(tester.view.reset);
 
       await withClock(Clock.fixed(DateTime(2025, 3, 29)), () async {
         await tester.pumpWidget(renderWidget());
@@ -148,6 +149,12 @@ void main() {
   );
 
   testWidgets('Test deleting log entries', (WidgetTester tester) async {
+    // Needs the taller surface itself: it used to inherit the one the test
+    // before it left behind
+    tester.view.physicalSize = const Size(500, 1000);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+
     await withClock(Clock.fixed(DateTime(2025, 3, 29)), () async {
       await tester.pumpWidget(renderWidget());
       await tester.tap(find.byType(TextButton));
@@ -169,6 +176,7 @@ void main() {
   ) async {
     tester.view.physicalSize = const Size(500, 1200);
     tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
 
     await withClock(Clock.fixed(DateTime(2025, 3, 29)), () async {
       await tester.pumpWidget(renderWidget());
@@ -220,6 +228,7 @@ void main() {
 
     tester.view.physicalSize = const Size(500, 1200);
     tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
 
     await withClock(Clock.fixed(DateTime(2025, 3, 29)), () async {
       await tester.pumpWidget(renderWidget());
@@ -255,6 +264,7 @@ void main() {
   testWidgets('Edit dialog shows all input fields by default', (WidgetTester tester) async {
     tester.view.physicalSize = const Size(500, 1200);
     tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
 
     await withClock(Clock.fixed(DateTime(2025, 3, 29)), () async {
       await tester.pumpWidget(renderWidget());
@@ -289,9 +299,46 @@ void main() {
     });
   });
 
+  testWidgets('Edit dialog clearing the RiR passes null to the repository', (
+    WidgetTester tester,
+  ) async {
+    // Regression test: the hand-written Log.copyWith falls back to the old
+    // value on null, so a cleared field must not be routed through it.
+    tester.view.physicalSize = const Size(500, 1200);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+
+    await withClock(Clock.fixed(DateTime(2025, 3, 29)), () async {
+      await tester.pumpWidget(renderWidget());
+      await tester.tap(find.byType(TextButton));
+      await tester.pumpAndSettle();
+      await tester.drag(find.byType(ListView), const Offset(0, -500));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const ValueKey('edit-log-1')));
+      await tester.pumpAndSettle();
+
+      // Log 1 starts with a RiR of 1.5; dragging the slider all the way to the
+      // left selects "not used", which clears the value
+      final rirSlider = find.descendant(
+        of: find.byKey(const ValueKey('edit-rir-widget')),
+        matching: find.byType(Slider),
+      );
+      await tester.drag(rirSlider, const Offset(-500, 0));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const ValueKey('edit-save-button')));
+      await tester.pumpAndSettle();
+
+      final captured = verify(mockWorkoutLogRepository.updateLocalDrift(captureAny)).captured;
+      expect((captured.single as Log).rir, isNull);
+    });
+  });
+
   testWidgets('Edit dialog cancel does not call the repository', (WidgetTester tester) async {
     tester.view.physicalSize = const Size(500, 1200);
     tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
 
     await withClock(Clock.fixed(DateTime(2025, 3, 29)), () async {
       await tester.pumpWidget(renderWidget());
@@ -315,6 +362,9 @@ void main() {
   ) async {
     // Log deletion is backed by PowerSync, so it must work even when offline:
     // the delete is queued locally and synced once the network is back.
+    tester.view.physicalSize = const Size(500, 1000);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
 
     await withClock(Clock.fixed(DateTime(2025, 3, 29)), () async {
       await tester.pumpWidget(renderWidget(isOnline: false));

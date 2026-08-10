@@ -33,9 +33,11 @@ import 'package:wger/features/exercises/providers/add_exercise_repository.dart';
 import 'package:wger/features/exercises/providers/exercise_repository.dart';
 import 'package:wger/features/exercises/providers/exercises_notifier.dart';
 import 'package:wger/features/exercises/screens/add_exercise_screen.dart';
+import 'package:wger/features/exercises/widgets/add_exercise/steps/step_1_basics.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
-import '../../../fake_connectivity.dart';
+import '../../../../test_data/exercises.dart';
+import '../../../helpers/fake_connectivity.dart';
 import 'add_exercise_screen_test.mocks.dart';
 
 /// Test suite for the exercise-contribution screen.
@@ -73,11 +75,15 @@ void main() {
   Widget createExerciseScreen({locale = 'en', bool isOnline = true}) {
     return ProviderScope(
       overrides: [
-        languagesProvider.overrideWith((ref) => Stream<List<Language>>.value(<Language>[])),
+        // Seeded, not empty: the mandatory category and language pickers have
+        // to be selectable or the wizard cannot be walked to the last step
+        languagesProvider.overrideWith((ref) => Stream<List<Language>>.value(testLanguages)),
         exerciseRepositoryProvider.overrideWithValue(mockExerciseRepository),
-        exerciseMusclesProvider.overrideWith((ref) => Stream<List<Muscle>>.value(<Muscle>[])),
+        exerciseMusclesProvider.overrideWith(
+          (ref) => Stream<List<Muscle>>.value(const [tMuscle1, tMuscle2]),
+        ),
         exerciseCategoriesProvider.overrideWith(
-          (ref) => Stream<List<ExerciseCategory>>.value(<ExerciseCategory>[]),
+          (ref) => Stream<List<ExerciseCategory>>.value(const [testCategoryArms]),
         ),
         exerciseEquipmentProvider.overrideWith(
           (ref) => Stream<List<Equipment>>.value(<Equipment>[]),
@@ -93,6 +99,51 @@ void main() {
         home: const AddExerciseScreen(),
       ),
     );
+  }
+
+  int currentStep(WidgetTester tester) => tester.widget<Stepper>(find.byType(Stepper)).currentStep;
+
+  AppLocalizations l10nOf(WidgetTester tester) =>
+      AppLocalizations.of(tester.element(find.byType(Stepper)));
+
+  Future<void> tapNext(WidgetTester tester) async {
+    final next = find.widgetWithText(ElevatedButton, l10nOf(tester).next).first;
+    await tester.ensureVisible(next);
+    await tester.pumpAndSettle();
+    await tester.tap(next);
+    await tester.pumpAndSettle();
+  }
+
+  Future<void> tapPrevious(WidgetTester tester) async {
+    final previous = find.widgetWithText(OutlinedButton, l10nOf(tester).previous).first;
+    await tester.ensureVisible(previous);
+    await tester.pumpAndSettle();
+    await tester.tap(previous);
+    await tester.pumpAndSettle();
+  }
+
+  /// Picks the single entry of a seeded dropdown.
+  Future<void> pickFromDropdown(WidgetTester tester, Key key, String entry) async {
+    // The key sits on the wrapper as well as on the DropdownButtonFormField
+    final dropdown = find.byKey(key).first;
+    await tester.ensureVisible(dropdown);
+    await tester.pumpAndSettle();
+    await tester.tap(dropdown);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(entry).last);
+    await tester.pumpAndSettle();
+  }
+
+  /// All steps are built at once, so fields are addressed inside their step.
+  Finder fieldOf(Type step, int index) =>
+      find.descendant(of: find.byType(step), matching: find.byType(TextFormField)).at(index);
+
+  /// Fills the mandatory fields of the first step (name, author, category).
+  Future<void> fillBasics(WidgetTester tester, {String name = 'Bench Press'}) async {
+    await tester.enterText(fieldOf(Step1Basics, 0), name);
+    await tester.enterText(fieldOf(Step1Basics, 2), 'Alice');
+    await tester.pumpAndSettle();
+    await pickFromDropdown(tester, const Key('category-dropdown'), testCategoryArms.name);
   }
 
   // --------------------------------------------------------------------------
@@ -184,10 +235,13 @@ void main() {
       await tester.pumpWidget(createExerciseScreen());
       await tester.pumpAndSettle();
 
-      final nameField = find.byType(TextFormField).first;
-      await tester.enterText(nameField, 'Test Exercise');
-      await tester.pump();
+      await fillBasics(tester, name: 'Test Exercise');
+      await tapNext(tester);
+      expect(currentStep(tester), 1, reason: 'the first step is complete and lets us pass');
 
+      await tapPrevious(tester);
+
+      expect(currentStep(tester), 0);
       expect(find.text('Test Exercise'), findsOneWidget);
     });
 
@@ -196,17 +250,13 @@ void main() {
       await tester.pumpWidget(createExerciseScreen());
       await tester.pumpAndSettle();
 
-      final stepper = tester.widget<Stepper>(find.byType(Stepper));
-      expect(stepper.currentStep, equals(0));
+      await fillBasics(tester);
+      await tapNext(tester);
+      expect(currentStep(tester), 1);
 
-      final context = tester.element(find.byType(Stepper));
-      final l10n = AppLocalizations.of(context);
+      await tapPrevious(tester);
 
-      final previousButton = find.widgetWithText(OutlinedButton, l10n.previous);
-      expect(previousButton, findsOneWidget);
-
-      final button = tester.widget<OutlinedButton>(previousButton);
-      expect(button.onPressed, isNotNull);
+      expect(currentStep(tester), 0);
     });
   });
 
@@ -246,29 +296,14 @@ void main() {
   // Exercise Submission Tests
   // --------------------------------------------------------------------------
 
-  group('Exercise Submission Tests', () {
-    testWidgets('Submission flow structure', (tester) async {
-      setTrustworthy(true);
-      when(mockAddExerciseRepository.submit(any)).thenAnswer((_) async => 1);
-
-      await tester.pumpWidget(createExerciseScreen());
-      await tester.pumpAndSettle();
-
-      final stepper = tester.widget<Stepper>(find.byType(Stepper));
-      expect(stepper.steps.length, equals(6));
-    });
-
-    testWidgets('Form structure supports error handling', (tester) async {
-      setTrustworthy(true);
-      when(mockAddExerciseRepository.submit(any)).thenThrow(Exception('Bad request'));
-
-      await tester.pumpWidget(createExerciseScreen());
-      await tester.pumpAndSettle();
-
-      final stepper = tester.widget<Stepper>(find.byType(Stepper));
-      expect(stepper.steps.length, equals(6));
-    });
-  });
+  // Not covered here: submitting from the last step. The stepper has no seam
+  // to reach it (onStepTapped is commented out) and walking all six steps in a
+  // widget test proved unreliable. The two tests that used to sit here only
+  // asserted `steps.length == 6` after stubbing submit(), so they never
+  // submitted anything. The error path and the fallback name of the success
+  // dialog (the exercise is not in the local DB yet when it is shown) are
+  // therefore still untested at screen level; postExerciseToServer itself is
+  // covered in add_exercise_notifier_test.dart.
 
   // --------------------------------------------------------------------------
   // Access Control Tests

@@ -99,6 +99,12 @@ const KEEP_DATA_ON_LOGOUT_DEFAULT = true;
 const PREFS_ALLOW_SELF_SIGNED_CERTS = 'allowSelfSignedCerts';
 const ALLOW_SELF_SIGNED_CERTS_DEFAULT = false;
 
+/// User preference: log everything instead of INFO and above, so a bug report
+/// also carries the fine-grained diagnostics. Persisted rather than a session
+/// switch, the interesting phase is the one right after a cold start.
+const PREFS_VERBOSE_LOGGING = 'verboseLogging';
+const VERBOSE_LOGGING_DEFAULT = false;
+
 /// Secure-storage key for the headless refresh token.
 const SECURE_STORAGE_REFRESH_TOKEN = 'wger_refresh_token';
 

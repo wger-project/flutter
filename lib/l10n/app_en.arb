@@ -1367,6 +1367,11 @@
   "settingsDataTitle": "Privacy",
   "settingsKeepDataOnLogout": "Keep data when logging out",
   "settingsKeepDataOnLogoutDescription": "The local database stays on your device until a different account signs in.",
+  "settingsVerboseLogging": "Detailed logging",
+  "@settingsVerboseLogging": {
+    "description": "Title of the setting that makes the app write detailed diagnostic entries to the application log"
+  },
+  "settingsVerboseLoggingDescription": "Useful when reporting persistent problems.",
   "aboutPageTitle": "About us & Support",
   "contributeExerciseWarning": "You can only contribute exercises if your account is older than {days} days and have verified your email",
   "@contributeExerciseWarning": {

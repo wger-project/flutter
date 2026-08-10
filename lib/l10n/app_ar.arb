@@ -285,7 +285,7 @@
     "@exercise": {
         "description": "An exercise for a workout"
     },
-    "customServerHint": "أدخل عنوان ملقّمك الخاص، وإلّا سيتم استخدام العنوان الافتراضي",
+    "customServerHint": "أدخل عنوان خادمك الخاص، وإلا سيتم استخدام العنوان الافتراضي",
     "@customServerHint": {
         "description": "Hint text for the form where the users can enter their own wger instance"
     },
@@ -379,7 +379,7 @@
     "@moreMeasurementEntries": {
         "description": "Message shown when the user wants to add new measurement"
     },
-    "usernameValidChars": "لا يجوز أن يحتوي اسم المستخدم إلّا على أحرف وأرقام والرموز التالية: @، +، .، -، و _",
+    "usernameValidChars": "لا يجوز أن يحتوي اسم المستخدم إلا على أحرف وأرقام والرموز التالية: @، +، .، -، و _",
     "@usernameValidChars": {
         "description": "Error message when the user tries to register a username with forbidden characters"
     },
@@ -710,7 +710,7 @@
         "description": "Error message when the user enters an invalid API key"
     },
     "useUsernameAndPassword": "استخدم اسم المستخدم وكلمة المرور",
-    "selectAvailablePlates": "اختر الأطباق المُتاحة",
+    "selectAvailablePlates": "اختر الأطباق المتاحة",
     "barWeight": "وزن القضيب الحديدي",
     "useColors": "استخدام الألوان",
     "apiTokenValidChars": "إن مفتاح ال API لا يمكن أن يحتوي غير الأحرف من a-f، أرقام من 0-9، ويحب أن تكون 40 محرف تماما",
@@ -1080,11 +1080,11 @@
     "@invalidRefreshToken": {
         "description": "Error message when the user enters an invalid refresh token"
     },
-    "refreshTokenValidChars": "يحتوي رمز التحديث على ثلاثة أجزاء مفصولة بنقاط (ترويسة.حمولة.توقيع)، كل منها يتكوّن من أحرف وأرقام و’-‘ و’_‘.",
+    "refreshTokenValidChars": "يحتوي رمز التحديث على ثلاثة أجزاء مفصولة بنقاط (ترويسة.حمولة.توقيع)، كل منها يتكون من أحرف وأرقام و’-‘ و’_‘",
     "@refreshTokenValidChars": {
         "description": "Error message when the user pastes a string that does not match the JWT shape"
     },
-    "refreshTokenHelperText": "أنشئ رمز تحديث JWT على موقع wger الإلكتروني والصقه هنا. يفيد هذا عندما يكون ملقّمك خلف وكيل مصادقة أو عندما ترغب في تخطي عملية تسجيل الدخول المعتادة.",
+    "refreshTokenHelperText": "أنشئ رمز تحديث JWT على موقع wger الإلكتروني والصقه هنا. يفيد هذا عندما يكون خادمك خلف وكيل مصادقة أو عندما ترغب في تخطي عملية تسجيل الدخول المعتادة.",
     "@refreshTokenHelperText": {
         "description": "Helper text on the refresh-token paste field"
     },
@@ -1092,7 +1092,7 @@
     "@mfaChallengeTitle": {
         "description": "App bar title on the 2FA challenge screen"
     },
-    "mfaChallengeTotpPrompt": "أدخل الرمز المكوّن من ٦ أرقام من تطبيق المصادقة الخاص بك",
+    "mfaChallengeTotpPrompt": "أدخل الرمز المكون من ٦ أرقام من تطبيق المصادقة الخاص بك",
     "@mfaChallengeTotpPrompt": {
         "description": "Helper text above the TOTP input field"
     },
@@ -1132,19 +1132,19 @@
     "@manageAccountOnWebSubtitle": {
         "description": "Helper text below the 'Manage account on the web' button listing what is configurable there"
     },
-    "advanced": "متقدّم",
-    "advancedSubtitle": "خيارات الملقّم والمصادقة",
-    "serverSectionLabel": "الملقّم",
+    "advanced": "متقدم",
+    "advancedSubtitle": "خيارات الخادم والمصادقة",
+    "serverSectionLabel": "الخادم",
     "signInMethodSectionLabel": "طريقة تسجيل الدخول",
-    "serverOptionDefaultDetail": "الملقّم الرسمي",
+    "serverOptionDefaultDetail": "الخادم الرسمي",
     "serverOptionSelfHostedTitle": "مُستضاف ذاتيًّا",
     "serverOptionSelfHostedDetail": "اتصل بمثيلك الخاص",
     "authOptionPasswordTitle": "اسم المستخدم وكلمة المرور",
-    "signInWithToken": "تسجيل الدخول باستخدام الرمز",
+    "signInWithToken": "تسجيل الدخول باستخدام الرمز المميز",
     "tokenSubtitle": "أنشئ واحدًا على موقع wger الإلكتروني",
     "newToWger": "هل أنت جديد على wger؟",
     "alreadyHaveAccount": "هل لديك حساب بالفعل؟",
-    "tokenLabel": "الرمز",
+    "tokenLabel": "الرمز المميز",
     "webHandoffLinkLabel": "خيارات تسجيل دخول أخرى",
     "webHandoffLinkSubtitle": "تسجيل الدخول عبر وسائل التواصل الاجتماعي، مفتاح المرور، تسجيل الدخول المُوحّد",
     "slotEntryTypeMyo": "ميو",
@@ -1152,5 +1152,21 @@
     "preview": "عرض مبدئي",
     "endBeforeStart": "قيمة النهاية لا يمكن ان تكون قبل البداية",
     "minLengthRoutine": "يجب أن يستمر الروتين لمدة لا تقل عن {number} أسبوعًا",
-    "maxLengthRoutine": "يمكن أن يستمر الروتين لمدة أقصاها {number} أسبوعًا"
+    "maxLengthRoutine": "يمكن أن يستمر الروتين لمدة أقصاها {number} أسبوعًا",
+    "allowSelfSignedCertsTitle": "السماح بالشهادات الموقعة ذاتيًّا",
+    "allowSelfSignedCertsDetail": "يعطل هذا الخيار التحقق من صحة شهادة TLS. لا تفعّله إلا للخادم الذي تثق به.",
+    "certsNotVerifiedTitle": "تم إيقاف التحقق من صحة الشهادة",
+    "@certsNotVerifiedTitle": {
+        "description": "Warning shown in the settings while the app accepts invalid TLS certificates from the server the user is logged into."
+    },
+    "certsNotVerifiedDetail": "لم يتم التحقق من شهادات {host}. لتغيير ذلك، سجّل الخروج وعدّل الخيار في شاشة تسجيل الدخول.",
+    "@certsNotVerifiedDetail": {
+        "description": "Explains the certificate warning. The option can only be set before logging in, hence the hint to log out.",
+        "type": "text",
+        "placeholders": {
+            "host": {
+                "type": "String"
+            }
+        }
+    }
 }

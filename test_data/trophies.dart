@@ -18,6 +18,7 @@
 
 import 'package:wger/features/trophies/models/trophy.dart';
 import 'package:wger/features/trophies/models/user_trophy.dart';
+import 'package:wger/features/trophies/models/user_trophy_progression.dart';
 
 const _trophyImageBase =
     'https://raw.githubusercontent.com/wger-project/wger/master/wger/trophies/static/trophies';
@@ -77,6 +78,70 @@ List<UserTrophy> getScreenshotUserTrophies() {
       earnedAt: DateTime(2026, 3, 1),
       progress: 100,
       isNotified: true,
+    ),
+  ];
+}
+
+List<Trophy> getTestTrophies() {
+  return [
+    Trophy(
+      id: 1,
+      uuid: '31a71d9a-bf26-4f18-b82f-afefe6f50df2',
+      name: 'New Year, New Me',
+      description: 'Work out on January 1st',
+      image: 'https://example.com/5362e55b-eaf1-4e34-9ef8-661538a3bdd9.png',
+      type: TrophyType.date,
+      isHidden: false,
+      isProgressive: false,
+    ),
+    Trophy(
+      id: 2,
+      uuid: 'b605b6a1-953d-41fb-87c9-a2f88b5f5907',
+      name: 'Unstoppable',
+      description: 'Maintain a 30-day workout streak',
+      image: 'https://example.com/b605b6a1-953d-41fb-87c9-a2f88b5f5907.png',
+      type: TrophyType.sequence,
+      isHidden: false,
+      isProgressive: true,
+    ),
+  ];
+}
+
+List<UserTrophyProgression> getUserTrophyProgression() {
+  final trophies = getTestTrophies();
+
+  return [
+    UserTrophyProgression(
+      trophy: trophies[0],
+      progress: 100,
+      isEarned: true,
+      earnedAt: DateTime(2025, 12, 20),
+      currentValue: null,
+      targetValue: null,
+      progressDisplay: null,
+    ),
+    UserTrophyProgression(
+      trophy: trophies[1],
+      progress: 40,
+      isEarned: false,
+      earnedAt: null,
+      currentValue: 12,
+      targetValue: 30,
+      progressDisplay: '12 / 30',
+    ),
+  ];
+}
+
+List<UserTrophy> getUserTrophies() {
+  final trophies = getTestTrophies();
+
+  return [
+    UserTrophy(
+      id: 4,
+      earnedAt: DateTime(2025, 12, 20),
+      isNotified: true,
+      progress: 100,
+      trophy: trophies[0],
     ),
   ];
 }

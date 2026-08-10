@@ -37,9 +37,9 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 
 import '../../../../test_data/body_weight.dart';
 import '../../../../test_data/nutritional_plans.dart';
-import '../../../fake_auth_environment.dart';
-import '../../../fake_connectivity.dart';
 import '../../../fixtures/fixture_reader.dart';
+import '../../../helpers/fake_auth_environment.dart';
+import '../../../helpers/fake_connectivity.dart';
 import '../../../helpers/measurement_repository_stubs.dart';
 import 'nutritional_plan_screen_test.mocks.dart';
 
@@ -136,6 +136,7 @@ void main() {
     (tester) async {
       tester.view.physicalSize = const Size(500, 1000);
       tester.view.devicePixelRatio = 1.0; // Ensure correct pixel ratio
+      addTearDown(tester.view.reset);
 
       final container = makeContainer();
       await tester.pumpWidget(createNutritionalPlan(container: container));

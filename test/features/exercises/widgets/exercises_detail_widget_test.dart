@@ -31,7 +31,7 @@ import 'package:wger/features/exercises/widgets/exercises.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 import '../../../../test_data/exercises.dart';
-import '../../../fake_connectivity.dart';
+import '../../../helpers/fake_connectivity.dart';
 import 'exercises_detail_widget_test.mocks.dart';
 
 @GenerateMocks([ExerciseRepository])

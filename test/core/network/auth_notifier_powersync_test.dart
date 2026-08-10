@@ -29,18 +29,15 @@ import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
-import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/network/auth_notifier.dart';
 import 'package:wger/core/network/auth_state.dart';
 import 'package:wger/core/network/secure_token_storage.dart';
 import 'package:wger/core/shared_preferences.dart';
 
-import '../../fake_connectivity.dart';
+import '../../helpers/fake_auth_environment.dart';
+import '../../helpers/fake_connectivity.dart';
 import 'auth_notifier_powersync_test.mocks.dart';
 
 @GenerateMocks([http.Client, SecureTokenStorage])
@@ -51,7 +48,7 @@ void main() {
 
   // Replacement for SharedPreferences.setMockInitialValues() for the
   // async API used by the auth notifier.
-  SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+  installFakeAuthEnvironment();
 
   // The background revalidation observes connectivity to re-probe on
   // reconnect; stub the connectivity platform so no real plugin is needed.
@@ -103,15 +100,6 @@ void main() {
     when(mockSecureStorage.readRefreshToken()).thenAnswer((_) async => null);
     when(mockSecureStorage.writeRefreshToken(any)).thenAnswer((_) async {});
 
-    SharedPreferences.setMockInitialValues({});
-    PackageInfo.setMockInitialValues(
-      appName: 'wger',
-      packageName: 'com.example.example',
-      version: '1.2.3',
-      buildNumber: '2',
-      buildSignature: 'buildSignature',
-    );
-
     // Point the on-disk wipe path at a real temp dir so a wiping logout
     // succeeds (no file present -> no-op). Set [failDbPathLookup] to make the
     // lookup throw and exercise a failed wipe.
@@ -133,7 +121,6 @@ void main() {
 
     // Wipe async prefs between tests (the platform instance is shared).
     final prefs = PreferenceHelper.asyncPref;
-    await prefs.clear();
 
     // Persist a logged-in user so auto-login actually runs.
     await prefs.setString(
@@ -506,6 +493,21 @@ void main() {
       when(
         mockClient.head(tProbe, headers: anyNamed('headers')),
       ).thenAnswer((_) async => Response('Unauthorized', 401));
+
+      final container = makeContainer();
+      final state = await container.read(authProvider.future);
+
+      expect(state.status, AuthStatus.loggedOut);
+      expect(await PreferenceHelper.asyncPref.containsKey(PREFS_USER), false);
+    });
+
+    test('Django HEAD returns 403 → loggedOut and saved user wiped', () async {
+      // The API answers a rejected token with 403, not 401, because
+      // SessionAuthentication runs before the JWT authenticator. Both have to
+      // count as "token rejected", or a revoked session survives every start.
+      when(
+        mockClient.head(tProbe, headers: anyNamed('headers')),
+      ).thenAnswer((_) async => Response('Forbidden', 403));
 
       final container = makeContainer();
       final state = await container.read(authProvider.future);

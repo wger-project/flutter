@@ -30,14 +30,7 @@ import 'package:wger/core/network/auth_state.dart';
 import 'package:wger/features/account/widgets/settings/certs_not_verified.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
-class _FakeAuthNotifier extends AuthNotifier {
-  _FakeAuthNotifier(this._state);
-
-  final AuthState _state;
-
-  @override
-  Future<AuthState> build() async => _state;
-}
+import '../../../../helpers/fake_auth_notifier.dart';
 
 void main() {
   const selfHosted = 'https://gym.example.com';
@@ -58,7 +51,7 @@ void main() {
         overrides: [
           appSettingsPrefsProvider.overrideWithValue(prefs),
           authProvider.overrideWith(
-            () => _FakeAuthNotifier(
+            () => FakeAuthNotifier(
               AuthState(status: AuthStatus.loggedIn, serverUrl: serverUrl),
             ),
           ),

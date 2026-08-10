@@ -26,10 +26,6 @@ import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:package_info_plus/package_info_plus.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
-import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/network/auth_notifier.dart';
 import 'package:wger/core/network/secure_token_storage.dart';
@@ -37,6 +33,7 @@ import 'package:wger/core/powersync_unreachable_screen.dart';
 import 'package:wger/core/shared_preferences.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
+import '../helpers/fake_auth_environment.dart';
 import 'recovery_screens_test.mocks.dart';
 
 /// Widget tests for the recovery screens.
@@ -44,7 +41,7 @@ import 'recovery_screens_test.mocks.dart';
 void main() {
   // Replacement for SharedPreferences.setMockInitialValues() for the
   // async API used by the auth notifier.
-  SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+  installFakeAuthEnvironment();
 
   late MockClient mockClient;
   late MockSecureTokenStorage mockSecureStorage;
@@ -99,18 +96,8 @@ void main() {
     when(mockSecureStorage.readRefreshToken()).thenAnswer((_) async => null);
     when(mockSecureStorage.writeRefreshToken(any)).thenAnswer((_) async {});
 
-    SharedPreferences.setMockInitialValues({});
-    PackageInfo.setMockInitialValues(
-      appName: 'wger',
-      packageName: 'com.example.example',
-      version: '1.2.3',
-      buildNumber: '2',
-      buildSignature: 'buildSignature',
-    );
-
     // Wipe async prefs between tests (the platform instance is shared).
     final prefs = PreferenceHelper.asyncPref;
-    await prefs.clear();
 
     // Saved login → autoLogin runs the full probe path.
     await prefs.setString(

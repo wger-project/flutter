@@ -35,6 +35,7 @@ import 'package:wger/features/routines/models/repetition_unit.dart';
 import 'package:wger/features/routines/models/session.dart';
 import 'package:wger/features/routines/models/weight_unit.dart';
 import 'package:wger/features/routines/providers/gym_state.dart';
+import 'package:wger/features/routines/providers/gym_state_notifier.dart';
 import 'package:wger/features/routines/providers/routines_notifier.dart';
 import 'package:wger/features/routines/providers/routines_repository.dart';
 import 'package:wger/features/routines/providers/workout_logs_repository.dart';
@@ -53,7 +54,7 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 
 import '../../../../test_data/exercises.dart';
 import '../../../../test_data/routines.dart';
-import '../../../fake_connectivity.dart';
+import '../../../helpers/fake_connectivity.dart';
 import 'gym_mode_test.mocks.dart';
 
 @GenerateMocks([
@@ -472,6 +473,35 @@ void main() {
   });
 
   testWidgets(
+    'resuming an interrupted session reopens the page it was left on',
+    (WidgetTester tester) async {
+      // Coming back into a running workout must not restart it at page 0:
+      // initData returns the stored page and gym_mode jumps the PageView
+      // there. Seed the state the way a still-valid session would leave it.
+      await withClock(Clock.fixed(DateTime(2025, 3, 29, 14, 33)), () async {
+        await tester.pumpWidget(
+          renderGymMode(
+            extraOverrides: [
+              gymStateProvider.overrideWith(() => _ResumedGymState(dayId: 1, currentPage: 3)),
+            ],
+          ),
+        );
+        await tester.pumpAndSettle();
+        await tester.tap(find.byType(TextButton));
+        await tester.pumpAndSettle();
+
+        expect(tester.takeException(), isNull);
+        expect(
+          tester.widget<PageView>(find.byType(PageView)).controller!.page,
+          3,
+          reason: 'the PageView has to open on the stored page, not on page 0',
+        );
+      });
+    },
+    semanticsEnabled: false,
+  );
+
+  testWidgets(
     'fresh session with exercise pages off: first swipe to a log page does not crash',
     (WidgetTester tester) async {
       // Test having a null page, which can happen on the first swipe of a fresh session
@@ -496,5 +526,22 @@ void main() {
       });
     },
     semanticsEnabled: false,
+  );
+}
+
+/// A gym state as an interrupted-but-still-valid session leaves it behind:
+/// initialised, on a later page, and not yet expired.
+class _ResumedGymState extends GymStateNotifier {
+  _ResumedGymState({required this.dayId, required this.currentPage});
+
+  final int dayId;
+  final int currentPage;
+
+  @override
+  GymModeState build() => GymModeState(
+    isInitialized: true,
+    dayId: dayId,
+    currentPage: currentPage,
+    validUntil: clock.now().add(const Duration(hours: 2)),
   );
 }

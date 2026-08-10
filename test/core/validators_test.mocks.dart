@@ -4143,6 +4143,28 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get settingsVerboseLogging =>
+      (super.noSuchMethod(
+            Invocation.getter(#settingsVerboseLogging),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#settingsVerboseLogging),
+            ),
+          )
+          as String);
+
+  @override
+  String get settingsVerboseLoggingDescription =>
+      (super.noSuchMethod(
+            Invocation.getter(#settingsVerboseLoggingDescription),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#settingsVerboseLoggingDescription),
+            ),
+          )
+          as String);
+
+  @override
   String get aboutPageTitle =>
       (super.noSuchMethod(
             Invocation.getter(#aboutPageTitle),

@@ -82,5 +82,63 @@ void main() {
       expect(formatted.length, 3);
       expect(formatted.first.contains('this is log 2'), true);
     });
+
+    test('formatted entries include the error and the stack trace', () {
+      logStore.add(
+        LogRecord(
+          Level.WARNING,
+          'Sync service error',
+          'testLogger',
+          Exception('connection refused'),
+          StackTrace.fromString('#0 first frame\n#1 second frame'),
+        ),
+      );
+
+      final formatted = logStore.getFormattedLogs(minLevel: Level.INFO).first;
+      expect(formatted, contains('Sync service error'));
+      expect(formatted, contains('connection refused'));
+      expect(formatted, contains('#0 first frame'));
+      expect(formatted, contains('#1 second frame'));
+    });
+
+    test('formatted entries use UTC timestamps', () {
+      final record = LogRecord(Level.INFO, 'this is a test', 'testLogger');
+      logStore.add(record);
+
+      final formatted = logStore.getFormattedLogs(minLevel: Level.INFO).first;
+      expect(formatted, startsWith(record.time.toUtc().toIso8601String()));
+      expect(formatted, contains('Z '));
+    });
+  });
+
+  group('log formatting', () {
+    test('long errors are clamped', () {
+      final record = LogRecord(Level.WARNING, 'boom', 'testLogger', 'x' * 2000);
+
+      expect(formatLogDetails(record).length, lessThan(1000));
+      expect(formatLogDetails(record), contains('…'));
+    });
+
+    test('long stack traces are shortened', () {
+      final frames = List.generate(40, (i) => '#$i some frame').join('\n');
+      final record = LogRecord(
+        Level.WARNING,
+        'boom',
+        'testLogger',
+        Exception('nope'),
+        StackTrace.fromString(frames),
+      );
+
+      final formatted = formatLogDetails(record);
+      expect(formatted, contains('#0 some frame'));
+      expect(formatted, isNot(contains('#39 some frame')));
+      expect(formatted, contains('more frames'));
+    });
+
+    test('entries without an error render just the message', () {
+      final record = LogRecord(Level.INFO, 'nothing to see here', 'testLogger');
+
+      expect(formatLogDetails(record), 'nothing to see here');
+    });
   });
 }
