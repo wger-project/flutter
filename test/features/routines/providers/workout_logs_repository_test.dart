@@ -203,6 +203,21 @@ void main() {
       expect(rows, hasLength(1));
       expect(rows.single.weight, 75);
     });
+
+    test('clears values that were nulled', () async {
+      final log = makeLog(sessionId: 'session-1', weight: 50);
+      log.rir = 2;
+      await repo.addLocalDrift(log);
+
+      // The user clears the RiR and the weight in the log edit dialog
+      log.rir = null;
+      log.weight = null;
+      await repo.updateLocalDrift(log);
+
+      final rows = await readLogs();
+      expect(rows.single.rir, isNull);
+      expect(rows.single.weight, isNull);
+    });
   });
 
   group('deleteLocalDrift', () {

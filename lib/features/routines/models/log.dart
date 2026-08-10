@@ -180,27 +180,19 @@ class Log {
       id: id != null ? drift.Value(id!) : const drift.Value.absent(),
       exerciseId: drift.Value(exerciseId),
       routineId: drift.Value(routineId),
-      sessionId: sessionId != null ? drift.Value(sessionId) : const drift.Value.absent(),
-      iteration: iteration != null ? drift.Value(iteration) : const drift.Value.absent(),
-      slotEntryId: slotEntryId != null ? drift.Value(slotEntryId) : const drift.Value.absent(),
-      rir: rir != null ? drift.Value(rir!.toDouble()) : const drift.Value.absent(),
-      rirTarget: rirTarget != null
-          ? drift.Value(rirTarget!.toDouble())
-          : const drift.Value.absent(),
-      repetitions: repetitions != null
-          ? drift.Value(repetitions!.toDouble())
-          : const drift.Value.absent(),
-      repetitionsTarget: repetitionsTarget != null
-          ? drift.Value(repetitionsTarget!.toDouble())
-          : const drift.Value.absent(),
-      repetitionsUnitId: repetitionsUnitId != null
-          ? drift.Value(repetitionsUnitId)
-          : const drift.Value.absent(),
-      weight: weight != null ? drift.Value(weight!.toDouble()) : const drift.Value.absent(),
-      weightTarget: weightTarget != null
-          ? drift.Value(weightTarget!.toDouble())
-          : const drift.Value.absent(),
-      weightUnitId: weightUnitId != null ? drift.Value(weightUnitId) : const drift.Value.absent(),
+      // Explicit NULL, not absent: clearing a value (e.g. the RiR or the
+      // weight in the log edit dialog) has to clear the column too
+      sessionId: drift.Value(sessionId),
+      iteration: drift.Value(iteration),
+      slotEntryId: drift.Value(slotEntryId),
+      rir: drift.Value(rir?.toDouble()),
+      rirTarget: drift.Value(rirTarget?.toDouble()),
+      repetitions: drift.Value(repetitions?.toDouble()),
+      repetitionsTarget: drift.Value(repetitionsTarget?.toDouble()),
+      repetitionsUnitId: drift.Value(repetitionsUnitId),
+      weight: drift.Value(weight?.toDouble()),
+      weightTarget: drift.Value(weightTarget?.toDouble()),
+      weightUnitId: drift.Value(weightUnitId),
       date: drift.Value(date),
     );
   }

@@ -89,7 +89,9 @@ class MealItem {
       id: id != null ? drift.Value(id!) : const drift.Value.absent(),
       mealId: drift.Value(mealId),
       ingredientId: drift.Value(ingredientId),
-      weightUnitId: weightUnitId == null ? const drift.Value.absent() : drift.Value(weightUnitId),
+      // Explicit NULL, not absent: switching the item back from a portion unit
+      // to grams has to clear the column too
+      weightUnitId: drift.Value(weightUnitId),
       order: drift.Value(order),
       amount: drift.Value(amount.toDouble()),
     );

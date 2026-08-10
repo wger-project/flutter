@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wger/database/powersync/database.dart';
 import 'package:wger/features/routines/models/log.dart';
@@ -93,6 +94,22 @@ void main() {
 
       final rows = await db.select(db.workoutSessionTable).get();
       expect(rows.single.notes, 'updated');
+    });
+
+    test('editLocalDrift clears times that were nulled', () async {
+      final inserted = await repo.addLocalDrift(
+        makeSession().copyWith(
+          timeStart: const TimeOfDay(hour: 8, minute: 0),
+          timeEnd: const TimeOfDay(hour: 9, minute: 30),
+        ),
+      );
+
+      // The user clears both times via the form's clear buttons
+      await repo.editLocalDrift(inserted.copyWith(timeStart: null, timeEnd: null));
+
+      final row = await db.select(db.workoutSessionTable).getSingle();
+      expect(row.timeStart, isNull);
+      expect(row.timeEnd, isNull);
     });
 
     test('deleteLocalDrift removes the row with matching id', () async {

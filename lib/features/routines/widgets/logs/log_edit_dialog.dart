@@ -101,13 +101,16 @@ class _LogEditDialogState extends ConsumerState<LogEditDialog> {
 
     setState(() => _saving = true);
 
-    final updated = widget.log.copyWith(
-      repetitions: _repetitions,
-      weight: _weight,
-      rir: _rir,
-      repetitionsUnitObj: _repetitionUnit,
-      weightUnitObj: _weightUnit,
-    );
+    // copyWith falls back to the old value on null, so the fields the user can
+    // clear are assigned directly
+    final updated =
+        widget.log.copyWith(
+            repetitionsUnitObj: _repetitionUnit,
+            weightUnitObj: _weightUnit,
+          )
+          ..repetitions = _repetitions
+          ..weight = _weight
+          ..rir = _rir;
 
     try {
       await ref.read(workoutLogProvider).updateEntry(updated);
