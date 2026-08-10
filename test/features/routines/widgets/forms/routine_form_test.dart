@@ -292,9 +292,12 @@ void main() {
     );
     expect(button.enabled, isFalse);
 
-    // And tapping it must not trigger the create request.
+    // Fill the form first: an invalid form is rejected by the validator, which
+    // would make the verifyNever below pass no matter what the gate does.
+    await tester.enterText(find.byKey(const Key('field-name')), 'New cool routine');
     await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)), warnIfMissed: false);
-    await tester.pump();
+    await tester.pumpAndSettle();
+
     verifyNever(mockRoutinesRepository.addRoutineServer(any));
   });
 }
