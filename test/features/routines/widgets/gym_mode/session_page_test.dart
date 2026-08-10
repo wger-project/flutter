@@ -105,13 +105,12 @@ void main() {
     });
   });
 
-  testWidgets('Existing session with null times falls back to defaults', (
+  testWidgets('An open session keeps its start and gets the current time as end', (
     WidgetTester tester,
   ) async {
-    // A session created lazily while logging has no times; the page should
-    // prefill the gym session's start and the current time instead of leaving
-    // both fields blank.
-    testRoutine.sessions[0] = testRoutine.sessions[0].copyWith(timeStart: null, timeEnd: null);
+    // A session created lazily while logging has a start but no end yet; the
+    // page prefills the current time so the form opens on a full interval.
+    testRoutine.sessions[0] = testRoutine.sessions[0].copyWith(datetimeEnd: null);
 
     notifier.state = notifier.state.copyWith(
       routine: testRoutine,
@@ -123,7 +122,7 @@ void main() {
       await tester.pumpWidget(renderSessionPage());
       await tester.pumpAndSettle();
 
-      expect(find.text('1:35 PM'), findsOneWidget);
+      expect(find.text('10:00 AM'), findsOneWidget);
       expect(find.text('3:23 PM'), findsOneWidget);
     });
   });
@@ -159,8 +158,8 @@ void main() {
       expect(captured.id, '1');
       expect(captured.impression, WorkoutImpression.good);
       expect(captured.notes, equals('This is a note'));
-      expect(captured.timeStart, equals(DateTime(2021, 5, 1, 10, 0)));
-      expect(captured.timeEnd, equals(DateTime(2021, 5, 1, 12, 34)));
+      expect(captured.datetimeStart, equals(DateTime(2021, 5, 1, 10, 0)));
+      expect(captured.datetimeEnd, equals(DateTime(2021, 5, 1, 12, 34)));
     });
   });
 }

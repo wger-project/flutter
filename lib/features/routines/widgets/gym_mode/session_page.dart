@@ -62,24 +62,22 @@ class _SessionPageState extends ConsumerState<SessionPage> {
               final found =
                   ours.firstWhereOrNull(
                     (s) =>
-                        s.timeEnd == null &&
-                        s.timeStart != null &&
-                        now.difference(s.timeStart!) <= sessionMaxDuration,
+                        s.datetimeEnd == null &&
+                        now.difference(s.datetimeStart) <= sessionMaxDuration,
                   ) ??
-                  ours.firstWhereOrNull((s) => s.date.isSameDayAs(now)) ??
+                  ours.firstWhereOrNull((s) => s.datetimeStart.isSameDayAs(now)) ??
                   WorkoutSession(
                     dayId: gymState.dayId,
-                    date: now,
+                    datetimeStart: gymState.workoutStart,
                     routineId: gymState.routine.id,
                   );
 
               // Prefill missing times. A session may have been created lazily
               // while logging sets (without times), so fall back to the gym
               // session's start and the current time.
-              final session = found.copyWith(
-                timeStart: found.timeStart ?? gymState.workoutStart,
-                timeEnd: found.timeEnd ?? now,
-              );
+              // A session created lazily while logging has no end yet; prefill
+              // the current time so the form opens on a complete interval.
+              final session = found.copyWith(datetimeEnd: found.datetimeEnd ?? now);
 
               return Column(
                 children: [

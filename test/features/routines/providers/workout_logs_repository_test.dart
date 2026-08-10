@@ -81,11 +81,11 @@ void main() {
   });
 
   group('addLocalDrift, log without sessionId', () {
-    test('reuses an existing session for the same routine and day', () async {
+    test('reuses an open session within the window', () async {
       final existingSession = WorkoutSession(
         id: 'existing-session-1',
         routineId: 100,
-        date: DateTime.utc(2026, 4, 15),
+        datetimeStart: DateTime.utc(2026, 4, 15, 16),
       );
       await db.into(db.workoutSessionTable).insert(existingSession.toCompanion());
 
@@ -99,11 +99,9 @@ void main() {
     });
 
     test('reuses a server-synced session whose date has no time component', () async {
-      // After a round-trip the backend stores the date as a bare 'YYYY-MM-DD'
-      // (Django DateField), not the local 'T00:00:00.000Z' format. The day
-      // lookup must still match it, otherwise a duplicate session is created
-      // and the server rejects it on the unique (date, routine, user)
-      // constraint, taking every log on it down with it.
+      // A row replicated before 2.7 carries only the bare 'YYYY-MM-DD' date and
+      // no datetime_start. The day lookup has to keep matching it, otherwise a
+      // duplicate session appears next to every one of them.
       await db.customStatement(
         "INSERT INTO manager_workoutsession (id, routine_id, date, impression) VALUES ('server-session', 100, '2026-04-15', '2')",
       );
@@ -117,22 +115,39 @@ void main() {
       expect(logs.single.sessionId, 'server-session');
     });
 
-    test('creates a new session at midnight UTC of the log date', () async {
+    test('creates a new session starting at the moment of the log', () async {
+      // Without a start the lookups above could never find it again and every
+      // further log would create one of its own.
       final log = makeLog(date: DateTime.utc(2026, 4, 15, 18, 30));
 
       await repo.addLocalDrift(log);
 
       final sessions = await readSessions();
       expect(sessions, hasLength(1));
-      expect(sessions.single.date, DateTime.utc(2026, 4, 15));
+      expect(sessions.single.datetimeStart, DateTime.utc(2026, 4, 15, 18, 30).toLocal());
       expect(log.sessionId, sessions.single.id);
+    });
+
+    test('starts a new session when the open one is older than the window', () async {
+      await db
+          .into(db.workoutSessionTable)
+          .insert(
+            WorkoutSession(
+              routineId: 100,
+              datetimeStart: DateTime.utc(2026, 4, 15, 8),
+            ).toCompanion(),
+          );
+
+      await repo.addLocalDrift(makeLog(routineId: 100, date: DateTime.utc(2026, 4, 15, 18)));
+
+      expect(await readSessions(), hasLength(2));
     });
 
     test('does not reuse a session from a different day', () async {
       await db
           .into(db.workoutSessionTable)
           .insert(
-            WorkoutSession(routineId: 100, date: DateTime.utc(2026, 4, 14)).toCompanion(),
+            WorkoutSession(routineId: 100, datetimeStart: DateTime.utc(2026, 4, 14)).toCompanion(),
           );
 
       await repo.addLocalDrift(makeLog(date: DateTime.utc(2026, 4, 15)));
@@ -144,7 +159,7 @@ void main() {
       await db
           .into(db.workoutSessionTable)
           .insert(
-            WorkoutSession(routineId: 999, date: DateTime.utc(2026, 4, 15)).toCompanion(),
+            WorkoutSession(routineId: 999, datetimeStart: DateTime.utc(2026, 4, 15)).toCompanion(),
           );
 
       await repo.addLocalDrift(makeLog(routineId: 100, date: DateTime.utc(2026, 4, 15)));
@@ -167,7 +182,7 @@ void main() {
       final existingSession = WorkoutSession(
         id: 'free-session',
         routineId: null,
-        date: DateTime.utc(2026, 4, 15),
+        datetimeStart: DateTime.utc(2026, 4, 15, 16),
       );
       await db.into(db.workoutSessionTable).insert(existingSession.toCompanion());
 
@@ -182,7 +197,7 @@ void main() {
       await db
           .into(db.workoutSessionTable)
           .insert(
-            WorkoutSession(routineId: 100, date: DateTime.utc(2026, 4, 15)).toCompanion(),
+            WorkoutSession(routineId: 100, datetimeStart: DateTime.utc(2026, 4, 15)).toCompanion(),
           );
 
       await repo.addLocalDrift(makeLog(routineId: null, date: DateTime.utc(2026, 4, 15)));

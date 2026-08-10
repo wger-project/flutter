@@ -55,9 +55,8 @@ void main() {
         routineId: 1,
         notes: 'Existing notes',
         impression: WorkoutImpression.bad,
-        date: DateTime.now(),
-        timeStart: DateTime.now().copyWith(hour: 10, minute: 0),
-        timeEnd: DateTime.now().copyWith(hour: 11, minute: 0),
+        datetimeStart: DateTime.now().copyWith(hour: 10, minute: 0),
+        datetimeEnd: DateTime.now().copyWith(hour: 11, minute: 0),
       );
 
       //Act
@@ -97,7 +96,7 @@ void main() {
         routineId: 1,
         notes: 'Old notes',
         impression: WorkoutImpression.neutral,
-        date: DateTime.now(),
+        datetimeStart: DateTime.now(),
       );
 
       when(mockRepository.editLocalDrift(any as dynamic)).thenAnswer(

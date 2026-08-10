@@ -60,7 +60,11 @@ class _SessionFormState extends ConsumerState<SessionForm> {
     super.initState();
     _draft =
         widget._session ??
-        WorkoutSession(routineId: widget._routineId, dayId: widget._dayId, date: clock.now());
+        WorkoutSession(
+          routineId: widget._routineId,
+          dayId: widget._dayId,
+          datetimeStart: clock.now(),
+        );
     notesController.text = _draft.notes ?? '';
   }
 
@@ -84,7 +88,7 @@ class _SessionFormState extends ConsumerState<SessionForm> {
 
   /// Anchors a picked time on the day the session belongs to
   DateTime _onSessionDay(TimeOfDay time) {
-    final day = _draft.date;
+    final day = _draft.localDay;
 
     return DateTime(day.year, day.month, day.day, time.hour, time.minute);
   }
@@ -92,9 +96,8 @@ class _SessionFormState extends ConsumerState<SessionForm> {
   /// Same, but an end before the start means the session ran past midnight
   DateTime _endOnSessionDay(TimeOfDay time) {
     final end = _onSessionDay(time);
-    final start = _draft.timeStart;
 
-    return start != null && end.isBefore(start) ? end.add(const Duration(days: 1)) : end;
+    return end.isBefore(_draft.datetimeStart) ? end.add(const Duration(days: 1)) : end;
   }
 
   @override
@@ -148,19 +151,21 @@ class _SessionFormState extends ConsumerState<SessionForm> {
               Flexible(
                 child: TimeInputWidget(
                   key: const ValueKey('time-start'),
-                  value: _draft.timeStart != null ? TimeOfDay.fromDateTime(_draft.timeStart!) : null,
+                  value: TimeOfDay.fromDateTime(_draft.datetimeStart),
                   labelText: AppLocalizations.of(context).timeStart,
-                  onCleared: () => _draft = _draft.copyWith(timeStart: null),
-                  onChanged: (time) => _draft = _draft.copyWith(timeStart: _onSessionDay(time)),
+                  onChanged: (time) => _draft = _draft.copyWith(datetimeStart: _onSessionDay(time)),
                 ),
               ),
               Flexible(
                 child: TimeInputWidget(
                   key: const ValueKey('time-end'),
-                  value: _draft.timeEnd != null ? TimeOfDay.fromDateTime(_draft.timeEnd!) : null,
+                  value: _draft.datetimeEnd != null
+                      ? TimeOfDay.fromDateTime(_draft.datetimeEnd!)
+                      : null,
                   labelText: AppLocalizations.of(context).timeEnd,
-                  onCleared: () => _draft = _draft.copyWith(timeEnd: null),
-                  onChanged: (time) => _draft = _draft.copyWith(timeEnd: _endOnSessionDay(time)),
+                  onCleared: () => _draft = _draft.copyWith(datetimeEnd: null),
+                  onChanged: (time) =>
+                      _draft = _draft.copyWith(datetimeEnd: _endOnSessionDay(time)),
                 ),
               ),
             ],
@@ -177,8 +182,8 @@ class _SessionFormState extends ConsumerState<SessionForm> {
 
               final i18n = AppLocalizations.of(context);
               final error = validateWorkoutSessionTimes(
-                timeStart: _draft.timeStart,
-                timeEnd: _draft.timeEnd,
+                datetimeStart: _draft.datetimeStart,
+                datetimeEnd: _draft.datetimeEnd,
                 i18n: i18n,
               );
               if (error != null) {

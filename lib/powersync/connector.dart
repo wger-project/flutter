@@ -208,7 +208,6 @@ class DjangoConnector extends PowerSyncBackendConnector {
   /// are read-only on the serializer and therefore safe to leave out.
   static const Map<String, Set<String>> _dateOnlyFields = {
     'manager_routine': {'start', 'end'},
-    'manager_workoutsession': {'date'},
     'nutrition_nutritionplan': {'start', 'end'},
     'gallery_image': {'date'},
   };

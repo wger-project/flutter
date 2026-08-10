@@ -43,7 +43,7 @@ class DayLogWidget extends ConsumerWidget {
     final trophyState = ref.read(trophyStateProvider);
 
     final session = _routine.sessions.firstWhere(
-      (s) => s.date.isSameDayAs(_date),
+      (s) => s.localDay.isSameDayAs(_date),
     );
     final exercises = session.exercises;
 

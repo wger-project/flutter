@@ -141,8 +141,8 @@ class WorkoutLogRepository {
               ..where(
                 (t) =>
                     t.routineId.equalsNullable(log.routineId) &
-                    t.timeStart.isSmallerOrEqualValue(at) &
-                    t.timeEnd.isBiggerOrEqualValue(at),
+                    t.datetimeStart.isSmallerOrEqualValue(at) &
+                    t.datetimeEnd.isBiggerOrEqualValue(at),
               )
               ..limit(1))
             .getSingleOrNull();
@@ -156,11 +156,11 @@ class WorkoutLogRepository {
               ..where(
                 (t) =>
                     t.routineId.equalsNullable(log.routineId) &
-                    t.timeEnd.isNull() &
-                    t.timeStart.isBiggerOrEqualValue(windowStart) &
-                    t.timeStart.isSmallerOrEqualValue(at),
+                    t.datetimeEnd.isNull() &
+                    t.datetimeStart.isBiggerOrEqualValue(windowStart) &
+                    t.datetimeStart.isSmallerOrEqualValue(at),
               )
-              ..orderBy([(t) => OrderingTerm.desc(t.timeStart)])
+              ..orderBy([(t) => OrderingTerm.desc(t.datetimeStart)])
               ..limit(1))
             .getSingleOrNull();
     if (open != null) {
@@ -175,7 +175,7 @@ class WorkoutLogRepository {
               ..where(
                 (t) =>
                     t.routineId.equalsNullable(log.routineId) &
-                    t.timeStart.isNull() &
+                    t.datetimeStart.isNull() &
                     t.date.equalsValue(dayMidnightUtc),
               )
               ..limit(1))
@@ -189,11 +189,7 @@ class WorkoutLogRepository {
     final created = await _db
         .into(_db.workoutSessionTable)
         .insertReturning(
-          WorkoutSession(
-            routineId: log.routineId,
-            date: DateTime.utc(log.date.year, log.date.month, log.date.day),
-            timeStart: log.date,
-          ).toCompanion(),
+          WorkoutSession(routineId: log.routineId, datetimeStart: log.date).toCompanion(),
         );
     _logger.finer('Created lazy session ${created.id} for log');
 

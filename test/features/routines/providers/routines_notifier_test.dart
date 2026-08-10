@@ -387,7 +387,7 @@ void main() {
       final session = WorkoutSession(
         id: 'session-1',
         routineId: 101,
-        date: DateTime(2025, 1, 1),
+        datetimeStart: DateTime(2025, 1, 1),
         logs: [log],
       );
       when(

@@ -91,22 +91,20 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
   final session1 = WorkoutSession(
     id: '1',
     routineId: 1,
-    date: DateTime(2021, 5, 1),
     impression: WorkoutImpression.good,
     notes: 'This is a note',
-    timeStart: DateTime(2021, 5, 1, 10, 0),
-    timeEnd: DateTime(2021, 5, 1, 12, 34),
+    datetimeStart: DateTime(2021, 5, 1, 10, 0),
+    datetimeEnd: DateTime(2021, 5, 1, 12, 34),
     logs: [log1, log2],
   );
 
   final session2 = WorkoutSession(
     id: '2',
     routineId: 1,
-    date: DateTime(2021, 5, 2),
     impression: WorkoutImpression.bad,
     notes: 'This is a note',
-    timeStart: DateTime(2021, 5, 2, 6, 12),
-    timeEnd: DateTime(2021, 5, 2, 8, 1),
+    datetimeStart: DateTime(2021, 5, 2, 6, 12),
+    datetimeEnd: DateTime(2021, 5, 2, 8, 1),
     logs: [log3],
   );
 

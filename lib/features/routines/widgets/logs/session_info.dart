@@ -47,7 +47,7 @@ class _SessionInfoState extends State<SessionInfo> {
               style: Theme.of(context).textTheme.headlineSmall,
             ),
             subtitle: Text(
-              localizedDate(context).format(widget._session.date),
+              localizedDate(context).format(widget._session.localDay),
             ),
             onTap: () => setState(() => editMode = !editMode),
             trailing: Icon(editMode ? Icons.edit_off : Icons.edit),
