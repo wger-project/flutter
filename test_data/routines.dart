@@ -16,20 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/material.dart';
-import 'package:wger/models/exercises/exercise.dart';
-import 'package:wger/models/workouts/base_config.dart';
-import 'package:wger/models/workouts/day.dart';
-import 'package:wger/models/workouts/day_data.dart';
-import 'package:wger/models/workouts/log.dart';
-import 'package:wger/models/workouts/repetition_unit.dart';
-import 'package:wger/models/workouts/routine.dart';
-import 'package:wger/models/workouts/session.dart';
-import 'package:wger/models/workouts/set_config_data.dart';
-import 'package:wger/models/workouts/slot.dart';
-import 'package:wger/models/workouts/slot_data.dart';
-import 'package:wger/models/workouts/slot_entry.dart';
-import 'package:wger/models/workouts/weight_unit.dart';
+import 'package:wger/features/exercises/models/exercise.dart';
+import 'package:wger/features/routines/models/base_config.dart';
+import 'package:wger/features/routines/models/day.dart';
+import 'package:wger/features/routines/models/day_data.dart';
+import 'package:wger/features/routines/models/log.dart';
+import 'package:wger/features/routines/models/repetition_unit.dart';
+import 'package:wger/features/routines/models/routine.dart';
+import 'package:wger/features/routines/models/session.dart';
+import 'package:wger/features/routines/models/set_config_data.dart';
+import 'package:wger/features/routines/models/slot.dart';
+import 'package:wger/features/routines/models/slot_data.dart';
+import 'package:wger/features/routines/models/slot_entry.dart';
+import 'package:wger/features/routines/models/weight_unit.dart';
 
 import './exercises.dart';
 
@@ -95,8 +94,8 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
     date: DateTime(2021, 5, 1),
     impression: WorkoutImpression.good,
     notes: 'This is a note',
-    timeStart: const TimeOfDay(hour: 10, minute: 0),
-    timeEnd: const TimeOfDay(hour: 12, minute: 34),
+    timeStart: DateTime(2021, 5, 1, 10, 0),
+    timeEnd: DateTime(2021, 5, 1, 12, 34),
     logs: [log1, log2],
   );
 
@@ -106,8 +105,8 @@ Routine getTestRoutine({List<Exercise>? exercises}) {
     date: DateTime(2021, 5, 2),
     impression: WorkoutImpression.bad,
     notes: 'This is a note',
-    timeStart: const TimeOfDay(hour: 6, minute: 12),
-    timeEnd: const TimeOfDay(hour: 8, minute: 1),
+    timeStart: DateTime(2021, 5, 2, 6, 12),
+    timeEnd: DateTime(2021, 5, 2, 8, 1),
     logs: [log3],
   );
 

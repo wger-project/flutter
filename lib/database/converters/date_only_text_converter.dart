@@ -43,21 +43,17 @@ class DateOnlyTextConverter extends TypeConverter<DateTime, String> {
       '${value.day.toString().padLeft(2, '0')}';
 }
 
+/// Stores a moment as UTC ISO8601, the same wire format the server speaks.
+///
+/// Keeping every row in UTC with an identical layout means a plain string
+/// comparison on the column is also a comparison in time, which the session
+/// lookup in the log repository relies on.
 class DateTimeTextConverter extends TypeConverter<DateTime, String> {
   const DateTimeTextConverter();
 
   @override
-  DateTime fromSql(String fromDb) {
-    final day = DateTime.parse(fromDb.substring(0, 19));
-    return DateTime.utc(day.year, day.month, day.day, day.hour, day.minute, day.second);
-  }
+  DateTime fromSql(String fromDb) => DateTime.parse(fromDb).toLocal();
 
   @override
-  String toSql(DateTime value) =>
-      '${value.year.toString().padLeft(4, '0')}-'
-      '${value.month.toString().padLeft(2, '0')}-'
-      '${value.day.toString().padLeft(2, '0')}T'
-      '${value.hour.toString().padLeft(2, '0')}:'
-      '${value.minute.toString().padLeft(2, '0')}:'
-      '${value.second.toString().padLeft(2, '0')}';
+  String toSql(DateTime value) => value.toUtc().toIso8601String();
 }

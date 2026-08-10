@@ -132,6 +132,24 @@
   "@serverOptionSelfHostedTitle": {},
   "serverOptionSelfHostedDetail": "Connect to your own instance",
   "@serverOptionSelfHostedDetail": {},
+  "allowSelfSignedCertsTitle": "Allow self-signed certificates",
+  "@allowSelfSignedCertsTitle": {},
+  "allowSelfSignedCertsDetail": "Disables TLS certificate validation. Only enable this for a server you trust.",
+  "@allowSelfSignedCertsDetail": {},
+  "certsNotVerifiedTitle": "Certificate validation is off",
+  "@certsNotVerifiedTitle": {
+    "description": "Warning shown in the settings while the app accepts invalid TLS certificates from the server the user is logged into."
+  },
+  "certsNotVerifiedDetail": "Certificates for {host} are not checked. To change this, log out and adjust the option on the login screen.",
+  "@certsNotVerifiedDetail": {
+    "description": "Explains the certificate warning. The option can only be set before logging in, hence the hint to log out.",
+    "type": "text",
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
   "authOptionPasswordTitle": "Username and password",
   "@authOptionPasswordTitle": {},
   "signInWithToken": "Sign in with token",
@@ -351,6 +369,7 @@
   },
   "gymModeShowExercises": "Show exercise overview pages",
   "gymModeShowTimer": "Show timer between sets",
+  "gymModeShowWorkoutDuration": "Show workout duration",
   "gymModeTimerType": "Timer type",
   "gymModeTimerTypeHelText": "If a set has pause time, a countdown is always used.",
   "countdown": "Countdown",
@@ -412,8 +431,21 @@
   "@addSet": {
     "description": "Label for the button that adds a set (to a workout day)"
   },
+  
+"gymModeLogScope": "Previous logs",
+"gymModeLogScopeHelp": "Which logs to show as reference while training",
+"gymModeLogScopeCurrentRoutine": "Current routine",
+"gymModeLogScopeWeeks": "Last {weeks} weeks",
+"@gymModeLogScopeWeeks": {
+  "placeholders": {
+    "weeks": { "type": "int" }
+  }
+},
+"gymModeDistinctLogs": "Hide duplicate values",
   "addMeal": "Add meal",
   "@addMeal": {},
+  "meal": "Meal",
+  "@meal": {},
   "mealLogged": "Meal logged to diary",
   "@mealLogged": {},
   "ingredientLogged": "Ingredient logged to diary",
@@ -551,6 +583,24 @@
   "endDate": "End date",
   "@endDate": {
     "description": "The End date of a nutritional plan or routine"
+  },
+  "endBeforeStart": "The end value cannot be before the start",
+  "@endBeforeStart": {
+    "description": "Validation error shown when a plan or routine end date is before its start date"
+  },
+  "minLengthRoutine": "The routine needs to be at least {number} weeks long",
+  "@minLengthRoutine": {
+    "description": "Validation error when a routine is shorter than the minimum allowed duration",
+    "placeholders": {
+      "number": { "type": "int" }
+    }
+  },
+  "maxLengthRoutine": "The routine can be at most {number} weeks long",
+  "@maxLengthRoutine": {
+    "description": "Validation error when a routine is longer than the maximum allowed duration",
+    "placeholders": {
+      "number": { "type": "int" }
+    }
   },
   "openEnded": "Open ended",
   "@openEnded": {
@@ -1054,6 +1104,11 @@
   "settingsDataTitle": "Privacy",
   "settingsKeepDataOnLogout": "Keep data when logging out",
   "settingsKeepDataOnLogoutDescription": "The local database stays on your device until a different account signs in.",
+  "settingsVerboseLogging": "Detailed logging",
+  "@settingsVerboseLogging": {
+    "description": "Title of the setting that makes the app write detailed diagnostic entries to the application log"
+  },
+  "settingsVerboseLoggingDescription": "Useful when reporting persistent problems.",
   "aboutPageTitle": "About us & Support",
   "contributeExerciseWarning": "You can only contribute exercises if your account is older than {days} days and have verified your email",
   "@contributeExerciseWarning": {
@@ -1264,6 +1319,10 @@
   "darkMode": "Always dark mode",
   "lightMode": "Always light mode",
   "systemMode": "System settings",
+  "useDynamicColor": "Use dynamic color",
+  "@useDynamicColor": {
+    "description": "Settings toggle to follow the system wallpaper colors (Material You) on supported platforms"
+  },
   "youAreOffline": "You are offline",
   "appLanguage": "App language",
   "@appLanguage": {
@@ -1366,6 +1425,27 @@
   "syncStatusErrorDetails": "Error details",
   "@syncStatusErrorDetails": {
     "description": "Header of the expandable section in the sync status dialog that reveals the raw error message"
+  },
+  "syncStatusStalledHint": "The connection to the sync service seems to be blocked. A VPN, ad blocker, antivirus or firewall on this network may be interfering.",
+  "@syncStatusStalledHint": {
+    "description": "Hint shown in the sync status dialog when the app keeps connecting but never receives any sync data, which usually means something on the network is blocking the connection"
+  },
+  "syncStatusReconnect": "Reconnect",
+  "@syncStatusReconnect": {
+    "description": "Button in the sync status dialog that drops the stuck connection to the sync service and opens a fresh one"
+  },
+  "syncStatusPendingUploads": "{count, plural, =1{One local change waiting for upload} other{{count} local changes waiting for upload}}",
+  "@syncStatusPendingUploads": {
+    "description": "Line in the sync status dialog showing how many local changes have not reached the server yet",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "syncStatusNeverSynced": "Not yet synchronised",
+  "@syncStatusNeverSynced": {
+    "description": "Shown in the sync status dialog instead of the last-sync timestamp when this device has never completed a synchronisation"
   },
   "filterNutriscore": "Nutri-Score filter",
   "@filterNutriscore": {

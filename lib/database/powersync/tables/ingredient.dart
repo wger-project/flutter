@@ -19,9 +19,10 @@
 import 'package:drift/drift.dart';
 import 'package:powersync/powersync.dart' as ps;
 import 'package:wger/database/converters/utc_datetime_converter.dart';
-import 'package:wger/models/nutrition/ingredient.dart';
-import 'package:wger/models/nutrition/ingredient_image.dart' show IngredientImage;
-import 'package:wger/models/nutrition/ingredient_weight_unit.dart' show IngredientWeightUnit;
+import 'package:wger/features/nutrition/models/ingredient.dart';
+import 'package:wger/features/nutrition/models/ingredient_image.dart' show IngredientImage;
+import 'package:wger/features/nutrition/models/ingredient_weight_unit.dart'
+    show IngredientWeightUnit;
 
 @UseRowClass(Ingredient)
 class IngredientTable extends Table {

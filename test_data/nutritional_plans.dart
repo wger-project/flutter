@@ -19,11 +19,11 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:wger/models/nutrition/ingredient.dart';
-import 'package:wger/models/nutrition/log.dart';
-import 'package:wger/models/nutrition/meal.dart';
-import 'package:wger/models/nutrition/meal_item.dart';
-import 'package:wger/models/nutrition/nutritional_plan.dart';
+import 'package:wger/features/nutrition/models/ingredient.dart';
+import 'package:wger/features/nutrition/models/log.dart';
+import 'package:wger/features/nutrition/models/meal.dart';
+import 'package:wger/features/nutrition/models/meal_item.dart';
+import 'package:wger/features/nutrition/models/nutritional_plan.dart';
 
 final ingredient1 = Ingredient(
   remoteId: '1',

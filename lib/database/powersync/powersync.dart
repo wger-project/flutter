@@ -27,12 +27,13 @@ import 'package:path_provider/path_provider.dart';
 import 'package:powersync/powersync.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:stream_transform/stream_transform.dart';
+import 'package:wger/core/network/auth_http_client.dart';
+import 'package:wger/core/network/network_provider.dart';
+import 'package:wger/core/network/wger_base.dart';
 import 'package:wger/powersync/api_client.dart';
 import 'package:wger/powersync/connector.dart';
 import 'package:wger/powersync/schema.dart';
-import 'package:wger/providers/auth_http_client.dart';
-import 'package:wger/providers/network_provider.dart';
-import 'package:wger/providers/wger_base.dart';
+import 'package:wger/powersync/sync_watchdog.dart';
 
 part 'powersync.g.dart';
 
@@ -50,6 +51,16 @@ PowerSyncDatabase? _builtInstance;
 /// those paths need.
 PowerSyncDatabase? get builtPowerSyncInstance => _builtInstance;
 
+/// Watches the sync status for a stream that keeps reconnecting without ever
+/// delivering data (e.g. blocked by a VPN or firewall) and flags it, see
+/// [SyncStreamWatchdog]. Fed from the DB's status stream by
+/// [powerSyncInstanceProvider].
+final syncWatchdogProvider = Provider<SyncStreamWatchdog>((ref) {
+  final watchdog = SyncStreamWatchdog();
+  ref.onDispose(watchdog.dispose);
+  return watchdog;
+});
+
 @Riverpod(keepAlive: true)
 Future<PowerSyncDatabase> powerSyncInstance(Ref ref) async {
   final db = PowerSyncDatabase(
@@ -62,6 +73,32 @@ Future<PowerSyncDatabase> powerSyncInstance(Ref ref) async {
   _builtInstance = db;
 
   final client = ref.read(authenticatedHttpClientProvider);
+  final watchdog = ref.read(syncWatchdogProvider);
+
+  // Whether any data ever arrived is the first question in every sync support
+  // case, so the first checkpoint of this app run gets a log line. Later ones
+  // would only repeat it. The progress is remembered from the events before
+  // the checkpoint, it is already cleared again once the download finishes.
+  var loggedFirstCheckpoint = false;
+  SyncDownloadProgress? lastProgress;
+  final statusSubscription = db.statusStream.listen((status) {
+    watchdog.onStatus(status);
+    lastProgress = status.downloadProgress ?? lastProgress;
+
+    if (!loggedFirstCheckpoint && status.lastSyncedAt != null) {
+      loggedFirstCheckpoint = true;
+      final operations = lastProgress == null
+          ? ''
+          : ', ${lastProgress!.downloadedOperations} of '
+                '${lastProgress!.totalOperations} operations downloaded';
+      // On a warm start this is the checkpoint of an earlier run, replayed
+      // from the local database, hence the timestamp.
+      _logger.info(
+        'Sync checkpoint received, last synced at '
+        '${status.lastSyncedAt!.toUtc().toIso8601String()}$operations',
+      );
+    }
+  });
 
   // Connect to the sync service only while the device is online. PowerSync's
   // own retry loop would otherwise log a credential error on every iteration
@@ -70,10 +107,16 @@ Future<PowerSyncDatabase> powerSyncInstance(Ref ref) async {
     if (isOnline) {
       final serverUrl = ref.read(wgerBaseProvider).serverUrl;
       if (serverUrl != null) {
+        _logger.info('Device online, connecting to the sync service');
         connectPowerSync(db, serverUrl, client);
+      } else {
+        _logger.info('Device online, but no server configured: not connecting');
       }
     } else {
+      _logger.info('Device offline, disconnecting from the sync service');
       db.disconnect();
+      // Deliberate disconnect: an offline device is not a blocked stream.
+      watchdog.reset();
     }
   }
 
@@ -82,6 +125,8 @@ Future<PowerSyncDatabase> powerSyncInstance(Ref ref) async {
 
   ref.onDispose(() {
     _builtInstance = null;
+    statusSubscription.cancel();
+    watchdog.reset();
     db.close();
   });
 
@@ -95,17 +140,52 @@ Future<PowerSyncDatabase> powerSyncInstance(Ref ref) async {
 ///
 /// Skips all work when the raw tables already exist, so warm restarts don't
 /// take a write lock on the DB.
+/// `CREATE TABLE` statement per raw table, keyed by table name.
+///
+/// Not STRICT: keep SQLite's type affinity behaviour so PowerSync's inferred
+/// inserts can bind values as they arrive from the JSON wire protocol without
+/// us having to coerce types up front.
+///
+/// `id` is INTEGER, not the PowerSync-conventional TEXT, so it matches the
+/// Drift `IntColumn id` and the integer `exercise_id` FK: the catalogue join
+/// is then native INTEGER == INTEGER instead of relying on TEXT-vs-INTEGER
+/// affinity coercion. PowerSync's string oplog id coerces to INTEGER on insert
+/// (safe: Django exercise PKs are always numeric).
+@visibleForTesting
+const rawTableStatements = <String, String>{
+  'exercises_exercise': '''
+      CREATE TABLE IF NOT EXISTS exercises_exercise(
+        id INTEGER NOT NULL PRIMARY KEY,
+        uuid TEXT,
+        category_id INTEGER,
+        variation_group TEXT,
+        created TEXT,
+        last_update TEXT
+      )
+    ''',
+  'exercises_translation': '''
+      CREATE TABLE IF NOT EXISTS exercises_translation(
+        id INTEGER NOT NULL PRIMARY KEY,
+        uuid TEXT,
+        language_id INTEGER,
+        exercise_id INTEGER,
+        description TEXT,
+        name TEXT,
+        created TEXT,
+        last_update TEXT
+      )
+    ''',
+};
+
+const _rawTableIndexStatements = [
+  'CREATE INDEX IF NOT EXISTS exercises_exercise__category ON exercises_exercise(category_id)',
+  'CREATE INDEX IF NOT EXISTS exercises_exercise__variation ON exercises_exercise(variation_group)',
+  'CREATE INDEX IF NOT EXISTS exercises_translation__language ON exercises_translation(language_id)',
+  'CREATE INDEX IF NOT EXISTS exercises_translation__exercise ON exercises_translation(exercise_id)',
+];
+
 Future<void> _createRawTables(PowerSyncDatabase db) async {
-  // Not STRICT: keep SQLite's type affinity behaviour so PowerSync's
-  // inferred inserts can bind values as they arrive from the JSON wire
-  // protocol without us having to coerce types up front.
-  //
-  // `id` is INTEGER, not the PowerSync-conventional TEXT, so it matches the
-  // Drift `IntColumn id` and the integer `exercise_id` FK: the catalogue join
-  // is then native INTEGER == INTEGER instead of relying on TEXT-vs-INTEGER
-  // affinity coercion. PowerSync's string oplog id coerces to INTEGER on insert
-  // (safe: Django exercise PKs are always numeric).
-  const rawTables = ['exercises_exercise', 'exercises_translation'];
+  final rawTables = rawTableStatements.keys.toList();
   final existing = await db.getAll(
     'SELECT name FROM sqlite_master '
     'WHERE type = ? AND name IN (${rawTables.map((_) => '?').join(', ')})',
@@ -117,45 +197,9 @@ Future<void> _createRawTables(PowerSyncDatabase db) async {
   }
 
   await db.writeTransaction((tx) async {
-    await tx.execute('''
-      CREATE TABLE IF NOT EXISTS exercises_exercise(
-        id INTEGER NOT NULL PRIMARY KEY,
-        uuid TEXT,
-        category_id INTEGER,
-        variation_group TEXT,
-        created TEXT,
-        last_update TEXT
-      )
-    ''');
-    await tx.execute(
-      'CREATE INDEX IF NOT EXISTS exercises_exercise__category '
-      'ON exercises_exercise(category_id)',
-    );
-    await tx.execute(
-      'CREATE INDEX IF NOT EXISTS exercises_exercise__variation '
-      'ON exercises_exercise(variation_group)',
-    );
-
-    await tx.execute('''
-      CREATE TABLE IF NOT EXISTS exercises_translation(
-        id INTEGER NOT NULL PRIMARY KEY,
-        uuid TEXT,
-        language_id INTEGER,
-        exercise_id INTEGER,
-        description TEXT,
-        name TEXT,
-        created TEXT,
-        last_update TEXT
-      )
-    ''');
-    await tx.execute(
-      'CREATE INDEX IF NOT EXISTS exercises_translation__language '
-      'ON exercises_translation(language_id)',
-    );
-    await tx.execute(
-      'CREATE INDEX IF NOT EXISTS exercises_translation__exercise '
-      'ON exercises_translation(exercise_id)',
-    );
+    for (final statement in [...rawTableStatements.values, ..._rawTableIndexStatements]) {
+      await tx.execute(statement);
+    }
   });
 }
 
@@ -170,9 +214,19 @@ void connectPowerSync(PowerSyncDatabase db, String baseUrl, http.Client client) 
     connector: DjangoConnector(
       baseUrl: baseUrl,
       apiClient: ApiClient(baseUrl, client: client),
+      client: client,
     ),
   );
 }
+
+/// Number of local changes still waiting in the upload queue. Emits again
+/// whenever the queue changes, so consumers can show a live count.
+final pendingUploadCountProvider = StreamProvider.autoDispose<int>((ref) async* {
+  final db = await ref.watch(powerSyncInstanceProvider.future);
+  yield* db
+      .watch('SELECT count(*) AS count FROM ps_crud', triggerOnTables: ['ps_crud'])
+      .map((rows) => rows.first['count'] as int);
+});
 
 final _syncStatusInternal = StreamProvider<SyncStatus?>((ref) {
   return Stream.fromFuture(
@@ -182,7 +236,7 @@ final _syncStatusInternal = StreamProvider<SyncStatus?>((ref) {
 
 final syncStatus = Provider((ref) {
   // ignore: invalid_use_of_internal_member
-  return ref.watch(_syncStatusInternal).value ?? const SyncStatus();
+  return ref.watch(_syncStatusInternal).value ?? const SyncStatus.uninitialized();
 });
 
 Future<String> _getDatabasePath() async {

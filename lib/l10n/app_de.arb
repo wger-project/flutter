@@ -100,6 +100,7 @@
         "description": "Label when starting the gym mode"
     },
     "addMeal": "Mahlzeit hinzufügen",
+    "meal": "Mahlzeit",
     "add": "Hinzufügen",
     "cancel": "Abbrechen",
     "save": "Speichern",
@@ -1148,5 +1149,24 @@
     "syncStatusDialogTitle": "Synchronisierungsstatus",
     "syncStatusLastSynced": "Letzte Synchronisierung",
     "syncStatusErrorDetails": "Fehlerdetails",
-    "sessionExpired": "Deine Sitzung ist abgelaufen, bitte melde dich erneut an"
+    "syncStatusStalledHint": "Die Verbindung zum Synchronisierungsdienst scheint blockiert zu werden. Möglicherweise stört ein VPN, Werbeblocker, Virenscanner oder eine Firewall in diesem Netzwerk.",
+    "syncStatusReconnect": "Neu verbinden",
+    "syncStatusPendingUploads": "{count, plural, =1{Eine lokale Änderung wartet auf den Upload} other{{count} lokale Änderungen warten auf den Upload}}",
+    "syncStatusNeverSynced": "Noch nie synchronisiert",
+    "sessionExpired": "Deine Sitzung ist abgelaufen, bitte melde dich erneut an",
+    "endBeforeStart": "Der Endwert darf nicht vor dem Startwert liegen",
+    "minLengthRoutine": "Die Routine muss mindestens {number} Wochen lang sein",
+    "maxLengthRoutine": "Die Routine darf maximal {number} Wochen lang sein",
+    "gymModeLogScope": "Frühere Protokolle",
+    "gymModeLogScopeHelp": "Welche Protokolle beim Training als Referenz angezeigt werden",
+    "gymModeLogScopeCurrentRoutine": "Aktuelle Routine",
+    "gymModeLogScopeWeeks": "Letzte {weeks} Wochen",
+    "gymModeDistinctLogs": "Doppelte Werte ausblenden",
+    "gymModeShowWorkoutDuration": "Trainingsdauer anzeigen",
+    "allowSelfSignedCertsTitle": "Selbstsignierte Zertifikate erlauben",
+    "allowSelfSignedCertsDetail": "Deaktiviert die Validierung des TLS-Zertifikats. Aktiviere das nur für einen Server, dem du vertraust.",
+    "certsNotVerifiedTitle": "Zertifikatsvalidierung ist deaktiviert",
+    "certsNotVerifiedDetail": "Zertifikate für {host} werden nicht geprüft. Zum Ändern melde dich ab und passe die Option im Anmeldebildschirm an.",
+    "settingsVerboseLogging": "Ausführliches Protokoll",
+    "settingsVerboseLoggingDescription": "Hilfreich, wenn du anhaltende Probleme meldest."
 }

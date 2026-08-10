@@ -918,5 +918,8 @@
         "description": "The start date of a nutritional plan or routine"
     },
     "dayTypeCustom": "自定义",
-    "dayTypeHiit": "高强度间歇训练"
+    "dayTypeHiit": "高强度间歇训练",
+    "endBeforeStart": "结束数值必须大于开始数值",
+    "minLengthRoutine": "此计划至少需要持续 {number} 周",
+    "maxLengthRoutine": "此计划最多持续 {number} 周"
 }

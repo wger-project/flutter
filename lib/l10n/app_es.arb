@@ -152,6 +152,7 @@
     "logMeal": "Registrar esta comida",
     "mealLogged": "Comida registrada en el diario",
     "addMeal": "Agregar comida",
+    "meal": "Comida",
     "addSet": "Agregar serie",
     "@addSet": {
         "description": "Label for the button that adds a set (to a workout day)"
@@ -1185,7 +1186,26 @@
     "syncStatusDialogTitle": "Estado de sincronización",
     "syncStatusLastSynced": "Última sincronización",
     "syncStatusErrorDetails": "Detalles del error",
+    "syncStatusStalledHint": "La conexión con el servicio de sincronización parece estar bloqueada. Es posible que una VPN, un bloqueador de anuncios, un antivirus o un cortafuegos de esta red estén interfiriendo.",
+    "syncStatusReconnect": "Reconectar",
+    "syncStatusPendingUploads": "{count, plural, =1{Un cambio local pendiente de subir} other{{count} cambios locales pendientes de subir}}",
+    "syncStatusNeverSynced": "Aún no sincronizado",
     "sessionExpired": "Tu sesión ha expirado, inicia sesión de nuevo",
     "weightOrRepsRequired": "Introduce un peso, repeticiones o ambos",
-    "timeStartEndBothOrNeither": "Indica la hora de inicio y de fin, o deja ambas vacías"
+    "timeStartEndBothOrNeither": "Indica la hora de inicio y de fin, o deja ambas vacías",
+    "endBeforeStart": "El final no puede ser anterior al inicio",
+    "minLengthRoutine": "La rutina debe ser de al menos {number} semanas",
+    "maxLengthRoutine": "La rutina debe tener como mucho {number} semanas",
+    "gymModeLogScope": "Registros anteriores",
+    "gymModeLogScopeHelp": "Qué registros mostrar como referencia durante el entrenamiento",
+    "gymModeLogScopeCurrentRoutine": "Rutina actual",
+    "gymModeLogScopeWeeks": "Últimas {weeks} semanas",
+    "gymModeDistinctLogs": "Ocultar valores duplicados",
+    "gymModeShowWorkoutDuration": "Mostrar la duración del entrenamiento",
+    "allowSelfSignedCertsTitle": "Permitir certificados autofirmados",
+    "allowSelfSignedCertsDetail": "Desactiva la validación del certificado TLS. Actívalo solo para un servidor de confianza.",
+    "certsNotVerifiedTitle": "La validación de certificados está desactivada",
+    "certsNotVerifiedDetail": "Los certificados de {host} no se comprueban. Para cambiarlo, cierra la sesión y ajusta la opción en la pantalla de inicio de sesión.",
+    "settingsVerboseLogging": "Registro detallado",
+    "settingsVerboseLoggingDescription": "Útil cuando informas de problemas persistentes."
 }

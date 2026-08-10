@@ -23,11 +23,12 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:logging/logging.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:wger/core/errors.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/core/keys.dart';
-import 'package:wger/helpers/errors.dart';
-import 'package:wger/helpers/logs.dart';
+import 'package:wger/core/logs.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/powersync/sync_diagnostics.dart' show collectSyncDiagnostics;
 
 /// Whether an error dialog is currently on screen.
 ///
@@ -178,7 +179,10 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
                     child: SingleChildScrollView(
                       child: Text(
                         fullStackTrace,
-                        style: TextStyle(fontSize: 12.0, color: Colors.grey[700]),
+                        style: TextStyle(
+                          fontSize: 12.0,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
                       ),
                     ),
                   ),
@@ -200,7 +204,10 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
                           ...applicationLogs.map(
                             (entry) => Text(
                               entry,
-                              style: TextStyle(fontSize: 12.0, color: Colors.grey[700]),
+                              style: TextStyle(
+                                fontSize: 12.0,
+                                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                              ),
                             ),
                           ),
                         ],
@@ -222,6 +229,7 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
                 issueErrorMessage: issueErrorMessage,
                 stackTrace: fullStackTrace,
                 applicationLogs: applicationLogs,
+                syncDiagnostics: await collectSyncDiagnostics(),
               );
               final Uri reportUri = Uri.parse(githubIssueUrl);
 
@@ -339,11 +347,43 @@ class CopyToClipboardButton extends StatelessWidget {
   final logger = Logger('CopyToClipboardButton');
   final String text;
 
-  CopyToClipboardButton({required this.text, super.key});
+  /// Renders as an icon button instead of a labelled one, for places where
+  /// the button sits in a toolbar or is repeated in a list.
+  final bool iconOnly;
+
+  CopyToClipboardButton({required this.text, this.iconOnly = false, super.key});
+
+  void _copy(BuildContext context) {
+    Clipboard.setData(ClipboardData(text: text))
+        .then((_) {
+          if (context.mounted) {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(const SnackBar(content: Text('Details copied to clipboard!')));
+          }
+        })
+        .catchError((copyError) {
+          logger.warning('Error copying to clipboard: $copyError');
+
+          if (context.mounted) {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(const SnackBar(content: Text('Could not copy details.')));
+          }
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
+
+    if (iconOnly) {
+      return IconButton(
+        icon: const Icon(Icons.copy_all_outlined),
+        tooltip: i18n.copyToClipboard,
+        onPressed: () => _copy(context),
+      );
+    }
 
     return TextButton.icon(
       icon: const Icon(Icons.copy_all_outlined, size: 18),
@@ -352,25 +392,7 @@ class CopyToClipboardButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
-      onPressed: () {
-        Clipboard.setData(ClipboardData(text: text))
-            .then((_) {
-              if (context.mounted) {
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(const SnackBar(content: Text('Details copied to clipboard!')));
-              }
-            })
-            .catchError((copyError) {
-              logger.warning('Error copying to clipboard: $copyError');
-
-              if (context.mounted) {
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(const SnackBar(content: Text('Could not copy details.')));
-              }
-            });
-      },
+      onPressed: () => _copy(context),
     );
   }
 }

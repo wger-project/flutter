@@ -19,7 +19,7 @@
 import 'package:drift/drift.dart';
 import 'package:powersync/powersync.dart' as ps;
 import 'package:wger/database/converters/date_only_text_converter.dart';
-import 'package:wger/models/gallery/image.dart';
+import 'package:wger/features/gallery/models/image.dart';
 
 @UseRowClass(GalleryImage)
 class GalleryImageTable extends Table {

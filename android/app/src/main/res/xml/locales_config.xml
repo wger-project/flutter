@@ -30,6 +30,7 @@
     <locale android:name="ro"/>
     <locale android:name="ru"/>
     <locale android:name="sk"/>
+    <locale android:name="sl"/>
     <locale android:name="sn"/>
     <locale android:name="ta"/>
     <locale android:name="th"/>

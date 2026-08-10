@@ -1,0 +1,172 @@
+/*
+ * This file is part of wger Workout Manager <https://github.com/wger-project>.
+ * Copyright (c)  2026 wger Team
+ *
+ * wger Workout Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+import 'package:drift/drift.dart' as drift;
+import 'package:flutter/material.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:wger/database/powersync/database.dart';
+import 'package:wger/features/exercises/models/exercise.dart';
+import 'package:wger/features/routines/models/log.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
+
+part 'session.freezed.dart';
+
+/// User's general impression of a workout session.
+///
+/// The wire values mirror Django's `WorkoutSession.IMPRESSION` choices
+/// (`CharField` with `'1'`, `'2'`, `'3'`), so the same string round-trips
+/// through PowerSync without any extra mapping on the connector.
+enum WorkoutImpression {
+  bad('1'),
+  neutral('2'),
+  good('3');
+
+  final String wireValue;
+  const WorkoutImpression(this.wireValue);
+
+  /// Looks up an enum case by its Django wire value.
+  static WorkoutImpression fromWire(String value) =>
+      WorkoutImpression.values.firstWhere((e) => e.wireValue == value);
+}
+
+extension WorkoutImpressionL10n on WorkoutImpression {
+  /// Localized human-readable label (e.g. "Good", "Neutral", "Bad").
+  String localized(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return switch (this) {
+      WorkoutImpression.bad => l10n.impressionBad,
+      WorkoutImpression.neutral => l10n.impressionNeutral,
+      WorkoutImpression.good => l10n.impressionGood,
+    };
+  }
+}
+
+/// How long after its start an ongoing session still picks up new logs
+const sessionMaxDuration = Duration(hours: 5);
+
+@freezed
+class WorkoutSession with _$WorkoutSession {
+  /// Inclusive upper bound for [notes]
+  static const maxNotesChars = 1000;
+
+  /// Client-generated UUID, is `null` only before the first persist
+  @override
+  final String? id;
+  @override
+  final int? routineId;
+  @override
+  final int? dayId;
+  @override
+  final DateTime date;
+  @override
+  final WorkoutImpression impression;
+  @override
+  final String? notes;
+  @override
+  final DateTime? timeStart;
+  @override
+  final DateTime? timeEnd;
+  @override
+  final List<Log> logs;
+
+  WorkoutSession({
+    this.id,
+    this.dayId,
+    required this.routineId,
+    required this.date,
+    this.impression = WorkoutImpression.neutral,
+    this.notes = '',
+    this.timeStart,
+    this.timeEnd,
+    this.logs = const [],
+  });
+
+  WorkoutSessionTableCompanion toCompanion() {
+    return WorkoutSessionTableCompanion(
+      id: id != null ? drift.Value(id!) : const drift.Value.absent(),
+      routineId: drift.Value(routineId),
+      dayId: drift.Value(dayId),
+      // Server-side `date` is a `DateField` (no time, no TZ). We  send here the
+      // calendar day the user picked, packaged as midnight-UTC so it round-trips
+      // through PowerSync's ISO8601 wire format and lands on the right day on
+      // the server.
+      date: drift.Value(DateTime.utc(date.year, date.month, date.day)),
+      notes: drift.Value(notes),
+      impression: drift.Value(impression),
+      // Explicit NULL, not absent: clearing a time has to clear the column too
+      timeStart: drift.Value(timeStart),
+      timeEnd: drift.Value(timeEnd),
+    );
+  }
+
+  /// Calculates the duration between [timeStart] and [timeEnd].
+  /// Returns null if either is missing.
+  Duration? get duration {
+    final start = timeStart;
+    final end = timeEnd;
+    if (start == null || end == null) {
+      return null;
+    }
+
+    return end.difference(start);
+  }
+
+  /// Returns a localized string representation of the duration (e.g., "2h 30m").
+  String durationTxt(BuildContext context) {
+    final duration = this.duration;
+    if (duration == null) {
+      return '-/-';
+    }
+    return AppLocalizations.of(
+      context,
+    ).durationHoursMinutes(duration.inHours, duration.inMinutes.remainder(60));
+  }
+
+  /// Returns a formatted string: "2h 30m (09:00 AM - 11:30 AM)".
+  String durationTxtWithStartEnd(BuildContext context) {
+    final start = timeStart;
+    final end = timeEnd;
+    if (end == null || start == null) {
+      return '-/-';
+    }
+
+    final localizations = MaterialLocalizations.of(context);
+    final startTime = localizations.formatTimeOfDay(TimeOfDay.fromDateTime(start));
+    final endTime = localizations.formatTimeOfDay(TimeOfDay.fromDateTime(end));
+
+    return '${durationTxt(context)} ($startTime - $endTime)';
+  }
+
+  /// Get total volume of the session for metric and imperial units
+  /// (i.e. sets that have "repetitions" as units and weight in kg or lbs).
+  /// Other combinations such as "seconds" are ignored.
+  Map<String, num> get volume {
+    final volumeMetric = logs.fold<double>(0, (sum, log) => sum + log.volume(metric: true));
+    final volumeImperial = logs.fold<double>(0, (sum, log) => sum + log.volume(metric: false));
+
+    return {'metric': volumeMetric, 'imperial': volumeImperial};
+  }
+
+  List<Exercise> get exercises {
+    final Set<Exercise> exerciseSet = {};
+    for (final log in logs) {
+      exerciseSet.add(log.exerciseObj);
+    }
+    return exerciseSet.toList();
+  }
+}

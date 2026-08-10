@@ -17,15 +17,21 @@
  */
 
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:drift/drift.dart' show GeneratedColumnWithTypeConverter;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
+import 'package:http/testing.dart';
+import 'package:logging/logging.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:powersync/powersync.dart';
+import 'package:wger/database/converters/date_only_text_converter.dart';
 import 'package:wger/powersync/api_client.dart';
 import 'package:wger/powersync/connector.dart';
 
+import '../helpers/in_memory_drift.dart';
 import 'connector_test.mocks.dart';
 
 @GenerateMocks([ApiClient])
@@ -161,13 +167,61 @@ void main() {
         expect(out['start'], '2024-11-01');
         expect(out['end'], isNull);
       });
+
+      test('trims every date-only column in the Drift schema', () async {
+        // The registry of date-only fields is maintained by hand, so a new
+        // table backed by a Django `DateField` can be forgotten, and the push
+        // then fails on a value the backend cannot parse. Derive the columns
+        // from the schema instead of listing them here again.
+        final db = await openTestDatabase();
+        addTearDown(db.close);
+
+        final dateOnlyColumns = <(String, String)>[];
+        for (final table in db.allTables) {
+          for (final column in table.$columns) {
+            if (column is GeneratedColumnWithTypeConverter &&
+                column.converter is DateOnlyTextConverter) {
+              dateOnlyColumns.add((table.actualTableName, column.name));
+            }
+          }
+        }
+        expect(dateOnlyColumns, isNotEmpty);
+
+        for (final (table, column) in dateOnlyColumns) {
+          final out = connector.genericTransform(table, {column: '2024-11-01T00:00:00.000Z'}, '1');
+          expect(
+            out[column],
+            '2024-11-01',
+            reason: '$table.$column is not registered as a date-only field',
+          );
+        }
+      });
     });
   });
 
   group('fetchCredentials', () {
+    /// Probe client answering 200 for any liveness probe, so the endpoint
+    /// resolution keeps whatever URL the token response advertised.
+    MockClient anyLivenessOk() => MockClient(
+      (request) async => request.url.path.endsWith('/probes/liveness')
+          ? http.Response('{"ready":true}', 200)
+          : http.Response('not found', 404),
+    );
+
+    /// Probe client answering 200 only for [probeUrl].
+    MockClient liveOnlyAt(String probeUrl) => MockClient(
+      (request) async => request.url.toString() == probeUrl
+          ? http.Response('{"ready":true}', 200)
+          : http.Response('not found', 404),
+    );
+
     test('builds PowerSyncCredentials with userId from sub and expiresAt from exp', () async {
       final mockApi = MockApiClient();
-      final connector = DjangoConnector(baseUrl: 'http://example.invalid', apiClient: mockApi);
+      final connector = DjangoConnector(
+        baseUrl: 'http://example.invalid',
+        apiClient: mockApi,
+        client: anyLivenessOk(),
+      );
       final jwt = makeJwt({'sub': 'user-42', 'exp': 1700000000});
       when(mockApi.getPowersyncToken()).thenAnswer(
         (_) async => {'token': jwt, 'powersync_url': 'https://ps.example.com'},
@@ -184,7 +238,11 @@ void main() {
 
     test('coerces a numeric sub into a String (Django sends ints)', () async {
       final mockApi = MockApiClient();
-      final connector = DjangoConnector(baseUrl: 'http://example.invalid', apiClient: mockApi);
+      final connector = DjangoConnector(
+        baseUrl: 'http://example.invalid',
+        apiClient: mockApi,
+        client: anyLivenessOk(),
+      );
       final jwt = makeJwt({'sub': 42, 'exp': 1700000000});
       when(mockApi.getPowersyncToken()).thenAnswer(
         (_) async => {'token': jwt, 'powersync_url': 'https://ps.example.com'},
@@ -197,7 +255,11 @@ void main() {
 
     test('still produces credentials when JWT is opaque (userId/expiresAt null)', () async {
       final mockApi = MockApiClient();
-      final connector = DjangoConnector(baseUrl: 'http://example.invalid', apiClient: mockApi);
+      final connector = DjangoConnector(
+        baseUrl: 'http://example.invalid',
+        apiClient: mockApi,
+        client: anyLivenessOk(),
+      );
       when(mockApi.getPowersyncToken()).thenAnswer(
         (_) async => {'token': 'not.a.jwt', 'powersync_url': 'https://ps.example.com'},
       );
@@ -210,6 +272,92 @@ void main() {
       expect(creds.expiresAt, isNull);
     });
 
+    test('falls back to <baseUrl>/ps/ when powersync_url does not answer the probe', () async {
+      final mockApi = MockApiClient();
+      final connector = DjangoConnector(
+        baseUrl: 'http://example.invalid',
+        apiClient: mockApi,
+        client: liveOnlyAt('http://example.invalid/ps/probes/liveness'),
+      );
+      final jwt = makeJwt({'sub': 'user-42', 'exp': 1700000000});
+      when(mockApi.getPowersyncToken()).thenAnswer(
+        (_) async => {'token': jwt, 'powersync_url': 'http://localhost/ps/'},
+      );
+
+      final creds = await connector.fetchCredentials();
+
+      expect(creds!.endpoint, 'http://example.invalid/ps/');
+    });
+
+    test('falls back to <baseUrl>/ps/ when powersync_url is missing', () async {
+      final mockApi = MockApiClient();
+      final connector = DjangoConnector(
+        baseUrl: 'http://example.invalid',
+        apiClient: mockApi,
+        client: liveOnlyAt('http://example.invalid/ps/probes/liveness'),
+      );
+      final jwt = makeJwt({'sub': 'user-42', 'exp': 1700000000});
+      when(mockApi.getPowersyncToken()).thenAnswer(
+        (_) async => {'token': jwt},
+      );
+
+      final creds = await connector.fetchCredentials();
+
+      expect(creds!.endpoint, 'http://example.invalid/ps/');
+    });
+
+    test('probes once per powersync_url value, again when it changes', () async {
+      final probes = <String>[];
+      final mockApi = MockApiClient();
+      final connector = DjangoConnector(
+        baseUrl: 'http://example.invalid',
+        apiClient: mockApi,
+        client: MockClient((request) async {
+          probes.add(request.url.toString());
+          return http.Response('{"ready":true}', 200);
+        }),
+      );
+      final jwt = makeJwt({'sub': 'u', 'exp': 1700000000});
+      when(mockApi.getPowersyncToken()).thenAnswer(
+        (_) async => {'token': jwt, 'powersync_url': 'https://ps.example.com'},
+      );
+
+      await connector.fetchCredentials();
+      await connector.fetchCredentials();
+      expect(probes, ['https://ps.example.com/probes/liveness']);
+
+      when(mockApi.getPowersyncToken()).thenAnswer(
+        (_) async => {'token': jwt, 'powersync_url': 'https://other.example.com'},
+      );
+      final creds = await connector.fetchCredentials();
+
+      expect(probes, hasLength(2));
+      expect(creds!.endpoint, 'https://other.example.com');
+    });
+
+    test('does not cache a failed resolution', () async {
+      final probes = <String>[];
+      final mockApi = MockApiClient();
+      final connector = DjangoConnector(
+        baseUrl: 'http://example.invalid',
+        apiClient: mockApi,
+        client: MockClient((request) async {
+          probes.add(request.url.toString());
+          return http.Response('not found', 404);
+        }),
+      );
+      final jwt = makeJwt({'sub': 'u', 'exp': 1700000000});
+      when(mockApi.getPowersyncToken()).thenAnswer(
+        (_) async => {'token': jwt, 'powersync_url': 'https://ps.example.com'},
+      );
+
+      expect(await connector.fetchCredentials(), isNull);
+      expect(await connector.fetchCredentials(), isNull);
+
+      // Both candidates probed on both attempts: no negative caching.
+      expect(probes, hasLength(4));
+    });
+
     test('returns null when the backend is unreachable', () async {
       final mockApi = MockApiClient();
       final connector = DjangoConnector(baseUrl: 'http://example.invalid', apiClient: mockApi);
@@ -218,6 +366,121 @@ void main() {
       ).thenThrow(http.ClientException('Connection refused'));
 
       expect(await connector.fetchCredentials(), isNull);
+    });
+
+    test('anchors expiresAt to the local clock via the token lifetime', () async {
+      final mockApi = MockApiClient();
+      final connector = DjangoConnector(
+        baseUrl: 'http://example.invalid',
+        apiClient: mockApi,
+        client: anyLivenessOk(),
+      );
+      // iat/exp lie far in the past; only their 600 s difference may matter.
+      final jwt = makeJwt({'sub': 'u', 'iat': 1700000000, 'exp': 1700000600});
+      when(mockApi.getPowersyncToken()).thenAnswer(
+        (_) async => {'token': jwt, 'powersync_url': 'https://ps.example.com'},
+      );
+
+      final creds = await connector.fetchCredentials();
+
+      final expected = DateTime.now().toUtc().add(const Duration(seconds: 600));
+      expect(creds!.expiresAt!.difference(expected).abs(), lessThan(const Duration(seconds: 5)));
+    });
+
+    group('unreachable-backend logging', () {
+      late MockApiClient mockApi;
+      late DjangoConnector connector;
+      late List<LogRecord> records;
+
+      setUp(() {
+        mockApi = MockApiClient();
+        connector = DjangoConnector(
+          baseUrl: 'http://example.invalid',
+          apiClient: mockApi,
+          client: anyLivenessOk(),
+        );
+        records = [];
+        final sub = Logger.root.onRecord.listen(records.add);
+        addTearDown(sub.cancel);
+      });
+
+      Iterable<LogRecord> infoLines(String needle) =>
+          records.where((r) => r.level == Level.INFO && r.message.contains(needle));
+
+      test('logs the outage at INFO once, not per retry', () async {
+        when(
+          mockApi.getPowersyncToken(),
+        ).thenThrow(http.ClientException('Connection refused'));
+
+        await connector.fetchCredentials();
+        await connector.fetchCredentials();
+        await connector.fetchCredentials();
+
+        expect(infoLines('backend unreachable'), hasLength(1));
+      });
+
+      test('logs recovery once the fetch succeeds again', () async {
+        when(
+          mockApi.getPowersyncToken(),
+        ).thenThrow(const SocketException('Network is unreachable'));
+        await connector.fetchCredentials();
+
+        final jwt = makeJwt({'sub': 'u', 'iat': 1700000000, 'exp': 1700000600});
+        when(mockApi.getPowersyncToken()).thenAnswer(
+          (_) async => {'token': jwt, 'powersync_url': 'https://ps.example.com'},
+        );
+        await connector.fetchCredentials();
+
+        expect(infoLines('reachable again'), hasLength(1));
+      });
+
+      test('a new outage after recovery is logged immediately again', () async {
+        when(
+          mockApi.getPowersyncToken(),
+        ).thenThrow(http.ClientException('Connection refused'));
+        await connector.fetchCredentials();
+
+        final jwt = makeJwt({'sub': 'u', 'iat': 1700000000, 'exp': 1700000600});
+        when(mockApi.getPowersyncToken()).thenAnswer(
+          (_) async => {'token': jwt, 'powersync_url': 'https://ps.example.com'},
+        );
+        await connector.fetchCredentials();
+
+        when(
+          mockApi.getPowersyncToken(),
+        ).thenThrow(http.ClientException('Connection refused'));
+        await connector.fetchCredentials();
+
+        expect(infoLines('backend unreachable'), hasLength(2));
+      });
+
+      test('logs the endpoint once, again only when it changes', () async {
+        final jwt = makeJwt({'sub': 'u', 'iat': 1700000000, 'exp': 1700000600});
+        when(mockApi.getPowersyncToken()).thenAnswer(
+          (_) async => {'token': jwt, 'powersync_url': 'https://ps.example.com'},
+        );
+        await connector.fetchCredentials();
+        await connector.fetchCredentials();
+
+        when(mockApi.getPowersyncToken()).thenAnswer(
+          (_) async => {'token': jwt, 'powersync_url': 'https://other.example.com'},
+        );
+        await connector.fetchCredentials();
+
+        expect(infoLines('endpoint https://ps.example.com'), hasLength(1));
+        expect(infoLines('endpoint https://other.example.com'), hasLength(1));
+      });
+
+      test('does not log recovery when there was no outage', () async {
+        final jwt = makeJwt({'sub': 'u', 'iat': 1700000000, 'exp': 1700000600});
+        when(mockApi.getPowersyncToken()).thenAnswer(
+          (_) async => {'token': jwt, 'powersync_url': 'https://ps.example.com'},
+        );
+
+        await connector.fetchCredentials();
+
+        expect(infoLines('reachable again'), isEmpty);
+      });
     });
   });
 
@@ -235,13 +498,15 @@ void main() {
       completed = false;
     });
 
-    CrudTransaction txWith(CrudEntry entry) => CrudTransaction(
+    CrudTransaction txWithAll(List<CrudEntry> entries) => CrudTransaction(
       transactionId: 1,
-      crud: [entry],
+      crud: entries,
       complete: ({String? writeCheckpoint}) async {
         completed = true;
       },
     );
+
+    CrudTransaction txWith(CrudEntry entry) => txWithAll([entry]);
 
     test('uploads a put through the transform and completes on success', () async {
       when(api.upsert(any)).thenAnswer((_) async => http.Response('{}', 200));
@@ -286,6 +551,46 @@ void main() {
       );
 
       expect(completed, isTrue);
+    });
+
+    test('a rejected op does not stop the ops behind it', () async {
+      // One bad op must not block the queue: the rest of the transaction is
+      // still sent and the transaction completes.
+      when(api.upsert(any)).thenAnswer(
+        (_) async => http.Response(json.encode({'error': 'invalid'}), 200),
+      );
+      when(api.update(any)).thenAnswer((_) async => http.Response('{}', 200));
+
+      await conn.processTransaction(
+        txWithAll([
+          CrudEntry(1, UpdateType.put, 'manager_routine', 'r1', 1, {'name': 'x'}),
+          CrudEntry(2, UpdateType.patch, 'manager_routine', 'r2', 1, {'name': 'y'}),
+        ]),
+      );
+
+      verify(api.update(any)).called(1);
+      expect(completed, isTrue);
+    });
+
+    test('a retryable op leaves the whole transaction queued for a replay', () async {
+      // The op ahead of it was already sent, so the replay re-sends it: this is
+      // the at-least-once delivery the backend handlers have to be idempotent
+      // for.
+      when(api.upsert(any)).thenAnswer((_) async => http.Response('{}', 200));
+      when(api.update(any)).thenAnswer((_) async => http.Response('', 503));
+
+      await expectLater(
+        conn.processTransaction(
+          txWithAll([
+            CrudEntry(1, UpdateType.put, 'manager_routine', 'r1', 1, {'name': 'x'}),
+            CrudEntry(2, UpdateType.patch, 'manager_routine', 'r2', 1, {'name': 'y'}),
+          ]),
+        ),
+        throwsA(isA<RetryableUploadException>()),
+      );
+
+      verify(api.upsert(any)).called(1);
+      expect(completed, isFalse);
     });
 
     test('rethrows and leaves the transaction queued when the backend is unreachable', () async {

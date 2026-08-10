@@ -5685,9 +5685,9 @@ class $WorkoutLogTableTable extends WorkoutLogTable with TableInfo<$WorkoutLogTa
   late final GeneratedColumn<int> routineId = GeneratedColumn<int>(
     'routine_id',
     aliasedName,
-    false,
+    true,
     type: DriftSqlType.int,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
   );
   static const VerificationMeta _sessionIdMeta = const VerificationMeta(
     'sessionId',
@@ -5860,8 +5860,6 @@ class $WorkoutLogTableTable extends WorkoutLogTable with TableInfo<$WorkoutLogTa
         _routineIdMeta,
         routineId.isAcceptableOrUnknown(data['routine_id']!, _routineIdMeta),
       );
-    } else if (isInserting) {
-      context.missing(_routineIdMeta);
     }
     if (data.containsKey('session_id')) {
       context.handle(
@@ -5975,7 +5973,7 @@ class $WorkoutLogTableTable extends WorkoutLogTable with TableInfo<$WorkoutLogTa
       routineId: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}routine_id'],
-      )!,
+      ),
       sessionId: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}session_id'],
@@ -6032,7 +6030,7 @@ class $WorkoutLogTableTable extends WorkoutLogTable with TableInfo<$WorkoutLogTa
 class WorkoutLogTableCompanion extends UpdateCompanion<Log> {
   final Value<String> id;
   final Value<int> exerciseId;
-  final Value<int> routineId;
+  final Value<int?> routineId;
   final Value<String?> sessionId;
   final Value<int?> iteration;
   final Value<int?> slotEntryId;
@@ -6067,7 +6065,7 @@ class WorkoutLogTableCompanion extends UpdateCompanion<Log> {
   WorkoutLogTableCompanion.insert({
     this.id = const Value.absent(),
     required int exerciseId,
-    required int routineId,
+    this.routineId = const Value.absent(),
     this.sessionId = const Value.absent(),
     this.iteration = const Value.absent(),
     this.slotEntryId = const Value.absent(),
@@ -6082,7 +6080,6 @@ class WorkoutLogTableCompanion extends UpdateCompanion<Log> {
     required DateTime date,
     this.rowid = const Value.absent(),
   }) : exerciseId = Value(exerciseId),
-       routineId = Value(routineId),
        date = Value(date);
   static Insertable<Log> custom({
     Expression<String>? id,
@@ -6125,7 +6122,7 @@ class WorkoutLogTableCompanion extends UpdateCompanion<Log> {
   WorkoutLogTableCompanion copyWith({
     Value<String>? id,
     Value<int>? exerciseId,
-    Value<int>? routineId,
+    Value<int?>? routineId,
     Value<String?>? sessionId,
     Value<int?>? iteration,
     Value<int?>? slotEntryId,
@@ -6305,24 +6302,24 @@ class $WorkoutSessionTableTable extends WorkoutSessionTable
         $WorkoutSessionTableTable.$converterimpression,
       );
   @override
-  late final GeneratedColumnWithTypeConverter<TimeOfDay?, String> timeStart =
+  late final GeneratedColumnWithTypeConverter<DateTime?, String> timeStart =
       GeneratedColumn<String>(
         'time_start',
         aliasedName,
         true,
         type: DriftSqlType.string,
         requiredDuringInsert: false,
-      ).withConverter<TimeOfDay?>(
+      ).withConverter<DateTime?>(
         $WorkoutSessionTableTable.$convertertimeStartn,
       );
   @override
-  late final GeneratedColumnWithTypeConverter<TimeOfDay?, String> timeEnd = GeneratedColumn<String>(
+  late final GeneratedColumnWithTypeConverter<DateTime?, String> timeEnd = GeneratedColumn<String>(
     'time_end',
     aliasedName,
     true,
     type: DriftSqlType.string,
     requiredDuringInsert: false,
-  ).withConverter<TimeOfDay?>($WorkoutSessionTableTable.$convertertimeEndn);
+  ).withConverter<DateTime?>($WorkoutSessionTableTable.$convertertimeEndn);
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -6388,6 +6385,12 @@ class $WorkoutSessionTableTable extends WorkoutSessionTable
         DriftSqlType.int,
         data['${effectivePrefix}routine_id'],
       ),
+      date: $WorkoutSessionTableTable.$converterdate.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}date'],
+        )!,
+      ),
       impression: $WorkoutSessionTableTable.$converterimpression.fromSql(
         attachedDatabase.typeMapping.read(
           DriftSqlType.string,
@@ -6410,12 +6413,6 @@ class $WorkoutSessionTableTable extends WorkoutSessionTable
           data['${effectivePrefix}time_end'],
         ),
       ),
-      date: $WorkoutSessionTableTable.$converterdate.fromSql(
-        attachedDatabase.typeMapping.read(
-          DriftSqlType.string,
-          data['${effectivePrefix}date'],
-        )!,
-      ),
     );
   }
 
@@ -6427,12 +6424,12 @@ class $WorkoutSessionTableTable extends WorkoutSessionTable
   static TypeConverter<DateTime, String> $converterdate = const DateOnlyTextConverter();
   static TypeConverter<WorkoutImpression, String> $converterimpression =
       const WorkoutImpressionConverter();
-  static TypeConverter<TimeOfDay, String> $convertertimeStart = const TimeOfDayConverter();
-  static TypeConverter<TimeOfDay?, String?> $convertertimeStartn = NullAwareTypeConverter.wrap(
+  static TypeConverter<DateTime, String> $convertertimeStart = const DateTimeTextConverter();
+  static TypeConverter<DateTime?, String?> $convertertimeStartn = NullAwareTypeConverter.wrap(
     $convertertimeStart,
   );
-  static TypeConverter<TimeOfDay, String> $convertertimeEnd = const TimeOfDayConverter();
-  static TypeConverter<TimeOfDay?, String?> $convertertimeEndn = NullAwareTypeConverter.wrap(
+  static TypeConverter<DateTime, String> $convertertimeEnd = const DateTimeTextConverter();
+  static TypeConverter<DateTime?, String?> $convertertimeEndn = NullAwareTypeConverter.wrap(
     $convertertimeEnd,
   );
 }
@@ -6444,8 +6441,8 @@ class WorkoutSessionTableCompanion extends UpdateCompanion<WorkoutSession> {
   final Value<DateTime> date;
   final Value<String?> notes;
   final Value<WorkoutImpression> impression;
-  final Value<TimeOfDay?> timeStart;
-  final Value<TimeOfDay?> timeEnd;
+  final Value<DateTime?> timeStart;
+  final Value<DateTime?> timeEnd;
   final Value<int> rowid;
   const WorkoutSessionTableCompanion({
     this.id = const Value.absent(),
@@ -6501,8 +6498,8 @@ class WorkoutSessionTableCompanion extends UpdateCompanion<WorkoutSession> {
     Value<DateTime>? date,
     Value<String?>? notes,
     Value<WorkoutImpression>? impression,
-    Value<TimeOfDay?>? timeStart,
-    Value<TimeOfDay?>? timeEnd,
+    Value<DateTime?>? timeStart,
+    Value<DateTime?>? timeEnd,
     Value<int>? rowid,
   }) {
     return WorkoutSessionTableCompanion(
@@ -17256,7 +17253,7 @@ typedef $$WorkoutLogTableTableCreateCompanionBuilder =
     WorkoutLogTableCompanion Function({
       Value<String> id,
       required int exerciseId,
-      required int routineId,
+      Value<int?> routineId,
       Value<String?> sessionId,
       Value<int?> iteration,
       Value<int?> slotEntryId,
@@ -17275,7 +17272,7 @@ typedef $$WorkoutLogTableTableUpdateCompanionBuilder =
     WorkoutLogTableCompanion Function({
       Value<String> id,
       Value<int> exerciseId,
-      Value<int> routineId,
+      Value<int?> routineId,
       Value<String?> sessionId,
       Value<int?> iteration,
       Value<int?> slotEntryId,
@@ -17565,7 +17562,7 @@ class $$WorkoutLogTableTableTableManager
               ({
                 Value<String> id = const Value.absent(),
                 Value<int> exerciseId = const Value.absent(),
-                Value<int> routineId = const Value.absent(),
+                Value<int?> routineId = const Value.absent(),
                 Value<String?> sessionId = const Value.absent(),
                 Value<int?> iteration = const Value.absent(),
                 Value<int?> slotEntryId = const Value.absent(),
@@ -17601,7 +17598,7 @@ class $$WorkoutLogTableTableTableManager
               ({
                 Value<String> id = const Value.absent(),
                 required int exerciseId,
-                required int routineId,
+                Value<int?> routineId = const Value.absent(),
                 Value<String?> sessionId = const Value.absent(),
                 Value<int?> iteration = const Value.absent(),
                 Value<int?> slotEntryId = const Value.absent(),
@@ -17665,8 +17662,8 @@ typedef $$WorkoutSessionTableTableCreateCompanionBuilder =
       required DateTime date,
       Value<String?> notes,
       required WorkoutImpression impression,
-      Value<TimeOfDay?> timeStart,
-      Value<TimeOfDay?> timeEnd,
+      Value<DateTime?> timeStart,
+      Value<DateTime?> timeEnd,
       Value<int> rowid,
     });
 typedef $$WorkoutSessionTableTableUpdateCompanionBuilder =
@@ -17677,8 +17674,8 @@ typedef $$WorkoutSessionTableTableUpdateCompanionBuilder =
       Value<DateTime> date,
       Value<String?> notes,
       Value<WorkoutImpression> impression,
-      Value<TimeOfDay?> timeStart,
-      Value<TimeOfDay?> timeEnd,
+      Value<DateTime?> timeStart,
+      Value<DateTime?> timeEnd,
       Value<int> rowid,
     });
 
@@ -17722,12 +17719,12 @@ class $$WorkoutSessionTableTableFilterComposer
         builder: (column) => ColumnWithTypeConverterFilters(column),
       );
 
-  ColumnWithTypeConverterFilters<TimeOfDay?, TimeOfDay, String> get timeStart => $composableBuilder(
+  ColumnWithTypeConverterFilters<DateTime?, DateTime, String> get timeStart => $composableBuilder(
     column: $table.timeStart,
     builder: (column) => ColumnWithTypeConverterFilters(column),
   );
 
-  ColumnWithTypeConverterFilters<TimeOfDay?, TimeOfDay, String> get timeEnd => $composableBuilder(
+  ColumnWithTypeConverterFilters<DateTime?, DateTime, String> get timeEnd => $composableBuilder(
     column: $table.timeEnd,
     builder: (column) => ColumnWithTypeConverterFilters(column),
   );
@@ -17812,10 +17809,10 @@ class $$WorkoutSessionTableTableAnnotationComposer
     builder: (column) => column,
   );
 
-  GeneratedColumnWithTypeConverter<TimeOfDay?, String> get timeStart =>
+  GeneratedColumnWithTypeConverter<DateTime?, String> get timeStart =>
       $composableBuilder(column: $table.timeStart, builder: (column) => column);
 
-  GeneratedColumnWithTypeConverter<TimeOfDay?, String> get timeEnd =>
+  GeneratedColumnWithTypeConverter<DateTime?, String> get timeEnd =>
       $composableBuilder(column: $table.timeEnd, builder: (column) => column);
 }
 
@@ -17862,8 +17859,8 @@ class $$WorkoutSessionTableTableTableManager
                 Value<DateTime> date = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
                 Value<WorkoutImpression> impression = const Value.absent(),
-                Value<TimeOfDay?> timeStart = const Value.absent(),
-                Value<TimeOfDay?> timeEnd = const Value.absent(),
+                Value<DateTime?> timeStart = const Value.absent(),
+                Value<DateTime?> timeEnd = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => WorkoutSessionTableCompanion(
                 id: id,
@@ -17884,8 +17881,8 @@ class $$WorkoutSessionTableTableTableManager
                 required DateTime date,
                 Value<String?> notes = const Value.absent(),
                 required WorkoutImpression impression,
-                Value<TimeOfDay?> timeStart = const Value.absent(),
-                Value<TimeOfDay?> timeEnd = const Value.absent(),
+                Value<DateTime?> timeStart = const Value.absent(),
+                Value<DateTime?> timeEnd = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => WorkoutSessionTableCompanion.insert(
                 id: id,
