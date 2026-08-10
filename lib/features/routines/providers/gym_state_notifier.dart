@@ -277,7 +277,7 @@ class GymStateNotifier extends _$GymStateNotifier {
 
     final shouldReset =
         (!state.isInitialized || state.isInitialized && dayId != state.dayId) ||
-        validUntil.isBefore(DateTime.now());
+        validUntil.isBefore(clock.now());
     if (shouldReset) {
       _logger.fine('Day ID mismatch or expired validUntil date. Resetting to page 0.');
     }

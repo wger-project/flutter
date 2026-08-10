@@ -27,6 +27,12 @@ import 'package:wger/core/shared_preferences.dart';
 import 'package:wger/features/account/models/user_profile.dart';
 import 'package:wger/features/account/providers/user_profile_notifier.dart';
 import 'package:wger/features/account/providers/user_profile_repository.dart';
+import 'package:wger/features/exercises/models/exercise.dart';
+import 'package:wger/features/routines/models/day.dart';
+import 'package:wger/features/routines/models/day_data.dart';
+import 'package:wger/features/routines/models/routine.dart';
+import 'package:wger/features/routines/models/set_config_data.dart';
+import 'package:wger/features/routines/models/slot_data.dart';
 import 'package:wger/features/routines/providers/gym_state.dart';
 import 'package:wger/features/routines/providers/gym_state_notifier.dart';
 import 'package:wger/features/routines/providers/routines_notifier.dart';
@@ -220,6 +226,115 @@ void main() {
         expect(slotPage.setConfigData!.weightUnit, testWeightUnit2);
         expect(slotPage.setConfigData!.weightUnitId, isNull);
       }
+    });
+  });
+
+  group('GymStateNotifier.calculatePages, supersets', () {
+    // A superset slot holds several exercises that are trained alternating.
+    // calculatePages then has to emit one overview page per exercise instead
+    // of the single one a normal slot gets.
+
+    SetConfigData configFor(int exerciseId, Exercise exercise) => SetConfigData(
+      exerciseId: exerciseId,
+      exercise: exercise,
+      slotEntryId: exerciseId,
+      nrOfSets: 1,
+      repetitions: 8,
+      repetitionsUnit: testRepetitionUnits.first,
+      weight: 40,
+      weightUnit: testWeightUnits.first,
+      restTime: 60,
+      textRepr: '8x40kg',
+    );
+
+    /// A routine whose only slot supersets [exerciseIds].
+    Routine supersetRoutine(List<int> exerciseIds, {List<SetConfigData>? setConfigs}) {
+      final exercises = getTestExercises();
+      final day = Day(id: 1, routineId: 1, name: 'Superset day');
+
+      return getTestRoutine()
+        ..dayDataGym = [
+          DayData(
+            iteration: 1,
+            date: DateTime(2024, 11, 1),
+            day: day,
+            slots: [
+              SlotData(
+                isSuperset: true,
+                exerciseIds: exerciseIds,
+                setConfigs:
+                    setConfigs ?? [for (final id in exerciseIds) configFor(id, exercises[id - 1])],
+              ),
+            ],
+          ),
+        ];
+    }
+
+    test('emits one overview page per exercise of the slot', () {
+      notifier.state = notifier.state.copyWith(
+        showExercisePages: true,
+        showTimerPages: false,
+        dayId: 1,
+        iteration: 1,
+        routine: supersetRoutine([1, 2]),
+      );
+
+      notifier.calculatePages();
+
+      final slotPages = notifier.state.pages[1].slotPages;
+      final overviews = slotPages.where((p) => p.type == SlotPageType.exerciseOverview);
+      expect(overviews, hasLength(2));
+      expect(
+        overviews.map((p) => p.setConfigData!.exerciseId),
+        [1, 2],
+        reason: 'each exercise of the superset gets its own overview page',
+      );
+      expect(slotPages.where((p) => p.type == SlotPageType.log), hasLength(2));
+    });
+
+    test('page indices stay consecutive across the superset', () {
+      notifier.state = notifier.state.copyWith(
+        showExercisePages: true,
+        showTimerPages: false,
+        dayId: 1,
+        iteration: 1,
+        routine: supersetRoutine([1, 2]),
+      );
+
+      notifier.calculatePages();
+
+      final indices = notifier.state.pages[1].slotPages.map((p) => p.pageIndex);
+      expect(indices, [1, 2, 3, 4]);
+    });
+
+    test('an exercise without a set config is skipped instead of crashing', () {
+      // The exercise list and the set configs come from separate parts of the
+      // API response, so they can disagree while a routine is being edited
+      final exercises = getTestExercises();
+      final routine = supersetRoutine(
+        [1, 2],
+        setConfigs: [configFor(1, exercises[0])],
+      );
+      notifier.state = notifier.state.copyWith(
+        showExercisePages: true,
+        showTimerPages: false,
+        dayId: 1,
+        iteration: 1,
+        routine: routine,
+      );
+
+      notifier.calculatePages();
+
+      final slotPages = notifier.state.pages[1].slotPages;
+      expect(
+        slotPages
+            .where((p) => p.type == SlotPageType.exerciseOverview)
+            .single
+            .setConfigData!
+            .exerciseId,
+        1,
+      );
+      expect(slotPages.where((p) => p.type == SlotPageType.log), hasLength(1));
     });
   });
 
@@ -433,6 +548,47 @@ void main() {
 
       // Assert
       expect(notifier.state.workoutStart, DateTime(2024, 5, 1, 10, 0));
+    });
+
+    test('Returns the stored page so a resumed workout reopens where it left off', () {
+      // The return value is what gym_mode jumps the PageView to
+      notifier.state = notifier.state.copyWith(
+        isInitialized: true,
+        dayId: 1,
+        currentPage: 4,
+      );
+
+      expect(notifier.initData(getTestRoutine(), 1, 1), 4);
+      expect(notifier.state.currentPage, 4);
+    });
+
+    test('Starting a different day resets to the first page', () {
+      notifier.state = notifier.state.copyWith(
+        isInitialized: true,
+        dayId: 1,
+        currentPage: 4,
+      );
+
+      expect(notifier.initData(getTestRoutine(), 2, 1), 0);
+      expect(notifier.state.dayId, 2);
+    });
+
+    test('An expired validUntil resets even on the same day', () {
+      // The session is only resumable for a while; after that the same day
+      // starts over instead of dropping the user in the middle of it
+      notifier.state = notifier.state.copyWith(
+        isInitialized: true,
+        dayId: 1,
+        currentPage: 4,
+        validUntil: DateTime(2024, 5, 1, 10, 0),
+      );
+
+      final page = withClock(
+        Clock.fixed(DateTime(2024, 5, 2, 18, 0)),
+        () => notifier.initData(getTestRoutine(), 1, 1),
+      );
+
+      expect(page, 0);
     });
   });
 
