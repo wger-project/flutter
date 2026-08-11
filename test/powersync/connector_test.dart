@@ -103,17 +103,19 @@ void main() {
         expect(out['created'], '2024-10-30T10:15:00.000Z');
       });
 
-      test('strips the time component on `manager_workoutsession.date`', () {
+      test('leaves the session timestamps untouched', () {
+        // The session no longer has a date-only column, both timestamps go to
+        // the server as the full ISO8601 values they are.
         final out = connector.genericTransform(
           'manager_workoutsession',
           {
-            'date': '2024-11-01T00:00:00.000Z',
+            'datetime_start': '2024-11-01T18:30:00.000Z',
             'notes': 'felt great',
             'impression': '1',
           },
           '12',
         );
-        expect(out['date'], '2024-11-01');
+        expect(out['datetime_start'], '2024-11-01T18:30:00.000Z');
         expect(out['notes'], 'felt great');
       });
 

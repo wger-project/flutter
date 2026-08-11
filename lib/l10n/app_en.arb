@@ -1496,5 +1496,14 @@
   "timeStartEndBothOrNeither": "Either set both start and end time or leave both empty",
   "@timeStartEndBothOrNeither": {
     "description": "Validation error when only one of start/end time is set on a workout session"
+  },
+  "sessionTooLong": "A session cannot be longer than {hours} hours",
+  "@sessionTooLong": {
+    "description": "Validation error when a workout session exceeds the maximum length",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
   }
 }
