@@ -120,12 +120,8 @@ class WorkoutSessionTable extends Table {
   TextColumn get id => text().clientDefault(() => ps.uuid.v7())();
   IntColumn get routineId => integer().named('routine_id').nullable()();
   IntColumn get dayId => integer().named('day_id').nullable()();
-  TextColumn get date => text().map(const DateOnlyTextConverter())();
   TextColumn get notes => text().nullable()();
   TextColumn get impression => text().map(const WorkoutImpressionConverter())();
-  TextColumn get timeStart =>
-      text().named('time_start').nullable().map(const TimeOfDayConverter())();
-  TextColumn get timeEnd => text().named('time_end').nullable().map(const TimeOfDayConverter())();
 }
 
 const PowersyncWorkoutSessionTable = ps.Table(
@@ -133,11 +129,8 @@ const PowersyncWorkoutSessionTable = ps.Table(
   [
     ps.Column.integer('routine_id'),
     ps.Column.integer('day_id'),
-    ps.Column.text('date'),
     ps.Column.text('notes'),
     ps.Column.text('impression'),
-    ps.Column.text('time_start'),
-    ps.Column.text('time_end'),
   ],
   indexes: [
     ps.Index('routine_idx', [ps.IndexedColumn('routine_id')]),
