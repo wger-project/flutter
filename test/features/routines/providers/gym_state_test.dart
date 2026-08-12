@@ -23,6 +23,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
+import 'package:wger/core/consts.dart';
 import 'package:wger/core/shared_preferences.dart';
 import 'package:wger/features/account/models/user_profile.dart';
 import 'package:wger/features/account/providers/user_profile_notifier.dart';
@@ -33,6 +34,7 @@ import 'package:wger/features/routines/models/day_data.dart';
 import 'package:wger/features/routines/models/routine.dart';
 import 'package:wger/features/routines/models/set_config_data.dart';
 import 'package:wger/features/routines/models/slot_data.dart';
+import 'package:wger/features/routines/models/slot_entry.dart';
 import 'package:wger/features/routines/providers/gym_state.dart';
 import 'package:wger/features/routines/providers/gym_state_notifier.dart';
 import 'package:wger/features/routines/providers/routines_notifier.dart';
@@ -84,6 +86,71 @@ void main() {
             expect(slot.logDone, false);
           }
         }
+      }
+    });
+
+    test('Stores what was logged, so it outlives the log page widget', () {
+      final slotPage = notifier.state.pages[1].slotPages[1];
+
+      notifier.markSlotPageAsDone(
+        slotPage.uuid,
+        isDone: true,
+        weight: 82.5,
+        reps: 7,
+        rir: 2,
+        weightUnitId: WEIGHT_UNIT_LB,
+        logId: 'log-uuid',
+      );
+
+      final updated = notifier.state.getSlotPageByUUID(slotPage.uuid)!;
+      expect(updated.loggedWeight, 82.5);
+      expect(updated.loggedReps, 7);
+      expect(updated.loggedRir, 2);
+      expect(updated.loggedWeightUnitId, WEIGHT_UNIT_LB);
+      expect(updated.logId, 'log-uuid');
+    });
+
+    test('Un-marking a set clears the logged values again', () {
+      final slotPage = notifier.state.pages[1].slotPages[1];
+      notifier.markSlotPageAsDone(slotPage.uuid, isDone: true, weight: 82.5, reps: 7);
+
+      notifier.markSlotPageAsDone(slotPage.uuid, isDone: false);
+
+      final updated = notifier.state.getSlotPageByUUID(slotPage.uuid)!;
+      expect(updated.logDone, false);
+      expect(updated.loggedWeight, isNull);
+      expect(updated.loggedReps, isNull);
+    });
+
+    test('Re-logging with a blank weight clears the previous one', () {
+      final slotPage = notifier.state.pages[1].slotPages[1];
+      notifier.markSlotPageAsDone(slotPage.uuid, isDone: true, weight: 82.5, reps: 7);
+
+      notifier.markSlotPageAsDone(slotPage.uuid, isDone: true, reps: 7);
+
+      expect(notifier.state.getSlotPageByUUID(slotPage.uuid)!.loggedWeight, isNull);
+    });
+  });
+
+  group('GymStateNotifier.setSlotTypeOverride', () {
+    test('Overrides the set type of a single slot page', () {
+      final slotPage = notifier.state.pages[1].slotPages[1];
+
+      notifier.setSlotTypeOverride(slotPage.uuid, SlotEntryType.warmup);
+
+      expect(notifier.state.getSlotPageByUUID(slotPage.uuid)!.typeOverride, SlotEntryType.warmup);
+      final others = notifier.state.pages
+          .expand((p) => p.slotPages)
+          .where((sp) => sp.uuid != slotPage.uuid);
+      expect(others.every((sp) => sp.typeOverride == null), isTrue);
+    });
+  });
+
+  group('PageEntry.isSuperset', () {
+    test('Is true only when the page holds more than one exercise', () {
+      final setPages = notifier.state.pages.where((p) => p.type == PageType.set).toList();
+      for (final page in setPages) {
+        expect(page.isSuperset, page.exercises.length > 1);
       }
     });
   });

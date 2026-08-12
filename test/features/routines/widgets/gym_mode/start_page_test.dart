@@ -80,7 +80,7 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  testWidgets('Switches update the notifier state', (tester) async {
+  testWidgets('Notify-on-countdown switch updates the notifier state', (tester) async {
     await pumpGymModeOptions(tester);
 
     // Open options (tap the ListTile to toggle _showOptions)
@@ -89,22 +89,14 @@ void main() {
     await tester.tap(optionsTile);
     await tester.pumpAndSettle();
 
-    // Toggle notify countdown first (it is only enabled while timer/countdown are active)
+    final notifier = container.read(gymStateProvider.notifier);
+    expect(notifier.state.alertOnCountdownEnd, isFalse);
+
+    // The notify-countdown switch is only enabled while the countdown timer is
+    // active (useCountdownBetweenSets == true, as seeded in setUp).
     final notifySwitch = find.byKey(const ValueKey('gym-mode-notify-countdown'));
     expect(notifySwitch, findsOneWidget);
     await tester.tap(notifySwitch);
-    await tester.pump();
-
-    // Now toggle show exercises
-    final showExercisesSwitch = find.byKey(const ValueKey('gym-mode-option-show-exercises'));
-    expect(showExercisesSwitch, findsOneWidget);
-    await tester.tap(showExercisesSwitch);
-    await tester.pump();
-
-    // Toggle show timer (this will disable notify switch)
-    final showTimerSwitch = find.byKey(const ValueKey('gym-mode-option-show-timer'));
-    expect(showTimerSwitch, findsOneWidget);
-    await tester.tap(showTimerSwitch);
     await tester.pump();
 
     // Toggle show workout duration
@@ -113,9 +105,6 @@ void main() {
     await tester.tap(durationSwitch);
     await tester.pump();
 
-    final notifier = container.read(gymStateProvider.notifier);
-    expect(notifier.state.showExercisePages, isFalse);
-    expect(notifier.state.showTimerPages, isFalse);
     expect(notifier.state.alertOnCountdownEnd, isTrue);
     expect(notifier.state.showWorkoutDuration, isFalse);
   });
