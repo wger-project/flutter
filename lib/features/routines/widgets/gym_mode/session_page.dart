@@ -47,7 +47,7 @@ class _SessionPageState extends ConsumerState<SessionPage> {
 
     return Column(
       children: [
-        NavigationHeader(i18n.workoutSession, widget._controller),
+        NavigationHeader(i18n.workoutSession),
         Expanded(
           child: AsyncValueWidget<List<WorkoutSession>>(
             value: ref.watch(workoutSessionProvider),
@@ -98,7 +98,6 @@ class _SessionPageState extends ConsumerState<SessionPage> {
             },
           ),
         ),
-        NavigationFooter(widget._controller),
       ],
     );
   }

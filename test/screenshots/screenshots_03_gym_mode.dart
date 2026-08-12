@@ -138,7 +138,7 @@ Widget createGymModeResultsScreen({Locale? locale}) {
         body: PageView(
           controller: controller,
           children: [
-            WorkoutSummary(controller),
+            WorkoutSummary(),
           ],
         ),
       ),
