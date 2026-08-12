@@ -235,13 +235,19 @@ void main() {
       await tester.tap(find.byKey(const ValueKey('save-log-button')));
       await tester.pumpAndSettle();
 
-      final saved = verify(mockWorkoutLogRepo.addLocalDrift(captureAny)).captured.single as Log;
       final gymState = container.read(gymStateProvider);
+      final captured = verify(
+        mockWorkoutLogRepo.addLocalDrift(captureAny, dayId: captureAnyNamed('dayId')),
+      ).captured;
+      final saved = captured[0] as Log;
       expect(saved.repetitions, 12);
       expect(saved.weight, 34);
       expect(saved.slotEntryId, gymState.getSlotEntryPageByIndex()!.setConfigData!.slotEntryId);
       expect(saved.routineId, gymState.routine.id);
       expect(saved.iteration, gymState.iteration);
+      // The lazy session needs the day, otherwise days that need logs to
+      // advance can't see it (issue wger#2460)
+      expect(captured[1], gymState.dayId);
     });
 
     testWidgets('reps quick buttons increment and decrement the value', (tester) async {

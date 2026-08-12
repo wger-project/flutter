@@ -171,9 +171,9 @@ class MockWorkoutLogRepository extends _i1.Mock implements _i9.WorkoutLogReposit
           as _i5.Future<void>);
 
   @override
-  _i5.Future<void> addLocalDrift(_i10.Log? log) =>
+  _i5.Future<void> addLocalDrift(_i10.Log? log, {int? dayId}) =>
       (super.noSuchMethod(
-            Invocation.method(#addLocalDrift, [log]),
+            Invocation.method(#addLocalDrift, [log], {#dayId: dayId}),
             returnValue: _i5.Future<void>.value(),
             returnValueForMissingStub: _i5.Future<void>.value(),
           )

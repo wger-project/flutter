@@ -393,7 +393,7 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
 
               // A failed write is intentionally left to propagate to the global
               // error handler; the success path below is then skipped.
-              await logProvider.addEntry(log);
+              await logProvider.addEntry(log, dayId: gymState.dayId);
               if (!context.mounted) {
                 return;
               }

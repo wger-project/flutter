@@ -128,6 +128,17 @@ void main() {
       expect(log.sessionId, sessions.single.id);
     });
 
+    test('stamps the new session with the day it was logged on', () async {
+      // A session without a day is invisible to days that need logs to
+      // advance, stalling the routine's date sequence (issue wger#2460)
+      final log = makeLog();
+
+      await repo.addLocalDrift(log, dayId: 42);
+
+      final sessions = await readSessions();
+      expect(sessions.single.dayId, 42);
+    });
+
     test('does not reuse a session from a different day', () async {
       await db
           .into(db.workoutSessionTable)

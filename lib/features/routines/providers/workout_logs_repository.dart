@@ -110,12 +110,14 @@ class WorkoutLogRepository {
   /// Persist a new workout log locally.
   ///
   /// If the log was created without a [Log.sessionId], the matching session is
-  /// reused or, if none exists yet, a fresh one is created.
+  /// reused or, if none exists yet, a fresh one is created with [dayId]. Days
+  /// that need logs to advance look sessions up by their day, so a lazy session
+  /// without one stalls the routine's date sequence (issue wger#2460).
   ///
   /// Wrapping both writes in a Drift transaction guarantees atomicity: a
   /// partial failure either commits both rows or neither, so we never end
   /// up with an orphan session locally.
-  Future<void> addLocalDrift(Log log) async {
+  Future<void> addLocalDrift(Log log, {int? dayId}) async {
     _logger.finer('Adding local workout log entry ${log.date}');
 
     await _db.transaction(() async {
@@ -137,6 +139,7 @@ class WorkoutLogRepository {
         } else {
           final newSession = WorkoutSession(
             routineId: log.routineId,
+            dayId: dayId,
             date: dayMidnightUtc,
           );
           final inserted = await _db
