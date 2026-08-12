@@ -94,6 +94,12 @@ class AuthNotifier extends _$AuthNotifier {
   @visibleForTesting
   int userSwitchWipeCount = 0;
 
+  /// Stops the PowerSync sync loop on the keep-data session-reset path.
+  /// Injectable because `PowerSyncDatabase` is a `base` class and cannot be
+  /// faked in tests.
+  @visibleForTesting
+  Future<void> Function() disconnectPowerSync = _disconnectBuiltPowerSync;
+
   @override
   Future<AuthState> build() async {
     _client = ref.read(authHttpClientProvider);
@@ -906,9 +912,10 @@ class AuthNotifier extends _$AuthNotifier {
   /// [logout] instead, which performs a full wipe.
   Future<void> clearSessionOnly() => _resetSession(wipeLocalData: false, sessionExpired: true);
 
-  /// Shared body for [logout] and [clearSessionOnly]. PowerSync is touched
-  /// before the state mutation so a reader observing the post-reset state
-  /// can never race ahead and re-attach to a DB we're about to wipe.
+  /// Shared body for [logout] and [clearSessionOnly]. On the wipe path
+  /// PowerSync is touched before the state mutation so a reader observing the
+  /// post-reset state can never race ahead and re-attach to a DB we're about
+  /// to wipe.
   ///
   /// [sessionExpired] marks the reset as involuntary in the published state,
   /// so the login screen can tell the user why they were logged out.
@@ -927,7 +934,11 @@ class AuthNotifier extends _$AuthNotifier {
         wiped = false;
       }
     } else {
-      await _disconnectPowerSyncIfBuilt();
+      // Deliberately not awaited: this path runs inside the single-flight
+      // refresh future, and the disconnect can block on a sync fetch that is
+      // itself awaiting that future (refresh -> disconnect -> sync fetch ->
+      // refresh deadlock). The DB is kept, so there is no wipe to race with.
+      unawaited(disconnectPowerSync());
     }
 
     state = AsyncData(
@@ -946,21 +957,6 @@ class AuthNotifier extends _$AuthNotifier {
       }
     } else {
       await _storage.clearCredentials();
-    }
-  }
-
-  /// Disconnects an already-built PowerSync DB but keeps its data on
-  /// disk so a subsequent login can re-attach to the same database.
-  /// No-op when PowerSync hasn't been built yet.
-  Future<void> _disconnectPowerSyncIfBuilt() async {
-    final db = builtPowerSyncInstance;
-    if (db == null) {
-      return;
-    }
-    try {
-      await db.disconnect();
-    } catch (e, s) {
-      _logger.warning('PowerSync disconnect failed', e, s);
     }
   }
 
@@ -1037,6 +1033,21 @@ class AuthNotifier extends _$AuthNotifier {
 /// [JwtCredential] (fresh logins go through `allauth.headless`); the refresh
 /// token is the one the caller still needs to write to secure storage.
 typedef _FreshCredentials = ({JwtCredential credential, String? refreshToken});
+
+/// Default for [AuthNotifier.disconnectPowerSync]: disconnects an
+/// already-built PowerSync DB but keeps its data on disk. No-op when
+/// PowerSync hasn't been built yet.
+Future<void> _disconnectBuiltPowerSync() async {
+  final db = builtPowerSyncInstance;
+  if (db == null) {
+    return;
+  }
+  try {
+    await db.disconnect();
+  } catch (e, s) {
+    Logger('AuthNotifier').warning('PowerSync disconnect failed', e, s);
+  }
+}
 
 /// User-agent header string identifying the app/version/platform.
 String getAppNameHeader(PackageInfo? applicationVersion) {
