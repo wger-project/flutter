@@ -21,6 +21,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:health_bridge/health.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:powersync/powersync.dart' as ps;
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/core/network/auth_credentials_storage.dart';
@@ -1464,6 +1465,16 @@ void main() {
       expect(
         dailyAggregateExternalId(_catHrId, DateTime(2026, 1, 1)),
         matches(RegExp(r'^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$')),
+      );
+    });
+
+    test('derives the id from the plain calendar day', () {
+      // Pinned rather than recomputed: the ids of everything already imported
+      // depend on this exact input, so a reformatted day (localized digits,
+      // a time component) would re-import every aggregate as a new entry
+      expect(
+        dailyAggregateExternalId(_catHrId, DateTime(2026, 1, 1)),
+        ps.uuid.v5(_catHrId, '2026-01-01'),
       );
     });
 

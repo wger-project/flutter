@@ -20,7 +20,6 @@ import 'package:collection/collection.dart';
 import 'package:health_bridge/health.dart';
 import 'package:logging/logging.dart';
 import 'package:powersync/powersync.dart' as ps;
-import 'package:wger/core/consts.dart';
 import 'package:wger/core/network/auth_credentials_storage.dart';
 import 'package:wger/core/shared_preferences.dart';
 import 'package:wger/features/health/models/health_metric.dart';
@@ -41,8 +40,16 @@ final _uuidPattern = RegExp(r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[
 /// as a UUIDField and rejects anything else permanently. The category id is
 /// itself a UUID and serves as the v5 namespace, which is exactly the
 /// "day X within category Y" relationship the id expresses.
-String dailyAggregateExternalId(String categoryId, DateTime day) =>
-    ps.uuid.v5(categoryId, DateFormatLists.format(day));
+///
+/// The day is formatted by hand: `DateFormat` renders its digits in the
+/// current locale, so a locale with its own numerals would give every day a
+/// second id and re-import the whole history.
+String dailyAggregateExternalId(String categoryId, DateTime day) => ps.uuid.v5(
+  categoryId,
+  '${day.year.toString().padLeft(4, '0')}-'
+  '${day.month.toString().padLeft(2, '0')}-'
+  '${day.day.toString().padLeft(2, '0')}',
+);
 
 /// Why the last sync did not deliver, if it didn't.
 enum HealthSyncIssue {
