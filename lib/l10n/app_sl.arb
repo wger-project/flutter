@@ -1391,9 +1391,5 @@
     "weightOrRepsRequired": "Vnesite težo, ponovitve ali oboje",
     "@weightOrRepsRequired": {
         "description": "Validation error when both weight and repetitions are empty in a workout log"
-    },
-    "timeStartEndBothOrNeither": "Nastavite tako začetni kot končni čas ali pa oba pustite prazna",
-    "@timeStartEndBothOrNeither": {
-        "description": "Validation error when only one of start/end time is set on a workout session"
     }
 }

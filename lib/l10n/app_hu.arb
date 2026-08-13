@@ -1346,9 +1346,5 @@
     "weightOrRepsRequired": "Adj meg súlyt, ismétlésszámot vagy mindkettőt",
     "@weightOrRepsRequired": {
         "description": "Validation error when both weight and repetitions are empty in a workout log"
-    },
-    "timeStartEndBothOrNeither": "Add meg a kezdési és a befejezési időt is, vagy hagyd mindkettőt üresen",
-    "@timeStartEndBothOrNeither": {
-        "description": "Validation error when only one of start/end time is set on a workout session"
     }
 }

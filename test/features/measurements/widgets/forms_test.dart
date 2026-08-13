@@ -261,6 +261,32 @@ void main() {
       expect(saved.extraData, {'unit': 'kg'});
       expect(saved.value, 30);
     });
+
+    testWidgets('editing pre-fills the notes and saves them changed', (tester) async {
+      final category = getMeasurementCategories()[0];
+      stubMeasurementReads(mockRepo, [category]);
+      when(mockRepo.updateLocalDrift(any)).thenAnswer((_) async {});
+
+      final entry = MeasurementEntry(
+        id: 'e-1',
+        categoryId: category.id!,
+        date: DateTime(2026, 1, 1),
+        value: 30,
+        notes: 'Old notes',
+      );
+
+      await tester.pumpWidget(wrap(MeasurementEntryForm(category.id!, entry)));
+      await tester.pumpAndSettle();
+      expect(find.widgetWithText(TextFormField, 'Old notes'), findsOneWidget);
+
+      await tester.enterText(find.widgetWithText(TextFormField, 'Old notes'), 'New notes');
+      await tester.tap(find.byType(ElevatedButton));
+      await tester.pumpAndSettle();
+
+      final saved =
+          verify(mockRepo.updateLocalDrift(captureAny)).captured.single as MeasurementEntry;
+      expect(saved.notes, 'New notes');
+    });
   });
 
   group('GroupMeasurementEntryForm', () {

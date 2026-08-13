@@ -287,7 +287,6 @@ class MeasurementEntryForm extends ConsumerStatefulWidget {
 
 class _MeasurementEntryFormState extends ConsumerState<MeasurementEntryForm> {
   final _form = GlobalKey<FormState>();
-  final _notesController = TextEditingController();
 
   late MeasurementEntry _draft;
 
@@ -308,13 +307,6 @@ class _MeasurementEntryFormState extends ConsumerState<MeasurementEntryForm> {
           notes: '',
         );
     _value = widget._entry?.value;
-    _notesController.text = _draft.notes;
-  }
-
-  @override
-  void dispose() {
-    _notesController.dispose();
-    super.dispose();
   }
 
   @override
@@ -354,7 +346,7 @@ class _MeasurementEntryFormState extends ConsumerState<MeasurementEntryForm> {
               // Notes
               TextFormField(
                 decoration: InputDecoration(labelText: AppLocalizations.of(context).notes),
-                controller: _notesController,
+                initialValue: _draft.notes,
                 onSaved: (newValue) {
                   _draft = _draft.copyWith(notes: newValue ?? '');
                 },
