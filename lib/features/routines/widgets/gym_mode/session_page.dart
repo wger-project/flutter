@@ -17,6 +17,7 @@
  */
 
 import 'package:clock/clock.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/core/consts.dart';
@@ -52,22 +53,31 @@ class _SessionPageState extends ConsumerState<SessionPage> {
             value: ref.watch(workoutSessionProvider),
             loggerName: 'SessionPage',
             data: (sessions) {
-              final found = sessions.firstWhere(
-                (s) => s.date.isSameDayAs(clock.now()) && s.routineId == gymState.routine.id,
-                orElse: () => WorkoutSession(
-                  dayId: gymState.dayId,
-                  date: clock.now(),
-                  routineId: gymState.routine.id,
-                ),
-              );
+              final now = clock.now();
+              final ours = sessions.where((s) => s.routineId == gymState.routine.id);
+
+              // A session that is still running wins over one that merely shares
+              // a calendar day, because a workout can cross midnight. The day is
+              // still the fallback, so an already finished one stays editable.
+              final found =
+                  ours.firstWhereOrNull(
+                    (s) =>
+                        s.datetimeEnd == null &&
+                        now.difference(s.datetimeStart) <= sessionMaxDuration,
+                  ) ??
+                  ours.firstWhereOrNull((s) => s.datetimeStart.isSameDayAs(now)) ??
+                  WorkoutSession(
+                    dayId: gymState.dayId,
+                    datetimeStart: gymState.workoutStart,
+                    routineId: gymState.routine.id,
+                  );
 
               // Prefill missing times. A session may have been created lazily
               // while logging sets (without times), so fall back to the gym
               // session's start and the current time.
-              final session = found.copyWith(
-                timeStart: found.timeStart ?? gymState.startTime,
-                timeEnd: found.timeEnd ?? TimeOfDay.fromDateTime(clock.now()),
-              );
+              // A session created lazily while logging has no end yet; prefill
+              // the current time so the form opens on a complete interval.
+              final session = found.copyWith(datetimeEnd: found.datetimeEnd ?? now);
 
               return Column(
                 children: [

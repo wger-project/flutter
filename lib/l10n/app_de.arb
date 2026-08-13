@@ -1168,5 +1168,6 @@
     "certsNotVerifiedTitle": "Zertifikatsvalidierung ist deaktiviert",
     "certsNotVerifiedDetail": "Zertifikate für {host} werden nicht geprüft. Zum Ändern melde dich ab und passe die Option im Anmeldebildschirm an.",
     "settingsVerboseLogging": "Ausführliches Protokoll",
-    "settingsVerboseLoggingDescription": "Hilfreich, wenn du anhaltende Probleme meldest."
+    "settingsVerboseLoggingDescription": "Hilfreich, wenn du anhaltende Probleme meldest.",
+    "sessionTooLong": "Eine Trainingseinheit darf nicht länger als {hours} Stunden dauern"
 }
