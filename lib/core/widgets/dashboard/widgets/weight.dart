@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:logging/logging.dart';
 import 'package:wger/core/form_screen.dart';
 import 'package:wger/core/widgets/dashboard/widgets/nothing_found.dart';
 import 'package:wger/core/widgets/error.dart';
@@ -38,6 +39,8 @@ import 'package:wger/features/measurements/widgets/weight_form.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 class DashboardWeightWidget extends ConsumerWidget {
+  static final _logger = Logger('DashboardWeightWidget');
+
   const DashboardWeightWidget();
 
   Widget _shell(BuildContext context, Widget body) {
@@ -61,6 +64,14 @@ class DashboardWeightWidget extends ConsumerWidget {
     );
   }
 
+  /// The error state of one of the providers the card resolves, logged the way
+  /// `AsyncValueWidget` logs the cards that only resolve a single one.
+  Widget _errorShell(BuildContext context, AsyncValue<Object?> value) {
+    _logger.warning('Async error in DashboardWeightWidget', value.error, value.stackTrace);
+
+    return _shell(context, StreamErrorIndicator(value.error!, stacktrace: value.stackTrace));
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final categoryAsync = ref.watch(bodyWeightCategoryOnlyProvider);
@@ -75,16 +86,10 @@ class DashboardWeightWidget extends ConsumerWidget {
       return _shell(context, const BoxedProgressIndicator());
     }
     if (categoryAsync.hasError) {
-      return _shell(
-        context,
-        StreamErrorIndicator(categoryAsync.error!, stacktrace: categoryAsync.stackTrace),
-      );
+      return _errorShell(context, categoryAsync);
     }
     if (profileAsync.hasError) {
-      return _shell(
-        context,
-        StreamErrorIndicator(profileAsync.error!, stacktrace: profileAsync.stackTrace),
-      );
+      return _errorShell(context, profileAsync);
     }
     final profile = profileAsync.value;
     if (profile == null) {
@@ -111,6 +116,9 @@ class DashboardWeightWidget extends ConsumerWidget {
       ChartRange.all,
       targetUnit: weightDisplayUnit(profile.isMetric),
     );
+    if (pointsAsync.hasError) {
+      return _errorShell(context, pointsAsync);
+    }
     final points = pointsAsync.value;
     if (points == null) {
       return _shell(context, const BoxedProgressIndicator());
