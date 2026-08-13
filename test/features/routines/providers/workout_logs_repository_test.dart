@@ -98,6 +98,56 @@ void main() {
       expect(logs.single.sessionId, existingSession.id);
     });
 
+    test('reuses a closed session the log falls into', () async {
+      final existingSession = WorkoutSession(
+        id: 'existing-session-1',
+        routineId: 100,
+        datetimeStart: DateTime.utc(2026, 4, 15, 16),
+        datetimeEnd: DateTime.utc(2026, 4, 15, 19),
+      );
+      await db.into(db.workoutSessionTable).insert(existingSession.toCompanion());
+
+      final log = makeLog(date: DateTime.utc(2026, 4, 15, 18));
+      await repo.addLocalDrift(log);
+
+      expect(await readSessions(), hasLength(1));
+      expect(log.sessionId, existingSession.id);
+    });
+
+    test('reuses a session that runs past midnight for a log after it', () async {
+      // The session it belongs to started the day before, so a lookup by day
+      // would put this log in one of its own (issue wger#2379)
+      final existingSession = WorkoutSession(
+        id: 'existing-session-1',
+        routineId: 100,
+        datetimeStart: DateTime.utc(2026, 4, 15, 23, 30),
+        datetimeEnd: DateTime.utc(2026, 4, 16, 1),
+      );
+      await db.into(db.workoutSessionTable).insert(existingSession.toCompanion());
+
+      final log = makeLog(date: DateTime.utc(2026, 4, 16, 0, 30));
+      await repo.addLocalDrift(log);
+
+      expect(await readSessions(), hasLength(1));
+      expect(log.sessionId, existingSession.id);
+    });
+
+    test('does not reuse a closed session the log falls outside of', () async {
+      await db
+          .into(db.workoutSessionTable)
+          .insert(
+            WorkoutSession(
+              routineId: 100,
+              datetimeStart: DateTime.utc(2026, 4, 15, 16),
+              datetimeEnd: DateTime.utc(2026, 4, 15, 17),
+            ).toCompanion(),
+          );
+
+      await repo.addLocalDrift(makeLog(date: DateTime.utc(2026, 4, 15, 18)));
+
+      expect(await readSessions(), hasLength(2));
+    });
+
     test('reuses a server-synced session whose date has no time component', () async {
       // A row replicated before 2.7 carries only the bare 'YYYY-MM-DD' date and
       // no datetime_start. The day lookup has to keep matching it, otherwise a
