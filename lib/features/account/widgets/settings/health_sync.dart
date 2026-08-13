@@ -197,10 +197,17 @@ class _HealthSyncSettingsTileState extends ConsumerState<HealthSyncSettingsTile>
       onTap: () async {
         final notifier = ref.read(healthSyncProvider.notifier);
         // Asking for the permissions shows the platform dialog, which only
-        // ever happens because the user tapped here
-        final count = needsPermission
-            ? await notifier.retryWithPermissions()
-            : await notifier.sync();
+        // ever happens because the user tapped here. A platform that refuses
+        // the request outright throws, and that is the same "no access" to the
+        // user as a declined dialog, so it must not reach the error dialog.
+        int? count;
+        try {
+          count = needsPermission
+              ? await notifier.retryWithPermissions()
+              : await notifier.sync();
+        } catch (e) {
+          _logger.warning('Retrying the health permissions failed', e);
+        }
         // The status line already covers "nothing new" and every failure;
         // only actual imports get a snackbar
         if (mounted && count != null && count > 0) {

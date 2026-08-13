@@ -81,6 +81,22 @@ class _ThrowingHealthSyncNotifier extends _FakeHealthSyncNotifier {
   Future<int?> enableSync() async => throw Exception('platform refused');
 }
 
+/// Throws from [retryWithPermissions], which asks the platform the same way
+/// [enableSync] does.
+class _ThrowingRetryHealthSyncNotifier extends _FakeHealthSyncNotifier {
+  _ThrowingRetryHealthSyncNotifier()
+    : super(
+        null,
+        initialState: const HealthSyncState(
+          isEnabled: true,
+          issue: HealthSyncIssue.permissionsMissing,
+        ),
+      );
+
+  @override
+  Future<int?> retryWithPermissions() async => throw Exception('platform refused');
+}
+
 void main() {
   Widget createTile(_FakeHealthSyncNotifier fake) {
     return ProviderScope(
@@ -199,6 +215,18 @@ void main() {
     // Treated like a denial instead of bubbling into the global error dialog
     expect(tester.takeException(), isNull);
     expect(find.text('Access to health data was not granted'), findsOneWidget);
+  });
+
+  testWidgets('a throwing retry stays in the tile', (tester) async {
+    await tester.pumpWidget(createTile(_ThrowingRetryHealthSyncNotifier()));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byIcon(Icons.warning_amber));
+    await tester.pumpAndSettle();
+
+    // Same treatment as the toggle: a refused request is a denial, not a crash
+    expect(tester.takeException(), isNull);
+    expect(find.textContaining('is not sharing your data'), findsOneWidget);
   });
 
   testWidgets('offers installing Health Connect instead of hiding the feature', (tester) async {
