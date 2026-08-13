@@ -61,8 +61,8 @@ class SettingsPage extends StatelessWidget {
             const SettingsDataPrivacy(),
             const HealthSyncSettingsTile(),
             ListTile(title: Text(i18n.others, style: Theme.of(context).textTheme.headlineSmall)),
-            const SettingsTheme(),
             const SettingsLanguage(),
+            const SettingsTheme(),
             ListTile(
               title: Text(i18n.selectAvailablePlates),
               onTap: () {
