@@ -6273,14 +6273,6 @@ class $WorkoutSessionTableTable extends WorkoutSessionTable
     type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
-  @override
-  late final GeneratedColumnWithTypeConverter<DateTime, String> date = GeneratedColumn<String>(
-    'date',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  ).withConverter<DateTime>($WorkoutSessionTableTable.$converterdate);
   static const VerificationMeta _notesMeta = const VerificationMeta('notes');
   @override
   late final GeneratedColumn<String> notes = GeneratedColumn<String>(
@@ -6302,34 +6294,12 @@ class $WorkoutSessionTableTable extends WorkoutSessionTable
         $WorkoutSessionTableTable.$converterimpression,
       );
   @override
-  late final GeneratedColumnWithTypeConverter<TimeOfDay?, String> timeStart =
-      GeneratedColumn<String>(
-        'time_start',
-        aliasedName,
-        true,
-        type: DriftSqlType.string,
-        requiredDuringInsert: false,
-      ).withConverter<TimeOfDay?>(
-        $WorkoutSessionTableTable.$convertertimeStartn,
-      );
-  @override
-  late final GeneratedColumnWithTypeConverter<TimeOfDay?, String> timeEnd = GeneratedColumn<String>(
-    'time_end',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-  ).withConverter<TimeOfDay?>($WorkoutSessionTableTable.$convertertimeEndn);
-  @override
   List<GeneratedColumn> get $columns => [
     id,
     routineId,
     dayId,
-    date,
     notes,
     impression,
-    timeStart,
-    timeEnd,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -6385,12 +6355,6 @@ class $WorkoutSessionTableTable extends WorkoutSessionTable
         DriftSqlType.int,
         data['${effectivePrefix}routine_id'],
       ),
-      date: $WorkoutSessionTableTable.$converterdate.fromSql(
-        attachedDatabase.typeMapping.read(
-          DriftSqlType.string,
-          data['${effectivePrefix}date'],
-        )!,
-      ),
       impression: $WorkoutSessionTableTable.$converterimpression.fromSql(
         attachedDatabase.typeMapping.read(
           DriftSqlType.string,
@@ -6401,18 +6365,6 @@ class $WorkoutSessionTableTable extends WorkoutSessionTable
         DriftSqlType.string,
         data['${effectivePrefix}notes'],
       ),
-      timeStart: $WorkoutSessionTableTable.$convertertimeStartn.fromSql(
-        attachedDatabase.typeMapping.read(
-          DriftSqlType.string,
-          data['${effectivePrefix}time_start'],
-        ),
-      ),
-      timeEnd: $WorkoutSessionTableTable.$convertertimeEndn.fromSql(
-        attachedDatabase.typeMapping.read(
-          DriftSqlType.string,
-          data['${effectivePrefix}time_end'],
-        ),
-      ),
     );
   }
 
@@ -6421,72 +6373,47 @@ class $WorkoutSessionTableTable extends WorkoutSessionTable
     return $WorkoutSessionTableTable(attachedDatabase, alias);
   }
 
-  static TypeConverter<DateTime, String> $converterdate = const DateOnlyTextConverter();
   static TypeConverter<WorkoutImpression, String> $converterimpression =
       const WorkoutImpressionConverter();
-  static TypeConverter<TimeOfDay, String> $convertertimeStart = const TimeOfDayConverter();
-  static TypeConverter<TimeOfDay?, String?> $convertertimeStartn = NullAwareTypeConverter.wrap(
-    $convertertimeStart,
-  );
-  static TypeConverter<TimeOfDay, String> $convertertimeEnd = const TimeOfDayConverter();
-  static TypeConverter<TimeOfDay?, String?> $convertertimeEndn = NullAwareTypeConverter.wrap(
-    $convertertimeEnd,
-  );
 }
 
 class WorkoutSessionTableCompanion extends UpdateCompanion<WorkoutSession> {
   final Value<String> id;
   final Value<int?> routineId;
   final Value<int?> dayId;
-  final Value<DateTime> date;
   final Value<String?> notes;
   final Value<WorkoutImpression> impression;
-  final Value<TimeOfDay?> timeStart;
-  final Value<TimeOfDay?> timeEnd;
   final Value<int> rowid;
   const WorkoutSessionTableCompanion({
     this.id = const Value.absent(),
     this.routineId = const Value.absent(),
     this.dayId = const Value.absent(),
-    this.date = const Value.absent(),
     this.notes = const Value.absent(),
     this.impression = const Value.absent(),
-    this.timeStart = const Value.absent(),
-    this.timeEnd = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   WorkoutSessionTableCompanion.insert({
     this.id = const Value.absent(),
     this.routineId = const Value.absent(),
     this.dayId = const Value.absent(),
-    required DateTime date,
     this.notes = const Value.absent(),
     required WorkoutImpression impression,
-    this.timeStart = const Value.absent(),
-    this.timeEnd = const Value.absent(),
     this.rowid = const Value.absent(),
-  }) : date = Value(date),
-       impression = Value(impression);
+  }) : impression = Value(impression);
   static Insertable<WorkoutSession> custom({
     Expression<String>? id,
     Expression<int>? routineId,
     Expression<int>? dayId,
-    Expression<String>? date,
     Expression<String>? notes,
     Expression<String>? impression,
-    Expression<String>? timeStart,
-    Expression<String>? timeEnd,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (routineId != null) 'routine_id': routineId,
       if (dayId != null) 'day_id': dayId,
-      if (date != null) 'date': date,
       if (notes != null) 'notes': notes,
       if (impression != null) 'impression': impression,
-      if (timeStart != null) 'time_start': timeStart,
-      if (timeEnd != null) 'time_end': timeEnd,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -6495,22 +6422,16 @@ class WorkoutSessionTableCompanion extends UpdateCompanion<WorkoutSession> {
     Value<String>? id,
     Value<int?>? routineId,
     Value<int?>? dayId,
-    Value<DateTime>? date,
     Value<String?>? notes,
     Value<WorkoutImpression>? impression,
-    Value<TimeOfDay?>? timeStart,
-    Value<TimeOfDay?>? timeEnd,
     Value<int>? rowid,
   }) {
     return WorkoutSessionTableCompanion(
       id: id ?? this.id,
       routineId: routineId ?? this.routineId,
       dayId: dayId ?? this.dayId,
-      date: date ?? this.date,
       notes: notes ?? this.notes,
       impression: impression ?? this.impression,
-      timeStart: timeStart ?? this.timeStart,
-      timeEnd: timeEnd ?? this.timeEnd,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -6527,27 +6448,12 @@ class WorkoutSessionTableCompanion extends UpdateCompanion<WorkoutSession> {
     if (dayId.present) {
       map['day_id'] = Variable<int>(dayId.value);
     }
-    if (date.present) {
-      map['date'] = Variable<String>(
-        $WorkoutSessionTableTable.$converterdate.toSql(date.value),
-      );
-    }
     if (notes.present) {
       map['notes'] = Variable<String>(notes.value);
     }
     if (impression.present) {
       map['impression'] = Variable<String>(
         $WorkoutSessionTableTable.$converterimpression.toSql(impression.value),
-      );
-    }
-    if (timeStart.present) {
-      map['time_start'] = Variable<String>(
-        $WorkoutSessionTableTable.$convertertimeStartn.toSql(timeStart.value),
-      );
-    }
-    if (timeEnd.present) {
-      map['time_end'] = Variable<String>(
-        $WorkoutSessionTableTable.$convertertimeEndn.toSql(timeEnd.value),
       );
     }
     if (rowid.present) {
@@ -6562,11 +6468,8 @@ class WorkoutSessionTableCompanion extends UpdateCompanion<WorkoutSession> {
           ..write('id: $id, ')
           ..write('routineId: $routineId, ')
           ..write('dayId: $dayId, ')
-          ..write('date: $date, ')
           ..write('notes: $notes, ')
           ..write('impression: $impression, ')
-          ..write('timeStart: $timeStart, ')
-          ..write('timeEnd: $timeEnd, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -17659,11 +17562,8 @@ typedef $$WorkoutSessionTableTableCreateCompanionBuilder =
       Value<String> id,
       Value<int?> routineId,
       Value<int?> dayId,
-      required DateTime date,
       Value<String?> notes,
       required WorkoutImpression impression,
-      Value<TimeOfDay?> timeStart,
-      Value<TimeOfDay?> timeEnd,
       Value<int> rowid,
     });
 typedef $$WorkoutSessionTableTableUpdateCompanionBuilder =
@@ -17671,11 +17571,8 @@ typedef $$WorkoutSessionTableTableUpdateCompanionBuilder =
       Value<String> id,
       Value<int?> routineId,
       Value<int?> dayId,
-      Value<DateTime> date,
       Value<String?> notes,
       Value<WorkoutImpression> impression,
-      Value<TimeOfDay?> timeStart,
-      Value<TimeOfDay?> timeEnd,
       Value<int> rowid,
     });
 
@@ -17703,11 +17600,6 @@ class $$WorkoutSessionTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnWithTypeConverterFilters<DateTime, DateTime, String> get date => $composableBuilder(
-    column: $table.date,
-    builder: (column) => ColumnWithTypeConverterFilters(column),
-  );
-
   ColumnFilters<String> get notes => $composableBuilder(
     column: $table.notes,
     builder: (column) => ColumnFilters(column),
@@ -17718,16 +17610,6 @@ class $$WorkoutSessionTableTableFilterComposer
         column: $table.impression,
         builder: (column) => ColumnWithTypeConverterFilters(column),
       );
-
-  ColumnWithTypeConverterFilters<TimeOfDay?, TimeOfDay, String> get timeStart => $composableBuilder(
-    column: $table.timeStart,
-    builder: (column) => ColumnWithTypeConverterFilters(column),
-  );
-
-  ColumnWithTypeConverterFilters<TimeOfDay?, TimeOfDay, String> get timeEnd => $composableBuilder(
-    column: $table.timeEnd,
-    builder: (column) => ColumnWithTypeConverterFilters(column),
-  );
 }
 
 class $$WorkoutSessionTableTableOrderingComposer
@@ -17754,11 +17636,6 @@ class $$WorkoutSessionTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get date => $composableBuilder(
-    column: $table.date,
-    builder: (column) => ColumnOrderings(column),
-  );
-
   ColumnOrderings<String> get notes => $composableBuilder(
     column: $table.notes,
     builder: (column) => ColumnOrderings(column),
@@ -17766,16 +17643,6 @@ class $$WorkoutSessionTableTableOrderingComposer
 
   ColumnOrderings<String> get impression => $composableBuilder(
     column: $table.impression,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get timeStart => $composableBuilder(
-    column: $table.timeStart,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get timeEnd => $composableBuilder(
-    column: $table.timeEnd,
     builder: (column) => ColumnOrderings(column),
   );
 }
@@ -17798,9 +17665,6 @@ class $$WorkoutSessionTableTableAnnotationComposer
   GeneratedColumn<int> get dayId =>
       $composableBuilder(column: $table.dayId, builder: (column) => column);
 
-  GeneratedColumnWithTypeConverter<DateTime, String> get date =>
-      $composableBuilder(column: $table.date, builder: (column) => column);
-
   GeneratedColumn<String> get notes =>
       $composableBuilder(column: $table.notes, builder: (column) => column);
 
@@ -17808,12 +17672,6 @@ class $$WorkoutSessionTableTableAnnotationComposer
     column: $table.impression,
     builder: (column) => column,
   );
-
-  GeneratedColumnWithTypeConverter<TimeOfDay?, String> get timeStart =>
-      $composableBuilder(column: $table.timeStart, builder: (column) => column);
-
-  GeneratedColumnWithTypeConverter<TimeOfDay?, String> get timeEnd =>
-      $composableBuilder(column: $table.timeEnd, builder: (column) => column);
 }
 
 class $$WorkoutSessionTableTableTableManager
@@ -17856,21 +17714,15 @@ class $$WorkoutSessionTableTableTableManager
                 Value<String> id = const Value.absent(),
                 Value<int?> routineId = const Value.absent(),
                 Value<int?> dayId = const Value.absent(),
-                Value<DateTime> date = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
                 Value<WorkoutImpression> impression = const Value.absent(),
-                Value<TimeOfDay?> timeStart = const Value.absent(),
-                Value<TimeOfDay?> timeEnd = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => WorkoutSessionTableCompanion(
                 id: id,
                 routineId: routineId,
                 dayId: dayId,
-                date: date,
                 notes: notes,
                 impression: impression,
-                timeStart: timeStart,
-                timeEnd: timeEnd,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -17878,21 +17730,15 @@ class $$WorkoutSessionTableTableTableManager
                 Value<String> id = const Value.absent(),
                 Value<int?> routineId = const Value.absent(),
                 Value<int?> dayId = const Value.absent(),
-                required DateTime date,
                 Value<String?> notes = const Value.absent(),
                 required WorkoutImpression impression,
-                Value<TimeOfDay?> timeStart = const Value.absent(),
-                Value<TimeOfDay?> timeEnd = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => WorkoutSessionTableCompanion.insert(
                 id: id,
                 routineId: routineId,
                 dayId: dayId,
-                date: date,
                 notes: notes,
                 impression: impression,
-                timeStart: timeStart,
-                timeEnd: timeEnd,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) =>
