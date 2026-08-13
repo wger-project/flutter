@@ -170,7 +170,7 @@ class HealthImporter {
         metrics,
         categories,
       ).map((m) => m.metricType.name).toSet();
-      final readsEverything = await _hasNewlyReadableTypes(readable);
+      final newlyReadable = await _newlyReadableTypes(readable);
       final endTime = DateTime.now();
 
       final source = _health.sourceName;
@@ -185,7 +185,7 @@ class HealthImporter {
         // reading from it would import what happened since and leave
         // everything before it missing, silently
         final startTime =
-            readsEverything ||
+            metric.dataTypes.any((t) => newlyReadable.contains(t.name)) ||
                 watermarks[name] == null ||
                 (withoutCategory.contains(name) && !knownEmpty.contains(name))
             ? _fullHistoryStart
@@ -638,26 +638,29 @@ class HealthImporter {
     return false;
   }
 
-  /// Whether the platform now lets us read a type it did not last time.
+  /// The type names the platform now lets us read but did not last time.
   ///
   /// Such a type has no history in wger for the same reason a deleted category
   /// has none: nothing was ever imported for it, so the watermark says nothing
   /// about it. That happens when the user grants access they had declined, and
   /// after an app update that added the type.
-  Future<bool> _hasNewlyReadableTypes(Set<HealthDataType> readable) async {
+  ///
+  /// The names rather than a flag: only the metrics built on them have that
+  /// hole, and the full history of every other one would be read for nothing.
+  Future<Set<String>> _newlyReadableTypes(Set<HealthDataType> readable) async {
     final previous = await _prefs.getHealthSyncReadableTypes();
     if (previous == null) {
-      return false;
+      return {};
     }
 
     final newlyReadable = readable.map((t) => t.name).toSet().difference(previous.toSet());
     if (newlyReadable.isNotEmpty) {
       _logger.info(
         'Access to ${newlyReadable.join(', ')} is new, '
-        'reading the full history instead of from the watermark',
+        'reading their full history instead of from the watermark',
       );
     }
-    return newlyReadable.isNotEmpty;
+    return newlyReadable;
   }
 
   /// The enabled metrics that have no category to import into.

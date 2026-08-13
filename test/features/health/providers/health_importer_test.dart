@@ -292,6 +292,26 @@ void main() {
       expect(capturedReadStart(), DateTime(2020));
     });
 
+    test('only the metrics of a newly readable type read their full history', () async {
+      // One granted permission used to send every metric back to 2020, which
+      // is years of platform records read to import nothing
+      await seedWatermarks('2026-06-01T12:00:00.000');
+      await PreferenceHelper.instance.setHealthSyncReadableTypes([
+        for (final metric in enabledHealthMetrics)
+          for (final type in metric.dataTypes)
+            if (type != HealthDataType.BODY_FAT_PERCENTAGE) type.name,
+      ]);
+      when(measurements.getCategoriesOnce()).thenAnswer((_) async => categoriesForEveryMetric());
+      stubReadings([]);
+
+      await runImport();
+
+      // Read once: every verify() consumes the calls it matched
+      final starts = capturedReadStarts();
+      expect(starts[HealthDataType.BODY_FAT_PERCENTAGE], DateTime(2020));
+      expect(starts[HealthDataType.WEIGHT], DateTime(2026, 5, 2, 12));
+    });
+
     test('stays on the watermark while the readable types are unchanged', () async {
       await seedWatermarks('2026-06-01T12:00:00.000');
       await PreferenceHelper.instance.setHealthSyncReadableTypes([
