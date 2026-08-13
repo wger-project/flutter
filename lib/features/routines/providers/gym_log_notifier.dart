@@ -51,6 +51,13 @@ class GymLogNotifier extends _$GymLogNotifier {
     state = out;
   }
 
+  /// Starts editing a log that was already persisted during the current
+  /// workout. Unlike [setLog], the id, session and date are kept so saving
+  /// updates the existing row instead of inserting a duplicate.
+  void editLog(Log log) {
+    state = log;
+  }
+
   void setWeight(num weight) {
     state = state?.copyWith(weight: weight);
   }
