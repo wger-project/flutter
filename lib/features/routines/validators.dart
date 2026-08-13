@@ -33,16 +33,21 @@ String? validateWorkoutLogCrossField({
   return null;
 }
 
-/// Cross-field validation for a workout session, mirroring the backend rule.
+/// Cross-field validation for a workout session, mirroring the backend rules:
+/// the end must not lie before the start, and the session must not last longer
+/// than [sessionMaxDuration].
 ///
-/// An end before the start is not an error, the form reads it as a session that
-/// ran past midnight. What the server does reject is a session longer than
-/// [sessionMaxDuration].
+/// A session that ran past midnight ends on the following day, so its end is
+/// after its start as well.
 String? validateWorkoutSessionTimes({
   required DateTime datetimeStart,
   required DateTime? datetimeEnd,
   required AppLocalizations i18n,
 }) {
+  if (datetimeEnd != null && datetimeEnd.isBefore(datetimeStart)) {
+    return i18n.timeStartAhead;
+  }
+
   if (datetimeEnd != null && datetimeEnd.difference(datetimeStart) > sessionMaxDuration) {
     return i18n.sessionTooLong(sessionMaxDuration.inHours);
   }

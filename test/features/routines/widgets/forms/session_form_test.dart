@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:wger/core/widgets/datetime_input.dart';
 import 'package:wger/features/routines/models/session.dart';
 import 'package:wger/features/routines/providers/workout_session_repository.dart';
 import 'package:wger/features/routines/widgets/forms/session.dart';
@@ -119,6 +120,55 @@ void main() {
               as WorkoutSession;
       expect(captured.notes, 'Updated notes');
       expect(onSavedCalled, isTrue);
+    });
+
+    testWidgets('refuses a start moved past the end', (WidgetTester tester) async {
+      // Arrange
+      final existingSession = WorkoutSession(
+        id: '1',
+        routineId: 1,
+        impression: WorkoutImpression.neutral,
+        datetimeStart: DateTime(2026, 8, 13, 10, 0),
+        datetimeEnd: DateTime(2026, 8, 13, 11, 0),
+      );
+      when(mockRepository.editLocalDrift(any as dynamic)).thenAnswer((_) async {});
+      await pumpSessionForm(tester, session: existingSession);
+
+      // Act
+      tester
+          .widget<TimeInputWidget>(find.byKey(const ValueKey('time-start')))
+          .onChanged(const TimeOfDay(hour: 12, minute: 0));
+      await tester.tap(find.byKey(const ValueKey('save-button')));
+      await tester.pumpAndSettle();
+
+      // Assert
+      verifyNever(mockRepository.editLocalDrift(any as dynamic));
+      expect(find.text('Start time cannot be ahead of end time'), findsOneWidget);
+    });
+
+    testWidgets('saves a session that ran past midnight', (WidgetTester tester) async {
+      // Arrange
+      final existingSession = WorkoutSession(
+        id: '1',
+        routineId: 1,
+        impression: WorkoutImpression.neutral,
+        datetimeStart: DateTime(2026, 8, 13, 23, 0),
+      );
+      when(mockRepository.editLocalDrift(any as dynamic)).thenAnswer((_) async {});
+      await pumpSessionForm(tester, session: existingSession);
+
+      // Act
+      tester
+          .widget<TimeInputWidget>(find.byKey(const ValueKey('time-end')))
+          .onChanged(const TimeOfDay(hour: 1, minute: 0));
+      await tester.tap(find.byKey(const ValueKey('save-button')));
+      await tester.pumpAndSettle();
+
+      // Assert
+      final captured =
+          verify(mockRepository.editLocalDrift(captureAny as dynamic)).captured.single
+              as WorkoutSession;
+      expect(captured.datetimeEnd, DateTime(2026, 8, 14, 1, 0));
     });
 
     // testWidgets('shows server side error messages', (WidgetTester tester) async {
