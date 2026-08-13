@@ -141,6 +141,7 @@ class PreferenceHelper {
   static const _healthSyncWatermarksKey = 'healthSyncWatermarks';
   static const _healthSyncReadableTypesKey = 'healthSyncReadableTypes';
   static const _healthSyncEmptyMetricsKey = 'healthSyncEmptyMetrics';
+  static const _healthSyncLastRunKey = 'healthSyncLastRun';
 
   Future<void> setHealthSyncEnabled(bool value) async {
     await PreferenceHelper.asyncPref.setBool(_healthSyncEnabledKey, value);
@@ -196,10 +197,25 @@ class PreferenceHelper {
     return PreferenceHelper.asyncPref.getStringList(_healthSyncEmptyMetricsKey);
   }
 
+  /// When the last import finished, as an ISO-8601 timestamp.
+  ///
+  /// Persisted rather than kept in memory: the automatic syncs are throttled
+  /// against it, and an app restart would otherwise always look like the first
+  /// run of the day.
+  Future<void> setHealthSyncLastRun(DateTime value) async {
+    await PreferenceHelper.asyncPref.setString(_healthSyncLastRunKey, value.toIso8601String());
+  }
+
+  Future<DateTime?> getHealthSyncLastRun() async {
+    final stored = await PreferenceHelper.asyncPref.getString(_healthSyncLastRunKey);
+    return stored == null ? null : DateTime.tryParse(stored);
+  }
+
   Future<void> clearHealthSyncPreferences() async {
     await PreferenceHelper.asyncPref.remove(_healthSyncEnabledKey);
     await PreferenceHelper.asyncPref.remove(_healthSyncWatermarksKey);
     await PreferenceHelper.asyncPref.remove(_healthSyncReadableTypesKey);
     await PreferenceHelper.asyncPref.remove(_healthSyncEmptyMetricsKey);
+    await PreferenceHelper.asyncPref.remove(_healthSyncLastRunKey);
   }
 }

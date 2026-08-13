@@ -236,4 +236,50 @@ void main() {
       expect(container.read(healthSyncProvider).lastSyncCount, 1);
     });
   });
+
+  group('syncIfDue', () {
+    test('runs when nothing was imported yet', () async {
+      stubReadings([]);
+
+      await createNotifier().syncIfDue();
+
+      verify(health.readableTypes(any)).called(1);
+    });
+
+    test('skips a run that follows a completed one', () async {
+      // Every run re-reads a month of platform records per metric, so the app
+      // being restarted twice in a row must not read it twice
+      stubReadings([]);
+      final notifier = createNotifier();
+      await notifier.sync();
+
+      await notifier.syncIfDue();
+
+      verify(health.readableTypes(any)).called(1);
+    });
+
+    test('runs again once the pause is over', () async {
+      stubReadings([]);
+      final notifier = createNotifier();
+      await notifier.sync();
+      await PreferenceHelper.instance.setHealthSyncLastRun(
+        DateTime.now().subtract(const Duration(hours: 1)),
+      );
+
+      await notifier.syncIfDue();
+
+      verify(health.readableTypes(any)).called(2);
+    });
+
+    test('skips after a restart, since the last run is persisted', () async {
+      // The timestamp only lived in the notifier state before, so a cold start
+      // always read the full overlap window again
+      stubReadings([]);
+      await createNotifier().sync();
+
+      await createNotifier().syncIfDue();
+
+      verify(health.readableTypes(any)).called(1);
+    });
+  });
 }

@@ -58,8 +58,8 @@ sealed class HealthSyncState with _$HealthSyncState {
 /// on. Everything about how readings become measurements lives there.
 @Riverpod(keepAlive: true)
 class HealthSyncNotifier extends _$HealthSyncNotifier {
-  /// Minimum pause between the automatic re-syncs on app resume.
-  static const _resumeThrottle = Duration(minutes: 15);
+  /// Minimum pause between the automatic syncs, on app start and on resume.
+  static const _autoSyncThrottle = Duration(minutes: 15);
 
   final _logger = Logger('HealthSyncNotifier');
   late final HealthRepository _health;
@@ -79,14 +79,7 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
     // New readings often exist exactly when the app comes back from the
     // background (the user just weighed in, granted permissions, ...), so
     // resume triggers a sync as well, throttled to stay unobtrusive
-    final lifecycleListener = AppLifecycleListener(
-      onResume: () {
-        final last = state.lastSyncTime;
-        if (last == null || DateTime.now().difference(last) >= _resumeThrottle) {
-          sync();
-        }
-      },
-    );
+    final lifecycleListener = AppLifecycleListener(onResume: syncIfDue);
     ref.onDispose(lifecycleListener.dispose);
 
     return const HealthSyncState();
@@ -149,6 +142,23 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
     state = const HealthSyncState();
   }
 
+  /// Runs one import unless the last one finished less than
+  /// [_autoSyncThrottle] ago, for the automatic triggers (app start, resume).
+  ///
+  /// Every run re-reads the overlap window of each metric, which is a month of
+  /// platform records for the ones a watch writes continuously, so an app
+  /// restarted a few times in a row must not do that on every start. What the
+  /// user asks for from the settings goes through [sync] and is never skipped.
+  Future<void> syncIfDue() async {
+    final last = await PreferenceHelper.instance.getHealthSyncLastRun();
+    if (last != null && DateTime.now().difference(last) < _autoSyncThrottle) {
+      _logger.fine('Health sync ran at $last, skipping this one');
+      return;
+    }
+
+    await sync();
+  }
+
   /// Runs one import and reports it in the state. Returns the number of
   /// imported entries. A no-op unless the user enabled sync, and while one is
   /// already running. Triggered on app open, on app resume, and manually from
@@ -166,6 +176,9 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
 
     // The timestamp says when the metrics were last read, so a run that gave
     // up before reading any of them leaves the previous one standing
+    if (result.completed) {
+      await PreferenceHelper.instance.setHealthSyncLastRun(DateTime.now());
+    }
     state = state.copyWith(
       isSyncing: false,
       lastSyncCount: result.imported,

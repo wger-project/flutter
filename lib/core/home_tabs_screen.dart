@@ -47,12 +47,13 @@ class _HomeTabsScreenState extends ConsumerState<HomeTabsScreen>
     super.initState();
 
     // Pull any new readings from Apple Health / Health Connect once the app is
-    // open. The sync is a no-op unless the user enabled it in the settings.
+    // open. A no-op unless the user enabled it in the settings, and unless the
+    // last sync is long enough ago.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) {
         return;
       }
-      ref.read(healthSyncProvider.notifier).sync();
+      ref.read(healthSyncProvider.notifier).syncIfDue();
     });
   }
 
