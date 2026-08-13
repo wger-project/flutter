@@ -269,6 +269,7 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
   Widget scanButton() {
     return IconButton(
       key: const Key('scan-button'),
+      tooltip: AppLocalizations.of(context).scanBarcode,
       icon: const FaIcon(FontAwesomeIcons.barcode),
       onPressed: () async {
         if (!widget.test) {

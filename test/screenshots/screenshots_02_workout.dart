@@ -25,8 +25,7 @@ import 'package:wger/features/routines/screens/routine_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/theme/theme.dart';
 
-import '../../test_data/exercises.dart';
-import '../../test_data/routines.dart';
+import '../../test_data/screenshots/routines.dart';
 import 'screenshots_02_workout.mocks.dart';
 
 @GenerateMocks([RoutinesRepository])
@@ -34,7 +33,7 @@ Widget createWorkoutDetailScreen({Locale? locale}) {
   locale ??= const Locale('en');
   final key = GlobalKey<NavigatorState>();
 
-  final routine = getTestRoutine(exercises: getScreenshotExercises());
+  final routine = getScreenshotRoutine();
   final mockRoutinesRepo = MockRoutinesRepository();
   when(mockRoutinesRepo.watchAllDrift()).thenAnswer((_) => Stream.value([routine]));
 

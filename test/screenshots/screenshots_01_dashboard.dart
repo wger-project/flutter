@@ -26,33 +26,31 @@ import 'package:wger/core/network/auth_state.dart';
 import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/features/account/providers/user_profile_repository.dart';
 import 'package:wger/features/gallery/providers/gallery_repository.dart';
-import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
 import 'package:wger/features/nutrition/providers/ingredient_repository.dart';
 import 'package:wger/features/nutrition/providers/nutrition_notifier.dart';
 import 'package:wger/features/nutrition/providers/nutrition_repository.dart';
 import 'package:wger/features/routines/providers/routines_repository.dart';
 import 'package:wger/features/trophies/providers/trophy_repository.dart';
-import 'package:wger/features/weight/providers/body_weight_repository.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/theme/theme.dart';
 
 import '../../test_data/body_weight.dart';
-import '../../test_data/exercises.dart';
 import '../../test_data/gallery.dart';
-import '../../test_data/measurements.dart';
-import '../../test_data/nutritional_plans.dart';
 import '../../test_data/profile.dart';
-import '../../test_data/routines.dart';
+import '../../test_data/screenshots/measurements.dart';
+import '../../test_data/screenshots/nutrition.dart';
+import '../../test_data/screenshots/routines.dart';
+import '../../test_data/screenshots/weight.dart';
 import '../../test_data/trophies.dart';
 import '../helpers/fake_auth_notifier.dart';
+import '../helpers/measurement_repository_stubs.dart';
 import 'screenshots_01_dashboard.mocks.dart';
 
 @GenerateMocks([
   GalleryRepository,
   NutritionRepository,
   IngredientRepository,
-  BodyWeightRepository,
   MeasurementRepository,
   UserProfileRepository,
   RoutinesRepository,
@@ -68,15 +66,13 @@ Widget createDashboardScreen({Locale? locale}) {
   final mockIngredientRepo = MockIngredientRepository();
   when(mockIngredientRepo.getById(any)).thenAnswer((_) async => null);
 
-  final mockBodyWeightRepository = MockBodyWeightRepository();
-  when(
-    mockBodyWeightRepository.watchAllDrift(),
-  ).thenAnswer((_) => Stream.value(getScreenshotWeightEntries()));
-
   final mockMeasurementRepo = MockMeasurementRepository();
-  when(
-    mockMeasurementRepo.watchAll(),
-  ).thenAnswer((_) => Stream<List<MeasurementCategory>>.value(getMeasurementCategories()));
+  final measurements = getScreenshotMeasurements();
+  stubMeasurementReads(
+    mockMeasurementRepo,
+    [getBodyWeightCategory(), ...measurements.categories],
+    {...getScreenshotBodyWeightEntries(), ...measurements.entries},
+  );
 
   final mockUserProfileRepo = MockUserProfileRepository();
   when(
@@ -86,7 +82,7 @@ Widget createDashboardScreen({Locale? locale}) {
   final mockRoutinesRepo = MockRoutinesRepository();
   when(
     mockRoutinesRepo.watchAllDrift(),
-  ).thenAnswer((_) => Stream.value([getTestRoutine(exercises: getScreenshotExercises())]));
+  ).thenAnswer((_) => Stream.value([getScreenshotRoutine()]));
 
   final mockTrophyRepo = MockTrophyRepository();
   when(
@@ -112,7 +108,6 @@ Widget createDashboardScreen({Locale? locale}) {
   );
   final container = ProviderContainer.test(
     overrides: [
-      bodyWeightRepositoryProvider.overrideWithValue(mockBodyWeightRepository),
       measurementRepositoryProvider.overrideWithValue(mockMeasurementRepo),
       authProvider.overrideWith(() => FakeAuthNotifier(loggedInAuth)),
       userProfileRepositoryProvider.overrideWithValue(mockUserProfileRepo),

@@ -218,29 +218,6 @@
         "description": "The weight of a workout log or body weight entry"
     },
     "min": "최소",
-    "chart30DaysTitle": "{name} 지난 30일",
-    "@chart30DaysTitle": {
-        "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chartDuringPlanTitle": "{chartName} 영양 계획 {planName} 중",
-    "@chartDuringPlanTitle": {
-        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-        "type": "text",
-        "placeholders": {
-            "chartName": {
-                "type": "String"
-            },
-            "planName": {
-                "type": "String"
-            }
-        }
-    },
     "measurements": "측정",
     "@measurements": {
         "description": "Categories for the measurements such as biceps size, body fat, etc."
@@ -546,10 +523,6 @@
         "description": "Imperative. Label used in popup allowing the user to jump to a specific exercise while in the gym mode"
     },
     "useColors": "색상 사용",
-    "newSet": "새 세트",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
-    },
     "selectAvailablePlates": "사용 가능한 플레이트 선택",
     "isRestDay": "쉬는 날인가",
     "logHelpEntries": "같은 날에 반복 횟수는 같지만 가중치가 다른 항목이 두 개 이상 있는 경우 다이어그램에는 가중치가 더 높은 항목만 표시됩니다.",
@@ -558,16 +531,6 @@
     "anErrorOccurred": "오류가 발생했습니다!",
     "onlyLoggingHelpText": "칼로리만 기록하고 특정 식사에 대한 자세한 영양 계획을 세우고 싶지 않은 경우 상자를 체크하세요",
     "measurement": "측정",
-    "chartAllTimeTitle": "{name} 역대",
-    "@chartAllTimeTitle": {
-        "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
     "energy": "에너지",
     "@energy": {
         "description": "Energy in a meal, ingredient etc. e.g. in kJ"

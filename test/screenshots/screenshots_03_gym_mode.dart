@@ -31,8 +31,8 @@ import 'package:wger/features/routines/widgets/gym_mode/summary.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/theme/theme.dart';
 
-import '../../test_data/exercises.dart';
-import '../../test_data/routines.dart';
+import '../../test_data/screenshots/exercises.dart';
+import '../../test_data/screenshots/routines.dart';
 
 class _StubRoutinesRiverpod extends RoutinesRiverpod {
   _StubRoutinesRiverpod(this._routines);
@@ -46,17 +46,17 @@ Widget createGymModeScreen({Locale? locale}) {
   locale ??= const Locale('en');
   final key = GlobalKey<NavigatorState>();
 
-  final routine = getTestRoutine(exercises: getScreenshotExercises());
+  final routine = getScreenshotRoutine();
   final container = riverpod.ProviderContainer.test(
     overrides: [
       exerciseListFiltersProvider.overrideWithValue(
-        ExerciseFilterState(exercises: getTestExercises()),
+        ExerciseFilterState(exercises: getScreenshotExercises()),
       ),
     ],
   );
   container.read(routinesRiverpodProvider.notifier).state = riverpod.AsyncData(
     RoutinesState(
-      routines: [getTestRoutine(exercises: getScreenshotExercises())],
+      routines: [getScreenshotRoutine()],
     ),
   );
 
@@ -99,7 +99,7 @@ Widget createGymModeResultsScreen({Locale? locale}) {
   final controller = PageController(initialPage: 0);
 
   final key = GlobalKey<NavigatorState>();
-  final routine = getTestRoutine(exercises: getScreenshotExercises());
+  final routine = getScreenshotRoutine();
   routine.sessions[0] = routine.sessions.first.copyWith(datetimeStart: clock.now());
 
   return riverpod.UncontrolledProviderScope(

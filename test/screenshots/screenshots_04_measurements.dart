@@ -20,27 +20,34 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:wger/features/measurements/models/measurement_category.dart';
+import 'package:wger/features/account/providers/user_profile_repository.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
 import 'package:wger/features/measurements/screens/measurement_categories_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/theme/theme.dart';
 
-import '../../test_data/measurements.dart';
+import '../../test_data/profile.dart';
+import '../../test_data/screenshots/measurements.dart';
+import '../helpers/measurement_repository_stubs.dart';
 import 'screenshots_04_measurements.mocks.dart';
 
-@GenerateMocks([MeasurementRepository])
+@GenerateMocks([MeasurementRepository, UserProfileRepository])
 Widget createMeasurementScreen({Locale? locale}) {
   locale ??= const Locale('en');
 
   final mockMeasurementRepo = MockMeasurementRepository();
-  when(
-    mockMeasurementRepo.watchAll(),
-  ).thenAnswer((_) => Stream<List<MeasurementCategory>>.value(getMeasurementCategories()));
+  final measurements = getScreenshotMeasurements();
+  stubMeasurementReads(mockMeasurementRepo, measurements.categories, measurements.entries);
+
+  // The weight card shows the values in the profile unit, so it only appears
+  // once the profile is there
+  final mockUserProfileRepo = MockUserProfileRepository();
+  when(mockUserProfileRepo.watchDrift()).thenAnswer((_) => Stream.value(tUserProfile1));
 
   final container = ProviderContainer.test(
     overrides: [
       measurementRepositoryProvider.overrideWithValue(mockMeasurementRepo),
+      userProfileRepositoryProvider.overrideWithValue(mockUserProfileRepo),
     ],
   );
 

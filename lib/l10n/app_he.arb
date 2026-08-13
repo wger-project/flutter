@@ -135,10 +135,6 @@
   },
   "newDay": "יום חדש",
   "@newDay": {},
-  "newSet": "סט חדש",
-  "@newSet": {
-    "description": "Header when adding a new set to a workout day"
-  },
   "plateCalculator": "צלחות",
   "@plateCalculator": {
     "description": "Label used for the plate calculator in the gym mode"
@@ -857,39 +853,6 @@
   "toAddMealsToThePlanGoToNutritionalPlanDetails": "לצורך הוספת מנות לתוכנית, יש לגשת לפרטי התוכנית התזונתית",
   "@toAddMealsToThePlanGoToNutritionalPlanDetails": {
     "description": "Message shown to guide users to the nutritional plan details page to add meals"
-  },
-  "chartAllTimeTitle": "{name} בכל הזמנים",
-  "@chartAllTimeTitle": {
-    "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-    "type": "text",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "chart30DaysTitle": "{name} ב־30 הימים האחרונים",
-  "@chart30DaysTitle": {
-    "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-    "type": "text",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "chartDuringPlanTitle": "{chartName} במסגרת התוכנית התזונתית {planName}",
-  "@chartDuringPlanTitle": {
-    "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-    "type": "text",
-    "placeholders": {
-      "chartName": {
-        "type": "String"
-      },
-      "planName": {
-        "type": "String"
-      }
-    }
   },
   "aboutDonateText": "בעוד המיזם הזה חופשי ותמיד יישאר כך, תפעול השרת כן עולה לנו כסף! גם הפיתוח דורש השקעה משמעותית של זמן ומאמץ של מתנדבים. התרומה שלך תלך ישירות לכיסוי העלויות האלה, המאפשרות לספק את השירות שלנו נאמנה.",
   "@aboutDonateText": {},
