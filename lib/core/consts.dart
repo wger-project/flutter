@@ -54,6 +54,8 @@ const SUBMIT_BUTTON_KEY_NAME = 'submit-button';
 /// Local Preferences keys
 const PREFS_INGREDIENTS = 'ingredientData';
 const PREFS_WORKOUT_UNITS = 'workoutUnits';
+
+/// Pre-JWT credential blob. Only still read to delete it on startup.
 const PREFS_USER = 'userData';
 const PREFS_USER_DARK_THEME = 'userDarkMode';
 const PREFS_USER_LOCALE = 'userLocale';
@@ -69,15 +71,10 @@ const PREFS_LAST_SERVER = 'lastServer';
 const PREFS_USE_DYNAMIC_COLOR = 'useDynamicColor';
 const USE_DYNAMIC_COLOR_DEFAULT = false;
 
-/// Headless JWT auth: SharedPreferences keys.
-///
-/// Read in parallel with the legacy `PREFS_USER` blob during the migration
-/// window; once a user logs in via the headless flow these supersede it.
-/// The refresh token is **not** stored here, it lives in secure storage
-/// (`SECURE_STORAGE_REFRESH_TOKEN`).
+/// Headless JWT auth: SharedPreferences keys. The refresh token is **not**
+/// stored here, it lives in secure storage (`SECURE_STORAGE_REFRESH_TOKEN`).
 const PREFS_ACCESS_TOKEN = 'accessToken';
 const PREFS_ACCESS_EXPIRES_AT = 'accessExpiresAt';
-const PREFS_TOKEN_TYPE = 'tokenType';
 const PREFS_SERVER_URL = 'serverUrl';
 
 /// JWT `sub` of the user whose data is materialised in the local PowerSync

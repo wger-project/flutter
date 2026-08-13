@@ -129,17 +129,6 @@ void main() {
       expect(refreshCalls, 0);
     });
 
-    test('legacy credential → Authorization: Token <key>', () async {
-      auth = const AuthState(credential: LegacyCredential('legacy-key'));
-
-      final headers = await sendAndCapture(
-        http.Request('GET', Uri.parse('https://wger.example/api/v2/routine/')),
-      );
-
-      expect(headers[HttpHeaders.authorizationHeader], 'Token legacy-key');
-      expect(refreshCalls, 0);
-    });
-
     test('no auth state → no Authorization header set', () async {
       auth = null;
       final headers = await sendAndCapture(
@@ -189,16 +178,6 @@ void main() {
           expiresAt: DateTime.now().toUtc().add(const Duration(hours: 1)),
         ),
       );
-
-      await sendAndCapture(
-        http.Request('GET', Uri.parse('https://wger.example/api/v2/routine/')),
-      );
-
-      expect(refreshCalls, 0);
-    });
-
-    test('does not fire for the legacy permanent token', () async {
-      auth = const AuthState(credential: LegacyCredential('legacy-key'));
 
       await sendAndCapture(
         http.Request('GET', Uri.parse('https://wger.example/api/v2/routine/')),
@@ -323,8 +302,8 @@ void main() {
       verify(inner.send(any)).called(1); // No retry attempted.
     });
 
-    test('legacy 401 → no retry, original 401 surfaces', () async {
-      auth = const AuthState(credential: LegacyCredential('legacy-key'));
+    test('401 without a credential → no retry, original 401 surfaces', () async {
+      auth = const AuthState();
       when(inner.send(any)).thenAnswer(
         (_) async => http.StreamedResponse(Stream.value(<int>[]), 401),
       );
