@@ -1244,6 +1244,34 @@ void main() {
       expect(await PreferenceHelper.asyncPref.getBool(PREFS_HAS_EVER_SYNCED), true);
     });
 
+    test('rejected refresh completes even when the PowerSync disconnect hangs', () async {
+      // Regression test for a deadlock: the disconnect can block on a sync
+      // fetch that awaits this same single-flight refresh, so the session
+      // reset must not await it. The refresh must finish and clear the
+      // session even when the disconnect never completes.
+      await PreferenceHelper.asyncPref.setBool(PREFS_HAS_EVER_SYNCED, true);
+      when(mockSecureStorage.readRefreshToken()).thenAnswer((_) async => 'old-refresh');
+      when(
+        mockClient.post(tRefresh, headers: anyNamed('headers'), body: anyNamed('body')),
+      ).thenAnswer((_) async => Response('Bad Request', 400));
+
+      final container = makeContainer();
+      await container.read(authProvider.future);
+
+      var disconnectCalls = 0;
+      final notifier = container.read(authProvider.notifier);
+      notifier.disconnectPowerSync = () {
+        disconnectCalls++;
+        return Completer<void>().future; // never completes
+      };
+
+      // Before the fix this future never completed.
+      await notifier.refreshAccessToken().timeout(const Duration(seconds: 5));
+
+      expect(container.read(authProvider).value!.status, AuthStatus.loggedOut);
+      expect(disconnectCalls, 1);
+    });
+
     test('network error → stays logged in', () async {
       // Pure offline case: we cannot conclude anything about the validity of
       // the refresh token, so keep the session intact and let the user keep
