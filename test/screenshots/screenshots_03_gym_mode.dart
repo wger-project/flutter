@@ -16,7 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:wger/features/exercises/providers/exercise_filter_state.dart';
@@ -100,7 +99,6 @@ Widget createGymModeResultsScreen({Locale? locale}) {
 
   final key = GlobalKey<NavigatorState>();
   final routine = getScreenshotRoutine();
-  routine.sessions[0] = routine.sessions.first.copyWith(datetimeStart: clock.now());
 
   return riverpod.UncontrolledProviderScope(
     container: riverpod.ProviderContainer.test(

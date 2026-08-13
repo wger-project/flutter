@@ -43,8 +43,10 @@ enum DeviceType {
   androidTv('tvScreenshots'),
   androidWear('wearScreenshots'),
 
+  // Apple only needs the largest size per device family, the smaller ones are
+  // scaled down automatically
   iOSPhoneBig('iPhone 6.9', isAndroid: false),
-  iOSPhoneSmall('iPhone 6.7', isAndroid: false);
+  iOSTabletBig('iPad 13', isAndroid: false);
 
   final String folderName;
   final bool isAndroid;
@@ -90,33 +92,33 @@ Future<void> takeScreenshot(
 const languages = [
   // Note: it seems if too many languages are processed at once, sometimes the process
   // disappear and no images are written. Doing this in smaller steps works fine
-  'ar',
-  'ca',
-  'cs-CZ',
+  // 'ar',
+  // 'ca',
+  // 'cs-CZ',
   'de-DE',
-  'el-GR',
-  'en-US',
-  'es-ES',
-
-  'fa-IR',
-  'fr-FR',
-  'hi-IN',
-  'hr',
-  'it-IT',
-  'iw-IL',
-  'ko-KR',
-  'nb-NO',
-
-  'pl-PL',
-  'pt-BR',
-  'pt-PT',
-  'ru-RU',
-  'sr',
-  'ta-IN',
-  'tr-TR',
-  'uk',
-  'zh-CN',
-  'zh-TW',
+  // 'el-GR',
+  // 'en-US',
+  // 'es-ES',
+  //
+  // 'fa-IR',
+  // 'fr-FR',
+  // 'hi-IN',
+  // 'hr',
+  // 'it-IT',
+  // 'iw-IL',
+  // 'ko-KR',
+  // 'nb-NO',
+  //
+  // 'pl-PL',
+  // 'pt-BR',
+  // 'pt-PT',
+  // 'ru-RU',
+  // 'sr',
+  // 'ta-IN',
+  // 'tr-TR',
+  // 'uk',
+  // 'zh-CN',
+  // 'zh-TW',
 ];
 
 void main() {
