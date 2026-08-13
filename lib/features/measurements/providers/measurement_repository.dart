@@ -300,9 +300,23 @@ class MeasurementRepository {
   /// query reads the same rows as the typed ones.
   List<Variable> _bucketVariables(String id, DateTime? since, DateTime? until) => [
     Variable.withString(id),
-    if (since != null) Variable.withString(since.toUtc().toIso8601String()),
-    if (until != null) Variable.withString(until.toUtc().toIso8601String()),
+    if (since != null) Variable.withString(_dateBound(since)),
+    if (until != null) Variable.withString(_dateBound(until)),
   ];
+
+  /// A date bound for the string comparisons the queries here do.
+  ///
+  /// Padded to the six fractional digits the sync writes, while Dart prints
+  /// three for a round instant. Since `'0' < 'Z'`, an unpadded bound compares
+  /// as later than a synced row on the very same instant, which is where the
+  /// daily aggregates of a health metric sit: on the day the window starts.
+  String _dateBound(DateTime value) {
+    final utc = value.toUtc().toIso8601String();
+    final dot = utc.indexOf('.');
+    final fraction = utc.substring(dot + 1, utc.length - 1);
+
+    return '${utc.substring(0, dot + 1)}${fraction.padRight(6, '0')}Z';
+  }
 
   /// The date bounds as SQL, against the variables [_bucketVariables] binds
   /// after the id. The upper one is exclusive, so a caller passes the start of
@@ -330,7 +344,7 @@ class MeasurementRepository {
 
     final variables = [
       Variable.withString(categoryId),
-      if (since != null) Variable.withString(since.toUtc().toIso8601String()),
+      if (since != null) Variable.withString(_dateBound(since)),
     ];
     final where = 'WHERE category_id = ?1${since == null ? '' : ' AND date >= ?2'}';
     final day = _bucketExpression(MeasurementBucketUnit.day);

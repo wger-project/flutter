@@ -527,6 +527,38 @@ void main() {
       expect(buckets.map((b) => b.sum), [80]);
     });
 
+    /// An entry as the sync writes it back: the service serialises timestamps
+    /// with six fractional digits, drift with three.
+    Future<void> seedSyncedEntry(String id, DateTime date, num value) {
+      final iso = date.toUtc().toIso8601String();
+      final utc = '${iso.substring(0, iso.length - 1)}000Z';
+
+      return db.customStatement(
+        'INSERT INTO measurements_measurement (id, category_id, date, value, notes) '
+        "VALUES ('$id', '1', '$utc', $value, '')",
+      );
+    }
+
+    test('since keeps a synced entry sitting exactly on it', () async {
+      // Where the daily aggregates of a health metric are: on the start of the
+      // day, which is what a window starts on too
+      await seedEntries([]);
+      await seedSyncedEntry('synced', DateTime(2026, 3, 1), 60);
+
+      final buckets = await repo.watchEntryBuckets('1', since: DateTime(2026, 3, 1)).first;
+
+      expect(buckets.map((b) => b.sum), [60]);
+    });
+
+    test('until drops a synced entry sitting exactly on it', () async {
+      await seedEntries([]);
+      await seedSyncedEntry('synced', DateTime(2026, 5, 4), 80);
+
+      final buckets = await repo.watchEntryBuckets('1', until: DateTime(2026, 5, 4)).first;
+
+      expect(buckets, isEmpty);
+    });
+
     test('until bounds the entries read, excluding its own day', () async {
       // What a chart of a finished plan period reads: everything after the
       // last day belongs to no plan
@@ -737,6 +769,19 @@ void main() {
       // Both days total 5000, so the histogram sees one value twice
       expect(counts.single.value, 5000);
       expect(counts.single.count, 2);
+    });
+
+    test('since keeps a synced entry sitting exactly on it', () async {
+      await seedValues([(DateTime(2026, 5, 4, 8), 60)]);
+      final iso = DateTime(2026, 3, 1).toUtc().toIso8601String();
+      await db.customStatement(
+        'INSERT INTO measurements_measurement (id, category_id, date, value, notes) '
+        "VALUES ('synced', '1', '${iso.substring(0, iso.length - 1)}000Z', 50, '')",
+      );
+
+      final counts = await repo.watchValueCounts('1', since: DateTime(2026, 3, 1)).first;
+
+      expect(counts.map((c) => c.value), [50, 60]);
     });
 
     test('mixed units are kept apart', () async {
