@@ -97,6 +97,42 @@ Future<ProbeResult> _defaultReachabilityCheck(
 @visibleForTesting
 Duration? networkProbeInterval = const Duration(seconds: 30);
 
+/// Whether the device has a network adapter at all (wifi, mobile, ethernet...)
+///
+/// This is a platform fact and may therefore gate a connection attempt, unlike
+/// the reachability probe behind [NetworkStatus], which is only an indication.
+/// Starts out true so nothing waits for the first answer of the platform
+/// channel; an adapterless device corrects it a moment later.
+@Riverpod(keepAlive: true)
+class NetworkAdapterAvailable extends _$NetworkAdapterAvailable {
+  final _logger = Logger('NetworkStatus');
+
+  @override
+  bool build() {
+    final sub = Connectivity().onConnectivityChanged.listen(_update);
+    ref.onDispose(sub.cancel);
+    unawaited(_seed());
+    return true;
+  }
+
+  Future<void> _seed() async {
+    final conn = await Connectivity().checkConnectivity();
+    if (ref.mounted) {
+      _update(conn);
+    }
+  }
+
+  /// An empty list means no connection either, hence [Iterable.any] rather
+  /// than a check for [ConnectivityResult.none].
+  void _update(List<ConnectivityResult> conn) {
+    final available = conn.any((c) => c != ConnectivityResult.none);
+    if (available != state) {
+      _logger.info('Network adapter ${available ? 'available' : 'gone'}');
+    }
+    state = available;
+  }
+}
+
 @Riverpod(keepAlive: true)
 class NetworkStatus extends _$NetworkStatus {
   final _logger = Logger('NetworkStatus');

@@ -302,6 +302,66 @@ void main() {
     expect(offline.first.message, contains('no network adapter'));
   });
 
+  group('networkAdapterAvailableProvider', () {
+    test('starts available and stays there once the platform confirms an adapter', () async {
+      final container = makeContainer();
+
+      // Nothing waits for the platform channel to answer.
+      expect(container.read(networkAdapterAvailableProvider), isTrue);
+
+      await pumpEventQueue();
+      expect(container.read(networkAdapterAvailableProvider), isTrue);
+    });
+
+    test('turns false once the platform reports no adapter', () async {
+      connectivity.current = [ConnectivityResult.none];
+      final container = makeContainer();
+      container.read(networkAdapterAvailableProvider);
+
+      await pumpEventQueue();
+
+      expect(container.read(networkAdapterAvailableProvider), isFalse);
+    });
+
+    test('an empty result list counts as no adapter', () async {
+      connectivity.current = [];
+      final container = makeContainer();
+      container.read(networkAdapterAvailableProvider);
+
+      await pumpEventQueue();
+
+      expect(container.read(networkAdapterAvailableProvider), isFalse);
+    });
+
+    test('follows the adapter change events in both directions', () async {
+      final container = makeContainer();
+      container.read(networkAdapterAvailableProvider);
+      await pumpEventQueue();
+
+      connectivity.emit([ConnectivityResult.none]);
+      await pumpEventQueue();
+      expect(container.read(networkAdapterAvailableProvider), isFalse);
+
+      connectivity.emit([ConnectivityResult.mobile]);
+      await pumpEventQueue();
+      expect(container.read(networkAdapterAvailableProvider), isTrue);
+    });
+
+    test('a failed reachability probe leaves the adapter state alone', () async {
+      // The whole point of the split: the probe may be wrong, the adapter is
+      // a platform fact and gates the PowerSync connection.
+      reachabilityCheck = (_, _, _) async => (reachable: false, reason: 'test');
+      final container = makeContainer(serverUrl: 'https://wger.example');
+      container.read(networkAdapterAvailableProvider);
+
+      await container.read(networkStatusProvider.notifier).check();
+      await pumpEventQueue();
+
+      expect(container.read(networkStatusProvider), isFalse);
+      expect(container.read(networkAdapterAvailableProvider), isTrue);
+    });
+  });
+
   test('periodically re-probes on the configured interval', () async {
     networkProbeInterval = const Duration(milliseconds: 50);
     var probeCount = 0;

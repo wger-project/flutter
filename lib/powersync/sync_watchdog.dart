@@ -55,6 +55,7 @@ class SyncStreamWatchdog {
   Timer? _timer;
   DateTime? _lastCheckpoint;
   bool _sawStatus = false;
+  bool _offline = false;
 
   /// Last error seen since the watchdog was armed, for the warning. Kept
   /// across status events: a retry loop clears the error while it reconnects
@@ -101,14 +102,33 @@ class SyncStreamWatchdog {
     // already stalled there is nothing new to detect (and no reason to log
     // the warning again), so the timer stays off until recovery.
     if (!_disarmed &&
+        !_offline &&
         !stalled.value &&
         (status.connecting || status.connected || _lastError != null)) {
       _timer ??= Timer(timeout, _onTimeout);
     }
   }
 
-  /// Call when the app disconnects on purpose (offline gate, logout), so a
-  /// device that is simply offline is never reported as blocked.
+  /// Whether the backend is currently unreachable for plain REST requests as
+  /// well. While set the watchdog stays quiet: a stream that delivers nothing
+  /// against a backend that answers nothing is not the blocked-stream case.
+  /// Unlike [reset] this keeps the connection epoch, so a brief false offline
+  /// does not restart the detection from scratch.
+  set offline(bool value) {
+    if (value == _offline) {
+      return;
+    }
+    _offline = value;
+    if (value) {
+      _cancelTimer();
+      stalled.value = false;
+    }
+  }
+
+  /// Call when the app disconnects on purpose (adapter loss, logout, manual
+  /// reconnect), so a device that is simply not connected is never reported as
+  /// blocked. Starts a new connection epoch, see [offline] for the softer
+  /// variant.
   void reset() {
     _cancelTimer();
     _disarmed = false;

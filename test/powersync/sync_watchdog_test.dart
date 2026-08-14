@@ -179,6 +179,47 @@ void main() {
     });
   });
 
+  test('stays quiet while the backend is unreachable for plain requests', () {
+    fakeAsync((async) {
+      watchdog.offline = true;
+      watchdog.onStatus(buildSyncStatus(connecting: true));
+
+      async.elapse(watchdog.timeout * 2);
+
+      expect(watchdog.stalled.value, isFalse);
+      expect(records, isEmpty);
+    });
+  });
+
+  test('going offline cancels a pending timer and clears the flag', () {
+    fakeAsync((async) {
+      watchdog.onStatus(buildSyncStatus(connecting: true));
+      async.elapse(watchdog.timeout);
+      expect(watchdog.stalled.value, isTrue);
+
+      watchdog.offline = true;
+      expect(watchdog.stalled.value, isFalse);
+
+      async.elapse(watchdog.timeout * 2);
+      expect(watchdog.stalled.value, isFalse);
+    });
+  });
+
+  test('re-arms on the next status once the backend answers again', () {
+    fakeAsync((async) {
+      watchdog.offline = true;
+      watchdog.onStatus(buildSyncStatus(connecting: true));
+      async.elapse(watchdog.timeout);
+      expect(watchdog.stalled.value, isFalse);
+
+      watchdog.offline = false;
+      watchdog.onStatus(buildSyncStatus(connecting: true));
+      async.elapse(watchdog.timeout);
+
+      expect(watchdog.stalled.value, isTrue);
+    });
+  });
+
   test('re-arms after reset() for the next connection epoch', () {
     fakeAsync((async) {
       watchdog.onStatus(buildSyncStatus(connected: true, lastSyncedAt: DateTime(2026, 7, 23)));

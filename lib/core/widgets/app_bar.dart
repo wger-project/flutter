@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/core/form_screen.dart';
@@ -56,24 +58,23 @@ class MainAppBar extends ConsumerWidget implements PreferredSizeWidget {
           icon: Icon(status.icon),
           onPressed: () => showDialog<void>(
             context: context,
-            // The dialog watches the sync state itself; only the server URL
-            // and the offline gate are snapshots taken when it opens.
-            // No reconnect while offline: the app deliberately disconnects
-            // there (see powerSyncInstance). The tap-time check covers the
-            // network dropping while the dialog is open
+            // The dialog watches the sync state itself; only the server URL is
+            // a snapshot taken when it opens. The reconnect action is never
+            // gated on the network status: it exists for the case where that
+            // status is wrong, so it re-probes instead of trusting it
             builder: (_) => SyncStatusDialog(
               serverUrl: ref.read(wgerBaseProvider).serverUrl,
-              onReconnect: !ref.read(networkStatusProvider)
-                  ? null
-                  : () {
-                      final db = builtPowerSyncInstance;
-                      final serverUrl = ref.read(wgerBaseProvider).serverUrl;
-                      if (db == null || serverUrl == null || !ref.read(networkStatusProvider)) {
-                        return;
-                      }
-                      ref.read(syncWatchdogProvider).reset();
-                      connectPowerSync(db, serverUrl, ref.read(authenticatedHttpClientProvider));
-                    },
+              onReconnect: () {
+                unawaited(ref.read(networkStatusProvider.notifier).check(optimistic: true));
+
+                final db = builtPowerSyncInstance;
+                final serverUrl = ref.read(wgerBaseProvider).serverUrl;
+                if (db == null || serverUrl == null) {
+                  return;
+                }
+                ref.read(syncWatchdogProvider).reset();
+                connectPowerSync(db, serverUrl, ref.read(authenticatedHttpClientProvider));
+              },
             ),
           ),
         ),
