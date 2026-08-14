@@ -20,6 +20,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
@@ -52,6 +53,12 @@ class _FakeUrlLauncher extends Fake with MockPlatformInterfaceMixin implements U
     launchedUrl = url;
     return true;
   }
+}
+
+/// A [NetworkStatus] that is offline without going through any probe.
+class _OfflineNetworkStatus extends NetworkStatus {
+  @override
+  bool build() => false;
 }
 
 @GenerateMocks([http.Client, SecureTokenStorage])
@@ -96,11 +103,12 @@ void main() {
     },
   };
 
-  Widget getWidget() {
+  Widget getWidget({List<Override> overrides = const []}) {
     return ProviderScope(
       overrides: [
         authHttpClientProvider.overrideWithValue(mockClient),
         secureTokenStorageProvider.overrideWithValue(mockSecureStorage),
+        ...overrides,
       ],
       child: const MaterialApp(
         localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -331,9 +339,11 @@ void main() {
     });
 
     testWidgets('Login button is disabled when offline', (WidgetTester tester) async {
-      // Arrange: no connectivity.
-      reachabilityCheck = (_, _, _) async => (reachable: false, reason: 'test');
-      await tester.pumpWidget(getWidget());
+      // Arrange: offline. Faking the notifier keeps this independent of how
+      // many failed probes NetworkStatus needs before it flips.
+      await tester.pumpWidget(
+        getWidget(overrides: [networkStatusProvider.overrideWith(_OfflineNetworkStatus.new)]),
+      );
       await tester.pumpAndSettle();
 
       // Assert: the action button cannot be tapped.

@@ -19,6 +19,7 @@
 import 'dart:async';
 
 import 'package:connectivity_plus_platform_interface/connectivity_plus_platform_interface.dart';
+import 'package:fake_async/fake_async.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -76,6 +77,14 @@ void main() {
     );
   }
 
+  /// Drives the state to offline with a failing [reachabilityCheck] in place.
+  /// Takes the hysteresis into account, which needs more than one failure.
+  Future<void> goOffline(ProviderContainer container) async {
+    final notifier = container.read(networkStatusProvider.notifier);
+    await notifier.check();
+    await notifier.check();
+  }
+
   test('starts optimistically online before the first probe completes', () async {
     reachabilityCheck = (_, _, _) async => (reachable: false, reason: 'test');
     final container = makeContainer(serverUrl: 'https://wger.example');
@@ -111,13 +120,45 @@ void main() {
     expect(container.read(networkStatusProvider), isTrue);
   });
 
-  test('reports offline when the backend probe fails', () async {
+  test('a single failed probe does not take the app offline', () async {
+    // The 1s-timeout probe used to be a coin flip on mobile networks, and one
+    // misfire was enough to disconnect everything for half a minute.
+    reachabilityCheck = (_, _, _) async => (reachable: true, reason: 'test');
+    final container = makeContainer(serverUrl: 'https://wger.example');
+    // Build first: the probe from build() would otherwise fail as well and
+    // the two together are exactly what does flip the state.
+    container.read(networkStatusProvider);
+    await pumpEventQueue();
+
+    reachabilityCheck = (_, _, _) async => (reachable: false, reason: 'test');
+    await container.read(networkStatusProvider.notifier).check();
+
+    expect(container.read(networkStatusProvider), isTrue);
+  });
+
+  test('reports offline once two probes fail in a row', () async {
     reachabilityCheck = (_, _, _) async => (reachable: false, reason: 'test');
     final container = makeContainer(serverUrl: 'https://wger.example');
 
-    await container.read(networkStatusProvider.notifier).check();
+    await goOffline(container);
 
     expect(container.read(networkStatusProvider), isFalse);
+  });
+
+  test('a successful probe in between resets the failure count', () async {
+    reachabilityCheck = (_, _, _) async => (reachable: true, reason: 'test');
+    final container = makeContainer(serverUrl: 'https://wger.example');
+    final notifier = container.read(networkStatusProvider.notifier);
+    await pumpEventQueue();
+
+    reachabilityCheck = (_, _, _) async => (reachable: false, reason: 'test');
+    await notifier.check();
+    reachabilityCheck = (_, _, _) async => (reachable: true, reason: 'test');
+    await notifier.check();
+    reachabilityCheck = (_, _, _) async => (reachable: false, reason: 'test');
+    await notifier.check();
+
+    expect(container.read(networkStatusProvider), isTrue);
   });
 
   test('probes the server version endpoint when a server URL is configured', () async {
@@ -169,23 +210,26 @@ void main() {
   });
 
   test('re-probes when a connectivity change event arrives', () async {
-    reachabilityCheck = (_, _, _) async => (reachable: true, reason: 'test');
+    var probes = 0;
+    reachabilityCheck = (_, _, _) async {
+      probes++;
+      return (reachable: true, reason: 'test');
+    };
     final container = makeContainer(serverUrl: 'https://wger.example');
     await container.read(networkStatusProvider.notifier).check();
-    expect(container.read(networkStatusProvider), isTrue);
+    final beforeEvent = probes;
 
-    // Adapter still reports a connection, but the backend probe now fails.
-    reachabilityCheck = (_, _, _) async => (reachable: false, reason: 'test');
+    // Adapter still reports a connection, but the backend has to prove itself.
     connectivity.emit([ConnectivityResult.wifi]);
     await pumpEventQueue();
 
-    expect(container.read(networkStatusProvider), isFalse);
+    expect(probes, greaterThan(beforeEvent));
   });
 
   test('goes online immediately on a connectivity change, offline only after the probe', () async {
     reachabilityCheck = (_, _, _) async => (reachable: false, reason: 'test');
     final container = makeContainer(serverUrl: 'https://wger.example');
-    await container.read(networkStatusProvider.notifier).check();
+    await goOffline(container);
     expect(container.read(networkStatusProvider), isFalse);
 
     // An adapter appears: optimistically online while the probe is pending.
@@ -204,7 +248,7 @@ void main() {
   test('goes online optimistically when the app resumes from the background', () async {
     reachabilityCheck = (_, _, _) async => (reachable: false, reason: 'test');
     final container = makeContainer(serverUrl: 'https://wger.example');
-    await container.read(networkStatusProvider.notifier).check();
+    await goOffline(container);
     expect(container.read(networkStatusProvider), isFalse);
 
     final probeCompleter = Completer<ProbeResult>();
@@ -223,10 +267,10 @@ void main() {
   test('plain check stays pessimistic while the probe is pending', () async {
     reachabilityCheck = (_, _, _) async => (reachable: false, reason: 'test');
     final container = makeContainer(serverUrl: 'https://wger.example');
-    await container.read(networkStatusProvider.notifier).check();
+    await goOffline(container);
     expect(container.read(networkStatusProvider), isFalse);
 
-    // The periodic re-probe must not flash "online" while the backend is down.
+    // The idle re-probe must not flash "online" while the backend is down.
     final probeCompleter = Completer<ProbeResult>();
     reachabilityCheck = (_, _, _) => probeCompleter.future;
     final pending = container.read(networkStatusProvider.notifier).check();
@@ -267,7 +311,7 @@ void main() {
 
     reachabilityCheck = (_, _, _) async => (reachable: false, reason: 'probe timed out');
     final container = makeContainer(serverUrl: 'https://wger.example');
-    await container.read(networkStatusProvider.notifier).check();
+    await goOffline(container);
     await pumpEventQueue();
 
     expect(lines('offline'), hasLength(1));
@@ -300,6 +344,111 @@ void main() {
     );
     expect(offline, hasLength(1));
     expect(offline.first.message, contains('no network adapter'));
+  });
+
+  test('retries a failed probe on the backoff ladder and settles back after a success', () {
+    fakeAsync((async) {
+      networkProbeInterval = const Duration(seconds: 30);
+      var probes = 0;
+      var reachable = false;
+      reachabilityCheck = (_, _, _) async {
+        probes++;
+        return (reachable: reachable, reason: 'test');
+      };
+      final container = makeContainer(serverUrl: 'https://wger.example');
+      container.read(networkStatusProvider);
+      async.flushMicrotasks();
+      expect(probes, 1, reason: 'the probe from build()');
+
+      // Each failure schedules the next probe sooner than the idle cadence.
+      for (final delay in const [Duration(seconds: 2), Duration(seconds: 5)]) {
+        async.elapse(delay);
+        async.flushMicrotasks();
+      }
+      expect(probes, 3);
+
+      // Recovered on the third retry: back to the idle cadence.
+      reachable = true;
+      async.elapse(const Duration(seconds: 10));
+      async.flushMicrotasks();
+      expect(probes, 4);
+      async.elapse(const Duration(seconds: 29));
+      async.flushMicrotasks();
+      expect(probes, 4, reason: 'a working backend is not probed every few seconds');
+
+      // And the ladder starts from the top again on the next failure.
+      reachable = false;
+      async.elapse(const Duration(seconds: 1));
+      async.flushMicrotasks();
+      expect(probes, 5);
+      async.elapse(const Duration(seconds: 2));
+      async.flushMicrotasks();
+      expect(probes, 6);
+    });
+  });
+
+  test('a reported request success flips the state online', () async {
+    reachabilityCheck = (_, _, _) async => (reachable: false, reason: 'test');
+    final container = makeContainer(serverUrl: 'https://wger.example');
+    await goOffline(container);
+    expect(container.read(networkStatusProvider), isFalse);
+
+    container.read(networkStatusProvider.notifier).reportRequestSuccess();
+
+    expect(container.read(networkStatusProvider), isTrue);
+  });
+
+  test('reported request successes push the next probe out', () {
+    fakeAsync((async) {
+      networkProbeInterval = const Duration(seconds: 30);
+      var probes = 0;
+      reachabilityCheck = (_, _, _) async {
+        probes++;
+        return (reachable: true, reason: 'test');
+      };
+      final container = makeContainer(serverUrl: 'https://wger.example');
+      final notifier = container.read(networkStatusProvider.notifier);
+      async.flushMicrotasks();
+      expect(probes, 1);
+
+      // Traffic keeps arriving just before every scheduled probe.
+      for (var i = 0; i < 3; i++) {
+        async.elapse(const Duration(seconds: 29));
+        notifier.reportRequestSuccess();
+      }
+      async.elapse(const Duration(seconds: 29));
+
+      expect(probes, 1, reason: 'real requests already answered the question');
+    });
+  });
+
+  test('a reported request failure probes immediately, but only one at a time', () async {
+    reachabilityCheck = (_, _, _) async => (reachable: true, reason: 'test');
+    final container = makeContainer(serverUrl: 'https://wger.example');
+    final notifier = container.read(networkStatusProvider.notifier);
+    await pumpEventQueue();
+
+    var probes = 0;
+    final pendingProbe = Completer<ProbeResult>();
+    reachabilityCheck = (_, _, _) {
+      probes++;
+      return pendingProbe.future;
+    };
+    notifier.reportRequestFailure();
+    await pumpEventQueue();
+    expect(probes, 1);
+
+    // The rest of a failing burst waits for the answer instead of piling up.
+    notifier.reportRequestFailure();
+    notifier.reportRequestFailure();
+    await pumpEventQueue();
+    expect(probes, 1);
+
+    pendingProbe.complete((reachable: false, reason: 'test'));
+    await pumpEventQueue();
+    notifier.reportRequestFailure();
+    await pumpEventQueue();
+    expect(probes, 2);
   });
 
   group('networkAdapterAvailableProvider', () {
@@ -354,7 +503,7 @@ void main() {
       final container = makeContainer(serverUrl: 'https://wger.example');
       container.read(networkAdapterAvailableProvider);
 
-      await container.read(networkStatusProvider.notifier).check();
+      await goOffline(container);
       await pumpEventQueue();
 
       expect(container.read(networkStatusProvider), isFalse);
