@@ -26,6 +26,7 @@ import 'package:mockito/mockito.dart';
 import 'package:wger/core/network/auth_http_client.dart';
 import 'package:wger/core/network/auth_notifier.dart';
 import 'package:wger/core/network/auth_state.dart';
+import 'package:wger/core/network/network_provider.dart';
 
 import '../../helpers/fake_connectivity.dart';
 import 'auth_http_client_test.mocks.dart';
@@ -59,6 +60,20 @@ class _RecordingAuthNotifier extends AuthNotifier {
     _initial = const AuthState();
     state = const AsyncData(AuthState());
   }
+}
+
+/// Records what the provider's reachability closure routes to the notifier.
+class _RecordingNetworkStatus extends NetworkStatus {
+  final reports = <bool>[];
+
+  @override
+  bool build() => true;
+
+  @override
+  void reportRequestSuccess() => reports.add(true);
+
+  @override
+  void reportRequestFailure() => reports.add(false);
 }
 
 @GenerateMocks([http.Client])
@@ -458,6 +473,7 @@ void main() {
     // AuthHttpClient have to reach the notifier, or every request goes out
     // unauthenticated and an expired session is never noticed.
     late _RecordingAuthNotifier notifier;
+    late _RecordingNetworkStatus networkStatus;
 
     JwtCredential jwt(String token) => JwtCredential(
       accessToken: token,
@@ -466,10 +482,12 @@ void main() {
 
     http.Client buildFromProvider(AuthState initial) {
       notifier = _RecordingAuthNotifier(initial);
+      networkStatus = _RecordingNetworkStatus();
       final container = ProviderContainer.test(
         overrides: [
           authHttpClientProvider.overrideWithValue(inner),
           authProvider.overrideWith(() => notifier),
+          networkStatusProvider.overrideWith(() => networkStatus),
         ],
       );
       // The provider reads authProvider synchronously, so the state has to be
@@ -511,6 +529,33 @@ void main() {
         (captured.last as http.BaseRequest).headers[HttpHeaders.authorizationHeader],
         'Bearer refreshed',
       );
+    });
+
+    test('reports a reached backend to the network status', () async {
+      // The closure resolves the notifier at call time; a captured one would
+      // go stale when the auth flow invalidates networkStatusProvider.
+      final client = buildFromProvider(AuthState(credential: jwt('token')));
+      await pumpEventQueue();
+      when(inner.send(any)).thenAnswer(
+        (_) async => http.StreamedResponse(Stream.value(<int>[]), 200),
+      );
+
+      await client.send(http.Request('GET', Uri.parse('https://wger.example/api/v2/routine/')));
+
+      expect(networkStatus.reports, [true]);
+    });
+
+    test('reports an unreachable backend to the network status', () async {
+      final client = buildFromProvider(AuthState(credential: jwt('token')));
+      await pumpEventQueue();
+      when(inner.send(any)).thenThrow(const SocketException('no route to host'));
+
+      await expectLater(
+        client.send(http.Request('GET', Uri.parse('https://wger.example/api/v2/routine/'))),
+        throwsA(isA<SocketException>()),
+      );
+
+      expect(networkStatus.reports, [false]);
     });
 
     test('a 401 that survives the refresh clears the session', () async {

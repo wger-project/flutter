@@ -63,8 +63,9 @@ class _OfflineNetworkStatus extends NetworkStatus {
 
 @GenerateMocks([http.Client, SecureTokenStorage])
 void main() {
-  // The auth screen watches networkStatusProvider to gate the action button.
-  // Stub connectivity so that probe is deterministic.
+  // The screen itself no longer gates on the network status, but the auth
+  // flow still reaches networkStatusProvider, so keep the connectivity
+  // platform stubbed instead of relying on the notifier never being built.
   installFakeConnectivity();
   // Installs the prefs/PackageInfo fakes and clears the store between tests,
   // so values a test writes (e.g. PREFS_LAST_SERVER) don't leak into the next.

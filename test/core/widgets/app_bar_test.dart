@@ -42,9 +42,10 @@ class _FakeNetworkStatus extends NetworkStatus {
   @override
   bool build() => _online;
 
+  // The fake makes no request, so the timeout has nothing to apply to.
   @override
   Future<bool> check({
-    Duration timeout = const Duration(seconds: 1),
+    Duration timeout = Duration.zero,
     bool optimistic = false,
   }) async {
     checks.add(optimistic);
@@ -59,7 +60,9 @@ void main() {
 
   setUp(() => networkStatus = _FakeNetworkStatus(false));
 
-  Future<void> pumpAppBar(WidgetTester tester) async {
+  /// Renders the app bar with the current [networkStatus] fake, and opens the
+  /// sync dialog through the [icon] the bar is expected to show.
+  Future<void> pumpAppBar(WidgetTester tester, {IconData icon = Icons.cloud_off}) async {
     final watchdog = SyncStreamWatchdog();
     addTearDown(watchdog.dispose);
 
@@ -82,7 +85,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byIcon(Icons.cloud_off));
+    await tester.tap(find.byIcon(icon));
     await tester.pumpAndSettle();
   }
 
@@ -92,6 +95,18 @@ void main() {
     await pumpAppBar(tester);
 
     expect(find.text(i18n.syncStatusReconnect), findsOneWidget);
+  });
+
+  testWidgets('a disconnected sync engine on a working network reads as connecting', (
+    tester,
+  ) async {
+    // cloud_off here would say "broken" for what is just the retry loop
+    // working, which is how a three second reconnect looked like an outage.
+    networkStatus = _FakeNetworkStatus(true);
+
+    await pumpAppBar(tester, icon: Icons.cloud_queue);
+
+    expect(find.text(i18n.syncStatusConnecting), findsOneWidget);
   });
 
   testWidgets('re-probes the network when reconnect is tapped', (tester) async {

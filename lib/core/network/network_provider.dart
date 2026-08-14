@@ -109,7 +109,7 @@ const _failuresBeforeOffline = 2;
 
 /// Timeout for a single reachability probe. Generous on purpose: a HEAD that
 /// takes two seconds means slow, not offline.
-const probeTimeout = Duration(seconds: 3);
+const _probeTimeout = Duration(seconds: 3);
 
 /// Whether the device has a network adapter at all (wifi, mobile, ethernet...)
 ///
@@ -225,7 +225,7 @@ class NetworkStatus extends _$NetworkStatus {
   /// the state changes only once the probe has answered. The scheduled
   /// re-probe stays pessimistic so a dead backend doesn't flash "online".
   Future<bool> check({
-    Duration timeout = probeTimeout,
+    Duration timeout = _probeTimeout,
     bool optimistic = false,
   }) => _probeRun(() async {
     final conn = await Connectivity().checkConnectivity();
@@ -261,7 +261,7 @@ class NetworkStatus extends _$NetworkStatus {
 
   Future<bool> _update(
     List<ConnectivityResult> conn, {
-    Duration timeout = probeTimeout,
+    Duration timeout = _probeTimeout,
     bool optimistic = false,
   }) async {
     // Only short-circuit when there's clearly no network adapter at all. Any

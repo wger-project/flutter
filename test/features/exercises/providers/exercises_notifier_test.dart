@@ -299,6 +299,39 @@ void main() {
       ).called(1);
     });
 
+    test('online: a network error falls back through the local post-filters', () async {
+      // The options the backend would have applied have to be applied here
+      // too, so the fallback has to run the filtering path, not just the
+      // substring search.
+      when(
+        mockRepo.searchExerciseServerWithSearchMode(
+          any,
+          languageCode: anyNamed('languageCode'),
+          searchLanguage: anyNamed('searchLanguage'),
+          searchMode: anyNamed('searchMode'),
+          categories: anyNamed('categories'),
+        ),
+      ).thenThrow(const SocketException('no route to host'));
+      final container = await primedContainer();
+      final notifier = container.read(exercisesProvider.notifier);
+
+      expect(
+        (await notifier.searchExerciseWithSearchMode(
+          'squats',
+          searchMode: ExerciseSearchMode.exact,
+        )).map((e) => e.id),
+        [testSquats.id],
+      );
+      expect(
+        await notifier.searchExerciseWithSearchMode(
+          'squa',
+          searchMode: ExerciseSearchMode.exact,
+        ),
+        isEmpty,
+        reason: 'the exact-mode filter has to survive the fallback',
+      );
+    });
+
     test('offline: exact mode only matches a full name', () async {
       final container = await primedContainer(isOnline: false);
       final notifier = container.read(exercisesProvider.notifier);

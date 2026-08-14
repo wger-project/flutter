@@ -148,8 +148,6 @@ class Exercises extends _$Exercises {
             );
         return _exercises.where((e) => ids.contains(e.id)).toList();
       } catch (e) {
-        // The cached status is only a hint, so the server attempt has to be
-        // allowed to fail: the local catalogue can stand in for it.
         if (!isNetworkError(e)) {
           rethrow;
         }

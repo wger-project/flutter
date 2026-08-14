@@ -282,6 +282,24 @@ void main() {
     expect(container.read(networkStatusProvider), isTrue);
   });
 
+  test('a probe that outlives the notifier does not write to it', () async {
+    // A screen can go away (and the auth flow can invalidate the provider on
+    // login) while a probe is still in flight. Writing the state afterwards
+    // throws.
+    final pendingProbe = Completer<ProbeResult>();
+    reachabilityCheck = (_, _, _) => pendingProbe.future;
+    final container = makeContainer(serverUrl: 'https://wger.example');
+    // Nothing awaits the probe in production, so the UnmountedRefException
+    // would land in the zone rather than here. Hold on to it to assert on it.
+    final probe = container.read(networkStatusProvider.notifier).check();
+    await pumpEventQueue();
+
+    container.dispose();
+    pendingProbe.complete((reachable: false, reason: 'test'));
+
+    await expectLater(probe, completes);
+  });
+
   test('re-probes when invalidated (e.g. after login)', () async {
     // NetworkStatus does not watch wgerBase, so auth re-probes the new server
     // by invalidating the provider; the rebuild runs the probe again.
