@@ -119,7 +119,7 @@ const probeTimeout = Duration(seconds: 3);
 /// channel; an adapterless device corrects it a moment later.
 @Riverpod(keepAlive: true)
 class NetworkAdapterAvailable extends _$NetworkAdapterAvailable {
-  final _logger = Logger('NetworkStatus');
+  final _logger = Logger('NetworkAdapterAvailable');
 
   @override
   bool build() {
