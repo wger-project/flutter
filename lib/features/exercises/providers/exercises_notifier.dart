@@ -19,6 +19,7 @@
 import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wger/core/consts.dart';
+import 'package:wger/core/errors.dart';
 import 'package:wger/core/language.dart';
 import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/core/search_options.dart';
@@ -85,8 +86,8 @@ class Exercises extends _$Exercises {
 
   /// Searches for exercises matching [term].
   ///
-  /// Routes to the REST API when the device is online, or to the in-memory
-  /// snapshot when offline. Empty term returns an empty list.
+  /// Prefers the REST API and falls back to the in-memory snapshot when the
+  /// server cannot be reached. Empty term returns an empty list.
   Future<List<Exercise>> searchExercise(
     String term, {
     String languageCode = 'en',
@@ -96,13 +97,22 @@ class Exercises extends _$Exercises {
       return [];
     }
     if (ref.read(networkStatusProvider)) {
-      // The repo's REST search returns just IDs; hydrate them against the
-      // already-loaded snapshot (the catalogue is always fully synced) so
-      // the caller gets full Exercise objects regardless of which path ran.
-      final ids = await ref
-          .read(exerciseRepositoryProvider)
-          .searchExerciseServer(term, languageCode: languageCode, searchEnglish: searchEnglish);
-      return _exercises.where((e) => ids.contains(e.id)).toList();
+      try {
+        // The repo's REST search returns just IDs; hydrate them against the
+        // already-loaded snapshot (the catalogue is always fully synced) so
+        // the caller gets full Exercise objects regardless of which path ran.
+        final ids = await ref
+            .read(exerciseRepositoryProvider)
+            .searchExerciseServer(term, languageCode: languageCode, searchEnglish: searchEnglish);
+        return _exercises.where((e) => ids.contains(e.id)).toList();
+      } catch (e) {
+        // The cached status is only a hint, so the server attempt has to be
+        // allowed to fail: the local catalogue can stand in for it.
+        if (!isNetworkError(e)) {
+          rethrow;
+        }
+        _logger.info('Exercise search falling back to the local catalogue: $e');
+      }
     }
     return _searchExerciseLocal(term, languageCode: languageCode, searchEnglish: searchEnglish);
   }
@@ -110,10 +120,10 @@ class Exercises extends _$Exercises {
   /// Searches for exercises matching [term] with extended search options:
   /// language scope, fulltext-vs-exact mode, and a category filter.
   ///
-  /// Routes to the REST API when online (the backend handles `searchMode` and
-  /// `categories` server-side), or to the in-memory snapshot when offline
-  /// (substring match within the configured languages, post-filtered by
-  /// [categories]). Empty/short terms return an empty list.
+  /// Prefers the REST API (the backend handles `searchMode` and `categories`
+  /// server-side) and falls back to the in-memory snapshot when the server
+  /// cannot be reached (substring match within the configured languages,
+  /// post-filtered by [categories]). Empty/short terms return an empty list.
   Future<List<Exercise>> searchExerciseWithSearchMode(
     String term, {
     String languageCode = LANGUAGE_SHORT_ENGLISH,
@@ -126,16 +136,25 @@ class Exercises extends _$Exercises {
     }
 
     if (ref.read(networkStatusProvider)) {
-      final ids = await ref
-          .read(exerciseRepositoryProvider)
-          .searchExerciseServerWithSearchMode(
-            term,
-            languageCode: languageCode,
-            searchLanguage: searchLanguage,
-            searchMode: searchMode,
-            categories: categories,
-          );
-      return _exercises.where((e) => ids.contains(e.id)).toList();
+      try {
+        final ids = await ref
+            .read(exerciseRepositoryProvider)
+            .searchExerciseServerWithSearchMode(
+              term,
+              languageCode: languageCode,
+              searchLanguage: searchLanguage,
+              searchMode: searchMode,
+              categories: categories,
+            );
+        return _exercises.where((e) => ids.contains(e.id)).toList();
+      } catch (e) {
+        // The cached status is only a hint, so the server attempt has to be
+        // allowed to fail: the local catalogue can stand in for it.
+        if (!isNetworkError(e)) {
+          rethrow;
+        }
+        _logger.info('Exercise search falling back to the local catalogue: $e');
+      }
     }
 
     final searchEnglish = searchLanguage == SearchLanguage.currentAndEnglish;

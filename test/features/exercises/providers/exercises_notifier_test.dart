@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:io';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
@@ -200,6 +202,39 @@ void main() {
       final result = await container.read(exercisesProvider.notifier).searchExercise('DEAD');
 
       expect(result.map((e) => e.id).toList(), [testDeadLift.id]);
+    });
+
+    test('online: a network error falls back to the local snapshot', () async {
+      // The cached "online" may be stale, so the failing server search must
+      // degrade to the local catalogue instead of surfacing an error.
+      when(
+        mockRepo.searchExerciseServer(
+          any,
+          languageCode: anyNamed('languageCode'),
+          searchEnglish: anyNamed('searchEnglish'),
+        ),
+      ).thenThrow(const SocketException('no route to host'));
+      final container = await primedContainer(isOnline: true);
+
+      final result = await container.read(exercisesProvider.notifier).searchExercise('dead');
+
+      expect(result.map((e) => e.id).toList(), [testDeadLift.id]);
+    });
+
+    test('online: an error that is not about the network still surfaces', () async {
+      when(
+        mockRepo.searchExerciseServer(
+          any,
+          languageCode: anyNamed('languageCode'),
+          searchEnglish: anyNamed('searchEnglish'),
+        ),
+      ).thenThrow(StateError('broken response'));
+      final container = await primedContainer(isOnline: true);
+
+      await expectLater(
+        container.read(exercisesProvider.notifier).searchExercise('dead'),
+        throwsStateError,
+      );
     });
 
     // NOTE: a focused test for the searchEnglish=true branch is omitted because

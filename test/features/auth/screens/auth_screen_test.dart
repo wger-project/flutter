@@ -338,17 +338,30 @@ void main() {
       );
     });
 
-    testWidgets('Login button is disabled when offline', (WidgetTester tester) async {
-      // Arrange: offline. Faking the notifier keeps this independent of how
-      // many failed probes NetworkStatus needs before it flips.
+    testWidgets('Login stays possible while the status says offline', (WidgetTester tester) async {
+      // A wrong offline status must not lock the user out of the app: the
+      // login attempt itself is the better probe.
+      await tester.binding.setSurfaceSize(const Size(1080, 1920));
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.reset);
+      when(
+        mockClient.post(tHeadlessLogin, headers: anyNamed('headers'), body: anyNamed('body')),
+      ).thenThrow(http.ClientException('SocketException: Connection refused'));
       await tester.pumpWidget(
         getWidget(overrides: [networkStatusProvider.overrideWith(_OfflineNetworkStatus.new)]),
       );
       await tester.pumpAndSettle();
 
-      // Assert: the action button cannot be tapped.
       final button = tester.widget<ElevatedButton>(find.byKey(const Key('actionButton')));
-      expect(button.onPressed, isNull);
+      expect(button.onPressed, isNotNull);
+
+      // And a genuinely unreachable server says so instead of staying silent.
+      await tester.enterText(find.byKey(const Key('inputUsername')), 'testuser');
+      await tester.enterText(find.byKey(const Key('inputPassword')), '123456789');
+      await tester.tap(find.byKey(const Key('actionButton')));
+      await tester.pumpAndSettle();
+
+      expect(find.text("Couldn't connect to server"), findsOneWidget);
     });
 
     testWidgets('Login - with refresh token - happy path', (WidgetTester tester) async {

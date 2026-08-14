@@ -22,6 +22,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
+import 'package:wger/core/errors.dart';
 import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/core/widgets/error.dart';
 import 'package:wger/core/widgets/progress_indicator.dart';
@@ -77,12 +78,21 @@ class _GymModeState extends ConsumerState<GymMode> {
     final notifier = ref.read(routinesRiverpodProvider.notifier);
     final routineId = widget._args.routineId;
 
-    final Routine routine;
+    Routine? routine;
     if (ref.read(networkStatusProvider)) {
-      routine = await notifier.fetchAndSetRoutineFull(routineId);
-    } else {
-      // Offline: use the local routine data. Reaching the gym mode requires an
-      // already-downloaded routine, so the routine is normally present
+      try {
+        routine = await notifier.fetchAndSetRoutineFull(routineId);
+      } catch (e) {
+        if (!isNetworkError(e)) {
+          rethrow;
+        }
+        widget._logger.info('Server unreachable, starting from the local routine: $e');
+      }
+    }
+
+    // Without the server, use the local routine data. Reaching the gym mode
+    // requires an already-downloaded routine, so it is normally present.
+    if (routine == null) {
       final cached = ref
           .read(routinesRiverpodProvider)
           .value
