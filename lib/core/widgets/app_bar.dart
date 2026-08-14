@@ -43,7 +43,11 @@ class MainAppBar extends ConsumerWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final syncState = ref.watch(syncStatus);
-    final status = syncStatusIconAndLabel(syncState, AppLocalizations.of(context));
+    final status = syncStatusIconAndLabel(
+      syncState,
+      AppLocalizations.of(context),
+      deviceOnline: ref.watch(networkStatusProvider),
+    );
 
     return AppBar(
       title: Text(_title),
