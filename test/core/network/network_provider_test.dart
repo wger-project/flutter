@@ -444,11 +444,40 @@ void main() {
     await pumpEventQueue();
     expect(probes, 1);
 
+    // Once it answered, the next failure is worth probing again.
     pendingProbe.complete((reachable: false, reason: 'test'));
     await pumpEventQueue();
     notifier.reportRequestFailure();
     await pumpEventQueue();
     expect(probes, 2);
+  });
+
+  test('a burst of failures reported in one turn triggers a single probe', () async {
+    // A screen firing its requests through Future.wait fails them all in the
+    // same event-loop turn. Every extra probe would sample the same moment
+    // and count as another consecutive failure, which is exactly what the
+    // hysteresis is there to prevent.
+    reachabilityCheck = (_, _, _) async => (reachable: true, reason: 'test');
+    final container = makeContainer(serverUrl: 'https://wger.example');
+    final notifier = container.read(networkStatusProvider.notifier);
+    await pumpEventQueue();
+
+    var probes = 0;
+    final pendingProbe = Completer<ProbeResult>();
+    reachabilityCheck = (_, _, _) {
+      probes++;
+      return pendingProbe.future;
+    };
+    notifier.reportRequestFailure();
+    notifier.reportRequestFailure();
+    notifier.reportRequestFailure();
+    await pumpEventQueue();
+
+    expect(probes, 1);
+
+    pendingProbe.complete((reachable: false, reason: 'test'));
+    await pumpEventQueue();
+    expect(container.read(networkStatusProvider), isTrue, reason: 'one failure is not offline');
   });
 
   group('networkAdapterAvailableProvider', () {

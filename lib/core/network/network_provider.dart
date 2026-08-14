@@ -163,8 +163,8 @@ class NetworkStatus extends _$NetworkStatus {
   /// re-probe backoff.
   int _failures = 0;
 
-  /// True while a probe waits for its answer, so a burst of failing requests
-  /// triggers one probe instead of one each.
+  /// True from the moment a probe pass starts until it has its answer, so a
+  /// burst of failing requests triggers one probe instead of one each.
   bool _probing = false;
 
   @override
@@ -179,8 +179,8 @@ class NetworkStatus extends _$NetworkStatus {
   void _init() {
     check(optimistic: true);
 
-    _sub = Connectivity().onConnectivityChanged.listen((conn) async {
-      await _update(conn, optimistic: true);
+    _sub = Connectivity().onConnectivityChanged.listen((conn) {
+      unawaited(_probeRun(() => _update(conn, optimistic: true)));
     });
 
     // A stale offline state from the background shouldn't stick until the
@@ -227,9 +227,21 @@ class NetworkStatus extends _$NetworkStatus {
   Future<bool> check({
     Duration timeout = probeTimeout,
     bool optimistic = false,
-  }) async {
+  }) => _probeRun(() async {
     final conn = await Connectivity().checkConnectivity();
     return _update(conn, timeout: timeout, optimistic: optimistic);
+  });
+
+  /// Runs one probe pass and marks it as in flight for [reportRequestFailure].
+  /// The flag is set before the first await, so failures reported in the same
+  /// event-loop turn already see it.
+  Future<bool> _probeRun(Future<bool> Function() run) async {
+    _probing = true;
+    try {
+      return await run();
+    } finally {
+      _probing = false;
+    }
   }
 
   /// Schedules the next probe: the idle cadence while things work, one of the
@@ -271,13 +283,7 @@ class NetworkStatus extends _$NetworkStatus {
 
     final base = ref.read(wgerBaseProvider);
     final probeUri = base.serverUrl != null ? base.makeUrl('version') : null;
-    _probing = true;
-    final ProbeResult probe;
-    try {
-      probe = await reachabilityCheck(probeUri, base.getAppNameHeaderValue(), timeout);
-    } finally {
-      _probing = false;
-    }
+    final probe = await reachabilityCheck(probeUri, base.getAppNameHeaderValue(), timeout);
 
     if (probe.reachable) {
       _failures = 0;
