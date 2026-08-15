@@ -120,7 +120,9 @@ class SyncStreamWatchdog {
     }
     _offline = value;
     if (value) {
-      _cancelTimer();
+      // A running timer deliberately survives: the probe misfires while a
+      // large download saturates the line, and cancelling here would let
+      // those misfires restart the detection over and over.
       stalled.value = false;
     }
   }
@@ -143,6 +145,11 @@ class SyncStreamWatchdog {
 
   void _onTimeout() {
     _timer = null;
+    // Nothing to report while plain requests fail as well; the next status
+    // event re-arms once the backend answers again.
+    if (_offline) {
+      return;
+    }
     stalled.value = true;
 
     if (_lastError case final error?) {

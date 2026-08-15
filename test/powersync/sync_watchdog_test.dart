@@ -191,7 +191,25 @@ void main() {
     });
   });
 
-  test('going offline cancels a pending timer and clears the flag', () {
+  test('a probe misfiring under load does not restart the detection', () {
+    fakeAsync((async) {
+      // The reachability probe times out while a large download saturates
+      // the line and recovers right after. If that restarted the clock, the
+      // watchdog would never reach its timeout on exactly the connection it
+      // is meant to flag.
+      watchdog.onStatus(buildSyncStatus(connecting: true));
+      async.elapse(watchdog.timeout - const Duration(seconds: 10));
+
+      watchdog.offline = true;
+      watchdog.offline = false;
+      watchdog.onStatus(buildSyncStatus(connecting: true));
+
+      async.elapse(const Duration(seconds: 11));
+      expect(watchdog.stalled.value, isTrue);
+    });
+  });
+
+  test('going offline clears the flag and reports nothing further', () {
     fakeAsync((async) {
       watchdog.onStatus(buildSyncStatus(connecting: true));
       async.elapse(watchdog.timeout);
