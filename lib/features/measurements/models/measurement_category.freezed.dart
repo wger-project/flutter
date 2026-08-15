@@ -31,7 +31,13 @@ mixin _$MeasurementCategory {
  String? get parentId;/// Position in the category list; for children, the position within the group
  int get order;/// Server-managed official category (max. one per metric type and user).
 /// The app never creates official categories itself.
- bool get isOfficial;/// Child categories (components) of this group. Populated by the repository
+ bool get isOfficial;/// What the server calculates the entries of this category from,
+/// [noDynamicType] for one the user fills themselves. Deliberately the raw
+/// string: a type added after this release still has to read as calculated,
+/// see [isCalculated].
+ String get dynamicType;/// Configuration of the calculation, its keys depend on [dynamicType]. Null
+/// for a category the server does not calculate.
+ Map<String, dynamic>? get dynamicParams;/// Child categories (components) of this group. Populated by the repository
 /// for display, never persisted directly.
  List<MeasurementCategory> get children;
 /// Create a copy of MeasurementCategory
@@ -44,16 +50,16 @@ $MeasurementCategoryCopyWith<MeasurementCategory> get copyWith => _$MeasurementC
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MeasurementCategory&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.unit, unit) || other.unit == unit)&&(identical(other.metricType, metricType) || other.metricType == metricType)&&(identical(other.chartType, chartType) || other.chartType == chartType)&&const DeepCollectionEquality().equals(other.chartConfig, chartConfig)&&(identical(other.parentId, parentId) || other.parentId == parentId)&&(identical(other.order, order) || other.order == order)&&(identical(other.isOfficial, isOfficial) || other.isOfficial == isOfficial)&&const DeepCollectionEquality().equals(other.children, children));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MeasurementCategory&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.unit, unit) || other.unit == unit)&&(identical(other.metricType, metricType) || other.metricType == metricType)&&(identical(other.chartType, chartType) || other.chartType == chartType)&&const DeepCollectionEquality().equals(other.chartConfig, chartConfig)&&(identical(other.parentId, parentId) || other.parentId == parentId)&&(identical(other.order, order) || other.order == order)&&(identical(other.isOfficial, isOfficial) || other.isOfficial == isOfficial)&&(identical(other.dynamicType, dynamicType) || other.dynamicType == dynamicType)&&const DeepCollectionEquality().equals(other.dynamicParams, dynamicParams)&&const DeepCollectionEquality().equals(other.children, children));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,name,unit,metricType,chartType,const DeepCollectionEquality().hash(chartConfig),parentId,order,isOfficial,const DeepCollectionEquality().hash(children));
+int get hashCode => Object.hash(runtimeType,id,name,unit,metricType,chartType,const DeepCollectionEquality().hash(chartConfig),parentId,order,isOfficial,dynamicType,const DeepCollectionEquality().hash(dynamicParams),const DeepCollectionEquality().hash(children));
 
 @override
 String toString() {
-  return 'MeasurementCategory(id: $id, name: $name, unit: $unit, metricType: $metricType, chartType: $chartType, chartConfig: $chartConfig, parentId: $parentId, order: $order, isOfficial: $isOfficial, children: $children)';
+  return 'MeasurementCategory(id: $id, name: $name, unit: $unit, metricType: $metricType, chartType: $chartType, chartConfig: $chartConfig, parentId: $parentId, order: $order, isOfficial: $isOfficial, dynamicType: $dynamicType, dynamicParams: $dynamicParams, children: $children)';
 }
 
 
@@ -64,7 +70,7 @@ abstract mixin class $MeasurementCategoryCopyWith<$Res>  {
   factory $MeasurementCategoryCopyWith(MeasurementCategory value, $Res Function(MeasurementCategory) _then) = _$MeasurementCategoryCopyWithImpl;
 @useResult
 $Res call({
- String? id, String name, String unit, MetricType metricType, ChartType chartType, Map<String, dynamic>? chartConfig, String? parentId, int order, bool isOfficial, List<MeasurementCategory> children
+ String? id, String name, String unit, MetricType metricType, ChartType chartType, Map<String, dynamic>? chartConfig, String? parentId, int order, bool isOfficial, String dynamicType, Map<String, dynamic>? dynamicParams, List<MeasurementCategory> children
 });
 
 
@@ -81,7 +87,7 @@ class _$MeasurementCategoryCopyWithImpl<$Res>
 
 /// Create a copy of MeasurementCategory
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? name = null,Object? unit = null,Object? metricType = null,Object? chartType = null,Object? chartConfig = freezed,Object? parentId = freezed,Object? order = null,Object? isOfficial = null,Object? children = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? name = null,Object? unit = null,Object? metricType = null,Object? chartType = null,Object? chartConfig = freezed,Object? parentId = freezed,Object? order = null,Object? isOfficial = null,Object? dynamicType = null,Object? dynamicParams = freezed,Object? children = null,}) {
   return _then(MeasurementCategory(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String?,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -92,7 +98,9 @@ as ChartType,chartConfig: freezed == chartConfig ? _self.chartConfig : chartConf
 as Map<String, dynamic>?,parentId: freezed == parentId ? _self.parentId : parentId // ignore: cast_nullable_to_non_nullable
 as String?,order: null == order ? _self.order : order // ignore: cast_nullable_to_non_nullable
 as int,isOfficial: null == isOfficial ? _self.isOfficial : isOfficial // ignore: cast_nullable_to_non_nullable
-as bool,children: null == children ? _self.children : children // ignore: cast_nullable_to_non_nullable
+as bool,dynamicType: null == dynamicType ? _self.dynamicType : dynamicType // ignore: cast_nullable_to_non_nullable
+as String,dynamicParams: freezed == dynamicParams ? _self.dynamicParams : dynamicParams // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>?,children: null == children ? _self.children : children // ignore: cast_nullable_to_non_nullable
 as List<MeasurementCategory>,
   ));
 }

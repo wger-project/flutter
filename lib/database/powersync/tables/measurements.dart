@@ -62,6 +62,17 @@ class MeasurementCategoryTable extends Table {
   /// Body weight entries live in the official `body_weight` category.
   BoolColumn get isOfficial =>
       boolean().named('is_official').withDefault(const Constant(false)).nullable()();
+
+  /// What the server calculates the entries of this category from, `NONE` for
+  /// one the user fills themselves. Kept as the raw string: a type added
+  /// after this release still has to read as calculated.
+  TextColumn get dynamicType =>
+      text().named('dynamic_type').withDefault(const Constant('NONE')).nullable()();
+
+  /// Configuration of the calculation (server JSONField), its keys depend on
+  /// [dynamicType].
+  TextColumn get dynamicParams =>
+      text().named('dynamic_params').map(const JsonMapConverter()).nullable()();
 }
 
 const PowersyncMeasurementCategoryTable = ps.Table(
@@ -77,6 +88,9 @@ const PowersyncMeasurementCategoryTable = ps.Table(
     ps.Column.integer('order'),
     // Postgres boolean; integer so the view yields 0/1, not the string '0'
     ps.Column.integer('is_official'),
+    ps.Column.text('dynamic_type'),
+    // JSON object, synced and stored as text
+    ps.Column.text('dynamic_params'),
   ],
   indexes: [
     ps.Index('parent_idx', [ps.IndexedColumn('parent_id')]),

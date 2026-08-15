@@ -235,6 +235,8 @@ void main() {
       expect(category.metricType, MetricType.custom);
       expect(category.order, 0);
       expect(category.isOfficial, isFalse);
+      expect(category.dynamicType, noDynamicType);
+      expect(category.isCalculated, isFalse);
 
       final entry = (await repo.watchEntries('legacy', limit: 10).first).single;
       expect(entry.source, 'user');
@@ -925,6 +927,23 @@ void main() {
       expect(emitted.single.isOfficial, isTrue);
       expect(emitted.single.metricType, MetricType.bodyWeight);
       expect(emitted.single.isOfficialBodyWeight, isTrue);
+    });
+
+    test('the calculation round-trips through the table', () async {
+      await repo.addLocalDriftCategory(
+        MeasurementCategory(
+          id: 'whtr',
+          name: 'Waist to height',
+          unit: '',
+          dynamicType: 'WHTR',
+          dynamicParams: const {'category_id': 'waist'},
+        ),
+      );
+
+      final emitted = await repo.watchAllWithoutEntries().first;
+      expect(emitted.single.dynamicType, 'WHTR');
+      expect(emitted.single.dynamicParams, {'category_id': 'waist'});
+      expect(emitted.single.isCalculated, isTrue);
     });
 
     test('updateLocalDriftCategory overwrites name and unit', () async {

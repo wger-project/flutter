@@ -49,10 +49,16 @@ class MeasurementsFab extends ConsumerWidget {
     );
   }
 
-  /// Whether [category] is fed by hand rather than by the health sync, judged
-  /// by who wrote its newest reading. A category without entries counts as
-  /// hand-kept: it was just created and logging is what it is waiting for.
+  /// Whether [category] is fed by hand rather than by the health sync or by
+  /// the server, judged by who wrote its newest reading. A category without
+  /// entries counts as hand-kept: it was just created and logging is what it
+  /// is waiting for. A calculated one never does, also while it is still
+  /// empty, since the server refuses entries there.
   bool _isHandKept(MeasurementCategory category, Map<String, MeasurementEntry> latest) {
+    if (category.isCalculated) {
+      return false;
+    }
+
     final newest = category.hasChildren
         ? category.children.map((c) => latest[c.id])
         : [latest[category.id]];

@@ -4780,6 +4780,29 @@ class $MeasurementCategoryTableTable extends MeasurementCategoryTable
     ),
     defaultValue: const Constant(false),
   );
+  static const VerificationMeta _dynamicTypeMeta = const VerificationMeta(
+    'dynamicType',
+  );
+  @override
+  late final GeneratedColumn<String> dynamicType = GeneratedColumn<String>(
+    'dynamic_type',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('NONE'),
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<Map<String, dynamic>?, String> dynamicParams =
+      GeneratedColumn<String>(
+        'dynamic_params',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      ).withConverter<Map<String, dynamic>?>(
+        $MeasurementCategoryTableTable.$converterdynamicParamsn,
+      );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -4791,6 +4814,8 @@ class $MeasurementCategoryTableTable extends MeasurementCategoryTable
     parentId,
     order,
     isOfficial,
+    dynamicType,
+    dynamicParams,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -4839,6 +4864,15 @@ class $MeasurementCategoryTableTable extends MeasurementCategoryTable
       context.handle(
         _isOfficialMeta,
         isOfficial.isAcceptableOrUnknown(data['is_official']!, _isOfficialMeta),
+      );
+    }
+    if (data.containsKey('dynamic_type')) {
+      context.handle(
+        _dynamicTypeMeta,
+        dynamicType.isAcceptableOrUnknown(
+          data['dynamic_type']!,
+          _dynamicTypeMeta,
+        ),
       );
     }
     return context;
@@ -4892,6 +4926,16 @@ class $MeasurementCategoryTableTable extends MeasurementCategoryTable
         DriftSqlType.bool,
         data['${effectivePrefix}is_official'],
       ),
+      dynamicType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dynamic_type'],
+      ),
+      dynamicParams: $MeasurementCategoryTableTable.$converterdynamicParamsn.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}dynamic_params'],
+        ),
+      ),
     );
   }
 
@@ -4911,6 +4955,12 @@ class $MeasurementCategoryTableTable extends MeasurementCategoryTable
       const JsonMapConverter();
   static TypeConverter<Map<String, dynamic>?, String?> $converterchartConfign =
       NullAwareTypeConverter.wrap($converterchartConfig);
+  static TypeConverter<Map<String, dynamic>, String> $converterdynamicParams =
+      const JsonMapConverter();
+  static TypeConverter<Map<String, dynamic>?, String?> $converterdynamicParamsn =
+      NullAwareTypeConverter.wrap(
+        $converterdynamicParams,
+      );
 }
 
 class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCategory> {
@@ -4923,6 +4973,8 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
   final Value<String?> parentId;
   final Value<int?> order;
   final Value<bool?> isOfficial;
+  final Value<String?> dynamicType;
+  final Value<Map<String, dynamic>?> dynamicParams;
   final Value<int> rowid;
   const MeasurementCategoryTableCompanion({
     this.id = const Value.absent(),
@@ -4934,6 +4986,8 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
     this.parentId = const Value.absent(),
     this.order = const Value.absent(),
     this.isOfficial = const Value.absent(),
+    this.dynamicType = const Value.absent(),
+    this.dynamicParams = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   MeasurementCategoryTableCompanion.insert({
@@ -4946,6 +5000,8 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
     this.parentId = const Value.absent(),
     this.order = const Value.absent(),
     this.isOfficial = const Value.absent(),
+    this.dynamicType = const Value.absent(),
+    this.dynamicParams = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : name = Value(name),
        unit = Value(unit);
@@ -4959,6 +5015,8 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
     Expression<String>? parentId,
     Expression<int>? order,
     Expression<bool>? isOfficial,
+    Expression<String>? dynamicType,
+    Expression<String>? dynamicParams,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -4971,6 +5029,8 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
       if (parentId != null) 'parent_id': parentId,
       if (order != null) 'order': order,
       if (isOfficial != null) 'is_official': isOfficial,
+      if (dynamicType != null) 'dynamic_type': dynamicType,
+      if (dynamicParams != null) 'dynamic_params': dynamicParams,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -4985,6 +5045,8 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
     Value<String?>? parentId,
     Value<int?>? order,
     Value<bool?>? isOfficial,
+    Value<String?>? dynamicType,
+    Value<Map<String, dynamic>?>? dynamicParams,
     Value<int>? rowid,
   }) {
     return MeasurementCategoryTableCompanion(
@@ -4997,6 +5059,8 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
       parentId: parentId ?? this.parentId,
       order: order ?? this.order,
       isOfficial: isOfficial ?? this.isOfficial,
+      dynamicType: dynamicType ?? this.dynamicType,
+      dynamicParams: dynamicParams ?? this.dynamicParams,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -5043,6 +5107,16 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
     if (isOfficial.present) {
       map['is_official'] = Variable<bool>(isOfficial.value);
     }
+    if (dynamicType.present) {
+      map['dynamic_type'] = Variable<String>(dynamicType.value);
+    }
+    if (dynamicParams.present) {
+      map['dynamic_params'] = Variable<String>(
+        $MeasurementCategoryTableTable.$converterdynamicParamsn.toSql(
+          dynamicParams.value,
+        ),
+      );
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -5061,6 +5135,8 @@ class MeasurementCategoryTableCompanion extends UpdateCompanion<MeasurementCateg
           ..write('parentId: $parentId, ')
           ..write('order: $order, ')
           ..write('isOfficial: $isOfficial, ')
+          ..write('dynamicType: $dynamicType, ')
+          ..write('dynamicParams: $dynamicParams, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -16433,6 +16509,8 @@ typedef $$MeasurementCategoryTableTableCreateCompanionBuilder =
       Value<String?> parentId,
       Value<int?> order,
       Value<bool?> isOfficial,
+      Value<String?> dynamicType,
+      Value<Map<String, dynamic>?> dynamicParams,
       Value<int> rowid,
     });
 typedef $$MeasurementCategoryTableTableUpdateCompanionBuilder =
@@ -16446,6 +16524,8 @@ typedef $$MeasurementCategoryTableTableUpdateCompanionBuilder =
       Value<String?> parentId,
       Value<int?> order,
       Value<bool?> isOfficial,
+      Value<String?> dynamicType,
+      Value<Map<String, dynamic>?> dynamicParams,
       Value<int> rowid,
     });
 
@@ -16554,6 +16634,17 @@ class $$MeasurementCategoryTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<String> get dynamicType => $composableBuilder(
+    column: $table.dynamicType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<Map<String, dynamic>?, Map<String, dynamic>, String>
+  get dynamicParams => $composableBuilder(
+    column: $table.dynamicParams,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+
   $$MeasurementCategoryTableTableFilterComposer get parentId {
     final $$MeasurementCategoryTableTableFilterComposer composer = $composerBuilder(
       composer: this,
@@ -16650,6 +16741,16 @@ class $$MeasurementCategoryTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get dynamicType => $composableBuilder(
+    column: $table.dynamicType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dynamicParams => $composableBuilder(
+    column: $table.dynamicParams,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   $$MeasurementCategoryTableTableOrderingComposer get parentId {
     final $$MeasurementCategoryTableTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -16712,6 +16813,17 @@ class $$MeasurementCategoryTableTableAnnotationComposer
     column: $table.isOfficial,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get dynamicType => $composableBuilder(
+    column: $table.dynamicType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumnWithTypeConverter<Map<String, dynamic>?, String> get dynamicParams =>
+      $composableBuilder(
+        column: $table.dynamicParams,
+        builder: (column) => column,
+      );
 
   $$MeasurementCategoryTableTableAnnotationComposer get parentId {
     final $$MeasurementCategoryTableTableAnnotationComposer composer = $composerBuilder(
@@ -16808,6 +16920,8 @@ class $$MeasurementCategoryTableTableTableManager
                 Value<String?> parentId = const Value.absent(),
                 Value<int?> order = const Value.absent(),
                 Value<bool?> isOfficial = const Value.absent(),
+                Value<String?> dynamicType = const Value.absent(),
+                Value<Map<String, dynamic>?> dynamicParams = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => MeasurementCategoryTableCompanion(
                 id: id,
@@ -16819,6 +16933,8 @@ class $$MeasurementCategoryTableTableTableManager
                 parentId: parentId,
                 order: order,
                 isOfficial: isOfficial,
+                dynamicType: dynamicType,
+                dynamicParams: dynamicParams,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -16832,6 +16948,8 @@ class $$MeasurementCategoryTableTableTableManager
                 Value<String?> parentId = const Value.absent(),
                 Value<int?> order = const Value.absent(),
                 Value<bool?> isOfficial = const Value.absent(),
+                Value<String?> dynamicType = const Value.absent(),
+                Value<Map<String, dynamic>?> dynamicParams = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => MeasurementCategoryTableCompanion.insert(
                 id: id,
@@ -16843,6 +16961,8 @@ class $$MeasurementCategoryTableTableTableManager
                 parentId: parentId,
                 order: order,
                 isOfficial: isOfficial,
+                dynamicType: dynamicType,
+                dynamicParams: dynamicParams,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

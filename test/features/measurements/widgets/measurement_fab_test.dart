@@ -124,5 +124,18 @@ void main() {
 
       expect(find.text('Resting heart rate').hitTestable(), findsOneWidget);
     });
+
+    testWidgets('a calculated category is not offered, also while still empty', (tester) async {
+      final bmi = MeasurementCategory(id: 'bmi', name: 'BMI', unit: '', dynamicType: 'BMI');
+
+      await tester.pumpWidget(_wrap([biceps, bmi], const {}));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byType(FloatingActionButton));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Biceps').hitTestable(), findsOneWidget);
+      expect(find.text('BMI').hitTestable(), findsNothing);
+    });
   });
 }

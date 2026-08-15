@@ -144,6 +144,20 @@ void main() {
     expect(find.text('Blutdruck'), findsNothing);
   });
 
+  testWidgets('a calculated category offers no way to add an entry', (tester) async {
+    stubMeasurementReads(
+      mockMeasurementRepo,
+      [MeasurementCategory(id: '1', name: 'BMI', unit: '', dynamicType: 'BMI')],
+      getMeasurementEntries(),
+    );
+
+    await tester.pumpWidget(createEntriesScreen());
+    await tester.tap(find.byType(TextButton));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(FloatingActionButton), findsNothing);
+  });
+
   testWidgets('switching the range keeps the screen it already drew', (tester) async {
     // Entries in every range, so the switch is between two ranges that both
     // have something to draw

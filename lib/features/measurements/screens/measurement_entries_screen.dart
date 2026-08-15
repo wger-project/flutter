@@ -122,7 +122,8 @@ class _MeasurementEntriesScreenState extends ConsumerState<MeasurementEntriesScr
             ),
         ],
       ),
-      floatingActionButton: category == null
+      // The entries of a calculated category are maintained by the server
+      floatingActionButton: category == null || category.isCalculated
           ? null
           : FloatingActionButton(
               child: const Icon(Icons.add, color: Colors.white),

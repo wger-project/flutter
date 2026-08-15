@@ -503,6 +503,9 @@ extension MeasurementCategoryDisplay on MeasurementCategory {
       metricType == MetricType.custom ? name : metricType.localized(context);
 }
 
+/// The server's `dynamic_type` for a category the user fills themselves
+const noDynamicType = 'NONE';
+
 @freezed
 class MeasurementCategory with _$MeasurementCategory {
   /// Inclusive upper bound for [name]
@@ -555,6 +558,18 @@ class MeasurementCategory with _$MeasurementCategory {
   @override
   final bool isOfficial;
 
+  /// What the server calculates the entries of this category from,
+  /// [noDynamicType] for one the user fills themselves. Deliberately the raw
+  /// string: a type added after this release still has to read as calculated,
+  /// see [isCalculated].
+  @override
+  final String dynamicType;
+
+  /// Configuration of the calculation, its keys depend on [dynamicType]. Null
+  /// for a category the server does not calculate.
+  @override
+  final Map<String, dynamic>? dynamicParams;
+
   /// Child categories (components) of this group. Populated by the repository
   /// for display, never persisted directly.
   @override
@@ -570,6 +585,8 @@ class MeasurementCategory with _$MeasurementCategory {
     this.parentId,
     this.order = 0,
     this.isOfficial = false,
+    this.dynamicType = noDynamicType,
+    this.dynamicParams,
     this.children = const [],
   });
 
@@ -586,6 +603,8 @@ class MeasurementCategory with _$MeasurementCategory {
     String? parentId,
     int? order,
     bool? isOfficial,
+    String? dynamicType,
+    Map<String, dynamic>? dynamicParams,
   }) : this(
          id: id,
          name: name,
@@ -596,6 +615,8 @@ class MeasurementCategory with _$MeasurementCategory {
          parentId: parentId,
          order: order ?? 0,
          isOfficial: isOfficial ?? false,
+         dynamicType: dynamicType ?? noDynamicType,
+         dynamicParams: dynamicParams,
        );
 
   /// How this category is drawn, beyond the chart type: see [ChartSettings].
@@ -614,6 +635,10 @@ class MeasurementCategory with _$MeasurementCategory {
   /// The user's body weight category. It has its own screens (weight feature)
   /// and is hidden from the general measurements UI.
   bool get isOfficialBodyWeight => isOfficial && metricType == MetricType.bodyWeight;
+
+  /// Whether the server maintains the entries of this category. They are
+  /// read-only, and adding one by hand is refused.
+  bool get isCalculated => dynamicType != noDynamicType;
 
   /// Whether the category form has anything to offer for this category.
   ///
@@ -636,6 +661,8 @@ class MeasurementCategory with _$MeasurementCategory {
       parentId: Value(parentId),
       order: Value(order),
       isOfficial: Value(isOfficial),
+      dynamicType: Value(dynamicType),
+      dynamicParams: Value(dynamicParams),
     );
   }
 }
