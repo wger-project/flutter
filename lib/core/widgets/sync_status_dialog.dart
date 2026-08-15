@@ -31,6 +31,7 @@ import 'package:wger/database/powersync/powersync.dart'
     show pendingUploadCountProvider, syncStatus, syncWatchdogProvider;
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/powersync/sync_diagnostics.dart';
+import 'package:wger/powersync/sync_watchdog.dart' show StalledReason;
 
 final _logger = Logger('SyncStatusDialog');
 
@@ -103,8 +104,9 @@ class SyncStatusDialog extends ConsumerWidget {
     // stalled: the sync stream keeps reconnecting without ever receiving
     // data (see SyncStreamWatchdog). There is no error to show in that
     // case, so the dialog adds a hint about likely network-side blockers.
+    final watchdog = ref.watch(syncWatchdogProvider);
     return ValueListenableBuilder<bool>(
-      valueListenable: ref.watch(syncWatchdogProvider).stalled,
+      valueListenable: watchdog.stalled,
       builder: (context, stalled, _) => AlertDialog(
         // The report button below only appears once something is visibly
         // wrong; copying the snapshot has to work in every state, a sync
@@ -151,11 +153,16 @@ class SyncStatusDialog extends ConsumerWidget {
               ],
             ),
 
-            // Stalled or errored sync
+            // Stalled or errored sync. The hint follows the signature the
+            // watchdog saw: only one of them is a blocked connection.
             if (stalled && syncState.anyError == null) ...[
               const SizedBox(height: 8),
               Text(
-                i18n.syncStatusStalledHint,
+                switch (watchdog.stalledReason) {
+                  StalledReason.notStarted => i18n.syncStatusStalledNotStartedHint,
+                  StalledReason.notApplied => i18n.syncStatusStalledNotAppliedHint,
+                  _ => i18n.syncStatusStalledHint,
+                },
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: theme.colorScheme.onSurfaceVariant,
                 ),

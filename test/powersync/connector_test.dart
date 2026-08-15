@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -537,6 +538,25 @@ void main() {
       verify(api.delete(any)).called(1);
     });
 
+    test('hands an unexpected error on as a plain stand-in', () async {
+      // An error object that cannot be sent between isolates never reaches
+      // the sync isolate and wedges the upload queue for the rest of the
+      // process (powersync-ja/powersync.dart#452), so the original must not
+      // leave this method. The op stays queued either way.
+      when(api.upsert(any)).thenThrow(_UnsendableException());
+
+      await expectLater(
+        conn.processTransaction(
+          txWith(CrudEntry(1, UpdateType.put, 'manager_routine', 'r1', 1, {'name': 'x'})),
+        ),
+        throwsA(
+          isA<UploadFailedException>().having((e) => e.details, 'details', contains('boom')),
+        ),
+      );
+
+      expect(completed, isFalse);
+    });
+
     test('completes the transaction even when the backend rejects the op', () async {
       // The key anti-poison-pill behaviour: a 200 with an `error` body is a
       // permanent rejection. processTransaction must not rethrow (that would
@@ -652,4 +672,13 @@ void main() {
       expect(completed, isTrue);
     });
   });
+}
+
+/// Stands in for an error that holds isolate-unsendable state, like dio's
+/// DioException with its CancelToken.
+class _UnsendableException implements Exception {
+  final Completer<void> completer = Completer();
+
+  @override
+  String toString() => 'boom';
 }
