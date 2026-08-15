@@ -51,6 +51,20 @@ class RetryableUploadException implements Exception {
   String toString() => 'Upload of $op on $table deferred: retryable status $statusCode';
 }
 
+/// Stand-in for an unexpected upload error, carrying nothing but text.
+///
+/// An error object that cannot be sent between isolates never reaches the
+/// sync isolate and wedges the upload queue for the rest of the process
+/// (powersync-ja/powersync.dart#452), so nothing foreign is ever rethrown.
+class UploadFailedException implements Exception {
+  final String details;
+
+  UploadFailedException(this.details);
+
+  @override
+  String toString() => 'Upload failed: $details';
+}
+
 /// What the transaction loop does with one upload response.
 enum _UploadOutcome {
   /// Accepted: complete the transaction once all ops are ok.
@@ -277,7 +291,8 @@ class DjangoConnector extends PowerSyncBackendConnector {
   /// an unreachable backend throws, leaving it queued for PowerSync to retry.
   ///
   /// A retry re-sends the whole transaction (at-least-once), so backend handlers
-  /// must be idempotent.
+  /// must be idempotent. Anything unexpected is rethrown as an
+  /// [UploadFailedException], never as the original object.
   @visibleForTesting
   Future<void> processTransaction(CrudTransaction transaction) async {
     try {
@@ -330,11 +345,12 @@ class DjangoConnector extends PowerSyncBackendConnector {
       // is expected to clear on its own.
       logger.warning('Upload deferred: $e');
       rethrow;
-    } on Exception catch (e) {
-      logger.severe('Error uploading data', e);
+    } on Exception catch (e, s) {
+      logger.severe('Error uploading data', e, s);
       // Error may be retryable, e.g. a temporary server error. Throwing here
-      // causes PowerSync to retry this transaction after a delay.
-      rethrow;
+      // causes PowerSync to retry this transaction after a delay. The text
+      // stands in for the original: see [UploadFailedException].
+      throw UploadFailedException(e.toString());
     }
   }
 

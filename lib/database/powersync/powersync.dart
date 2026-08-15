@@ -109,6 +109,8 @@ Future<PowerSyncDatabase> powerSyncInstance(Ref ref) async {
       if (serverUrl != null) {
         _logger.info('Device online, connecting to the sync service');
         connectPowerSync(db, serverUrl, client);
+        // From here on a silent sync client is a fault, not an idle app.
+        watchdog.onConnectRequested();
       } else {
         _logger.info('Device online, but no server configured: not connecting');
       }

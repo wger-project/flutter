@@ -1206,5 +1206,7 @@
     "relativeYearsAgo": "{count, plural, one{il y a 1 an} other{il y a {count} ans}}",
     "settingsVerboseLogging": "Journalisation détaillée",
     "settingsVerboseLoggingDescription": "Utile lorsque vous signalez des problèmes persistants.",
-    "sessionTooLong": "Une session d’entraînement ne peut pas durer plus de {hours} heures"
+    "sessionTooLong": "Une session d’entraînement ne peut pas durer plus de {hours} heures",
+    "syncStatusStalledNotStartedHint": "L'application a demandé une synchronisation, mais celle-ci n'a jamais démarré. Redémarrer l'application suffit généralement.",
+    "syncStatusStalledNotAppliedHint": "Des données arrivent mais ne peuvent pas être appliquées, donc rien de nouveau n'apparaît. Signalez-le avec les détails copiés pour que nous puissions le corriger."
 }

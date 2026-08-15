@@ -1697,6 +1697,14 @@
   "@syncStatusStalledHint": {
     "description": "Hint shown in the sync status dialog when the app keeps connecting but never receives any sync data, which usually means something on the network is blocking the connection"
   },
+  "syncStatusStalledNotStartedHint": "The app asked to synchronise, but the sync client never started. Restarting the app usually helps.",
+  "@syncStatusStalledNotStartedHint": {
+    "description": "Hint shown in the sync status dialog when a connection was requested but the sync client never reported any state at all"
+  },
+  "syncStatusStalledNotAppliedHint": "Data is arriving but cannot be applied, so nothing new shows up. Reporting this with the copied details helps us fix it.",
+  "@syncStatusStalledNotAppliedHint": {
+    "description": "Hint shown in the sync status dialog when sync data keeps arriving but no checkpoint ever completes, so the downloaded data stays invisible"
+  },
   "syncStatusReconnect": "Reconnect",
   "@syncStatusReconnect": {
     "description": "Button in the sync status dialog that drops the stuck connection to the sync service and opens a fresh one"

@@ -24,6 +24,21 @@ import 'package:powersync/powersync.dart' show SyncStatus;
 
 final _logger = Logger('powersync');
 
+/// Why the sync looks stalled, so the report does not blame the network for
+/// everything. See [SyncStreamWatchdog.stalledReason].
+enum StalledReason {
+  /// Connecting was requested but the client never reported any state at
+  /// all, not even an attempt.
+  notStarted,
+
+  /// The client connects, but no data ever arrives.
+  noData,
+
+  /// Data arrives and still no checkpoint completes, so nothing of it
+  /// becomes visible.
+  notApplied,
+}
+
 /// Flags a sync stream that keeps reconnecting without ever delivering a
 /// checkpoint.
 ///
@@ -39,11 +54,13 @@ final _logger = Logger('powersync');
 /// nothing tells the user that no data has arrived for minutes.
 ///
 /// The watchdog arms a timer while the client wants to sync but has not
-/// received a checkpoint in this connection epoch. Checkpoint progress
-/// disarms it until [reset]; only an active download pauses it, as that is
-/// data actually flowing. If the timer survives [timeout], [stalled] flips
-/// to true (the sync status dialog shows a hint) and a WARNING lands in the
-/// app logs.
+/// received a checkpoint in this connection epoch, either on the first
+/// status event or already on [onConnectRequested], since a connect that
+/// never starts produces no events at all. Checkpoint progress disarms it
+/// until [reset]; only an active download pauses it, as that is data
+/// actually flowing. If the timer survives [timeout], [stalled] flips to
+/// true, [stalledReason] says which of the signatures it was, and a WARNING
+/// lands in the app logs.
 class SyncStreamWatchdog {
   SyncStreamWatchdog({this.timeout = const Duration(minutes: 2)});
 
@@ -52,9 +69,19 @@ class SyncStreamWatchdog {
   /// True while the stream looks blocked. Consumed by the sync status dialog.
   final ValueNotifier<bool> stalled = ValueNotifier(false);
 
+  /// Set together with [stalled], so a listener reading it during the same
+  /// rebuild sees the matching reason. Null while nothing is wrong.
+  StalledReason? get stalledReason => _stalledReason;
+  StalledReason? _stalledReason;
+
   Timer? _timer;
   DateTime? _lastCheckpoint;
   bool _sawStatus = false;
+
+  /// Whether the client reported a connection attempt, and whether data ever
+  /// flowed, in this connection epoch. Both pick the reason on timeout.
+  bool _sawConnection = false;
+  bool _sawDownload = false;
 
   /// Last error seen since the watchdog was armed, for the warning. Kept
   /// across status events: a retry loop clears the error while it reconnects
@@ -66,6 +93,16 @@ class SyncStreamWatchdog {
   /// re-trigger it. [reset] re-arms for the next connection epoch.
   bool _disarmed = false;
 
+  /// Call when the app asks PowerSync to connect. A `connect()` that never
+  /// starts the sync client produces no status event at all, so without this
+  /// the watchdog would wait for a trigger that never comes.
+  void onConnectRequested() {
+    if (_disarmed || stalled.value) {
+      return;
+    }
+    _timer ??= Timer(timeout, _onTimeout);
+  }
+
   void onStatus(SyncStatus status) {
     final checkpoint = status.lastSyncedAt;
     // Progress is a NEW checkpoint: the first status event replays the
@@ -73,6 +110,8 @@ class SyncStreamWatchdog {
     // blocked device), so only a change to a non-null value counts.
     final madeProgress = _sawStatus && checkpoint != null && checkpoint != _lastCheckpoint;
     _sawStatus = true;
+    _sawConnection |= status.connecting || status.connected;
+    _sawDownload |= status.downloading;
     _lastCheckpoint = checkpoint;
 
     if (madeProgress) {
@@ -81,6 +120,7 @@ class SyncStreamWatchdog {
       _cancelTimer();
       if (stalled.value) {
         _logger.info('Sync stream recovered, checkpoint received');
+        _stalledReason = null;
         stalled.value = false;
       }
       return;
@@ -113,6 +153,9 @@ class SyncStreamWatchdog {
     _cancelTimer();
     _disarmed = false;
     _lastError = null;
+    _sawConnection = false;
+    _sawDownload = false;
+    _stalledReason = null;
     stalled.value = false;
   }
 
@@ -123,22 +166,37 @@ class SyncStreamWatchdog {
 
   void _onTimeout() {
     _timer = null;
+    _stalledReason = switch ((_sawConnection, _sawDownload)) {
+      (false, _) => StalledReason.notStarted,
+      (true, false) => StalledReason.noData,
+      (true, true) => StalledReason.notApplied,
+    };
     stalled.value = true;
 
+    final minutes = timeout.inMinutes;
     if (_lastError case final error?) {
       _logger.warning(
-        'Sync has been failing for ${timeout.inMinutes} minutes without '
-        'receiving any data.',
+        'Sync has been failing for $minutes minutes without receiving any data.',
         error,
       );
       return;
     }
 
-    _logger.warning(
-      'Sync stream keeps terminating without receiving any data. The '
-      'connection to the sync service may be blocked by a VPN, ad blocker, '
-      'antivirus or firewall on this network.',
-    );
+    // Naming the signature keeps the report honest: only the middle case is
+    // the blocked-middlebox one we used to assume for all of them.
+    _logger.warning(switch (_stalledReason!) {
+      StalledReason.notStarted =>
+        'The sync client has not reported any state for $minutes minutes '
+            'after being asked to connect. Restarting the app usually clears this.',
+      StalledReason.noData =>
+        'Sync stream keeps terminating without receiving any data. The '
+            'connection to the sync service may be blocked by a VPN, ad blocker, '
+            'antivirus or firewall on this network.',
+      StalledReason.notApplied =>
+        'Sync has been receiving data for $minutes minutes without completing '
+            'a checkpoint, so none of it becomes visible. This is a client-side '
+            'problem, not a blocked connection.',
+    });
   }
 
   void _cancelTimer() {

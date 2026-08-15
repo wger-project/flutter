@@ -51,6 +51,47 @@ void main() {
     });
   });
 
+  test('flags a connect that never produces a single status event', () {
+    fakeAsync((async) {
+      // powersync-ja/powersync.dart#445: connect() can silently never start
+      // the sync client. Without onConnectRequested nothing would ever arm
+      // the timer, since arming used to need a status event.
+      watchdog.onConnectRequested();
+
+      async.elapse(watchdog.timeout + const Duration(seconds: 1));
+      expect(watchdog.stalled.value, isTrue);
+      expect(watchdog.stalledReason, StalledReason.notStarted);
+      expect(logLines(Level.WARNING, 'has not reported any state'), hasLength(1));
+    });
+  });
+
+  test('does not blame the network when data did arrive', () {
+    fakeAsync((async) {
+      // Data flows but no checkpoint ever completes: the client cannot apply
+      // what it downloads, which is not a blocked connection.
+      watchdog.onStatus(buildSyncStatus(connected: true, downloading: true));
+      async.elapse(const Duration(seconds: 5));
+      watchdog.onStatus(buildSyncStatus(connected: true));
+
+      async.elapse(watchdog.timeout + const Duration(seconds: 1));
+      expect(watchdog.stalledReason, StalledReason.notApplied);
+      expect(logLines(Level.WARNING, 'without completing'), hasLength(1));
+      expect(logLines(Level.WARNING, 'may be blocked'), isEmpty);
+    });
+  });
+
+  test('a deliberate disconnect clears the reason as well', () {
+    fakeAsync((async) {
+      watchdog.onConnectRequested();
+      async.elapse(watchdog.timeout + const Duration(seconds: 1));
+      expect(watchdog.stalledReason, isNotNull);
+
+      watchdog.reset();
+      expect(watchdog.stalled.value, isFalse);
+      expect(watchdog.stalledReason, isNull);
+    });
+  });
+
   test('the silent connect/EOF retry loop does not reset the timer', () {
     fakeAsync((async) {
       // Mimic the status flapping of an iteration that starts, ends cleanly
