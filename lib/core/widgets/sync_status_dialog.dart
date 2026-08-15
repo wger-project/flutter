@@ -21,6 +21,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:powersync/powersync.dart' show SyncStatus;
 import 'package:url_launcher/url_launcher.dart';
+import 'package:wger/core/error_dialogs.dart' show CopyToClipboardButton;
 import 'package:wger/core/errors.dart' show buildGithubIssueUrl;
 import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/core/logs.dart';
@@ -105,7 +106,23 @@ class SyncStatusDialog extends ConsumerWidget {
     return ValueListenableBuilder<bool>(
       valueListenable: ref.watch(syncWatchdogProvider).stalled,
       builder: (context, stalled, _) => AlertDialog(
-        title: Text(i18n.syncStatusDialogTitle),
+        // The report button below only appears once something is visibly
+        // wrong; copying the snapshot has to work in every state, a sync
+        // that looks idle is exactly the case we need reports for.
+        title: Row(
+          children: [
+            Expanded(child: Text(i18n.syncStatusDialogTitle)),
+            CopyToClipboardButton(
+              text: formatSyncDiagnostics(
+                syncState,
+                pendingUploads: pendingUploads,
+                server: serverCategory(serverUrl),
+                local: ref.watch(localSyncStateProvider).value,
+              ),
+              iconOnly: true,
+            ),
+          ],
+        ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -230,6 +247,7 @@ class SyncStatusDialog extends ConsumerWidget {
           if (stalled || syncState.anyError != null)
             TextButton(
               onPressed: () async {
+                final local = await collectLocalSyncState();
                 final url = buildGithubIssueUrl(
                   issueTitle: 'Sync error',
                   issueErrorMessage:
@@ -240,6 +258,7 @@ class SyncStatusDialog extends ConsumerWidget {
                     syncState,
                     pendingUploads: pendingUploads,
                     server: serverCategory(serverUrl),
+                    local: local,
                   ),
                 );
                 try {

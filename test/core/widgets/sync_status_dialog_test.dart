@@ -29,6 +29,7 @@ import 'package:powersync/powersync.dart'
         SyncResponseException,
         SyncStatus,
         UpdateType;
+import 'package:wger/core/error_dialogs.dart' show CopyToClipboardButton;
 import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/core/widgets/sync_status_dialog.dart';
 import 'package:wger/database/powersync/powersync.dart'
@@ -170,6 +171,17 @@ void main() {
       expect(find.text(i18n.syncStatusLastSynced), findsOneWidget);
       expect(find.text(i18n.syncStatusNeverSynced), findsOneWidget);
       expect(find.byType(LinearProgressIndicator), findsNothing);
+    });
+
+    testWidgets('offers the snapshot for copying even when nothing looks wrong', (tester) async {
+      // The state we keep getting reports about: no error, not stalled, so
+      // the report button stays hidden and copying is the only way out.
+      await _pumpDialog(tester, buildSyncStatus());
+
+      expect(find.text('Report issue'), findsNothing);
+      final button = tester.widget<CopyToClipboardButton>(find.byType(CopyToClipboardButton));
+      expect(button.text, contains('last successful sync: never'));
+      expect(button.text, contains('pending uploads: 0'));
     });
 
     testWidgets('renders the placeholder while the sync state is still unknown', (tester) async {
