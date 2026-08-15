@@ -202,9 +202,7 @@ class _HealthSyncSettingsTileState extends ConsumerState<HealthSyncSettingsTile>
         // user as a declined dialog, so it must not reach the error dialog.
         int? count;
         try {
-          count = needsPermission
-              ? await notifier.retryWithPermissions()
-              : await notifier.sync();
+          count = needsPermission ? await notifier.retryWithPermissions() : await notifier.sync();
         } catch (e) {
           _logger.warning('Retrying the health permissions failed', e);
         }
