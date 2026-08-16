@@ -763,15 +763,16 @@ class AuthNotifier extends _$AuthNotifier {
   /// with the new token instead of replaying their pre-login error state.
   void _invalidatePostLoginProviders() {
     _logger.fine('Invalidating data providers after login');
+    // Leaf first: the providers below read reachability as they rebuild, and
+    // flushing a still-dirty networkStatusProvider from a create during
+    // widget build crashes. The re-probe also picks up the new server URL.
+    ref.invalidate(networkStatusProvider);
     ref.invalidate(accountProvider);
     ref.invalidate(userProfileProvider);
     ref.invalidate(routinesRiverpodProvider);
     ref.invalidate(nutritionProvider);
     ref.invalidate(trophyStateProvider);
     ref.invalidate(galleryProvider);
-    // Re-probe reachability against the new server. NetworkStatus relies on
-    // this invalidation to pick up the post-login server URL immediately.
-    ref.invalidate(networkStatusProvider);
   }
 
   /// Exchanges the persisted refresh token for a fresh access/refresh pair.
