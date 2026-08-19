@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/core/date.dart';
 import 'package:wger/features/routines/models/routine.dart';
+import 'package:wger/features/routines/models/session.dart';
 import 'package:wger/features/trophies/providers/trophy_notifier.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
@@ -38,23 +39,40 @@ class DayLogWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // A day can hold more than one session, e.g. a morning and an evening
+    // workout, and each of them is shown with its own logs
+    final sessions = _routine.sessions.where((s) => s.localDay.isSameDayAs(_date)).toList()
+      ..sort((a, b) => a.datetimeStart.compareTo(b.datetimeStart));
+
+    return Column(
+      spacing: 10,
+      children: sessions.map((session) => SessionLogWidget(session, _routine)).toList(),
+    );
+  }
+}
+
+class SessionLogWidget extends ConsumerWidget {
+  final WorkoutSession _session;
+  final Routine _routine;
+
+  const SessionLogWidget(this._session, this._routine);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     final i18n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final trophyState = ref.read(trophyStateProvider);
 
-    final session = _routine.sessions.firstWhere(
-      (s) => s.localDay.isSameDayAs(_date),
-    );
-    final exercises = session.exercises;
+    final exercises = _session.exercises;
 
     final prTrophies = trophyState.prTrophies
-        .where((t) => t.contextData?.sessionId == session.id)
+        .where((t) => t.contextData?.sessionId == _session.id)
         .toList();
 
     return Column(
       spacing: 10,
       children: [
-        Card(child: SessionInfo(session)),
+        Card(child: SessionInfo(_session)),
         if (prTrophies.isNotEmpty)
           SizedBox(
             width: double.infinity,
@@ -64,7 +82,7 @@ class DayLogWidget extends ConsumerWidget {
               color: theme.colorScheme.tertiaryContainer,
             ),
           ),
-        MuscleGroupsCard(session.logs),
+        MuscleGroupsCard(_session.logs),
 
         Column(
           spacing: 10,
@@ -82,7 +100,7 @@ class DayLogWidget extends ConsumerWidget {
                         translation.name,
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
-                      ...session.logs
+                      ..._session.logs
                           .where((l) => l.exerciseId == exercise.id)
                           .map(
                             (log) => Row(
