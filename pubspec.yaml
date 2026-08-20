@@ -107,6 +107,8 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   flutter_native_splash: ^2.4.8
   freezed: ^3.2.0
+  # Used to strip the alpha channel from the generated store screenshots
+  image: ^4.9.1
   json_serializable: ^6.14.1
   mockito: ^5.6.4
   network_image_mock: ^2.1.1
