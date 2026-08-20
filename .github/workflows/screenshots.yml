@@ -12,8 +12,21 @@ permissions:
 
 jobs:
   screenshots_apple:
-    name: 'iOS'
+    name: 'Apple - ${{ matrix.device.name }}'
     runs-on: macos-latest
+    strategy:
+      matrix:
+        device:
+          # Apple only needs the largest device per family, the smaller ones
+          # are scaled down by App Store Connect
+          - name: "iPhone 6.9in"
+            simulator: iPhone 17 Pro Max
+            device_type: iOSPhoneBig
+            folder: iPhone 6.9
+          - name: "iPad 13in"
+            simulator: iPad Pro 13-inch
+            device_type: iOSTabletBig
+            folder: iPad 13
     steps:
       - uses: actions/checkout@v7
 
@@ -23,7 +36,15 @@ jobs:
       - name: Boot iOS simulator
         id: boot
         run: |
-          SIMULATOR=$(xcrun simctl list devices available | awk -F '[()]' '/iPhone 17/{print $2; exit}')
+          # Match the UDID explicitly, some device names contain parentheses themselves
+          SIMULATOR=$(xcrun simctl list devices available \
+            | grep -m1 '${{ matrix.device.simulator }}' \
+            | grep -oE '[0-9A-F]{8}(-[0-9A-F]{4}){3}-[0-9A-F]{12}')
+          if [ -z "$SIMULATOR" ]; then
+            echo "No available simulator matching '${{ matrix.device.simulator }}'"
+            xcrun simctl list devices available
+            exit 1
+          fi
           echo "SIMULATOR=$SIMULATOR" >> $GITHUB_ENV
           xcrun simctl boot "$SIMULATOR" || true
           open -a Simulator || true
@@ -31,13 +52,13 @@ jobs:
 
       - name: Generate screenshots
         run: |
-          flutter drive --driver=test_driver/screenshot_driver.dart --target=integration_test/make_screenshots_test.dart --dart-define=DEVICE_TYPE=iOSPhoneBig -d "$SIMULATOR"
+          flutter drive --driver=test_driver/screenshot_driver.dart --target=integration_test/make_screenshots_test.dart --dart-define=DEVICE_TYPE=${{ matrix.device.device_type }} -d "$SIMULATOR"
 
       - name: Upload screenshots
         uses: actions/upload-artifact@v7
         with:
-          name: screenshots-ios
-          path: fastlane/metadata/ios/**/images/iPhone 6.9/*.png
+          name: screenshots-ios-${{ matrix.device.device_type }}
+          path: fastlane/metadata/ios/**/images/${{ matrix.device.folder }}/*.png
 
   screenshots_android:
     name: 'Android - ${{ matrix.device.name }}'
@@ -46,11 +67,11 @@ jobs:
       matrix:
         device:
           - name: "Phone"
-            profile: pixel_7_pro
+            profile: pixel_10
             device_type: androidPhone
             folder: phoneScreenshots
           - name: "Tablet 7in"
-            profile: 7in WSVGA (Tablet)
+            profile: small_tablet
             device_type: androidTabletSmall
             folder: sevenInchScreenshots
           - name: "Tablet 10in"
@@ -111,13 +132,13 @@ jobs:
           profile: ${{ matrix.device.profile }}
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
-          script: |           
+          script: |
             flutter drive --driver=test_driver/screenshot_driver.dart --target=integration_test/make_screenshots_test.dart --dart-define=DEVICE_TYPE=${{ matrix.device.device_type }}
 
       - name: Upload screenshots
         uses: actions/upload-artifact@v7
         with:
-          name: screenshots-android-${{ matrix.device.folder }}
+          name: screenshots-android-${{ matrix.device.device_type }}
           path: fastlane/metadata/android/**/images/${{ matrix.device.folder }}/*.png
 
   commit_screenshots:
@@ -141,17 +162,19 @@ jobs:
       - name: Merge artifacts into fastlane/metadata
         run: |
           set -euo pipefail
-          rsync --archive --checksum --itemize-changes "screenshots/screenshots-android-phoneScreenshots/" fastlane/metadata/android/
-          rsync --archive --checksum --itemize-changes "screenshots/screenshots-android-sevenInchScreenshots/" fastlane/metadata/android/
-          rsync --archive --checksum --itemize-changes "screenshots/screenshots-android-tenInchScreenshots/" fastlane/metadata/android/
-          rsync --archive --checksum --itemize-changes "screenshots/screenshots-ios/" fastlane/metadata/ios/
+          for artifact in screenshots/screenshots-android-*/; do
+            rsync --archive --checksum --itemize-changes "$artifact" fastlane/metadata/android/
+          done
+          for artifact in screenshots/screenshots-ios-*/; do
+            rsync --archive --checksum --itemize-changes "$artifact" fastlane/metadata/ios/
+          done
 
       - name: Commit screenshots to a dated branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add fastlane/metadata/android fastlane/metadata/ios || true
           if git diff --staged --quiet; then
             echo "No new or changed screenshots to commit."
