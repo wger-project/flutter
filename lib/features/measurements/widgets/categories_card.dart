@@ -298,15 +298,22 @@ class CategoriesCard extends ConsumerWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                TextButton(
-                  child: Text(AppLocalizations.of(context).goToDetailPage),
-                  onPressed: () {
-                    Navigator.pushNamed(
-                      context,
-                      MeasurementEntriesScreen.routeName,
-                      arguments: currentCategory.id,
-                    );
-                  },
+                // The label runs long in several languages and the card is
+                // narrow on tablets, where the dashboard lays it out in columns
+                Expanded(
+                  child: TextButton(
+                    child: Text(
+                      AppLocalizations.of(context).goToDetailPage,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    onPressed: () {
+                      Navigator.pushNamed(
+                        context,
+                        MeasurementEntriesScreen.routeName,
+                        arguments: currentCategory.id,
+                      );
+                    },
+                  ),
                 ),
                 IconButton(
                   onPressed: () async {

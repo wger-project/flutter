@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2026 wger Team
+ * Copyright (c) 2026 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -38,6 +38,7 @@ Widget _wrap(
   Map<String, MeasurementEntry> latest = const {},
   List<MeasurementCategory> categories = const [],
   Map<String, List<MeasurementEntry>> entries = const {},
+  Locale? locale,
 }) => ProviderScope(
   overrides: [
     // The component rows read their last known value from its own query
@@ -47,6 +48,7 @@ Widget _wrap(
     measurementGroupBucketsProvider.overrideWith(groupBucketsFrom(categories, entries)),
   ],
   child: MaterialApp(
+    locale: locale,
     localizationsDelegates: AppLocalizations.localizationsDelegates,
     supportedLocales: AppLocalizations.supportedLocales,
     home: Scaffold(body: child),
@@ -61,11 +63,12 @@ Map<String, MeasurementEntry> _latestOf(Map<String, List<MeasurementEntry>> entr
 
 /// The fixtures have fixed dates, so the card charts the full history instead
 /// of the range it defaults to
-Widget _card(_Seed seed) => _wrap(
+Widget _card(_Seed seed, {Locale? locale}) => _wrap(
   CategoriesCard(seed.category, range: ChartRange.all),
   latest: _latestOf(seed.entries),
   categories: [seed.category],
   entries: seed.entries,
+  locale: locale,
 );
 
 _Seed _bpGroup({bool withEntries = false}) => (
