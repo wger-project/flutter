@@ -138,8 +138,23 @@ class MuscleWidget extends StatelessWidget {
     List<Muscle> musclesSecondary = const [],
     this.isFront = true,
   }) {
-    this.muscles = muscles.where((m) => m.isFront == isFront).toList();
-    this.musclesSecondary = musclesSecondary.where((m) => m.isFront == isFront).toList();
+    final frontMuscles = muscles.where((m) => m.isFront == isFront);
+    final mainMuscleIds = <int>{};
+    this.muscles = [];
+    for (final m in frontMuscles) {
+      if (mainMuscleIds.add(m.id)) {
+        this.muscles.add(m);
+      }
+    }
+
+    final frontSecondary = musclesSecondary.where((m) => m.isFront == isFront);
+    final secondaryMuscleIds = <int>{};
+    this.musclesSecondary = [];
+    for (final m in frontSecondary) {
+      if (!mainMuscleIds.contains(m.id) && secondaryMuscleIds.add(m.id)) {
+        this.musclesSecondary.add(m);
+      }
+    }
   }
 
   @override
@@ -150,13 +165,9 @@ class MuscleWidget extends StatelessWidget {
       children: [
         SvgPicture.asset('assets/images/muscles/$background.svg'),
         ...muscles.map((m) => SvgPicture.asset('assets/images/muscles/main/muscle-${m.id}.svg')),
-        ...musclesSecondary
-            .where((m) => !muscles.contains(m))
-            .map(
-              (m) => SvgPicture.asset(
-                'assets/images/muscles/secondary/muscle-${m.id}.svg',
-              ),
-            ),
+        ...musclesSecondary.map(
+          (m) => SvgPicture.asset('assets/images/muscles/secondary/muscle-${m.id}.svg'),
+        ),
       ],
     );
   }
