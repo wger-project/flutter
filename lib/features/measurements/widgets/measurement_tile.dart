@@ -34,6 +34,7 @@ import 'package:wger/features/measurements/models/measurement_entry.dart';
 import 'package:wger/features/measurements/models/unit_conversion.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/measurements/screens/measurement_entries_screen.dart';
+import 'package:wger/features/measurements/widgets/calculation_mark.dart';
 import 'package:wger/features/measurements/widgets/charts.dart';
 import 'package:wger/features/measurements/widgets/helpers.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -103,6 +104,9 @@ class MeasurementTile extends ConsumerWidget {
               ),
               _heroValue(context, latest),
               const Spacer(),
+              // Renders nothing for a hand-kept category, which is what keeps
+              // the row out of the tile's height budget for those
+              CalculationMark(category, dense: true),
               if (category.hasChildren) _groupSpark(latest) else _leafSpark(latest),
             ],
           ),

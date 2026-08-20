@@ -22,7 +22,7 @@ import 'package:wger/core/form_screen.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/measurements/screens/measurement_entries_screen.dart';
-import 'package:wger/features/measurements/widgets/forms.dart';
+import 'package:wger/features/measurements/widgets/forms/category.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 /// Asks what to track and creates the category for it.
@@ -52,6 +52,13 @@ class MetricPickerSheet extends ConsumerWidget {
     final categories = ref.watch(measurementCategoriesProvider).value ?? const [];
     final taken = categories.map((c) => c.metricType).toSet();
 
+    // Alphabetical by the name the user reads: the order they are declared in
+    // means nothing to them, and the list is long enough to look through
+    final pickable = [
+      for (final metricType in MetricType.values)
+        if (metricType.isPickable) metricType,
+    ]..sort((a, b) => a.localized(context).compareTo(b.localized(context)));
+
     return SafeArea(
       child: ListView(
         shrinkWrap: true,
@@ -63,7 +70,27 @@ class MetricPickerSheet extends ConsumerWidget {
               style: Theme.of(context).textTheme.titleLarge,
             ),
           ),
-          for (final metricType in MetricType.values.where((t) => t.isPickable))
+          // First, and above the divider: it is the one that fits whatever
+          // the user wants to track, the rest are a catalogue of known ones
+          ListTile(
+            leading: const Icon(Icons.straighten),
+            title: Text(i18n.customMeasurement),
+            subtitle: Text(i18n.measurementCategoriesHelpText),
+            onTap: () {
+              Navigator.of(context).pop();
+              Navigator.pushNamed(
+                context,
+                FormScreen.routeName,
+                arguments: FormScreenArguments(
+                  i18n.newEntry,
+                  const MeasurementCategoryForm(),
+                  hasListView: true,
+                ),
+              );
+            },
+          ),
+          const Divider(),
+          for (final metricType in pickable)
             ListTile(
               enabled: !taken.contains(metricType),
               title: Text(metricType.localized(context)),
@@ -100,23 +127,6 @@ class MetricPickerSheet extends ConsumerWidget {
                 }
               },
             ),
-          const Divider(),
-          ListTile(
-            leading: const Icon(Icons.straighten),
-            title: Text(i18n.customMeasurement),
-            subtitle: Text(i18n.measurementCategoriesHelpText),
-            onTap: () {
-              Navigator.of(context).pop();
-              Navigator.pushNamed(
-                context,
-                FormScreen.routeName,
-                arguments: FormScreenArguments(
-                  i18n.newEntry,
-                  const MeasurementCategoryForm(),
-                ),
-              );
-            },
-          ),
         ],
       ),
     );

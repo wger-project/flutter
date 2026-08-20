@@ -28,7 +28,7 @@ import 'package:wger/core/network/auth_credentials_storage.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
 import 'package:wger/features/measurements/screens/measurement_entries_screen.dart';
-import 'package:wger/features/measurements/widgets/forms.dart';
+import 'package:wger/features/measurements/widgets/forms/category.dart';
 import 'package:wger/features/measurements/widgets/metric_picker.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
@@ -67,6 +67,18 @@ void main() {
         home: const Scaffold(body: MetricPickerSheet()),
       ),
     );
+  }
+
+  /// Brings the tile named [label] into view; where it sits follows from the
+  /// alphabetical order, so no test may assume it is on the first screen
+  Future<void> scrollTo(WidgetTester tester, String label) async {
+    await tester.dragUntilVisible(
+      find.text(label),
+      find.byType(ListView),
+      const Offset(0, -100),
+    );
+    await tester.ensureVisible(find.text(label));
+    await tester.pumpAndSettle();
   }
 
   testWidgets('offers neither body weight nor the components', (tester) async {
@@ -120,6 +132,7 @@ void main() {
     await tester.pumpAndSettle();
 
     final context = tester.element(find.byType(MetricPickerSheet));
+    await scrollTo(tester, MetricType.restingHeartRate.localized(context));
     await tester.tap(find.text(MetricType.restingHeartRate.localized(context)));
     await tester.pumpAndSettle();
 
@@ -154,6 +167,7 @@ void main() {
     await tester.pumpAndSettle();
 
     final context = tester.element(find.byType(MetricPickerSheet));
+    await scrollTo(tester, MetricType.restingHeartRate.localized(context));
     await tester.tap(find.text(MetricType.restingHeartRate.localized(context)));
     await tester.pumpAndSettle();
 
@@ -164,19 +178,31 @@ void main() {
     await tester.pumpWidget(wrap());
     await tester.pumpAndSettle();
 
-    // Last of the list, below the fold on a test-sized screen
-    final custom = find.text(
-      AppLocalizations.of(tester.element(find.byType(MetricPickerSheet))).customMeasurement,
+    await tester.tap(
+      find.text(
+        AppLocalizations.of(tester.element(find.byType(MetricPickerSheet))).customMeasurement,
+      ),
     );
-    await tester.dragUntilVisible(custom, find.byType(ListView), const Offset(0, -100));
-    // The drag stops as soon as the tile is built, which can still leave it
-    // just below the fold
-    await tester.ensureVisible(custom);
-    await tester.pumpAndSettle();
-    await tester.tap(custom);
     await tester.pumpAndSettle();
 
     expect(find.byType(MeasurementCategoryForm), findsOneWidget);
     verifyNever(mockRepo.addLocalDriftCategoryGroup(any));
+  });
+
+  testWidgets('the own measurement leads, the known ones follow in order', (tester) async {
+    await tester.pumpWidget(wrap());
+    await tester.pumpAndSettle();
+
+    final i18n = AppLocalizations.of(tester.element(find.byType(MetricPickerSheet)));
+    final titles = tester
+        .widgetList<ListTile>(find.byType(ListTile))
+        .map((tile) => (tile.title! as Text).data!)
+        .toList();
+
+    expect(titles.first, i18n.customMeasurement);
+    // Alphabetical by the translated name, not by the order they are declared
+    final known = titles.skip(1).toList();
+    expect(known, [...known]..sort());
+    expect(known, isNotEmpty);
   });
 }

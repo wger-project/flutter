@@ -5062,6 +5062,28 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get syncStatusStalledNotStartedHint =>
+      (super.noSuchMethod(
+            Invocation.getter(#syncStatusStalledNotStartedHint),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#syncStatusStalledNotStartedHint),
+            ),
+          )
+          as String);
+
+  @override
+  String get syncStatusStalledNotAppliedHint =>
+      (super.noSuchMethod(
+            Invocation.getter(#syncStatusStalledNotAppliedHint),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#syncStatusStalledNotAppliedHint),
+            ),
+          )
+          as String);
+
+  @override
   String get syncStatusReconnect =>
       (super.noSuchMethod(
             Invocation.getter(#syncStatusReconnect),
@@ -5178,17 +5200,6 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.getter(#weightOrRepsRequired),
-            ),
-          )
-          as String);
-
-  @override
-  String get timeStartEndBothOrNeither =>
-      (super.noSuchMethod(
-            Invocation.getter(#timeStartEndBothOrNeither),
-            returnValue: _i3.dummyValue<String>(
-              this,
-              Invocation.getter(#timeStartEndBothOrNeither),
             ),
           )
           as String);
@@ -5321,6 +5332,204 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.getter(#importedEntry),
+            ),
+          )
+          as String);
+
+  @override
+  String get calculationValuesManual =>
+      (super.noSuchMethod(
+            Invocation.getter(#calculationValuesManual),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#calculationValuesManual),
+            ),
+          )
+          as String);
+
+  @override
+  String get calculationValuesCalculated =>
+      (super.noSuchMethod(
+            Invocation.getter(#calculationValuesCalculated),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#calculationValuesCalculated),
+            ),
+          )
+          as String);
+
+  @override
+  String get calculationType =>
+      (super.noSuchMethod(
+            Invocation.getter(#calculationType),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#calculationType),
+            ),
+          )
+          as String);
+
+  @override
+  String get calculationUnknown =>
+      (super.noSuchMethod(
+            Invocation.getter(#calculationUnknown),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#calculationUnknown),
+            ),
+          )
+          as String);
+
+  @override
+  String get calculationParamsIncomplete =>
+      (super.noSuchMethod(
+            Invocation.getter(#calculationParamsIncomplete),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#calculationParamsIncomplete),
+            ),
+          )
+          as String);
+
+  @override
+  String get calculationLocked =>
+      (super.noSuchMethod(
+            Invocation.getter(#calculationLocked),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#calculationLocked),
+            ),
+          )
+          as String);
+
+  @override
+  String get calculationMissingHeight =>
+      (super.noSuchMethod(
+            Invocation.getter(#calculationMissingHeight),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#calculationMissingHeight),
+            ),
+          )
+          as String);
+
+  @override
+  String get calculationNoSourceCategory =>
+      (super.noSuchMethod(
+            Invocation.getter(#calculationNoSourceCategory),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#calculationNoSourceCategory),
+            ),
+          )
+          as String);
+
+  @override
+  String get calculationBadge =>
+      (super.noSuchMethod(
+            Invocation.getter(#calculationBadge),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#calculationBadge),
+            ),
+          )
+          as String);
+
+  @override
+  String get calculationEntryInfo =>
+      (super.noSuchMethod(
+            Invocation.getter(#calculationEntryInfo),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#calculationEntryInfo),
+            ),
+          )
+          as String);
+
+  @override
+  String get calculationNameBmi =>
+      (super.noSuchMethod(
+            Invocation.getter(#calculationNameBmi),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#calculationNameBmi),
+            ),
+          )
+          as String);
+
+  @override
+  String get calculationNameWhtr =>
+      (super.noSuchMethod(
+            Invocation.getter(#calculationNameWhtr),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#calculationNameWhtr),
+            ),
+          )
+          as String);
+
+  @override
+  String get calculationNameOneRepMax =>
+      (super.noSuchMethod(
+            Invocation.getter(#calculationNameOneRepMax),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#calculationNameOneRepMax),
+            ),
+          )
+          as String);
+
+  @override
+  String get calculationNameOneRmTotal =>
+      (super.noSuchMethod(
+            Invocation.getter(#calculationNameOneRmTotal),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#calculationNameOneRmTotal),
+            ),
+          )
+          as String);
+
+  @override
+  String get calculationDescriptionBmi =>
+      (super.noSuchMethod(
+            Invocation.getter(#calculationDescriptionBmi),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#calculationDescriptionBmi),
+            ),
+          )
+          as String);
+
+  @override
+  String get calculationParamCategory =>
+      (super.noSuchMethod(
+            Invocation.getter(#calculationParamCategory),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#calculationParamCategory),
+            ),
+          )
+          as String);
+
+  @override
+  String get calculationParamMaxReps =>
+      (super.noSuchMethod(
+            Invocation.getter(#calculationParamMaxReps),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#calculationParamMaxReps),
+            ),
+          )
+          as String);
+
+  @override
+  String get calculationParamWindowDays =>
+      (super.noSuchMethod(
+            Invocation.getter(#calculationParamWindowDays),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#calculationParamWindowDays),
             ),
           )
           as String);
@@ -5871,6 +6080,61 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.method(#healthSyncPermissionMissing, [platform]),
+            ),
+          )
+          as String);
+
+  @override
+  String calculationDuplicate(String? name) =>
+      (super.noSuchMethod(
+            Invocation.method(#calculationDuplicate, [name]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#calculationDuplicate, [name]),
+            ),
+          )
+          as String);
+
+  @override
+  String calculationDescriptionWhtr(String? category) =>
+      (super.noSuchMethod(
+            Invocation.method(#calculationDescriptionWhtr, [category]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#calculationDescriptionWhtr, [category]),
+            ),
+          )
+          as String);
+
+  @override
+  String calculationHelpExercises(int? min, int? max, int? count) =>
+      (super.noSuchMethod(
+            Invocation.method(#calculationHelpExercises, [min, max, count]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#calculationHelpExercises, [min, max, count]),
+            ),
+          )
+          as String);
+
+  @override
+  String calculationHelpMaxReps(int? min, int? max) =>
+      (super.noSuchMethod(
+            Invocation.method(#calculationHelpMaxReps, [min, max]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#calculationHelpMaxReps, [min, max]),
+            ),
+          )
+          as String);
+
+  @override
+  String calculationHelpWindowDays(int? min, int? max) =>
+      (super.noSuchMethod(
+            Invocation.method(#calculationHelpWindowDays, [min, max]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#calculationHelpWindowDays, [min, max]),
             ),
           )
           as String);

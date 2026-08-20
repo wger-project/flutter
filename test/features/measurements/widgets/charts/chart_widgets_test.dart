@@ -92,6 +92,41 @@ void main() {
     });
   });
 
+  group('a series that does not move', () {
+    testWidgets('gets a value axis with room in it', (tester) async {
+      // Every reading the same weight. fl_chart derives its own bounds from
+      // the spots, lands on a range of nothing, and then walks the axis in
+      // steps smaller than the value's own precision: the walk never advances
+      // and it builds labels until the heap gives out. Without the bounds set
+      // here this test hangs rather than fails.
+      final flat = [
+        for (var day = 1; day <= 5; day++) entry(111.18, DateTime(2026, 1, day)),
+      ];
+
+      await tester.pumpWidget(
+        _wrap(MeasurementChartWidgetFl.singleMeasurement(flat, 'kg')),
+      );
+      await tester.pumpAndSettle();
+
+      final data = tester.widget<LineChart>(find.byType(LineChart)).data;
+      expect(data.minY, lessThan(111.18));
+      expect(data.maxY, greaterThan(111.18));
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('and so does a bar chart of one repeated value', (tester) async {
+      final flat = [
+        for (var day = 1; day <= 5; day++) entry(8000, DateTime(2026, 1, day)),
+      ];
+
+      await tester.pumpWidget(_wrap(MeasurementBarChartWidgetFl(flat, 'steps')));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(BarChart), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    });
+  });
+
   group('MeasurementChartWidgetFl series', () {
     /// The chart data fl_chart actually receives
     LineChartData chartData(WidgetTester tester) =>

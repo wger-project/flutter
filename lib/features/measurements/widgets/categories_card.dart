@@ -33,7 +33,8 @@ import 'package:wger/features/measurements/widgets/helpers.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 import 'charts.dart';
-import 'forms.dart';
+import 'forms/entry.dart';
+import 'forms/group_entry.dart';
 
 class CategoriesCard extends ConsumerWidget {
   final MeasurementCategory currentCategory;

@@ -22,7 +22,8 @@ import 'package:wger/core/form_screen.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/measurement_entry.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
-import 'package:wger/features/measurements/widgets/forms.dart';
+import 'package:wger/features/measurements/widgets/forms/entry.dart';
+import 'package:wger/features/measurements/widgets/forms/group_entry.dart';
 import 'package:wger/features/measurements/widgets/metric_picker.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
@@ -63,7 +64,7 @@ class MeasurementsFab extends ConsumerWidget {
         ? category.children.map((c) => latest[c.id])
         : [latest[category.id]];
 
-    return newest.nonNulls.every((entry) => entry.source == 'user');
+    return newest.nonNulls.every((entry) => entry.source == measurementSourceUser);
   }
 
   @override

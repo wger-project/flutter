@@ -110,6 +110,53 @@ void main() {
       expect(find.textContaining('stable'), findsOneWidget);
     });
 
+    testWidgets('a calculated tile is badged and says what it is computed from', (tester) async {
+      // Rendered at the height the grid gives every tile, so the extra row
+      // has to fit next to the value, the spark and its axis
+      final bmi = MeasurementCategory(id: 'bmi', name: 'BMI', unit: 'kg/m²', dynamicType: 'BMI');
+      final entries = {
+        'bmi': [for (var day = 6; day >= 0; day--) _entry('bmi', 22.4, _day(day))],
+      };
+
+      await tester.pumpWidget(_wrap(bmi, entries: entries));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Calculated'), findsOneWidget);
+      expect(find.text('From your body weight and the height in your profile'), findsOneWidget);
+      expect(find.byType(SparkLineChart), findsOneWidget);
+    });
+
+    testWidgets('the mark still fits over the tallest spark', (tester) async {
+      // The heatmap has no axis row and takes that room for its grid, so it
+      // is the tile the extra row has the least space in
+      final bmi = MeasurementCategory(
+        id: 'bmi',
+        name: 'BMI',
+        unit: 'kg/m²',
+        dynamicType: 'BMI',
+        chartType: ChartType.heatmap,
+      );
+      final entries = {
+        'bmi': [for (var day = 6; day >= 0; day--) _entry('bmi', 22.4, _day(day))],
+      };
+
+      await tester.pumpWidget(_wrap(bmi, entries: entries));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Calculated'), findsOneWidget);
+    });
+
+    testWidgets('a hand-kept tile carries no badge', (tester) async {
+      final entries = {
+        'rhr': [for (var day = 6; day >= 0; day--) _entry('rhr', 61, _day(day))],
+      };
+
+      await tester.pumpWidget(_wrap(restingHeartRate, entries: entries));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Calculated'), findsNothing);
+    });
+
     testWidgets('a moving value quotes its weekly rate instead', (tester) async {
       final entries = {
         'rhr': [for (var day = 6; day >= 0; day--) _entry('rhr', 70 - day * 2, _day(day))],

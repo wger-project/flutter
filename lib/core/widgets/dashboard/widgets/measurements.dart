@@ -26,7 +26,7 @@ import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/measurements/screens/measurement_categories_screen.dart';
 import 'package:wger/features/measurements/widgets/categories_card.dart';
-import 'package:wger/features/measurements/widgets/forms.dart';
+import 'package:wger/features/measurements/widgets/forms/category.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 class DashboardMeasurementWidget extends ConsumerStatefulWidget {

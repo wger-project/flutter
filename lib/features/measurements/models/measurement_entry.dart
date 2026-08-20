@@ -22,6 +22,15 @@ import 'package:wger/database/powersync/database.dart';
 
 part 'measurement_entry.freezed.dart';
 
+/// The server's `source` for an entry the user wrote themselves, the only one
+/// the app lets them edit or delete.
+const measurementSourceUser = 'user';
+
+/// The server's `source` for an entry it computed itself, see the calculated
+/// categories. Such an entry is read-only: it is replaced whenever the data
+/// behind it changes.
+const measurementSourceCalculated = 'calculated';
+
 @freezed
 class MeasurementEntry with _$MeasurementEntry {
   /// Client-generated UUID, is `null` only before the first persist
@@ -63,7 +72,7 @@ class MeasurementEntry with _$MeasurementEntry {
     required this.date,
     required this.value,
     required this.notes,
-    this.source = 'user',
+    this.source = measurementSourceUser,
     this.externalId,
     this.extraData,
   });
@@ -86,7 +95,7 @@ class MeasurementEntry with _$MeasurementEntry {
          date: date,
          value: value,
          notes: notes,
-         source: source ?? 'user',
+         source: source ?? measurementSourceUser,
          externalId: externalId,
          extraData: extraData,
        );

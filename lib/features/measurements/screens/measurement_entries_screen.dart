@@ -28,7 +28,9 @@ import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/providers/chart_range_setting.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/measurements/widgets/entries.dart';
-import 'package:wger/features/measurements/widgets/forms.dart';
+import 'package:wger/features/measurements/widgets/forms/category.dart';
+import 'package:wger/features/measurements/widgets/forms/entry.dart';
+import 'package:wger/features/measurements/widgets/forms/group_entry.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 enum MeasurementOptions {
@@ -90,6 +92,7 @@ class _MeasurementEntriesScreenState extends ConsumerState<MeasurementEntriesScr
                       arguments: FormScreenArguments(
                         AppLocalizations.of(context).edit,
                         MeasurementCategoryForm(category),
+                        hasListView: true,
                       ),
                     );
                     break;

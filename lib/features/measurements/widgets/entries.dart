@@ -32,13 +32,14 @@ import 'package:wger/features/measurements/models/measurement_entry.dart';
 import 'package:wger/features/measurements/models/unit_conversion.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/measurements/screens/measurement_entries_screen.dart';
+import 'package:wger/features/measurements/widgets/calculation_mark.dart';
 import 'package:wger/features/measurements/widgets/chart_range_selector.dart';
 import 'package:wger/features/measurements/widgets/helpers.dart';
 import 'package:wger/features/nutrition/models/nutritional_plan.dart';
 import 'package:wger/features/nutrition/providers/nutrition_notifier.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
-import 'forms.dart';
+import 'forms/entry.dart';
 
 class EntriesList extends ConsumerWidget {
   final MeasurementCategory category;
@@ -105,6 +106,14 @@ class EntriesList extends ConsumerWidget {
 
     return Column(
       children: [
+        if (category.isCalculated)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(15, 8, 15, 0),
+            child: Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: CalculationMark(category),
+            ),
+          ),
         ChartRangeSelector(
           value: range,
           onChanged: onRangeChanged,
@@ -267,6 +276,7 @@ class _EntryListState extends ConsumerState<_EntryList> with _GrowsWhileScrolled
       hasMore: entries.length >= limit,
       itemBuilder: (context, index) {
         final currentEntry = entries[index];
+        final isCalculated = currentEntry.source == measurementSourceCalculated;
 
         return Card(
           child: ListTile(
@@ -281,12 +291,17 @@ class _EntryListState extends ConsumerState<_EntryList> with _GrowsWhileScrolled
               ),
             ),
             subtitle: Text(datetimeFormat.format(currentEntry.date)),
-            // Imported entries are read-only; changes belong in the source
-            // app, deletes would reappear on the next import
-            trailing: currentEntry.source != 'user'
+            // Entries the user did not write are read-only, for two
+            // different reasons: an import belongs to the app it came from,
+            // a calculated value to the data it is computed from
+            trailing: currentEntry.source != measurementSourceUser
                 ? Tooltip(
-                    message: AppLocalizations.of(context).importedEntry,
-                    child: const Icon(Icons.monitor_heart_outlined),
+                    message: isCalculated
+                        ? AppLocalizations.of(context).calculationEntryInfo
+                        : AppLocalizations.of(context).importedEntry,
+                    child: Icon(
+                      isCalculated ? Icons.calculate_outlined : Icons.monitor_heart_outlined,
+                    ),
                   )
                 : PopupMenuButton(
                     itemBuilder: (BuildContext context) {

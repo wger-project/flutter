@@ -417,7 +417,7 @@ class MeasurementChartWidgetFl extends StatelessWidget {
         if (entry.max != null) entry.max!,
       ],
     ];
-    final yAxis = drawn.isEmpty ? null : durationAxis(_unit, drawn.reduce(min), drawn.reduce(max));
+    final yAxis = drawn.isEmpty ? null : valueAxis(_unit, drawn.reduce(min), drawn.reduce(max));
 
     // Flatten the series into fl_chart's flat bar list, remembering which
     // indices are band bounds (invisible) and which carry a name.
@@ -580,7 +580,7 @@ class MeasurementBarChartWidgetFl extends StatelessWidget {
         if (entry.max != null) entry.max!,
       ],
     ];
-    final yAxis = durationAxis(_unit, drawn.reduce(min), drawn.reduce(max));
+    final yAxis = valueAxis(_unit, drawn.reduce(min), drawn.reduce(max));
     final barWidth = _barWidth(_entries.length, availableWidth);
 
     return BarChartData(
@@ -699,7 +699,7 @@ class MeasurementStackedBarChartWidgetFl extends StatelessWidget {
   BarChartData mainData(BuildContext context, double availableWidth) {
     // The bar is as tall as its segments together, so that is what the axis
     // has to cover
-    final yAxis = durationAxis(_unit, 0, _entries.map((e) => e.total).fold<num>(0, max));
+    final yAxis = valueAxis(_unit, 0, _entries.map((e) => e.total).fold<num>(0, max));
     final barWidth = _barWidth(_entries.length, availableWidth);
 
     return BarChartData(

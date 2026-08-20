@@ -125,6 +125,46 @@ const _MINUTES_PER_HOUR = 60;
 /// interval grows in whole hours until few enough ticks are left, and the
 /// bounds are widened to the hours around the data, because fl_chart counts
 /// the ticks from the lower bound.
+/// How close the ends of a series have to be for its axis to count as flat:
+/// a spread that only shows up in the last digits of a double.
+const _FLAT_RELATIVE = 1e-9;
+
+/// Room left around a flat series, as a share of the value it sits at.
+const _FLAT_PADDING = 0.05;
+
+/// Bounds and tick interval of a value axis, null where fl_chart may pick them
+/// itself.
+///
+/// Two cases are taken out of its hands. Durations are read in hours, see
+/// [durationAxis]. And a series whose values are all the same leaves a range
+/// of nothing: fl_chart divides that range into steps and walks the axis one
+/// step at a time, so a step below the last value's own precision never
+/// advances the walk, and it generates labels until the heap gives out. A flat
+/// series is ordinary (a weight that did not move, a calculation that stays
+/// put), so the axis gets room around the value instead.
+({double min, double max, double? interval})? valueAxis(
+  String unit,
+  num min,
+  num max,
+) {
+  final duration = durationAxis(unit, min, max);
+  if (duration != null) {
+    return duration;
+  }
+
+  if ((max - min).abs() > max.abs() * _FLAT_RELATIVE) {
+    return null;
+  }
+
+  // A value of zero has no magnitude to take a share of
+  final padding = max.abs() * _FLAT_PADDING;
+  return (
+    min: (max - (padding == 0 ? 1 : padding)).toDouble(),
+    max: (max + (padding == 0 ? 1 : padding)).toDouble(),
+    interval: null,
+  );
+}
+
 ({double min, double max, double interval})? durationAxis(
   String unit,
   num min,

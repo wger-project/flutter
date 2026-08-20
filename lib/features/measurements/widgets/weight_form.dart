@@ -130,7 +130,7 @@ class _WeightFormState extends riverpod.ConsumerState<WeightForm> {
                 date: _date,
                 value: _weight!,
                 notes: widget._entry?.notes ?? '',
-                source: widget._entry?.source ?? 'user',
+                source: widget._entry?.source ?? measurementSourceUser,
                 externalId: widget._entry?.externalId,
                 extraData: {...?widget._entry?.extraData, 'unit': _unit},
               );

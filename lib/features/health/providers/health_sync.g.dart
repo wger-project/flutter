@@ -56,7 +56,7 @@ final class HealthSyncNotifierProvider
   }
 }
 
-String _$healthSyncNotifierHash() => r'9ed53f8b6656f0bc283d1acdbe1b29da2b6e9642';
+String _$healthSyncNotifierHash() => r'128cb8ce19d0ef3ad4388de415f7768e87c617b6';
 
 /// Drives the health import: the user's preference, when a run happens, and
 /// what the settings screen shows about it.

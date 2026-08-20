@@ -418,8 +418,17 @@ class $UserProfileTableTable extends UserProfileTable
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _heightMeta = const VerificationMeta('height');
   @override
-  List<GeneratedColumn> get $columns => [id, weightUnitStr];
+  late final GeneratedColumn<int> height = GeneratedColumn<int>(
+    'height',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, weightUnitStr, height];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -448,6 +457,12 @@ class $UserProfileTableTable extends UserProfileTable
     } else if (isInserting) {
       context.missing(_weightUnitStrMeta);
     }
+    if (data.containsKey('height')) {
+      context.handle(
+        _heightMeta,
+        height.isAcceptableOrUnknown(data['height']!, _heightMeta),
+      );
+    }
     return context;
   }
 
@@ -465,6 +480,10 @@ class $UserProfileTableTable extends UserProfileTable
         DriftSqlType.string,
         data['${effectivePrefix}weight_unit'],
       )!,
+      height: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}height'],
+      ),
     );
   }
 
@@ -477,26 +496,31 @@ class $UserProfileTableTable extends UserProfileTable
 class UserProfileTableCompanion extends UpdateCompanion<UserProfile> {
   final Value<int> id;
   final Value<String> weightUnitStr;
+  final Value<int?> height;
   final Value<int> rowid;
   const UserProfileTableCompanion({
     this.id = const Value.absent(),
     this.weightUnitStr = const Value.absent(),
+    this.height = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   UserProfileTableCompanion.insert({
     required int id,
     required String weightUnitStr,
+    this.height = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        weightUnitStr = Value(weightUnitStr);
   static Insertable<UserProfile> custom({
     Expression<int>? id,
     Expression<String>? weightUnitStr,
+    Expression<int>? height,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (weightUnitStr != null) 'weight_unit': weightUnitStr,
+      if (height != null) 'height': height,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -504,11 +528,13 @@ class UserProfileTableCompanion extends UpdateCompanion<UserProfile> {
   UserProfileTableCompanion copyWith({
     Value<int>? id,
     Value<String>? weightUnitStr,
+    Value<int?>? height,
     Value<int>? rowid,
   }) {
     return UserProfileTableCompanion(
       id: id ?? this.id,
       weightUnitStr: weightUnitStr ?? this.weightUnitStr,
+      height: height ?? this.height,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -522,6 +548,9 @@ class UserProfileTableCompanion extends UpdateCompanion<UserProfile> {
     if (weightUnitStr.present) {
       map['weight_unit'] = Variable<String>(weightUnitStr.value);
     }
+    if (height.present) {
+      map['height'] = Variable<int>(height.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -533,6 +562,7 @@ class UserProfileTableCompanion extends UpdateCompanion<UserProfile> {
     return (StringBuffer('UserProfileTableCompanion(')
           ..write('id: $id, ')
           ..write('weightUnitStr: $weightUnitStr, ')
+          ..write('height: $height, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -10974,12 +11004,14 @@ typedef $$UserProfileTableTableCreateCompanionBuilder =
     UserProfileTableCompanion Function({
       required int id,
       required String weightUnitStr,
+      Value<int?> height,
       Value<int> rowid,
     });
 typedef $$UserProfileTableTableUpdateCompanionBuilder =
     UserProfileTableCompanion Function({
       Value<int> id,
       Value<String> weightUnitStr,
+      Value<int?> height,
       Value<int> rowid,
     });
 
@@ -10999,6 +11031,11 @@ class $$UserProfileTableTableFilterComposer
 
   ColumnFilters<String> get weightUnitStr => $composableBuilder(
     column: $table.weightUnitStr,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get height => $composableBuilder(
+    column: $table.height,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -11021,6 +11058,11 @@ class $$UserProfileTableTableOrderingComposer
     column: $table.weightUnitStr,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<int> get height => $composableBuilder(
+    column: $table.height,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$UserProfileTableTableAnnotationComposer
@@ -11038,6 +11080,9 @@ class $$UserProfileTableTableAnnotationComposer
     column: $table.weightUnitStr,
     builder: (column) => column,
   );
+
+  GeneratedColumn<int> get height =>
+      $composableBuilder(column: $table.height, builder: (column) => column);
 }
 
 class $$UserProfileTableTableTableManager
@@ -11075,20 +11120,24 @@ class $$UserProfileTableTableTableManager
               ({
                 Value<int> id = const Value.absent(),
                 Value<String> weightUnitStr = const Value.absent(),
+                Value<int?> height = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => UserProfileTableCompanion(
                 id: id,
                 weightUnitStr: weightUnitStr,
+                height: height,
                 rowid: rowid,
               ),
           createCompanionCallback:
               ({
                 required int id,
                 required String weightUnitStr,
+                Value<int?> height = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => UserProfileTableCompanion.insert(
                 id: id,
                 weightUnitStr: weightUnitStr,
+                height: height,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) =>

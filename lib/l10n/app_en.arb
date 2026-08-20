@@ -1866,5 +1866,80 @@
   "importedEntry": "This entry was synced from a health app and can only be changed there",
   "@importedEntry": {
     "description": "Tooltip on the badge of a measurement entry imported from Apple Health / Health Connect; such entries cannot be edited or deleted in the app"
+  },
+  "calculationValuesManual": "Entered by hand",
+  "@calculationValuesManual": {},
+  "calculationValuesCalculated": "Calculated by wger",
+  "@calculationValuesCalculated": {},
+  "calculationType": "Calculation",
+  "@calculationType": {
+    "description": "Label of the field that picks what the server calculates for a category"
+  },
+  "calculationUnknown": "This calculation was set up in a newer version of wger and cannot be changed here.",
+  "@calculationUnknown": {},
+  "calculationParamsIncomplete": "The calculation is not configured completely yet",
+  "@calculationParamsIncomplete": {},
+  "calculationDuplicate": "You already have a {name} category with these settings",
+  "@calculationDuplicate": {
+    "description": "Refuses a second calculated category that would compute exactly the same series",
+    "placeholders": {
+      "name": { "type": "String", "example": "Waist to height ratio" }
+    }
+  },
+  "calculationLocked": "The calculation cannot be changed. Delete the category to stop calculating it.",
+  "@calculationLocked": {},
+  "calculationMissingHeight": "The height in your profile is missing, so no values can be computed yet.",
+  "@calculationMissingHeight": {},
+  "calculationNoSourceCategory": "You have no other category to read from yet.",
+  "@calculationNoSourceCategory": {},
+  "calculationBadge": "Calculated",
+  "@calculationBadge": {
+    "description": "Badge marking a measurement category whose values the server computes"
+  },
+  "calculationEntryInfo": "This value is calculated by wger and cannot be edited",
+  "@calculationEntryInfo": {},
+  "calculationNameBmi": "BMI",
+  "@calculationNameBmi": {},
+  "calculationNameWhtr": "Waist to height ratio",
+  "@calculationNameWhtr": {},
+  "calculationNameOneRepMax": "One-rep max",
+  "@calculationNameOneRepMax": {},
+  "calculationNameOneRmTotal": "One-rep max total",
+  "@calculationNameOneRmTotal": {},
+  "calculationDescriptionBmi": "From your body weight and the height in your profile",
+  "@calculationDescriptionBmi": {},
+  "calculationDescriptionWhtr": "From {category} and the height in your profile",
+  "@calculationDescriptionWhtr": {
+    "placeholders": {
+      "category": { "type": "String", "example": "Waist" }
+    }
+  },
+  "calculationParamCategory": "Source category",
+  "@calculationParamCategory": {},
+  "calculationParamMaxReps": "Max reps counted",
+  "@calculationParamMaxReps": {},
+  "calculationParamWindowDays": "Window in days",
+  "@calculationParamWindowDays": {},
+  "calculationHelpExercises": "Between {min} and {max} exercises, {count} selected.",
+  "@calculationHelpExercises": {
+    "placeholders": {
+      "min": { "type": "int" },
+      "max": { "type": "int" },
+      "count": { "type": "int" }
+    }
+  },
+  "calculationHelpMaxReps": "{min} to {max}. Sets above this are ignored.",
+  "@calculationHelpMaxReps": {
+    "placeholders": {
+      "min": { "type": "int" },
+      "max": { "type": "int" }
+    }
+  },
+  "calculationHelpWindowDays": "{min} to {max}. How far back a best set counts.",
+  "@calculationHelpWindowDays": {
+    "placeholders": {
+      "min": { "type": "int" },
+      "max": { "type": "int" }
+    }
   }
 }

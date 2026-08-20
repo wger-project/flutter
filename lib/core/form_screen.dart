@@ -28,9 +28,10 @@ class FormScreenArguments {
   /// Widget to render, typically a form
   final Widget widget;
 
-  /// Flag indicating whether to render the content has a list view (e.g. larger
-  /// forms that use an autocompleter, etc) or not (smnall forms, content will
-  /// get pushed down)
+  /// Whether [widget] scrolls itself, e.g. because it holds a list or grows
+  /// while it is filled in. It is then given the screen to fill. A form
+  /// without it is laid out at its natural height and pushed to the bottom,
+  /// which only holds as long as it fits.
   final bool hasListView;
 
   /// Padding for the whole content, default 15px on all sides

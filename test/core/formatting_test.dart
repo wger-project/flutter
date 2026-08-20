@@ -48,6 +48,46 @@ void main() {
     });
   });
 
+  group('valueAxis', () {
+    test('leaves an ordinary spread to the chart', () {
+      expect(valueAxis('kg', 80, 92), isNull);
+    });
+
+    test('reads a duration in hours', () {
+      // The duration axis keeps deciding for its own unit
+      expect(valueAxis('min', 0, 300)?.interval, durationAxis('min', 0, 300)?.interval);
+    });
+
+    test('gives a flat series room around it', () {
+      // Every reading the same: fl_chart would divide a range of nothing into
+      // steps below the value's own precision and never finish walking it
+      final axis = valueAxis('kg', 111.18, 111.18)!;
+
+      expect(axis.min, lessThan(111.18));
+      expect(axis.max, greaterThan(111.18));
+      expect(axis.interval, isNull);
+    });
+
+    test('counts a spread of rounding errors as flat', () {
+      // What an average over identical values produces
+      final axis = valueAxis('kg', 111.17999999999999, 111.18)!;
+
+      expect(axis.max - axis.min, greaterThan(1));
+    });
+
+    test('keeps a small but real spread', () {
+      // A ratio moves in the third decimal and still means something
+      expect(valueAxis('', 0.470, 0.471), isNull);
+    });
+
+    test('has room to show even a flat zero', () {
+      final axis = valueAxis('kg', 0, 0)!;
+
+      expect(axis.min, lessThan(0));
+      expect(axis.max, greaterThan(0));
+    });
+  });
+
   group('durationAxis', () {
     test('leaves the ticks to the chart for every other unit', () {
       expect(durationAxis('kg', 60, 100), isNull);

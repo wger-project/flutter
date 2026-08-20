@@ -109,6 +109,44 @@ void main() {
     expect(find.byIcon(Icons.monitor_heart_outlined), findsOneWidget);
   });
 
+  testWidgets('A calculated category is marked and its entries are read-only', (
+    WidgetTester tester,
+  ) async {
+    final category = MeasurementCategory(
+      id: 'c1',
+      name: 'BMI',
+      unit: 'kg/m²',
+      dynamicType: 'BMI',
+    );
+    final calculated = MeasurementEntry(
+      id: 'e-calc',
+      categoryId: 'c1',
+      date: DateTime(2026, 1, 2),
+      value: 22,
+      notes: '',
+      source: 'calculated',
+    );
+
+    await tester.pumpWidget(
+      createEntriesList(category, {
+        'c1': [calculated],
+      }),
+    );
+    await tester.pumpAndSettle();
+
+    // The mark sits on the category, the rows carry no menu at all
+    expect(find.text('Calculated'), findsOneWidget);
+    expect(find.text('From your body weight and the height in your profile'), findsOneWidget);
+    expect(find.byTooltip('Show menu'), findsNothing);
+    // A calculated value is read-only for a different reason than an import,
+    // and says so
+    expect(find.byIcon(Icons.calculate_outlined), findsOneWidget);
+    expect(
+      find.byTooltip('This value is calculated by wger and cannot be edited'),
+      findsOneWidget,
+    );
+  });
+
   testWidgets('A group charts its components and lists the readings', (
     WidgetTester tester,
   ) async {
