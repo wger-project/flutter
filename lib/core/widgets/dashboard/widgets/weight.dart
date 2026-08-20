@@ -143,7 +143,7 @@ class DashboardWeightWidget extends ConsumerWidget {
 
     final (entriesAll, average) = sensibleRange(
       points,
-      averageDays: category.chartSettings.averageWindow,
+      averageDays: category.chartSettings.averageWindow ?? ChartSettings.fallbackWindow,
     );
 
     return Column(

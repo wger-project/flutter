@@ -158,7 +158,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(DropdownButtonFormField<TrendCharacter>), findsOneWidget);
-      expect(find.byType(DropdownButtonFormField<int>), findsOneWidget);
+      expect(find.byType(DropdownButtonFormField<Object>), findsOneWidget);
     });
 
     testWidgets('a summed type has no line to configure', (tester) async {
@@ -171,7 +171,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(DropdownButtonFormField<TrendCharacter>), findsNothing);
-      expect(find.byType(DropdownButtonFormField<int>), findsNothing);
+      expect(find.byType(DropdownButtonFormField<Object>), findsNothing);
     });
 
     testWidgets('the line settings are disabled for a chart without a line', (tester) async {
@@ -193,12 +193,38 @@ void main() {
       );
       expect(
         tester
-            .widget<DropdownButtonFormField<int>>(
-              find.byType(DropdownButtonFormField<int>),
+            .widget<DropdownButtonFormField<Object>>(
+              find.byType(DropdownButtonFormField<Object>),
             )
             .onChanged,
         isNull,
       );
+    });
+
+    testWidgets('both lines of the chart can be turned off', (tester) async {
+      final category = getMeasurementCategories()[1].copyWith(chartType: ChartType.auto);
+      stubMeasurementReads(mockRepo, [category]);
+
+      await tester.pumpWidget(wrap(MeasurementCategoryForm(category)));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byType(DropdownButtonFormField<TrendCharacter>));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Off').last);
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byType(DropdownButtonFormField<Object>));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Off').last);
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byType(ElevatedButton));
+      await tester.pumpAndSettle();
+
+      final saved =
+          verify(mockRepo.updateLocalDriftCategory(captureAny)).captured.single
+              as MeasurementCategory;
+      expect(saved.chartConfig, {'trend': 'none', 'average_window': 'none'});
     });
 
     testWidgets('the line settings are enabled while the chart is a line', (tester) async {

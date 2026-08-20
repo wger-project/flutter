@@ -1050,9 +1050,9 @@
     },
     "editorItalic": "Cursief",
     "editorList": "Lijst",
-    "filterNutriscoreOff": "Uit",
-    "@filterNutriscoreOff": {
-        "description": "Label for the first slider stop, which disables the Nutri-Score filter"
+    "off": "Uit",
+    "@off": {
+        "description": "Generic label for the option that switches something off, e.g. a filter or a line of a chart"
     },
     "searchModeExact": "Exact",
     "@searchModeExact": {

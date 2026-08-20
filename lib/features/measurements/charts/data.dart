@@ -260,7 +260,10 @@ MeasurementBucketLevel chartBucketLevel(MetricType metricType, ChartType chartTy
   ChartRange range,
   ChartSettings settings,
 ) {
-  final average = movingAverage(points, days: settings.averageWindow);
+  final average = movingAverage(
+    points,
+    days: settings.averageWindow ?? ChartSettings.fallbackWindow,
+  );
   final cutoff = range.cutoff;
 
   return cutoff == null

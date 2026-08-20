@@ -366,10 +366,13 @@ class _ChartSettingsSection extends StatelessWidget {
                   }
                 : null,
           ),
-          DropdownButtonFormField<int>(
-            initialValue: settings.averageWindow,
+          // The window is a number, "off" is the string the server stores, so
+          // the two share one field only as objects
+          DropdownButtonFormField<Object>(
+            initialValue: settings.averageWindow ?? chartLineOff,
             decoration: InputDecoration(labelText: i18n.chartAverageWindow),
             items: [
+              DropdownMenuItem(value: chartLineOff, child: Text(i18n.off)),
               for (final days in ChartSettings.averageWindows)
                 DropdownMenuItem(value: days, child: Text(i18n.chartAverageWindowDays(days))),
             ],

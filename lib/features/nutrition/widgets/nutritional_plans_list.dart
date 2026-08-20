@@ -26,6 +26,7 @@ import 'package:wger/features/account/providers/user_profile_notifier.dart';
 import 'package:wger/features/measurements/charts/data.dart';
 import 'package:wger/features/measurements/measurements.dart';
 import 'package:wger/features/measurements/models/measurement_bucket.dart';
+import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/unit_conversion.dart';
 import 'package:wger/features/measurements/providers/body_weight_provider.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
@@ -78,7 +79,7 @@ class NutritionalPlansList extends riverpod.ConsumerWidget {
     );
     final average = movingAverage(
       entriesAll,
-      days: category.chartSettings.averageWindow,
+      days: category.chartSettings.averageWindow ?? ChartSettings.fallbackWindow,
     ).whereDateWithInterpolation(startDate, endDate);
     if (average.length < 2) {
       return const SizedBox.shrink();

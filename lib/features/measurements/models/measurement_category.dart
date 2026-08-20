@@ -92,17 +92,24 @@ enum ChartType {
   );
 }
 
+/// What both line settings take when the user turns their line off
+const chartLineOff = 'none';
+
 /// How closely the trend line follows the values, as the EMA period it maps to.
 ///
 /// Stored as the character rather than the number, so the periods stay tunable
 /// without touching what users configured.
 enum TrendCharacter {
+  /// No trend line at all, see [chartLineOff]
+  none(chartLineOff, null),
   reactive('reactive', 5),
   balanced('balanced', 10),
   sluggish('sluggish', 20);
 
   final String wireValue;
-  final int emaPeriod;
+
+  /// Null for [TrendCharacter.none], which draws nothing
+  final int? emaPeriod;
   const TrendCharacter(this.wireValue, this.emaPeriod);
 
   /// Falls back to [TrendCharacter.balanced], which is the unconfigured chart.
@@ -117,6 +124,7 @@ extension MeasurementTrendCharacterL10n on TrendCharacter {
   String localized(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return switch (this) {
+      TrendCharacter.none => l10n.off,
       TrendCharacter.reactive => l10n.trendReactive,
       TrendCharacter.balanced => l10n.trendBalanced,
       TrendCharacter.sluggish => l10n.trendSluggish,
@@ -133,10 +141,14 @@ class ChartSettings {
   /// Windows the moving average may be computed over, in days.
   static const averageWindows = [7, 14, 30];
 
+  /// Window the numbers derived from the average use when the line is off
+  static const fallbackWindow = 7;
+
   final TrendCharacter trend;
 
-  /// Window the moving average covers, in days
-  final int averageWindow;
+  /// Window the moving average covers, in days, null when the user turned the
+  /// average line off
+  final int? averageWindow;
 
   const ChartSettings({
     this.trend = TrendCharacter.balanced,
@@ -152,7 +164,9 @@ class ChartSettings {
 
     return ChartSettings(
       trend: TrendCharacter.fromWire(config?['trend']),
-      averageWindow: window is int && averageWindows.contains(window)
+      averageWindow: window == chartLineOff
+          ? null
+          : window is int && averageWindows.contains(window)
           ? window
           : averageWindows.first,
     );

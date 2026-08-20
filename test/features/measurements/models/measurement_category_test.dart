@@ -112,6 +112,18 @@ void main() {
       expect(withConfig({'average_window': 'a fortnight'}).chartSettings.averageWindow, 7);
     });
 
+    test('a line the user turned off has no period and no window', () {
+      expect(withConfig({'trend': 'none'}).chartSettings.trend.emaPeriod, isNull);
+      expect(withConfig({'average_window': 'none'}).chartSettings.averageWindow, isNull);
+    });
+
+    test('turning one line off leaves the other alone', () {
+      final settings = withConfig({'trend': 'none', 'average_window': 14}).chartSettings;
+
+      expect(settings.trend, TrendCharacter.none);
+      expect(settings.averageWindow, 14);
+    });
+
     test('a setting is changed without dropping the keys of another client', () {
       final category = withConfig({'goal_line': 75}).withChartSetting('trend', 'reactive');
 
@@ -119,8 +131,8 @@ void main() {
     });
 
     test('the trend character maps to the EMA period the chart uses', () {
-      expect(TrendCharacter.reactive.emaPeriod, lessThan(TrendCharacter.balanced.emaPeriod));
-      expect(TrendCharacter.sluggish.emaPeriod, greaterThan(TrendCharacter.balanced.emaPeriod));
+      expect(TrendCharacter.reactive.emaPeriod, lessThan(TrendCharacter.balanced.emaPeriod!));
+      expect(TrendCharacter.sluggish.emaPeriod, greaterThan(TrendCharacter.balanced.emaPeriod!));
     });
   });
 

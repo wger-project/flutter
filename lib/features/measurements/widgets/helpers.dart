@@ -50,7 +50,9 @@ List<Widget> buildChartSection(
           : buildChartForMetricType(
               metricType,
               raw,
-              avg,
+              // The average is still computed for the number below, the
+              // setting only decides whether the line is drawn
+              settings.averageWindow == null ? const [] : avg,
               unit,
               planPeriods: planPeriods,
               trend: trend,
@@ -62,6 +64,16 @@ List<Widget> buildChartSection(
     if (avg.isNotEmpty) MeasurementOverallChangeWidget(avg.first, avg.last, unit),
     const SizedBox(height: 8),
   ];
+}
+
+/// The trend over [raw], null when the user turned the trend line off
+List<MeasurementChartEntry>? _trendlineFor(
+  List<MeasurementChartEntry> raw,
+  ChartSettings settings,
+) {
+  final period = settings.trend.emaPeriod;
+
+  return period == null ? null : smoothedTrendline(raw, period: period);
 }
 
 /// The chart of a measurement series: [buildChartSection] for the chart the
@@ -113,7 +125,8 @@ List<Widget> buildSeriesChartSection(
   // The points arrive condensed, so the trend follows the shape across weeks
   // rather than the swings within a single day
   final summed = metricType.isSummedPerDay;
-  final trendAll = summed ? null : smoothedTrendline(entriesAll, period: settings.trend.emaPeriod);
+  final period = settings.trend.emaPeriod;
+  final trendAll = summed || period == null ? null : smoothedTrendline(entriesAll, period: period);
   return [
     ...buildChartSection(
       context,
@@ -134,12 +147,13 @@ List<Widget> buildSeriesChartSection(
           text: AppLocalizations.of(context).indicatorRaw,
           isSquare: true,
         ),
-        Indicator(
-          color: Theme.of(context).colorScheme.tertiary,
-          text: AppLocalizations.of(context).indicatorAvg,
-          isSquare: true,
-        ),
-        if (!metricType.isSummedPerDay)
+        if (settings.averageWindow != null)
+          Indicator(
+            color: Theme.of(context).colorScheme.tertiary,
+            text: AppLocalizations.of(context).indicatorAvg,
+            isSquare: true,
+          ),
+        if (trendAll != null)
           Indicator(
             color: Theme.of(context).colorScheme.secondary,
             text: AppLocalizations.of(context).indicatorTrend,
@@ -416,7 +430,7 @@ Widget buildChartForMetricType(
     raw,
     unit,
     avgs: avg,
-    trend: trend ?? smoothedTrendline(raw, period: settings.trend.emaPeriod),
+    trend: trend ?? _trendlineFor(raw, settings),
     planPeriods: planPeriods,
   );
 }
