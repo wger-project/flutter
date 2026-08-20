@@ -19,15 +19,13 @@
 import 'dart:math';
 
 import 'package:wger/features/measurements/models/measurement_entry.dart';
-import 'package:wger/features/nutrition/models/nutritional_plan.dart';
 
 import '../body_weight.dart';
 
 /// A year of body weight ending today, shaped like a real log: a slow drift
-/// up, a successful cut over the period of [getScreenshotWeightPlans]' first
-/// plan, a short maintenance phase, and a fresh cut under the active plan.
-/// The cut and the active plan fall inside the last three months, so the
-/// story is visible in every chart range.
+/// up, a successful cut, a short maintenance phase, and a fresh cut. The cuts
+/// fall inside the last three months, so the story is visible in every chart
+/// range.
 ///
 /// Deterministic (fixed random seed); only the dates move with today.
 Map<String, List<MeasurementEntry>> getScreenshotBodyWeightEntries() {
@@ -71,28 +69,4 @@ Map<String, List<MeasurementEntry>> getScreenshotBodyWeightEntries() {
 
   // newest first, matching the order the paged list reads them in
   return bodyWeightEntries(entries.reversed.toList());
-}
-
-/// The nutrition plans behind the weight phases of
-/// [getScreenshotBodyWeightEntries]: a finished cut covering the big drop
-/// and a currently active plan. Shown as period bands in the weight chart.
-List<NutritionalPlan> getScreenshotWeightPlans() {
-  final today = DateTime.now();
-  DateTime daysAgo(int days) => DateTime(today.year, today.month, today.day - days);
-
-  return [
-    NutritionalPlan(
-      id: 'bb000000-0000-4000-8000-000000000001',
-      description: 'Summer cut',
-      startDate: daysAgo(75),
-      endDate: daysAgo(25),
-      onlyLogging: true,
-    ),
-    NutritionalPlan(
-      id: 'bb000000-0000-4000-8000-000000000002',
-      description: 'Mini cut',
-      startDate: daysAgo(10),
-      onlyLogging: true,
-    ),
-  ];
 }

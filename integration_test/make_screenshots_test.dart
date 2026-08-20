@@ -30,7 +30,6 @@ import '../test/screenshots/screenshots_02_workout.dart';
 import '../test/screenshots/screenshots_03_gym_mode.dart';
 import '../test/screenshots/screenshots_04_measurements.dart';
 import '../test/screenshots/screenshots_05_nutritional_plan.dart';
-import '../test/screenshots/screenshots_06_weight.dart';
 
 /// Type of device
 ///
@@ -180,12 +179,6 @@ void main() {
         await tester.tap(find.byType(TextButton));
         await tester.pumpAndSettle();
         await takeScreenshot(tester, binding, language, '05 - nutritional plan');
-      });
-
-      testWidgets('body weight screen - $language', (WidgetTester tester) async {
-        await tester.pumpWidget(createWeightScreen(locale: locale));
-        await tester.pumpAndSettle();
-        await takeScreenshot(tester, binding, language, '06 - weight');
       });
     }
   });
