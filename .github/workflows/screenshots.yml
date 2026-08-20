@@ -91,7 +91,23 @@ jobs:
           sudo udevadm trigger --name-match=kvm
 
       - name: Accept Android SDK licenses
-        run: yes | sdkmanager --licenses || true
+        run: yes | "${ANDROID_HOME:?}/cmdline-tools/latest/bin/sdkmanager" --licenses || true
+
+      # The runner image ships command line tools 12.0, which does not have the
+      # device definitions we need.
+      - name: Install current SDK command line tools
+        run: |
+          SDK="${ANDROID_HOME:?}/cmdline-tools"
+          yes | "$SDK/latest/bin/sdkmanager" --install "cmdline-tools;22.0"
+          rm -rf "$SDK/latest"
+          mv "$SDK/22.0" "$SDK/latest"
+          "$SDK/latest/bin/sdkmanager" --version
+
+      # Fail here rather than after the system image download
+      - name: Check the device profile exists
+        run: |
+          "${ANDROID_HOME:?}/cmdline-tools/latest/bin/avdmanager" list device --compact \
+            | grep -qx '${{ matrix.device.profile }}'
 
       # Free up disk space on the runner. List taken from
       # https://github.com/flathub-infra/vorarbeiter/blob/main/.github/workflows/build.yml

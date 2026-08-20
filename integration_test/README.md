@@ -20,7 +20,9 @@ resolution that comes out is the one the profile has.
 | `iOSTabletBig`        | iPad Pro 13-inch  | 2064x2752  |
 
 For Android either pick the profile in Android Studio under Device Manager, or
-on the command line.
+on the command line. Pixel 10 and Small Tablet need reasonably current SDK
+command line tools; the ones on the CI runner are too old for them, which is why
+the workflow installs its own before creating the AVD.
 
 For the Apple device types just install the matching simulator in Xcode.
 
