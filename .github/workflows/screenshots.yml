@@ -155,7 +155,7 @@ jobs:
           target: google_apis
           arch: x86_64
           profile: ${{ matrix.device.profile }}
-          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          emulator-options: -no-snapshot-save -no-window -no-metrics -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
           pre-emulator-launch-script: .github/scripts/portrait-avd.sh
           # The action runs every line of this as its own sh -c, so no loops here
