@@ -239,8 +239,9 @@ void main() {
     await container.read(networkStatusProvider.notifier).check();
     final beforeEvent = probes;
 
-    // Adapter still reports a connection, but the backend has to prove itself.
-    connectivity.emit([ConnectivityResult.wifi]);
+    // An interface switch keeps the adapter up, but the backend has to prove
+    // itself on the new network. A same-content event is deliberately inert.
+    connectivity.emit([ConnectivityResult.mobile]);
     await pumpEventQueue();
 
     expect(probes, greaterThan(beforeEvent));
@@ -252,10 +253,11 @@ void main() {
     await goOffline(container);
     expect(container.read(networkStatusProvider), isFalse);
 
-    // An adapter appears: optimistically online while the probe is pending.
+    // A connectivity change arrives: optimistically online while the probe
+    // for the new interface is pending.
     final probeCompleter = Completer<ProbeResult>();
     reachabilityCheck = (_, _, _) => probeCompleter.future;
-    connectivity.emit([ConnectivityResult.wifi]);
+    connectivity.emit([ConnectivityResult.mobile]);
     await pumpEventQueue();
     expect(container.read(networkStatusProvider), isTrue);
 
@@ -516,6 +518,28 @@ void main() {
     pendingProbe.complete((reachable: false, reason: 'test'));
     await pumpEventQueue();
     expect(container.read(networkStatusProvider), isTrue, reason: 'one failure is not offline');
+  });
+
+  test('an adapter loss during a pending probe is not coalesced away', () async {
+    // The change event must survive the pass in flight: that pass measured
+    // the old interface and its stale success must not stand.
+    reachabilityCheck = (_, _, _) async => (reachable: true, reason: 'test');
+    final container = makeContainer(serverUrl: 'https://wger.example');
+    final notifier = container.read(networkStatusProvider.notifier);
+    await pumpEventQueue();
+
+    final pendingProbe = Completer<ProbeResult>();
+    reachabilityCheck = (_, _, _) => pendingProbe.future;
+    final inFlight = notifier.check();
+    await pumpEventQueue();
+
+    connectivity.emit([ConnectivityResult.none]);
+    await pumpEventQueue();
+    pendingProbe.complete((reachable: true, reason: 'stale wifi probe'));
+    await inFlight;
+    await pumpEventQueue();
+
+    expect(container.read(networkStatusProvider), isFalse);
   });
 
   test('concurrent check calls join one probe pass and count one failure', () async {

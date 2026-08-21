@@ -163,6 +163,11 @@ class SyncStreamWatchdog {
       // A running timer deliberately survives: the probe misfires while a
       // large download saturates the line, and cancelling here would let
       // those misfires restart the detection over and over.
+      // A stall cleared here re-arms: its timer was consumed when it was
+      // flagged, and notStarted has no status event to restart it.
+      if (stalled.value && !_disarmed) {
+        _timer ??= Timer(timeout, _onTimeout);
+      }
       _stalledReason = null;
       stalled.value = false;
     }
@@ -204,16 +209,9 @@ class SyncStreamWatchdog {
     stalled.value = true;
 
     final minutes = timeout.inMinutes;
-    if (_lastError case final error?) {
-      _logger.warning(
-        'Sync has been failing for $minutes minutes without receiving any data.',
-        error,
-      );
-      return;
-    }
-
     // Naming the signature keeps the report honest: only the middle case is
-    // the blocked-middlebox one we used to assume for all of them.
+    // the blocked-middlebox one we used to assume for all of them. The last
+    // error seen (if any) rides along for the details.
     _logger.warning(switch (_stalledReason!) {
       StalledReason.notStarted =>
         'The sync client has not reported any state for $minutes minutes '
@@ -226,7 +224,7 @@ class SyncStreamWatchdog {
         'Sync has been receiving data for $minutes minutes without completing '
             'a checkpoint, so none of it becomes visible. This is a client-side '
             'problem, not a blocked connection.',
-    });
+    }, _lastError);
   }
 
   void _cancelTimer() {

@@ -57,19 +57,25 @@ void main() {
   final i18n = AppLocalizationsEn();
 
   late _FakeNetworkStatus networkStatus;
+  late SyncStreamWatchdog watchdog;
 
   setUp(() => networkStatus = _FakeNetworkStatus(false));
 
   /// Renders the app bar with the current [networkStatus] fake, and opens the
   /// sync dialog through the [icon] the bar is expected to show.
-  Future<void> pumpAppBar(WidgetTester tester, {IconData icon = Icons.cloud_off}) async {
-    final watchdog = SyncStreamWatchdog();
+  Future<void> pumpAppBar(
+    WidgetTester tester, {
+    IconData icon = Icons.cloud_off,
+    bool adapterAvailable = true,
+  }) async {
+    watchdog = SyncStreamWatchdog();
     addTearDown(watchdog.dispose);
 
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
           networkStatusProvider.overrideWith(() => networkStatus),
+          networkAdapterAvailableProvider.overrideWithValue(adapterAvailable),
           wgerBaseProvider.overrideWithValue(WgerBaseProvider(serverUrl: 'https://wger.example')),
           syncStatus.overrideWithValue(buildSyncStatus()),
           syncWatchdogProvider.overrideWithValue(watchdog),
@@ -116,5 +122,13 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(networkStatus.checks, [true]);
+  });
+
+  testWidgets('hides the reconnect action while there is no adapter', (tester) async {
+    // The reachability status may be wrong, the adapter is a platform fact:
+    // without one there is no transport a reconnect could possibly use.
+    await pumpAppBar(tester, adapterAvailable: false);
+
+    expect(find.text(i18n.syncStatusReconnect), findsNothing);
   });
 }

@@ -19,6 +19,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:collection/collection.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
@@ -135,6 +136,11 @@ class ConnectivityState extends _$ConnectivityState {
   }
 
   void _update(List<ConnectivityResult> conn) {
+    // Same content is no change: the seed in particular usually re-delivers
+    // the optimistic default and must not trigger a second startup probe.
+    if (const ListEquality<ConnectivityResult>().equals(conn, state)) {
+      return;
+    }
     if (hasNetworkAdapter(conn) != hasNetworkAdapter(state)) {
       _logger.info('Network adapter ${hasNetworkAdapter(conn) ? 'available' : 'gone'}');
     }
@@ -190,9 +196,7 @@ class NetworkStatus extends _$NetworkStatus {
 
     // Listening on the raw list, not the derived adapter bool: an interface
     // switch (wifi to mobile) keeps the bool true but still warrants a probe.
-    ref.listen(connectivityStateProvider, (_, conn) {
-      unawaited(_probeRun(() => _update(conn, optimistic: true)));
-    });
+    ref.listen(connectivityStateProvider, (_, _) => unawaited(_recheckOnChange()));
 
     // A stale offline state from the background shouldn't stick until the
     // next timer tick, so re-check optimistically on resume.
@@ -248,6 +252,20 @@ class NetworkStatus extends _$NetworkStatus {
   /// any other caller can observe [_inFlight].
   Future<bool> _probeRun(Future<bool> Function() run) {
     return _inFlight ??= run().whenComplete(() => _inFlight = null);
+  }
+
+  /// A connectivity change must never coalesce away: a pass already in
+  /// flight measured the old interface, so wait it out and run a fresh pass
+  /// on the new state.
+  Future<void> _recheckOnChange() async {
+    if (_inFlight case final pending?) {
+      try {
+        await pending;
+      } catch (_) {
+        // The joined pass owns its error; this one only waits its turn.
+      }
+    }
+    await check(optimistic: true);
   }
 
   /// Schedules the next probe: the idle cadence while things work, one of the

@@ -285,8 +285,8 @@ class SyncStatusDialog extends ConsumerWidget {
             ),
           // A stuck stream (firewall, VPN, flaky DNS) often recovers on a
           // fresh connection and can look healthy here while hanging, so the
-          // action is not gated on an error. Absent only while offline, where
-          // reconnecting would just spin against an unreachable backend.
+          // action is not gated on an error. Absent only without a network
+          // adapter, where there is no transport to reconnect over.
           if (onReconnect != null)
             TextButton(
               onPressed: () {

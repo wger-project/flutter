@@ -175,9 +175,46 @@ void main() {
       }
 
       expect(watchdog.stalled.value, isTrue);
-      final warnings = logLines(Level.WARNING, 'has been failing');
+      final warnings = logLines(Level.WARNING, 'may be blocked');
       expect(warnings, hasLength(1));
       expect(warnings.first.error.toString(), contains('boom'));
+    });
+  });
+
+  test('a retained error does not override the signature-specific warning', () {
+    fakeAsync((async) {
+      // Data arrived, then the timeout with an old error retained: the log
+      // must say "not applied", not falsely claim no data was received.
+      watchdog.onStatus(buildSyncStatus(connected: true, downloading: true));
+      async.elapse(const Duration(seconds: 5));
+      watchdog.onStatus(buildSyncStatus(downloadError: Exception('boom')));
+
+      async.elapse(watchdog.timeout + const Duration(seconds: 1));
+
+      expect(watchdog.stalledReason, StalledReason.notApplied);
+      final warnings = logLines(Level.WARNING, 'without completing');
+      expect(warnings, hasLength(1));
+      expect(warnings.first.error.toString(), contains('boom'));
+    });
+  });
+
+  test('a stall cleared by an offline window is flagged again afterwards', () {
+    fakeAsync((async) {
+      watchdog.onConnectRequested();
+      async.elapse(watchdog.timeout + const Duration(seconds: 1));
+      expect(watchdog.stalled.value, isTrue);
+
+      // The probe drops out briefly; clearing the flag must not end the
+      // detection, the notStarted case has no status event to restart it.
+      watchdog.offline = true;
+      expect(watchdog.stalled.value, isFalse);
+      async.elapse(watchdog.timeout);
+
+      watchdog.offline = false;
+      async.elapse(watchdog.timeout + const Duration(seconds: 1));
+
+      expect(watchdog.stalled.value, isTrue);
+      expect(watchdog.stalledReason, StalledReason.notStarted);
     });
   });
 
