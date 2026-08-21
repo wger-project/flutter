@@ -163,9 +163,10 @@ class NetworkStatus extends _$NetworkStatus {
   /// re-probe backoff.
   int _failures = 0;
 
-  /// True from the moment a probe pass starts until it has its answer, so a
-  /// burst of failing requests triggers one probe instead of one each.
-  bool _probing = false;
+  /// The probe pass in flight, if any. Late callers join it instead of racing
+  /// it: overlapping passes would each count the same failed moment into
+  /// [_failures] and defeat the offline hysteresis.
+  Future<bool>? _inFlight;
 
   @override
   bool build() {
@@ -208,12 +209,9 @@ class NetworkStatus extends _$NetworkStatus {
   }
 
   /// Reports that a real request failed with a network error, which triggers
-  /// a probe right away instead of waiting for the scheduled one. A probe
-  /// already in flight is answer enough.
+  /// a probe right away instead of waiting for the scheduled one. A failing
+  /// burst joins the probe pass the first failure started.
   void reportRequestFailure() {
-    if (_probing) {
-      return;
-    }
     unawaited(check());
   }
 
@@ -232,16 +230,11 @@ class NetworkStatus extends _$NetworkStatus {
     return _update(conn, timeout: timeout, optimistic: optimistic);
   });
 
-  /// Runs one probe pass and marks it as in flight for [reportRequestFailure].
-  /// The flag is set before the first await, so failures reported in the same
-  /// event-loop turn already see it.
-  Future<bool> _probeRun(Future<bool> Function() run) async {
-    _probing = true;
-    try {
-      return await run();
-    } finally {
-      _probing = false;
-    }
+  /// Runs one probe pass, or joins the one already in flight. Coalescing is
+  /// safe against reentrancy: the synchronous prefix of [run] executes before
+  /// any other caller can observe [_inFlight].
+  Future<bool> _probeRun(Future<bool> Function() run) {
+    return _inFlight ??= run().whenComplete(() => _inFlight = null);
   }
 
   /// Schedules the next probe: the idle cadence while things work, one of the

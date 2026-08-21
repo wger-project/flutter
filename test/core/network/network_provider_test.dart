@@ -498,6 +498,32 @@ void main() {
     expect(container.read(networkStatusProvider), isTrue, reason: 'one failure is not offline');
   });
 
+  test('concurrent check calls join one probe pass and count one failure', () async {
+    // A timer or connectivity-event pass can start while another pass is
+    // mid-probe. Racing passes would each sample the same blip and count it
+    // twice, which is exactly what the offline hysteresis must not allow.
+    reachabilityCheck = (_, _, _) async => (reachable: true, reason: 'test');
+    final container = makeContainer(serverUrl: 'https://wger.example');
+    final notifier = container.read(networkStatusProvider.notifier);
+    await pumpEventQueue();
+
+    var probes = 0;
+    final pendingProbe = Completer<ProbeResult>();
+    reachabilityCheck = (_, _, _) {
+      probes++;
+      return pendingProbe.future;
+    };
+    final first = notifier.check();
+    await pumpEventQueue();
+    final second = notifier.check();
+
+    pendingProbe.complete((reachable: false, reason: 'test'));
+    await Future.wait([first, second]);
+
+    expect(probes, 1);
+    expect(container.read(networkStatusProvider), isTrue, reason: 'one blip is one failure');
+  });
+
   group('networkAdapterAvailableProvider', () {
     test('starts available and stays there once the platform confirms an adapter', () async {
       final container = makeContainer();
