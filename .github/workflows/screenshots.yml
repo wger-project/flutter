@@ -18,6 +18,9 @@ jobs:
     # VM service it retries forever
     timeout-minutes: 40
     strategy:
+      # The jobs write into separate folders and a flaky one should not take
+      # the healthy ones down with it
+      fail-fast: false
       matrix:
         device:
           # Apple only needs the largest device per family, the smaller ones
@@ -68,6 +71,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 40
     strategy:
+      # The jobs write into separate folders and a flaky one should not take
+      # the healthy ones down with it
+      fail-fast: false
       matrix:
         device:
           - name: "Phone"
