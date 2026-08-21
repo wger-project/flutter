@@ -57,4 +57,4 @@ jobs:
           git add pubspec.yaml flatpak/de.wger.flutter.metainfo.xml
           git commit -m "Bump version to ${{ inputs.app_version }}"
           git tag ${{ inputs.app_version }}
-          git push origin HEAD:master --tags
+          git push --atomic origin HEAD:master --tags
