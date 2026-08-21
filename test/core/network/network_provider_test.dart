@@ -17,12 +17,15 @@
  */
 
 import 'dart:async';
+import 'dart:io';
 
 import 'package:connectivity_plus_platform_interface/connectivity_plus_platform_interface.dart';
 import 'package:fake_async/fake_async.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/testing.dart';
 import 'package:logging/logging.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:wger/core/network/base_provider.dart';
@@ -47,6 +50,20 @@ class _FakeConnectivity extends ConnectivityPlatform with MockPlatformInterfaceM
   }
 
   void dispose() => _controller.close();
+}
+
+/// Records what [ReachabilityReportingClient] routes into the notifier.
+class _RecordingNetworkStatus extends NetworkStatus {
+  final reports = <bool>[];
+
+  @override
+  bool build() => true;
+
+  @override
+  void reportRequestSuccess() => reports.add(true);
+
+  @override
+  void reportRequestFailure() => reports.add(false);
 }
 
 void main() {
@@ -603,5 +620,48 @@ void main() {
     await pumpEventQueue();
 
     expect(probeCount, greaterThan(afterInit));
+  });
+  group('ReachabilityReportingClient', () {
+    late _RecordingNetworkStatus status;
+
+    ReachabilityReportingClient buildClient(MockClient inner) {
+      status = _RecordingNetworkStatus();
+      final container = ProviderContainer.test(
+        overrides: [networkStatusProvider.overrideWith(() => status)],
+      );
+      return ReachabilityReportingClient(
+        inner,
+        () => container.read(networkStatusProvider.notifier),
+      );
+    }
+
+    Future<http.Response> get(http.Client client) =>
+        client.get(Uri.parse('https://wger.example/api/v2/routine/'));
+
+    test('any response reports the backend as reached, 4xx and 5xx included', () async {
+      for (final code in [200, 403, 500]) {
+        final client = buildClient(MockClient((_) async => http.Response('', code)));
+
+        await get(client);
+
+        expect(status.reports, [true], reason: 'HTTP $code was not reported');
+      }
+    });
+
+    test('a network error reports a failure and rethrows', () async {
+      final client = buildClient(MockClient((_) => throw const SocketException('no route')));
+
+      await expectLater(get(client), throwsA(isA<SocketException>()));
+
+      expect(status.reports, [false]);
+    });
+
+    test('an error that is not about the network reports nothing', () async {
+      final client = buildClient(MockClient((_) => throw const FormatException('broken')));
+
+      await expectLater(get(client), throwsA(isA<FormatException>()));
+
+      expect(status.reports, isEmpty);
+    });
   });
 }

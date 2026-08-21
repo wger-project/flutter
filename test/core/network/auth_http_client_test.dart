@@ -26,9 +26,8 @@ import 'package:mockito/mockito.dart';
 import 'package:wger/core/network/auth_http_client.dart';
 import 'package:wger/core/network/auth_notifier.dart';
 import 'package:wger/core/network/auth_state.dart';
-import 'package:wger/core/network/network_provider.dart';
+import 'package:wger/core/network/network_provider.dart' show ReachabilityReportingClient;
 
-import '../../helpers/fake_connectivity.dart';
 import 'auth_http_client_test.mocks.dart';
 
 /// Records the calls the provider's closures are supposed to route to the
@@ -62,20 +61,6 @@ class _RecordingAuthNotifier extends AuthNotifier {
   }
 }
 
-/// Records what the provider's reachability closure routes to the notifier.
-class _RecordingNetworkStatus extends NetworkStatus {
-  final reports = <bool>[];
-
-  @override
-  bool build() => true;
-
-  @override
-  void reportRequestSuccess() => reports.add(true);
-
-  @override
-  void reportRequestFailure() => reports.add(false);
-}
-
 @GenerateMocks([http.Client])
 void main() {
   // The provider's onSessionExpired shows a snackbar through
@@ -83,15 +68,10 @@ void main() {
   // (no widget tree), so the snackbar is skipped instead of throwing.
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  // The provider reports every request outcome to NetworkStatus, which would
-  // otherwise reach for the real connectivity plugin and a DNS lookup.
-  installFakeConnectivity();
-
   late MockClient inner;
   late AuthState? auth;
   late int refreshCalls;
   late int sessionExpiredCalls;
-  late List<bool> reachabilityReports;
   Future<void> Function() onRefresh = () async {};
 
   AuthHttpClient buildClient() => AuthHttpClient(
@@ -105,7 +85,6 @@ void main() {
       sessionExpiredCalls++;
       auth = const AuthState();
     },
-    reportReachability: ({required bool reachable}) => reachabilityReports.add(reachable),
   );
 
   /// Stubs a single response and returns the headers captured from the
@@ -131,7 +110,6 @@ void main() {
     auth = null;
     refreshCalls = 0;
     sessionExpiredCalls = 0;
-    reachabilityReports = [];
     onRefresh = () async {};
   });
 
@@ -407,73 +385,19 @@ void main() {
     });
   });
 
-  group('reachability reporting', () {
-    // Every real request is a free, perfectly targeted probe for
-    // NetworkStatus, which is what keeps its cached status fresh.
-    Future<void> send() => buildClient().send(
-      http.Request('GET', Uri.parse('https://wger.example/api/v2/routine/')),
-    );
-
-    test('any response counts as reachable, including 4xx and 5xx', () async {
-      for (final status in [200, 403, 500]) {
-        reachabilityReports = [];
-        when(inner.send(any)).thenAnswer(
-          (_) async => http.StreamedResponse(Stream.value(<int>[]), status),
-        );
-
-        await send();
-
-        expect(reachabilityReports, [true], reason: 'HTTP $status was not reported as reachable');
-      }
-    });
-
-    test('a network error reports unreachable', () async {
-      when(inner.send(any)).thenThrow(const SocketException('no route to host'));
-
-      await expectLater(send(), throwsA(isA<SocketException>()));
-
-      expect(reachabilityReports, [false]);
-    });
-
-    test('a non-network error reports nothing either way', () async {
-      when(inner.send(any)).thenThrow(const FormatException('broken response'));
-
-      await expectLater(send(), throwsA(isA<FormatException>()));
-
-      expect(reachabilityReports, isEmpty);
-    });
-
-    test('the retry after a refresh reports as well', () async {
-      auth = AuthState(
-        credential: JwtCredential(
-          accessToken: 'stale',
-          expiresAt: DateTime.now().toUtc().add(const Duration(hours: 1)),
-        ),
-      );
-      onRefresh = () async => auth = AuthState(
-        credential: JwtCredential(
-          accessToken: 'fresh',
-          expiresAt: DateTime.now().toUtc().add(const Duration(hours: 1)),
-        ),
-      );
-      var call = 0;
-      when(inner.send(any)).thenAnswer(
-        (_) async => http.StreamedResponse(Stream.value(<int>[]), ++call == 1 ? 401 : 200),
-      );
-
-      await send();
-
-      expect(reachabilityReports, [true, true]);
-    });
-  });
-
   group('authenticatedHttpClientProvider', () {
     // The tests above build the client with hand-written closures. These cover
     // the wiring the app actually runs: the closures the provider hands to
     // AuthHttpClient have to reach the notifier, or every request goes out
     // unauthenticated and an expired session is never noticed.
     late _RecordingAuthNotifier notifier;
-    late _RecordingNetworkStatus networkStatus;
+
+    test('the raw client is wrapped for reachability reporting', () {
+      // Wrapping sits at the bottom of the stack, so login and refresh
+      // traffic through the raw client feeds the network status as well.
+      final container = ProviderContainer.test();
+      expect(container.read(authHttpClientProvider), isA<ReachabilityReportingClient>());
+    });
 
     JwtCredential jwt(String token) => JwtCredential(
       accessToken: token,
@@ -482,12 +406,10 @@ void main() {
 
     http.Client buildFromProvider(AuthState initial) {
       notifier = _RecordingAuthNotifier(initial);
-      networkStatus = _RecordingNetworkStatus();
       final container = ProviderContainer.test(
         overrides: [
           authHttpClientProvider.overrideWithValue(inner),
           authProvider.overrideWith(() => notifier),
-          networkStatusProvider.overrideWith(() => networkStatus),
         ],
       );
       // The provider reads authProvider synchronously, so the state has to be
@@ -529,33 +451,6 @@ void main() {
         (captured.last as http.BaseRequest).headers[HttpHeaders.authorizationHeader],
         'Bearer refreshed',
       );
-    });
-
-    test('reports a reached backend to the network status', () async {
-      // The closure resolves the notifier at call time; a captured one would
-      // go stale when the auth flow invalidates networkStatusProvider.
-      final client = buildFromProvider(AuthState(credential: jwt('token')));
-      await pumpEventQueue();
-      when(inner.send(any)).thenAnswer(
-        (_) async => http.StreamedResponse(Stream.value(<int>[]), 200),
-      );
-
-      await client.send(http.Request('GET', Uri.parse('https://wger.example/api/v2/routine/')));
-
-      expect(networkStatus.reports, [true]);
-    });
-
-    test('reports an unreachable backend to the network status', () async {
-      final client = buildFromProvider(AuthState(credential: jwt('token')));
-      await pumpEventQueue();
-      when(inner.send(any)).thenThrow(const SocketException('no route to host'));
-
-      await expectLater(
-        client.send(http.Request('GET', Uri.parse('https://wger.example/api/v2/routine/'))),
-        throwsA(isA<SocketException>()),
-      );
-
-      expect(networkStatus.reports, [false]);
     });
 
     test('a 401 that survives the refresh clears the session', () async {

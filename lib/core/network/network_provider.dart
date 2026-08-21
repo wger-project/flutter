@@ -323,3 +323,33 @@ class NetworkStatus extends _$NetworkStatus {
     state = isOnline;
   }
 }
+
+/// Feeds every request outcome into [NetworkStatus]: any response means the
+/// backend was reached (4xx/5xx included), a network error means it was not.
+/// Wrapped around the raw client, so auth traffic counts as a probe too.
+class ReachabilityReportingClient extends http.BaseClient {
+  ReachabilityReportingClient(this._inner, this._status);
+
+  final http.Client _inner;
+
+  /// Resolved at call time: the auth flow invalidates [NetworkStatus] on
+  /// login and a captured notifier would go stale.
+  final NetworkStatus Function() _status;
+
+  @override
+  Future<http.StreamedResponse> send(http.BaseRequest request) async {
+    try {
+      final response = await _inner.send(request);
+      _status().reportRequestSuccess();
+      return response;
+    } catch (e) {
+      if (isNetworkError(e)) {
+        _status().reportRequestFailure();
+      }
+      rethrow;
+    }
+  }
+
+  @override
+  void close() => _inner.close();
+}

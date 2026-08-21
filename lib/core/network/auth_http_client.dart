@@ -22,10 +22,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 import 'package:wger/core/error_dialogs.dart';
-import 'package:wger/core/errors.dart';
 import 'package:wger/core/network/auth_notifier.dart';
 import 'package:wger/core/network/auth_state.dart';
-import 'package:wger/core/network/network_provider.dart';
 
 /// Pre-emptive refresh leeway: if the access JWT will expire within this
 /// window we refresh before sending the request. Chosen to absorb mild
@@ -56,7 +54,6 @@ class AuthHttpClient extends http.BaseClient {
   final AuthState? Function() _readAuth;
   final Future<void> Function() _refresh;
   final Future<void> Function() _onSessionExpired;
-  final void Function({required bool reachable}) _reportReachability;
   final _logger = Logger('AuthHttpClient');
 
   AuthHttpClient({
@@ -64,12 +61,10 @@ class AuthHttpClient extends http.BaseClient {
     required AuthState? Function() readAuth,
     required Future<void> Function() refresh,
     required Future<void> Function() onSessionExpired,
-    required void Function({required bool reachable}) reportReachability,
   }) : _inner = inner,
        _readAuth = readAuth,
        _refresh = refresh,
-       _onSessionExpired = onSessionExpired,
-       _reportReachability = reportReachability;
+       _onSessionExpired = onSessionExpired;
 
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) async {
@@ -82,7 +77,7 @@ class AuthHttpClient extends http.BaseClient {
     }
 
     _applyAuthHeader(request, credential);
-    final response = await _send(request);
+    final response = await _inner.send(request);
 
     final canRetry =
         response.statusCode == 401 && credential is JwtCredential && request is http.Request;
@@ -99,7 +94,7 @@ class AuthHttpClient extends http.BaseClient {
     }
 
     final retry = _cloneRequest(request, fresh);
-    final retryResponse = await _send(retry);
+    final retryResponse = await _inner.send(retry);
     if (retryResponse.statusCode == 401) {
       _logger.warning(
         'Retry after refresh still returned 401 for '
@@ -114,23 +109,6 @@ class AuthHttpClient extends http.BaseClient {
 
   @override
   void close() => _inner.close();
-
-  /// Sends through the inner client and reports whether the backend answered
-  /// at all. Any response counts, including 4xx and 5xx: the server was
-  /// reached. Only a network-level failure says otherwise, and errors that
-  /// are not about the network say nothing either way.
-  Future<http.StreamedResponse> _send(http.BaseRequest request) async {
-    try {
-      final response = await _inner.send(request);
-      _reportReachability(reachable: true);
-      return response;
-    } catch (e) {
-      if (isNetworkError(e)) {
-        _reportReachability(reachable: false);
-      }
-      rethrow;
-    }
-  }
 
   void _applyAuthHeader(http.BaseRequest req, AuthCredential? credential) {
     if (credential == null) {
@@ -170,13 +148,6 @@ final authenticatedHttpClientProvider = Provider<http.Client>(
     onSessionExpired: () async {
       await ref.read(authProvider.notifier).clearSessionOnly();
       showSessionExpiredSnackbar();
-    },
-    // Read at call time, not captured: the auth flow invalidates
-    // networkStatusProvider after a login and a captured notifier would go
-    // stale. Only the write path, no dependency on the network status.
-    reportReachability: ({required bool reachable}) {
-      final status = ref.read(networkStatusProvider.notifier);
-      reachable ? status.reportRequestSuccess() : status.reportRequestFailure();
     },
   ),
 );
