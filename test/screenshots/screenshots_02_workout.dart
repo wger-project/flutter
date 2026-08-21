@@ -16,10 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:wger/database/powersync/database.dart';
 import 'package:wger/features/routines/providers/routines_repository.dart';
 import 'package:wger/features/routines/screens/routine_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -39,6 +41,9 @@ Widget createWorkoutDetailScreen({Locale? locale}) {
 
   final container = riverpod.ProviderContainer.test(
     overrides: [
+      // Backstop for repositories that are not mocked: they all read the
+      // database, and none of them should reach the real PowerSync file
+      driftPowerSyncDatabase.overrideWithValue(DriftPowersyncDatabase(NativeDatabase.memory())),
       routinesRepositoryProvider.overrideWithValue(mockRoutinesRepo),
     ],
   );

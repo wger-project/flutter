@@ -5117,13 +5117,10 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
-  String get filterNutriscoreOff =>
+  String get off =>
       (super.noSuchMethod(
-            Invocation.getter(#filterNutriscoreOff),
-            returnValue: _i3.dummyValue<String>(
-              this,
-              Invocation.getter(#filterNutriscoreOff),
-            ),
+            Invocation.getter(#off),
+            returnValue: _i3.dummyValue<String>(this, Invocation.getter(#off)),
           )
           as String);
 

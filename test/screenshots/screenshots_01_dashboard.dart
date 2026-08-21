@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mockito/annotations.dart';
@@ -24,13 +25,18 @@ import 'package:wger/core/home_tabs_screen.dart';
 import 'package:wger/core/network/auth_notifier.dart';
 import 'package:wger/core/network/auth_state.dart';
 import 'package:wger/core/network/network_provider.dart';
+import 'package:wger/database/powersync/database.dart';
+import 'package:wger/database/powersync/powersync.dart';
 import 'package:wger/features/account/providers/user_profile_repository.dart';
+import 'package:wger/features/exercises/providers/exercise_repository.dart';
 import 'package:wger/features/gallery/providers/gallery_repository.dart';
+import 'package:wger/features/health/providers/health_repository.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
 import 'package:wger/features/nutrition/providers/ingredient_repository.dart';
 import 'package:wger/features/nutrition/providers/nutrition_notifier.dart';
 import 'package:wger/features/nutrition/providers/nutrition_repository.dart';
 import 'package:wger/features/routines/providers/routines_repository.dart';
+import 'package:wger/features/routines/providers/workout_session_repository.dart';
 import 'package:wger/features/trophies/providers/trophy_repository.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/theme/theme.dart';
@@ -45,6 +51,7 @@ import '../../test_data/screenshots/weight.dart';
 import '../../test_data/trophies.dart';
 import '../helpers/fake_auth_notifier.dart';
 import '../helpers/measurement_repository_stubs.dart';
+import '../helpers/sync_status.dart';
 import 'screenshots_01_dashboard.mocks.dart';
 
 @GenerateMocks([
@@ -55,6 +62,10 @@ import 'screenshots_01_dashboard.mocks.dart';
   UserProfileRepository,
   RoutinesRepository,
   TrophyRepository,
+  // The dashboard builds these too, they just have nothing to answer here
+  ExerciseRepository,
+  HealthRepository,
+  WorkoutSessionRepository,
 ])
 Widget createDashboardScreen({Locale? locale}) {
   locale ??= const Locale('en');
@@ -108,6 +119,10 @@ Widget createDashboardScreen({Locale? locale}) {
   );
   final container = ProviderContainer.test(
     overrides: [
+      // Backstop for repositories that are not mocked: they all read the
+      // database, and none of them should reach the real PowerSync file
+      driftPowerSyncDatabase.overrideWithValue(DriftPowersyncDatabase(NativeDatabase.memory())),
+      syncStatus.overrideWithValue(buildUninitializedSyncStatus()),
       measurementRepositoryProvider.overrideWithValue(mockMeasurementRepo),
       authProvider.overrideWith(() => FakeAuthNotifier(loggedInAuth)),
       userProfileRepositoryProvider.overrideWithValue(mockUserProfileRepo),
@@ -118,6 +133,9 @@ Widget createDashboardScreen({Locale? locale}) {
       networkStatusProvider.overrideWithValue(true),
       routinesRepositoryProvider.overrideWithValue(mockRoutinesRepo),
       trophyRepositoryProvider.overrideWithValue(mockTrophyRepo),
+      exerciseRepositoryProvider.overrideWithValue(MockExerciseRepository()),
+      healthRepositoryProvider.overrideWithValue(MockHealthRepository()),
+      workoutSessionRepositoryProvider.overrideWithValue(MockWorkoutSessionRepository()),
     ],
   );
 

@@ -16,10 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:wger/database/powersync/database.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
 import 'package:wger/features/nutrition/providers/ingredient_repository.dart';
 import 'package:wger/features/nutrition/providers/nutrition_notifier.dart';
@@ -54,6 +56,9 @@ Widget createNutritionalPlanScreen({Locale? locale}) {
 
   final container = ProviderContainer.test(
     overrides: [
+      // Backstop for repositories that are not mocked: they all read the
+      // database, and none of them should reach the real PowerSync file
+      driftPowerSyncDatabase.overrideWithValue(DriftPowersyncDatabase(NativeDatabase.memory())),
       measurementRepositoryProvider.overrideWithValue(mockMeasurementRepository),
       nutritionRepositoryProvider.overrideWithValue(mockNutritionRepo),
       ingredientRepositoryProvider.overrideWithValue(mockIngredientRepo),
