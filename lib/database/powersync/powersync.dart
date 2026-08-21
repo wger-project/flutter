@@ -110,9 +110,7 @@ Future<PowerSyncDatabase> powerSyncInstance(Ref ref) async {
       final serverUrl = ref.read(wgerBaseProvider).serverUrl;
       if (serverUrl != null) {
         _logger.info('Network adapter available, connecting to the sync service');
-        connectPowerSync(db, serverUrl, client);
-        // From here on a silent sync client is a fault, not an idle app.
-        watchdog.onConnectRequested();
+        connectPowerSync(db, serverUrl, client, watchdog);
       } else {
         _logger.info('Network adapter available, but no server configured: not connecting');
       }
@@ -219,7 +217,12 @@ Future<void> _createRawTables(PowerSyncDatabase db) async {
 /// HTTP client (see [authenticatedHttpClientProvider]); the connector reuses
 /// it for its REST calls so the same `Authorization` injection and
 /// pre-emptive refresh apply.
-void connectPowerSync(PowerSyncDatabase db, String baseUrl, http.Client client) {
+void connectPowerSync(
+  PowerSyncDatabase db,
+  String baseUrl,
+  http.Client client,
+  SyncStreamWatchdog watchdog,
+) {
   db.connect(
     connector: DjangoConnector(
       baseUrl: baseUrl,
@@ -227,6 +230,9 @@ void connectPowerSync(PowerSyncDatabase db, String baseUrl, http.Client client) 
       client: client,
     ),
   );
+  // A connect that never starts the sync client emits no status event, so
+  // arming the watchdog is inseparable from requesting the connection.
+  watchdog.onConnectRequested();
 }
 
 /// Number of local changes still waiting in the upload queue. Emits again

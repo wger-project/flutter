@@ -76,8 +76,15 @@ class MainAppBar extends ConsumerWidget implements PreferredSizeWidget {
                 if (db == null || serverUrl == null) {
                   return;
                 }
-                ref.read(syncWatchdogProvider).reset();
-                connectPowerSync(db, serverUrl, ref.read(authenticatedHttpClientProvider));
+                // A manual reconnect is a deliberate new connection epoch.
+                final watchdog = ref.read(syncWatchdogProvider);
+                watchdog.reset();
+                connectPowerSync(
+                  db,
+                  serverUrl,
+                  ref.read(authenticatedHttpClientProvider),
+                  watchdog,
+                );
               },
             ),
           ),
