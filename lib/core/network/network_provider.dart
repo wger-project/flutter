@@ -274,6 +274,11 @@ class NetworkStatus extends _$NetworkStatus {
       _setState(true, 'network adapter available, probe pending');
     }
 
+    // The pass may resume here after the notifier was invalidated (login
+    // does that); the dead ref must not be touched.
+    if (!ref.mounted) {
+      return _lastState;
+    }
     final base = ref.read(wgerBaseProvider);
     final probeUri = base.serverUrl != null ? base.makeUrl('version') : null;
     final probe = await reachabilityCheck(probeUri, base.getAppNameHeaderValue(), timeout);

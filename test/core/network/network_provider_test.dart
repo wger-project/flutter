@@ -35,8 +35,14 @@ class _FakeConnectivity extends ConnectivityPlatform with MockPlatformInterfaceM
   List<ConnectivityResult> current = [ConnectivityResult.wifi];
   final _controller = StreamController<List<ConnectivityResult>>.broadcast();
 
+  /// When set, [checkConnectivity] answers only once the gate completes.
+  Completer<void>? gate;
+
   @override
-  Future<List<ConnectivityResult>> checkConnectivity() async => current;
+  Future<List<ConnectivityResult>> checkConnectivity() async {
+    await gate?.future;
+    return current;
+  }
 
   @override
   Stream<List<ConnectivityResult>> get onConnectivityChanged => _controller.stream;
@@ -296,6 +302,25 @@ void main() {
 
     container.dispose();
     pendingProbe.complete((reachable: false, reason: 'test'));
+
+    await expectLater(probe, completes);
+  });
+
+  test('a probe suspended in the connectivity lookup survives an invalidation', () async {
+    // Same window as above, one await earlier: the pass can be sitting in the
+    // platform checkConnectivity call when the login invalidates the
+    // provider, and must not touch the dead ref afterwards.
+    reachabilityCheck = (_, _, _) async => (reachable: true, reason: 'test');
+    final container = makeContainer(serverUrl: 'https://wger.example');
+    container.read(networkStatusProvider);
+    await pumpEventQueue();
+
+    connectivity.gate = Completer<void>();
+    final probe = container.read(networkStatusProvider.notifier).check();
+    await pumpEventQueue();
+
+    container.dispose();
+    connectivity.gate!.complete();
 
     await expectLater(probe, completes);
   });
