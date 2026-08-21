@@ -4578,6 +4578,28 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get syncStatusStalledNotStartedHint =>
+      (super.noSuchMethod(
+            Invocation.getter(#syncStatusStalledNotStartedHint),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#syncStatusStalledNotStartedHint),
+            ),
+          )
+          as String);
+
+  @override
+  String get syncStatusStalledNotAppliedHint =>
+      (super.noSuchMethod(
+            Invocation.getter(#syncStatusStalledNotAppliedHint),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#syncStatusStalledNotAppliedHint),
+            ),
+          )
+          as String);
+
+  @override
   String get syncStatusReconnect =>
       (super.noSuchMethod(
             Invocation.getter(#syncStatusReconnect),

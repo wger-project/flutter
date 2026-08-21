@@ -111,22 +111,20 @@ const _failuresBeforeOffline = 2;
 /// takes two seconds means slow, not offline.
 const _probeTimeout = Duration(seconds: 3);
 
-/// Whether the device has a network adapter at all (wifi, mobile, ethernet...)
-///
-/// This is a platform fact and may therefore gate a connection attempt, unlike
-/// the reachability probe behind [NetworkStatus], which is only an indication.
-/// Starts out true so nothing waits for the first answer of the platform
-/// channel; an adapterless device corrects it a moment later.
+/// Raw connectivity state, the app's single [Connectivity] consumer; the
+/// adapter gate and the reachability probes both derive from it. Starts out
+/// with wifi so nothing waits for the first answer of the platform channel;
+/// an adapterless device corrects it a moment later.
 @Riverpod(keepAlive: true)
-class NetworkAdapterAvailable extends _$NetworkAdapterAvailable {
-  final _logger = Logger('NetworkAdapterAvailable');
+class ConnectivityState extends _$ConnectivityState {
+  final _logger = Logger('ConnectivityState');
 
   @override
-  bool build() {
+  List<ConnectivityResult> build() {
     final sub = Connectivity().onConnectivityChanged.listen(_update);
     ref.onDispose(sub.cancel);
     unawaited(_seed());
-    return true;
+    return const [ConnectivityResult.wifi];
   }
 
   Future<void> _seed() async {
@@ -136,22 +134,30 @@ class NetworkAdapterAvailable extends _$NetworkAdapterAvailable {
     }
   }
 
-  /// An empty list means no connection either, hence [Iterable.any] rather
-  /// than a check for [ConnectivityResult.none].
   void _update(List<ConnectivityResult> conn) {
-    final available = conn.any((c) => c != ConnectivityResult.none);
-    if (available != state) {
-      _logger.info('Network adapter ${available ? 'available' : 'gone'}');
+    if (hasNetworkAdapter(conn) != hasNetworkAdapter(state)) {
+      _logger.info('Network adapter ${hasNetworkAdapter(conn) ? 'available' : 'gone'}');
     }
-    state = available;
+    state = conn;
   }
 }
+
+/// An empty list means no connection either, hence [Iterable.any] rather
+/// than a check for [ConnectivityResult.none].
+bool hasNetworkAdapter(List<ConnectivityResult> conn) =>
+    conn.any((c) => c != ConnectivityResult.none);
+
+/// Whether the device has a network adapter at all (wifi, mobile, ethernet...)
+///
+/// This is a platform fact and may therefore gate a connection attempt, unlike
+/// the reachability probe behind [NetworkStatus], which is only an indication.
+@Riverpod(keepAlive: true)
+bool networkAdapterAvailable(Ref ref) => hasNetworkAdapter(ref.watch(connectivityStateProvider));
 
 @Riverpod(keepAlive: true)
 class NetworkStatus extends _$NetworkStatus {
   final _logger = Logger('NetworkStatus');
 
-  StreamSubscription<List<ConnectivityResult>>? _sub;
   Timer? _probeTimer;
   AppLifecycleListener? _lifecycleListener;
 
@@ -178,9 +184,13 @@ class NetworkStatus extends _$NetworkStatus {
   }
 
   void _init() {
-    check(optimistic: true);
+    // Deferred one microtask: the pass writes the state, which build() would
+    // otherwise overwrite with its own return value right after.
+    unawaited(Future.microtask(() => check(optimistic: true)));
 
-    _sub = Connectivity().onConnectivityChanged.listen((conn) {
+    // Listening on the raw list, not the derived adapter bool: an interface
+    // switch (wifi to mobile) keeps the bool true but still warrants a probe.
+    ref.listen(connectivityStateProvider, (_, conn) {
       unawaited(_probeRun(() => _update(conn, optimistic: true)));
     });
 
@@ -191,7 +201,6 @@ class NetworkStatus extends _$NetworkStatus {
     _scheduleProbe();
 
     ref.onDispose(() {
-      _sub?.cancel();
       _probeTimer?.cancel();
       _lifecycleListener?.dispose();
     });
@@ -225,8 +234,12 @@ class NetworkStatus extends _$NetworkStatus {
   Future<bool> check({
     Duration timeout = _probeTimeout,
     bool optimistic = false,
-  }) => _probeRun(() async {
-    final conn = await Connectivity().checkConnectivity();
+  }) => _probeRun(() {
+    // The deferred pass from _init can arrive after a dispose.
+    if (!ref.mounted) {
+      return Future.value(_lastState);
+    }
+    final conn = ref.read(connectivityStateProvider);
     return _update(conn, timeout: timeout, optimistic: optimistic);
   });
 
@@ -259,9 +272,8 @@ class NetworkStatus extends _$NetworkStatus {
   }) async {
     // Only short-circuit when there's clearly no network adapter at all. Any
     // other connectivity type (wifi, ethernet, mobile, vpn, other, ...) still
-    // has to prove real reachability via the probe below. An empty list
-    // counts as "no connection" too.
-    if (conn.every((c) => c == ConnectivityResult.none)) {
+    // has to prove real reachability via the probe below.
+    if (!hasNetworkAdapter(conn)) {
       // A known offline state, not a failed probe: the ladder starts fresh
       // when the adapter comes back.
       _failures = 0;
@@ -274,11 +286,6 @@ class NetworkStatus extends _$NetworkStatus {
       _setState(true, 'network adapter available, probe pending');
     }
 
-    // The pass may resume here after the notifier was invalidated (login
-    // does that); the dead ref must not be touched.
-    if (!ref.mounted) {
-      return _lastState;
-    }
     final base = ref.read(wgerBaseProvider);
     final probeUri = base.serverUrl != null ? base.makeUrl('version') : null;
     final probe = await reachabilityCheck(probeUri, base.getAppNameHeaderValue(), timeout);

@@ -35,14 +35,8 @@ class _FakeConnectivity extends ConnectivityPlatform with MockPlatformInterfaceM
   List<ConnectivityResult> current = [ConnectivityResult.wifi];
   final _controller = StreamController<List<ConnectivityResult>>.broadcast();
 
-  /// When set, [checkConnectivity] answers only once the gate completes.
-  Completer<void>? gate;
-
   @override
-  Future<List<ConnectivityResult>> checkConnectivity() async {
-    await gate?.future;
-    return current;
-  }
+  Future<List<ConnectivityResult>> checkConnectivity() async => current;
 
   @override
   Stream<List<ConnectivityResult>> get onConnectivityChanged => _controller.stream;
@@ -109,6 +103,9 @@ void main() {
       return (reachable: true, reason: 'test');
     };
     final container = makeContainer(serverUrl: 'https://wger.example');
+    // Let the connectivity seed land before the first probe pass reads it.
+    container.read(connectivityStateProvider);
+    await pumpEventQueue();
 
     final result = await container.read(networkStatusProvider.notifier).check();
 
@@ -306,25 +303,6 @@ void main() {
     await expectLater(probe, completes);
   });
 
-  test('a probe suspended in the connectivity lookup survives an invalidation', () async {
-    // Same window as above, one await earlier: the pass can be sitting in the
-    // platform checkConnectivity call when the login invalidates the
-    // provider, and must not touch the dead ref afterwards.
-    reachabilityCheck = (_, _, _) async => (reachable: true, reason: 'test');
-    final container = makeContainer(serverUrl: 'https://wger.example');
-    container.read(networkStatusProvider);
-    await pumpEventQueue();
-
-    connectivity.gate = Completer<void>();
-    final probe = container.read(networkStatusProvider.notifier).check();
-    await pumpEventQueue();
-
-    container.dispose();
-    connectivity.gate!.complete();
-
-    await expectLater(probe, completes);
-  });
-
   test('re-probes when invalidated (e.g. after login)', () async {
     // NetworkStatus does not watch wgerBase, so auth re-probes the new server
     // by invalidating the provider; the rebuild runs the probe again.
@@ -379,8 +357,8 @@ void main() {
     final container = makeContainer(serverUrl: 'https://wger.example');
     await container.read(networkStatusProvider.notifier).check();
 
-    connectivity.current = [ConnectivityResult.none];
-    await container.read(networkStatusProvider.notifier).check();
+    connectivity.emit([ConnectivityResult.none]);
+    await pumpEventQueue();
 
     final offline = records.where(
       (r) => r.loggerName == 'NetworkStatus' && r.message.contains('offline'),
