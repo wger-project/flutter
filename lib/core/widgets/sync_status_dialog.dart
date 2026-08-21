@@ -260,7 +260,8 @@ class SyncStatusDialog extends ConsumerWidget {
           if (stalled || syncState.anyError != null)
             TextButton(
               onPressed: () async {
-                final local = await collectLocalSyncState();
+                // Same snapshot the copy button shows, and no second query.
+                final local = await ref.read(localSyncStateProvider.future);
                 final url = buildGithubIssueUrl(
                   issueTitle: 'Sync error',
                   issueErrorMessage:
