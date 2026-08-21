@@ -278,10 +278,13 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
         if (!mounted) {
           return;
         }
+        // Started in the tap handler: reading a provider in the route builder
+        // runs during build, and an inline future re-fires on every rebuild.
+        final search = ref.read(ingredientRepositoryProvider).searchIngredientByBarcode(barcode);
         showDialog(
           context: context,
           builder: (context) => FutureBuilder<Ingredient?>(
-            future: ref.read(ingredientRepositoryProvider).searchIngredientByBarcode(barcode),
+            future: search,
             builder: (BuildContext context, AsyncSnapshot<Ingredient?> snapshot) {
               return IngredientScanResultDialog(snapshot, barcode, widget.selectIngredient);
             },

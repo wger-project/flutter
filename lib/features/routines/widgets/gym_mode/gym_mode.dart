@@ -22,6 +22,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
+import 'package:wger/core/build_safety.dart';
 import 'package:wger/core/errors.dart';
 import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/core/widgets/error.dart';
@@ -72,7 +73,7 @@ class _GymModeState extends ConsumerState<GymMode> {
     // synchronously inside the widget life-cycle: the offline branch reaches
     // gym-state mutations with no await in between, and modifying a provider
     // during a life-cycle is not allowed.
-    await Future<void>.delayed(Duration.zero);
+    await yieldPastBuild();
 
     final notifier = ref.read(routinesRiverpodProvider.notifier);
     final routineId = widget._args.routineId;

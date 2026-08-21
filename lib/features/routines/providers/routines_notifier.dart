@@ -19,6 +19,7 @@
 import 'package:collection/collection.dart';
 import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:wger/core/build_safety.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/helpers.dart';
 import 'package:wger/features/account/providers/user_profile_notifier.dart';
@@ -33,7 +34,6 @@ import 'package:wger/features/routines/models/slot_entry.dart';
 import 'package:wger/features/routines/models/weight_unit.dart';
 import 'package:wger/features/routines/providers/routines_repository.dart';
 import 'package:wger/features/routines/providers/workout_session_notifier.dart';
-
 part 'routines_notifier.g.dart';
 
 // Reference-data streams: kept alive across the app's lifetime so that
@@ -263,6 +263,10 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
   }
 
   Future<Routine> _fetchAndSetRoutineFull(int routineId) async {
+    // Watch-created providers enter here synchronously during widget build,
+    // where reading a dirty dependency chain forces a mid-build refresh.
+    await yieldPastBuild();
+
     final repo = ref.read(routinesRepositoryProvider);
 
     // Wait for every reference-data stream to produce its first value before
@@ -429,5 +433,10 @@ class RoutinesRiverpod extends _$RoutinesRiverpod {
 /// lets a reconnect re-create the provider and retry.
 @riverpod
 Future<void> routineHydration(Ref ref, int routineId) async {
+  // Created by a ref.watch during widget build; reading a dirty dependency
+  // chain there (e.g. auth right after a token refresh) forces a provider
+  // refresh mid-build.
+  await yieldPastBuild();
+
   await ref.read(routinesRiverpodProvider.notifier).fetchAndSetRoutineFull(routineId);
 }

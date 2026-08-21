@@ -60,41 +60,47 @@ class MainAppBar extends ConsumerWidget implements PreferredSizeWidget {
         ),
         IconButton(
           icon: Icon(status.icon),
-          onPressed: () => showDialog<void>(
-            context: context,
-            // The dialog watches the sync state itself; only the server URL
-            // and the adapter gate are snapshots taken when it opens. The
-            // reconnect action is never gated on the reachability status (it
-            // exists for when that status is wrong), but the adapter is a
-            // platform fact: without one there is no transport to retry on.
-            builder: (_) => SyncStatusDialog(
-              serverUrl: ref.read(wgerBaseProvider).serverUrl,
-              onReconnect: !ref.read(networkAdapterAvailableProvider)
-                  ? null
-                  : () {
-                      unawaited(ref.read(networkStatusProvider.notifier).check(optimistic: true));
+          onPressed: () {
+            // The dialog watches the sync state itself; the server URL and
+            // adapter gate are tap-time snapshots. The route builder runs
+            // during build, where a dirty provider read forces a mid-build
+            // refresh. Reconnect gates on the adapter, a platform fact,
+            // never on the reachability status (it exists for when that
+            // status is wrong).
+            final serverUrl = ref.read(wgerBaseProvider).serverUrl;
+            final adapterAvailable = ref.read(networkAdapterAvailableProvider);
 
-                      final db = builtPowerSyncInstance;
-                      final serverUrl = ref.read(wgerBaseProvider).serverUrl;
-                      // The adapter re-check covers it disappearing while the
-                      // dialog was open.
-                      if (db == null ||
-                          serverUrl == null ||
-                          !ref.read(networkAdapterAvailableProvider)) {
-                        return;
-                      }
-                      // A manual reconnect is a deliberate new connection epoch.
-                      final watchdog = ref.read(syncWatchdogProvider);
-                      watchdog.reset();
-                      connectPowerSync(
-                        db,
-                        serverUrl,
-                        ref.read(authenticatedHttpClientProvider),
-                        watchdog,
-                      );
-                    },
-            ),
-          ),
+            showDialog<void>(
+              context: context,
+              builder: (_) => SyncStatusDialog(
+                serverUrl: serverUrl,
+                onReconnect: !adapterAvailable
+                    ? null
+                    : () {
+                        unawaited(ref.read(networkStatusProvider.notifier).check(optimistic: true));
+
+                        final db = builtPowerSyncInstance;
+                        final url = ref.read(wgerBaseProvider).serverUrl;
+                        // The adapter re-check covers it disappearing while
+                        // the dialog was open.
+                        if (db == null ||
+                            url == null ||
+                            !ref.read(networkAdapterAvailableProvider)) {
+                          return;
+                        }
+                        // A manual reconnect is a deliberate new connection epoch.
+                        final watchdog = ref.read(syncWatchdogProvider);
+                        watchdog.reset();
+                        connectPowerSync(
+                          db,
+                          url,
+                          ref.read(authenticatedHttpClientProvider),
+                          watchdog,
+                        );
+                      },
+              ),
+            );
+          },
         ),
         IconButton(
           icon: const Icon(Icons.settings),

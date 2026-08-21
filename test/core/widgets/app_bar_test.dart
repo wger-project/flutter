@@ -23,6 +23,7 @@ import 'package:wger/core/network/base_provider.dart';
 import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/core/network/wger_base.dart';
 import 'package:wger/core/widgets/app_bar.dart';
+import 'package:wger/core/widgets/sync_status_dialog.dart';
 import 'package:wger/database/powersync/powersync.dart'
     show pendingUploadCountProvider, syncStatus, syncWatchdogProvider;
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -130,5 +131,47 @@ void main() {
     await pumpAppBar(tester, adapterAvailable: false);
 
     expect(find.text(i18n.syncStatusReconnect), findsNothing);
+  });
+
+  testWidgets('sync icon snapshots its providers at tap time and opens the dialog', (tester) async {
+    // Companion to a production crash: reading a dirty provider from the
+    // route builder forced a mid-build refresh. The exact race needs a
+    // dependency flip in the same frame and is not deterministically
+    // reproducible here; this pins the tap-time wiring of the fixed path.
+    watchdog = SyncStreamWatchdog();
+    addTearDown(watchdog.dispose);
+    final container = ProviderContainer.test(
+      overrides: [
+        networkStatusProvider.overrideWithValue(true),
+        networkAdapterAvailableProvider.overrideWithValue(true),
+        wgerBaseProvider.overrideWithValue(WgerBaseProvider(serverUrl: 'https://wger.example')),
+        syncStatus.overrideWithValue(buildSyncStatus(connected: true)),
+        syncWatchdogProvider.overrideWithValue(watchdog),
+        pendingUploadCountProvider.overrideWith((ref) => Stream.value(0)),
+      ],
+    );
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: const MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: Locale('en'),
+          home: Scaffold(appBar: MainAppBar('Test')),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    // Dirty the provider the dialog reads, without pumping a frame, so the
+    // flush happens on the tap itself.
+    container.invalidate(wgerBaseProvider);
+
+    await tester.tap(find.byIcon(Icons.cloud_done_outlined));
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+    expect(find.byType(SyncStatusDialog), findsOneWidget);
   });
 }

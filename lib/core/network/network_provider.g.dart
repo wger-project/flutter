@@ -53,7 +53,7 @@ final class ConnectivityStateProvider
   }
 }
 
-String _$connectivityStateHash() => r'd65d4be040fa25c9c05bc221c48e17c76d899fde';
+String _$connectivityStateHash() => r'c912f76dd5900836dde7f1762b6498b58a07d67e';
 
 /// Raw connectivity state, the app's single [Connectivity] consumer; the
 /// adapter gate and the reachability probes both derive from it. Starts out
@@ -129,7 +129,7 @@ final class NetworkAdapterAvailableProvider extends $FunctionalProvider<bool, bo
   }
 }
 
-String _$networkAdapterAvailableHash() => r'0ceb5414b1e2dbc081b71377d84aa2e87c418fb0';
+String _$networkAdapterAvailableHash() => r'173cf2e2eddced4b02f8138a03b9a24042a71b2d';
 
 @ProviderFor(NetworkStatus)
 final networkStatusProvider = NetworkStatusProvider._();
@@ -162,7 +162,7 @@ final class NetworkStatusProvider extends $NotifierProvider<NetworkStatus, bool>
   }
 }
 
-String _$networkStatusHash() => r'0cdf954ed8b0bbeae3cd2a0df250d17428049160';
+String _$networkStatusHash() => r'7151484435c9be02745f59fea595fa6d71d16c35';
 
 abstract class _$NetworkStatus extends $Notifier<bool> {
   bool build();

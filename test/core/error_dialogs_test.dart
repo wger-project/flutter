@@ -17,9 +17,36 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wger/core/error_dialogs.dart';
 import 'package:wger/core/errors.dart';
+import 'package:wger/core/keys.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
+
+/// Requests an error dialog from *inside* its own build, the situation a
+/// FlutterError.onError handler is in when a widget fails to build.
+class _ErrorDuringBuild extends StatelessWidget {
+  const _ErrorDuringBuild();
+
+  @override
+  Widget build(BuildContext context) {
+    showGeneralErrorDialog('boom during build', StackTrace.current, context: context);
+    return const SizedBox.shrink();
+  }
+}
+
+/// Requests the transient-error snackbar from inside a build, where the
+/// messenger's setState would otherwise assert.
+class _SnackbarDuringBuild extends StatelessWidget {
+  const _SnackbarDuringBuild();
+
+  @override
+  Widget build(BuildContext context) {
+    showTransientErrorSnackbar();
+    return const SizedBox.shrink();
+  }
+}
 
 void main() {
   group('formatApiErrors', () {
@@ -65,6 +92,71 @@ void main() {
       expect(htmlErrorTitle('<html><body>no title here</body></html>'), isNull);
       expect(htmlErrorTitle('<html><head><title>   </title></head></html>'), isNull);
       expect(htmlErrorTitle(''), isNull);
+    });
+  });
+
+  group('showGeneralErrorDialog during build', () {
+    Widget app(Widget home) => MaterialApp(
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: home,
+    );
+
+    testWidgets('defers the dialog to the next frame instead of asserting', (tester) async {
+      // Regression: a mid-build route push asserted, and the secondary
+      // exception wedged the one-dialog guard shut until app restart.
+      await tester.pumpWidget(app(const _ErrorDuringBuild()));
+
+      // The build itself must not throw...
+      expect(tester.takeException(), isNull);
+
+      // ...and the dialog appears on the following frame.
+      await tester.pump();
+      expect(find.byType(AlertDialog), findsOneWidget);
+
+      // Dismissing releases the guard: a second dialog can be shown.
+      await tester.tap(find.text('OK'));
+      await tester.pumpAndSettle();
+      expect(find.byType(AlertDialog), findsNothing);
+
+      final context = tester.element(find.byType(SizedBox));
+      showGeneralErrorDialog('second error', StackTrace.current, context: context);
+      // One frame runs the post-frame callback (pushing the route), the next
+      // builds the dialog.
+      await tester.pump();
+      await tester.pump();
+      expect(
+        find.byType(AlertDialog),
+        findsOneWidget,
+        reason: 'the guard flag must not stay wedged after the first dialog',
+      );
+    });
+
+    testWidgets('snackbar requested during build appears without asserting', (tester) async {
+      // Same bug class as the dialogs: showSnackBar sets state on the
+      // messenger, which asserts during build.
+      await tester.pumpWidget(
+        MaterialApp(
+          navigatorKey: navigatorKey,
+          scaffoldMessengerKey: scaffoldMessengerKey,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const Scaffold(body: _SnackbarDuringBuild()),
+        ),
+      );
+
+      expect(tester.takeException(), isNull);
+
+      await tester.pump();
+      expect(find.byType(SnackBar), findsOneWidget);
     });
   });
 }
