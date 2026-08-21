@@ -69,7 +69,12 @@ const ISSUE_REFRESH_TOKEN_PATH = 'issue-refresh-token';
 const HEADLESS_SESSION_TOKEN_HEADER = 'X-Session-Token';
 
 /// HTTP client used by the auth notifier. Override in tests.
-final authHttpClientProvider = Provider<http.Client>((ref) => http.Client());
+final authHttpClientProvider = Provider<http.Client>(
+  (ref) => ReachabilityReportingClient(
+    http.Client(),
+    () => ref.read(networkStatusProvider.notifier),
+  ),
+);
 
 @Riverpod(keepAlive: true)
 class AuthNotifier extends _$AuthNotifier {
@@ -1002,7 +1007,12 @@ class AuthNotifier extends _$AuthNotifier {
       return;
     }
     try {
-      connectPowerSync(db, serverUrl, ref.read(authenticatedHttpClientProvider));
+      connectPowerSync(
+        db,
+        serverUrl,
+        ref.read(authenticatedHttpClientProvider),
+        ref.read(syncWatchdogProvider),
+      );
     } catch (e, s) {
       _logger.warning('PowerSync reconnect failed', e, s);
     }

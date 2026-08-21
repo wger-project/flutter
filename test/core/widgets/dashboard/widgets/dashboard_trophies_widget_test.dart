@@ -26,8 +26,13 @@ import 'package:wger/features/trophies/providers/trophy_notifier.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 import '../../../../../test_data/trophies.dart';
+import '../../../../helpers/fake_connectivity.dart';
 
 void main() {
+  // The widget tree reaches networkStatusProvider; without the fake the
+  // deferred init probe does a real DNS lookup with a pending timer.
+  installFakeConnectivity();
+
   Future<void> pumpOverview(WidgetTester tester, [List<Override> overrides = const []]) async {
     await tester.pumpWidget(
       ProviderScope(

@@ -67,6 +67,11 @@ final class TrophyStateNotifier extends _$TrophyStateNotifier {
     // reachability read sits inside the microtask: this build can run during
     // widget build with networkStatusProvider dirty (see build_safety.dart).
     Future.microtask(() {
+      // The microtask can outlive the notifier: the post-login flow
+      // invalidates this provider.
+      if (!ref.mounted) {
+        return;
+      }
       if (ref.read(networkStatusProvider)) {
         _fetchAllSafe();
       }

@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:io';
+
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
@@ -396,6 +398,37 @@ void main() {
       expect(find.byType(StreamErrorIndicator), findsNothing);
       expect(find.byType(StartPage), findsOneWidget);
       verifyNever(mockRoutinesRepo.fetchAndSetRoutineFullServer(any));
+    });
+  });
+
+  testWidgets('falls back to the cached routine when the server is unreachable', (
+    WidgetTester tester,
+  ) async {
+    // The status says online but the request fails: the workout still has to
+    // start from the already-downloaded routine instead of an error screen.
+    when(mockRoutinesRepo.watchAllDrift()).thenAnswer(
+      (_) => Stream.value([testRoutine]),
+    );
+    when(
+      mockRoutinesRepo.fetchAndSetRoutineFullServer(any),
+    ).thenThrow(const SocketException('no route to host'));
+
+    await withClock(Clock.fixed(DateTime(2025, 3, 29, 14, 33)), () async {
+      await tester.pumpWidget(renderGymMode());
+      await tester.pumpAndSettle();
+
+      // Prime the keepAlive routines stream (see the offline test above).
+      final container = riverpod.ProviderScope.containerOf(
+        tester.element(find.byType(TextButton)),
+      );
+      container.listen(routinesRiverpodProvider, (_, _) {});
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byType(TextButton));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(StreamErrorIndicator), findsNothing);
+      expect(find.byType(StartPage), findsOneWidget);
     });
   });
 
