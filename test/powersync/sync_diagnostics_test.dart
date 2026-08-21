@@ -66,6 +66,45 @@ void main() {
       expect(text, contains('error (Connection error): SocketException'));
     });
 
+    test('omits the local counters when they could not be read', () {
+      final text = formatSyncDiagnostics(buildSyncStatus(connected: true), pendingUploads: 0);
+
+      expect(text, isNot(contains('checkpoint request')));
+      expect(text, isNot(contains('local buckets')));
+    });
+
+    test('renders the local counters, showing a closed apply gate', () {
+      final text = formatSyncDiagnostics(
+        buildSyncStatus(connected: true),
+        pendingUploads: 0,
+        local: const LocalSyncState(
+          targetRequestId: 9,
+          lastSeenRequestId: 4,
+          lastAppliedRequestId: 3,
+          maxLastOp: 1738524,
+          opsSinceCheckpoint: 166,
+          oplogRows: 15973,
+        ),
+      );
+
+      expect(text, contains('checkpoint request: target 9, seen 4, applied 3'));
+      expect(
+        text,
+        contains('local buckets: last op 1738524, ops since checkpoint 166, oplog rows 15973'),
+      );
+    });
+
+    test('marks missing local counters instead of dropping the line', () {
+      final text = formatSyncDiagnostics(
+        buildSyncStatus(connected: true),
+        pendingUploads: 0,
+        local: const LocalSyncState(targetRequestId: 3),
+      );
+
+      expect(text, contains('checkpoint request: target 3, seen -, applied -'));
+      expect(text, contains('local buckets: last op -, ops since checkpoint -, oplog rows -'));
+    });
+
     test('clamps oversized error messages', () {
       final text = formatSyncDiagnostics(
         buildSyncStatus(downloadError: Exception('x' * 5000)),
@@ -81,6 +120,7 @@ void main() {
   group('collectSyncDiagnostics', () {
     test('returns null while the PowerSync database is not initialised', () async {
       expect(await collectSyncDiagnostics(), isNull);
+      expect(await collectLocalSyncState(), isNull);
     });
   });
 }

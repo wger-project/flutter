@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/core/form_screen.dart';
@@ -41,7 +43,11 @@ class MainAppBar extends ConsumerWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final syncState = ref.watch(syncStatus);
-    final status = syncStatusIconAndLabel(syncState, AppLocalizations.of(context));
+    final status = syncStatusIconAndLabel(
+      syncState,
+      AppLocalizations.of(context),
+      deviceOnline: ref.watch(networkStatusProvider),
+    );
 
     return AppBar(
       title: Text(_title),
@@ -57,22 +63,35 @@ class MainAppBar extends ConsumerWidget implements PreferredSizeWidget {
           onPressed: () => showDialog<void>(
             context: context,
             // The dialog watches the sync state itself; only the server URL
-            // and the offline gate are snapshots taken when it opens.
-            // No reconnect while offline: the app deliberately disconnects
-            // there (see powerSyncInstance). The tap-time check covers the
-            // network dropping while the dialog is open
+            // and the adapter gate are snapshots taken when it opens. The
+            // reconnect action is never gated on the reachability status (it
+            // exists for when that status is wrong), but the adapter is a
+            // platform fact: without one there is no transport to retry on.
             builder: (_) => SyncStatusDialog(
               serverUrl: ref.read(wgerBaseProvider).serverUrl,
-              onReconnect: !ref.read(networkStatusProvider)
+              onReconnect: !ref.read(networkAdapterAvailableProvider)
                   ? null
                   : () {
+                      unawaited(ref.read(networkStatusProvider.notifier).check(optimistic: true));
+
                       final db = builtPowerSyncInstance;
                       final serverUrl = ref.read(wgerBaseProvider).serverUrl;
-                      if (db == null || serverUrl == null || !ref.read(networkStatusProvider)) {
+                      // The adapter re-check covers it disappearing while the
+                      // dialog was open.
+                      if (db == null ||
+                          serverUrl == null ||
+                          !ref.read(networkAdapterAvailableProvider)) {
                         return;
                       }
-                      ref.read(syncWatchdogProvider).reset();
-                      connectPowerSync(db, serverUrl, ref.read(authenticatedHttpClientProvider));
+                      // A manual reconnect is a deliberate new connection epoch.
+                      final watchdog = ref.read(syncWatchdogProvider);
+                      watchdog.reset();
+                      connectPowerSync(
+                        db,
+                        serverUrl,
+                        ref.read(authenticatedHttpClientProvider),
+                        watchdog,
+                      );
                     },
             ),
           ),

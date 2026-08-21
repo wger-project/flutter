@@ -22,6 +22,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
 import 'package:http/http.dart' as http;
+import 'package:logging/logging.dart';
 
 import 'consts.dart';
 
@@ -63,6 +64,29 @@ bool isNetworkError(Object e) {
       e is SocketException ||
       e is HandshakeException ||
       e is TimeoutException;
+}
+
+/// Runs [server] when [isOnline] hints that the backend is reachable, falling
+/// back to [local] when it is not or when [server] fails with a network error
+/// (logged as "[fallbackLog]: error"). Anything else is rethrown.
+Future<T> serverWithLocalFallback<T>({
+  required bool isOnline,
+  required Future<T> Function() server,
+  required FutureOr<T> Function() local,
+  required Logger logger,
+  required String fallbackLog,
+}) async {
+  if (isOnline) {
+    try {
+      return await server();
+    } catch (e) {
+      if (!isNetworkError(e)) {
+        rethrow;
+      }
+      logger.info('$fallbackLog: $e');
+    }
+  }
+  return local();
 }
 
 /// Builds the URL that opens a pre-filled GitHub bug report.

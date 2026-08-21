@@ -16,12 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:powersync/powersync.dart'
     show CredentialsException, PowerSyncProtocolException, SyncResponseException, SyncStatus;
 import 'package:wger/core/consts.dart';
 import 'package:wger/database/powersync/powersync.dart' show builtPowerSyncInstance;
-import 'package:wger/powersync/connector.dart' show RetryableUploadException;
+import 'package:wger/powersync/connector.dart'
+    show NoPowerSyncEndpointException, RetryableUploadException;
 
 final _logger = Logger('sync_diagnostics');
 
@@ -38,6 +40,10 @@ String _categoriseHttpStatus(int statusCode) {
 
 /// Classifies a sync error into a short English category label
 String? categoriseSyncError(Object error) {
+  if (error is NoPowerSyncEndpointException) {
+    return 'Sync service unavailable';
+  }
+
   if (error is CredentialsException) {
     return 'Authentication error';
   }
@@ -75,11 +81,55 @@ String? serverCategory(String? serverUrl) {
   };
 }
 
+/// Local counters that tell a blocked apply apart from data that never
+/// arrives. Null fields mean the value is not in the database (yet).
+class LocalSyncState {
+  const LocalSyncState({
+    this.targetRequestId,
+    this.lastSeenRequestId,
+    this.lastAppliedRequestId,
+    this.maxLastOp,
+    this.opsSinceCheckpoint,
+    this.oplogRows,
+  });
+
+  /// While the target is greater than [lastSeenRequestId], the client waits
+  /// for the service to confirm a local write and applies nothing.
+  final int? targetRequestId;
+  final int? lastSeenRequestId;
+  final int? lastAppliedRequestId;
+
+  /// Highest bucket position stored locally. Advances while data arrives,
+  /// even when no checkpoint can be applied.
+  final int? maxLastOp;
+
+  /// Operations downloaded since the last applied checkpoint.
+  final int? opsSinceCheckpoint;
+
+  final int? oplogRows;
+}
+
+/// Reads [LocalSyncState] in a single round trip. The subqueries keep the
+/// result to one row even when a table is empty.
+const _localStateQuery = '''
+SELECT
+  (SELECT CAST(value AS INTEGER) FROM ps_kv WHERE key = 'target_checkpoint_request_id')
+    AS target_request_id,
+  (SELECT CAST(value AS INTEGER) FROM ps_kv WHERE key = 'last_seen_checkpoint_request_id')
+    AS last_seen_request_id,
+  (SELECT CAST(value AS INTEGER) FROM ps_kv WHERE key = 'last_applied_checkpoint_request_id')
+    AS last_applied_request_id,
+  (SELECT CAST(max(last_op) AS INTEGER) FROM ps_buckets) AS max_last_op,
+  (SELECT CAST(sum(count_since_last) AS INTEGER) FROM ps_buckets) AS ops_since_checkpoint,
+  (SELECT count(*) FROM ps_oplog) AS oplog_rows
+''';
+
 /// Renders a compact sync-state summary for bug reports.
 String formatSyncDiagnostics(
   SyncStatus status, {
   required int pendingUploads,
   String? server,
+  LocalSyncState? local,
 }) {
   final buffer = StringBuffer();
   if (server != null) {
@@ -92,6 +142,19 @@ String formatSyncDiagnostics(
     )
     ..writeln('last successful sync: ${status.lastSyncedAt?.toUtc().toIso8601String() ?? 'never'}')
     ..writeln('pending uploads: $pendingUploads');
+  if (local != null) {
+    String value(int? v) => v?.toString() ?? '-';
+    buffer
+      ..writeln(
+        'checkpoint request: target ${value(local.targetRequestId)}, '
+        'seen ${value(local.lastSeenRequestId)}, applied ${value(local.lastAppliedRequestId)}',
+      )
+      ..writeln(
+        'local buckets: last op ${value(local.maxLastOp)}, '
+        'ops since checkpoint ${value(local.opsSinceCheckpoint)}, '
+        'oplog rows ${value(local.oplogRows)}',
+      );
+  }
   if (status.downloadProgress case final progress?) {
     buffer.writeln(
       'download progress: ${progress.downloadedOperations} / ${progress.totalOperations}',
@@ -105,6 +168,38 @@ String formatSyncDiagnostics(
     buffer.writeln('error (${categoriseSyncError(error) ?? 'Uncategorised'}): $clamped');
   }
   return buffer.toString().trimRight();
+}
+
+/// Local counters for the sync status dialog, so it can offer them without
+/// building a whole bug report.
+final localSyncStateProvider = FutureProvider.autoDispose<LocalSyncState?>(
+  (ref) => collectLocalSyncState(),
+);
+
+/// Reads the local sync counters, or null when the database is missing or
+/// does not answer.
+///
+/// Never throws: a report must not fail over a diagnostic, and the internal
+/// tables read here are not part of PowerSync's public API.
+Future<LocalSyncState?> collectLocalSyncState() async {
+  final db = builtPowerSyncInstance;
+  if (db == null) {
+    return null;
+  }
+  try {
+    final row = await db.get(_localStateQuery);
+    return LocalSyncState(
+      targetRequestId: row['target_request_id'] as int?,
+      lastSeenRequestId: row['last_seen_request_id'] as int?,
+      lastAppliedRequestId: row['last_applied_request_id'] as int?,
+      maxLastOp: row['max_last_op'] as int?,
+      opsSinceCheckpoint: row['ops_since_checkpoint'] as int?,
+      oplogRows: row['oplog_rows'] as int?,
+    );
+  } catch (e, s) {
+    _logger.warning('Could not read the local sync state', e, s);
+    return null;
+  }
 }
 
 /// Snapshot of the current sync state for bug reports, or null when the
@@ -124,6 +219,7 @@ Future<String?> collectSyncDiagnostics({String? serverUrl}) async {
       db.currentStatus,
       pendingUploads: queue.count,
       server: serverCategory(serverUrl),
+      local: await collectLocalSyncState(),
     );
   } catch (e, s) {
     _logger.warning('Could not collect sync diagnostics', e, s);

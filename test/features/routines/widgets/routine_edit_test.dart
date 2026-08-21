@@ -27,10 +27,15 @@ import 'package:wger/features/routines/widgets/routine_edit.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 import '../../../../test_data/routines.dart';
+import '../../../helpers/fake_connectivity.dart';
 import 'routine_edit_test.mocks.dart';
 
 @GenerateMocks([RoutinesRepository])
 void main() {
+  // The widget tree reaches networkStatusProvider; without the fake the
+  // deferred init probe does a real DNS lookup with a pending timer.
+  installFakeConnectivity();
+
   late MockRoutinesRepository mockRoutinesRepository;
 
   setUp(() {

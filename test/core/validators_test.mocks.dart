@@ -504,6 +504,39 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get allowSelfSignedCertsTitle =>
+      (super.noSuchMethod(
+            Invocation.getter(#allowSelfSignedCertsTitle),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#allowSelfSignedCertsTitle),
+            ),
+          )
+          as String);
+
+  @override
+  String get allowSelfSignedCertsDetail =>
+      (super.noSuchMethod(
+            Invocation.getter(#allowSelfSignedCertsDetail),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#allowSelfSignedCertsDetail),
+            ),
+          )
+          as String);
+
+  @override
+  String get certsNotVerifiedTitle =>
+      (super.noSuchMethod(
+            Invocation.getter(#certsNotVerifiedTitle),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#certsNotVerifiedTitle),
+            ),
+          )
+          as String);
+
+  @override
   String get authOptionPasswordTitle =>
       (super.noSuchMethod(
             Invocation.getter(#authOptionPasswordTitle),
@@ -1659,6 +1692,14 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
               this,
               Invocation.getter(#addMeal),
             ),
+          )
+          as String);
+
+  @override
+  String get meal =>
+      (super.noSuchMethod(
+            Invocation.getter(#meal),
+            returnValue: _i3.dummyValue<String>(this, Invocation.getter(#meal)),
           )
           as String);
 
@@ -3629,6 +3670,28 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get settingsVerboseLogging =>
+      (super.noSuchMethod(
+            Invocation.getter(#settingsVerboseLogging),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#settingsVerboseLogging),
+            ),
+          )
+          as String);
+
+  @override
+  String get settingsVerboseLoggingDescription =>
+      (super.noSuchMethod(
+            Invocation.getter(#settingsVerboseLoggingDescription),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#settingsVerboseLoggingDescription),
+            ),
+          )
+          as String);
+
+  @override
   String get aboutPageTitle =>
       (super.noSuchMethod(
             Invocation.getter(#aboutPageTitle),
@@ -4251,6 +4314,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get useDynamicColor =>
+      (super.noSuchMethod(
+            Invocation.getter(#useDynamicColor),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#useDynamicColor),
+            ),
+          )
+          as String);
+
+  @override
   String get youAreOffline =>
       (super.noSuchMethod(
             Invocation.getter(#youAreOffline),
@@ -4493,6 +4567,61 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get syncStatusStalledHint =>
+      (super.noSuchMethod(
+            Invocation.getter(#syncStatusStalledHint),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#syncStatusStalledHint),
+            ),
+          )
+          as String);
+
+  @override
+  String get syncStatusStalledNotStartedHint =>
+      (super.noSuchMethod(
+            Invocation.getter(#syncStatusStalledNotStartedHint),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#syncStatusStalledNotStartedHint),
+            ),
+          )
+          as String);
+
+  @override
+  String get syncStatusStalledNotAppliedHint =>
+      (super.noSuchMethod(
+            Invocation.getter(#syncStatusStalledNotAppliedHint),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#syncStatusStalledNotAppliedHint),
+            ),
+          )
+          as String);
+
+  @override
+  String get syncStatusReconnect =>
+      (super.noSuchMethod(
+            Invocation.getter(#syncStatusReconnect),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#syncStatusReconnect),
+            ),
+          )
+          as String);
+
+  @override
+  String get syncStatusNeverSynced =>
+      (super.noSuchMethod(
+            Invocation.getter(#syncStatusNeverSynced),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#syncStatusNeverSynced),
+            ),
+          )
+          as String);
+
+  @override
   String get filterNutriscore =>
       (super.noSuchMethod(
             Invocation.getter(#filterNutriscore),
@@ -4598,6 +4727,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.getter(#timeStartEndBothOrNeither),
+            ),
+          )
+          as String);
+
+  @override
+  String certsNotVerifiedDetail(String? host) =>
+      (super.noSuchMethod(
+            Invocation.method(#certsNotVerifiedDetail, [host]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#certsNotVerifiedDetail, [host]),
             ),
           )
           as String);
@@ -4950,6 +5090,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.method(#searchLanguageEnglish, [lang]),
+            ),
+          )
+          as String);
+
+  @override
+  String syncStatusPendingUploads(int? count) =>
+      (super.noSuchMethod(
+            Invocation.method(#syncStatusPendingUploads, [count]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#syncStatusPendingUploads, [count]),
             ),
           )
           as String);

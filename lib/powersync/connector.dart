@@ -25,6 +25,7 @@ import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 import 'package:powersync/powersync.dart';
 import 'package:wger/core/error_dialogs.dart';
+import 'package:wger/core/errors.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/core/helpers.dart';
 import 'package:wger/core/network/jwt.dart';
@@ -49,6 +50,28 @@ class RetryableUploadException implements Exception {
 
   @override
   String toString() => 'Upload of $op on $table deferred: retryable status $statusCode';
+}
+
+/// Thrown when the wger backend answers but no live PowerSync endpoint can
+/// be resolved: a down or misconfigured sync service, not an offline device
+/// and not an authentication problem.
+class NoPowerSyncEndpointException implements Exception {
+  @override
+  String toString() => 'No live PowerSync endpoint found';
+}
+
+/// Stand-in for an unexpected upload error, carrying nothing but text.
+///
+/// An error object that cannot be sent between isolates never reaches the
+/// sync isolate and wedges the upload queue for the rest of the process
+/// (powersync-ja/powersync.dart#452), so nothing foreign is ever rethrown.
+class UploadFailedException implements Exception {
+  final String details;
+
+  UploadFailedException(this.details);
+
+  @override
+  String toString() => 'Upload failed: $details';
 }
 
 /// What the transaction loop does with one upload response.
@@ -119,14 +142,14 @@ class DjangoConnector extends PowerSyncBackendConnector {
     try {
       session = await apiClient.getPowersyncToken();
     } on http.ClientException catch (e) {
-      // Backend unreachable (offline). Returning null skips this attempt;
-      // PowerSync retries on its own schedule. Without this, the raw
-      // SocketException stack trace floods the logs on every retry.
+      // Backend unreachable. Null would mean "not logged in" to the SDK and
+      // surface as a CredentialsException; rethrowing keeps it a connection
+      // error. PowerSync retries on its own schedule either way.
       _logUnreachable(e.message);
-      return null;
+      rethrow;
     } on SocketException catch (e) {
       _logUnreachable(e.message);
-      return null;
+      rethrow;
     }
     _logReachableAgain();
 
@@ -148,11 +171,11 @@ class DjangoConnector extends PowerSyncBackendConnector {
       }
     }
     if (endpoint == null) {
-      // The wger backend answered (the token fetch above succeeded), so this
-      // is a bad or down sync service, not the device being offline.
-      // Returning null skips the attempt; PowerSync retries on its own.
+      // The wger backend answered (the token fetch above succeeded). Null
+      // would mean "not logged in" to the SDK; the typed error keeps the
+      // meaning. PowerSync retries on its own schedule either way.
       _logNoEndpoint();
-      return null;
+      throw NoPowerSyncEndpointException();
     }
     _lastNoEndpointLogAt = null;
     if (endpoint != _lastLoggedEndpoint) {
@@ -275,7 +298,8 @@ class DjangoConnector extends PowerSyncBackendConnector {
   /// an unreachable backend throws, leaving it queued for PowerSync to retry.
   ///
   /// A retry re-sends the whole transaction (at-least-once), so backend handlers
-  /// must be idempotent.
+  /// must be idempotent. Anything unexpected is rethrown as an
+  /// [UploadFailedException], never as the original object.
   @visibleForTesting
   Future<void> processTransaction(CrudTransaction transaction) async {
     try {
@@ -315,24 +339,24 @@ class DjangoConnector extends PowerSyncBackendConnector {
         }
       }
       await transaction.complete();
-    } on http.ClientException catch (e) {
-      // Backend unreachable (offline or down). The transaction stays queued;
-      // rethrowing lets PowerSync retry it once the backend is reachable.
-      logger.fine('Upload deferred, backend unreachable: ${e.message}');
-      rethrow;
-    } on SocketException catch (e) {
-      logger.fine('Upload deferred, backend unreachable: ${e.message}');
-      rethrow;
     } on RetryableUploadException catch (e) {
       // Stays queued for PowerSync to retry. Below severe: a brief server blip
       // is expected to clear on its own.
       logger.warning('Upload deferred: $e');
       rethrow;
-    } on Exception catch (e) {
-      logger.severe('Error uploading data', e);
-      // Error may be retryable, e.g. a temporary server error. Throwing here
-      // causes PowerSync to retry this transaction after a delay.
-      rethrow;
+    } catch (e, s) {
+      if (isNetworkError(e)) {
+        // Backend unreachable (offline or down). The transaction stays queued;
+        // rethrowing lets PowerSync retry it once the backend is reachable.
+        logger.fine('Upload deferred, backend unreachable: $e');
+        rethrow;
+      }
+      // Deliberately bare: Errors (TypeError, JsonUnsupportedObjectError...)
+      // must not cross the isolate boundary as objects either. Throwing here
+      // causes PowerSync to retry this transaction after a delay. The text
+      // stands in for the original: see [UploadFailedException].
+      logger.severe('Error uploading data', e, s);
+      throw UploadFailedException(e.toString());
     }
   }
 
