@@ -155,10 +155,6 @@
     },
     "newDay": "روز جدید",
     "@newDay": {},
-    "newSet": "مجموعه جدید",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
-    },
     "selectExercises": "اگر می‌خواهید مجموعه ای از حرکات را انجام دهید، می‌توانید چندین تمرین را جستجو کنید، آنها در یک گروه قرار می‌گیرند",
     "@selectExercises": {},
     "gymMode": "حالت باشگاه",
@@ -275,39 +271,6 @@
     "@min": {},
     "max": "حداکثر",
     "@max": {},
-    "chartAllTimeTitle": "نمودار کلی {name}",
-    "@chartAllTimeTitle": {
-        "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chart30DaysTitle": "نمودار 30 روزه {name}",
-    "@chart30DaysTitle": {
-        "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chartDuringPlanTitle": "نمودار {chartName} در برنامه {planName}",
-    "@chartDuringPlanTitle": {
-        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-        "type": "text",
-        "placeholders": {
-            "chartName": {
-                "type": "String"
-            },
-            "planName": {
-                "type": "String"
-            }
-        }
-    },
     "measurement": "اندازه گیری",
     "@measurement": {},
     "measurements": "اندازه گیری ها",

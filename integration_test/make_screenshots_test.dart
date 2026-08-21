@@ -30,7 +30,6 @@ import '../test/screenshots/screenshots_02_workout.dart';
 import '../test/screenshots/screenshots_03_gym_mode.dart';
 import '../test/screenshots/screenshots_04_measurements.dart';
 import '../test/screenshots/screenshots_05_nutritional_plan.dart';
-import '../test/screenshots/screenshots_06_weight.dart';
 
 /// Type of device
 ///
@@ -43,8 +42,10 @@ enum DeviceType {
   androidTv('tvScreenshots'),
   androidWear('wearScreenshots'),
 
+  // Apple only needs the largest size per device family, the smaller ones are
+  // scaled down automatically
   iOSPhoneBig('iPhone 6.9', isAndroid: false),
-  iOSPhoneSmall('iPhone 6.7', isAndroid: false);
+  iOSTabletBig('iPad 13', isAndroid: false);
 
   final String folderName;
   final bool isAndroid;
@@ -87,9 +88,7 @@ Future<void> takeScreenshot(
 
 // Available languages in weblate for the fastlane/metadata/android folder (not necessarily
 // those for which the application is translated)
-const languages = [
-  // Note: it seems if too many languages are processed at once, sometimes the process
-  // disappear and no images are written. Doing this in smaller steps works fine
+const allLanguages = [
   'ar',
   'ca',
   'cs-CZ',
@@ -119,7 +118,31 @@ const languages = [
   'zh-TW',
 ];
 
+/// Languages to generate: `de-DE,en-US`, or `2/5` for the second of five equal
+/// blocks. Empty means all of them, which the hand-over rarely survives.
+const _languagesArg = String.fromEnvironment('LANGUAGES');
+
+List<String> _selectedLanguages() {
+  if (_languagesArg.isEmpty) {
+    return allLanguages;
+  }
+  if (!_languagesArg.contains('/')) {
+    return _languagesArg.split(',').map((language) => language.trim()).toList();
+  }
+
+  final [index, count] = _languagesArg.split('/').map(int.parse).toList();
+  final size = (allLanguages.length / count).ceil();
+  return allLanguages.skip((index - 1) * size).take(size).toList();
+}
+
+final languages = _selectedLanguages();
+
 void main() {
+  final unknown = languages.where((language) => !allLanguages.contains(language)).toList();
+  if (unknown.isNotEmpty) {
+    throw ArgumentError('Not in allLanguages: ${unknown.join(', ')}');
+  }
+
   final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   binding.framePolicy = LiveTestWidgetsFlutterBindingFramePolicy.fullyLive;
@@ -178,12 +201,6 @@ void main() {
         await tester.tap(find.byType(TextButton));
         await tester.pumpAndSettle();
         await takeScreenshot(tester, binding, language, '05 - nutritional plan');
-      });
-
-      testWidgets('body weight screen - $language', (WidgetTester tester) async {
-        await tester.pumpWidget(createWeightScreen(locale: locale));
-        await tester.pumpAndSettle();
-        await takeScreenshot(tester, binding, language, '06 - weight');
       });
     }
   });

@@ -101,11 +101,10 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
         context,
       ).push<String?>(MaterialPageRoute(builder: (context) => const ScanReader()));
 
-      if (code == null) {
-        return '';
-      }
-
-      if (code == '-1') {
+      // A decoder that never returns looks exactly like a cancelled scan from
+      // here, so log the empty result as the only trace it leaves.
+      if (code == null || code.isEmpty || code == '-1') {
+        widget._logger.info('Barcode scanner returned no code');
         return '';
       }
       return code;
@@ -269,6 +268,7 @@ class _IngredientTypeaheadState extends ConsumerState<IngredientTypeahead> {
   Widget scanButton() {
     return IconButton(
       key: const Key('scan-button'),
+      tooltip: AppLocalizations.of(context).scanBarcode,
       icon: const FaIcon(FontAwesomeIcons.barcode),
       onPressed: () async {
         if (!widget.test) {

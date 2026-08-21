@@ -17,30 +17,220 @@
  */
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:wger/core/exceptions/no_such_entry_exception.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 
-import '../../../../test_data/measurements.dart';
-
 void main() {
-  late MeasurementCategory category;
+  group('isOfficialBodyWeight', () {
+    test('is true only for the official body weight category', () {
+      final official = MeasurementCategory(
+        metricType: MetricType.bodyWeight,
+        isOfficial: true,
+      );
+      expect(official.isOfficialBodyWeight, isTrue);
 
-  setUp(() {
-    category = getMeasurementCategories()[0];
+      // A user-created category with the same metric type is not official
+      expect(MeasurementCategory(metricType: MetricType.bodyWeight).isOfficialBodyWeight, isFalse);
+      // Other official metric types are not body weight
+      expect(
+        MeasurementCategory(metricType: MetricType.height, isOfficial: true).isOfficialBodyWeight,
+        isFalse,
+      );
+    });
   });
 
-  group('findEntryById()', () {
-    test('should find an entry in the entries list', () {
-      // act
-      final result = category.findEntryById('1');
-
-      // assert
-      expect(result.id, '1');
+  group('ChartType', () {
+    test('fromWire maps null, the server default, to no override', () {
+      expect(ChartType.fromWire(null), ChartType.auto);
     });
 
-    test('should throw a NoSuchEntryException if no MeasurementEntry was found', () {
-      // act & assert
-      expect(() => category.findEntryById('abc'), throwsA(isA<NoSuchEntryException>()));
+    test('fromWire defaults to auto for a type this release does not know', () {
+      expect(ChartType.fromWire('sunburst'), ChartType.auto);
+    });
+
+    test('wireValue round-trips through fromWire for every case', () {
+      for (final type in ChartType.values) {
+        expect(ChartType.fromWire(type.wireValue), type);
+      }
+    });
+
+    test('the offered types follow the metric type', () {
+      expect(MetricType.steps.availableChartTypes, [
+        ChartType.bar,
+        ChartType.heatmap,
+        ChartType.delta,
+        ChartType.distribution,
+      ]);
+      expect(MetricType.custom.availableChartTypes, [
+        ChartType.line,
+        ChartType.heatmap,
+        ChartType.delta,
+        ChartType.distribution,
+      ]);
+
+      // a group is drawn by what its components are to each other
+      expect(MetricType.bloodPressure.availableChartTypes, isEmpty);
+    });
+
+    test('a type that does not fit falls back to the derived chart', () {
+      expect(MetricType.custom.resolveChartType(ChartType.bar), ChartType.line);
+      expect(MetricType.steps.resolveChartType(ChartType.line), ChartType.bar);
+      expect(MetricType.custom.resolveChartType(ChartType.auto), ChartType.line);
+    });
+
+    test('a type that fits is kept', () {
+      expect(MetricType.custom.resolveChartType(ChartType.heatmap), ChartType.heatmap);
+      expect(MetricType.steps.resolveChartType(ChartType.bar), ChartType.bar);
+      expect(MetricType.bodyWeight.resolveChartType(ChartType.delta), ChartType.delta);
+      expect(
+        MetricType.restingHeartRate.resolveChartType(ChartType.distribution),
+        ChartType.distribution,
+      );
+    });
+  });
+
+  group('chartConfig', () {
+    MeasurementCategory withConfig(Map<String, dynamic> config) =>
+        MeasurementCategory(chartConfig: config);
+
+    test('an unconfigured category gets the defaults', () {
+      // A row synced before the column existed reads null, one the user never
+      // configured an empty object; both mean the same thing
+      expect(MeasurementCategory().chartSettings.trend, TrendCharacter.balanced);
+      expect(MeasurementCategory().chartSettings.averageWindow, 7);
+      expect(withConfig({}).chartSettings.trend, TrendCharacter.balanced);
+      expect(withConfig({}).chartSettings.averageWindow, 7);
+    });
+
+    test('reads what was configured', () {
+      expect(withConfig({'trend': 'sluggish'}).chartSettings.trend, TrendCharacter.sluggish);
+      expect(withConfig({'average_window': 30}).chartSettings.averageWindow, 30);
+    });
+
+    test('a value this release does not know falls back to the default', () {
+      expect(withConfig({'trend': 'glacial'}).chartSettings.trend, TrendCharacter.balanced);
+      expect(withConfig({'average_window': 21}).chartSettings.averageWindow, 7);
+      expect(withConfig({'average_window': 'a fortnight'}).chartSettings.averageWindow, 7);
+    });
+
+    test('a line the user turned off has no period and no window', () {
+      expect(withConfig({'trend': 'none'}).chartSettings.trend.emaPeriod, isNull);
+      expect(withConfig({'average_window': 'none'}).chartSettings.averageWindow, isNull);
+    });
+
+    test('turning one line off leaves the other alone', () {
+      final settings = withConfig({'trend': 'none', 'average_window': 14}).chartSettings;
+
+      expect(settings.trend, TrendCharacter.none);
+      expect(settings.averageWindow, 14);
+    });
+
+    test('a setting is changed without dropping the keys of another client', () {
+      final category = withConfig({'goal_line': 75}).withChartSetting('trend', 'reactive');
+
+      expect(category.chartConfig, {'goal_line': 75, 'trend': 'reactive'});
+    });
+
+    test('the trend character maps to the EMA period the chart uses', () {
+      expect(TrendCharacter.reactive.emaPeriod, lessThan(TrendCharacter.balanced.emaPeriod!));
+      expect(TrendCharacter.sluggish.emaPeriod, greaterThan(TrendCharacter.balanced.emaPeriod!));
+    });
+  });
+
+  group('binWidth', () {
+    test('body weight follows the unit, like its limits do', () {
+      expect(MetricType.bodyWeight.binWidth('kg'), 0.5);
+      expect(MetricType.bodyWeight.binWidth('lb'), 1);
+    });
+
+    test('the typed metrics carry a fixed width', () {
+      expect(MetricType.restingHeartRate.binWidth(), 1);
+      expect(MetricType.steps.binWidth(), 1000);
+      expect(MetricType.sleepTotal.binWidth(), 30);
+    });
+
+    test('free-form categories and groups have none, theirs follows the data', () {
+      expect(MetricType.custom.binWidth(), isNull);
+      expect(MetricType.bloodPressure.binWidth(), isNull);
+    });
+  });
+
+  group('displayDecimals', () {
+    test('follows the resolution the metric is measured at', () {
+      expect(MetricType.restingHeartRate.displayDecimals, 0);
+      expect(MetricType.bloodPressureSystolic.displayDecimals, 0);
+      expect(MetricType.energy.displayDecimals, 0);
+      expect(MetricType.bodyWeight.displayDecimals, 1);
+      expect(MetricType.bodyFat.displayDecimals, 1);
+      expect(MetricType.custom.displayDecimals, 1);
+      expect(MetricType.distance.displayDecimals, 2);
+    });
+  });
+
+  group('MetricType', () {
+    test('fromWire maps a known wire value to its enum case', () {
+      expect(MetricType.fromWire('body_fat'), MetricType.bodyFat);
+      expect(MetricType.fromWire('blood_pressure'), MetricType.bloodPressure);
+      expect(MetricType.fromWire('custom'), MetricType.custom);
+    });
+
+    test('fromWire defaults to custom for an unknown value', () {
+      expect(MetricType.fromWire('something_new'), MetricType.custom);
+      expect(MetricType.fromWire(''), MetricType.custom);
+    });
+
+    test('wireValue round-trips through fromWire for every case', () {
+      for (final type in MetricType.values) {
+        expect(MetricType.fromWire(type.wireValue), type);
+      }
+    });
+
+    test('isSummedPerDay is true only for cumulative daily metrics', () {
+      expect(MetricType.steps.isSummedPerDay, isTrue);
+      expect(MetricType.distance.isSummedPerDay, isTrue);
+      expect(MetricType.energy.isSummedPerDay, isTrue);
+      expect(MetricType.sleep.isSummedPerDay, isTrue);
+
+      expect(MetricType.custom.isSummedPerDay, isFalse);
+      expect(MetricType.bodyWeight.isSummedPerDay, isFalse);
+      expect(MetricType.heartRate.isSummedPerDay, isFalse);
+    });
+
+    test('limits are per unit for body weight only', () {
+      expect(MetricType.bodyWeight.limits('kg').max, 350);
+      expect(MetricType.bodyWeight.limits('lb').max, 770);
+
+      // every other type has one unit, so the argument changes nothing
+      expect(MetricType.heartRate.limits('bpm').max, MetricType.heartRate.limits().max);
+    });
+
+    test('limits of the components differ from each other', () {
+      expect(MetricType.bloodPressureSystolic.limits().max, 250);
+      expect(MetricType.bloodPressureDiastolic.limits().max, 150);
+    });
+
+    test('limits of an untyped category are the column itself', () {
+      expect(MetricType.custom.limits().min, 0);
+      expect(MetricType.custom.limits().max, measurementSchemaMaxValue);
+    });
+
+    test('contains is inclusive', () {
+      final limits = MetricType.steps.limits();
+
+      expect(limits.contains(0), isTrue);
+      expect(limits.contains(100000), isTrue);
+      expect(limits.contains(100001), isFalse);
+    });
+
+    test('correlatesWithNutrition is true for body composition and custom', () {
+      expect(MetricType.bodyWeight.correlatesWithNutrition, isTrue);
+      expect(MetricType.bodyFat.correlatesWithNutrition, isTrue);
+      expect(MetricType.custom.correlatesWithNutrition, isTrue);
+
+      // the typed health metrics don't get nutrition plan context
+      expect(MetricType.heartRate.correlatesWithNutrition, isFalse);
+      expect(MetricType.bloodPressure.correlatesWithNutrition, isFalse);
+      expect(MetricType.steps.correlatesWithNutrition, isFalse);
+      expect(MetricType.sleep.correlatesWithNutrition, isFalse);
     });
   });
 }

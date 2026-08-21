@@ -165,10 +165,6 @@
         "description": "A (logged) workout session"
     },
     "newDay": "Hari baru",
-    "newSet": "Set baru",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
-    },
     "selectExercises": "Jika Anda ingin melakukan superset, Anda dapat mencari beberapa latihan, mereka akan dikelompokkan bersama",
     "gymMode": "Mode gym",
     "@gymMode": {
@@ -580,39 +576,6 @@
     "errorCouldNotConnectToServer": "Tidak dapat terhubung ke server",
     "errorInfoDescription": "Maaf, terjadi kesalahan. Anda dapat membantu kami memperbaikinya dengan melaporkan masalah ini di GitHub.",
     "min": "Minimal",
-    "chartAllTimeTitle": "{name}Sepanjang waktu",
-    "@chartAllTimeTitle": {
-        "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chart30DaysTitle": "{name} 30 hari terakhir",
-    "@chart30DaysTitle": {
-        "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chartDuringPlanTitle": "{chartName} selama rencana nutrisi {planName}",
-    "@chartDuringPlanTitle": {
-        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-        "type": "text",
-        "placeholders": {
-            "chartName": {
-                "type": "String"
-            },
-            "planName": {
-                "type": "String"
-            }
-        }
-    },
     "aboutWhySupportTitle": "Bersifat open source & gratis ❤️",
     "aboutSourceListTitle": "Lihat kode sumber",
     "aboutJoinCommunityTitle": "Gabung komunitas",
@@ -1008,7 +971,6 @@
     "@volume": {
         "description": "The volume of a workout or set, i.e. weight x reps"
     },
-    "identicalExercisePleaseDiscard": "Jika kamu menemukan latihan yang identik dengan yang sedang ditambahkan, harap batalkan draf kamu dan edit latihan tersebut.",
     "checkInformationBeforeSubmitting": "Pastikan informasi yang kamu masukkan sudah benar sebelum mengirimkan latihan",
     "imageDetailsTitle": "Detail gambar",
     "@imageDetailsTitle": {
@@ -1069,21 +1031,10 @@
             }
         }
     },
-    "imageFormatNotSupportedDetail": "Gambar {imageFormat} belum didukung.",
-    "@imageFormatNotSupportedDetail": {
-        "description": "Label shown on the image preview container when image format is not supported",
-        "type": "text",
-        "placeholders": {
-            "imageFormat": {
-                "type": "String"
-            }
-        }
-    },
     "add": "Tambah",
     "@add": {
         "description": "Add button text"
     },
-    "superset": "Superset",
     "useBasicMarkdown": "Kamu dapat menggunakan Markdown dasar untuk memformat teks",
     "editorBold": "Tebal",
     "@editorBold": {
@@ -1166,9 +1117,9 @@
     "@filterNutriscore": {
         "description": "Heading for the Nutri-Score slider in the ingredient search filter dialog"
     },
-    "filterNutriscoreOff": "Mati",
-    "@filterNutriscoreOff": {
-        "description": "Label for the first slider stop, which disables the Nutri-Score filter"
+    "off": "Mati",
+    "@off": {
+        "description": "Generic label for the option that switches something off, e.g. a filter or a line of a chart"
     },
     "filterNutriscoreNoFilter": "Tanpa filter",
     "@filterNutriscoreNoFilter": {

@@ -142,4 +142,87 @@ void main() {
 
     expect(formKey.currentState!.validate(), isTrue);
   });
+
+  group('steppers', () {
+    Widget wrapStepped({
+      num? value = 80,
+      String locale = 'en',
+      num? min,
+      num? max,
+      required ValueChanged<num?> onChanged,
+    }) => wrap(
+      DecimalInputWidget(
+        value: value,
+        labelText: 'X',
+        min: min,
+        max: max,
+        steppers: const [1, 0.1],
+        onChanged: onChanged,
+      ),
+      locale: locale,
+    );
+
+    testWidgets('a field without them has no buttons', (WidgetTester tester) async {
+      await tester.pumpWidget(
+        wrap(DecimalInputWidget(value: 80, labelText: 'X', onChanged: (_) {})),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.byType(IconButton), findsNothing);
+    });
+
+    testWidgets('each button steps the field by its size and reports it', (
+      WidgetTester tester,
+    ) async {
+      num? captured;
+      await tester.pumpWidget(wrapStepped(onChanged: (value) => captured = value));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('stepper-minus-0')));
+      await tester.pumpAndSettle();
+      expect(find.text('79'), findsOneWidget);
+      expect(captured, 79);
+
+      await tester.tap(find.byKey(const Key('stepper-plus-1')));
+      await tester.pumpAndSettle();
+      expect(find.text('79.1'), findsOneWidget);
+      expect(captured, 79.1);
+    });
+
+    testWidgets('steps in the format of the active locale', (WidgetTester tester) async {
+      await tester.pumpWidget(wrapStepped(locale: 'de', onChanged: (_) {}));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('stepper-minus-1')));
+      await tester.pumpAndSettle();
+
+      expect(find.text('79,9'), findsOneWidget);
+    });
+
+    testWidgets('a step out of the valid range is ignored', (WidgetTester tester) async {
+      num? captured;
+      await tester.pumpWidget(
+        wrapStepped(value: 80, min: 80, max: 80.5, onChanged: (value) => captured = value),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('stepper-minus-0')));
+      await tester.tap(find.byKey(const Key('stepper-plus-0')));
+      await tester.pumpAndSettle();
+
+      expect(find.text('80'), findsOneWidget);
+      expect(captured, isNull);
+    });
+
+    testWidgets('an empty field has nothing to step', (WidgetTester tester) async {
+      await tester.pumpWidget(wrapStepped(value: null, onChanged: (_) {}));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('stepper-plus-0')));
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      expect(find.text('1'), findsNothing);
+    });
+  });
 }

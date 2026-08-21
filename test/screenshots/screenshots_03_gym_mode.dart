@@ -16,9 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:clock/clock.dart';
+import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
+import 'package:wger/database/powersync/database.dart';
 import 'package:wger/features/exercises/providers/exercise_filter_state.dart';
 import 'package:wger/features/exercises/providers/exercise_filters_notifier.dart';
 import 'package:wger/features/routines/models/routine.dart';
@@ -31,8 +32,8 @@ import 'package:wger/features/routines/widgets/gym_mode/summary.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/theme/theme.dart';
 
-import '../../test_data/exercises.dart';
-import '../../test_data/routines.dart';
+import '../../test_data/screenshots/exercises.dart';
+import '../../test_data/screenshots/routines.dart';
 
 class _StubRoutinesRiverpod extends RoutinesRiverpod {
   _StubRoutinesRiverpod(this._routines);
@@ -46,17 +47,20 @@ Widget createGymModeScreen({Locale? locale}) {
   locale ??= const Locale('en');
   final key = GlobalKey<NavigatorState>();
 
-  final routine = getTestRoutine(exercises: getScreenshotExercises());
+  final routine = getScreenshotRoutine();
   final container = riverpod.ProviderContainer.test(
     overrides: [
+      // Backstop for repositories that are not mocked: they all read the
+      // database, and none of them should reach the real PowerSync file
+      driftPowerSyncDatabase.overrideWithValue(DriftPowersyncDatabase(NativeDatabase.memory())),
       exerciseListFiltersProvider.overrideWithValue(
-        ExerciseFilterState(exercises: getTestExercises()),
+        ExerciseFilterState(exercises: getScreenshotExercises()),
       ),
     ],
   );
   container.read(routinesRiverpodProvider.notifier).state = riverpod.AsyncData(
     RoutinesState(
-      routines: [getTestRoutine(exercises: getScreenshotExercises())],
+      routines: [getScreenshotRoutine()],
     ),
   );
 
@@ -99,12 +103,14 @@ Widget createGymModeResultsScreen({Locale? locale}) {
   final controller = PageController(initialPage: 0);
 
   final key = GlobalKey<NavigatorState>();
-  final routine = getTestRoutine(exercises: getScreenshotExercises());
-  routine.sessions[0] = routine.sessions.first.copyWith(date: clock.now());
+  final routine = getScreenshotRoutine();
 
   return riverpod.UncontrolledProviderScope(
     container: riverpod.ProviderContainer.test(
       overrides: [
+        // Backstop for repositories that are not mocked: they all read the
+        // database, and none of them should reach the real PowerSync file
+        driftPowerSyncDatabase.overrideWithValue(DriftPowersyncDatabase(NativeDatabase.memory())),
         gymStateProvider.overrideWithValue(
           GymModeState(
             routine: routine,

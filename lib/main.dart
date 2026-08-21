@@ -55,7 +55,9 @@ import 'package:wger/features/exercises/screens/exercise_screen.dart';
 import 'package:wger/features/exercises/screens/exercises_screen.dart';
 import 'package:wger/features/gallery/screens/gallery_screen.dart';
 import 'package:wger/features/measurements/screens/measurement_categories_screen.dart';
+import 'package:wger/features/measurements/screens/measurement_category_sort_screen.dart';
 import 'package:wger/features/measurements/screens/measurement_entries_screen.dart';
+import 'package:wger/features/measurements/screens/weight_screen.dart';
 import 'package:wger/features/nutrition/screens/ingredient_detail_screen.dart';
 import 'package:wger/features/nutrition/screens/ingredients_screen.dart';
 import 'package:wger/features/nutrition/screens/log_meal_screen.dart';
@@ -70,7 +72,6 @@ import 'package:wger/features/routines/screens/routine_logs_screen.dart';
 import 'package:wger/features/routines/screens/routine_screen.dart';
 import 'package:wger/features/routines/screens/settings_plates_screen.dart';
 import 'package:wger/features/trophies/screens/trophy_screen.dart';
-import 'package:wger/features/weight/screens/weight_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/theme/dynamic_color.dart';
 import 'package:wger/theme/theme.dart';
@@ -267,6 +268,8 @@ class MainApp extends ConsumerWidget {
                 GymModeScreen.routeName: (ctx) => const GymModeScreen(),
                 HomeTabsScreen.routeName: (ctx) => const HomeTabsScreen(),
                 MeasurementCategoriesScreen.routeName: (ctx) => const MeasurementCategoriesScreen(),
+                MeasurementCategorySortScreen.routeName: (ctx) =>
+                    const MeasurementCategorySortScreen(),
                 MeasurementEntriesScreen.routeName: (ctx) => const MeasurementEntriesScreen(),
                 NutritionalPlansScreen.routeName: (ctx) => const NutritionalPlansScreen(),
                 NutritionalDiaryScreen.routeName: (ctx) => const NutritionalDiaryScreen(),

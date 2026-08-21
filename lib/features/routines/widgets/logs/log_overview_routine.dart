@@ -94,9 +94,8 @@ class _WorkoutLogCalendarState extends State<WorkoutLogCalendar> {
 
   void loadEvents() {
     for (final session in widget._routine.sessions) {
-      _events[DateFormatLists.format(session.date)] = [
-        session.date,
-      ];
+      // One entry per session, the calendar draws a marker for each of them
+      _events.putIfAbsent(DateFormatLists.format(session.localDay), () => []).add(session.localDay);
     }
 
     _selectedEvents.value = _getEventsForDay(_selectedDay!);
@@ -157,7 +156,8 @@ class _WorkoutLogCalendarState extends State<WorkoutLogCalendar> {
         ValueListenableBuilder<List<DateTime>>(
           valueListenable: _selectedEvents,
           builder: (context, logEvents, _) {
-            // At the moment there is only one "event" per day
+            // Every event of a day carries that same day, the widget below
+            // renders all sessions logged on it
             return logEvents.isNotEmpty
                 ? DayLogWidget(logEvents.first, widget._routine)
                 : Container();

@@ -16,23 +16,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:wger/database/powersync/database.dart';
+import 'package:wger/features/measurements/providers/measurement_repository.dart';
 import 'package:wger/features/nutrition/providers/ingredient_repository.dart';
 import 'package:wger/features/nutrition/providers/nutrition_notifier.dart';
 import 'package:wger/features/nutrition/providers/nutrition_repository.dart';
 import 'package:wger/features/nutrition/screens/nutritional_plan_screen.dart';
-import 'package:wger/features/weight/providers/body_weight_repository.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/theme/theme.dart';
 
 import '../../test_data/body_weight.dart';
-import '../../test_data/nutritional_plans.dart';
+import '../../test_data/screenshots/nutrition.dart';
+import '../../test_data/screenshots/weight.dart';
+import '../helpers/measurement_repository_stubs.dart';
 import 'screenshots_05_nutritional_plan.mocks.dart';
 
-@GenerateMocks([NutritionRepository, IngredientRepository, BodyWeightRepository])
+@GenerateMocks([NutritionRepository, IngredientRepository, MeasurementRepository])
 Widget createNutritionalPlanScreen({Locale? locale}) {
   locale ??= const Locale('en');
 
@@ -43,14 +47,19 @@ Widget createNutritionalPlanScreen({Locale? locale}) {
   final mockIngredientRepo = MockIngredientRepository();
   when(mockIngredientRepo.getById(any)).thenAnswer((_) async => null);
 
-  final mockBodyWeightRepository = MockBodyWeightRepository();
-  when(
-    mockBodyWeightRepository.watchAllDrift(),
-  ).thenAnswer((_) => Stream.value(getScreenshotWeightEntries()));
+  final mockMeasurementRepository = MockMeasurementRepository();
+  stubMeasurementReads(
+    mockMeasurementRepository,
+    [getBodyWeightCategory()],
+    getScreenshotBodyWeightEntries(),
+  );
 
   final container = ProviderContainer.test(
     overrides: [
-      bodyWeightRepositoryProvider.overrideWithValue(mockBodyWeightRepository),
+      // Backstop for repositories that are not mocked: they all read the
+      // database, and none of them should reach the real PowerSync file
+      driftPowerSyncDatabase.overrideWithValue(DriftPowersyncDatabase(NativeDatabase.memory())),
+      measurementRepositoryProvider.overrideWithValue(mockMeasurementRepository),
       nutritionRepositoryProvider.overrideWithValue(mockNutritionRepo),
       ingredientRepositoryProvider.overrideWithValue(mockIngredientRepo),
     ],

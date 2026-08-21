@@ -177,4 +177,38 @@ void main() {
       expect(find.text('1/5/2021'), findsOneWidget);
     });
   });
+
+  group('DateTimeInputWidget', () {
+    testWidgets('reports the whole moment, keeping the half picked before', (
+      WidgetTester tester,
+    ) async {
+      // The forms collect what they are told without rebuilding, so the
+      // second pick must not be applied to the moment they started with
+      DateTime? reported;
+      await tester.pumpWidget(
+        wrap(
+          DateTimeInputWidget(
+            value: DateTime(2021, 1, 1, 15, 30),
+            onChanged: (value) => reported = value,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // Straight through the two halves, whose own pickers are covered above
+      tester.widget<DateInputWidget>(find.byType(DateInputWidget)).onChanged(DateTime(2021, 1, 5));
+      await tester.pumpAndSettle();
+      expect(reported, DateTime(2021, 1, 5, 15, 30));
+
+      tester
+          .widget<TimeInputWidget>(find.byType(TimeInputWidget))
+          .onChanged(const TimeOfDay(hour: 9, minute: 45));
+      await tester.pumpAndSettle();
+
+      // The day of the first pick, the time of the second
+      expect(reported, DateTime(2021, 1, 5, 9, 45));
+      expect(find.text('1/5/2021'), findsOneWidget);
+      expect(find.text('9:45 AM'), findsOneWidget);
+    });
+  });
 }

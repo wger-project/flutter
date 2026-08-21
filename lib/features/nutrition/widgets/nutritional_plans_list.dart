@@ -23,11 +23,16 @@ import 'package:wger/core/widgets/async_value_widget.dart';
 import 'package:wger/core/widgets/confirm_delete_dialog.dart';
 import 'package:wger/core/widgets/text_prompt.dart';
 import 'package:wger/features/account/providers/user_profile_notifier.dart';
+import 'package:wger/features/measurements/charts/data.dart';
 import 'package:wger/features/measurements/measurements.dart';
+import 'package:wger/features/measurements/models/measurement_bucket.dart';
+import 'package:wger/features/measurements/models/measurement_category.dart';
+import 'package:wger/features/measurements/models/unit_conversion.dart';
+import 'package:wger/features/measurements/providers/body_weight_provider.dart';
+import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/measurements/widgets/charts.dart';
 import 'package:wger/features/nutrition/providers/nutrition_notifier.dart';
 import 'package:wger/features/nutrition/screens/nutritional_plan_screen.dart';
-import 'package:wger/features/weight/providers/body_weight_notifier.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 class NutritionalPlansList extends riverpod.ConsumerWidget {
@@ -40,29 +45,54 @@ class NutritionalPlansList extends riverpod.ConsumerWidget {
     DateTime startDate,
     DateTime? endDate,
   ) {
-    final entriesList = ref.watch(weightEntryProvider).asData?.value ?? [];
+    final category = ref.watch(bodyWeightCategoryOnlyProvider).value;
+    final profile = ref.watch(userProfileProvider).value;
+    if (category == null || profile == null) {
+      // Not yet loaded, skip the weight-change row entirely. The widget will
+      // rebuild with the value once available.
+      return const SizedBox.shrink();
+    }
 
-    final entriesAll = entriesList.map((e) => MeasurementChartEntry(e.weight, e.date)).toList();
-    final entries7dAvg = moving7dAverage(entriesAll).whereDateWithInterpolation(startDate, endDate);
-    if (entries7dAvg.length < 2) {
+    // The whole history rather than the plan's period: the boundary values are
+    // interpolated from the readings around it, which can lie outside. One
+    // point per day, so several readings on one day count once.
+    final buckets = ref
+        .watch(
+          measurementChartBucketsProvider(
+            category.id!,
+            null,
+            null,
+            MeasurementBucketLevel.day,
+          ),
+        )
+        .value;
+    if (buckets == null) {
+      return const SizedBox.shrink();
+    }
+
+    // Normalize mixed-unit entries to the display unit before averaging
+    final displayUnit = weightDisplayUnit(profile.isMetric);
+    final entriesAll = chartEntriesForBuckets(
+      buckets,
+      targetUnit: displayUnit,
+      categoryUnit: category.unit,
+    );
+    final average = movingAverage(
+      entriesAll,
+      days: category.chartSettings.averageWindow ?? ChartSettings.fallbackWindow,
+    ).whereDateWithInterpolation(startDate, endDate);
+    if (average.length < 2) {
       return const SizedBox.shrink();
     }
 
     // Calculate weight change
-    final firstWeight = entries7dAvg.first;
-    final lastWeight = entries7dAvg.last;
+    final firstWeight = average.first;
+    final lastWeight = average.last;
     final weightDifference = lastWeight.value - firstWeight.value;
 
     // Format the weight change text and determine color
     final String weightChangeText;
     final Color weightChangeColor;
-    final profile = ref.watch(userProfileProvider).value;
-    if (profile == null) {
-      // Profile not yet loaded, skip the weight-change row entirely. The
-      // widget will rebuild with the value once available.
-      return const SizedBox.shrink();
-    }
-
     final unit = weightUnit(profile.isMetric, context);
 
     if (weightDifference > 0) {

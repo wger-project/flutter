@@ -80,6 +80,16 @@ void main() {
       expect(out.containsKey('routine_id'), isFalse);
     });
 
+    test('keeps `external_id`, which is a value column and not a foreign key', () {
+      final out = connector.genericTransform(
+        'measurements_measurement',
+        {'external_id': 'abc-123', 'category_id': 5},
+        '1',
+      );
+      expect(out['external_id'], 'abc-123');
+      expect(out['category'], 5);
+    });
+
     test('handles null opData (delete events)', () {
       final out = connector.genericTransform('manager_routine', null, '99');
       expect(out, {'id': '99'});
@@ -104,17 +114,19 @@ void main() {
         expect(out['created'], '2024-10-30T10:15:00.000Z');
       });
 
-      test('strips the time component on `manager_workoutsession.date`', () {
+      test('leaves the session timestamps untouched', () {
+        // The session no longer has a date-only column, both timestamps go to
+        // the server as the full ISO8601 values they are.
         final out = connector.genericTransform(
           'manager_workoutsession',
           {
-            'date': '2024-11-01T00:00:00.000Z',
+            'datetime_start': '2024-11-01T18:30:00.000Z',
             'notes': 'felt great',
             'impression': '1',
           },
           '12',
         );
-        expect(out['date'], '2024-11-01');
+        expect(out['datetime_start'], '2024-11-01T18:30:00.000Z');
         expect(out['notes'], 'felt great');
       });
 

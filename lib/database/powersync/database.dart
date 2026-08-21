@@ -25,6 +25,9 @@ import 'package:wger/core/language.dart';
 import 'package:wger/core/license.dart';
 import 'package:wger/database/converters/date_only_text_converter.dart';
 import 'package:wger/database/converters/exercise_image_style_converter.dart';
+import 'package:wger/database/converters/json_map_converter.dart';
+import 'package:wger/database/converters/measurement_chart_type_converter.dart';
+import 'package:wger/database/converters/measurement_metric_type_converter.dart';
 import 'package:wger/database/converters/time_of_day_converter.dart';
 import 'package:wger/database/converters/utc_datetime_converter.dart';
 import 'package:wger/database/converters/workout_impression_converter.dart';
@@ -51,7 +54,6 @@ import 'package:wger/features/routines/models/repetition_unit.dart';
 import 'package:wger/features/routines/models/routine.dart';
 import 'package:wger/features/routines/models/session.dart';
 import 'package:wger/features/routines/models/weight_unit.dart';
-import 'package:wger/features/weight/models/weight_entry.dart';
 
 import 'powersync.dart';
 import 'tables/exercise.dart';
@@ -63,7 +65,6 @@ import 'tables/measurements.dart';
 import 'tables/nutrition.dart';
 import 'tables/routines.dart';
 import 'tables/user_profile.dart';
-import 'tables/weight.dart';
 
 part 'database.g.dart';
 
@@ -87,9 +88,6 @@ part 'database.g.dart';
     ExerciseCategoryTable,
     ExerciseImageTable,
     ExerciseVideoTable,
-
-    // Body weight
-    WeightEntryTable,
 
     // Measurements
     MeasurementCategoryTable,

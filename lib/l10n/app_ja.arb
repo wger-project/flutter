@@ -175,10 +175,6 @@
     },
     "newDay": "新しい日",
     "@newDay": {},
-    "newSet": "新しいセット",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
-    },
     "selectExercises": "If you want to do a superset you can search for several exercises, they will be grouped together",
     "@selectExercises": {},
     "gymMode": "ジムモード",
@@ -476,16 +472,6 @@
     "imageFormatNotSupported": "{imageFormat}はサポートされていません",
     "@imageFormatNotSupported": {
         "description": "Label shown on the error container when image format is not supported",
-        "type": "text",
-        "placeholders": {
-            "imageFormat": {
-                "type": "String"
-            }
-        }
-    },
-    "imageFormatNotSupportedDetail": "{imageFormat}形式の画像はまだサポートされていません。",
-    "@imageFormatNotSupportedDetail": {
-        "description": "Label shown on the image preview container when image format is not supported",
         "type": "text",
         "placeholders": {
             "imageFormat": {

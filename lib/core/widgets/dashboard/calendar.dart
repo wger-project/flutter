@@ -24,14 +24,17 @@ import 'package:wger/core/date.dart';
 import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/core/json.dart';
 import 'package:wger/core/widgets/progress_indicator.dart';
+import 'package:wger/features/account/providers/user_profile_notifier.dart';
+import 'package:wger/features/measurements/charts/data.dart';
+import 'package:wger/features/measurements/models/measurement_bucket.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
+import 'package:wger/features/measurements/models/unit_conversion.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
+import 'package:wger/features/measurements/widgets/charts.dart';
 import 'package:wger/features/nutrition/models/nutritional_plan.dart';
 import 'package:wger/features/nutrition/providers/nutrition_notifier.dart';
 import 'package:wger/features/routines/models/session.dart';
 import 'package:wger/features/routines/providers/routines_notifier.dart';
-import 'package:wger/features/weight/models/weight_entry.dart';
-import 'package:wger/features/weight/providers/body_weight_notifier.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/theme/theme.dart';
 
@@ -78,40 +81,55 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
   /// Builds the date → events map from already-loaded provider data
   Map<String, List<Event>> _buildEvents({
     required BuildContext context,
-    required List<WeightEntry> entries,
+    required bool isMetric,
     required List<MeasurementCategory> categories,
+    required Map<String, List<MeasurementBucket>> dailyBuckets,
     required List<WorkoutSession> sessions,
     required List<NutritionalPlan> plans,
   }) {
-    final numberFormat = localizedNumberFormat(context);
     final i18n = AppLocalizations.of(context);
     final events = <String, List<Event>>{};
 
-    for (final entry in entries) {
-      final date = DateFormatLists.format(entry.date);
-      events.putIfAbsent(date, () => []);
-      events[date]!.add(Event(EventType.weight, '${numberFormat.format(entry.weight)} kg'));
-    }
-
     for (final category in categories) {
-      for (final entry in category.entries) {
-        final date = DateFormatLists.format(entry.date);
+      // Body weight entries live in the official category but keep their own
+      // event type (no category-name prefix) and are shown in the profile's
+      // display unit; other measurements show in the category unit
+      final isBodyWeight = category.isOfficialBodyWeight;
+      final displayUnit = isBodyWeight ? weightDisplayUnit(isMetric) : category.unit;
+      // the conversion needs the wire unit, the label the localized one
+      final unitLabel = isBodyWeight ? weightUnit(isMetric, context) : category.unit;
+
+      // One event per day, not per reading: an imported metric writes hundreds
+      // of samples onto a day, and they describe that day together
+      final points = chartEntriesForBuckets(
+        dailyBuckets[category.id] ?? const [],
+        targetUnit: displayUnit,
+        categoryUnit: category.unit,
+        summed: category.metricType.isSummedPerDay,
+      );
+
+      for (final point in points) {
+        final date = DateFormatLists.format(point.date);
+        final value = unitSuffixed(
+          measurementValue(context, point.value, displayUnit),
+          unitLabel,
+        );
         events.putIfAbsent(date, () => []);
         events[date]!.add(
-          Event(
-            EventType.measurement,
-            '${category.name}: ${numberFormat.format(entry.value)} ${category.unit}',
-          ),
+          isBodyWeight
+              ? Event(EventType.weight, value)
+              : Event(EventType.measurement, '${category.name}: $value'),
         );
       }
     }
 
     for (final session in sessions) {
-      final date = DateFormatLists.format(session.date);
+      final date = DateFormatLists.format(session.localDay);
       events.putIfAbsent(date, () => []);
       var time = '';
-      if (session.timeStart != null && session.timeEnd != null) {
-        time = '(${timeToString(session.timeStart)} - ${timeToString(session.timeEnd)})';
+      if (session.datetimeEnd != null) {
+        time =
+            '(${timeToString(TimeOfDay.fromDateTime(session.datetimeStart))} - ${timeToString(TimeOfDay.fromDateTime(session.datetimeEnd!))})';
       }
       events[date]!.add(
         Event(
@@ -187,21 +205,27 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
 
   @override
   Widget build(BuildContext context) {
-    final entries = ref.watch(weightEntryProvider).value;
-    final categories = ref.watch(measurementProvider).value;
+    final categories = ref.watch(measurementCategoriesProvider).value;
+    final dailyBuckets = ref.watch(measurementDailyBucketsProvider).value;
     final routinesState = ref.watch(routinesRiverpodProvider).value;
     final nutritionState = ref.watch(nutritionProvider).value;
+    final profile = ref.watch(userProfileProvider).value;
 
     // Show a spinner until every source has produced at least one value. Same
     // pattern as the other dashboard widgets via [AsyncValueWidget].
-    if (entries == null || categories == null || routinesState == null || nutritionState == null) {
+    if (categories == null ||
+        dailyBuckets == null ||
+        routinesState == null ||
+        nutritionState == null ||
+        profile == null) {
       return _shell(context, const BoxedProgressIndicator());
     }
 
     final events = _buildEvents(
       context: context,
-      entries: entries,
+      isMetric: profile.isMetric,
       categories: categories,
+      dailyBuckets: dailyBuckets,
       sessions: routinesState.sessions,
       plans: nutritionState.plans,
     );

@@ -49,7 +49,7 @@ class ServerGating {
   /// separately via [serverVersionGate], so callers check the version once and
   /// pass it into the auth state themselves.
   Future<AuthStatus> resolve({
-    required AuthCredential credential,
+    required JwtCredential credential,
     required String serverUrl,
     required PackageInfo appVersion,
   }) async {
@@ -77,7 +77,7 @@ class ServerGating {
   /// can distinguish "we couldn't reach the server" from "the server said
   /// no". Only the latter is grounds for logging the user out.
   Future<http.Response?> probe({
-    required AuthCredential credential,
+    required JwtCredential credential,
     required String serverUrl,
     required PackageInfo appVersion,
   }) async {
@@ -106,7 +106,7 @@ class ServerGating {
   /// completed conclusively, so the caller defaults to permissive).
   Future<bool> serverConfigSane({
     required String serverUrl,
-    required AuthCredential credential,
+    required JwtCredential credential,
   }) async {
     try {
       final baseUri = Uri.parse(serverUrl);
@@ -143,7 +143,7 @@ class ServerGating {
   /// success the flag is set so future starts skip the probe.
   Future<bool> isPowerSyncReachable({
     required String serverUrl,
-    required AuthCredential credential,
+    required JwtCredential credential,
   }) async {
     if (await _storage.hasEverSynced()) {
       return true;

@@ -16,12 +16,57 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/features/routines/models/log.dart';
 import 'package:wger/features/routines/models/session.dart';
 
 void main() {
+  group('WorkoutSession.fromDb', () {
+    test('takes the new columns when they are set', () {
+      final session = WorkoutSession.fromDb(
+        routineId: 1,
+        datetimeStart: DateTime(2026, 4, 15, 18, 30),
+        datetimeEnd: DateTime(2026, 4, 15, 19, 45),
+      );
+
+      expect(session.datetimeStart, DateTime(2026, 4, 15, 18, 30));
+      expect(session.datetimeEnd, DateTime(2026, 4, 15, 19, 45));
+    });
+
+    test('rebuilds a row that predates 2.7 from its date and times', () {
+      final session = WorkoutSession.fromDb(
+        routineId: 1,
+        date: DateTime(2026, 4, 15),
+        timeStart: const TimeOfDay(hour: 18, minute: 30),
+        timeEnd: const TimeOfDay(hour: 19, minute: 45),
+      );
+
+      expect(session.datetimeStart, DateTime(2026, 4, 15, 18, 30));
+      expect(session.datetimeEnd, DateTime(2026, 4, 15, 19, 45));
+    });
+
+    test('reads an end before the start as the next day', () {
+      final session = WorkoutSession.fromDb(
+        routineId: 1,
+        date: DateTime(2026, 4, 15),
+        timeStart: const TimeOfDay(hour: 23, minute: 0),
+        timeEnd: const TimeOfDay(hour: 1, minute: 30),
+      );
+
+      expect(session.datetimeStart, DateTime(2026, 4, 15, 23, 0));
+      expect(session.datetimeEnd, DateTime(2026, 4, 16, 1, 30));
+    });
+
+    test('an old row without times starts at midnight and stays open', () {
+      final session = WorkoutSession.fromDb(routineId: 1, date: DateTime(2026, 4, 15));
+
+      expect(session.datetimeStart, DateTime(2026, 4, 15));
+      expect(session.datetimeEnd, isNull);
+    });
+  });
+
   group('WorkoutSession.volume', () {
     test('sums metric volumes correctly', () {
       final a = Log(
@@ -46,7 +91,7 @@ void main() {
         repetitionsUnitId: REP_UNIT_REPETITIONS_ID,
       );
 
-      final session = WorkoutSession(routineId: 1, date: DateTime(2021), logs: [a, b]);
+      final session = WorkoutSession(routineId: 1, datetimeStart: DateTime(2021), logs: [a, b]);
 
       final vol = session.volume;
       expect(vol['metric'], equals(100 * 3 + 50 * 2));
@@ -76,7 +121,7 @@ void main() {
         repetitionsUnitId: REP_UNIT_REPETITIONS_ID,
       );
 
-      final session = WorkoutSession(routineId: 1, date: DateTime(2021), logs: [a, b]);
+      final session = WorkoutSession(routineId: 1, datetimeStart: DateTime(2021), logs: [a, b]);
 
       final vol = session.volume;
       expect(vol['imperial'], equals(220 * 4 + 150 * 1));
@@ -117,7 +162,7 @@ void main() {
         repetitionsUnitId: 999, // some other repetition unit -> should be ignored
       );
 
-      final session = WorkoutSession(routineId: 1, date: DateTime(2021), logs: [a, b, c]);
+      final session = WorkoutSession(routineId: 1, datetimeStart: DateTime(2021), logs: [a, b, c]);
 
       final vol = session.volume;
       // only 'a' should count for metric, only 'b' for imperial
@@ -126,7 +171,7 @@ void main() {
     });
 
     test('returns zero for empty logs', () {
-      final session = WorkoutSession(routineId: 1, date: DateTime(2021), logs: []);
+      final session = WorkoutSession(routineId: 1, datetimeStart: DateTime(2021), logs: []);
 
       final vol = session.volume;
       expect(vol['metric'], equals(0));
@@ -156,7 +201,7 @@ void main() {
         repetitionsUnitId: REP_UNIT_REPETITIONS_ID,
       );
 
-      final session = WorkoutSession(routineId: 1, date: DateTime(2021), logs: [a, b]);
+      final session = WorkoutSession(routineId: 1, datetimeStart: DateTime(2021), logs: [a, b]);
 
       final vol = session.volume;
       expect(vol['metric'], closeTo(10.5 * 3 + 5.25 * 2.5, 1e-9));

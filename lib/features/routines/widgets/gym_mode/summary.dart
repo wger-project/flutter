@@ -101,7 +101,7 @@ class _WorkoutSummaryState extends ConsumerState<WorkoutSummary> {
               }
 
               final session = routine.sessions.firstWhereOrNull(
-                (s) => s.date.isSameDayAs(clock.now()),
+                (s) => s.localDay.isSameDayAs(clock.now()),
               );
               final userTrophies = trophyState.prTrophies
                   .where((t) => t.contextData?.sessionId == session?.id)

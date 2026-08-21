@@ -225,10 +225,6 @@
     "@resultingRoutine": {},
     "newDay": "Nový deň",
     "@newDay": {},
-    "newSet": "Nová séria",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
-    },
     "selectExercises": "Ak chcete urobiť superset, môžete vyhľadať niekoľko cvikov, ktoré budú zoskupené dohromady",
     "@selectExercises": {},
     "gymMode": "Režim posilňovňa",

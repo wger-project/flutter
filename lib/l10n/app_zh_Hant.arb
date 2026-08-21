@@ -311,10 +311,6 @@
     },
     "weightUnit": "重量單位",
     "newDay": "新的一天",
-    "newSet": "新增一組",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
-    },
     "start": "開始",
     "@start": {
         "description": "Label on button to start the gym mode (i.e., an imperative)"
@@ -799,39 +795,6 @@
     "darkMode": "保持深色模式",
     "lightMode": "保持淺色模式",
     "systemMode": "系統設定",
-    "chartAllTimeTitle": "{name} 歷史紀錄",
-    "@chartAllTimeTitle": {
-        "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chart30DaysTitle": "{name} 最近 30 天",
-    "@chart30DaysTitle": {
-        "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chartDuringPlanTitle": "營養計劃 {planName} 期間的 {chartName}",
-    "@chartDuringPlanTitle": {
-        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-        "type": "text",
-        "placeholders": {
-            "chartName": {
-                "type": "String"
-            },
-            "planName": {
-                "type": "String"
-            }
-        }
-    },
     "noIngredientsDefined": "尚未定義食材",
     "ingredientLogged": "食材已紀錄到日記",
     "selectMealToLog": "選擇要紀錄到日記的餐點",
@@ -957,7 +920,6 @@
             }
         }
     },
-    "identicalExercisePleaseDiscard": "如果你發現有訓練動作與你正在新增的動作相同，請捨棄目前的草稿，改為編輯該訓練動作。",
     "checkInformationBeforeSubmitting": "提交訓練動作前，請確認你輸入的資訊正確無誤。",
     "imageDetailsTitle": "圖片資訊",
     "@imageDetailsTitle": {
@@ -974,19 +936,8 @@
             }
         }
     },
-    "imageFormatNotSupportedDetail": "目前尚不支援 {imageFormat} 格式的圖片。",
-    "@imageFormatNotSupportedDetail": {
-        "description": "Label shown on the image preview container when image format is not supported",
-        "type": "text",
-        "placeholders": {
-            "imageFormat": {
-                "type": "String"
-            }
-        }
-    },
     "fitInWeekHelp": "啟用後，訓練日會以每週為週期循環；若未啟用，訓練日會依序進行，不受每週起始日影響。",
     "addSuperset": "新增超級組",
-    "superset": "超級組",
     "setHasNoExercises": "此組尚未加入任何動作！",
     "useBasicMarkdown": "您可以使用基本的 Markdown 語法來格式化文字",
     "simpleModeHelp": "編輯動作時，隱藏部分進階設定",
@@ -1040,9 +991,9 @@
     "@filterNutriscore": {
         "description": "Heading for the Nutri-Score slider in the ingredient search filter dialog"
     },
-    "filterNutriscoreOff": "關閉",
-    "@filterNutriscoreOff": {
-        "description": "Label for the first slider stop, which disables the Nutri-Score filter"
+    "off": "關閉",
+    "@off": {
+        "description": "Generic label for the option that switches something off, e.g. a filter or a line of a chart"
     },
     "filterNutriscoreNoFilter": "不套用篩選",
     "@filterNutriscoreNoFilter": {

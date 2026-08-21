@@ -34,6 +34,7 @@ import 'package:wger/features/routines/providers/workout_logs_repository.dart';
 import 'package:wger/features/routines/screens/routine_logs_screen.dart';
 import 'package:wger/features/routines/screens/routine_screen.dart';
 import 'package:wger/features/routines/widgets/logs/log_overview_routine.dart';
+import 'package:wger/features/routines/widgets/logs/session_info.dart';
 import 'package:wger/features/trophies/providers/trophy_repository.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
@@ -56,7 +57,7 @@ void main() {
 
   setUp(() {
     routine = getTestRoutine();
-    routine.sessions[0] = routine.sessions[0].copyWith(date: DateTime(2025, 3, 29));
+    routine.sessions[0] = routine.sessions[0].copyWith(datetimeStart: DateTime(2025, 3, 29));
     // Pin every log to a known session id so we can verify the edit
     // dialog round-trips the value through the model.
     for (final log in routine.sessions[0].logs) {
@@ -214,6 +215,29 @@ void main() {
       expect(updated.id, '1');
       expect(updated.repetitions, 15);
       expect(updated.sessionId, 'session-fixture-1');
+    });
+  });
+
+  testWidgets('Shows every session logged on the selected day', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(500, 1200);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+
+    // A second workout later the same day, which the server allows since 2.7
+    routine.sessions[1] = routine.sessions[1].copyWith(
+      datetimeStart: DateTime(2025, 3, 29, 18, 0),
+      datetimeEnd: DateTime(2025, 3, 29, 19, 30),
+    );
+
+    await withClock(Clock.fixed(DateTime(2025, 3, 29)), () async {
+      await tester.pumpWidget(renderWidget());
+      await tester.tap(find.byType(TextButton));
+      await tester.pumpAndSettle();
+
+      // Both sessions are rendered, each with its own logs
+      expect(find.byType(SessionInfo), findsNWidgets(2));
+      expect(find.byKey(const ValueKey('delete-log-1')), findsOneWidget);
+      expect(find.byKey(const ValueKey('delete-log-3')), findsOneWidget);
     });
   });
 

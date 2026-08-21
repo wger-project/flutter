@@ -92,10 +92,6 @@
         "description": "Comment, additional information"
     },
     "newDay": "Novo dia",
-    "newSet": "Novo set",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
-    },
     "selectExercises": "Se você quiser fazer um conjunto, você pode procurar vários exercícios, eles serão agrupados",
     "todaysWorkout": "Seu treino hoje",
     "addSet": "Adicionar set",
@@ -682,40 +678,7 @@
     "@surplus": {
         "description": "Caloric surplus (either planned or unplanned)"
     },
-    "chart30DaysTitle": "{name} Ultimos 30 dias",
-    "@chart30DaysTitle": {
-        "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chartDuringPlanTitle": "{chartName} Durante o plano nutricional {planName}",
-    "@chartDuringPlanTitle": {
-        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-        "type": "text",
-        "placeholders": {
-            "chartName": {
-                "type": "String"
-            },
-            "planName": {
-                "type": "String"
-            }
-        }
-    },
     "loggedToday": "Registrado hoje",
-    "chartAllTimeTitle": "{name} de todo o tempo",
-    "@chartAllTimeTitle": {
-        "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
     "overallChangeWeight": "Mudança geral",
     "@overallChangeWeight": {
         "description": "Overall change in weight, added for localization"
@@ -847,7 +810,6 @@
     },
     "enterTextInLanguage": "Por favor, introduz o texto la linguagem correta!",
     "checkInformationBeforeSubmitting": "Por favor, verifica que a informação introduzida está correta antes de submeter o exercício",
-    "identicalExercisePleaseDiscard": "Se encontrares um exercício igual ao que estás a introduzir, por favor descarta o teu rascunho e edita antes esse exercício.",
     "overview": "Panorama",
     "dashboardWidgets": "Widgets do Painel de Controle",
     "dayTypeCustom": "Personalizado",
@@ -971,21 +933,10 @@
             }
         }
     },
-    "imageFormatNotSupportedDetail": "{imageFormat} Imagens ainda não são suportadas.",
-    "@imageFormatNotSupportedDetail": {
-        "description": "Label shown on the image preview container when image format is not supported",
-        "type": "text",
-        "placeholders": {
-            "imageFormat": {
-                "type": "String"
-            }
-        }
-    },
     "add": "Adicionar texto ao botão",
     "@add": {
         "description": "Add button text"
     },
-    "superset": "Super Série",
     "endWorkout": "Fim do treino",
     "@endWorkout": {
         "description": "Use the imperative, label on button to finish the current workout in gym mode"
@@ -1053,9 +1004,9 @@
     "@filterNutriscore": {
         "description": "Heading for the Nutri-Score slider in the ingredient search filter dialog"
     },
-    "filterNutriscoreOff": "Desligado",
-    "@filterNutriscoreOff": {
-        "description": "Label for the first slider stop, which disables the Nutri-Score filter"
+    "off": "Desligado",
+    "@off": {
+        "description": "Generic label for the option that switches something off, e.g. a filter or a line of a chart"
     },
     "filterNutriscoreNoFilter": "Sem filtro",
     "@filterNutriscoreNoFilter": {

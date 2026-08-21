@@ -22,11 +22,17 @@ import 'package:wger/database/powersync/database.dart';
 
 part 'measurement_entry.freezed.dart';
 
+/// The server's `source` for an entry the user wrote themselves, the only one
+/// the app lets them edit or delete.
+const measurementSourceUser = 'user';
+
+/// The server's `source` for an entry it computed itself, see the calculated
+/// categories. Such an entry is read-only: it is replaced whenever the data
+/// behind it changes.
+const measurementSourceCalculated = 'calculated';
+
 @freezed
 class MeasurementEntry with _$MeasurementEntry {
-  static const minValue = 0;
-  static const maxValue = 1000;
-
   /// Client-generated UUID, is `null` only before the first persist
   @override
   final String? id;
@@ -43,13 +49,56 @@ class MeasurementEntry with _$MeasurementEntry {
   @override
   final String notes;
 
+  /// Origin of the reading; one of the server's `source` values
+  /// (`user`, `google`, `apple`).
+  @override
+  final String source;
+
+  /// Platform record UUID, used to deduplicate re-imports. `null` for manual
+  /// entries.
+  @override
+  final String? externalId;
+
+  /// Per-entry metadata (server JSONField). The `unit` key holds the unit
+  /// [value] was entered in; without it the category unit applies. Raw values
+  /// are meaningless without their unit, so display and calculations go
+  /// through `valueIn` instead of reading [value] directly.
+  @override
+  final Map<String, dynamic>? extraData;
+
   MeasurementEntry({
     this.id,
     required this.categoryId,
     required this.date,
     required this.value,
     required this.notes,
+    this.source = measurementSourceUser,
+    this.externalId,
+    this.extraData,
   });
+
+  /// Maps a row of the local database. Rows synced before the 2.7 schema
+  /// change lack the new columns and read as NULL; they fall back to the
+  /// defaults until the full re-sync replaces them.
+  MeasurementEntry.fromDb({
+    required String id,
+    required String categoryId,
+    required DateTime date,
+    required double value,
+    required String notes,
+    String? source,
+    String? externalId,
+    Map<String, dynamic>? extraData,
+  }) : this(
+         id: id,
+         categoryId: categoryId,
+         date: date,
+         value: value,
+         notes: notes,
+         source: source ?? measurementSourceUser,
+         externalId: externalId,
+         extraData: extraData,
+       );
 
   // Boilerplate
   MeasurementEntryTableCompanion toCompanion() {
@@ -59,6 +108,9 @@ class MeasurementEntry with _$MeasurementEntry {
       date: Value(date),
       value: Value(value.toDouble()),
       notes: Value(notes),
+      source: Value(source),
+      externalId: Value(externalId),
+      extraData: Value(extraData),
     );
   }
 }

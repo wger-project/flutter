@@ -87,6 +87,8 @@
 		<true/>
 		<key>NSCameraUsageDescription</key>
 		<string>Workout photos</string>
+		<key>NSHealthShareUsageDescription</key>
+		<string>wger reads your health data to automatically import body measurements such as weight, body fat, blood pressure, heart rate and blood oxygen</string>
 		<key>UIApplicationSceneManifest</key>
 		<dict>
 			<key>UIApplicationSupportsMultipleScenes</key>

@@ -26,7 +26,7 @@ import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/measurements/screens/measurement_categories_screen.dart';
 import 'package:wger/features/measurements/widgets/categories_card.dart';
-import 'package:wger/features/measurements/widgets/forms.dart';
+import 'package:wger/features/measurements/widgets/forms/category.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 class DashboardMeasurementWidget extends ConsumerStatefulWidget {
@@ -43,9 +43,17 @@ class _DashboardMeasurementWidgetState extends ConsumerState<DashboardMeasuremen
   @override
   Widget build(BuildContext context) {
     return AsyncValueWidget<List<MeasurementCategory>>(
-      value: ref.watch(measurementProvider),
+      // The categories alone; a card reads its own points, and the latest
+      // value of a component comes from its own query, see CategoriesCard
+      value: ref.watch(measurementCategoriesProvider),
       loggerName: 'DashboardMeasurementWidget',
-      data: (categoriesList) {
+      data: (allCategories) {
+        // Children of multi-value groups are shown inside their parent's card.
+        // Body weight has its own dashboard widget.
+        final categoriesList = allCategories
+            .where((c) => c.parentId == null && !c.isOfficialBodyWeight)
+            .toList();
+
         if (categoriesList.isEmpty) {
           return NothingFound(
             AppLocalizations.of(context).moreMeasurementEntries,
