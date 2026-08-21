@@ -148,6 +148,7 @@ jobs:
           profile: ${{ matrix.device.profile }}
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
+          pre-emulator-launch-script: .github/scripts/portrait-avd.sh
           script: |
             flutter drive --driver=test_driver/screenshot_driver.dart --target=integration_test/make_screenshots_test.dart --dart-define=DEVICE_TYPE=${{ matrix.device.device_type }}
 
