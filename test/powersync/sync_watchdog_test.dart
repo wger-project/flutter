@@ -264,6 +264,37 @@ void main() {
     });
   });
 
+  test('a timeout expiring during an offline window still flags afterwards', () {
+    fakeAsync((async) {
+      // The notStarted case emits no status event, so nothing would ever
+      // re-arm a timer that was consumed silently while offline.
+      watchdog.onConnectRequested();
+      async.elapse(const Duration(minutes: 1));
+
+      watchdog.offline = true;
+      async.elapse(watchdog.timeout);
+
+      watchdog.offline = false;
+      async.elapse(watchdog.timeout + const Duration(seconds: 1));
+
+      expect(watchdog.stalled.value, isTrue);
+      expect(watchdog.stalledReason, StalledReason.notStarted);
+    });
+  });
+
+  test('going offline clears the stalled reason together with the flag', () {
+    fakeAsync((async) {
+      watchdog.onConnectRequested();
+      async.elapse(watchdog.timeout + const Duration(seconds: 1));
+      expect(watchdog.stalledReason, isNotNull);
+
+      watchdog.offline = true;
+
+      expect(watchdog.stalled.value, isFalse);
+      expect(watchdog.stalledReason, isNull);
+    });
+  });
+
   test('re-arms on the next status once the backend answers again', () {
     fakeAsync((async) {
       watchdog.offline = true;
