@@ -133,14 +133,14 @@ class DjangoConnector extends PowerSyncBackendConnector {
     try {
       session = await apiClient.getPowersyncToken();
     } on http.ClientException catch (e) {
-      // Backend unreachable (offline). Returning null skips this attempt;
-      // PowerSync retries on its own schedule. Without this, the raw
-      // SocketException stack trace floods the logs on every retry.
+      // Backend unreachable. Null would mean "not logged in" to the SDK and
+      // surface as a CredentialsException; rethrowing keeps it a connection
+      // error. PowerSync retries on its own schedule either way.
       _logUnreachable(e.message);
-      return null;
+      rethrow;
     } on SocketException catch (e) {
       _logUnreachable(e.message);
-      return null;
+      rethrow;
     }
     _logReachableAgain();
 

@@ -96,8 +96,9 @@ class Exercises extends _$Exercises {
     if (term.isEmpty) {
       return [];
     }
-    if (ref.read(networkStatusProvider)) {
-      try {
+    return serverWithLocalFallback(
+      isOnline: ref.read(networkStatusProvider),
+      server: () async {
         // The repo's REST search returns just IDs; hydrate them against the
         // already-loaded snapshot (the catalogue is always fully synced) so
         // the caller gets full Exercise objects regardless of which path ran.
@@ -105,16 +106,12 @@ class Exercises extends _$Exercises {
             .read(exerciseRepositoryProvider)
             .searchExerciseServer(term, languageCode: languageCode, searchEnglish: searchEnglish);
         return _exercises.where((e) => ids.contains(e.id)).toList();
-      } catch (e) {
-        // The cached status is only a hint, so the server attempt has to be
-        // allowed to fail: the local catalogue can stand in for it.
-        if (!isNetworkError(e)) {
-          rethrow;
-        }
-        _logger.info('Exercise search falling back to the local catalogue: $e');
-      }
-    }
-    return _searchExerciseLocal(term, languageCode: languageCode, searchEnglish: searchEnglish);
+      },
+      local: () =>
+          _searchExerciseLocal(term, languageCode: languageCode, searchEnglish: searchEnglish),
+      logger: _logger,
+      fallbackLog: 'Exercise search falling back to the local catalogue',
+    );
   }
 
   /// Searches for exercises matching [term] with extended search options:
@@ -135,8 +132,9 @@ class Exercises extends _$Exercises {
       return [];
     }
 
-    if (ref.read(networkStatusProvider)) {
-      try {
+    return serverWithLocalFallback(
+      isOnline: ref.read(networkStatusProvider),
+      server: () async {
         final ids = await ref
             .read(exerciseRepositoryProvider)
             .searchExerciseServerWithSearchMode(
@@ -147,30 +145,28 @@ class Exercises extends _$Exercises {
               categories: categories,
             );
         return _exercises.where((e) => ids.contains(e.id)).toList();
-      } catch (e) {
-        if (!isNetworkError(e)) {
-          rethrow;
+      },
+      local: () async {
+        final searchEnglish = searchLanguage == SearchLanguage.currentAndEnglish;
+        var results = await _searchExerciseLocal(
+          term,
+          languageCode: languageCode,
+          searchEnglish: searchEnglish,
+        );
+        if (searchMode == ExerciseSearchMode.exact) {
+          final lower = term.toLowerCase();
+          results = results.where((e) {
+            return e.getTranslation(languageCode).name.toLowerCase() == lower;
+          }).toList();
         }
-        _logger.info('Exercise search falling back to the local catalogue: $e');
-      }
-    }
-
-    final searchEnglish = searchLanguage == SearchLanguage.currentAndEnglish;
-    var results = await _searchExerciseLocal(
-      term,
-      languageCode: languageCode,
-      searchEnglish: searchEnglish,
+        if (categories.isNotEmpty) {
+          results = results.where((e) => categories.contains(e.category)).toList();
+        }
+        return results;
+      },
+      logger: _logger,
+      fallbackLog: 'Filtered exercise search falling back to the local catalogue',
     );
-    if (searchMode == ExerciseSearchMode.exact) {
-      final lower = term.toLowerCase();
-      results = results.where((e) {
-        return e.getTranslation(languageCode).name.toLowerCase() == lower;
-      }).toList();
-    }
-    if (categories.isNotEmpty) {
-      results = results.where((e) => categories.contains(e.category)).toList();
-    }
-    return results;
   }
 
   /// Pure in-memory substring search across the configured translations.

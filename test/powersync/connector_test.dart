@@ -359,14 +359,17 @@ void main() {
       expect(probes, hasLength(4));
     });
 
-    test('returns null when the backend is unreachable', () async {
+    test('rethrows when the backend is unreachable', () async {
+      // Null would mean "not logged in" to the SDK, which turns a plain
+      // outage into a CredentialsException ("Authentication error" in the
+      // sync dialog). A connection error has to stay a connection error.
       final mockApi = MockApiClient();
       final connector = DjangoConnector(baseUrl: 'http://example.invalid', apiClient: mockApi);
       when(
         mockApi.getPowersyncToken(),
       ).thenThrow(http.ClientException('Connection refused'));
 
-      expect(await connector.fetchCredentials(), isNull);
+      await expectLater(connector.fetchCredentials(), throwsA(isA<http.ClientException>()));
     });
 
     test('anchors expiresAt to the local clock via the token lifetime', () async {
@@ -408,14 +411,25 @@ void main() {
       Iterable<LogRecord> infoLines(String needle) =>
           records.where((r) => r.level == Level.INFO && r.message.contains(needle));
 
+      /// Unreachable fetches rethrow; these tests only assert the log lines.
+      Future<void> fetchIgnoringNetworkError() async {
+        try {
+          await connector.fetchCredentials();
+        } on http.ClientException {
+          // expected, the backend is stubbed unreachable
+        } on SocketException {
+          // expected, the backend is stubbed unreachable
+        }
+      }
+
       test('logs the outage at INFO once, not per retry', () async {
         when(
           mockApi.getPowersyncToken(),
         ).thenThrow(http.ClientException('Connection refused'));
 
-        await connector.fetchCredentials();
-        await connector.fetchCredentials();
-        await connector.fetchCredentials();
+        await fetchIgnoringNetworkError();
+        await fetchIgnoringNetworkError();
+        await fetchIgnoringNetworkError();
 
         expect(infoLines('backend unreachable'), hasLength(1));
       });
@@ -424,7 +438,7 @@ void main() {
         when(
           mockApi.getPowersyncToken(),
         ).thenThrow(const SocketException('Network is unreachable'));
-        await connector.fetchCredentials();
+        await fetchIgnoringNetworkError();
 
         final jwt = makeJwt({'sub': 'u', 'iat': 1700000000, 'exp': 1700000600});
         when(mockApi.getPowersyncToken()).thenAnswer(
@@ -439,7 +453,7 @@ void main() {
         when(
           mockApi.getPowersyncToken(),
         ).thenThrow(http.ClientException('Connection refused'));
-        await connector.fetchCredentials();
+        await fetchIgnoringNetworkError();
 
         final jwt = makeJwt({'sub': 'u', 'iat': 1700000000, 'exp': 1700000600});
         when(mockApi.getPowersyncToken()).thenAnswer(
@@ -450,7 +464,7 @@ void main() {
         when(
           mockApi.getPowersyncToken(),
         ).thenThrow(http.ClientException('Connection refused'));
-        await connector.fetchCredentials();
+        await fetchIgnoringNetworkError();
 
         expect(infoLines('backend unreachable'), hasLength(2));
       });

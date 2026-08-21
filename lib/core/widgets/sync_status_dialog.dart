@@ -36,8 +36,8 @@ import 'package:wger/powersync/sync_watchdog.dart' show StalledReason;
 final _logger = Logger('SyncStatusDialog');
 
 /// Icon and label for the current sync state. [deviceOnline] is the network
-/// status: without it a missing connection cannot be told apart from one that
-/// is still being established.
+/// status: while offline everything reads as calmly disconnected (an outage
+/// is not an app error), online it separates connecting from broken.
 ({IconData icon, String label}) syncStatusIconAndLabel(
   SyncStatus status,
   AppLocalizations i18n, {
@@ -47,6 +47,12 @@ final _logger = Logger('SyncStatusDialog');
   // establish a connection", not "transferring data".
   final connecting = (icon: Icons.cloud_queue, label: i18n.syncStatusConnecting);
 
+  // Offline wins over everything: sync errors piled up during an outage are
+  // a consequence of the outage, not something the user should act on.
+  if (!deviceOnline) {
+    return (icon: Icons.cloud_off, label: i18n.syncStatusDisconnected);
+  }
+
   if (status.anyError != null) {
     return (
       icon: status.connected ? Icons.sync_problem : Icons.cloud_off,
@@ -55,10 +61,10 @@ final _logger = Logger('SyncStatusDialog');
   } else if (status.connecting) {
     return connecting;
   } else if (!status.connected) {
-    // Not connected while the network is up means PowerSync's retry loop is
+    // The offline case returned above, so this is PowerSync's retry loop
     // working on it, which is a far cry from "this app is broken". That also
     // covers the seconds after a cold start, before the first connection.
-    return deviceOnline ? connecting : (icon: Icons.cloud_off, label: i18n.syncStatusDisconnected);
+    return connecting;
   } else if (status.uploading && status.downloading) {
     // The status changes often between downloading, uploading and both,
     // so we use the same icon for all three

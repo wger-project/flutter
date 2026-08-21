@@ -159,6 +159,18 @@ void main() {
       expect(r.icon, Icons.cloud_off);
       expect(r.label, i18n.syncStatusError);
     });
+
+    test('error while the device is offline → Disconnected, not Sync error', () {
+      // Errors piled up during an outage are a consequence of the outage; a
+      // device that is offline reads as calmly disconnected, not broken.
+      final r = syncStatusIconAndLabel(
+        buildSyncStatus(downloadError: Exception('boom')),
+        i18n,
+        deviceOnline: false,
+      );
+      expect(r.icon, Icons.cloud_off);
+      expect(r.label, i18n.syncStatusDisconnected);
+    });
   });
 
   group('SyncStatusDialog rendering', () {

@@ -26,7 +26,6 @@ import 'package:wger/core/errors.dart';
 import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/core/widgets/error.dart';
 import 'package:wger/core/widgets/progress_indicator.dart';
-import 'package:wger/features/routines/models/routine.dart';
 import 'package:wger/features/routines/providers/gym_state.dart';
 import 'package:wger/features/routines/providers/gym_state_notifier.dart';
 import 'package:wger/features/routines/providers/routines_notifier.dart';
@@ -78,31 +77,25 @@ class _GymModeState extends ConsumerState<GymMode> {
     final notifier = ref.read(routinesRiverpodProvider.notifier);
     final routineId = widget._args.routineId;
 
-    Routine? routine;
-    if (ref.read(networkStatusProvider)) {
-      try {
-        routine = await notifier.fetchAndSetRoutineFull(routineId);
-      } catch (e) {
-        if (!isNetworkError(e)) {
-          rethrow;
+    final routine = await serverWithLocalFallback(
+      isOnline: ref.read(networkStatusProvider),
+      server: () => notifier.fetchAndSetRoutineFull(routineId),
+      local: () {
+        // Reaching the gym mode requires an already-downloaded routine, so
+        // the local data is normally present.
+        final cached = ref
+            .read(routinesRiverpodProvider)
+            .value
+            ?.routines
+            .firstWhereOrNull((r) => r.id == routineId);
+        if (cached == null || !cached.isHydrated) {
+          throw StateError('Routine $routineId is not available offline');
         }
-        widget._logger.info('Server unreachable, starting from the local routine: $e');
-      }
-    }
-
-    // Without the server, use the local routine data. Reaching the gym mode
-    // requires an already-downloaded routine, so it is normally present.
-    if (routine == null) {
-      final cached = ref
-          .read(routinesRiverpodProvider)
-          .value
-          ?.routines
-          .firstWhereOrNull((r) => r.id == routineId);
-      if (cached == null || !cached.isHydrated) {
-        throw StateError('Routine $routineId is not available offline');
-      }
-      routine = cached;
-    }
+        return cached;
+      },
+      logger: widget._logger,
+      fallbackLog: 'Server unreachable, starting from the local routine',
+    );
 
     final gymViewModel = ref.read(gymStateProvider.notifier);
     final initialPage = gymViewModel.initData(

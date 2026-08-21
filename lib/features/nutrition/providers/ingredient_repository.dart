@@ -198,29 +198,25 @@ class IngredientRepository {
     bool isVegan = false,
     bool isVegetarian = false,
     NutriScore? nutriscoreMax,
-  }) async {
-    if (isOnline) {
-      try {
-        return await searchIngredientServer(
-          name,
-          languageCode: languageCode,
-          searchLanguage: searchLanguage,
-          isVegan: isVegan,
-          isVegetarian: isVegetarian,
-          nutriscoreMax: nutriscoreMax,
-        );
-      } catch (e) {
-        if (!isNetworkError(e)) {
-          rethrow;
-        }
-        _logger.info('Ingredient search falling back to the local subset: $e');
-      }
-    }
-    return searchIngredientLocal(
-      name,
-      isVegan: isVegan,
-      isVegetarian: isVegetarian,
-      nutriscoreMax: nutriscoreMax,
+  }) {
+    return serverWithLocalFallback(
+      isOnline: isOnline,
+      server: () => searchIngredientServer(
+        name,
+        languageCode: languageCode,
+        searchLanguage: searchLanguage,
+        isVegan: isVegan,
+        isVegetarian: isVegetarian,
+        nutriscoreMax: nutriscoreMax,
+      ),
+      local: () => searchIngredientLocal(
+        name,
+        isVegan: isVegan,
+        isVegetarian: isVegetarian,
+        nutriscoreMax: nutriscoreMax,
+      ),
+      logger: _logger,
+      fallbackLog: 'Ingredient search falling back to the local subset',
     );
   }
 
