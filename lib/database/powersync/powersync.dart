@@ -27,6 +27,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:powersync/powersync.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:stream_transform/stream_transform.dart';
+import 'package:wger/core/logs.dart';
 import 'package:wger/core/network/auth_http_client.dart';
 import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/core/network/wger_base.dart';
@@ -66,7 +67,9 @@ Future<PowerSyncDatabase> powerSyncInstance(Ref ref) async {
   final db = PowerSyncDatabase(
     schema: schema,
     path: await _getDatabasePath(),
-    logger: attachedLogger,
+    // The SDK's retry loop logs identical lines every few seconds during an
+    // outage; collapsed so they don't crowd out the exportable log store.
+    logger: repeatCollapsingLogger('PowerSync'),
   );
   await db.initialize();
   await _createRawTables(db);
@@ -100,30 +103,36 @@ Future<PowerSyncDatabase> powerSyncInstance(Ref ref) async {
     }
   });
 
-  // Connect to the sync service only while the device is online. PowerSync's
-  // own retry loop would otherwise log a credential error on every iteration
-  // against an unreachable backend
-  void syncConnection(bool isOnline) {
-    if (isOnline) {
+  // Gated on the network adapter only, never on the reachability probe: a
+  // probe failure is an indication, an unreachable backend is PowerSync's own
+  // retry loop to handle (the connector throttles its log output while the
+  // backend does not answer). Reconnecting while already connected is safe and
+  // doubles as the "retry now" signal when the adapter comes back.
+  void syncConnection(bool hasAdapter) {
+    if (hasAdapter) {
       final serverUrl = ref.read(wgerBaseProvider).serverUrl;
       if (serverUrl != null) {
-        _logger.info('Device online, connecting to the sync service');
-        connectPowerSync(db, serverUrl, client);
-        // From here on a silent sync client is a fault, not an idle app.
-        watchdog.onConnectRequested();
+        _logger.info('Network adapter available, connecting to the sync service');
+        connectPowerSync(db, serverUrl, client, watchdog);
       } else {
-        _logger.info('Device online, but no server configured: not connecting');
+        _logger.info('Network adapter available, but no server configured: not connecting');
       }
     } else {
-      _logger.info('Device offline, disconnecting from the sync service');
+      _logger.info('No network adapter, disconnecting from the sync service');
       db.disconnect();
       // Deliberate disconnect: an offline device is not a blocked stream.
       watchdog.reset();
     }
   }
 
-  syncConnection(ref.read(networkStatusProvider));
-  ref.listen(networkStatusProvider, (_, isOnline) => syncConnection(isOnline));
+  syncConnection(ref.read(networkAdapterAvailableProvider));
+  ref.listen(networkAdapterAvailableProvider, (_, hasAdapter) => syncConnection(hasAdapter));
+
+  // The probe stays a diagnostic input for the watchdog: while short REST
+  // requests fail too, a stream without checkpoints says nothing about the
+  // blocked middlebox the watchdog looks for.
+  watchdog.offline = !ref.read(networkStatusProvider);
+  ref.listen(networkStatusProvider, (_, isOnline) => watchdog.offline = !isOnline);
 
   ref.onDispose(() {
     _builtInstance = null;
@@ -211,7 +220,12 @@ Future<void> _createRawTables(PowerSyncDatabase db) async {
 /// HTTP client (see [authenticatedHttpClientProvider]); the connector reuses
 /// it for its REST calls so the same `Authorization` injection and
 /// pre-emptive refresh apply.
-void connectPowerSync(PowerSyncDatabase db, String baseUrl, http.Client client) {
+void connectPowerSync(
+  PowerSyncDatabase db,
+  String baseUrl,
+  http.Client client,
+  SyncStreamWatchdog watchdog,
+) {
   db.connect(
     connector: DjangoConnector(
       baseUrl: baseUrl,
@@ -219,6 +233,9 @@ void connectPowerSync(PowerSyncDatabase db, String baseUrl, http.Client client) 
       client: client,
     ),
   );
+  // A connect that never starts the sync client emits no status event, so
+  // arming the watchdog is inseparable from requesting the connection.
+  watchdog.onConnectRequested();
 }
 
 /// Number of local changes still waiting in the upload queue. Emits again

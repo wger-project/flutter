@@ -29,7 +29,6 @@ import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/core/exceptions/mfa_required_exception.dart';
 import 'package:wger/core/network/auth_notifier.dart';
 import 'package:wger/core/network/auth_state.dart';
-import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/core/widgets/server_config_warning_dialog.dart';
 import 'package:wger/features/auth/screens/mfa_challenge_screen.dart';
 import 'package:wger/features/auth/widgets/advanced_sheet.dart';
@@ -279,9 +278,6 @@ class _AuthCardState extends ConsumerState<AuthCard> {
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
     final deviceSize = MediaQuery.sizeOf(context);
-    // Login/registration both need the server, so disable the action while
-    // there is no connectivity.
-    final isOnline = ref.watch(networkStatusProvider);
     final allowSelfSignedCerts = ref.watch(
       appSettingsProvider.select(
         (s) => s.value?.allowSelfSignedCerts ?? ALLOW_SELF_SIGNED_CERTS_DEFAULT,
@@ -366,18 +362,21 @@ class _AuthCardState extends ConsumerState<AuthCard> {
                   // Bespoke submit:  the shared FormSubmitButton only surfaces
                   // WgerHttpException and has no style override, so it is
                   // intentionally not used here.
+                  //
+                  // Never gated on the network status: the login attempt is
+                  // the better probe and a wrong status would lock the user
+                  // out of the app. A failure lands in the error message
+                  // above.
                   SizedBox(
                     width: double.infinity,
                     height: 45,
                     child: ElevatedButton(
                       key: const Key('actionButton'),
-                      onPressed: isOnline
-                          ? () {
-                              if (!_isLoading) {
-                                _submit(context);
-                              }
-                            }
-                          : null,
+                      onPressed: () {
+                        if (!_isLoading) {
+                          _submit(context);
+                        }
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Theme.of(context).colorScheme.primary,
                       ),

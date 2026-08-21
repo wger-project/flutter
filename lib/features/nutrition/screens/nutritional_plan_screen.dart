@@ -18,10 +18,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg_icons/flutter_svg_icons.dart';
 import 'package:wger/core/form_screen.dart';
 import 'package:wger/core/widgets/object_gone_redirect.dart';
 import 'package:wger/core/widgets/progress_indicator.dart';
+import 'package:wger/core/widgets/svg_icon.dart';
 import 'package:wger/features/nutrition/providers/nutrition_notifier.dart';
 import 'package:wger/features/nutrition/screens/log_meals_screen.dart';
 import 'package:wger/features/nutrition/widgets/forms.dart';
@@ -74,10 +74,7 @@ class NutritionalPlanScreen extends ConsumerWidget {
                 ),
               );
             },
-            child: const SvgIcon(
-              icon: SvgIconData('assets/icons/ingredient-diary.svg'),
-              color: Colors.white,
-            ),
+            child: const SvgIcon('assets/icons/ingredient-diary.svg', color: Colors.white),
           ),
           const SizedBox(width: 8),
           FloatingActionButton(
@@ -89,10 +86,7 @@ class NutritionalPlanScreen extends ConsumerWidget {
                 arguments: nutritionalPlan,
               );
             },
-            child: const SvgIcon(
-              icon: SvgIconData('assets/icons/meal-diary.svg'),
-              color: Colors.white,
-            ),
+            child: const SvgIcon('assets/icons/meal-diary.svg', color: Colors.white),
           ),
         ],
       ),
@@ -105,9 +99,7 @@ class NutritionalPlanScreen extends ConsumerWidget {
             actions: [
               if (!nutritionalPlan.onlyLogging)
                 IconButton(
-                  icon: const SvgIcon(
-                    icon: SvgIconData('assets/icons/meal-add.svg'),
-                  ),
+                  icon: const SvgIcon('assets/icons/meal-add.svg'),
                   onPressed: () {
                     Navigator.pushNamed(
                       context,

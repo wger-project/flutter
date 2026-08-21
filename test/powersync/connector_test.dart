@@ -364,21 +364,24 @@ void main() {
         (_) async => {'token': jwt, 'powersync_url': 'https://ps.example.com'},
       );
 
-      expect(await connector.fetchCredentials(), isNull);
-      expect(await connector.fetchCredentials(), isNull);
+      await expectLater(connector.fetchCredentials(), throwsA(isA<NoPowerSyncEndpointException>()));
+      await expectLater(connector.fetchCredentials(), throwsA(isA<NoPowerSyncEndpointException>()));
 
       // Both candidates probed on both attempts: no negative caching.
       expect(probes, hasLength(4));
     });
 
-    test('returns null when the backend is unreachable', () async {
+    test('rethrows when the backend is unreachable', () async {
+      // Null would mean "not logged in" to the SDK, which turns a plain
+      // outage into a CredentialsException ("Authentication error" in the
+      // sync dialog). A connection error has to stay a connection error.
       final mockApi = MockApiClient();
       final connector = DjangoConnector(baseUrl: 'http://example.invalid', apiClient: mockApi);
       when(
         mockApi.getPowersyncToken(),
       ).thenThrow(http.ClientException('Connection refused'));
 
-      expect(await connector.fetchCredentials(), isNull);
+      await expectLater(connector.fetchCredentials(), throwsA(isA<http.ClientException>()));
     });
 
     test('anchors expiresAt to the local clock via the token lifetime', () async {
@@ -420,14 +423,25 @@ void main() {
       Iterable<LogRecord> infoLines(String needle) =>
           records.where((r) => r.level == Level.INFO && r.message.contains(needle));
 
+      /// Unreachable fetches rethrow; these tests only assert the log lines.
+      Future<void> fetchIgnoringNetworkError() async {
+        try {
+          await connector.fetchCredentials();
+        } on http.ClientException {
+          // expected, the backend is stubbed unreachable
+        } on SocketException {
+          // expected, the backend is stubbed unreachable
+        }
+      }
+
       test('logs the outage at INFO once, not per retry', () async {
         when(
           mockApi.getPowersyncToken(),
         ).thenThrow(http.ClientException('Connection refused'));
 
-        await connector.fetchCredentials();
-        await connector.fetchCredentials();
-        await connector.fetchCredentials();
+        await fetchIgnoringNetworkError();
+        await fetchIgnoringNetworkError();
+        await fetchIgnoringNetworkError();
 
         expect(infoLines('backend unreachable'), hasLength(1));
       });
@@ -436,7 +450,7 @@ void main() {
         when(
           mockApi.getPowersyncToken(),
         ).thenThrow(const SocketException('Network is unreachable'));
-        await connector.fetchCredentials();
+        await fetchIgnoringNetworkError();
 
         final jwt = makeJwt({'sub': 'u', 'iat': 1700000000, 'exp': 1700000600});
         when(mockApi.getPowersyncToken()).thenAnswer(
@@ -451,7 +465,7 @@ void main() {
         when(
           mockApi.getPowersyncToken(),
         ).thenThrow(http.ClientException('Connection refused'));
-        await connector.fetchCredentials();
+        await fetchIgnoringNetworkError();
 
         final jwt = makeJwt({'sub': 'u', 'iat': 1700000000, 'exp': 1700000600});
         when(mockApi.getPowersyncToken()).thenAnswer(
@@ -462,7 +476,7 @@ void main() {
         when(
           mockApi.getPowersyncToken(),
         ).thenThrow(http.ClientException('Connection refused'));
-        await connector.fetchCredentials();
+        await fetchIgnoringNetworkError();
 
         expect(infoLines('backend unreachable'), hasLength(2));
       });
@@ -569,6 +583,25 @@ void main() {
       expect(completed, isFalse);
     });
 
+    test('hands an unexpected Error on as a plain stand-in as well', () async {
+      // Errors are not Exceptions: an `on Exception` clause would let a
+      // TypeError or JsonUnsupportedObjectError (which references the
+      // unencodable object) escape as the original across the isolate
+      // boundary.
+      when(api.upsert(any)).thenThrow(ArgumentError('boom'));
+
+      await expectLater(
+        conn.processTransaction(
+          txWith(CrudEntry(1, UpdateType.put, 'manager_routine', 'r1', 1, {'name': 'x'})),
+        ),
+        throwsA(
+          isA<UploadFailedException>().having((e) => e.details, 'details', contains('boom')),
+        ),
+      );
+
+      expect(completed, isFalse);
+    });
+
     test('completes the transaction even when the backend rejects the op', () async {
       // The key anti-poison-pill behaviour: a 200 with an `error` body is a
       // permanent rejection. processTransaction must not rethrow (that would
@@ -635,6 +668,21 @@ void main() {
         throwsA(isA<http.ClientException>()),
       );
       // Not completed: the op stays queued for PowerSync to retry once online.
+      expect(completed, isFalse);
+    });
+
+    test('a TLS handshake failure defers quietly like any network error', () async {
+      // HandshakeException is a network error too (isNetworkError), but is
+      // neither a ClientException nor a SocketException: it must take the
+      // quiet retry path, not the severe-logged UploadFailedException wrap.
+      when(api.upsert(any)).thenThrow(const HandshakeException('bad certificate'));
+
+      await expectLater(
+        conn.processTransaction(
+          txWith(CrudEntry(1, UpdateType.put, 'manager_routine', 'r1', 1, {'name': 'x'})),
+        ),
+        throwsA(isA<HandshakeException>()),
+      );
       expect(completed, isFalse);
     });
 

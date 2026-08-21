@@ -567,6 +567,36 @@ void main() {
   });
 
   group('routineHydration family', () {
+    test('creation defers all provider reads past the synchronous phase', () async {
+      // Regression: the provider is created by a ref.watch during widget
+      // build, and a synchronous read of the then-dirty repository chain
+      // crashed mid-build. No provider may be touched before a yield.
+      var repoRead = false;
+      when(
+        mockRepo.fetchAndSetRoutineFullServer(101),
+      ).thenAnswer((_) async => Routine(id: 101, name: 'Test routine'));
+      final container = ProviderContainer.test(
+        overrides: [
+          routinesRepositoryProvider.overrideWith((ref) {
+            repoRead = true;
+            return mockRepo;
+          }),
+          ...ambientOverrides(),
+        ],
+      );
+
+      container.listen(routineHydrationProvider(101), (_, _) {});
+      expect(
+        repoRead,
+        false,
+        reason: 'no provider may be read synchronously during create (build phase)',
+      );
+
+      await container.read(routineHydrationProvider(101).future);
+      expect(repoRead, true);
+      verify(mockRepo.fetchAndSetRoutineFullServer(101)).called(1);
+    });
+
     test('watching the provider triggers a single structure fetch', () async {
       // Arrange
       when(

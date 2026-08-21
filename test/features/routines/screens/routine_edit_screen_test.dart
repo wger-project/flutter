@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (C) 2020, 2021 wger Team
+ * Copyright (c)  2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * wger Workout Manager is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -25,6 +25,7 @@ import 'package:wger/features/routines/screens/routine_edit_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 import '../../../../test_data/routines.dart';
+import '../../../helpers/fake_connectivity.dart';
 
 class _StubRoutinesRiverpod extends RoutinesRiverpod {
   _StubRoutinesRiverpod(this._routines);
@@ -35,6 +36,10 @@ class _StubRoutinesRiverpod extends RoutinesRiverpod {
 }
 
 void main() {
+  // The widget tree reaches networkStatusProvider; without the fake the
+  // deferred init probe does a real DNS lookup with a pending timer.
+  installFakeConnectivity();
+
   final key = GlobalKey<NavigatorState>();
 
   testWidgets('RoutineEditScreen smoke test', (WidgetTester tester) async {

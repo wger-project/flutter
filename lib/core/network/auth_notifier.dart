@@ -63,7 +63,12 @@ const HEADLESS_AUTH_MFA_AUTHENTICATE_PATH = 'auth/2fa/authenticate';
 const HEADLESS_SESSION_TOKEN_HEADER = 'X-Session-Token';
 
 /// HTTP client used by the auth notifier. Override in tests.
-final authHttpClientProvider = Provider<http.Client>((ref) => http.Client());
+final authHttpClientProvider = Provider<http.Client>(
+  (ref) => ReachabilityReportingClient(
+    http.Client(),
+    () => ref.read(networkStatusProvider.notifier),
+  ),
+);
 
 @Riverpod(keepAlive: true)
 class AuthNotifier extends _$AuthNotifier {
@@ -638,15 +643,16 @@ class AuthNotifier extends _$AuthNotifier {
   /// with the new token instead of replaying their pre-login error state.
   void _invalidatePostLoginProviders() {
     _logger.fine('Invalidating data providers after login');
+    // Leaf first: the providers below read reachability as they rebuild, and
+    // flushing a still-dirty networkStatusProvider from a create during
+    // widget build crashes. The re-probe also picks up the new server URL.
+    ref.invalidate(networkStatusProvider);
     ref.invalidate(accountProvider);
     ref.invalidate(userProfileProvider);
     ref.invalidate(routinesRiverpodProvider);
     ref.invalidate(nutritionProvider);
     ref.invalidate(trophyStateProvider);
     ref.invalidate(galleryProvider);
-    // Re-probe reachability against the new server. NetworkStatus relies on
-    // this invalidation to pick up the post-login server URL immediately.
-    ref.invalidate(networkStatusProvider);
   }
 
   /// Exchanges the persisted refresh token for a fresh access/refresh pair.
@@ -876,7 +882,12 @@ class AuthNotifier extends _$AuthNotifier {
       return;
     }
     try {
-      connectPowerSync(db, serverUrl, ref.read(authenticatedHttpClientProvider));
+      connectPowerSync(
+        db,
+        serverUrl,
+        ref.read(authenticatedHttpClientProvider),
+        ref.read(syncWatchdogProvider),
+      );
     } catch (e, s) {
       _logger.warning('PowerSync reconnect failed', e, s);
     }

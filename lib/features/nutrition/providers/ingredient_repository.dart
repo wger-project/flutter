@@ -20,6 +20,7 @@ import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/core/consts.dart';
+import 'package:wger/core/errors.dart';
 import 'package:wger/core/network/base_provider.dart';
 import 'package:wger/core/network/wger_base.dart';
 import 'package:wger/core/search_options.dart';
@@ -37,9 +38,9 @@ final ingredientRepositoryProvider = Provider<IngredientRepository>((ref) {
 /// Data access for ingredient lookups and searches.
 ///
 /// Exposes both transport paths ([searchIngredientServer], [searchIngredientLocal])
-/// as pure data-access primitives, and a thin connectivity-aware dispatcher
-/// ([search]) for callers that just want "search; pick the right transport
-/// for the current network state".
+/// as pure data-access primitives, and a dispatcher ([search]) for callers
+/// that just want "search, preferably on the server, and give me something
+/// usable when it cannot be reached".
 class IngredientRepository {
   final _logger = Logger('IngredientRepository');
   final WgerBaseProvider _base;
@@ -185,9 +186,10 @@ class IngredientRepository {
         .toList();
   }
 
-  /// Searches for ingredients on the transport implied by [isOnline]:
-  /// REST when online, the locally-synced subset when offline. [languageCode]
-  /// is only forwarded to the server path.
+  /// Searches for ingredients over REST, or in the locally-synced subset when
+  /// the server cannot be reached. [isOnline] only skips the server attempt
+  /// upfront; a network error during it falls back just the same, as the
+  /// status may be stale. [languageCode] is only forwarded to the server path.
   Future<List<Ingredient>> search(
     String name, {
     required bool isOnline,
@@ -197,21 +199,24 @@ class IngredientRepository {
     bool isVegetarian = false,
     NutriScore? nutriscoreMax,
   }) {
-    if (isOnline) {
-      return searchIngredientServer(
+    return serverWithLocalFallback(
+      isOnline: isOnline,
+      server: () => searchIngredientServer(
         name,
         languageCode: languageCode,
         searchLanguage: searchLanguage,
         isVegan: isVegan,
         isVegetarian: isVegetarian,
         nutriscoreMax: nutriscoreMax,
-      );
-    }
-    return searchIngredientLocal(
-      name,
-      isVegan: isVegan,
-      isVegetarian: isVegetarian,
-      nutriscoreMax: nutriscoreMax,
+      ),
+      local: () => searchIngredientLocal(
+        name,
+        isVegan: isVegan,
+        isVegetarian: isVegetarian,
+        nutriscoreMax: nutriscoreMax,
+      ),
+      logger: _logger,
+      fallbackLog: 'Ingredient search falling back to the local subset',
     );
   }
 

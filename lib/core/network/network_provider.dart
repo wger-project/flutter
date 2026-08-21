@@ -19,6 +19,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:collection/collection.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
@@ -91,23 +92,93 @@ Future<ProbeResult> _defaultReachabilityCheck(
   }
 }
 
-/// Interval for the active backend re-probe (see [NetworkStatus]). Tests set
-/// this to `null` to disable the periodic timer; a pending timer would
-/// otherwise fail the test runner.
+/// Idle cadence of the active backend re-probe (see [NetworkStatus]). Tests
+/// set this to `null` to disable the timer; a pending timer would otherwise
+/// fail the test runner.
 @visibleForTesting
 Duration? networkProbeInterval = const Duration(seconds: 30);
+
+/// Delays for the re-probes after a failed one, before settling back on
+/// [networkProbeInterval]. A backend that comes back should be noticed within
+/// seconds; the idle cadence is far too slow to recover from a misfire.
+const _probeRetryDelays = [Duration(seconds: 2), Duration(seconds: 5), Duration(seconds: 10)];
+
+/// How many probes have to fail in a row before the state flips to offline.
+/// A single failure is normal on a mobile network (radio wakeup, TLS cold
+/// start) and says nothing about being offline.
+const _failuresBeforeOffline = 2;
+
+/// Timeout for a single reachability probe. Generous on purpose: a HEAD that
+/// takes two seconds means slow, not offline.
+const _probeTimeout = Duration(seconds: 3);
+
+/// Raw connectivity state, the app's single [Connectivity] consumer; the
+/// adapter gate and the reachability probes both derive from it. Starts out
+/// with wifi so nothing waits for the first answer of the platform channel;
+/// an adapterless device corrects it a moment later.
+@Riverpod(keepAlive: true)
+class ConnectivityState extends _$ConnectivityState {
+  final _logger = Logger('ConnectivityState');
+
+  @override
+  List<ConnectivityResult> build() {
+    final sub = Connectivity().onConnectivityChanged.listen(_update);
+    ref.onDispose(sub.cancel);
+    unawaited(_seed());
+    return const [ConnectivityResult.wifi];
+  }
+
+  Future<void> _seed() async {
+    final conn = await Connectivity().checkConnectivity();
+    if (ref.mounted) {
+      _update(conn);
+    }
+  }
+
+  void _update(List<ConnectivityResult> conn) {
+    // Same content is no change: the seed in particular usually re-delivers
+    // the optimistic default and must not trigger a second startup probe.
+    if (const ListEquality<ConnectivityResult>().equals(conn, state)) {
+      return;
+    }
+    if (hasNetworkAdapter(conn) != hasNetworkAdapter(state)) {
+      _logger.info('Network adapter ${hasNetworkAdapter(conn) ? 'available' : 'gone'}');
+    }
+    state = conn;
+  }
+}
+
+/// An empty list means no connection either, hence [Iterable.any] rather
+/// than a check for [ConnectivityResult.none].
+bool hasNetworkAdapter(List<ConnectivityResult> conn) =>
+    conn.any((c) => c != ConnectivityResult.none);
+
+/// Whether the device has a network adapter at all (wifi, mobile, ethernet...)
+///
+/// This is a platform fact and may therefore gate a connection attempt, unlike
+/// the reachability probe behind [NetworkStatus], which is only an indication.
+@Riverpod(keepAlive: true)
+bool networkAdapterAvailable(Ref ref) => hasNetworkAdapter(ref.watch(connectivityStateProvider));
 
 @Riverpod(keepAlive: true)
 class NetworkStatus extends _$NetworkStatus {
   final _logger = Logger('NetworkStatus');
 
-  StreamSubscription<List<ConnectivityResult>>? _sub;
   Timer? _probeTimer;
   AppLifecycleListener? _lifecycleListener;
 
   /// Mirrors [state] for the change detection in [_setState]. Reading [state]
   /// itself is not an option, it is not available while the notifier builds.
   bool _lastState = true;
+
+  /// Probes that failed in a row, driving both the offline hysteresis and the
+  /// re-probe backoff.
+  int _failures = 0;
+
+  /// The probe pass in flight, if any. Late callers join it instead of racing
+  /// it: overlapping passes would each count the same failed moment into
+  /// [_failures] and defeat the offline hysteresis.
+  Future<bool>? _inFlight;
 
   @override
   bool build() {
@@ -119,29 +190,42 @@ class NetworkStatus extends _$NetworkStatus {
   }
 
   void _init() {
-    check(optimistic: true);
+    // Deferred one microtask: the pass writes the state, which build() would
+    // otherwise overwrite with its own return value right after.
+    unawaited(Future.microtask(() => check(optimistic: true)));
 
-    _sub = Connectivity().onConnectivityChanged.listen((conn) async {
-      await _update(conn, optimistic: true);
-    });
+    // Listening on the raw list, not the derived adapter bool: an interface
+    // switch (wifi to mobile) keeps the bool true but still warrants a probe.
+    ref.listen(connectivityStateProvider, (_, _) => unawaited(_recheckOnChange()));
 
     // A stale offline state from the background shouldn't stick until the
     // next timer tick, so re-check optimistically on resume.
     _lifecycleListener = AppLifecycleListener(onResume: () => check(optimistic: true));
 
-    // Connectivity events only fire on adapter changes, so an active re-probe
-    // is needed to notice a backend that goes down (or comes back) while the
-    // network stays up.
-    final probeInterval = networkProbeInterval;
-    if (probeInterval != null) {
-      _probeTimer = Timer.periodic(probeInterval, (_) => check());
-    }
+    _scheduleProbe();
 
     ref.onDispose(() {
-      _sub?.cancel();
       _probeTimer?.cancel();
       _lifecycleListener?.dispose();
     });
+  }
+
+  /// Reports that a real request reached the backend, whatever it answered.
+  ///
+  /// Every request the app makes is a better probe than the artificial one,
+  /// so the status follows the real traffic and the timer degrades to an
+  /// idle-time fallback.
+  void reportRequestSuccess() {
+    _failures = 0;
+    _setState(true, 'request answered');
+    _scheduleProbe();
+  }
+
+  /// Reports that a real request failed with a network error, which triggers
+  /// a probe right away instead of waiting for the scheduled one. A failing
+  /// burst joins the probe pass the first failure started.
+  void reportRequestFailure() {
+    unawaited(check());
   }
 
   /// Re-checks connectivity and backend reachability, updates the state and
@@ -149,27 +233,70 @@ class NetworkStatus extends _$NetworkStatus {
   ///
   /// With [optimistic] the state flips to online as soon as a network adapter
   /// is available and a failed probe only downgrades it afterwards; without it
-  /// the state changes only once the probe has answered. The periodic re-probe
-  /// stays pessimistic so a dead backend doesn't flash "online" every tick.
+  /// the state changes only once the probe has answered. The scheduled
+  /// re-probe stays pessimistic so a dead backend doesn't flash "online".
   Future<bool> check({
-    Duration timeout = const Duration(seconds: 1),
+    Duration timeout = _probeTimeout,
     bool optimistic = false,
-  }) async {
-    final conn = await Connectivity().checkConnectivity();
+  }) => _probeRun(() {
+    // The deferred pass from _init can arrive after a dispose.
+    if (!ref.mounted) {
+      return Future.value(_lastState);
+    }
+    final conn = ref.read(connectivityStateProvider);
     return _update(conn, timeout: timeout, optimistic: optimistic);
+  });
+
+  /// Runs one probe pass, or joins the one already in flight. Coalescing is
+  /// safe against reentrancy: the synchronous prefix of [run] executes before
+  /// any other caller can observe [_inFlight].
+  Future<bool> _probeRun(Future<bool> Function() run) {
+    return _inFlight ??= run().whenComplete(() => _inFlight = null);
+  }
+
+  /// A connectivity change must never coalesce away: a pass already in
+  /// flight measured the old interface, so wait it out and run a fresh pass
+  /// on the new state.
+  Future<void> _recheckOnChange() async {
+    if (_inFlight case final pending?) {
+      try {
+        await pending;
+      } catch (_) {
+        // The joined pass owns its error; this one only waits its turn.
+      }
+    }
+    await check(optimistic: true);
+  }
+
+  /// Schedules the next probe: the idle cadence while things work, one of the
+  /// shorter [_probeRetryDelays] while they don't. Connectivity events only
+  /// fire on adapter changes, so a dead backend needs an active probe.
+  void _scheduleProbe() {
+    _probeTimer?.cancel();
+    final idle = networkProbeInterval;
+    if (idle == null || !ref.mounted) {
+      return;
+    }
+    final delay = _failures > 0 && _failures <= _probeRetryDelays.length
+        ? _probeRetryDelays[_failures - 1]
+        : idle;
+    _probeTimer = Timer(delay, () => check());
   }
 
   Future<bool> _update(
     List<ConnectivityResult> conn, {
-    Duration timeout = const Duration(seconds: 1),
+    Duration timeout = _probeTimeout,
     bool optimistic = false,
   }) async {
     // Only short-circuit when there's clearly no network adapter at all. Any
     // other connectivity type (wifi, ethernet, mobile, vpn, other, ...) still
-    // has to prove real reachability via the probe below. An empty list
-    // counts as "no connection" too.
-    if (conn.every((c) => c == ConnectivityResult.none)) {
+    // has to prove real reachability via the probe below.
+    if (!hasNetworkAdapter(conn)) {
+      // A known offline state, not a failed probe: the ladder starts fresh
+      // when the adapter comes back.
+      _failures = 0;
       _setState(false, 'no network adapter');
+      _scheduleProbe();
       return false;
     }
 
@@ -180,18 +307,67 @@ class NetworkStatus extends _$NetworkStatus {
     final base = ref.read(wgerBaseProvider);
     final probeUri = base.serverUrl != null ? base.makeUrl('version') : null;
     final probe = await reachabilityCheck(probeUri, base.getAppNameHeaderValue(), timeout);
-    _setState(probe.reachable, probe.reason);
-    return probe.reachable;
+
+    if (probe.reachable) {
+      _failures = 0;
+      _setState(true, probe.reason);
+    } else {
+      _failures++;
+      // One failure only buys a faster retry: on a mobile network it is as
+      // likely to be a radio wakeup as a real outage.
+      if (_failures >= _failuresBeforeOffline) {
+        _setState(false, probe.reason);
+      }
+    }
+    _scheduleProbe();
+    return _lastState;
   }
 
   /// Updates the state and logs genuine changes, so a connection that drops
   /// and comes back every few seconds is visible in the logs. Repetitions of
   /// the same value stay silent.
+  ///
+  /// A probe outlives the notifier whenever the provider is invalidated (the
+  /// auth flow does that on login) while a request is still in flight, and
+  /// writing the state afterwards throws.
   void _setState(bool isOnline, String reason) {
+    if (!ref.mounted) {
+      return;
+    }
     if (isOnline != _lastState) {
       _logger.info('Network status: ${isOnline ? 'online' : 'offline'} ($reason)');
     }
     _lastState = isOnline;
     state = isOnline;
   }
+}
+
+/// Feeds every request outcome into [NetworkStatus]: any response means the
+/// backend was reached (4xx/5xx included), a network error means it was not.
+/// Wrapped around the raw client, so auth traffic counts as a probe too.
+class ReachabilityReportingClient extends http.BaseClient {
+  ReachabilityReportingClient(this._inner, this._status);
+
+  final http.Client _inner;
+
+  /// Resolved at call time: the auth flow invalidates [NetworkStatus] on
+  /// login and a captured notifier would go stale.
+  final NetworkStatus Function() _status;
+
+  @override
+  Future<http.StreamedResponse> send(http.BaseRequest request) async {
+    try {
+      final response = await _inner.send(request);
+      _status().reportRequestSuccess();
+      return response;
+    } catch (e) {
+      if (isNetworkError(e)) {
+        _status().reportRequestFailure();
+      }
+      rethrow;
+    }
+  }
+
+  @override
+  void close() => _inner.close();
 }

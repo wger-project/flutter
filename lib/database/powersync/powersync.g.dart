@@ -46,4 +46,4 @@ final class PowerSyncInstanceProvider
   }
 }
 
-String _$powerSyncInstanceHash() => r'c553a9a164b91aafd94b9687fe9fbfb0acde9efe';
+String _$powerSyncInstanceHash() => r'8eacedfa3e5d5b41168f7517cbe19400a895b130';

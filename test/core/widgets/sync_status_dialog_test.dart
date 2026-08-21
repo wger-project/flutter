@@ -30,12 +30,14 @@ import 'package:powersync/powersync.dart'
         SyncStatus,
         UpdateType;
 import 'package:wger/core/error_dialogs.dart' show CopyToClipboardButton;
+import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/core/widgets/sync_status_dialog.dart';
 import 'package:wger/database/powersync/powersync.dart'
     show pendingUploadCountProvider, syncStatus, syncWatchdogProvider;
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/l10n/generated/app_localizations_en.dart';
-import 'package:wger/powersync/connector.dart' show RetryableUploadException;
+import 'package:wger/powersync/connector.dart'
+    show NoPowerSyncEndpointException, RetryableUploadException;
 import 'package:wger/powersync/sync_watchdog.dart';
 
 import '../../helpers/sync_status.dart';
@@ -46,6 +48,7 @@ Widget _wrap(
   Widget child, {
   required SyncStatus status,
   bool stalled = false,
+  bool deviceOnline = true,
   Stream<int>? pendingUploads,
 }) {
   final watchdog = SyncStreamWatchdog();
@@ -53,6 +56,7 @@ Widget _wrap(
   return ProviderScope(
     overrides: [
       syncStatus.overrideWithValue(status),
+      networkStatusProvider.overrideWithValue(deviceOnline),
       syncWatchdogProvider.overrideWithValue(watchdog),
       pendingUploadCountProvider.overrideWith((ref) => pendingUploads ?? const Stream.empty()),
     ],
@@ -76,27 +80,42 @@ void main() {
 
   group('syncStatusIconAndLabel', () {
     test('idle, online → Connected + cloud_done', () {
-      final r = syncStatusIconAndLabel(buildSyncStatus(connected: true), i18n);
+      final r = syncStatusIconAndLabel(buildSyncStatus(connected: true), i18n, deviceOnline: true);
       expect(r.icon, Icons.cloud_done_outlined);
       expect(r.label, i18n.syncStatusConnected);
     });
 
     test('connecting → Connecting + cloud_queue', () {
-      final r = syncStatusIconAndLabel(buildSyncStatus(connecting: true), i18n);
+      final r = syncStatusIconAndLabel(buildSyncStatus(connecting: true), i18n, deviceOnline: true);
       expect(r.icon, Icons.cloud_queue);
       expect(r.label, i18n.syncStatusConnecting);
     });
 
-    test('disconnected → Disconnected + cloud_off', () {
-      final r = syncStatusIconAndLabel(buildSyncStatus(), i18n);
+    test('disconnected while the device is offline → Disconnected + cloud_off', () {
+      final r = syncStatusIconAndLabel(buildSyncStatus(), i18n, deviceOnline: false);
       expect(r.icon, Icons.cloud_off);
       expect(r.label, i18n.syncStatusDisconnected);
+    });
+
+    test('disconnected while the network is up → Connecting, not cloud_off', () {
+      // The retry loop is working on it. cloud_off here reads as "broken",
+      // which is what made a three second reconnect look like an outage.
+      final r = syncStatusIconAndLabel(buildSyncStatus(), i18n, deviceOnline: true);
+      expect(r.icon, Icons.cloud_queue);
+      expect(r.label, i18n.syncStatusConnecting);
+    });
+
+    test('the uninitialized state on app start reads as Connecting', () {
+      final r = syncStatusIconAndLabel(buildUninitializedSyncStatus(), i18n, deviceOnline: true);
+      expect(r.icon, Icons.cloud_queue);
+      expect(r.label, i18n.syncStatusConnecting);
     });
 
     test('uploading only → Uploading + cloud_upload', () {
       final r = syncStatusIconAndLabel(
         buildSyncStatus(connected: true, uploading: true),
         i18n,
+        deviceOnline: true,
       );
       expect(r.icon, Icons.cloud_upload_outlined);
       expect(r.label, i18n.syncStatusUploading);
@@ -106,6 +125,7 @@ void main() {
       final r = syncStatusIconAndLabel(
         buildSyncStatus(connected: true, downloading: true),
         i18n,
+        deviceOnline: true,
       );
       expect(r.icon, Icons.cloud_download_outlined);
       expect(r.label, i18n.syncStatusDownloading);
@@ -115,6 +135,7 @@ void main() {
       final r = syncStatusIconAndLabel(
         buildSyncStatus(connected: true, uploading: true, downloading: true),
         i18n,
+        deviceOnline: true,
       );
       expect(r.icon, Icons.cloud_sync_outlined);
       expect(r.label, i18n.syncStatusSyncing);
@@ -124,6 +145,7 @@ void main() {
       final r = syncStatusIconAndLabel(
         buildSyncStatus(connected: true, downloadError: Exception('boom')),
         i18n,
+        deviceOnline: true,
       );
       expect(r.icon, Icons.sync_problem);
       expect(r.label, i18n.syncStatusError);
@@ -133,9 +155,22 @@ void main() {
       final r = syncStatusIconAndLabel(
         buildSyncStatus(downloadError: Exception('boom')),
         i18n,
+        deviceOnline: true,
       );
       expect(r.icon, Icons.cloud_off);
       expect(r.label, i18n.syncStatusError);
+    });
+
+    test('error while the device is offline → Disconnected, not Sync error', () {
+      // Errors piled up during an outage are a consequence of the outage; a
+      // device that is offline reads as calmly disconnected, not broken.
+      final r = syncStatusIconAndLabel(
+        buildSyncStatus(downloadError: Exception('boom')),
+        i18n,
+        deviceOnline: false,
+      );
+      expect(r.icon, Icons.cloud_off);
+      expect(r.label, i18n.syncStatusDisconnected);
     });
   });
 
@@ -357,6 +392,12 @@ void main() {
 
     testWidgets('CredentialsException → "Authentication error"', (tester) async {
       await expectCategory(tester, CredentialsException('Not logged in'), 'Authentication error');
+    });
+
+    testWidgets('NoPowerSyncEndpointException → "Sync service unavailable"', (tester) async {
+      // A dead or misconfigured sync service behind a working backend must
+      // not read as an authentication problem.
+      await expectCategory(tester, NoPowerSyncEndpointException(), 'Sync service unavailable');
     });
 
     testWidgets('SyncResponseException(401) → "Authentication error"', (tester) async {

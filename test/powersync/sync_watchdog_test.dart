@@ -175,9 +175,46 @@ void main() {
       }
 
       expect(watchdog.stalled.value, isTrue);
-      final warnings = logLines(Level.WARNING, 'has been failing');
+      final warnings = logLines(Level.WARNING, 'may be blocked');
       expect(warnings, hasLength(1));
       expect(warnings.first.error.toString(), contains('boom'));
+    });
+  });
+
+  test('a retained error does not override the signature-specific warning', () {
+    fakeAsync((async) {
+      // Data arrived, then the timeout with an old error retained: the log
+      // must say "not applied", not falsely claim no data was received.
+      watchdog.onStatus(buildSyncStatus(connected: true, downloading: true));
+      async.elapse(const Duration(seconds: 5));
+      watchdog.onStatus(buildSyncStatus(downloadError: Exception('boom')));
+
+      async.elapse(watchdog.timeout + const Duration(seconds: 1));
+
+      expect(watchdog.stalledReason, StalledReason.notApplied);
+      final warnings = logLines(Level.WARNING, 'without completing');
+      expect(warnings, hasLength(1));
+      expect(warnings.first.error.toString(), contains('boom'));
+    });
+  });
+
+  test('a stall cleared by an offline window is flagged again afterwards', () {
+    fakeAsync((async) {
+      watchdog.onConnectRequested();
+      async.elapse(watchdog.timeout + const Duration(seconds: 1));
+      expect(watchdog.stalled.value, isTrue);
+
+      // The probe drops out briefly; clearing the flag must not end the
+      // detection, the notStarted case has no status event to restart it.
+      watchdog.offline = true;
+      expect(watchdog.stalled.value, isFalse);
+      async.elapse(watchdog.timeout);
+
+      watchdog.offline = false;
+      async.elapse(watchdog.timeout + const Duration(seconds: 1));
+
+      expect(watchdog.stalled.value, isTrue);
+      expect(watchdog.stalledReason, StalledReason.notStarted);
     });
   });
 
@@ -217,6 +254,96 @@ void main() {
       // No further timer fires after the reset.
       async.elapse(watchdog.timeout * 2);
       expect(watchdog.stalled.value, isFalse);
+    });
+  });
+
+  test('stays quiet while the backend is unreachable for plain requests', () {
+    fakeAsync((async) {
+      watchdog.offline = true;
+      watchdog.onStatus(buildSyncStatus(connecting: true));
+
+      async.elapse(watchdog.timeout * 2);
+
+      expect(watchdog.stalled.value, isFalse);
+      expect(records, isEmpty);
+    });
+  });
+
+  test('a probe misfiring under load does not restart the detection', () {
+    fakeAsync((async) {
+      // The reachability probe times out while a large download saturates
+      // the line and recovers right after. If that restarted the clock, the
+      // watchdog would never reach its timeout on exactly the connection it
+      // is meant to flag.
+      watchdog.onStatus(buildSyncStatus(connecting: true));
+      async.elapse(watchdog.timeout - const Duration(seconds: 10));
+
+      watchdog.offline = true;
+      watchdog.offline = false;
+      watchdog.onStatus(buildSyncStatus(connecting: true));
+
+      async.elapse(const Duration(seconds: 11));
+      expect(watchdog.stalled.value, isTrue);
+    });
+  });
+
+  test('going offline clears the flag and reports nothing further', () {
+    fakeAsync((async) {
+      watchdog.onStatus(buildSyncStatus(connecting: true));
+      async.elapse(watchdog.timeout);
+      expect(watchdog.stalled.value, isTrue);
+
+      watchdog.offline = true;
+      expect(watchdog.stalled.value, isFalse);
+
+      async.elapse(watchdog.timeout * 2);
+      expect(watchdog.stalled.value, isFalse);
+    });
+  });
+
+  test('a timeout expiring during an offline window still flags afterwards', () {
+    fakeAsync((async) {
+      // The notStarted case emits no status event, so nothing would ever
+      // re-arm a timer that was consumed silently while offline.
+      watchdog.onConnectRequested();
+      async.elapse(const Duration(minutes: 1));
+
+      watchdog.offline = true;
+      async.elapse(watchdog.timeout);
+
+      watchdog.offline = false;
+      async.elapse(watchdog.timeout + const Duration(seconds: 1));
+
+      expect(watchdog.stalled.value, isTrue);
+      expect(watchdog.stalledReason, StalledReason.notStarted);
+    });
+  });
+
+  test('going offline clears the stalled reason together with the flag', () {
+    fakeAsync((async) {
+      watchdog.onConnectRequested();
+      async.elapse(watchdog.timeout + const Duration(seconds: 1));
+      expect(watchdog.stalledReason, isNotNull);
+
+      watchdog.offline = true;
+
+      expect(watchdog.stalled.value, isFalse);
+      expect(watchdog.stalledReason, isNull);
+    });
+  });
+
+  test('re-arms on the next status once the backend answers again', () {
+    fakeAsync((async) {
+      watchdog.offline = true;
+      watchdog.onStatus(buildSyncStatus(connecting: true));
+      async.elapse(watchdog.timeout);
+      expect(watchdog.stalled.value, isFalse);
+
+      watchdog.offline = false;
+      watchdog.onStatus(buildSyncStatus(connecting: true));
+      async.elapse(watchdog.timeout);
+
+      expect(watchdog.stalled.value, isTrue);
     });
   });
 

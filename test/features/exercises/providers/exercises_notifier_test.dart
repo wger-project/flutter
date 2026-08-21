@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:io';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
@@ -202,6 +204,39 @@ void main() {
       expect(result.map((e) => e.id).toList(), [testDeadLift.id]);
     });
 
+    test('online: a network error falls back to the local snapshot', () async {
+      // The cached "online" may be stale, so the failing server search must
+      // degrade to the local catalogue instead of surfacing an error.
+      when(
+        mockRepo.searchExerciseServer(
+          any,
+          languageCode: anyNamed('languageCode'),
+          searchEnglish: anyNamed('searchEnglish'),
+        ),
+      ).thenThrow(const SocketException('no route to host'));
+      final container = await primedContainer(isOnline: true);
+
+      final result = await container.read(exercisesProvider.notifier).searchExercise('dead');
+
+      expect(result.map((e) => e.id).toList(), [testDeadLift.id]);
+    });
+
+    test('online: an error that is not about the network still surfaces', () async {
+      when(
+        mockRepo.searchExerciseServer(
+          any,
+          languageCode: anyNamed('languageCode'),
+          searchEnglish: anyNamed('searchEnglish'),
+        ),
+      ).thenThrow(StateError('broken response'));
+      final container = await primedContainer(isOnline: true);
+
+      await expectLater(
+        container.read(exercisesProvider.notifier).searchExercise('dead'),
+        throwsStateError,
+      );
+    });
+
     // NOTE: a focused test for the searchEnglish=true branch is omitted because
     // Exercise.getTranslation('xx') falls back to English when no 'xx'
     // translation exists, so a German search already matches English names in
@@ -262,6 +297,39 @@ void main() {
           categories: anyNamed('categories'),
         ),
       ).called(1);
+    });
+
+    test('online: a network error falls back through the local post-filters', () async {
+      // The options the backend would have applied have to be applied here
+      // too, so the fallback has to run the filtering path, not just the
+      // substring search.
+      when(
+        mockRepo.searchExerciseServerWithSearchMode(
+          any,
+          languageCode: anyNamed('languageCode'),
+          searchLanguage: anyNamed('searchLanguage'),
+          searchMode: anyNamed('searchMode'),
+          categories: anyNamed('categories'),
+        ),
+      ).thenThrow(const SocketException('no route to host'));
+      final container = await primedContainer();
+      final notifier = container.read(exercisesProvider.notifier);
+
+      expect(
+        (await notifier.searchExerciseWithSearchMode(
+          'squats',
+          searchMode: ExerciseSearchMode.exact,
+        )).map((e) => e.id),
+        [testSquats.id],
+      );
+      expect(
+        await notifier.searchExerciseWithSearchMode(
+          'squa',
+          searchMode: ExerciseSearchMode.exact,
+        ),
+        isEmpty,
+        reason: 'the exact-mode filter has to survive the fallback',
+      );
     });
 
     test('offline: exact mode only matches a full name', () async {

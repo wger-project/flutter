@@ -56,7 +56,7 @@
     "@successfullySaved": {
         "description": "Message when an item was successfully saved"
     },
-    "exerciseList": "Oefeningen lijst",
+    "exerciseList": "Oefeningen­lijst",
     "exercise": "Oefening",
     "@exercise": {
         "description": "An exercise for a workout"
@@ -65,11 +65,11 @@
     "@exercises": {
         "description": "Multiple exercises for a workout"
     },
-    "exerciseName": "Oefening naam",
+    "exerciseName": "Oefening­naam",
     "@exerciseName": {
         "description": "Label for the name of a workout exercise"
     },
-    "success": "Succes",
+    "success": "Gelukt",
     "@success": {
         "description": "Message when an action completed successfully, usually used as a heading"
     },
@@ -323,7 +323,7 @@
     },
     "onlyLogging": "Alleen calorieën bijhouden",
     "onlyLoggingHelpText": "Vink dit vakje aan als u alleen uw calorieën wilt registreren en geen gedetailleerd voedingsplan met specifieke maaltijden wilt opstellen",
-    "goalMacro": "Macro doelen",
+    "goalMacro": "Macro­doelen",
     "@goalMacro": {
         "description": "The goal for macronutrients"
     },
@@ -518,7 +518,7 @@
     "@moreMeasurementEntries": {
         "description": "Message shown when the user wants to add new measurement"
     },
-    "edit": "Wijzig",
+    "edit": "Bewerken",
     "loadingText": "Laden...",
     "@loadingText": {
         "description": "Text to show when entries are being loaded in the background: Loading..."
@@ -860,7 +860,7 @@
     "@glutes": {
         "description": "Generated entry for translation for server strings"
     },
-    "gym_mat": "Gym matje",
+    "gym_mat": "Gym-matje",
     "@gym_mat": {
         "description": "Generated entry for translation for server strings"
     },
@@ -964,7 +964,7 @@
     "@lb": {
         "description": "Generated entry for translation for server strings"
     },
-    "none__bodyweight_exercise_": "geen (lichaamsgewicht)",
+    "none__bodyweight_exercise_": "geen (oefeningen met lichaamsgewicht)",
     "@none__bodyweight_exercise_": {
         "description": "Generated entry for translation for server strings"
     },
@@ -981,7 +981,7 @@
     "@goalTypeMeals": {
         "description": "added for localization of Class GoalType's filed meals"
     },
-    "goalTypeBasic": "Basic",
+    "goalTypeBasic": "Basis",
     "@goalTypeBasic": {
         "description": "added for localization of Class GoalType's filed basic"
     },
@@ -1152,5 +1152,60 @@
     },
     "endBeforeStart": "De eindwaarde mag niet vóór de beginwaarde liggen",
     "minLengthRoutine": "De routine moet minimaal {number} weken duren",
-    "maxLengthRoutine": "De routine kan maximaal {number} weken duren"
+    "maxLengthRoutine": "De routine kan maximaal {number} weken duren",
+    "syncStatusConnected": "Verbonden",
+    "@syncStatusConnected": {
+        "description": "Tooltip on the sync icon when the app is online and idle (no upload or download in progress)"
+    },
+    "syncStatusConnecting": "Verbinden",
+    "@syncStatusConnecting": {
+        "description": "Tooltip on the sync icon while the app is establishing a connection to the sync service"
+    },
+    "syncStatusUploading": "Uploaden",
+    "@syncStatusUploading": {
+        "description": "Tooltip on the sync icon while local changes are being uploaded to the server"
+    },
+    "syncStatusDownloading": "Downloaden",
+    "@syncStatusDownloading": {
+        "description": "Tooltip on the sync icon while remote changes are being downloaded from the server"
+    },
+    "syncStatusSyncing": "Synchroniseren",
+    "@syncStatusSyncing": {
+        "description": "Tooltip on the sync icon when the app is uploading and downloading at the same time"
+    },
+    "syncStatusReconnect": "Opnieuw verbinden",
+    "@syncStatusReconnect": {
+        "description": "Button in the sync status dialog that drops the stuck connection to the sync service and opens a fresh one"
+    },
+    "syncStatusDisconnected": "Niet verbonden",
+    "@syncStatusDisconnected": {
+        "description": "Tooltip on the sync icon when the app has no active connection to the sync service"
+    },
+    "syncStatusError": "Synchronisatie­fout",
+    "@syncStatusError": {
+        "description": "Status label shown in the sync status dialog when the latest sync attempt failed"
+    },
+    "syncStatusDialogTitle": "Synchronisatie­status",
+    "@syncStatusDialogTitle": {
+        "description": "Title of the dialog opened by tapping the sync icon in the app bar"
+    },
+    "syncStatusLastSynced": "Laatste synchronisatie",
+    "@syncStatusLastSynced": {
+        "description": "Label in the sync status dialog above the timestamp of the last successful sync"
+    },
+    "syncStatusErrorDetails": "Fout­details",
+    "@syncStatusErrorDetails": {
+        "description": "Header of the expandable section in the sync status dialog that reveals the raw error message"
+    },
+    "syncStatusNeverSynced": "Nog niet gesynchroniseerd",
+    "@syncStatusNeverSynced": {
+        "description": "Shown in the sync status dialog instead of the last-sync timestamp when this device has never completed a synchronisation"
+    },
+    "serverSectionLabel": "Server",
+    "advanced": "Geavanceerd",
+    "meal": "Maaltijd",
+    "ingredients": "Ingrediënten",
+    "@ingredients": {
+        "description": "Plural title for the ingredients overview screen"
+    }
 }

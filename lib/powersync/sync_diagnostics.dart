@@ -22,7 +22,8 @@ import 'package:powersync/powersync.dart'
     show CredentialsException, PowerSyncProtocolException, SyncResponseException, SyncStatus;
 import 'package:wger/core/consts.dart';
 import 'package:wger/database/powersync/powersync.dart' show builtPowerSyncInstance;
-import 'package:wger/powersync/connector.dart' show RetryableUploadException;
+import 'package:wger/powersync/connector.dart'
+    show NoPowerSyncEndpointException, RetryableUploadException;
 
 final _logger = Logger('sync_diagnostics');
 
@@ -39,6 +40,10 @@ String _categoriseHttpStatus(int statusCode) {
 
 /// Classifies a sync error into a short English category label
 String? categoriseSyncError(Object error) {
+  if (error is NoPowerSyncEndpointException) {
+    return 'Sync service unavailable';
+  }
+
   if (error is CredentialsException) {
     return 'Authentication error';
   }

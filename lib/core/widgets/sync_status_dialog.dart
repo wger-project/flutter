@@ -25,6 +25,7 @@ import 'package:wger/core/error_dialogs.dart' show CopyToClipboardButton;
 import 'package:wger/core/errors.dart' show buildGithubIssueUrl;
 import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/core/logs.dart';
+import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/core/widgets/log_overview.dart' show LogOverviewPage;
 import 'package:wger/database/powersync/powersync.dart'
     show pendingUploadCountProvider, syncStatus, syncWatchdogProvider;
@@ -34,21 +35,36 @@ import 'package:wger/powersync/sync_watchdog.dart' show StalledReason;
 
 final _logger = Logger('SyncStatusDialog');
 
+/// Icon and label for the current sync state. [deviceOnline] is the network
+/// status: while offline everything reads as calmly disconnected (an outage
+/// is not an app error), online it separates connecting from broken.
 ({IconData icon, String label}) syncStatusIconAndLabel(
   SyncStatus status,
-  AppLocalizations i18n,
-) {
+  AppLocalizations i18n, {
+  required bool deviceOnline,
+}) {
+  // Distinct from the active-sync icons below: "queue" reads as "trying to
+  // establish a connection", not "transferring data".
+  final connecting = (icon: Icons.cloud_queue, label: i18n.syncStatusConnecting);
+
+  // Offline wins over everything: sync errors piled up during an outage are
+  // a consequence of the outage, not something the user should act on.
+  if (!deviceOnline) {
+    return (icon: Icons.cloud_off, label: i18n.syncStatusDisconnected);
+  }
+
   if (status.anyError != null) {
     return (
       icon: status.connected ? Icons.sync_problem : Icons.cloud_off,
       label: i18n.syncStatusError,
     );
   } else if (status.connecting) {
-    // Distinct from the active-sync icon below: "queue" reads as
-    // "trying to establish a connection", not "transferring data".
-    return (icon: Icons.cloud_queue, label: i18n.syncStatusConnecting);
+    return connecting;
   } else if (!status.connected) {
-    return (icon: Icons.cloud_off, label: i18n.syncStatusDisconnected);
+    // The offline case returned above, so this is PowerSync's retry loop
+    // working on it, which is a far cry from "this app is broken". That also
+    // covers the seconds after a cold start, before the first connection.
+    return connecting;
   } else if (status.uploading && status.downloading) {
     // The status changes often between downloading, uploading and both,
     // so we use the same icon for all three
@@ -81,7 +97,11 @@ class SyncStatusDialog extends ConsumerWidget {
     final syncState = ref.watch(syncStatus);
     // The queue count loads async for a moment; treat that as an empty queue
     final pendingUploads = ref.watch(pendingUploadCountProvider).value ?? 0;
-    final status = syncStatusIconAndLabel(syncState, i18n);
+    final status = syncStatusIconAndLabel(
+      syncState,
+      i18n,
+      deviceOnline: ref.watch(networkStatusProvider),
+    );
     final lastSynced = syncState.lastSyncedAt;
     final errorCategory = syncState.anyError == null
         ? null
@@ -240,7 +260,8 @@ class SyncStatusDialog extends ConsumerWidget {
           if (stalled || syncState.anyError != null)
             TextButton(
               onPressed: () async {
-                final local = await collectLocalSyncState();
+                // Same snapshot the copy button shows, and no second query.
+                final local = await ref.read(localSyncStateProvider.future);
                 final url = buildGithubIssueUrl(
                   issueTitle: 'Sync error',
                   issueErrorMessage:
@@ -264,8 +285,8 @@ class SyncStatusDialog extends ConsumerWidget {
             ),
           // A stuck stream (firewall, VPN, flaky DNS) often recovers on a
           // fresh connection and can look healthy here while hanging, so the
-          // action is not gated on an error. Absent only while offline, where
-          // reconnecting would just spin against an unreachable backend.
+          // action is not gated on an error. Absent only without a network
+          // adapter, where there is no transport to reconnect over.
           if (onReconnect != null)
             TextButton(
               onPressed: () {
