@@ -25,18 +25,17 @@ import 'package:image/image.dart' as img;
 import 'package:integration_test/integration_test_driver_extended.dart';
 
 // cf. https://dev.to/mjablecnik/take-screenshot-during-flutter-integration-tests-435k
+// Errors are deliberately not caught here. The screenshots are handed over in
+// one go once the tests are through, and when that fails the run produces no
+// images at all. Swallowing it would leave a green job with an empty artifact.
 Future<void> main() async {
-  try {
-    await integrationDriver(
-      onScreenshot: (String screenshotName, List<int> screenshotBytes, [_]) async {
-        final File image = await File(screenshotName).create(recursive: true);
-        image.writeAsBytesSync(_withoutAlpha(screenshotBytes));
-        return true;
-      },
-    );
-  } catch (e) {
-    print('An error occurred: $e');
-  }
+  await integrationDriver(
+    onScreenshot: (String screenshotName, List<int> screenshotBytes, [_]) async {
+      final File image = await File(screenshotName).create(recursive: true);
+      image.writeAsBytesSync(_withoutAlpha(screenshotBytes));
+      return true;
+    },
+  );
 }
 
 /// Re-encodes a PNG as opaque 8 bit RGB
