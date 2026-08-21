@@ -90,7 +90,7 @@ dev_dependencies:
   xml: ^7.0.1
   flutter_lints: ^6.0.0
   flutter_native_splash: ^2.4.8
-  freezed: ^3.2.0
+  freezed: ^4.0.0-dev.3
   json_serializable: ^6.14.1
   mockito: ^5.6.4
   network_image_mock: ^2.1.1
