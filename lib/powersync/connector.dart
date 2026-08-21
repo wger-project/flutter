@@ -52,6 +52,14 @@ class RetryableUploadException implements Exception {
   String toString() => 'Upload of $op on $table deferred: retryable status $statusCode';
 }
 
+/// Thrown when the wger backend answers but no live PowerSync endpoint can
+/// be resolved: a down or misconfigured sync service, not an offline device
+/// and not an authentication problem.
+class NoPowerSyncEndpointException implements Exception {
+  @override
+  String toString() => 'No live PowerSync endpoint found';
+}
+
 /// Stand-in for an unexpected upload error, carrying nothing but text.
 ///
 /// An error object that cannot be sent between isolates never reaches the
@@ -163,11 +171,11 @@ class DjangoConnector extends PowerSyncBackendConnector {
       }
     }
     if (endpoint == null) {
-      // The wger backend answered (the token fetch above succeeded), so this
-      // is a bad or down sync service, not the device being offline.
-      // Returning null skips the attempt; PowerSync retries on its own.
+      // The wger backend answered (the token fetch above succeeded). Null
+      // would mean "not logged in" to the SDK; the typed error keeps the
+      // meaning. PowerSync retries on its own schedule either way.
       _logNoEndpoint();
-      return null;
+      throw NoPowerSyncEndpointException();
     }
     _lastNoEndpointLogAt = null;
     if (endpoint != _lastLoggedEndpoint) {

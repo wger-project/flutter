@@ -36,7 +36,8 @@ import 'package:wger/database/powersync/powersync.dart'
     show pendingUploadCountProvider, syncStatus, syncWatchdogProvider;
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/l10n/generated/app_localizations_en.dart';
-import 'package:wger/powersync/connector.dart' show RetryableUploadException;
+import 'package:wger/powersync/connector.dart'
+    show NoPowerSyncEndpointException, RetryableUploadException;
 import 'package:wger/powersync/sync_watchdog.dart';
 
 import '../../helpers/sync_status.dart';
@@ -391,6 +392,12 @@ void main() {
 
     testWidgets('CredentialsException → "Authentication error"', (tester) async {
       await expectCategory(tester, CredentialsException('Not logged in'), 'Authentication error');
+    });
+
+    testWidgets('NoPowerSyncEndpointException → "Sync service unavailable"', (tester) async {
+      // A dead or misconfigured sync service behind a working backend must
+      // not read as an authentication problem.
+      await expectCategory(tester, NoPowerSyncEndpointException(), 'Sync service unavailable');
     });
 
     testWidgets('SyncResponseException(401) → "Authentication error"', (tester) async {

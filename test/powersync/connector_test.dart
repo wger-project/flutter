@@ -352,8 +352,8 @@ void main() {
         (_) async => {'token': jwt, 'powersync_url': 'https://ps.example.com'},
       );
 
-      expect(await connector.fetchCredentials(), isNull);
-      expect(await connector.fetchCredentials(), isNull);
+      await expectLater(connector.fetchCredentials(), throwsA(isA<NoPowerSyncEndpointException>()));
+      await expectLater(connector.fetchCredentials(), throwsA(isA<NoPowerSyncEndpointException>()));
 
       // Both candidates probed on both attempts: no negative caching.
       expect(probes, hasLength(4));
