@@ -343,11 +343,12 @@ class DjangoConnector extends PowerSyncBackendConnector {
       // is expected to clear on its own.
       logger.warning('Upload deferred: $e');
       rethrow;
-    } on Exception catch (e, s) {
-      logger.severe('Error uploading data', e, s);
-      // Error may be retryable, e.g. a temporary server error. Throwing here
+    } catch (e, s) {
+      // Deliberately bare: Errors (TypeError, JsonUnsupportedObjectError...)
+      // must not cross the isolate boundary as objects either. Throwing here
       // causes PowerSync to retry this transaction after a delay. The text
       // stands in for the original: see [UploadFailedException].
+      logger.severe('Error uploading data', e, s);
       throw UploadFailedException(e.toString());
     }
   }

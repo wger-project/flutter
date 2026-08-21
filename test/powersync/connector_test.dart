@@ -571,6 +571,25 @@ void main() {
       expect(completed, isFalse);
     });
 
+    test('hands an unexpected Error on as a plain stand-in as well', () async {
+      // Errors are not Exceptions: an `on Exception` clause would let a
+      // TypeError or JsonUnsupportedObjectError (which references the
+      // unencodable object) escape as the original across the isolate
+      // boundary.
+      when(api.upsert(any)).thenThrow(ArgumentError('boom'));
+
+      await expectLater(
+        conn.processTransaction(
+          txWith(CrudEntry(1, UpdateType.put, 'manager_routine', 'r1', 1, {'name': 'x'})),
+        ),
+        throwsA(
+          isA<UploadFailedException>().having((e) => e.details, 'details', contains('boom')),
+        ),
+      );
+
+      expect(completed, isFalse);
+    });
+
     test('completes the transaction even when the backend rejects the op', () async {
       // The key anti-poison-pill behaviour: a 200 with an `error` body is a
       // permanent rejection. processTransaction must not rethrow (that would
