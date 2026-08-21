@@ -138,23 +138,10 @@ class MuscleWidget extends StatelessWidget {
     List<Muscle> musclesSecondary = const [],
     this.isFront = true,
   }) {
-    final frontMuscles = muscles.where((m) => m.isFront == isFront);
-    final mainMuscleIds = <int>{};
-    this.muscles = [];
-    for (final m in frontMuscles) {
-      if (mainMuscleIds.add(m.id)) {
-        this.muscles.add(m);
-      }
-    }
-
-    final frontSecondary = musclesSecondary.where((m) => m.isFront == isFront);
-    final secondaryMuscleIds = <int>{};
-    this.musclesSecondary = [];
-    for (final m in frontSecondary) {
-      if (!mainMuscleIds.contains(m.id) && secondaryMuscleIds.add(m.id)) {
-        this.musclesSecondary.add(m);
-      }
-    }
+    this.muscles = muscles.where((m) => m.isFront == isFront).toList();
+    this.musclesSecondary = musclesSecondary
+        .where((m) => m.isFront == isFront && !this.muscles.contains(m))
+        .toList();
   }
 
   @override

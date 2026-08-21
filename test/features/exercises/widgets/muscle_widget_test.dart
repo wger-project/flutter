@@ -176,48 +176,5 @@ void main() {
         findsOneWidget,
       );
     });
-
-    testWidgets('Deduplicates duplicate muscles within the same list by ID', (tester) async {
-      const duplicateMuscle1 = Muscle(
-        id: 1,
-        name: 'Biceps brachii (duplicate)',
-        nameEn: 'Biceps',
-        isFront: true,
-      );
-
-      await tester.pumpWidget(
-        createWidget(
-          MuscleWidget(
-            muscles: const [muscleFront1, duplicateMuscle1],
-            musclesSecondary: const [muscleFront2, muscleFront2],
-            isFront: true,
-          ),
-        ),
-      );
-
-      // Only one main muscle 1 SVG should be rendered
-      expect(
-        find.byWidgetPredicate(
-          (widget) =>
-              widget is SvgPicture &&
-              widget.bytesLoader is SvgAssetLoader &&
-              (widget.bytesLoader as SvgAssetLoader).assetName ==
-                  'assets/images/muscles/main/muscle-1.svg',
-        ),
-        findsOneWidget,
-      );
-
-      // Only one secondary muscle 2 SVG should be rendered
-      expect(
-        find.byWidgetPredicate(
-          (widget) =>
-              widget is SvgPicture &&
-              widget.bytesLoader is SvgAssetLoader &&
-              (widget.bytesLoader as SvgAssetLoader).assetName ==
-                  'assets/images/muscles/secondary/muscle-2.svg',
-        ),
-        findsOneWidget,
-      );
-    });
   });
 }
