@@ -659,6 +659,21 @@ void main() {
       expect(completed, isFalse);
     });
 
+    test('a TLS handshake failure defers quietly like any network error', () async {
+      // HandshakeException is a network error too (isNetworkError), but is
+      // neither a ClientException nor a SocketException: it must take the
+      // quiet retry path, not the severe-logged UploadFailedException wrap.
+      when(api.upsert(any)).thenThrow(const HandshakeException('bad certificate'));
+
+      await expectLater(
+        conn.processTransaction(
+          txWith(CrudEntry(1, UpdateType.put, 'manager_routine', 'r1', 1, {'name': 'x'})),
+        ),
+        throwsA(isA<HandshakeException>()),
+      );
+      expect(completed, isFalse);
+    });
+
     test('rethrows RetryableUploadException on transient/retryable statuses', () async {
       // Server errors, gateway timeout, rate limiting and a non-recoverable 401
       // are retried: throw so PowerSync keeps the transaction queued. Mirrors

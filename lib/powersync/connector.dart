@@ -25,6 +25,7 @@ import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 import 'package:powersync/powersync.dart';
 import 'package:wger/core/error_dialogs.dart';
+import 'package:wger/core/errors.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/core/helpers.dart';
 import 'package:wger/core/network/jwt.dart';
@@ -330,20 +331,18 @@ class DjangoConnector extends PowerSyncBackendConnector {
         }
       }
       await transaction.complete();
-    } on http.ClientException catch (e) {
-      // Backend unreachable (offline or down). The transaction stays queued;
-      // rethrowing lets PowerSync retry it once the backend is reachable.
-      logger.fine('Upload deferred, backend unreachable: ${e.message}');
-      rethrow;
-    } on SocketException catch (e) {
-      logger.fine('Upload deferred, backend unreachable: ${e.message}');
-      rethrow;
     } on RetryableUploadException catch (e) {
       // Stays queued for PowerSync to retry. Below severe: a brief server blip
       // is expected to clear on its own.
       logger.warning('Upload deferred: $e');
       rethrow;
     } catch (e, s) {
+      if (isNetworkError(e)) {
+        // Backend unreachable (offline or down). The transaction stays queued;
+        // rethrowing lets PowerSync retry it once the backend is reachable.
+        logger.fine('Upload deferred, backend unreachable: $e');
+        rethrow;
+      }
       // Deliberately bare: Errors (TypeError, JsonUnsupportedObjectError...)
       // must not cross the isolate boundary as objects either. Throwing here
       // causes PowerSync to retry this transaction after a delay. The text
