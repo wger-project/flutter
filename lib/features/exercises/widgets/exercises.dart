@@ -139,7 +139,9 @@ class MuscleWidget extends StatelessWidget {
     this.isFront = true,
   }) {
     this.muscles = muscles.where((m) => m.isFront == isFront).toList();
-    this.musclesSecondary = musclesSecondary.where((m) => m.isFront == isFront).toList();
+    this.musclesSecondary = musclesSecondary
+        .where((m) => m.isFront == isFront && !this.muscles.contains(m))
+        .toList();
   }
 
   @override
@@ -150,13 +152,9 @@ class MuscleWidget extends StatelessWidget {
       children: [
         SvgPicture.asset('assets/images/muscles/$background.svg'),
         ...muscles.map((m) => SvgPicture.asset('assets/images/muscles/main/muscle-${m.id}.svg')),
-        ...musclesSecondary
-            .where((m) => !muscles.contains(m))
-            .map(
-              (m) => SvgPicture.asset(
-                'assets/images/muscles/secondary/muscle-${m.id}.svg',
-              ),
-            ),
+        ...musclesSecondary.map(
+          (m) => SvgPicture.asset('assets/images/muscles/secondary/muscle-${m.id}.svg'),
+        ),
       ],
     );
   }
