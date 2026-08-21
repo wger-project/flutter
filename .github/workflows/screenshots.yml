@@ -14,6 +14,9 @@ jobs:
   screenshots_apple:
     name: 'Apple - ${{ matrix.device.name }}'
     runs-on: macos-latest
+    # A run takes about 20 minutes. When flutter drive cannot reach the app's
+    # VM service it retries forever
+    timeout-minutes: 40
     strategy:
       matrix:
         device:
@@ -63,6 +66,7 @@ jobs:
   screenshots_android:
     name: 'Android - ${{ matrix.device.name }}'
     runs-on: ubuntu-latest
+    timeout-minutes: 40
     strategy:
       matrix:
         device:
