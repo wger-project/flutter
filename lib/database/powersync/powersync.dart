@@ -27,6 +27,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:powersync/powersync.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:stream_transform/stream_transform.dart';
+import 'package:wger/core/logs.dart';
 import 'package:wger/core/network/auth_http_client.dart';
 import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/core/network/wger_base.dart';
@@ -66,7 +67,9 @@ Future<PowerSyncDatabase> powerSyncInstance(Ref ref) async {
   final db = PowerSyncDatabase(
     schema: schema,
     path: await _getDatabasePath(),
-    logger: attachedLogger,
+    // The SDK's retry loop logs identical lines every few seconds during an
+    // outage; collapsed so they don't crowd out the exportable log store.
+    logger: repeatCollapsingLogger('PowerSync'),
   );
   await db.initialize();
   await _createRawTables(db);
