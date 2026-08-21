@@ -57,8 +57,7 @@ jobs:
           n=0; until xcrun simctl bootstatus "$SIMULATOR" -b || [ $n -ge 60 ]; do sleep 1; n=$((n+1)); done
 
       - name: Generate screenshots
-        run: |
-          flutter drive --driver=test_driver/screenshot_driver.dart --target=integration_test/make_screenshots_test.dart --dart-define=DEVICE_TYPE=${{ matrix.device.device_type }} -d "$SIMULATOR"
+        run: .github/scripts/take-screenshots.sh ${{ matrix.device.device_type }} -d "$SIMULATOR"
 
       - name: Upload screenshots
         uses: actions/upload-artifact@v7
@@ -159,8 +158,8 @@ jobs:
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
           pre-emulator-launch-script: .github/scripts/portrait-avd.sh
-          script: |
-            flutter drive --driver=test_driver/screenshot_driver.dart --target=integration_test/make_screenshots_test.dart --dart-define=DEVICE_TYPE=${{ matrix.device.device_type }}
+          # The action runs every line of this as its own sh -c, so no loops here
+          script: .github/scripts/take-screenshots.sh ${{ matrix.device.device_type }}
 
       - name: Upload screenshots
         uses: actions/upload-artifact@v7

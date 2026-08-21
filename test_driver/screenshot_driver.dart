@@ -25,9 +25,8 @@ import 'package:image/image.dart' as img;
 import 'package:integration_test/integration_test_driver_extended.dart';
 
 // cf. https://dev.to/mjablecnik/take-screenshot-during-flutter-integration-tests-435k
-// Errors are deliberately not caught here. The screenshots are handed over in
-// one go once the tests are through, and when that fails the run produces no
-// images at all. Swallowing it would leave a green job with an empty artifact.
+// Errors stay uncaught: a failed hand-over means no images at all, and
+// swallowing it would leave a green job with an empty artifact.
 Future<void> main() async {
   await integrationDriver(
     onScreenshot: (String screenshotName, List<int> screenshotBytes, [_]) async {

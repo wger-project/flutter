@@ -26,13 +26,7 @@ the workflow installs its own before creating the AVD.
 
 For the Apple device types just install the matching simulator in Xcode.
 
-## 2. Pick the languages
-
-The `languages` list in `make_screenshots_test.dart` decides what gets written.
-Comment out everything but the language you are working on while trying things
-out, and put the list back for a real run.
-
-## 3. Boot one device and run the driver
+## 2. Boot one device and run the driver
 
 Start the emulator or simulator for the device type you want, then:
 
@@ -40,12 +34,19 @@ Start the emulator or simulator for the device type you want, then:
 flutter drive \
     --driver=test_driver/screenshot_driver.dart \
     --target=integration_test/make_screenshots_test.dart \
-    --dart-define=DEVICE_TYPE=androidPhone
+    --dart-define=DEVICE_TYPE=androidPhone \
+    --dart-define=LANGUAGES=de-DE
 ```
 
-Add `-d <device id>` if more than one device is attached, `flutter devices`
-lists them. The images land in `fastlane/metadata/`, `git status` shows what
-changed.
+`LANGUAGES` takes a comma separated subset, or `2/5` for the second of five
+equal blocks. Leave it out for all of them. Add `-d <device id>` if more than
+one device is attached, `flutter devices` lists them. The images land in
+`fastlane/metadata/`, `git status` shows what changed.
+
+A run keeps every screenshot in memory on the device and hands the lot over to
+the driver once the tests are through. Over all 25 languages that is upwards of
+70MB of JSON, and when the app loses its VM service under it the run ends with
+no images at all, so the workflow walks the list in blocks of five.
 
 ## In CI
 
@@ -55,10 +56,9 @@ so the setup above is only needed locally.
 
 ## Troubleshooting
 
-If you get errors or the screenshots are not written to disk, comment out some
-of the languages. It seems if too many are processed at once, sometimes the
-process disappears and no images are written. Doing this in smaller steps works
-fine.
+If a run ends with `DriverError: ... Service has disappeared` and writes no
+images, it lost the app before it could collect them. Fewer languages per run
+makes that less likely, otherwise just run it again.
 
 See also
 

@@ -88,9 +88,7 @@ Future<void> takeScreenshot(
 
 // Available languages in weblate for the fastlane/metadata/android folder (not necessarily
 // those for which the application is translated)
-const languages = [
-  // Note: it seems if too many languages are processed at once, sometimes the process
-  // disappear and no images are written. Doing this in smaller steps works fine
+const allLanguages = [
   'ar',
   'ca',
   'cs-CZ',
@@ -120,7 +118,31 @@ const languages = [
   'zh-TW',
 ];
 
+/// Languages to generate: `de-DE,en-US`, or `2/5` for the second of five equal
+/// blocks. Empty means all of them, which the hand-over rarely survives.
+const _languagesArg = String.fromEnvironment('LANGUAGES');
+
+List<String> _selectedLanguages() {
+  if (_languagesArg.isEmpty) {
+    return allLanguages;
+  }
+  if (!_languagesArg.contains('/')) {
+    return _languagesArg.split(',').map((language) => language.trim()).toList();
+  }
+
+  final [index, count] = _languagesArg.split('/').map(int.parse).toList();
+  final size = (allLanguages.length / count).ceil();
+  return allLanguages.skip((index - 1) * size).take(size).toList();
+}
+
+final languages = _selectedLanguages();
+
 void main() {
+  final unknown = languages.where((language) => !allLanguages.contains(language)).toList();
+  if (unknown.isNotEmpty) {
+    throw ArgumentError('Not in allLanguages: ${unknown.join(', ')}');
+  }
+
   final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   binding.framePolicy = LiveTestWidgetsFlutterBindingFramePolicy.fullyLive;

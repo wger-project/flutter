@@ -1,14 +1,8 @@
 #!/usr/bin/env bash
 #
-# Turns the AVD panel portrait.
-#
-# The tablet profiles define a landscape panel and rely on
-# hw.initialOrientation to turn it, which the emulator does not do when it runs
-# with -no-window: the same profile that gives 1600x2560 on a desktop produced
-# 2560x1600 in CI. Swapping the panel itself takes the rotation out of it.
-#
-# Runs as the pre-emulator-launch-script of android-emulator-runner, after the
-# AVD is created and before the emulator starts.
+# Turns the AVD panel portrait, as the pre-emulator-launch-script of
+# android-emulator-runner. The tablet panels are landscape and rely on
+# hw.initialOrientation, which the emulator ignores with -no-window.
 
 set -euo pipefail
 
