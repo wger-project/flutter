@@ -107,15 +107,16 @@ Future<PowerSyncDatabase> powerSyncInstance(Ref ref) async {
   // Gated on the network adapter only, never on the reachability probe: a
   // probe failure is an indication, an unreachable backend is PowerSync's own
   // retry loop to handle (the connector throttles its log output while the
-  // backend does not answer). Reconnecting while already connected is safe and
-  // doubles as the "retry now" signal when the adapter comes back.
+  // backend does not answer).
   void syncConnection(bool hasAdapter) {
     if (hasAdapter) {
       final serverUrl = ref.read(wgerBaseProvider).serverUrl;
-      if (serverUrl != null) {
-        connectPowerSync(db, serverUrl, client, watchdog, reason: 'network adapter available');
-      } else {
+      if (serverUrl == null) {
         _logger.info('Network adapter available, but no server configured: not connecting');
+      } else if (skipAdapterReconnect(db.currentStatus)) {
+        _logger.fine('Sync already connected, skipping reconnect');
+      } else {
+        connectPowerSync(db, serverUrl, client, watchdog, reason: 'network adapter available');
       }
     } else {
       _logger.info('No network adapter, disconnecting from the sync service');
@@ -213,6 +214,14 @@ Future<void> _createRawTables(PowerSyncDatabase db) async {
     }
   });
 }
+
+/// Whether an adapter-triggered connect may be skipped: only while the stream
+/// is already up. The SDK's connect() is never a no-op and would abort a
+/// healthy stream; every other state (connecting, error, retry delay) still
+/// reconnects, which doubles as the "retry now" signal when the adapter comes
+/// back. Deliberate reconnects (login, manual retry) bypass this guard.
+@visibleForTesting
+bool skipAdapterReconnect(SyncStatus status) => status.connected;
 
 /// Creates a fresh [DjangoConnector] for [baseUrl] and connects [db] to it.
 /// Used both at initial creation and after a logout/login cycle to pick up
