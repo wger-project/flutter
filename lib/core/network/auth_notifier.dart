@@ -1012,6 +1012,7 @@ class AuthNotifier extends _$AuthNotifier {
         serverUrl,
         ref.read(authenticatedHttpClientProvider),
         ref.read(syncWatchdogProvider),
+        reason: 'login completed',
       );
     } catch (e, s) {
       _logger.warning('PowerSync reconnect failed', e, s);

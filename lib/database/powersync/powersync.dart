@@ -113,8 +113,7 @@ Future<PowerSyncDatabase> powerSyncInstance(Ref ref) async {
     if (hasAdapter) {
       final serverUrl = ref.read(wgerBaseProvider).serverUrl;
       if (serverUrl != null) {
-        _logger.info('Network adapter available, connecting to the sync service');
-        connectPowerSync(db, serverUrl, client, watchdog);
+        connectPowerSync(db, serverUrl, client, watchdog, reason: 'network adapter available');
       } else {
         _logger.info('Network adapter available, but no server configured: not connecting');
       }
@@ -221,12 +220,16 @@ Future<void> _createRawTables(PowerSyncDatabase db) async {
 /// HTTP client (see [authenticatedHttpClientProvider]); the connector reuses
 /// it for its REST calls so the same `Authorization` injection and
 /// pre-emptive refresh apply.
+///
+/// [reason] just names the trigger in the log
 void connectPowerSync(
   PowerSyncDatabase db,
   String baseUrl,
   http.Client client,
-  SyncStreamWatchdog watchdog,
-) {
+  SyncStreamWatchdog watchdog, {
+  required String reason,
+}) {
+  _logger.info('Connecting to the sync service ($reason)');
   db.connect(
     connector: DjangoConnector(
       baseUrl: baseUrl,

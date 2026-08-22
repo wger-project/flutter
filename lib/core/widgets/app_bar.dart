@@ -96,6 +96,7 @@ class MainAppBar extends ConsumerWidget implements PreferredSizeWidget {
                           url,
                           ref.read(authenticatedHttpClientProvider),
                           watchdog,
+                          reason: 'manual retry',
                         );
                       },
               ),
