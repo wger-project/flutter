@@ -1120,6 +1120,7 @@
     "carbohydratesSugar": "Azúcar (carbohidratos)",
     "aboutViewDocsTitle": "Abrir la documentación",
     "aboutViewLicensesTitle": "Ver licencias",
+    "aboutPrivacyPolicyTitle": "Términos y política de privacidad",
     "enterMaxCharacters": "Introduce como máximo {max} caracteres",
     "powerSyncUnreachableTitle": "Servicio de sincronización no disponible",
     "powerSyncUnreachableContent": "Tu servidor de wger es accesible, pero el servicio (independiente) que gestiona la sincronización sin conexión no responde. Si alojas wger por tu cuenta, revisa tu configuración y asegúrate de que el servicio PowerSync funcione correctamente.",

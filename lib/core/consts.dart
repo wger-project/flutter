@@ -195,6 +195,11 @@ const WEBLATE_URL = 'https://hosted.weblate.org/engage/wger';
 const BUY_ME_A_COFFEE_URL = 'https://buymeacoffee.com/wger';
 const LIBERAPAY_URL = 'https://liberapay.com/wger';
 
+/// Terms of service and privacy policy, served by every instance. What it says
+/// is up to whoever runs the server, upstream ships a placeholder. The Health
+/// Connect entry points in MainActivity.kt use wger.de's copy of this page.
+const TERMS_OF_SERVICE_PATH = 'software/terms-of-service';
+
 /// Factor to multiply / divide in the charts when converting dates to milliseconds
 /// from epoch since fl_charts does not support real time series charts and using
 /// the milliseconds themselves can cause the application to crash since it runs

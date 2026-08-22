@@ -1086,6 +1086,7 @@
     "carbohydratesSugar": "Zucker (Kohlenhydrate)",
     "aboutViewDocsTitle": "Dokumentation öffnen",
     "aboutViewLicensesTitle": "Lizenzen anzeigen",
+    "aboutPrivacyPolicyTitle": "Nutzungsbedingungen und Datenschutz",
     "powerSyncUnreachableTitle": "Sync-Dienst nicht erreichbar",
     "powerSyncUnreachableContent": "Dein wger-Server ist erreichbar, aber der (separate) Dienst für die Offline-Synchronisierung antwortet nicht. Wenn du wger selbst hostest, überprüfe deine Konfiguration und stelle sicher, dass der PowerSync-Dienst korrekt läuft.",
     "serverUnreachableRetry": "Erneut versuchen",
