@@ -27,6 +27,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:powersync/powersync.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:stream_transform/stream_transform.dart';
+import 'package:wger/core/http_overrides.dart';
 import 'package:wger/core/logs.dart';
 import 'package:wger/core/network/auth_http_client.dart';
 import 'package:wger/core/network/network_provider.dart';
@@ -232,10 +233,21 @@ void connectPowerSync(
       apiClient: ApiClient(baseUrl, client: client),
       client: client,
     ),
+    options: syncOptionsFor(baseUrl),
   );
   // A connect that never starts the sync client emits no status event, so
   // arming the watchdog is inseparable from requesting the connection.
   watchdog.onConnectRequested();
+}
+
+/// Sync options carrying the self-signed cert exemption for [baseUrl], or
+/// null when there is none. The stream downloads in a separate isolate whose
+/// HTTP client does not see HttpOverrides.global, so it travels explicitly.
+SyncOptions? syncOptionsFor(String baseUrl) {
+  final exemptHost = kIsWeb ? null : WgerHttpOverrides.exemptHost(baseUrl);
+  return exemptHost == null
+      ? null
+      : SyncOptions(httpClient: WgerHttpOverrides.syncHttpClientFactory(exemptHost));
 }
 
 /// Number of local changes still waiting in the upload queue. Emits again

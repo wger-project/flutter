@@ -19,6 +19,7 @@
 import 'package:drift/drift.dart' show DriftSqlType, Table, TableInfo;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:wger/core/http_overrides.dart';
 import 'package:wger/database/powersync/database.dart';
 import 'package:wger/database/powersync/powersync.dart';
 import 'package:wger/powersync/schema.dart';
@@ -95,5 +96,23 @@ void main() {
         );
       }
     }
+  });
+
+  group('syncOptionsFor', () {
+    tearDown(() {
+      WgerHttpOverrides.allowSelfSignedCerts = false;
+      WgerHttpOverrides.trustedHost = null;
+    });
+
+    test('hands the sync isolate a client factory while the server cert is exempt', () {
+      WgerHttpOverrides.allowSelfSignedCerts = true;
+      WgerHttpOverrides.trustServer('https://gym.example.com');
+
+      expect(syncOptionsFor('https://gym.example.com')?.httpClient, isNotNull);
+    });
+
+    test('is null without an exemption', () {
+      expect(syncOptionsFor('https://gym.example.com'), isNull);
+    });
   });
 }

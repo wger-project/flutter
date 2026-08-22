@@ -19,6 +19,8 @@
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/io_client.dart';
 import 'package:wger/core/consts.dart';
 
 /// [HttpOverrides] that accepts a self-signed / otherwise invalid TLS
@@ -81,6 +83,20 @@ class WgerHttpOverrides extends HttpOverrides {
     final host = _hostOf(serverUrl);
     return (host != null && _accepts(host)) ? host : null;
   }
+
+  /// Accepts an invalid certificate only from [exemptHost]. Unlike
+  /// [acceptsBadCertificate] this reads no statics, so it also decides
+  /// correctly in isolates where they were never set.
+  static bool Function(X509Certificate, String, int) acceptsBadCertificateFrom(
+    String exemptHost,
+  ) =>
+      (cert, host, port) => host == exemptHost;
+
+  /// Client factory for PowerSync's sync isolate (`SyncOptions.httpClient`),
+  /// which never sees [HttpOverrides.global]. The closure captures only the
+  /// host string, so it can be sent across the isolate port.
+  static http.Client Function() syncHttpClientFactory(String exemptHost) =>
+      () => IOClient(HttpClient()..badCertificateCallback = acceptsBadCertificateFrom(exemptHost));
 
   @override
   HttpClient createHttpClient(SecurityContext? context) {
