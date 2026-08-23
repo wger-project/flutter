@@ -20,7 +20,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/core/shared_preferences.dart';
-import 'package:wger/features/account/models/user_profile.dart';
 import 'package:wger/features/account/providers/user_profile_repository.dart';
 
 const reportedTimezonePrefKey = 'reportedTimezone';
@@ -77,14 +76,7 @@ class TimezoneSync {
 
       if (current.isEmpty || current == lastReported) {
         _logger.info('Reporting device timezone $detected to the profile');
-        await _repo.editLocalDrift(
-          UserProfile(
-            id: profile.id,
-            weightUnitStr: profile.weightUnitStr,
-            height: profile.height,
-            timeZone: detected,
-          ),
-        );
+        await _repo.updateTimeZoneDrift(profile.id, detected);
         await prefs.setString(reportedTimezonePrefKey, detected);
       }
     } on Exception catch (e) {

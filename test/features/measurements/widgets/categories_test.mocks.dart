@@ -7,11 +7,16 @@ import 'dart:async' as _i3;
 
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:wger/features/account/models/user_profile.dart' as _i8;
-import 'package:wger/features/account/providers/user_profile_repository.dart' as _i7;
-import 'package:wger/features/measurements/models/measurement_bucket.dart' as _i6;
-import 'package:wger/features/measurements/models/measurement_category.dart' as _i4;
-import 'package:wger/features/measurements/models/measurement_entry.dart' as _i5;
-import 'package:wger/features/measurements/providers/measurement_repository.dart' as _i2;
+import 'package:wger/features/account/providers/user_profile_repository.dart'
+    as _i7;
+import 'package:wger/features/measurements/models/measurement_bucket.dart'
+    as _i6;
+import 'package:wger/features/measurements/models/measurement_category.dart'
+    as _i4;
+import 'package:wger/features/measurements/models/measurement_entry.dart'
+    as _i5;
+import 'package:wger/features/measurements/providers/measurement_repository.dart'
+    as _i2;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -31,7 +36,8 @@ import 'package:wger/features/measurements/providers/measurement_repository.dart
 /// A class which mocks [MeasurementRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockMeasurementRepository extends _i1.Mock implements _i2.MeasurementRepository {
+class MockMeasurementRepository extends _i1.Mock
+    implements _i2.MeasurementRepository {
   MockMeasurementRepository() {
     _i1.throwOnMissingStub(this);
   }
@@ -128,7 +134,8 @@ class MockMeasurementRepository extends _i1.Mock implements _i2.MeasurementRepos
               [parentId],
               {#since: since, #level: level, #maxPoints: maxPoints},
             ),
-            returnValue: _i3.Stream<Map<String, List<_i6.MeasurementBucket>>>.empty(),
+            returnValue:
+                _i3.Stream<Map<String, List<_i6.MeasurementBucket>>>.empty(),
           )
           as _i3.Stream<Map<String, List<_i6.MeasurementBucket>>>);
 
@@ -136,7 +143,8 @@ class MockMeasurementRepository extends _i1.Mock implements _i2.MeasurementRepos
   _i3.Stream<Map<String, List<_i6.MeasurementBucket>>> watchDailyBuckets() =>
       (super.noSuchMethod(
             Invocation.method(#watchDailyBuckets, []),
-            returnValue: _i3.Stream<Map<String, List<_i6.MeasurementBucket>>>.empty(),
+            returnValue:
+                _i3.Stream<Map<String, List<_i6.MeasurementBucket>>>.empty(),
           )
           as _i3.Stream<Map<String, List<_i6.MeasurementBucket>>>);
 
@@ -285,7 +293,8 @@ class MockMeasurementRepository extends _i1.Mock implements _i2.MeasurementRepos
 /// A class which mocks [UserProfileRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockUserProfileRepository extends _i1.Mock implements _i7.UserProfileRepository {
+class MockUserProfileRepository extends _i1.Mock
+    implements _i7.UserProfileRepository {
   MockUserProfileRepository() {
     _i1.throwOnMissingStub(this);
   }
@@ -297,6 +306,15 @@ class MockUserProfileRepository extends _i1.Mock implements _i7.UserProfileRepos
             returnValue: _i3.Stream<_i8.UserProfile?>.empty(),
           )
           as _i3.Stream<_i8.UserProfile?>);
+
+  @override
+  _i3.Future<void> updateTimeZoneDrift(int? id, String? timeZone) =>
+      (super.noSuchMethod(
+            Invocation.method(#updateTimeZoneDrift, [id, timeZone]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
 
   @override
   _i3.Future<void> editLocalDrift(_i8.UserProfile? profile) =>

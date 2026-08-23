@@ -45,7 +45,7 @@ void main() {
     SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
     await PreferenceHelper.asyncPref.remove(reportedTimezonePrefKey);
     mockRepo = MockUserProfileRepository();
-    when(mockRepo.editLocalDrift(any)).thenAnswer((_) async {});
+    when(mockRepo.updateTimeZoneDrift(any, any)).thenAnswer((_) async {});
   });
 
   test('fills an empty profile field and remembers the report', () async {
@@ -53,8 +53,7 @@ void main() {
 
     await makeSync().reportIfNeeded();
 
-    final written = verify(mockRepo.editLocalDrift(captureAny)).captured.single as UserProfile;
-    expect(written.timeZone, detected);
+    verify(mockRepo.updateTimeZoneDrift(1, detected)).called(1);
     expect(await PreferenceHelper.asyncPref.getString(reportedTimezonePrefKey), detected);
   });
 
@@ -63,7 +62,7 @@ void main() {
 
     await makeSync().reportIfNeeded();
 
-    verify(mockRepo.editLocalDrift(any)).called(1);
+    verify(mockRepo.updateTimeZoneDrift(1, detected)).called(1);
   });
 
   test('an unchanged zone does not even read the profile', () async {
@@ -72,7 +71,7 @@ void main() {
     await makeSync().reportIfNeeded();
 
     verifyNever(mockRepo.watchDrift());
-    verifyNever(mockRepo.editLocalDrift(any));
+    verifyNever(mockRepo.updateTimeZoneDrift(any, any));
   });
 
   test('follows a device move when the profile still holds our old report', () async {
@@ -81,8 +80,7 @@ void main() {
 
     await makeSync().reportIfNeeded();
 
-    final written = verify(mockRepo.editLocalDrift(captureAny)).captured.single as UserProfile;
-    expect(written.timeZone, detected);
+    verify(mockRepo.updateTimeZoneDrift(1, detected)).called(1);
   });
 
   test('leaves a zone alone that someone else set', () async {
@@ -90,7 +88,7 @@ void main() {
 
     await makeSync().reportIfNeeded();
 
-    verifyNever(mockRepo.editLocalDrift(any));
+    verifyNever(mockRepo.updateTimeZoneDrift(any, any));
     expect(await PreferenceHelper.asyncPref.getString(reportedTimezonePrefKey), null);
   });
 
@@ -99,7 +97,7 @@ void main() {
 
     await makeSync().reportIfNeeded();
 
-    verifyNever(mockRepo.editLocalDrift(any));
+    verifyNever(mockRepo.updateTimeZoneDrift(any, any));
     expect(await PreferenceHelper.asyncPref.getString(reportedTimezonePrefKey), detected);
   });
 }

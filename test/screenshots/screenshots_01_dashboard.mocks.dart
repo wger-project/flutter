@@ -13,29 +13,39 @@ import 'package:wger/core/language.dart' as _i42;
 import 'package:wger/core/network/base_provider.dart' as _i8;
 import 'package:wger/core/search_options.dart' as _i21;
 import 'package:wger/features/account/models/user_profile.dart' as _i27;
-import 'package:wger/features/account/providers/user_profile_repository.dart' as _i26;
+import 'package:wger/features/account/providers/user_profile_repository.dart'
+    as _i26;
 import 'package:wger/features/exercises/models/category.dart' as _i38;
 import 'package:wger/features/exercises/models/equipment.dart' as _i40;
 import 'package:wger/features/exercises/models/exercise_filters.dart' as _i37;
 import 'package:wger/features/exercises/models/muscle.dart' as _i41;
-import 'package:wger/features/exercises/providers/exercise_repository.dart' as _i36;
-import 'package:wger/features/exercises/providers/exercises_notifier.dart' as _i39;
+import 'package:wger/features/exercises/providers/exercise_repository.dart'
+    as _i36;
+import 'package:wger/features/exercises/providers/exercises_notifier.dart'
+    as _i39;
 import 'package:wger/features/gallery/models/image.dart' as _i2;
-import 'package:wger/features/gallery/providers/gallery_repository.dart' as _i10;
+import 'package:wger/features/gallery/providers/gallery_repository.dart'
+    as _i10;
 import 'package:wger/features/health/models/health_reading.dart' as _i45;
 import 'package:wger/features/health/providers/health_repository.dart' as _i43;
-import 'package:wger/features/measurements/models/measurement_bucket.dart' as _i25;
-import 'package:wger/features/measurements/models/measurement_category.dart' as _i23;
-import 'package:wger/features/measurements/models/measurement_entry.dart' as _i24;
-import 'package:wger/features/measurements/providers/measurement_repository.dart' as _i22;
+import 'package:wger/features/measurements/models/measurement_bucket.dart'
+    as _i25;
+import 'package:wger/features/measurements/models/measurement_category.dart'
+    as _i23;
+import 'package:wger/features/measurements/models/measurement_entry.dart'
+    as _i24;
+import 'package:wger/features/measurements/providers/measurement_repository.dart'
+    as _i22;
 import 'package:wger/features/nutrition/models/ingredient.dart' as _i19;
 import 'package:wger/features/nutrition/models/ingredient_filters.dart' as _i20;
 import 'package:wger/features/nutrition/models/log.dart' as _i17;
 import 'package:wger/features/nutrition/models/meal.dart' as _i15;
 import 'package:wger/features/nutrition/models/meal_item.dart' as _i16;
 import 'package:wger/features/nutrition/models/nutritional_plan.dart' as _i14;
-import 'package:wger/features/nutrition/providers/ingredient_repository.dart' as _i18;
-import 'package:wger/features/nutrition/providers/nutrition_repository.dart' as _i13;
+import 'package:wger/features/nutrition/providers/ingredient_repository.dart'
+    as _i18;
+import 'package:wger/features/nutrition/providers/nutrition_repository.dart'
+    as _i13;
 import 'package:wger/features/routines/models/base_config.dart' as _i7;
 import 'package:wger/features/routines/models/day.dart' as _i4;
 import 'package:wger/features/routines/models/repetition_unit.dart' as _i30;
@@ -44,12 +54,16 @@ import 'package:wger/features/routines/models/session.dart' as _i9;
 import 'package:wger/features/routines/models/slot.dart' as _i5;
 import 'package:wger/features/routines/models/slot_entry.dart' as _i6;
 import 'package:wger/features/routines/models/weight_unit.dart' as _i29;
-import 'package:wger/features/routines/providers/routines_repository.dart' as _i28;
-import 'package:wger/features/routines/providers/workout_session_repository.dart' as _i46;
+import 'package:wger/features/routines/providers/routines_repository.dart'
+    as _i28;
+import 'package:wger/features/routines/providers/workout_session_repository.dart'
+    as _i46;
 import 'package:wger/features/trophies/models/trophy.dart' as _i33;
 import 'package:wger/features/trophies/models/user_trophy.dart' as _i34;
-import 'package:wger/features/trophies/models/user_trophy_progression.dart' as _i35;
-import 'package:wger/features/trophies/providers/trophy_repository.dart' as _i31;
+import 'package:wger/features/trophies/models/user_trophy_progression.dart'
+    as _i35;
+import 'package:wger/features/trophies/providers/trophy_repository.dart'
+    as _i31;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -67,35 +81,43 @@ import 'package:wger/features/trophies/providers/trophy_repository.dart' as _i31
 // ignore_for_file: invalid_use_of_internal_member
 
 class _FakeGalleryImage_0 extends _i1.SmartFake implements _i2.GalleryImage {
-  _FakeGalleryImage_0(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+  _FakeGalleryImage_0(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _FakeRoutine_1 extends _i1.SmartFake implements _i3.Routine {
-  _FakeRoutine_1(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+  _FakeRoutine_1(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _FakeDay_2 extends _i1.SmartFake implements _i4.Day {
-  _FakeDay_2(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+  _FakeDay_2(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _FakeSlot_3 extends _i1.SmartFake implements _i5.Slot {
-  _FakeSlot_3(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+  _FakeSlot_3(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _FakeSlotEntry_4 extends _i1.SmartFake implements _i6.SlotEntry {
-  _FakeSlotEntry_4(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+  _FakeSlotEntry_4(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 class _FakeBaseConfig_5 extends _i1.SmartFake implements _i7.BaseConfig {
-  _FakeBaseConfig_5(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+  _FakeBaseConfig_5(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
-class _FakeWgerBaseProvider_6 extends _i1.SmartFake implements _i8.WgerBaseProvider {
+class _FakeWgerBaseProvider_6 extends _i1.SmartFake
+    implements _i8.WgerBaseProvider {
   _FakeWgerBaseProvider_6(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeWorkoutSession_7 extends _i1.SmartFake implements _i9.WorkoutSession {
+class _FakeWorkoutSession_7 extends _i1.SmartFake
+    implements _i9.WorkoutSession {
   _FakeWorkoutSession_7(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
@@ -165,7 +187,8 @@ class MockGalleryRepository extends _i1.Mock implements _i10.GalleryRepository {
 /// A class which mocks [NutritionRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockNutritionRepository extends _i1.Mock implements _i13.NutritionRepository {
+class MockNutritionRepository extends _i1.Mock
+    implements _i13.NutritionRepository {
   MockNutritionRepository() {
     _i1.throwOnMissingStub(this);
   }
@@ -297,7 +320,8 @@ class MockNutritionRepository extends _i1.Mock implements _i13.NutritionReposito
 /// A class which mocks [IngredientRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockIngredientRepository extends _i1.Mock implements _i18.IngredientRepository {
+class MockIngredientRepository extends _i1.Mock
+    implements _i18.IngredientRepository {
   MockIngredientRepository() {
     _i1.throwOnMissingStub(this);
   }
@@ -421,7 +445,8 @@ class MockIngredientRepository extends _i1.Mock implements _i18.IngredientReposi
 /// A class which mocks [MeasurementRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockMeasurementRepository extends _i1.Mock implements _i22.MeasurementRepository {
+class MockMeasurementRepository extends _i1.Mock
+    implements _i22.MeasurementRepository {
   MockMeasurementRepository() {
     _i1.throwOnMissingStub(this);
   }
@@ -478,7 +503,8 @@ class MockMeasurementRepository extends _i1.Mock implements _i22.MeasurementRepo
   _i11.Stream<Map<String, _i24.MeasurementEntry>> watchLatestEntries() =>
       (super.noSuchMethod(
             Invocation.method(#watchLatestEntries, []),
-            returnValue: _i11.Stream<Map<String, _i24.MeasurementEntry>>.empty(),
+            returnValue:
+                _i11.Stream<Map<String, _i24.MeasurementEntry>>.empty(),
           )
           as _i11.Stream<Map<String, _i24.MeasurementEntry>>);
 
@@ -518,7 +544,8 @@ class MockMeasurementRepository extends _i1.Mock implements _i22.MeasurementRepo
               [parentId],
               {#since: since, #level: level, #maxPoints: maxPoints},
             ),
-            returnValue: _i11.Stream<Map<String, List<_i25.MeasurementBucket>>>.empty(),
+            returnValue:
+                _i11.Stream<Map<String, List<_i25.MeasurementBucket>>>.empty(),
           )
           as _i11.Stream<Map<String, List<_i25.MeasurementBucket>>>);
 
@@ -526,7 +553,8 @@ class MockMeasurementRepository extends _i1.Mock implements _i22.MeasurementRepo
   _i11.Stream<Map<String, List<_i25.MeasurementBucket>>> watchDailyBuckets() =>
       (super.noSuchMethod(
             Invocation.method(#watchDailyBuckets, []),
-            returnValue: _i11.Stream<Map<String, List<_i25.MeasurementBucket>>>.empty(),
+            returnValue:
+                _i11.Stream<Map<String, List<_i25.MeasurementBucket>>>.empty(),
           )
           as _i11.Stream<Map<String, List<_i25.MeasurementBucket>>>);
 
@@ -675,7 +703,8 @@ class MockMeasurementRepository extends _i1.Mock implements _i22.MeasurementRepo
 /// A class which mocks [UserProfileRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockUserProfileRepository extends _i1.Mock implements _i26.UserProfileRepository {
+class MockUserProfileRepository extends _i1.Mock
+    implements _i26.UserProfileRepository {
   MockUserProfileRepository() {
     _i1.throwOnMissingStub(this);
   }
@@ -687,6 +716,15 @@ class MockUserProfileRepository extends _i1.Mock implements _i26.UserProfileRepo
             returnValue: _i11.Stream<_i27.UserProfile?>.empty(),
           )
           as _i11.Stream<_i27.UserProfile?>);
+
+  @override
+  _i11.Future<void> updateTimeZoneDrift(int? id, String? timeZone) =>
+      (super.noSuchMethod(
+            Invocation.method(#updateTimeZoneDrift, [id, timeZone]),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
+          )
+          as _i11.Future<void>);
 
   @override
   _i11.Future<void> editLocalDrift(_i27.UserProfile? profile) =>
@@ -701,7 +739,8 @@ class MockUserProfileRepository extends _i1.Mock implements _i26.UserProfileRepo
 /// A class which mocks [RoutinesRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockRoutinesRepository extends _i1.Mock implements _i28.RoutinesRepository {
+class MockRoutinesRepository extends _i1.Mock
+    implements _i28.RoutinesRepository {
   MockRoutinesRepository() {
     _i1.throwOnMissingStub(this);
   }
@@ -1012,7 +1051,8 @@ class MockTrophyRepository extends _i1.Mock implements _i31.TrophyRepository {
 /// A class which mocks [ExerciseRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockExerciseRepository extends _i1.Mock implements _i36.ExerciseRepository {
+class MockExerciseRepository extends _i1.Mock
+    implements _i36.ExerciseRepository {
   MockExerciseRepository() {
     _i1.throwOnMissingStub(this);
   }
@@ -1195,7 +1235,8 @@ class MockHealthRepository extends _i1.Mock implements _i43.HealthRepository {
 /// A class which mocks [WorkoutSessionRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockWorkoutSessionRepository extends _i1.Mock implements _i46.WorkoutSessionRepository {
+class MockWorkoutSessionRepository extends _i1.Mock
+    implements _i46.WorkoutSessionRepository {
   MockWorkoutSessionRepository() {
     _i1.throwOnMissingStub(this);
   }

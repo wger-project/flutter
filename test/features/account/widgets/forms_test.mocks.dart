@@ -9,7 +9,8 @@ import 'package:mockito/mockito.dart' as _i1;
 import 'package:wger/features/account/models/account.dart' as _i2;
 import 'package:wger/features/account/models/user_profile.dart' as _i5;
 import 'package:wger/features/account/providers/account_repository.dart' as _i6;
-import 'package:wger/features/account/providers/user_profile_repository.dart' as _i3;
+import 'package:wger/features/account/providers/user_profile_repository.dart'
+    as _i3;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -27,13 +28,15 @@ import 'package:wger/features/account/providers/user_profile_repository.dart' as
 // ignore_for_file: invalid_use_of_internal_member
 
 class _FakeAccount_0 extends _i1.SmartFake implements _i2.Account {
-  _FakeAccount_0(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+  _FakeAccount_0(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 /// A class which mocks [UserProfileRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockUserProfileRepository extends _i1.Mock implements _i3.UserProfileRepository {
+class MockUserProfileRepository extends _i1.Mock
+    implements _i3.UserProfileRepository {
   MockUserProfileRepository() {
     _i1.throwOnMissingStub(this);
   }
@@ -45,6 +48,15 @@ class MockUserProfileRepository extends _i1.Mock implements _i3.UserProfileRepos
             returnValue: _i4.Stream<_i5.UserProfile?>.empty(),
           )
           as _i4.Stream<_i5.UserProfile?>);
+
+  @override
+  _i4.Future<void> updateTimeZoneDrift(int? id, String? timeZone) =>
+      (super.noSuchMethod(
+            Invocation.method(#updateTimeZoneDrift, [id, timeZone]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
 
   @override
   _i4.Future<void> editLocalDrift(_i5.UserProfile? profile) =>
