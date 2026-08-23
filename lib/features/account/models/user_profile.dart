@@ -33,7 +33,10 @@ class UserProfile {
   /// Body height in cm, null for a profile that has none
   final int? height;
 
-  UserProfile({required this.id, required this.weightUnitStr, this.height});
+  /// IANA timezone name. Empty or null means no client has reported one.
+  final String? timeZone;
+
+  UserProfile({required this.id, required this.weightUnitStr, this.height, this.timeZone});
 
   bool get isMetric => weightUnitStr == 'kg';
 
@@ -46,6 +49,7 @@ class UserProfile {
       id: drift.Value(id),
       weightUnitStr: drift.Value(weightUnitStr),
       height: drift.Value(height),
+      timeZone: drift.Value(timeZone),
     );
   }
 }

@@ -427,8 +427,19 @@ class $UserProfileTableTable extends UserProfileTable
     type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _timeZoneMeta = const VerificationMeta(
+    'timeZone',
+  );
   @override
-  List<GeneratedColumn> get $columns => [id, weightUnitStr, height];
+  late final GeneratedColumn<String> timeZone = GeneratedColumn<String>(
+    'time_zone',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, weightUnitStr, height, timeZone];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -463,6 +474,12 @@ class $UserProfileTableTable extends UserProfileTable
         height.isAcceptableOrUnknown(data['height']!, _heightMeta),
       );
     }
+    if (data.containsKey('time_zone')) {
+      context.handle(
+        _timeZoneMeta,
+        timeZone.isAcceptableOrUnknown(data['time_zone']!, _timeZoneMeta),
+      );
+    }
     return context;
   }
 
@@ -484,6 +501,10 @@ class $UserProfileTableTable extends UserProfileTable
         DriftSqlType.int,
         data['${effectivePrefix}height'],
       ),
+      timeZone: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}time_zone'],
+      ),
     );
   }
 
@@ -497,17 +518,20 @@ class UserProfileTableCompanion extends UpdateCompanion<UserProfile> {
   final Value<int> id;
   final Value<String> weightUnitStr;
   final Value<int?> height;
+  final Value<String?> timeZone;
   final Value<int> rowid;
   const UserProfileTableCompanion({
     this.id = const Value.absent(),
     this.weightUnitStr = const Value.absent(),
     this.height = const Value.absent(),
+    this.timeZone = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   UserProfileTableCompanion.insert({
     required int id,
     required String weightUnitStr,
     this.height = const Value.absent(),
+    this.timeZone = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        weightUnitStr = Value(weightUnitStr);
@@ -515,12 +539,14 @@ class UserProfileTableCompanion extends UpdateCompanion<UserProfile> {
     Expression<int>? id,
     Expression<String>? weightUnitStr,
     Expression<int>? height,
+    Expression<String>? timeZone,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (weightUnitStr != null) 'weight_unit': weightUnitStr,
       if (height != null) 'height': height,
+      if (timeZone != null) 'time_zone': timeZone,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -529,12 +555,14 @@ class UserProfileTableCompanion extends UpdateCompanion<UserProfile> {
     Value<int>? id,
     Value<String>? weightUnitStr,
     Value<int?>? height,
+    Value<String?>? timeZone,
     Value<int>? rowid,
   }) {
     return UserProfileTableCompanion(
       id: id ?? this.id,
       weightUnitStr: weightUnitStr ?? this.weightUnitStr,
       height: height ?? this.height,
+      timeZone: timeZone ?? this.timeZone,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -551,6 +579,9 @@ class UserProfileTableCompanion extends UpdateCompanion<UserProfile> {
     if (height.present) {
       map['height'] = Variable<int>(height.value);
     }
+    if (timeZone.present) {
+      map['time_zone'] = Variable<String>(timeZone.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -563,6 +594,7 @@ class UserProfileTableCompanion extends UpdateCompanion<UserProfile> {
           ..write('id: $id, ')
           ..write('weightUnitStr: $weightUnitStr, ')
           ..write('height: $height, ')
+          ..write('timeZone: $timeZone, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -11005,6 +11037,7 @@ typedef $$UserProfileTableTableCreateCompanionBuilder =
       required int id,
       required String weightUnitStr,
       Value<int?> height,
+      Value<String?> timeZone,
       Value<int> rowid,
     });
 typedef $$UserProfileTableTableUpdateCompanionBuilder =
@@ -11012,6 +11045,7 @@ typedef $$UserProfileTableTableUpdateCompanionBuilder =
       Value<int> id,
       Value<String> weightUnitStr,
       Value<int?> height,
+      Value<String?> timeZone,
       Value<int> rowid,
     });
 
@@ -11036,6 +11070,11 @@ class $$UserProfileTableTableFilterComposer
 
   ColumnFilters<int> get height => $composableBuilder(
     column: $table.height,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get timeZone => $composableBuilder(
+    column: $table.timeZone,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -11063,6 +11102,11 @@ class $$UserProfileTableTableOrderingComposer
     column: $table.height,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get timeZone => $composableBuilder(
+    column: $table.timeZone,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$UserProfileTableTableAnnotationComposer
@@ -11083,6 +11127,9 @@ class $$UserProfileTableTableAnnotationComposer
 
   GeneratedColumn<int> get height =>
       $composableBuilder(column: $table.height, builder: (column) => column);
+
+  GeneratedColumn<String> get timeZone =>
+      $composableBuilder(column: $table.timeZone, builder: (column) => column);
 }
 
 class $$UserProfileTableTableTableManager
@@ -11121,11 +11168,13 @@ class $$UserProfileTableTableTableManager
                 Value<int> id = const Value.absent(),
                 Value<String> weightUnitStr = const Value.absent(),
                 Value<int?> height = const Value.absent(),
+                Value<String?> timeZone = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => UserProfileTableCompanion(
                 id: id,
                 weightUnitStr: weightUnitStr,
                 height: height,
+                timeZone: timeZone,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -11133,11 +11182,13 @@ class $$UserProfileTableTableTableManager
                 required int id,
                 required String weightUnitStr,
                 Value<int?> height = const Value.absent(),
+                Value<String?> timeZone = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => UserProfileTableCompanion.insert(
                 id: id,
                 weightUnitStr: weightUnitStr,
                 height: height,
+                timeZone: timeZone,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) =>

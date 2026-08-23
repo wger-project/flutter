@@ -82,6 +82,7 @@ dependencies:
   state_notifier: ^1.0.0
   connectivity_plus: ^7.3.1
   powersync: ^2.3.3
+  flutter_timezone: ^5.1.0
 
 dependency_overrides:
   # health -> device_info_plus ^12.1.0 pins win32 5.x, which conflicts with

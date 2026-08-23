@@ -21,6 +21,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:wger/core/dashboard.dart';
 import 'package:wger/core/material.dart';
+import 'package:wger/features/account/providers/timezone_sync.dart';
 import 'package:wger/features/gallery/screens/gallery_screen.dart';
 import 'package:wger/features/health/providers/health_sync.dart';
 import 'package:wger/features/measurements/screens/measurement_categories_screen.dart';
@@ -54,6 +55,10 @@ class _HomeTabsScreenState extends ConsumerState<HomeTabsScreen>
         return;
       }
       ref.read(healthSyncProvider.notifier).syncIfDue();
+
+      // Report the device timezone to the profile, so the server calculates
+      // streaks and trophies in the user's own zone. A no-op when unchanged.
+      ref.read(timezoneSyncProvider).reportIfNeeded();
     });
   }
 
