@@ -43,6 +43,7 @@ import 'package:wger/core/network/server_gating.dart';
 import 'package:wger/core/shared_preferences.dart';
 import 'package:wger/database/powersync/powersync.dart';
 import 'package:wger/features/account/providers/account_notifier.dart';
+import 'package:wger/features/account/providers/timezone_sync.dart';
 import 'package:wger/features/account/providers/user_profile_notifier.dart';
 import 'package:wger/features/gallery/providers/gallery_notifier.dart';
 import 'package:wger/features/nutrition/providers/nutrition_notifier.dart';
@@ -761,6 +762,16 @@ class AuthNotifier extends _$AuthNotifier {
       'rotated refresh token: ${newRefresh != null}',
     );
 
+    // A logout, user switch or server change while the request was in flight
+    // ended the session this result belongs to; persisting it would replant
+    // the tokens into the freshly cleared storage and republish the session
+    final latest = _currentOrBlank();
+    if (latest.serverUrl != serverUrl ||
+        latest.credential?.accessToken != current.credential?.accessToken) {
+      _logger.warning('refreshAccessToken: session changed while refreshing, discarding result');
+      return;
+    }
+
     final newCred = JwtCredential(accessToken: newAccess, expiresAt: newExp);
     await _storage.updateJwt(credential: newCred, refreshToken: newRefresh);
     state = AsyncData(current.copyWith(credential: newCred));
@@ -863,14 +874,20 @@ class AuthNotifier extends _$AuthNotifier {
         _logger.severe('local DB wipe via disconnectAndClear failed', e, s);
         rethrow;
       }
-      return;
+    } else {
+      try {
+        await deletePowerSyncDatabaseFile();
+      } catch (e, s) {
+        _logger.severe('local DB wipe via file delete failed', e, s);
+        rethrow;
+      }
     }
-    try {
-      await deletePowerSyncDatabaseFile();
-    } catch (e, s) {
-      _logger.severe('local DB wipe via file delete failed', e, s);
-      rethrow;
-    }
+
+    // The account-scoped preferences leave with the data: the next account
+    // must not inherit the health-sync opt-in and watermarks, nor a timezone
+    // marker that would let the sync overwrite its chosen zone
+    await PreferenceHelper.instance.clearHealthSyncPreferences();
+    await PreferenceHelper.asyncPref.remove(reportedTimezonePrefKey);
   }
 
   /// Reconnects an already-built PowerSync DB with a fresh connector for the

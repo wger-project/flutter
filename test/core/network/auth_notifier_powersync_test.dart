@@ -891,6 +891,43 @@ void main() {
       expect(headers['accept'], 'application/json');
     });
 
+    test('a refresh completing after the session ended is discarded', () async {
+      // The result belongs to the session that started the request: writing
+      // it would replant the tokens into the cleared storage and republish
+      // the logged-in state
+      await seedHeadlessBundle();
+      when(mockSecureStorage.readRefreshToken()).thenAnswer((_) async => 'old-refresh');
+
+      final gate = Completer<Response>();
+      when(
+        mockClient.post(tRefresh, headers: anyNamed('headers'), body: anyNamed('body')),
+      ).thenAnswer((_) => gate.future);
+
+      final container = makeContainer();
+      await container.read(authProvider.future);
+      final notifier = container.read(authProvider.notifier);
+
+      final refresh = notifier.refreshAccessToken();
+      await pumpEventQueue();
+      await notifier.clearSessionOnly();
+
+      final newAccess = makeJwt({'exp': 1900000000});
+      gate.complete(
+        Response(
+          jsonEncode({
+            'status': 200,
+            'data': {'access_token': newAccess, 'refresh_token': 'new-refresh'},
+            'meta': {'is_authenticated': true},
+          }),
+          200,
+        ),
+      );
+      await refresh;
+
+      expect(container.read(authProvider).value!.isAuth, isFalse);
+      verifyNever(mockSecureStorage.writeRefreshToken(any));
+    });
+
     test('clearSessionOnly keeps the DB-owner marker (the local DB is preserved)', () async {
       // An involuntary clear keeps the local DB on disk, so its owner marker
       // must survive too: it is what lets a *different* user signing in later

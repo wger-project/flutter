@@ -37,6 +37,7 @@ import 'package:wger/core/shared_preferences.dart';
 import 'package:wger/features/account/models/account.dart';
 import 'package:wger/features/account/providers/account_notifier.dart';
 import 'package:wger/features/account/providers/account_repository.dart';
+import 'package:wger/features/account/providers/timezone_sync.dart';
 
 import '../../helpers/fake_auth_environment.dart';
 import 'auth_notifier_login_test.mocks.dart';
@@ -393,6 +394,23 @@ void main() {
       // And ownership is now claimed for the new user so a future re-login
       // can detect the next switch.
       expect(await PreferenceHelper.asyncPref.getString(PREFS_DB_OWNER_USER_ID), '7');
+    });
+
+    test('a user switch drops the previous account-scoped preferences', () async {
+      // Health opt-in, watermarks and the timezone-report marker describe the
+      // previous account: inherited, they would import health data without an
+      // opt-in and let the sync overwrite the new user's chosen zone
+      await PreferenceHelper.asyncPref.setString(PREFS_DB_OWNER_USER_ID, '5');
+      await PreferenceHelper.instance.setHealthSyncEnabled(true);
+      await PreferenceHelper.asyncPref.setString(reportedTimezonePrefKey, 'Pacific/Auckland');
+      stubLoginSuccess(makeJwt({'sub': '7', 'exp': 1900000000}));
+
+      final container = makeContainer();
+      await container.read(authProvider.future);
+      await container.read(authProvider.notifier).login(username, password, serverUrl, null);
+
+      expect(await PreferenceHelper.instance.getHealthSyncEnabled(), isFalse);
+      expect(await PreferenceHelper.asyncPref.getString(reportedTimezonePrefKey), isNull);
     });
 
     test('same user logging back in keeps the local DB', () async {
