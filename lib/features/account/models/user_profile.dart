@@ -44,12 +44,14 @@ class UserProfile {
   int get defaultWeightUnitId => isMetric ? WEIGHT_UNIT_KG : WEIGHT_UNIT_LB;
 
   /// Drift companion for local UPDATE writes routed through PowerSync.
+  ///
+  /// Only the columns the profile form edits: the timezone column belongs to
+  /// TimezoneSync, and a full write would clear what another client reported.
   UserProfileTableCompanion toCompanion() {
     return UserProfileTableCompanion(
       id: drift.Value(id),
       weightUnitStr: drift.Value(weightUnitStr),
       height: drift.Value(height),
-      timeZone: drift.Value(timeZone),
     );
   }
 }

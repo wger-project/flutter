@@ -114,6 +114,18 @@ void main() {
       expect(row.height, 178);
     });
 
+    test('leaves the reported timezone alone', () async {
+      // The column belongs to TimezoneSync; the server rejects it as null,
+      // taking the rest of the profile write down with it
+      await seed();
+      await repo.updateTimeZoneDrift(1, 'Pacific/Auckland');
+
+      await repo.editLocalDrift(UserProfile(id: 1, weightUnitStr: 'lb'));
+
+      final row = await db.select(db.userProfileTable).getSingle();
+      expect(row.timeZone, 'Pacific/Auckland');
+    });
+
     test('clears the height when the profile has none', () async {
       // The server allows a profile without one, so an emptied field has to
       // reach the column as NULL rather than leaving the old value standing
