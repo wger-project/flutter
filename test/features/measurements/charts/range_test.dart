@@ -39,6 +39,13 @@ void main() {
       expect(DateTime(now.year, now.month, now.day - 6), count);
     });
 
+    test('the cutoff sits at the same midnight as the count cutoff', () {
+      // Chart filter and count queries have to agree on the calendar days a
+      // range covers, and the day buckets they compare against sit at midnight
+      expect(ChartRange.lastWeek.cutoff, ChartRange.lastWeek.countCutoff);
+      expect(ChartRange.lastMonth.cutoff, ChartRange.lastMonth.countCutoff);
+    });
+
     test('the read cutoff leaves room for the widest average window', () {
       // 30 days of range plus the 30-day window the category may be set to
       final read = ChartRange.lastMonth.readCutoff!;

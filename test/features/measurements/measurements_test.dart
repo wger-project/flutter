@@ -4,6 +4,34 @@ import 'package:wger/features/measurements/charts/series.dart';
 import 'package:wger/features/measurements/measurements.dart';
 
 void main() {
+  group('whereDate', () {
+    MeasurementChartEntry entry(num value, DateTime date) => MeasurementChartEntry(value, date);
+
+    test('keeps a point sitting exactly on the start bound', () {
+      // Day buckets and the range cutoff both sit at midnight, so the oldest
+      // day of a range lands exactly on the bound
+      final entries = [
+        entry(10, DateTime(2023, 1, 1)),
+        entry(20, DateTime(2023, 1, 2, 14)),
+      ];
+
+      final result = entries.whereDate(DateTime(2023, 1, 1), null);
+
+      expect(result.map((e) => e.value), [10, 20]);
+    });
+
+    test('the end stays exclusive', () {
+      final entries = [
+        entry(10, DateTime(2023, 1, 1)),
+        entry(20, DateTime(2023, 1, 2)),
+      ];
+
+      final result = entries.whereDate(DateTime(2023, 1, 1), DateTime(2023, 1, 2));
+
+      expect(result.map((e) => e.value), [10]);
+    });
+  });
+
   group('whereDateWithInterpolation', () {
     // Helper to create entries
     MeasurementChartEntry entry(num value, DateTime date) => MeasurementChartEntry(value, date);

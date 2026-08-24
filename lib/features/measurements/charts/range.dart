@@ -37,8 +37,16 @@ enum ChartRange {
 
   final int? _days;
 
-  /// Oldest date still shown, null for the full history.
-  DateTime? get cutoff => _days == null ? null : DateTime.now().subtract(Duration(days: _days));
+  /// Oldest date still shown, at midnight so the window covers whole calendar
+  /// days like [countCutoff] does, null for the full history.
+  DateTime? get cutoff {
+    final days = _days;
+    if (days == null) {
+      return null;
+    }
+    final from = DateTime.now().subtract(Duration(days: days));
+    return DateTime(from.year, from.month, from.day);
+  }
 
   /// Days read beyond [cutoff], so the moving average of the first days in
   /// range averages the days before them instead of starting over at the

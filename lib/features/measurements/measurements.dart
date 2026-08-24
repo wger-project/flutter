@@ -22,7 +22,9 @@ import 'package:wger/features/measurements/charts/series.dart';
 
 extension MeasurementChartEntryListExtensions on List<MeasurementChartEntry> {
   List<MeasurementChartEntry> whereDate(DateTime start, DateTime? end) {
-    return where((e) => e.date.isAfter(start) && (end == null || e.date.isBefore(end))).toList();
+    // Inclusive at the start: day buckets sit exactly at midnight, and the
+    // range cutoff is one too
+    return where((e) => !e.date.isBefore(start) && (end == null || e.date.isBefore(end))).toList();
   }
 
   // assures values on the start (and optionally end) dates exist, by interpolating if needed
