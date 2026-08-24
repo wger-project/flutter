@@ -243,6 +243,27 @@ void main() {
     });
   });
 
+  group('updateLocalDriftCategory', () {
+    test('leaves the metric type column untouched', () async {
+      // A type added after this app version reads as custom; writing that
+      // narrowed value back would queue a change the server refuses
+      await db.customStatement(
+        'INSERT INTO measurements_category (id, name, unit, metric_type) '
+        "VALUES ('future', 'Vo2max', 'ml', 'vo2_max')",
+      );
+      final category = (await repo.watchAllWithoutEntries().first).single;
+      expect(category.metricType, MetricType.custom);
+
+      await repo.updateLocalDriftCategory(category.copyWith(name: 'VO2 max'));
+
+      final row = await db
+          .customSelect("SELECT name, metric_type FROM measurements_category WHERE id = 'future'")
+          .getSingle();
+      expect(row.read<String>('name'), 'VO2 max');
+      expect(row.read<String>('metric_type'), 'vo2_max');
+    });
+  });
+
   group('the import dedup queries', () {
     /// An entry of ['1'], keyed by [externalId] unless it is null.
     Future<void> seedEntry(String id, {String? externalId, double value = 1}) => repo.addLocalDrift(

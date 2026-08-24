@@ -562,7 +562,10 @@ class MeasurementRepository {
   Future<void> updateLocalDriftCategory(MeasurementCategory category) async {
     _logger.finer('Updating local measurement category ${category.id}');
     final stmt = _db.update(_db.measurementCategoryTable)..where((t) => t.id.equals(category.id!));
-    await stmt.write(category.toCompanion());
+    // metric_type stays untouched: it is identity and the server refuses a
+    // change, while a type this app version does not know reads as custom,
+    // so writing it back would queue exactly that refused change
+    await stmt.write(category.toCompanion().copyWith(metricType: const Value.absent()));
   }
 
   Future<void> addLocalDriftCategory(MeasurementCategory category) async {
