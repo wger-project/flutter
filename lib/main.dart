@@ -24,6 +24,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
+import 'package:timezone/data/latest.dart' as tzdata;
 import 'package:wger/core/app_link_router.dart';
 import 'package:wger/core/app_settings_notifier.dart';
 import 'package:wger/core/consts.dart';
@@ -112,6 +113,9 @@ void main() async {
 
   // Logger
   _setupLogging();
+
+  // Timezone database, needed to cut calendar days in the profile zone
+  tzdata.initializeTimeZones();
 
   final logger = Logger('main');
 

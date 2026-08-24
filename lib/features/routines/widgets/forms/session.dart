@@ -87,10 +87,14 @@ class _SessionFormState extends ConsumerState<SessionForm> {
   }
 
   /// Anchors a picked time on the day the session belongs to
+  ///
+  /// Deliberately the device-zone day: the pickers show and edit device wall
+  /// clock, so the anchor has to be cut in the same zone or an edit could
+  /// move the session by a day
   DateTime _onSessionDay(TimeOfDay time) {
-    final day = _draft.localDay;
+    final start = _draft.datetimeStart.toLocal();
 
-    return DateTime(day.year, day.month, day.day, time.hour, time.minute);
+    return DateTime(start.year, start.month, start.day, time.hour, time.minute);
   }
 
   /// Same, but an end before the start means the session ran past midnight

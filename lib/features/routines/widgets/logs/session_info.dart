@@ -25,7 +25,10 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 class SessionInfo extends StatefulWidget {
   final WorkoutSession _session;
 
-  const SessionInfo(this._session);
+  /// The owner's IANA zone for the day header, null falls back to the device
+  final String? _ownerZone;
+
+  const SessionInfo(this._session, this._ownerZone);
 
   @override
   State<SessionInfo> createState() => _SessionInfoState();
@@ -47,7 +50,7 @@ class _SessionInfoState extends State<SessionInfo> {
               style: Theme.of(context).textTheme.headlineSmall,
             ),
             subtitle: Text(
-              localizedDate(context).format(widget._session.localDay),
+              localizedDate(context).format(widget._session.localDayIn(widget._ownerZone)),
             ),
             onTap: () => setState(() => editMode = !editMode),
             trailing: Icon(editMode ? Icons.edit_off : Icons.edit),

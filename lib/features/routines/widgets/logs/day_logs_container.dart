@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/core/date.dart';
+import 'package:wger/features/account/providers/user_profile_notifier.dart';
 import 'package:wger/features/routines/models/routine.dart';
 import 'package:wger/features/routines/models/session.dart';
 import 'package:wger/features/trophies/providers/trophy_notifier.dart';
@@ -41,8 +42,10 @@ class DayLogWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // A day can hold more than one session, e.g. a morning and an evening
     // workout, and each of them is shown with its own logs
-    final sessions = _routine.sessions.where((s) => s.localDay.isSameDayAs(_date)).toList()
-      ..sort((a, b) => a.datetimeStart.compareTo(b.datetimeStart));
+    final ownerZone = ref.watch(ownerTimeZoneProvider);
+    final sessions =
+        _routine.sessions.where((s) => s.localDayIn(ownerZone).isSameDayAs(_date)).toList()
+          ..sort((a, b) => a.datetimeStart.compareTo(b.datetimeStart));
 
     return Column(
       spacing: 10,
@@ -72,7 +75,7 @@ class SessionLogWidget extends ConsumerWidget {
     return Column(
       spacing: 10,
       children: [
-        Card(child: SessionInfo(_session)),
+        Card(child: SessionInfo(_session, ref.watch(ownerTimeZoneProvider))),
         if (prTrophies.isNotEmpty)
           SizedBox(
             width: double.infinity,

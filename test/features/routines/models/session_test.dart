@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:timezone/data/latest.dart' as tzdata;
 import 'package:wger/core/consts.dart';
 import 'package:wger/features/routines/models/log.dart';
 import 'package:wger/features/routines/models/session.dart';
@@ -64,6 +65,28 @@ void main() {
 
       expect(session.datetimeStart, DateTime(2026, 4, 15));
       expect(session.datetimeEnd, isNull);
+    });
+  });
+
+  group('WorkoutSession.localDayIn', () {
+    setUpAll(tzdata.initializeTimeZones);
+
+    test('cuts the day in the owner zone, not the device one', () {
+      final session = WorkoutSession.fromDb(
+        routineId: 1,
+        datetimeStart: DateTime.utc(2026, 8, 10, 12, 30),
+      );
+
+      expect(session.localDayIn('Pacific/Auckland'), DateTime(2026, 8, 11));
+    });
+
+    test('falls back to the device day while no zone is reported', () {
+      final session = WorkoutSession.fromDb(
+        routineId: 1,
+        datetimeStart: DateTime(2026, 8, 10, 23, 30),
+      );
+
+      expect(session.localDayIn(null), DateTime(2026, 8, 10));
     });
   });
 

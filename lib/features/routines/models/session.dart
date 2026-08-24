@@ -20,6 +20,7 @@ import 'package:clock/clock.dart';
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:wger/core/date.dart';
 import 'package:wger/database/powersync/database.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/routines/models/log.dart';
@@ -153,8 +154,10 @@ class WorkoutSession with _$WorkoutSession {
 
   /// The calendar day this session counts for, e.g. for the dashboard calendar
   ///
-  /// A session that runs over midnight counts for the day it started on.
-  DateTime get localDay => DateTime(datetimeStart.year, datetimeStart.month, datetimeStart.day);
+  /// A session that runs over midnight counts for the day it started on, cut
+  /// in the owner's profile zone like the server's local_day (the zone comes
+  /// from ownerTimeZoneProvider; the device zone stands in while it is null)
+  DateTime localDayIn(String? zoneName) => dayIn(datetimeStart, zoneName);
 
   /// Duration between start and end, null while the session is still open
   Duration? get duration {

@@ -86,6 +86,7 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
     required Map<String, List<MeasurementBucket>> dailyBuckets,
     required List<WorkoutSession> sessions,
     required List<NutritionalPlan> plans,
+    required String? ownerZone,
   }) {
     final i18n = AppLocalizations.of(context);
     final events = <String, List<Event>>{};
@@ -124,7 +125,7 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
     }
 
     for (final session in sessions) {
-      final date = DateFormatLists.format(session.localDay);
+      final date = DateFormatLists.format(session.localDayIn(ownerZone));
       events.putIfAbsent(date, () => []);
       var time = '';
       if (session.datetimeEnd != null) {
@@ -228,6 +229,7 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
       dailyBuckets: dailyBuckets,
       sessions: routinesState.sessions,
       plans: nutritionState.plans,
+      ownerZone: profile.timeZone,
     );
 
     final selectedEvents = _selectedDay != null
