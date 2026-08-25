@@ -22,15 +22,13 @@ import 'package:logging/logging.dart';
 import 'package:powersync/powersync.dart' as ps;
 import 'package:wger/core/network/auth_credentials_storage.dart';
 import 'package:wger/core/shared_preferences.dart';
+import 'package:wger/features/health/models/daily_windows.dart';
 import 'package:wger/features/health/models/health_metric.dart';
-import 'package:wger/features/health/models/health_reading.dart';
+import 'package:wger/features/health/providers/health_entry_writer.dart';
 import 'package:wger/features/health/providers/health_repository.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/measurement_entry.dart';
-import 'package:wger/features/measurements/models/unit_conversion.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
-
-final _uuidPattern = RegExp(r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$');
 
 /// Stable id identifying the aggregate of [day] within [categoryId].
 ///
@@ -112,14 +110,9 @@ class HealthImporter {
   /// history in practice.
   static final _fullHistoryStart = DateTime(2020);
 
-  /// Platform record ids folded into a UUID during the running import, see
-  /// [_externalIdFor]. Expected to stay 0; anything else means a platform
-  /// changed its id format under us.
-  var _normalizedIdCount = 0;
-
-  /// Readings dropped during the running import because their value is outside
-  /// what its metric type allows, see [_isInRange].
-  var _outOfRangeCount = 0;
+  /// Writes what the running import reads, and counts what it had to fold or
+  /// drop. Replaced per run, see [run].
+  late HealthEntryWriter _writer;
 
   /// Reads the enabled metrics from the health platform and writes any new
   /// readings to the matching measurement categories.
@@ -128,9 +121,6 @@ class HealthImporter {
   /// and resume, where a platform dialog would come out of nowhere. Asking
   /// again is the user's call, which the notifier offers.
   Future<HealthImportResult> run() async {
-    _normalizedIdCount = 0;
-    _outOfRangeCount = 0;
-
     try {
       final readable = await _health.readableTypes(healthDataTypes);
       final metrics = healthMetrics.where((m) => m.dataTypes.every(readable.contains)).toList();
@@ -158,337 +148,171 @@ class HealthImporter {
         return (imported: 0, issue: HealthSyncIssue.failed, completed: false);
       }
 
-      final categories = await _measurements.getCategoriesOnce();
+      _writer = HealthEntryWriter(_measurements, _health.sourceName);
+      final run = await _prepare(metrics, readable, userId);
+      for (final metric in metrics) {
+        await _syncMetric(metric, run);
+      }
+      await _persist(run, readable);
 
-      final watermarks = await _readWatermarks();
+      _logger.info(
+        'Imported ${run.synced} health measurements, '
+        '${run.watermarks.length} of ${metrics.length} metrics now have a watermark',
+      );
+      return run.result();
+    } catch (e, s) {
+      return _failureResult(e, s);
+    }
+  }
+
+  /// Everything the metrics are read against: where each one starts, which
+  /// categories exist, and what the run collects along the way.
+  Future<_SyncRun> _prepare(
+    List<HealthMetric> metrics,
+    Set<HealthDataType> readable,
+    String userId,
+  ) async {
+    final categories = await _measurements.getCategoriesOnce();
+
+    return _SyncRun(
+      userId: userId,
+      categories: categories,
+      endTime: DateTime.now(),
+      watermarks: await _readWatermarks(),
       // Metrics the platform has nothing for never get a category, so counting
       // them as missing would ask for the full window on every sync
-      final knownEmpty = {...?await _prefs.getHealthSyncEmptyMetrics()};
-      final withoutCategory = _missingCategories(
+      knownEmpty: {...?await _prefs.getHealthSyncEmptyMetrics()},
+      withoutCategory: _missingCategories(
         metrics,
         categories,
-      ).map((m) => m.metricType.name).toSet();
-      final newlyReadable = await _newlyReadableTypes(readable);
-      final endTime = DateTime.now();
+      ).map((m) => m.metricType.name).toSet(),
+      newlyReadable: await _newlyReadableTypes(readable),
+    );
+  }
 
-      final source = _health.sourceName;
-      var synced = 0;
-      var failedMetric = false;
-      var permissionsMissing = false;
+  /// Reads one metric and writes what it delivers, then moves its watermark.
+  ///
+  /// One bad metric must not cost the others their import, so everything here
+  /// is caught: its own watermark then stays put for whatever it could not
+  /// write, and the run remembers what kind of failure it was.
+  Future<void> _syncMetric(HealthMetric metric, _SyncRun run) async {
+    final name = metric.metricType.name;
+    final startTime = run.startFor(metric);
+    final readsFullHistory = startTime == _fullHistoryStart;
+    // One line per metric would be eight per sync in the exportable log,
+    // where the summary at the end is what a report needs
+    _logger.fine('Syncing $name from $startTime to ${run.endTime}');
 
-      for (final metric in metrics) {
-        final name = metric.metricType.name;
-        // A metric with nothing imported yet has no watermark to go from, and
-        // one without a category has no history behind its watermark either:
-        // reading from it would import what happened since and leave
-        // everything before it missing, silently
-        final startTime =
-            metric.dataTypes.any((t) => newlyReadable.contains(t.name)) ||
-                watermarks[name] == null ||
-                (withoutCategory.contains(name) && !knownEmpty.contains(name))
-            ? _fullHistoryStart
-            : watermarks[name]!.subtract(_syncOverlap);
-        final readsFullHistory = startTime == _fullHistoryStart;
-        // One line per metric would be eight per sync in the exportable log,
-        // where the summary below is what a report needs
-        _logger.fine('Syncing $name from $startTime to $endTime');
+    try {
+      var delivered = false;
+      DateTime? latest;
+      // The categories the metric imports into, resolved on the first
+      // batch that delivers: a metric the platform has nothing for must
+      // not create them
+      List<ImportTarget>? targets;
 
-        // One bad metric must not cost the others their import, and its own
-        // watermark has to stay put for whatever it could not write
-        try {
-          var delivered = false;
-          DateTime? latest;
-          // The categories the metric imports into, resolved on the first
-          // batch that delivers: a metric the platform has nothing for must
-          // not create them
-          List<_ImportTarget>? targets;
-
-          // Read per metric, one window at a time: how much of the timeline
-          // one platform query may cover depends on how densely the metric is
-          // written, see [HealthMetric.readWindow]. Windows already written
-          // stay written when a later one fails; the watermark below then
-          // holds, and the re-read is deduplicated via the external ids
-          await _health.read(
-            types: metric.dataTypes,
-            start: _windowStartFor(startTime, metric),
-            end: endTime,
-            window: metric.readWindow,
-            onBatch: (batch, windowEnd) async {
-              final readings = batch.where((r) => metric.dataTypes.contains(r.type)).toList();
-              if (readings.isEmpty) {
-                return;
-              }
-              delivered = true;
-              targets ??= await _resolveTargets(metric, categories, userId);
-              for (final target in targets!) {
-                final routed = readings.where((r) => target.dataTypes.contains(r.type));
-                synced += metric.dailyAggregation != null
-                    ? await _collectDailyAggregates(metric, routed, target, windowEnd, source)
-                    : await _importReadings(metric, routed, target, source);
-              }
-              for (final reading in readings) {
-                if (latest == null || reading.date.isAfter(latest!)) {
-                  latest = reading.date;
-                }
-              }
-            },
-          );
-          // The newest day can still be growing, so it is only written once
-          // no window can add to it anymore
-          for (final target in targets ?? const <_ImportTarget>[]) {
-            synced += await _flushPendingDays(metric, target, source);
+      // Read per metric, one window at a time: how much of the timeline
+      // one platform query may cover depends on how densely the metric is
+      // written, see [HealthMetric.readWindow]. Windows already written
+      // stay written when a later one fails; the watermark below then
+      // holds, and the re-read is deduplicated via the external ids
+      await _health.read(
+        types: metric.dataTypes,
+        start: windowStartFor(startTime, metric),
+        end: run.endTime,
+        window: metric.readWindow,
+        onBatch: (batch, windowEnd) async {
+          final readings = batch.where((r) => metric.dataTypes.contains(r.type)).toList();
+          if (readings.isEmpty) {
+            return;
           }
-
-          if (!delivered) {
-            if (readsFullHistory && withoutCategory.contains(name)) {
-              knownEmpty.add(name);
+          delivered = true;
+          targets ??= await _writer.resolveTargets(metric, run.categories, run.userId);
+          for (final target in targets!) {
+            final routed = readings.where((r) => target.dataTypes.contains(r.type));
+            run.synced += metric.dailyAggregation != null
+                ? await _writer.collectDailyAggregates(metric, routed, target, windowEnd)
+                : await _writer.importReadings(metric, routed, target);
+          }
+          for (final reading in readings) {
+            if (latest == null || reading.date.isAfter(latest!)) {
+              latest = reading.date;
             }
-            watermarks[name] = endTime;
-            continue;
           }
-          knownEmpty.remove(name);
+        },
+      );
+      // The newest day can still be growing, so it is only written once
+      // no window can add to it anymore
+      for (final target in targets ?? const <ImportTarget>[]) {
+        run.synced += await _writer.flushPendingDays(metric, target);
+      }
 
-          // A reading dated in the future (a device with a wrong clock) must
-          // not drag the watermark along with it, or everything recorded until
-          // that date is skipped on the next run
-          watermarks[name] = latest == null || latest!.isAfter(endTime) ? endTime : latest!;
-        } on _SkipMetric {
-          // Nothing was written and the watermark holds; the cause is logged
-          // where the metric was skipped
-        } catch (e, s) {
-          if (HealthRepository.isAuthorizationMissing(e)) {
-            // The one permission failure iOS reports, and it reports it only
-            // when the read runs. Worth telling apart, the user can fix it
-            _logger.warning('No authorization to read ${metric.metricType.name}', e);
-            permissionsMissing = true;
-          } else {
-            _logger.severe('Importing ${metric.metricType.name} failed', e, s);
-            failedMetric = true;
-          }
+      if (!delivered) {
+        if (readsFullHistory && run.withoutCategory.contains(name)) {
+          run.knownEmpty.add(name);
         }
+        run.watermarks[name] = run.endTime;
+        return;
       }
+      run.knownEmpty.remove(name);
 
-      // Recorded after the metrics ran, so a sync that died earlier tries
-      // again rather than remembering an access it never used
-      await _prefs.setHealthSyncReadableTypes(readable.map((t) => t.name).toList());
-      // A metric that threw is in neither set and keeps its full-window read
-      await _prefs.setHealthSyncEmptyMetrics(knownEmpty.toList());
-      await _writeWatermarks(watermarks);
-
-      if (_normalizedIdCount > 0) {
-        _logger.warning(
-          'Folded $_normalizedIdCount platform record ids into UUIDs during this sync',
-        );
-      }
-      if (_outOfRangeCount > 0) {
-        _logger.warning('Dropped $_outOfRangeCount readings outside their metric limits');
-      }
-      _logger.info(
-        'Imported $synced health measurements, '
-        '${watermarks.length} of ${metrics.length} metrics now have a watermark',
-      );
-      return (
-        imported: synced,
-        issue: failedMetric
-            ? HealthSyncIssue.failed
-            : permissionsMissing
-            ? HealthSyncIssue.permissionsMissing
-            : null,
-        completed: true,
-      );
+      // A reading dated in the future (a device with a wrong clock) must
+      // not drag the watermark along with it, or everything recorded until
+      // that date is skipped on the next run
+      run.watermarks[name] = latest == null || latest!.isAfter(run.endTime) ? run.endTime : latest!;
+    } on SkipMetric {
+      // Nothing was written and the watermark holds; the cause is logged
+      // where the metric was skipped
     } catch (e, s) {
-      // A read the platform refuses for lack of permissions is the one
-      // permission problem iOS reports at all, so it is worth telling apart
-      // from a genuine failure: the user can fix it by granting access again.
-      final missing = HealthRepository.isAuthorizationMissing(e);
-      if (missing) {
-        _logger.warning('Health sync stopped, the platform reports no authorization', e);
+      if (HealthRepository.isAuthorizationMissing(e)) {
+        // The one permission failure iOS reports, and it reports it only
+        // when the read runs. Worth telling apart, the user can fix it
+        _logger.warning('No authorization to read $name', e);
+        run.permissionsMissing = true;
       } else {
-        _logger.severe('Health sync failed', e, s);
+        _logger.severe('Importing $name failed', e, s);
+        run.failedMetric = true;
       }
-      return (
-        imported: 0,
-        issue: missing ? HealthSyncIssue.permissionsMissing : HealthSyncIssue.failed,
-        completed: false,
+    }
+  }
+
+  /// Writes what the run learned, once every metric has had its turn.
+  Future<void> _persist(_SyncRun run, Set<HealthDataType> readable) async {
+    // Recorded after the metrics ran, so a sync that died earlier tries
+    // again rather than remembering an access it never used
+    await _prefs.setHealthSyncReadableTypes(readable.map((t) => t.name).toList());
+    // A metric that threw is in neither set and keeps its full-window read
+    await _prefs.setHealthSyncEmptyMetrics(run.knownEmpty.toList());
+    await _writeWatermarks(run.watermarks);
+
+    if (_writer.normalizedIdCount > 0) {
+      _logger.warning(
+        'Folded ${_writer.normalizedIdCount} platform record ids into UUIDs during this sync',
       );
     }
+    if (_writer.outOfRangeCount > 0) {
+      _logger.warning('Dropped ${_writer.outOfRangeCount} readings outside their metric limits');
+    }
   }
 
-  /// Imports [metricReadings] into [target]'s category, deduplicating against
-  /// the entries already present via their externalId. Returns the number of
-  /// imported entries.
-  Future<int> _importReadings(
-    HealthMetric metric,
-    Iterable<HealthReading> metricReadings,
-    _ImportTarget target,
-    String source,
-  ) async {
-    final category = target.category;
-    final seen = target.seen!;
-    var synced = 0;
-
-    for (final reading in metricReadings) {
-      final uuid = _externalIdFor(reading.externalId, category.id!);
-      if (uuid != null && seen.contains(uuid)) {
-        continue;
-      }
-
-      // Body weight is stored in kg. Should a platform report it in
-      // pounds, convert and keep the original for provenance.
-      var raw = reading.value;
-      String? sourceUnit;
-      if (metric.metricType == MetricType.bodyWeight && reading.unit == HealthDataUnit.POUND) {
-        sourceUnit = 'lb';
-        raw = convertWeight(reading.value, from: 'lb', to: 'kg');
-      }
-
-      final converted = metric.toCategoryValue(raw);
-      // The server stores values as Decimal with 2 places and rejects
-      // anything more precise, so round away unit-conversion float noise
-      // (1.803 m * 100 = 180.29999999999998).
-      final value = (converted * 100).roundToDouble() / 100;
-
-      if (_isInRange(value, category, metric)) {
-        await _measurements.addLocalDrift(
-          MeasurementEntry(
-            categoryId: category.id!,
-            date: reading.date,
-            value: value,
-            notes: '',
-            source: source,
-            externalId: uuid,
-            extraData: _extraDataFor(
-              metric,
-              reading,
-              converted: sourceUnit != null || converted != reading.value,
-              sourceUnit: sourceUnit,
-              // Only set when the platform id had to be folded into a UUID
-              sourceRecordId: uuid == reading.externalId ? null : reading.externalId,
-            ),
-          ),
-        );
-
-        if (uuid != null) {
-          seen.add(uuid);
-        }
-        synced++;
-      }
-    }
-    return synced;
-  }
-
-  /// Sorts [metricReadings] into the days they belong to and writes every day
-  /// no later window can add samples to; the rest waits in [target]'s pending
-  /// days until [_flushPendingDays]. Returns the number of written entries.
-  Future<int> _collectDailyAggregates(
-    HealthMetric metric,
-    Iterable<HealthReading> metricReadings,
-    _ImportTarget target,
-    DateTime windowEnd,
-    String source,
-  ) async {
-    for (final reading in metricReadings) {
-      target.pending.putIfAbsent(_dayOf(reading.date, metric), () => []).add(reading);
+  /// The result of a run that gave up before the metrics ran.
+  ///
+  /// A read the platform refuses for lack of permissions is the one permission
+  /// problem iOS reports at all, so it is worth telling apart from a genuine
+  /// failure: the user can fix it by granting access again.
+  HealthImportResult _failureResult(Object e, StackTrace s) {
+    final missing = HealthRepository.isAuthorizationMissing(e);
+    if (missing) {
+      _logger.warning('Health sync stopped, the platform reports no authorization', e);
+    } else {
+      _logger.severe('Health sync failed', e, s);
     }
 
-    var synced = 0;
-    // The windows only move forward, so a day that ends at or before this
-    // window's end is complete and can stop holding its samples
-    for (final day in target.pending.keys.toList()) {
-      if (!_dayEnd(day, metric).isAfter(windowEnd)) {
-        synced += await _writeDailyAggregate(
-          metric,
-          day,
-          target.pending.remove(day)!,
-          target,
-          source,
-        );
-      }
-    }
-    return synced;
-  }
-
-  /// Writes the days still pending once the metric's read is complete: the
-  /// newest one is usually among them, still growing while its day runs.
-  Future<int> _flushPendingDays(HealthMetric metric, _ImportTarget target, String source) async {
-    var synced = 0;
-    for (final day in target.pending.keys.toList()) {
-      synced += await _writeDailyAggregate(
-        metric,
-        day,
-        target.pending.remove(day)!,
-        target,
-        source,
-      );
-    }
-    return synced;
-  }
-
-  /// Writes [samples] as the one entry of [day], condensed per the metric's
-  /// [HealthMetric.dailyAggregation]. Days are keyed by
-  /// [dailyAggregateExternalId], so a re-read within the overlap window updates
-  /// the aggregate in place when late samples change it (the current day keeps
-  /// growing until it ends). The entry's date is the start of that day; for
-  /// metrics that roll over (sleep) the samples' real window is kept in
-  /// extra_data. Returns the number of written entries.
-  Future<int> _writeDailyAggregate(
-    HealthMetric metric,
-    DateTime day,
-    List<HealthReading> samples,
-    _ImportTarget target,
-    String source,
-  ) async {
-    final category = target.category;
-    final values = samples.map((r) => metric.toCategoryValue(r.value)).toList();
-    final aggregate = switch (metric.dailyAggregation!) {
-      DailyAggregation.average => values.average,
-      DailyAggregation.sum => values.sum,
-      DailyAggregation.mergedDuration => _mergedDurationMinutes(samples),
-    };
-    // Round like the raw import: the server stores Decimal with 2 places
-    final value = (aggregate * 100).roundToDouble() / 100;
-    final extraData = <String, dynamic>{
-      if (metric.dailyAggregation == DailyAggregation.average) ...{
-        'min': values.min,
-        'max': values.max,
-      },
-      'sample_count': values.length,
-      // The types actually seen, not the metric's own: a component can roll
-      // several of them up (total sleep)
-      'record_type': (samples.map((r) => r.type.name).toSet().toList()..sort()).join(','),
-      // A rolled-over day is not the samples' calendar day, so keep the
-      // window they actually cover
-      if (metric.dayRollsOverAtHour != null) ...{
-        'date_from': samples.map((r) => r.date).reduce(_earlier).toIso8601String(),
-        'date_to': samples.map((r) => r.dateTo ?? r.date).reduce(_later).toIso8601String(),
-      },
-    };
-
-    if (!_isInRange(value, category, metric)) {
-      return 0;
-    }
-    final externalId = dailyAggregateExternalId(category.id!, day);
-    final existing = target.stored![externalId];
-    if (existing == null) {
-      await _measurements.addLocalDrift(
-        MeasurementEntry(
-          categoryId: category.id!,
-          date: day,
-          value: value,
-          notes: '',
-          source: source,
-          externalId: externalId,
-          extraData: extraData,
-        ),
-      );
-      return 1;
-    }
-    if (existing.value != value ||
-        !const MapEquality<String, dynamic>().equals(existing.extraData, extraData)) {
-      await _measurements.updateLocalDrift(existing.copyWith(value: value, extraData: extraData));
-      return 1;
-    }
-    return 0;
+    return (
+      imported: 0,
+      issue: missing ? HealthSyncIssue.permissionsMissing : HealthSyncIssue.failed,
+      completed: false,
+    );
   }
 
   /// How far each metric has been imported.
@@ -501,171 +325,6 @@ class HealthImporter {
     await _prefs.setHealthSyncWatermarks({
       for (final e in watermarks.entries) e.key: e.value.toIso8601String(),
     });
-  }
-
-  /// The time [samples] cover in minutes, counting overlapping stretches once.
-  ///
-  /// Adding the durations up would report a night twice when two sources both
-  /// recorded it, which is the normal case for sleep: a phone writes the night
-  /// as undifferentiated sleep while a watch writes the same night as its
-  /// stages. A sample without an end is taken to last as long as its value
-  /// says.
-  double _mergedDurationMinutes(Iterable<HealthReading> samples) {
-    final intervals =
-        samples
-            .map(
-              (r) => (
-                r.date,
-                r.dateTo ?? r.date.add(Duration(microseconds: (r.value * 60 * 1000000).round())),
-              ),
-            )
-            .toList()
-          ..sort((a, b) => a.$1.compareTo(b.$1));
-
-    var total = Duration.zero;
-    DateTime? start;
-    DateTime? end;
-    for (final (from, to) in intervals) {
-      if (end == null || from.isAfter(end)) {
-        if (start != null) {
-          total += end!.difference(start);
-        }
-        start = from;
-        end = to;
-        continue;
-      }
-      if (to.isAfter(end)) {
-        end = to;
-      }
-    }
-    if (start != null) {
-      total += end!.difference(start);
-    }
-    return total.inMicroseconds / Duration.microsecondsPerMinute;
-  }
-
-  /// Where the read window starts for [metric].
-  ///
-  /// A daily aggregate is recomputed from what the window returns, so a start
-  /// inside a day would overwrite it with a fraction of it.
-  DateTime _windowStartFor(DateTime start, HealthMetric metric) {
-    if (metric.dailyAggregation == null) {
-      return start;
-    }
-
-    final rollover = metric.dayRollsOverAtHour;
-    if (rollover == null) {
-      return DateTime(start.year, start.month, start.day);
-    }
-
-    // Before the rollover hour the current day began on the previous one
-    final dayBegan = start.hour >= rollover ? start.day : start.day - 1;
-    return DateTime(start.year, start.month, dayBegan, rollover);
-  }
-
-  /// The day a sample is attributed to. Plain calendar day, unless the metric
-  /// rolls over: samples at or after [HealthMetric.dayRollsOverAtHour] then
-  /// count towards the next day, so a night of sleep lands on the day the user
-  /// wakes up instead of being split at midnight.
-  DateTime _dayOf(DateTime date, HealthMetric metric) {
-    final rollover = metric.dayRollsOverAtHour;
-    final rollsOver = rollover != null && date.hour >= rollover;
-
-    // Calendar arithmetic, not +24h: a DST day is 23 or 25 hours long
-    return DateTime(date.year, date.month, date.day + (rollsOver ? 1 : 0));
-  }
-
-  /// The first instant no longer attributed to [day], i.e. from when on no
-  /// later read window can add samples to it.
-  DateTime _dayEnd(DateTime day, HealthMetric metric) {
-    final rollover = metric.dayRollsOverAtHour;
-    return rollover == null
-        ? DateTime(day.year, day.month, day.day + 1)
-        : DateTime(day.year, day.month, day.day, rollover);
-  }
-
-  static DateTime _earlier(DateTime a, DateTime b) => a.isBefore(b) ? a : b;
-
-  static DateTime _later(DateTime a, DateTime b) => a.isAfter(b) ? a : b;
-
-  /// Builds an imported entry's `extra_data` from the reading's provenance.
-  ///
-  /// `unit` is the only key with server semantics (kg|lb, validated for body
-  /// weight); the rest is provenance for debugging and later duplicate
-  /// detection. Keys without a value are omitted, never written as null.
-  /// [converted] marks readings whose stored value differs from the platform
-  /// value; the original is then kept in `source_value` (and `source_unit`
-  /// when the difference is a weight-unit conversion). [sourceRecordId] is the
-  /// platform's own record id, kept when it had to be folded into a UUID.
-  Map<String, dynamic> _extraDataFor(
-    HealthMetric metric,
-    HealthReading reading, {
-    required bool converted,
-    String? sourceUnit,
-    String? sourceRecordId,
-  }) {
-    return {
-      if (metric.metricType == MetricType.bodyWeight) 'unit': 'kg',
-      if (reading.dateTo != null) 'date_to': reading.dateTo!.toIso8601String(),
-      'recording_method': reading.recordingMethod.name,
-      'record_type': reading.type.name,
-      if (reading.sourceName != null) 'source_name': reading.sourceName,
-      if (reading.sourceId != null) 'source_id': reading.sourceId,
-      if (reading.deviceModel != null) 'device_model': reading.deviceModel,
-      if (reading.sourceDeviceId != null) 'source_device_id': reading.sourceDeviceId,
-      if (converted) 'source_value': reading.value,
-      'source_unit': ?sourceUnit,
-      'source_record_id': ?sourceRecordId,
-    };
-  }
-
-  /// The id stored in `external_id` for a platform record.
-  ///
-  /// The server's `external_id` is a UUIDField and rejects anything else
-  /// permanently, but Health Connect documents `Metadata.id` only as a
-  /// platform-assigned String. Ids that are not UUIDs are therefore folded
-  /// into one deterministically (same scheme as the daily aggregates, so the
-  /// mapping is stable across syncs and dedup keeps working); the original is
-  /// kept in `extra_data.source_record_id`, which is what a later delete-sync
-  /// via `deleteByUUID` needs.
-  String? _externalIdFor(String? platformId, String categoryId) {
-    if (platformId == null || _uuidPattern.hasMatch(platformId)) {
-      return platformId;
-    }
-    if (_normalizedIdCount == 0) {
-      _logger.warning(
-        'Health platform returned a record id that is not a UUID ("$platformId"). '
-        'Folding it into one so the entry can sync; see extra_data.source_record_id',
-      );
-    }
-    _normalizedIdCount++;
-    return ps.uuid.v5(categoryId, platformId);
-  }
-
-  /// Whether [value] is within what the server accepts for [category].
-  ///
-  /// A value outside those bounds is rejected with a 400, and a validation
-  /// failure is permanent by design: the entry would sit in the local database
-  /// and never sync. So it is dropped here instead of written. Nobody ever
-  /// complains about a dropped wearable artifact, which makes this log the only
-  /// signal that a bound is too tight.
-  ///
-  /// The unit is the metric's, not the category's: body weight is imported in
-  /// kilograms and stamped as such, even into a category labelled in pounds.
-  bool _isInRange(num value, MeasurementCategory category, HealthMetric metric) {
-    final limits = category.metricType.limits(metric.unit);
-    if (limits.contains(value)) {
-      return true;
-    }
-
-    if (_outOfRangeCount == 0) {
-      _logger.warning(
-        'Dropping a ${category.metricType.name} reading of $value ${metric.unit}, '
-        'outside the accepted ${limits.min} to ${limits.max}',
-      );
-    }
-    _outOfRangeCount++;
-    return false;
   }
 
   /// The type names the platform now lets us read but did not last time.
@@ -733,167 +392,77 @@ class HealthImporter {
     }
     return missing;
   }
+}
 
-  /// The categories [metric] imports into, paired with the state their import
-  /// carries across the read windows.
+/// The state one [HealthImporter.run] carries across its metrics: what the
+/// reads are measured against, and what they produced.
+class _SyncRun {
+  _SyncRun({
+    required this.userId,
+    required this.categories,
+    required this.endTime,
+    required this.watermarks,
+    required this.knownEmpty,
+    required this.withoutCategory,
+    required this.newlyReadable,
+  });
+
+  /// Owner of the local database, whose typed category ids are derived from it
+  final String userId;
+
+  /// The categories that exist, grown by the ones a metric creates
+  final List<MeasurementCategory> categories;
+
+  /// End of every read window of this run, so the metrics cover the same span
+  final DateTime endTime;
+
+  /// How far each metric has been imported, moved as they deliver
+  final Map<String, DateTime> watermarks;
+
+  /// Metrics the platform is known to have nothing for, see
+  /// setHealthSyncEmptyMetrics
+  final Set<String> knownEmpty;
+
+  /// Metrics without a category to import into
+  final Set<String> withoutCategory;
+
+  /// Type names the platform lets us read but did not last time
+  final Set<String> newlyReadable;
+
+  var synced = 0;
+  var failedMetric = false;
+  var permissionsMissing = false;
+
+  /// Where the read of [metric] starts.
   ///
-  /// Throws [_SkipMetric] when the metric cannot be imported right now (no
-  /// official body weight category yet, or a group conflict); the cause is
-  /// logged where it is decided.
-  Future<List<_ImportTarget>> _resolveTargets(
-    HealthMetric metric,
-    List<MeasurementCategory> categories,
-    String userId,
-  ) async {
-    if (metric.components.isEmpty) {
-      final category = await _findOrCreateCategory(metric, categories, userId);
-      if (category == null) {
-        throw const _SkipMetric();
-      }
-      return [await _targetFor(metric, category, metric.dataTypes)];
-    }
+  /// A metric with nothing imported yet has no watermark to go from, and one
+  /// without a category has no history behind its watermark either: reading
+  /// from it would import what happened since and leave everything before it
+  /// missing, silently. Those read the full history; everything else starts
+  /// an overlap window before its watermark.
+  DateTime startFor(HealthMetric metric) {
+    final name = metric.metricType.name;
+    final hasNoHistory =
+        metric.dataTypes.any((t) => newlyReadable.contains(t.name)) ||
+        watermarks[name] == null ||
+        (withoutCategory.contains(name) && !knownEmpty.contains(name));
 
-    final children = await _findOrCreateGroupChildren(metric, categories, userId);
-    if (children == null) {
-      throw const _SkipMetric();
-    }
-    return [
-      for (final (i, component) in metric.components.indexed)
-        await _targetFor(metric, children[i], component.dataTypes),
-    ];
+    return hasNoHistory
+        ? HealthImporter._fullHistoryStart
+        : watermarks[name]!.subtract(HealthImporter._syncOverlap);
   }
 
-  Future<_ImportTarget> _targetFor(
-    HealthMetric metric,
-    MeasurementCategory category,
-    List<HealthDataType> dataTypes,
-  ) async => _ImportTarget(
-    category: category,
-    dataTypes: dataTypes,
-    // Loaded once per run: a full history holds one row per record or day,
-    // and every batch of the run deduplicates against the same state
-    seen: metric.dailyAggregation == null ? await _measurements.getExternalIds(category.id!) : null,
-    stored: metric.dailyAggregation != null
-        ? await _measurements.getEntriesByExternalId(category.id!)
+  /// What the run reports back: a failing metric outweighs a missing
+  /// permission, since it is the one the user cannot act on themselves.
+  HealthImportResult result() => (
+    imported: synced,
+    issue: failedMetric
+        ? HealthSyncIssue.failed
+        : permissionsMissing
+        ? HealthSyncIssue.permissionsMissing
         : null,
+    completed: true,
   );
-
-  /// Finds the category for [metric] by its `metric_type`, or creates it. The
-  /// created category is appended to [categories] so a later metric in the same
-  /// run reuses it.
-  ///
-  /// Matching by name as well was dropped deliberately: it hit any hand-made
-  /// category that happened to be called like the metric in English and missed
-  /// it in every other language, so the target depended on the UI language. A
-  /// hand-kept category cannot be adopted into a metric type yet, see the plan.
-  ///
-  /// Body weight is the exception: it goes only into the official category,
-  /// which the server creates for every user. It is never created here;
-  /// returns `null` (skip the metric) while the initial sync has not
-  /// delivered it yet.
-  Future<MeasurementCategory?> _findOrCreateCategory(
-    HealthMetric metric,
-    List<MeasurementCategory> categories,
-    String userId,
-  ) async {
-    if (metric.metricType == MetricType.bodyWeight) {
-      final official = categories.firstWhereOrNull((c) => c.isOfficialBodyWeight);
-      if (official == null) {
-        _logger.info('Official body weight category not synced yet, skipping weight import');
-      }
-      return official;
-    }
-
-    final existing = categories.firstWhereOrNull((c) => c.metricType == metric.metricType);
-    if (existing != null) {
-      return existing;
-    }
-
-    final category = MeasurementCategory.forMetricType(userId, metric.metricType);
-    await _measurements.addLocalDriftCategory(category);
-    categories.add(category);
-    return category;
-  }
-
-  /// Finds the child categories a group metric imports into, one per
-  /// component matched by its own metric type, creating the group and any
-  /// missing children as needed. Returns `null` (skip the metric) when the
-  /// matching category holds entries itself: the server allows measurements
-  /// only on leaves, so attaching children would make its rows invalid.
-  Future<List<MeasurementCategory>?> _findOrCreateGroupChildren(
-    HealthMetric metric,
-    List<MeasurementCategory> categories,
-    String userId,
-  ) async {
-    final existing = categories.firstWhereOrNull(
-      (c) => c.parentId == null && c.metricType == metric.metricType,
-    );
-    if (existing != null && await _measurements.hasEntries(existing.id!)) {
-      _logger.warning(
-        'Category "${existing.name}" holds entries itself and cannot become '
-        'a ${metric.metricType.name} group, skipping the import',
-      );
-      return null;
-    }
-
-    final parent = existing ?? MeasurementCategory.forMetricType(userId, metric.metricType);
-    // Collected and written in one transaction, so a group is never left
-    // without the children its readings live in
-    final toCreate = <MeasurementCategory>[if (existing == null) parent];
-
-    // The component categories come from the metric type, in the same order as
-    // the metric's health data types, so the caller can pair them by index.
-    // The server creates them on the very same ids when it sees the group
-    final result = <MeasurementCategory>[];
-    for (final (order, metricType) in metric.metricType.components.indexed) {
-      final existingChild = categories.firstWhereOrNull(
-        (c) => c.parentId == parent.id && c.metricType == metricType,
-      );
-      if (existingChild != null) {
-        result.add(existingChild);
-        continue;
-      }
-      final child = MeasurementCategory.forMetricType(
-        userId,
-        metricType,
-        parentId: parent.id,
-        order: order,
-      );
-      toCreate.add(child);
-      result.add(child);
-    }
-    if (toCreate.isNotEmpty) {
-      await _measurements.addLocalDriftCategoryGroup(toCreate);
-      categories.addAll(toCreate);
-    }
-    return result;
-  }
 }
 
-/// One category a metric imports into, with the state the import carries
-/// across the read windows.
-class _ImportTarget {
-  _ImportTarget({required this.category, required this.dataTypes, this.seen, this.stored});
-
-  final MeasurementCategory category;
-
-  /// The readings this target receives, matched by their platform type.
-  final List<HealthDataType> dataTypes;
-
-  /// External ids already imported; raw metrics only.
-  final Set<String>? seen;
-
-  /// Stored aggregates by external id; aggregating metrics only.
-  final Map<String, MeasurementEntry>? stored;
-
-  /// Days still collecting samples, until no read window can add to them
-  /// anymore. Never more than the newest day per window boundary, which is
-  /// what keeps the peak memory at one window plus one day.
-  final pending = <DateTime, List<HealthReading>>{};
-}
-
-/// Stops reading a metric that cannot be imported right now; its watermark
 /// then stays put and the readings are retried on the next sync.
-class _SkipMetric implements Exception {
-  const _SkipMetric();
-}
