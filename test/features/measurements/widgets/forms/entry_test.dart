@@ -21,6 +21,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:wger/core/widgets/decimal_input.dart';
+import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/measurement_entry.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
 import 'package:wger/features/measurements/widgets/forms/entry.dart';
@@ -85,6 +87,35 @@ void main() {
       expect(saved.externalId, 'platform-uuid');
       expect(saved.extraData, {'unit': 'kg'});
       expect(saved.value, 30);
+    });
+
+    testWidgets('a value outside the limits of the metric type is refused', (tester) async {
+      final category = MeasurementCategory(
+        id: 'hr',
+        name: 'Heart rate',
+        unit: 'bpm',
+        metricType: MetricType.heartRate,
+      );
+      stubMeasurementReads(mockRepo, [category]);
+      when(mockRepo.addLocalDrift(any)).thenAnswer((_) async {});
+
+      await tester.pumpWidget(wrap(MeasurementEntryForm(category.id!)));
+      await tester.pumpAndSettle();
+
+      // 500 bpm are over the bound the server enforces as well
+      await tester.enterText(
+        find.descendant(
+          of: find.byType(DecimalInputWidget),
+          matching: find.byType(TextFormField),
+        ),
+        '500',
+      );
+      await tester.ensureVisible(find.byType(ElevatedButton));
+      await tester.tap(find.byType(ElevatedButton));
+      await tester.pumpAndSettle();
+
+      verifyNever(mockRepo.addLocalDrift(any));
+      expect(find.text('Please enter a value between 30 and 250'), findsOneWidget);
     });
 
     testWidgets('editing pre-fills the notes and saves them changed', (tester) async {

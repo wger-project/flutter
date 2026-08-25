@@ -23,24 +23,49 @@ import 'package:wger/features/measurements/widgets/chart_range_selector.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 void main() {
-  testWidgets('every range is offered', (tester) async {
-    var picked = ChartRange.last3Months;
+  late ChartRange picked;
+
+  Future<void> pumpSelector(WidgetTester tester, ChartRange selected) async {
+    picked = selected;
     await tester.pumpWidget(
       MaterialApp(
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
           body: ChartRangeSelector(
-            value: picked,
+            value: selected,
             onChanged: (range) => picked = range,
           ),
         ),
       ),
     );
     await tester.pumpAndSettle();
+  }
 
-    expect(find.text('1 month'), findsOneWidget);
-    await tester.tap(find.text('1 month'));
-    expect(picked, ChartRange.lastMonth);
+  testWidgets('every range is offered', (tester) async {
+    await pumpSelector(tester, ChartRange.last3Months);
+
+    final context = tester.element(find.byType(ChartRangeSelector));
+    final i18n = AppLocalizations.of(context);
+    for (final range in ChartRange.values) {
+      expect(find.text(range.label(i18n)), findsOneWidget, reason: range.name);
+    }
+  });
+
+  testWidgets('picking a range reports that range', (tester) async {
+    for (final range in ChartRange.values) {
+      // Start on another one, so a selector that always reports its own value
+      // cannot pass
+      await pumpSelector(
+        tester,
+        range == ChartRange.all ? ChartRange.lastWeek : ChartRange.all,
+      );
+      final context = tester.element(find.byType(ChartRangeSelector));
+
+      await tester.tap(find.text(range.label(AppLocalizations.of(context))));
+      await tester.pumpAndSettle();
+
+      expect(picked, range, reason: range.name);
+    }
   });
 }

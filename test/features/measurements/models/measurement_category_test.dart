@@ -154,6 +154,22 @@ void main() {
     });
   });
 
+  group('limits', () {
+    test('body weight is bounded in the unit it was entered in', () {
+      expect(MetricType.bodyWeight.limits('kg').max, 350);
+      expect(MetricType.bodyWeight.limits('lb').max, 770);
+    });
+
+    test('a typed metric carries the bounds of its own scale', () {
+      expect(MetricType.bloodOxygen.limits().min, 50);
+      expect(MetricType.bloodOxygen.limits().max, 100);
+    });
+
+    test('a free-form category is bounded by what the column holds', () {
+      expect(MetricType.custom.limits().max, measurementSchemaMaxValue);
+    });
+  });
+
   group('displayDecimals', () {
     test('follows the resolution the metric is measured at', () {
       expect(MetricType.restingHeartRate.displayDecimals, 0);

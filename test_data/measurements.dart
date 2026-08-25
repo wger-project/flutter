@@ -107,6 +107,7 @@ final testMeasurementCategorySystolic = MeasurementCategory(
   id: 'sys',
   name: 'Systolic',
   unit: 'mmHg',
+  metricType: MetricType.bloodPressureSystolic,
   parentId: 'bp',
   order: 0,
 );
@@ -115,6 +116,7 @@ final testMeasurementCategoryDiastolic = MeasurementCategory(
   id: 'dia',
   name: 'Diastolic',
   unit: 'mmHg',
+  metricType: MetricType.bloodPressureDiastolic,
   parentId: 'bp',
   order: 1,
 );

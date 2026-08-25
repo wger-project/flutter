@@ -30,6 +30,7 @@ import 'package:wger/features/measurements/widgets/charts/spark_charts.dart';
 import 'package:wger/features/measurements/widgets/measurement_tile.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
+import '../../../../test_data/measurements.dart';
 import '../../../helpers/measurement_chart_buckets.dart';
 import '../../../helpers/measurement_repository_stubs.dart';
 import 'measurement_tile_test.mocks.dart';
@@ -259,16 +260,7 @@ void main() {
     });
 
     testWidgets('blood pressure tile: the reading quoted high over low', (tester) async {
-      final group = MeasurementCategory(
-        id: 'bp',
-        name: 'Blood pressure',
-        unit: 'mmHg',
-        metricType: MetricType.bloodPressure,
-        children: [
-          MeasurementCategory(id: 'sys', name: 'Systolic', unit: 'mmHg', parentId: 'bp'),
-          MeasurementCategory(id: 'dia', name: 'Diastolic', unit: 'mmHg', parentId: 'bp'),
-        ],
-      );
+      final group = testMeasurementCategoryBloodPressure;
       final entries = {
         'sys': [_entry('sys', 122, _day(0))],
         'dia': [_entry('dia', 79, _day(0))],

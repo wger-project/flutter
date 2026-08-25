@@ -33,6 +33,7 @@ import 'package:wger/features/measurements/widgets/charts/stacked_bar_chart.dart
 import 'package:wger/features/measurements/widgets/helpers.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
+import '../../../../test_data/measurements.dart';
 import '../../../helpers/measurement_chart_buckets.dart';
 
 Widget _wrapChart(Widget chart) => MaterialApp(
@@ -337,29 +338,7 @@ void main() {
       'rem': withStages ? [entry('rem', DateTime(2026, 1, 2), 60)] : const [],
     };
 
-    MeasurementCategory bloodPressure() => MeasurementCategory(
-      id: 'bp',
-      name: 'Blood pressure',
-      unit: 'mmHg',
-      metricType: MetricType.bloodPressure,
-      children: [
-        MeasurementCategory(
-          id: 'sys',
-          name: 'Systolic',
-          unit: 'mmHg',
-          metricType: MetricType.bloodPressureSystolic,
-          parentId: 'bp',
-        ),
-        MeasurementCategory(
-          id: 'dia',
-          name: 'Diastolic',
-          unit: 'mmHg',
-          metricType: MetricType.bloodPressureDiastolic,
-          parentId: 'bp',
-          order: 1,
-        ),
-      ],
-    );
+    MeasurementCategory bloodPressure() => testMeasurementCategoryBloodPressure;
 
     Map<String, List<MeasurementEntry>> bloodPressureEntries() => {
       'sys': [entry('sys', DateTime(2026, 1, 2, 8), 120)],

@@ -33,6 +33,7 @@ import 'package:wger/features/nutrition/providers/ingredient_repository.dart';
 import 'package:wger/features/nutrition/providers/nutrition_repository.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
+import '../../../../test_data/measurements.dart';
 import '../../../helpers/measurement_chart_buckets.dart';
 import '../../../helpers/measurement_repository_stubs.dart';
 import 'entries_test.mocks.dart';
@@ -198,23 +199,7 @@ void main() {
     final readings = [
       for (var day = 0; day < 40; day++) DateTime.now().subtract(Duration(days: day)),
     ];
-    MeasurementCategory component(String id, String name, MetricType type) => MeasurementCategory(
-      id: id,
-      name: name,
-      unit: 'mmHg',
-      metricType: type,
-      parentId: 'bp',
-    );
-    final group = MeasurementCategory(
-      id: 'bp',
-      name: 'Blood pressure',
-      unit: 'mmHg',
-      metricType: MetricType.bloodPressure,
-      children: [
-        component('sys', 'Systolic', MetricType.bloodPressureSystolic),
-        component('dia', 'Diastolic', MetricType.bloodPressureDiastolic),
-      ],
-    );
+    final group = testMeasurementCategoryBloodPressure;
     final entries = {
       for (final (id, value) in [('sys', 120), ('dia', 80)])
         id: [

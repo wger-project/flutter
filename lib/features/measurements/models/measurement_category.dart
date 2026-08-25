@@ -20,6 +20,7 @@ import 'package:drift/drift.dart' hide JsonKey;
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:powersync/powersync.dart' as ps;
+import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/database/powersync/database.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
@@ -364,7 +365,7 @@ enum MetricType {
     MetricType.sleepLight ||
     MetricType.sleepDeep ||
     MetricType.sleepRem ||
-    MetricType.sleepAwake => 'min',
+    MetricType.sleepAwake => durationUnit,
   };
 
   /// `true` for the component that rolls its siblings up instead of being one

@@ -111,7 +111,7 @@ class _MeasurementCategoryFormState extends ConsumerState<MeasurementCategoryFor
     if (_draft.id == null) {
       await notifier.addCategory(_draft);
     } else {
-      notifier.updateCategory(_draft);
+      await notifier.updateCategory(_draft);
     }
 
     if (mounted) {
