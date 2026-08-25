@@ -189,14 +189,7 @@ final class MeasurementNotifier extends _$MeasurementNotifier {
     await _repo.addLocalDriftCategoryGroup([
       parent,
       for (final (order, metricType) in parent.metricType.components.indexed)
-        MeasurementCategory(
-          id: deterministicCategoryId(userId, metricType),
-          name: metricType.canonicalName,
-          unit: metricType.defaultUnit,
-          metricType: metricType,
-          parentId: parent.id,
-          order: order,
-        ),
+        MeasurementCategory.forMetricType(userId, metricType, parentId: parent.id, order: order),
     ]);
     return parent.id;
   }

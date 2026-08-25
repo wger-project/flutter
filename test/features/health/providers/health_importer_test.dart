@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:health_bridge/health.dart';
@@ -97,6 +98,7 @@ void main() {
     when(measurements.addLocalDrift(any)).thenAnswer((_) async {});
     when(measurements.updateLocalDrift(any)).thenAnswer((_) async {});
     when(measurements.addLocalDriftCategory(any)).thenAnswer((_) async {});
+    when(measurements.addLocalDriftCategoryGroup(any)).thenAnswer((_) async {});
     when(measurements.getCategoriesOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
     when(measurements.getExternalIds(any)).thenAnswer((_) async => <String>{});
     when(
@@ -477,9 +479,16 @@ void main() {
       final count = await runImport();
       expect(count, 4);
 
-      final createdCategories = verify(
-        measurements.addLocalDriftCategory(captureAny),
-      ).captured.cast<MeasurementCategory>();
+      // Leaf categories are single inserts, a group arrives as one
+      // transactional write of the parent with its children
+      final createdCategories = [
+        ...verify(
+          measurements.addLocalDriftCategory(captureAny),
+        ).captured.cast<MeasurementCategory>(),
+        ...verify(
+          measurements.addLocalDriftCategoryGroup(captureAny),
+        ).captured.cast<List<MeasurementCategory>>().flattened,
+      ];
       expect(
         createdCategories.map((c) => c.metricType),
         containsAll([MetricType.bodyFat, MetricType.height, MetricType.bloodPressure]),
@@ -1111,8 +1120,8 @@ void main() {
         measurements.addLocalDrift(captureAny),
       ).captured.cast<MeasurementEntry>();
       final categories = verify(
-        measurements.addLocalDriftCategory(captureAny),
-      ).captured.cast<MeasurementCategory>();
+        measurements.addLocalDriftCategoryGroup(captureAny),
+      ).captured.cast<List<MeasurementCategory>>().flattened;
       final typeOf = {for (final c in categories) c.id: c.metricType};
       final byType = {for (final e in entries) typeOf[e.categoryId]: e.value};
 
@@ -1310,12 +1319,70 @@ void main() {
       final count = await runImport();
       expect(count, 2);
       verifyNever(measurements.addLocalDriftCategory(any));
+      verifyNever(measurements.addLocalDriftCategoryGroup(any));
 
       final entries = verify(
         measurements.addLocalDrift(captureAny),
       ).captured.cast<MeasurementEntry>();
       expect(entries.firstWhere((e) => e.value == 120).categoryId, 'upper');
       expect(entries.firstWhere((e) => e.value == 80).categoryId, 'lower');
+    });
+
+    test('creates a group with its children in one transactional write', () async {
+      // A throw between single inserts would leave the group without the
+      // children its readings live in
+      when(measurements.getCategoriesOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
+      stubReadings([
+        HealthReading(
+          type: HealthDataType.BLOOD_PRESSURE_SYSTOLIC,
+          value: 120,
+          date: DateTime(2026, 1, 3),
+          externalId: _idBp1,
+        ),
+      ]);
+
+      await runImport();
+
+      final written =
+          verify(
+                measurements.addLocalDriftCategoryGroup(captureAny),
+              ).captured.single
+              as List<MeasurementCategory>;
+      verifyNever(measurements.addLocalDriftCategory(any));
+      final parent = written.firstWhere((c) => c.metricType == MetricType.bloodPressure);
+      expect(parent.parentId, isNull);
+      expect(written.where((c) => c.parentId == parent.id), hasLength(2));
+    });
+
+    test('creates the missing children of an existing group in one write', () async {
+      // The state a crash between the old single inserts could leave behind
+      final parent = MeasurementCategory(
+        id: 'bp',
+        name: 'Blood pressure',
+        unit: 'mmHg',
+        metricType: MetricType.bloodPressure,
+      );
+      when(measurements.getCategoriesOnce()).thenAnswer((_) async => [parent]);
+      stubReadings([
+        HealthReading(
+          type: HealthDataType.BLOOD_PRESSURE_SYSTOLIC,
+          value: 120,
+          date: DateTime(2026, 1, 3),
+          externalId: _idBp1,
+        ),
+      ]);
+
+      await runImport();
+
+      final written =
+          verify(
+                measurements.addLocalDriftCategoryGroup(captureAny),
+              ).captured.single
+              as List<MeasurementCategory>;
+      verifyNever(measurements.addLocalDriftCategory(any));
+      // Only the children; the parent already exists
+      expect(written.map((c) => c.parentId), everyElement('bp'));
+      expect(written, hasLength(2));
     });
 
     test(
@@ -1377,6 +1444,7 @@ void main() {
       // retried once the conflict is resolved
       expect(count, 0);
       verifyNever(measurements.addLocalDriftCategory(any));
+      verifyNever(measurements.addLocalDriftCategoryGroup(any));
       verifyNever(measurements.addLocalDrift(any));
       expect(await watermarkOf(MetricType.bloodPressure), '2020-01-01T00:00:00.000');
     });
@@ -1646,7 +1714,12 @@ void main() {
 
 /// The id of the sleep category with [metricType] among the ones the sync
 /// created. Sleep is a group, so a run creates the group plus one child per
-/// stage; consumes the recorded calls, so call it once per test.
-String _sleepCategoryId(MockMeasurementRepository measurements, MetricType metricType) => verify(
-  measurements.addLocalDriftCategory(captureAny),
-).captured.cast<MeasurementCategory>().firstWhere((c) => c.metricType == metricType).id!;
+/// stage in one write; consumes the recorded calls, so call it once per test.
+String _sleepCategoryId(MockMeasurementRepository measurements, MetricType metricType) =>
+    verify(
+          measurements.addLocalDriftCategoryGroup(captureAny),
+        ).captured
+        .cast<List<MeasurementCategory>>()
+        .flattened
+        .firstWhere((c) => c.metricType == metricType)
+        .id!;

@@ -604,6 +604,23 @@ class MeasurementCategory with _$MeasurementCategory {
     this.children = const [],
   });
 
+  /// The typed category of [metricType] for [userId]: the deterministic id
+  /// the app and the server both derive, with the type's canonical name and
+  /// unit. [parentId] and [order] place a component in its group.
+  MeasurementCategory.forMetricType(
+    String userId,
+    MetricType metricType, {
+    String? parentId,
+    int order = 0,
+  }) : this(
+         id: deterministicCategoryId(userId, metricType),
+         name: metricType.canonicalName,
+         unit: metricType.defaultUnit,
+         metricType: metricType,
+         parentId: parentId,
+         order: order,
+       );
+
   /// Maps a row of the local database. Rows synced before the 2.7 schema
   /// change lack the new columns and read as NULL; they fall back to the
   /// defaults until the full re-sync replaces them.

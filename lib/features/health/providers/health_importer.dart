@@ -811,12 +811,7 @@ class HealthImporter {
       return existing;
     }
 
-    final category = MeasurementCategory(
-      id: deterministicCategoryId(userId, metric.metricType),
-      name: metric.canonicalName,
-      unit: metric.unit,
-      metricType: metric.metricType,
-    );
+    final category = MeasurementCategory.forMetricType(userId, metric.metricType);
     await _measurements.addLocalDriftCategory(category);
     categories.add(category);
     return category;
@@ -843,18 +838,10 @@ class HealthImporter {
       return null;
     }
 
-    final parent =
-        existing ??
-        MeasurementCategory(
-          id: deterministicCategoryId(userId, metric.metricType),
-          name: metric.canonicalName,
-          unit: metric.unit,
-          metricType: metric.metricType,
-        );
-    if (existing == null) {
-      await _measurements.addLocalDriftCategory(parent);
-      categories.add(parent);
-    }
+    final parent = existing ?? MeasurementCategory.forMetricType(userId, metric.metricType);
+    // Collected and written in one transaction, so a group is never left
+    // without the children its readings live in
+    final toCreate = <MeasurementCategory>[if (existing == null) parent];
 
     // The component categories come from the metric type, in the same order as
     // the metric's health data types, so the caller can pair them by index.
@@ -868,17 +855,18 @@ class HealthImporter {
         result.add(existingChild);
         continue;
       }
-      final child = MeasurementCategory(
-        id: deterministicCategoryId(userId, metricType),
-        name: metricType.canonicalName,
-        unit: metricType.defaultUnit,
-        metricType: metricType,
+      final child = MeasurementCategory.forMetricType(
+        userId,
+        metricType,
         parentId: parent.id,
         order: order,
       );
-      await _measurements.addLocalDriftCategory(child);
-      categories.add(child);
+      toCreate.add(child);
       result.add(child);
+    }
+    if (toCreate.isNotEmpty) {
+      await _measurements.addLocalDriftCategoryGroup(toCreate);
+      categories.addAll(toCreate);
     }
     return result;
   }
