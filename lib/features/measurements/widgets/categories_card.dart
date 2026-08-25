@@ -16,12 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/core/form_screen.dart';
 import 'package:wger/core/formatting/formatting.dart';
-import 'package:wger/features/measurements/charts/colors.dart';
 import 'package:wger/features/measurements/charts/data.dart';
 import 'package:wger/features/measurements/charts/range.dart';
 import 'package:wger/features/measurements/charts/series.dart';
@@ -192,16 +190,9 @@ class CategoriesCard extends ConsumerWidget {
     BuildContext context,
     Map<String, List<MeasurementChartEntry>> points,
   ) {
-    // A range is a single bar whose ends speak for themselves, and a stacked
-    // bar's segments carry the component colours; only the line chart needs
-    // the dots on the rows below to tie a component to its line.
+    // A range is a single bar whose ends speak for themselves; only the line
+    // chart needs the dots on the rows below to tie a component to its line
     final asRange = currentCategory.children.length == 2 && groupRangeEntries(points).isNotEmpty;
-    // The stacked chart draws only the components that are parts of the whole,
-    // so a row's colour has to come from that list rather than from its
-    // position among all children
-    final stacked = currentCategory.metricType.isSummedPerDay
-        ? stackableComponents(currentCategory)
-        : null;
 
     return [
       if (groupHasData(points))
@@ -218,48 +209,24 @@ class CategoriesCard extends ConsumerWidget {
         builder: (context, ref, _) {
           final latest = ref.watch(latestMeasurementEntriesProvider).value ?? const {};
 
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: currentCategory.children.mapIndexed((index, child) {
-              final colorIndex = stacked == null
-                  ? index
-                  : stacked.indexWhere((c) => c.id == child.id);
+          return GroupComponentRows(
+            currentCategory,
+            showDots: !asRange,
+            trailing: (context, child) {
               final value = latest[child.id];
 
-              return ListTile(
-                dense: true,
-                // The dot ties the row to its part of the chart above. A range
-                // is a single bar, where the ends speak for themselves, and a
-                // roll-up component is no segment of the stack.
-                leading: asRange || colorIndex < 0
-                    ? null
-                    : Container(
-                        width: 12,
-                        height: 12,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: componentColor(context, colorIndex),
-                        ),
-                      ),
-                title: Text(child.displayName(context)),
-                trailing: Text(
-                  value != null
-                      ? measurementWithUnit(
-                          context,
-                          value.valueIn(child.unit, categoryUnit: child.unit),
-                          child.unit,
-                          decimals: child.metricType.displayDecimals,
-                        )
-                      : '—',
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
-                onTap: () => Navigator.pushNamed(
-                  context,
-                  MeasurementEntriesScreen.routeName,
-                  arguments: child.id,
-                ),
+              return Text(
+                value != null
+                    ? measurementWithUnit(
+                        context,
+                        value.valueIn(child.unit, categoryUnit: child.unit),
+                        child.unit,
+                        decimals: child.metricType.displayDecimals,
+                      )
+                    : '—',
+                style: Theme.of(context).textTheme.bodyLarge,
               );
-            }).toList(),
+            },
           );
         },
       ),

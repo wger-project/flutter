@@ -52,14 +52,21 @@ class WeightForm extends riverpod.ConsumerStatefulWidget {
 class _WeightFormState extends riverpod.ConsumerState<WeightForm> {
   final _form = GlobalKey<FormState>();
 
-  late DateTime _date;
+  late MeasurementEntry _draft;
   num? _weight;
   late String _unit;
 
   @override
   void initState() {
     super.initState();
-    _date = widget._entry?.date ?? DateTime.now();
+    _draft =
+        widget._entry ??
+        MeasurementEntry(
+          categoryId: widget._category.id!,
+          date: DateTime.now(),
+          value: 0,
+          notes: '',
+        );
     _weight = widget._entry?.value;
 
     // Existing entries keep their stored unit (the value is shown exactly as
@@ -81,8 +88,8 @@ class _WeightFormState extends riverpod.ConsumerState<WeightForm> {
         children: [
           DateTimeInputWidget(
             key: const Key('dateTimeInput'),
-            value: _date,
-            onChanged: (value) => _date = value,
+            value: _draft.date,
+            onChanged: (value) => _draft = _draft.copyWith(date: value),
           ),
 
           // Weight
@@ -121,18 +128,12 @@ class _WeightFormState extends riverpod.ConsumerState<WeightForm> {
               }
               _form.currentState!.save();
 
-              // Notes, source and external id are not editable here; keep the
-              // existing values so edits to imported entries stay deduplicable.
-              // The chosen unit is stamped into extra_data, other keys survive.
-              final entry = MeasurementEntry(
-                id: widget._entry?.id,
-                categoryId: widget._category.id!,
-                date: _date,
+              // The draft carries what the form does not offer (notes, source,
+              // external id), so an edited import stays deduplicable; only the
+              // chosen unit is stamped into extra_data, other keys survive
+              final entry = _draft.copyWith(
                 value: _weight!,
-                notes: widget._entry?.notes ?? '',
-                source: widget._entry?.source ?? measurementSourceUser,
-                externalId: widget._entry?.externalId,
-                extraData: {...?widget._entry?.extraData, 'unit': _unit},
+                extraData: {...?_draft.extraData, 'unit': _unit},
               );
 
               final notifier = ref.read(measurementProvider.notifier);

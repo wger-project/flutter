@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/core/widgets/error.dart';
@@ -10,6 +11,7 @@ import 'package:wger/features/measurements/models/measurement_bucket.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/unit_conversion.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
+import 'package:wger/features/measurements/screens/measurement_entries_screen.dart';
 import 'package:wger/features/measurements/widgets/charts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
@@ -433,4 +435,57 @@ Widget buildChartForMetricType(
     trend: trend ?? _trendlineFor(raw, settings),
     planPeriods: planPeriods,
   );
+}
+
+/// One row per component of [group]: a colour dot tying the row to its part
+/// of the group chart, the component's name, and [trailing]; tapping opens
+/// the component's entries.
+///
+/// The stacked chart draws only the components that are parts of the whole,
+/// so a row's colour comes from that list rather than from its position among
+/// all children, and a roll-up component gets no dot. [showDots] turns them
+/// off wholesale, for a range chart whose single bar needs no legend.
+class GroupComponentRows extends StatelessWidget {
+  const GroupComponentRows(this.group, {required this.trailing, this.showDots = true});
+
+  final MeasurementCategory group;
+
+  /// Built per component: the latest value on the card, a chevron on the
+  /// detail screen.
+  final Widget? Function(BuildContext context, MeasurementCategory child) trailing;
+
+  final bool showDots;
+
+  @override
+  Widget build(BuildContext context) {
+    final stacked = group.metricType.isSummedPerDay ? stackableComponents(group) : null;
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: group.children.mapIndexed((index, child) {
+        final colorIndex = stacked == null ? index : stacked.indexWhere((c) => c.id == child.id);
+
+        return ListTile(
+          dense: true,
+          leading: !showDots || colorIndex < 0
+              ? null
+              : Container(
+                  width: 12,
+                  height: 12,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: componentColor(context, colorIndex),
+                  ),
+                ),
+          title: Text(child.displayName(context)),
+          trailing: trailing(context, child),
+          onTap: () => Navigator.pushNamed(
+            context,
+            MeasurementEntriesScreen.routeName,
+            arguments: child.id,
+          ),
+        );
+      }).toList(),
+    );
+  }
 }

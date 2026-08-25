@@ -286,5 +286,34 @@ void main() {
       // The typed value itself is not converted, only re-interpreted
       expect(saved.value, 80);
     });
+
+    testWidgets('Editing keeps source, externalId and extra data of imported entries', (
+      WidgetTester tester,
+    ) async {
+      final imported = MeasurementEntry(
+        id: 'e-import',
+        categoryId: testBodyWeightCategoryId,
+        date: DateTime(2026, 1, 1),
+        value: 80,
+        notes: 'From the watch',
+        source: 'apple',
+        externalId: 'platform-uuid',
+        extraData: const {'unit': 'kg', 'record_type': 'WEIGHT'},
+      );
+
+      await tester.pumpWidget(createWeightForm(entry: imported));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
+      await tester.pumpAndSettle();
+
+      final saved =
+          verify(mockRepo.updateLocalDrift(captureAny)).captured.single as MeasurementEntry;
+      expect(saved.source, 'apple');
+      expect(saved.externalId, 'platform-uuid');
+      expect(saved.notes, 'From the watch');
+      expect(saved.extraData, {'unit': 'kg', 'record_type': 'WEIGHT'});
+      expect(saved.value, 80);
+    });
   });
 }

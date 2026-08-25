@@ -23,7 +23,6 @@ import 'package:wger/core/form_screen.dart';
 import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/core/snackbar.dart';
 import 'package:wger/core/widgets/error.dart';
-import 'package:wger/features/measurements/charts/colors.dart';
 import 'package:wger/features/measurements/charts/data.dart';
 import 'package:wger/features/measurements/charts/range.dart';
 import 'package:wger/features/measurements/charts/series.dart';
@@ -31,7 +30,6 @@ import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/measurement_entry.dart';
 import 'package:wger/features/measurements/models/unit_conversion.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
-import 'package:wger/features/measurements/screens/measurement_entries_screen.dart';
 import 'package:wger/features/measurements/widgets/calculation_mark.dart';
 import 'package:wger/features/measurements/widgets/chart_range_selector.dart';
 import 'package:wger/features/measurements/widgets/helpers.dart';
@@ -177,9 +175,6 @@ class EntriesList extends ConsumerWidget {
   /// which the legend rows lead to.
   Widget _buildGroup(BuildContext context, WidgetRef ref, MeasurementCategory category) {
     final i18n = AppLocalizations.of(context);
-    // Only the stacked chart leaves a component out, so the colours of the
-    // rows below have to follow the same list
-    final stacked = category.metricType.isSummedPerDay ? stackableComponents(category) : null;
 
     return Column(
       children: [
@@ -208,29 +203,10 @@ class EntriesList extends ConsumerWidget {
           ],
           onError: (_, error) => [StreamErrorIndicator(error.toString())],
         ),
-        ...category.children.mapIndexed((index, child) {
-          final colorIndex = stacked == null ? index : stacked.indexWhere((c) => c.id == child.id);
-          return ListTile(
-            dense: true,
-            leading: colorIndex < 0
-                ? null
-                : Container(
-                    width: 12,
-                    height: 12,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: componentColor(context, colorIndex),
-                    ),
-                  ),
-            title: Text(child.displayName(context)),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => Navigator.pushNamed(
-              context,
-              MeasurementEntriesScreen.routeName,
-              arguments: child.id,
-            ),
-          );
-        }),
+        GroupComponentRows(
+          category,
+          trailing: (_, _) => const Icon(Icons.chevron_right),
+        ),
         const Divider(),
         _GroupReadingsList(category),
       ],
