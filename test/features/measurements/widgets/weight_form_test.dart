@@ -80,6 +80,7 @@ void main() {
     expect(find.text('1/1/2021'), findsOneWidget);
     expect(find.text('3:30 PM'), findsOneWidget);
     expect(find.text('80'), findsOneWidget);
+    expect(find.text('After the run'), findsOneWidget);
   });
 
   testWidgets('Correctly prefills and localizes the data - de', (WidgetTester tester) async {
@@ -137,14 +138,17 @@ void main() {
     await tester.pumpAndSettle();
   });
 
-  testWidgets('Saving keeps an afternoon (PM) time intact', (WidgetTester tester) async {
+  testWidgets('Saving keeps an afternoon (PM) time intact and takes the edited notes', (
+    WidgetTester tester,
+  ) async {
     await tester.pumpWidget(createWeightForm(entry: testWeightEntry1));
     await tester.pumpAndSettle();
 
     // The stored 15:30 renders as a PM time in a 12-hour locale
     expect(find.text('3:30 PM'), findsOneWidget);
 
-    // Save without changing anything
+    // Save with the time untouched
+    await tester.enterText(find.byKey(const Key('notesInput')), 'Before breakfast');
     await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
     await tester.pumpAndSettle();
 
@@ -152,6 +156,7 @@ void main() {
     expect(saved.categoryId, testBodyWeightCategoryId);
     expect(saved.date.hour, 15);
     expect(saved.date.minute, 30);
+    expect(saved.notes, 'Before breakfast');
   });
 
   group('units', () {

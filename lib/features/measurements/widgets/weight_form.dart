@@ -118,6 +118,22 @@ class _WeightFormState extends riverpod.ConsumerState<WeightForm> {
               }
             },
           ),
+          // Notes
+          TextFormField(
+            key: const Key('notesInput'),
+            decoration: InputDecoration(labelText: AppLocalizations.of(context).notes),
+            initialValue: _draft.notes,
+            onSaved: (newValue) {
+              _draft = _draft.copyWith(notes: newValue ?? '');
+            },
+            validator: (value) {
+              const maxLength = 100;
+              if (value!.length > maxLength) {
+                return AppLocalizations.of(context).enterCharacters('0', maxLength.toString());
+              }
+              return null;
+            },
+          ),
           FormSubmitButton(
             key: const Key(SUBMIT_BUTTON_KEY_NAME),
             label: AppLocalizations.of(context).save,
@@ -128,7 +144,7 @@ class _WeightFormState extends riverpod.ConsumerState<WeightForm> {
               }
               _form.currentState!.save();
 
-              // The draft carries what the form does not offer (notes, source,
+              // The draft carries what the form does not offer (source,
               // external id), so an edited import stays deduplicable; only the
               // chosen unit is stamped into extra_data, other keys survive
               final entry = _draft.copyWith(

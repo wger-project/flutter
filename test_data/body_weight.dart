@@ -28,7 +28,7 @@ final testWeightEntry1 = MeasurementEntry(
   categoryId: testBodyWeightCategoryId,
   value: 80.0,
   date: DateTime.utc(2021, 01, 01, 15, 30),
-  notes: '',
+  notes: 'After the run',
 );
 final testWeightEntry2 = MeasurementEntry(
   id: '2',
