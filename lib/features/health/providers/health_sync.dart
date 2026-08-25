@@ -91,9 +91,6 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
     }
   }
 
-  /// Whether a health platform is available on this device.
-  Future<bool> isAvailable() => _health.isAvailable();
-
   /// How usable the device's health platform is, so the settings can offer
   /// installing or updating Health Connect instead of hiding the feature.
   Future<HealthPlatformAvailability> availability() => _health.availability();
@@ -107,7 +104,7 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
   /// permissions were not granted (sync stays disabled).
   Future<int?> enableSync() async {
     _logger.info('Enabling health sync');
-    if (!await _health.ensureAuthorized(enabledHealthDataTypes)) {
+    if (!await _health.ensureAuthorized(healthDataTypes)) {
       return null;
     }
     await PreferenceHelper.instance.setHealthSyncEnabled(true);
@@ -123,7 +120,7 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
   /// not granted.
   Future<int?> retryWithPermissions() async {
     _logger.info('Re-requesting health permissions');
-    if (!await _health.ensureAuthorized(enabledHealthDataTypes)) {
+    if (!await _health.ensureAuthorized(healthDataTypes)) {
       state = state.copyWith(issue: HealthSyncIssue.permissionsMissing);
       return null;
     }

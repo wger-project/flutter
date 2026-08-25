@@ -60,8 +60,6 @@ class HealthMetric {
     required this.toCategoryValue,
     this.dailyAggregation,
     this.dayRollsOverAtHour,
-    this.enabled = false,
-    this.disabledReason,
     this.readWindow = defaultReadWindow,
   }) : components = const [];
 
@@ -74,8 +72,6 @@ class HealthMetric {
     required this.toCategoryValue,
     this.dailyAggregation,
     this.dayRollsOverAtHour,
-    this.enabled = false,
-    this.disabledReason,
     this.readWindow = defaultReadWindow,
   }) : dataType = null;
 
@@ -112,13 +108,6 @@ class HealthMetric {
   /// Sleep is attributed to the day the user wakes up, so a night starting at
   /// 23:30 belongs to the following day. `null` buckets by plain calendar day.
   final int? dayRollsOverAtHour;
-
-  /// Whether V1 imports this metric. Disabled ones are declared for visibility
-  /// and blocked on further groundwork (see [disabledReason]).
-  final bool enabled;
-
-  /// Why a declared metric is not imported yet.
-  final String? disabledReason;
 
   /// How much of the timeline one platform query may cover for this metric.
   ///
@@ -168,17 +157,13 @@ double _identity(double raw) => raw;
 /// Both platforms report a distance in meters, the category stores kilometers.
 double _metersToKm(double raw) => raw / 1000;
 
-/// The V1 metric set (see `plan-measurements-health-v27.md`).
-///
-/// Only [HealthMetric.enabled] entries are imported. A disabled one stays
-/// declared so the mapping is visible in one place, with the groundwork it
-/// waits for in its [HealthMetric.disabledReason].
+/// The V1 metric set (see `plan-measurements-health-v27.md`), all of which
+/// the importer pulls.
 const List<HealthMetric> healthMetrics = [
   HealthMetric(
     metricType: MetricType.bodyFat,
     dataType: HealthDataType.BODY_FAT_PERCENTAGE,
     toCategoryValue: _bodyFatToPercent,
-    enabled: true,
   ),
   HealthMetric(
     // Both platforms report kilograms, like body weight. Unlike it, the
@@ -187,19 +172,16 @@ const List<HealthMetric> healthMetrics = [
     metricType: MetricType.leanBodyMass,
     dataType: HealthDataType.LEAN_BODY_MASS,
     toCategoryValue: _identity,
-    enabled: true,
   ),
   HealthMetric(
     metricType: MetricType.height,
     dataType: HealthDataType.HEIGHT,
     toCategoryValue: _heightToCm,
-    enabled: true,
   ),
   HealthMetric(
     metricType: MetricType.bodyWeight,
     dataType: HealthDataType.WEIGHT,
     toCategoryValue: _identity,
-    enabled: true,
   ),
   HealthMetric.group(
     metricType: MetricType.bloodPressure,
@@ -214,14 +196,12 @@ const List<HealthMetric> healthMetrics = [
         dataTypes: [HealthDataType.BLOOD_PRESSURE_DIASTOLIC],
       ),
     ],
-    enabled: true,
   ),
   HealthMetric(
     metricType: MetricType.heartRate,
     dataType: HealthDataType.HEART_RATE,
     toCategoryValue: _identity,
     dailyAggregation: DailyAggregation.average,
-    enabled: true,
     readWindow: highVolumeReadWindow,
   ),
   HealthMetric(
@@ -231,7 +211,6 @@ const List<HealthMetric> healthMetrics = [
     metricType: MetricType.restingHeartRate,
     dataType: HealthDataType.RESTING_HEART_RATE,
     toCategoryValue: _identity,
-    enabled: true,
   ),
   HealthMetric(
     // A single saturation says little on its own, and a wearable measures it
@@ -241,7 +220,6 @@ const List<HealthMetric> healthMetrics = [
     dataType: HealthDataType.BLOOD_OXYGEN,
     toCategoryValue: _saturationToPercent,
     dailyAggregation: DailyAggregation.average,
-    enabled: true,
     readWindow: highVolumeReadWindow,
   ),
   HealthMetric.group(
@@ -274,7 +252,6 @@ const List<HealthMetric> healthMetrics = [
     ],
     dailyAggregation: DailyAggregation.mergedDuration,
     dayRollsOverAtHour: 18,
-    enabled: true,
   ),
   // The three cumulative types below are counters, not measurements: a single
   // record covers a few minutes and means nothing on its own, so only the
@@ -286,7 +263,6 @@ const List<HealthMetric> healthMetrics = [
     dataType: HealthDataType.STEPS,
     toCategoryValue: _identity,
     dailyAggregation: DailyAggregation.sum,
-    enabled: true,
     readWindow: highVolumeReadWindow,
   ),
   HealthMetric(
@@ -294,7 +270,6 @@ const List<HealthMetric> healthMetrics = [
     dataType: HealthDataType.DISTANCE_DELTA,
     toCategoryValue: _metersToKm,
     dailyAggregation: DailyAggregation.sum,
-    enabled: true,
     readWindow: highVolumeReadWindow,
   ),
   HealthMetric(
@@ -305,15 +280,10 @@ const List<HealthMetric> healthMetrics = [
     dataType: HealthDataType.ACTIVE_ENERGY_BURNED,
     toCategoryValue: _identity,
     dailyAggregation: DailyAggregation.sum,
-    enabled: true,
     readWindow: highVolumeReadWindow,
   ),
 ];
 
-/// The enabled subset that the importer actually pulls.
-List<HealthMetric> get enabledHealthMetrics => healthMetrics.where((m) => m.enabled).toList();
-
-/// Every platform data type the enabled metrics are made of, i.e. what
-/// permissions are asked for and what is checked as readable.
-List<HealthDataType> get enabledHealthDataTypes =>
-    enabledHealthMetrics.expand((m) => m.dataTypes).toList();
+/// Every platform data type the metrics are made of, i.e. what permissions
+/// are asked for and what is checked as readable.
+List<HealthDataType> get healthDataTypes => healthMetrics.expand((m) => m.dataTypes).toList();

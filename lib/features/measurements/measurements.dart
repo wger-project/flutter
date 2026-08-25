@@ -73,7 +73,7 @@ extension MeasurementChartEntryListExtensions on List<MeasurementChartEntry> {
       } else {
         // insert interpolated start value if needed
         if (!hasEntryOnStartDay && lastBeforeStart != null) {
-          result.insert(0, interpolateBetween(lastBeforeStart, entry, start));
+          result.insert(0, _interpolateBetween(lastBeforeStart, entry, start));
           hasEntryOnStartDay = true;
         }
 
@@ -84,7 +84,7 @@ extension MeasurementChartEntryListExtensions on List<MeasurementChartEntry> {
           // note: we only interpolate end if we have data going beyond end
           // if let's say your plan ends in a week from now, we wouldn't want to fake data until next week.
           if (!hasEntryOnEndDay && lastBeforeEnd != null) {
-            result.add(interpolateBetween(lastBeforeEnd, entry, end!));
+            result.add(_interpolateBetween(lastBeforeEnd, entry, end!));
             hasEntryOnEndDay = true;
           }
           // we added all our values and did all interpolations
@@ -98,7 +98,7 @@ extension MeasurementChartEntryListExtensions on List<MeasurementChartEntry> {
 }
 
 // caller needs to make sure that before.date < date < after.date
-MeasurementChartEntry interpolateBetween(
+MeasurementChartEntry _interpolateBetween(
   MeasurementChartEntry before,
   MeasurementChartEntry after,
   DateTime date,

@@ -28,10 +28,10 @@ import 'package:intl/intl.dart';
 import 'package:wger/core/formatting/formatting.dart';
 
 /// Number of dates to label on the x axis
-const X_LABEL_COUNT = 4;
+const _xLabelCount = 4;
 
 /// Widest a single bar gets, for charts with only a handful of entries
-const MAX_BAR_WIDTH = 12.0;
+const _maxBarWidth = 12.0;
 
 const hiddenTitles = AxisTitles(sideTitles: SideTitles(showTitles: false));
 
@@ -73,8 +73,8 @@ AxisTitles valueTitles(BuildContext context, String unit, double? interval) => A
 /// The date axis of the bar charts, which draw one title per group: their x
 /// value is a position in [dates] rather than a timestamp, so thinning the
 /// labels out has to happen here.
-AxisTitles dateIndexTitles(BuildContext context, List<DateTime> dates) {
-  final labelStep = max(1, (dates.length / X_LABEL_COUNT).ceil());
+AxisTitles _dateIndexTitles(BuildContext context, List<DateTime> dates) {
+  final labelStep = max(1, (dates.length / _xLabelCount).ceil());
   // keep the labels away from the chart edges
   final labelOffset = labelStep ~/ 2;
   final spansYears = dates.isNotEmpty && dates.first.year != dates.last.year;
@@ -112,7 +112,7 @@ FlTitlesData barTitlesData(
   show: true,
   rightTitles: hiddenTitles,
   topTitles: hiddenTitles,
-  bottomTitles: dateIndexTitles(context, dates),
+  bottomTitles: _dateIndexTitles(context, dates),
   leftTitles: valueTitles(context, unit, interval),
 );
 
@@ -120,7 +120,7 @@ FlTitlesData barTitlesData(
 /// between them, but never go below a hairline. Without it a couple of months
 /// of readings overlap into a solid block.
 double barWidth(int count, double availableWidth) =>
-    count == 0 ? MAX_BAR_WIDTH : (availableWidth / count * 0.7).clamp(1.0, MAX_BAR_WIDTH);
+    count == 0 ? _maxBarWidth : (availableWidth / count * 0.7).clamp(1.0, _maxBarWidth);
 
 /// Horizontal lines only: a vertical one per bar would only repeat the bars.
 FlGridData barGrid(BuildContext context) => FlGridData(

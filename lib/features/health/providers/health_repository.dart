@@ -56,9 +56,6 @@ class HealthRepository {
   /// for Apple Health, `google` for Health Connect.
   String get sourceName => Platform.isIOS ? 'apple' : 'google';
 
-  /// Whether a health platform is usable on this device.
-  Future<bool> isAvailable() async => await availability() == HealthPlatformAvailability.available;
-
   /// How usable the device's health platform is.
   ///
   /// Android tells the two unusable cases apart, and both are the user's to

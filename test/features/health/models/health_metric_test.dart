@@ -27,7 +27,7 @@ void main() {
   group('Enabled metric set', () {
     test('every declared metric is imported', () {
       expect(
-        enabledHealthMetrics.map((m) => m.metricType),
+        healthMetrics.map((m) => m.metricType),
         containsAll([
           MetricType.bodyFat,
           MetricType.leanBodyMass,
@@ -43,7 +43,7 @@ void main() {
           MetricType.energy,
         ]),
       );
-      expect(enabledHealthMetrics.length, 12);
+      expect(healthMetrics.length, 12);
     });
 
     test('daily aggregation is set per metric', () {
@@ -93,12 +93,6 @@ void main() {
       }
     });
 
-    test('every disabled metric explains why', () {
-      // Nothing is parked at the moment; the rule is for the next type that is
-      // declared before its groundwork exists
-      expect(healthMetrics.where((m) => !m.enabled).every((m) => m.disabledReason != null), isTrue);
-    });
-
     test('metric types are unique', () {
       final types = healthMetrics.map((m) => m.metricType).toList();
       expect(types.length, types.toSet().length);
@@ -139,12 +133,5 @@ void main() {
     test('a value already in centimeters is kept as-is', () {
       expect(height.toCategoryValue(180), closeTo(180, 0.001));
     });
-  });
-
-  test('enabledHealthMetrics matches the enabled flag', () {
-    expect(
-      enabledHealthMetrics,
-      healthMetrics.where((m) => m.enabled).toList(),
-    );
   });
 }

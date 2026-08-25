@@ -24,7 +24,6 @@ import 'package:wger/features/measurements/charts/range.dart';
 import 'package:wger/features/measurements/charts/series.dart';
 import 'package:wger/features/measurements/models/measurement_bucket.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
-import 'package:wger/features/measurements/models/measurement_entry.dart';
 
 void main() {
   MeasurementChartEntry entry(num value, DateTime date) => MeasurementChartEntry(value, date);
@@ -331,46 +330,6 @@ void main() {
     });
   });
 
-  group('chartEntriesFor', () {
-    test('converts the aggregate bounds along with the value', () {
-      // Reading the value in lb but the bounds in kg would put the band a
-      // factor 2.2 off the line it is supposed to wrap
-      final points = chartEntriesFor(
-        [
-          MeasurementEntry(
-            categoryId: 'c',
-            date: DateTime(2026, 1, 1),
-            value: 80,
-            notes: '',
-            extraData: const {'min': 70, 'max': 90},
-          ),
-        ],
-        targetUnit: 'lb',
-        categoryUnit: 'kg',
-      );
-
-      expect(points.single.value, 176.37);
-      expect(points.single.min, 154.32);
-      expect(points.single.max, 198.42);
-    });
-
-    test('leaves entries without bounds unranged', () {
-      final points = chartEntriesFor(
-        [
-          MeasurementEntry(
-            categoryId: 'c',
-            date: DateTime(2026, 1, 1),
-            value: 80,
-            notes: '',
-          ),
-        ],
-        targetUnit: 'kg',
-        categoryUnit: 'kg',
-      );
-
-      expect(points.single.hasRange, isFalse);
-    });
-  });
   group('chartEntriesForBuckets', () {
     MeasurementBucket bucket(
       num sum, {

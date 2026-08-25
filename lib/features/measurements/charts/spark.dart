@@ -45,11 +45,11 @@ const sparkMaxWeeks = 52;
 
 /// Widest window drawn as one slot per day. Beyond it the daily bars fall
 /// below legibility and the bar family switches to weekly slots.
-const sparkWeeklyThresholdDays = 35;
+const _weeklyThresholdDays = 35;
 
 /// Fewest points in the window before a line spark draws dots instead: a line
 /// through a handful of readings claims a continuity they do not have.
-const sparkSparseMinDays = 3;
+const _sparseMinDays = 3;
 
 /// The spark a category of [metricType] is drawn as, honoring [picked]
 /// wherever the format survives miniaturisation.
@@ -89,7 +89,7 @@ class SparkWindow {
 /// passed in (null for the full history).
 ///
 /// The line follows the filter as it is. The bar family switches to weekly
-/// slots beyond [sparkWeeklyThresholdDays] and is capped at [sparkMaxWeeks];
+/// slots beyond [_weeklyThresholdDays] and is capped at [sparkMaxWeeks];
 /// the heatmap follows it within its own, tighter legibility bounds. The
 /// delta window gets one slot beyond its weeks for the running week.
 SparkWindow sparkWindowFor(SparkKind kind, {required DateTime? cutoff, DateTime? today}) {
@@ -115,7 +115,7 @@ SparkWindow sparkWindowFor(SparkKind kind, {required DateTime? cutoff, DateTime?
       );
 
     case SparkKind.bars:
-      if (days != null && days <= sparkWeeklyThresholdDays) {
+      if (days != null && days <= _weeklyThresholdDays) {
         return SparkWindow(start: dayOf(cutoff!), days: days);
       }
       final weeks = weeksOf(days);
@@ -130,8 +130,8 @@ SparkWindow sparkWindowFor(SparkKind kind, {required DateTime? cutoff, DateTime?
   }
 }
 
-/// Whether the window holds too few points for a line, see [sparkSparseMinDays].
-bool sparkIsSparse(List<MeasurementChartEntry> days) => days.length < sparkSparseMinDays;
+/// Whether the window holds too few points for a line, see [_sparseMinDays].
+bool sparkIsSparse(List<MeasurementChartEntry> days) => days.length < _sparseMinDays;
 
 /// One point per calendar week: the mean of the week's daily values, carrying
 /// the span of everything measured in it as its range.

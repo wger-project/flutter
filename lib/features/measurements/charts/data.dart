@@ -178,30 +178,6 @@ List<MeasurementChartEntry> weeklyDeltas(
   ];
 }
 
-/// Turns stored entries into chart points, converting the value to [targetUnit].
-///
-/// Entries stored as a daily aggregate keep the range they summarise in
-/// `extra_data` (heart rate min/max); it is lifted onto the point so the chart
-/// draws a band around the line. Those bounds share the value's unit and are
-/// converted along with it.
-List<MeasurementChartEntry> chartEntriesFor(
-  List<MeasurementEntry> entries, {
-  required String targetUnit,
-  required String categoryUnit,
-}) => entries.map((entry) {
-  num? bound(String key) {
-    final stored = entry.extraData?[key];
-    return stored is num ? entry.boundIn(stored, targetUnit, categoryUnit: categoryUnit) : null;
-  }
-
-  return MeasurementChartEntry(
-    entry.valueIn(targetUnit, categoryUnit: categoryUnit),
-    entry.date,
-    min: bound('min'),
-    max: bound('max'),
-  );
-}).toList();
-
 /// The point level a category's chart needs.
 ///
 /// Two charts are built on a calendar unit and fix it: a heatmap draws days, a
@@ -240,7 +216,7 @@ MeasurementBucketLevel chartBucketLevel(MetricType metricType, ChartType chartTy
 
 /// Turns SQL-condensed buckets into chart points, converting to [targetUnit].
 ///
-/// The counterpart of [chartEntriesFor] for the aggregated read path. A bucket
+/// Chart points from the aggregated read path. A bucket
 /// arrives once per unit its entries were written in, so the slices are
 /// converted before they are merged. Their spread becomes the point's range,
 /// left off where it says nothing (a single reading, a [summed] total).
@@ -482,14 +458,14 @@ ChartType resolveChartTypeForData(
       ? aggregatePerDay(raw).length
       : raw.map((e) => e.count).sum;
 
-  return readings < distributionMinValues ? metricType.defaultChartType : resolved;
+  return readings < _distributionMinValues ? metricType.defaultChartType : resolved;
 }
 
 /// Fewest values a distribution says anything about: below this a histogram
 /// is noise with gaps, and the chart falls back to the derived default. Same
 /// principle as a group whose readings are all unpaired falling back to
 /// lines: never an empty or misleading card.
-const distributionMinValues = 15;
+const _distributionMinValues = 15;
 
 /// Widest a histogram gets, in bins. A single outlier (a lb reading stored
 /// into a kg category) would otherwise stretch a fixed-width histogram into

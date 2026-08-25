@@ -132,19 +132,17 @@ class HealthImporter {
     _outOfRangeCount = 0;
 
     try {
-      final readable = await _health.readableTypes(enabledHealthDataTypes);
-      final metrics = enabledHealthMetrics
-          .where((m) => m.dataTypes.every(readable.contains))
-          .toList();
+      final readable = await _health.readableTypes(healthDataTypes);
+      final metrics = healthMetrics.where((m) => m.dataTypes.every(readable.contains)).toList();
       if (metrics.isEmpty) {
         _logger.warning('Health permissions not granted, skipping sync');
         return (imported: 0, issue: HealthSyncIssue.permissionsMissing, completed: false);
       }
-      if (metrics.length < enabledHealthMetrics.length) {
+      if (metrics.length < healthMetrics.length) {
         // A declined type costs its own metric its import, nothing else. Both
         // platforms hand out access per type, so this is the normal state
         // after a user unticked one, not an error
-        final blocked = enabledHealthMetrics.where((m) => !metrics.contains(m));
+        final blocked = healthMetrics.where((m) => !metrics.contains(m));
         _logger.info(
           'No access to ${blocked.map((m) => m.metricType.name).join(', ')}, '
           'importing the remaining ${metrics.length} metrics',

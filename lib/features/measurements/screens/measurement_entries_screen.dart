@@ -33,7 +33,7 @@ import 'package:wger/features/measurements/widgets/forms/entry.dart';
 import 'package:wger/features/measurements/widgets/forms/group_entry.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
-enum MeasurementOptions {
+enum _MeasurementOptions {
   edit,
   delete,
 }
@@ -81,11 +81,11 @@ class _MeasurementEntriesScreenState extends ConsumerState<MeasurementEntriesScr
         title: Text(category?.displayName(context) ?? ''),
         actions: [
           if (category != null)
-            PopupMenuButton<MeasurementOptions>(
+            PopupMenuButton<_MeasurementOptions>(
               icon: const Icon(Icons.more_vert),
               onSelected: (value) {
                 switch (value) {
-                  case MeasurementOptions.edit:
+                  case _MeasurementOptions.edit:
                     Navigator.pushNamed(
                       context,
                       FormScreen.routeName,
@@ -97,7 +97,7 @@ class _MeasurementEntriesScreenState extends ConsumerState<MeasurementEntriesScr
                     );
                     break;
 
-                  case MeasurementOptions.delete:
+                  case _MeasurementOptions.delete:
                     showConfirmDeleteDialog(
                       context,
                       itemName: category.displayName(context),
@@ -112,12 +112,12 @@ class _MeasurementEntriesScreenState extends ConsumerState<MeasurementEntriesScr
               itemBuilder: (context) {
                 return [
                   if (category.isEditable)
-                    PopupMenuItem<MeasurementOptions>(
-                      value: MeasurementOptions.edit,
+                    PopupMenuItem<_MeasurementOptions>(
+                      value: _MeasurementOptions.edit,
                       child: Text(AppLocalizations.of(context).edit),
                     ),
-                  PopupMenuItem<MeasurementOptions>(
-                    value: MeasurementOptions.delete,
+                  PopupMenuItem<_MeasurementOptions>(
+                    value: _MeasurementOptions.delete,
                     child: Text(AppLocalizations.of(context).delete),
                   ),
                 ];

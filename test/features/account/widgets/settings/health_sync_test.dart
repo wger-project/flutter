@@ -44,9 +44,6 @@ class _FakeHealthSyncNotifier extends HealthSyncNotifier {
   HealthSyncState build() => initialState;
 
   @override
-  Future<bool> isAvailable() async => platformAvailability == HealthPlatformAvailability.available;
-
-  @override
   Future<HealthPlatformAvailability> availability() async => platformAvailability;
 
   @override

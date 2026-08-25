@@ -48,7 +48,7 @@ sealed class CalculationParam {
 /// no end, and a category whose unit is not among these is offered but
 /// disabled, which shows the user what to change instead of hiding the
 /// category from them.
-const lengthUnits = [
+const _lengthUnits = [
   'mm',
   'millimeter',
   'millimeters',
@@ -138,7 +138,7 @@ const calculationTypes = <CalculationType>[
     // A ratio of two lengths, so the number carries no unit
     unit: '',
     params: [
-      CategoryParam('category_id', unitFilter: lengthUnits),
+      CategoryParam('category_id', unitFilter: _lengthUnits),
     ],
     needsHeight: true,
   ),

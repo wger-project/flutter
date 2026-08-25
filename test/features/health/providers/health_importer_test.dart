@@ -121,7 +121,7 @@ void main() {
   /// imported before looks like.
   Future<void> seedWatermarks(String timestamp) =>
       PreferenceHelper.instance.setHealthSyncWatermarks({
-        for (final metric in enabledHealthMetrics) metric.metricType.name: timestamp,
+        for (final metric in healthMetrics) metric.metricType.name: timestamp,
       });
 
   /// How far [type] has been imported, null while it has no watermark.
@@ -133,7 +133,7 @@ void main() {
   /// starting from the watermark.
   List<MeasurementCategory> categoriesForEveryMetric() {
     final categories = <MeasurementCategory>[];
-    for (final metric in enabledHealthMetrics) {
+    for (final metric in healthMetrics) {
       if (metric.metricType == MetricType.bodyWeight) {
         categories.add(
           MeasurementCategory(
@@ -291,7 +291,7 @@ void main() {
       // Both platforms hand out access per type, and Health Connect invites
       // the user to untick single ones, so one declined type must not stop
       // everything else
-      final bloodPressure = enabledHealthMetrics.firstWhere(
+      final bloodPressure = healthMetrics.firstWhere(
         (m) => m.metricType == MetricType.bloodPressure,
       );
       when(health.readableTypes(any)).thenAnswer(
@@ -338,7 +338,7 @@ void main() {
       // is years of platform records read to import nothing
       await seedWatermarks('2026-06-01T12:00:00.000');
       await PreferenceHelper.instance.setHealthSyncReadableTypes([
-        for (final metric in enabledHealthMetrics)
+        for (final metric in healthMetrics)
           for (final type in metric.dataTypes)
             if (type != HealthDataType.BODY_FAT_PERCENTAGE) type.name,
       ]);
@@ -356,7 +356,7 @@ void main() {
     test('stays on the watermark while the readable types are unchanged', () async {
       await seedWatermarks('2026-06-01T12:00:00.000');
       await PreferenceHelper.instance.setHealthSyncReadableTypes([
-        for (final metric in enabledHealthMetrics)
+        for (final metric in healthMetrics)
           for (final type in metric.dataTypes) type.name,
       ]);
       when(measurements.getCategoriesOnce()).thenAnswer((_) async => categoriesForEveryMetric());

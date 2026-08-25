@@ -59,7 +59,7 @@ void main() {
       // Health Connect can only grant what the manifest declares, and it
       // reports an undeclared type as not granted rather than as an error, so
       // a forgotten entry costs that metric its import without a trace
-      for (final metric in enabledHealthMetrics) {
+      for (final metric in healthMetrics) {
         for (final type in metric.dataTypes) {
           final permission = _readPermissions[type];
           expect(

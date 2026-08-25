@@ -30,7 +30,7 @@ part 'measurement_category.freezed.dart';
 /// MUST stay identical to CATEGORY_NAMESPACE on the server: a UUIDv5 hashes
 /// namespace and name together, so a different constant here derives different
 /// ids and the whole point of [deterministicCategoryId] collapses.
-const categoryIdNamespace = '4c5ef6dd-97c9-5b18-9f8b-2a5c1ed70a2f';
+const _categoryIdNamespace = '4c5ef6dd-97c9-5b18-9f8b-2a5c1ed70a2f';
 
 /// The id the category of [metricType] has for the user [userId].
 ///
@@ -40,7 +40,7 @@ const categoryIdNamespace = '4c5ef6dd-97c9-5b18-9f8b-2a5c1ed70a2f';
 /// acknowledges the second push as a no-op instead of rejecting it against its
 /// uniqueness constraint.
 String deterministicCategoryId(String userId, MetricType metricType) =>
-    ps.uuid.v5(categoryIdNamespace, '$userId:${metricType.wireValue}');
+    ps.uuid.v5(_categoryIdNamespace, '$userId:${metricType.wireValue}');
 
 /// Largest value the server's column can hold (numeric(8, 2)). It is what a
 /// category without a metric type is bounded by, since nothing about a
