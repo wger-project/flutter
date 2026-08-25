@@ -358,6 +358,28 @@ void main() {
 
       verifyNever(mockClient.head(tProbe, headers: anyNamed('headers')));
     });
+
+    test('a retried auto-login replaces the listener instead of stacking one', () async {
+      final container = makeContainer();
+      await container.read(authProvider.future);
+      final notifier = container.read(authProvider.notifier);
+      await notifier.revalidationDone;
+
+      // What the recovery screens' retry button runs; it re-arms the listener
+      await notifier.retryAutoLogin();
+      await notifier.revalidationDone;
+      await pumpEventQueue();
+      // Consume the probes the two scheduling runs fired themselves
+      verify(mockClient.head(tProbe, headers: anyNamed('headers')));
+
+      connectivityStream.add(const [ConnectivityResult.wifi]);
+      await pumpEventQueue();
+      await notifier.revalidationDone;
+      await pumpEventQueue();
+
+      // One reconnect, one probe
+      verify(mockClient.head(tProbe, headers: anyNamed('headers'))).called(1);
+    });
   });
 
   group('never-synced session: PowerSync reachability', () {

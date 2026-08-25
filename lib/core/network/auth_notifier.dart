@@ -88,6 +88,11 @@ class AuthNotifier extends _$AuthNotifier {
   @visibleForTesting
   Future<void>? revalidationDone;
 
+  /// Listeners armed by [_scheduleRevalidation], replaced on re-arm: the
+  /// provider is keepAlive, so stacked ones would live for good.
+  StreamSubscription<List<ConnectivityResult>>? _connectivitySub;
+  AppLifecycleListener? _lifecycleListener;
+
   /// Number of times the user-switch DB wipe has fired since the notifier
   /// was built. Exposed so tests can assert the user-mismatch path ran
   /// without having to instrument PowerSync or the filesystem.
@@ -105,6 +110,10 @@ class AuthNotifier extends _$AuthNotifier {
     _client = ref.read(authHttpClientProvider);
     _storage = ref.read(authCredentialsStorageProvider);
     _gating = ref.read(serverGatingProvider);
+    ref.onDispose(() {
+      _connectivitySub?.cancel();
+      _lifecycleListener?.dispose();
+    });
     return _tryAutoLogin();
   }
 
@@ -527,20 +536,21 @@ class AuthNotifier extends _$AuthNotifier {
   void _scheduleRevalidation() {
     revalidationDone = Future(_revalidate);
 
-    final sub = Connectivity().onConnectivityChanged.listen((results) {
+    _connectivitySub?.cancel();
+    _connectivitySub = Connectivity().onConnectivityChanged.listen((results) {
       final online = results.any((r) => r != ConnectivityResult.none);
       if (online) {
         revalidationDone = _revalidate();
       }
     });
-    ref.onDispose(sub.cancel);
 
     // A warm resume must also revalidate: the process can stay alive in the
     // background for days, so the tokens may have expired without any cold
     // start noticing. The app is offline-first, so without this a dead
     // session would only surface once some server-backed action happens to
     // run. Gated on needsRefresh so quick app switches stay request-free.
-    final lifecycleListener = AppLifecycleListener(
+    _lifecycleListener?.dispose();
+    _lifecycleListener = AppLifecycleListener(
       onResume: () {
         final credential = state.asData?.value.credential;
         if (credential?.needsRefresh(refreshLeeway) ?? false) {
@@ -549,7 +559,6 @@ class AuthNotifier extends _$AuthNotifier {
         }
       },
     );
-    ref.onDispose(lifecycleListener.dispose);
   }
 
   /// Revalidates the restored session against the server. Fire-and-forget: it
