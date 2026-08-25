@@ -177,22 +177,22 @@ class MeasurementChartWidgetFl extends StatelessWidget {
       final carriesSpread =
           series.role == MeasurementSeriesRole.raw ||
           series.role == MeasurementSeriesRole.component;
-      final ranged = carriesSpread
-          ? series.entries.where((e) => e.hasRange).toList()
-          : const <MeasurementChartEntry>[];
+      final hasSpread = carriesSpread && series.entries.any((e) => e.hasRange);
       return _ResolvedSeries(
         line,
         series.label,
-        bounds: ranged.length == series.entries.length && ranged.isNotEmpty
+        // A point without a spread (a day with a single measurement) pinches
+        // the band to the line instead of switching it off for the series
+        bounds: hasSpread
             ? (
                 LineChartBarData(
-                  spots: _spots(ranged, (e) => e.min!),
+                  spots: _spots(series.entries, (e) => e.min ?? e.value),
                   color: Colors.transparent,
                   barWidth: 0,
                   dotData: const FlDotData(show: false),
                 ),
                 LineChartBarData(
-                  spots: _spots(ranged, (e) => e.max!),
+                  spots: _spots(series.entries, (e) => e.max ?? e.value),
                   color: Colors.transparent,
                   barWidth: 0,
                   dotData: const FlDotData(show: false),

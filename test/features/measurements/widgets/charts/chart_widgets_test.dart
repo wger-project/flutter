@@ -228,7 +228,9 @@ void main() {
       expect(chartData(tester).betweenBarsData, hasLength(1));
     });
 
-    testWidgets('no band when only some points carry a range', (tester) async {
+    testWidgets('a point without a spread pinches the band to the line', (tester) async {
+      // A day with a single measurement has no range of its own; the band
+      // narrows to the line there instead of vanishing for the whole series
       await tester.pumpWidget(
         _wrap(
           MeasurementChartWidgetFl([
@@ -241,8 +243,12 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(chartData(tester).betweenBarsData, isEmpty);
-      expect(chartData(tester).lineBarsData, hasLength(1));
+      final data = chartData(tester);
+      expect(data.betweenBarsData, hasLength(1));
+      expect(data.lineBarsData, hasLength(3));
+      // The bounds fall back to the value where the point has no range
+      expect(data.lineBarsData[0].spots.map((s) => s.y), [50, 70]);
+      expect(data.lineBarsData[1].spots.map((s) => s.y), [80, 70]);
     });
   });
 
