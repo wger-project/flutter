@@ -97,8 +97,17 @@ void main() {
         start: anyNamed('start'),
         end: anyNamed('end'),
         window: anyNamed('window'),
+        onBatch: anyNamed('onBatch'),
       ),
-    ).thenAnswer((_) async => readings);
+    ).thenAnswer((invocation) async {
+      if (readings.isEmpty) {
+        return;
+      }
+      final onBatch =
+          invocation.namedArguments[#onBatch]
+              as Future<void> Function(List<HealthReading>, DateTime);
+      await onBatch(readings, invocation.namedArguments[#end] as DateTime);
+    });
   }
 
   group('HealthSyncState', () {
@@ -133,6 +142,7 @@ void main() {
           start: anyNamed('start'),
           end: anyNamed('end'),
           window: anyNamed('window'),
+          onBatch: anyNamed('onBatch'),
         ),
       );
     });

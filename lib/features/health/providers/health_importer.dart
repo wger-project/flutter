@@ -198,69 +198,65 @@ class HealthImporter {
         // One bad metric must not cost the others their import, and its own
         // watermark has to stay put for whatever it could not write
         try {
-          // Read per metric: how much of the timeline one platform query may
-          // cover depends on how densely the metric is written, see
-          // [HealthMetric.readWindow]
-          final readings = await _health.read(
+          var delivered = false;
+          DateTime? latest;
+          // The categories the metric imports into, resolved on the first
+          // batch that delivers: a metric the platform has nothing for must
+          // not create them
+          List<_ImportTarget>? targets;
+
+          // Read per metric, one window at a time: how much of the timeline
+          // one platform query may cover depends on how densely the metric is
+          // written, see [HealthMetric.readWindow]. Windows already written
+          // stay written when a later one fails; the watermark below then
+          // holds, and the re-read is deduplicated via the external ids
+          await _health.read(
             types: metric.dataTypes,
             start: _windowStartFor(startTime, metric),
             end: endTime,
             window: metric.readWindow,
+            onBatch: (batch, windowEnd) async {
+              final readings = batch.where((r) => metric.dataTypes.contains(r.type)).toList();
+              if (readings.isEmpty) {
+                return;
+              }
+              delivered = true;
+              targets ??= await _resolveTargets(metric, categories, userId);
+              for (final target in targets!) {
+                final routed = readings.where((r) => target.dataTypes.contains(r.type));
+                synced += metric.dailyAggregation != null
+                    ? await _collectDailyAggregates(metric, routed, target, windowEnd, source)
+                    : await _importReadings(metric, routed, target, source);
+              }
+              for (final reading in readings) {
+                if (latest == null || reading.date.isAfter(latest!)) {
+                  latest = reading.date;
+                }
+              }
+            },
           );
-
-          // Pair each target category with the readings it receives: the metric's
-          // own category, or one child per component for a group metric.
-          final List<(MeasurementCategory, Iterable<HealthReading>)> targets;
-          if (metric.components.isEmpty) {
-            final metricReadings = readings.where((r) => metric.dataTypes.contains(r.type));
-            if (metricReadings.isEmpty) {
-              if (readsFullHistory && withoutCategory.contains(name)) {
-                knownEmpty.add(name);
-              }
-              watermarks[name] = endTime;
-              continue;
-            }
-            knownEmpty.remove(name);
-            final category = await _findOrCreateCategory(metric, categories, userId);
-            if (category == null) {
-              continue;
-            }
-            targets = [(category, metricReadings)];
-          } else {
-            final byComponent = [
-              for (final component in metric.components)
-                readings.where((r) => component.dataTypes.contains(r.type)),
-            ];
-            if (byComponent.every((r) => r.isEmpty)) {
-              if (readsFullHistory && withoutCategory.contains(name)) {
-                knownEmpty.add(name);
-              }
-              watermarks[name] = endTime;
-              continue;
-            }
-            knownEmpty.remove(name);
-            final children = await _findOrCreateGroupChildren(metric, categories, userId);
-            if (children == null) {
-              continue;
-            }
-            targets = [for (var i = 0; i < children.length; i++) (children[i], byComponent[i])];
+          // The newest day can still be growing, so it is only written once
+          // no window can add to it anymore
+          for (final target in targets ?? const <_ImportTarget>[]) {
+            synced += await _flushPendingDays(metric, target, source);
           }
 
-          DateTime? latest;
-          for (final (category, metricReadings) in targets) {
-            final (importedCount, newest) = metric.dailyAggregation != null
-                ? await _importDailyAggregates(metric, metricReadings, category, source)
-                : await _importReadings(metric, metricReadings, category, source);
-            synced += importedCount;
-            if (newest != null && (latest == null || newest.isAfter(latest))) {
-              latest = newest;
+          if (!delivered) {
+            if (readsFullHistory && withoutCategory.contains(name)) {
+              knownEmpty.add(name);
             }
+            watermarks[name] = endTime;
+            continue;
           }
+          knownEmpty.remove(name);
 
           // A reading dated in the future (a device with a wrong clock) must
           // not drag the watermark along with it, or everything recorded until
           // that date is skipped on the next run
-          watermarks[name] = latest == null || latest.isAfter(endTime) ? endTime : latest;
+          watermarks[name] = latest == null || latest!.isAfter(endTime) ? endTime : latest!;
+        } on _SkipMetric {
+          // Nothing was written and the watermark holds; the cause is logged
+          // where the metric was skipped
         } catch (e, s) {
           if (HealthRepository.isAuthorizationMissing(e)) {
             // The one permission failure iOS reports, and it reports it only
@@ -320,18 +316,18 @@ class HealthImporter {
     }
   }
 
-  /// Imports [metricReadings] into [category], deduplicating against the
-  /// entries already present via their externalId. Returns the number of
-  /// imported entries and the newest imported reading date.
-  Future<(int, DateTime?)> _importReadings(
+  /// Imports [metricReadings] into [target]'s category, deduplicating against
+  /// the entries already present via their externalId. Returns the number of
+  /// imported entries.
+  Future<int> _importReadings(
     HealthMetric metric,
     Iterable<HealthReading> metricReadings,
-    MeasurementCategory category,
+    _ImportTarget target,
     String source,
   ) async {
-    final seen = await _measurements.getExternalIds(category.id!);
+    final category = target.category;
+    final seen = target.seen!;
     var synced = 0;
-    DateTime? latest;
 
     for (final reading in metricReadings) {
       final uuid = _externalIdFor(reading.externalId, category.id!);
@@ -379,95 +375,122 @@ class HealthImporter {
         }
         synced++;
       }
-
-      // Also for a dropped reading: it will never become importable, so
-      // holding the watermark back would only mean reading it again forever
-      if (latest == null || reading.date.isAfter(latest)) {
-        latest = reading.date;
-      }
     }
-    return (synced, latest);
+    return synced;
   }
 
-  /// Imports [metricReadings] as one entry per day, condensed per the metric's
+  /// Sorts [metricReadings] into the days they belong to and writes every day
+  /// no later window can add samples to; the rest waits in [target]'s pending
+  /// days until [_flushPendingDays]. Returns the number of written entries.
+  Future<int> _collectDailyAggregates(
+    HealthMetric metric,
+    Iterable<HealthReading> metricReadings,
+    _ImportTarget target,
+    DateTime windowEnd,
+    String source,
+  ) async {
+    for (final reading in metricReadings) {
+      target.pending.putIfAbsent(_dayOf(reading.date, metric), () => []).add(reading);
+    }
+
+    var synced = 0;
+    // The windows only move forward, so a day that ends at or before this
+    // window's end is complete and can stop holding its samples
+    for (final day in target.pending.keys.toList()) {
+      if (!_dayEnd(day, metric).isAfter(windowEnd)) {
+        synced += await _writeDailyAggregate(
+          metric,
+          day,
+          target.pending.remove(day)!,
+          target,
+          source,
+        );
+      }
+    }
+    return synced;
+  }
+
+  /// Writes the days still pending once the metric's read is complete: the
+  /// newest one is usually among them, still growing while its day runs.
+  Future<int> _flushPendingDays(HealthMetric metric, _ImportTarget target, String source) async {
+    var synced = 0;
+    for (final day in target.pending.keys.toList()) {
+      synced += await _writeDailyAggregate(
+        metric,
+        day,
+        target.pending.remove(day)!,
+        target,
+        source,
+      );
+    }
+    return synced;
+  }
+
+  /// Writes [samples] as the one entry of [day], condensed per the metric's
   /// [HealthMetric.dailyAggregation]. Days are keyed by
   /// [dailyAggregateExternalId], so a re-read within the overlap window updates
   /// the aggregate in place when late samples change it (the current day keeps
   /// growing until it ends). The entry's date is the start of that day; for
   /// metrics that roll over (sleep) the samples' real window is kept in
-  /// extra_data. Returns the number of written entries and the newest
-  /// processed sample date.
-  Future<(int, DateTime?)> _importDailyAggregates(
+  /// extra_data. Returns the number of written entries.
+  Future<int> _writeDailyAggregate(
     HealthMetric metric,
-    Iterable<HealthReading> metricReadings,
-    MeasurementCategory category,
+    DateTime day,
+    List<HealthReading> samples,
+    _ImportTarget target,
     String source,
   ) async {
-    var synced = 0;
-    DateTime? latest;
-    final byDay = groupBy(metricReadings, (r) => _dayOf(r.date, metric));
-    // Read once for the whole category: a day is looked up by its key below,
-    // and a full history holds one aggregate per day
-    final stored = await _measurements.getEntriesByExternalId(category.id!);
+    final category = target.category;
+    final values = samples.map((r) => metric.toCategoryValue(r.value)).toList();
+    final aggregate = switch (metric.dailyAggregation!) {
+      DailyAggregation.average => values.average,
+      DailyAggregation.sum => values.sum,
+      DailyAggregation.mergedDuration => _mergedDurationMinutes(samples),
+    };
+    // Round like the raw import: the server stores Decimal with 2 places
+    final value = (aggregate * 100).roundToDouble() / 100;
+    final extraData = <String, dynamic>{
+      if (metric.dailyAggregation == DailyAggregation.average) ...{
+        'min': values.min,
+        'max': values.max,
+      },
+      'sample_count': values.length,
+      // The types actually seen, not the metric's own: a component can roll
+      // several of them up (total sleep)
+      'record_type': (samples.map((r) => r.type.name).toSet().toList()..sort()).join(','),
+      // A rolled-over day is not the samples' calendar day, so keep the
+      // window they actually cover
+      if (metric.dayRollsOverAtHour != null) ...{
+        'date_from': samples.map((r) => r.date).reduce(_earlier).toIso8601String(),
+        'date_to': samples.map((r) => r.dateTo ?? r.date).reduce(_later).toIso8601String(),
+      },
+    };
 
-    for (final MapEntry(key: day, value: samples) in byDay.entries) {
-      final values = samples.map((r) => metric.toCategoryValue(r.value)).toList();
-      final aggregate = switch (metric.dailyAggregation!) {
-        DailyAggregation.average => values.average,
-        DailyAggregation.sum => values.sum,
-        DailyAggregation.mergedDuration => _mergedDurationMinutes(samples),
-      };
-      // Round like the raw import: the server stores Decimal with 2 places
-      final value = (aggregate * 100).roundToDouble() / 100;
-      final extraData = <String, dynamic>{
-        if (metric.dailyAggregation == DailyAggregation.average) ...{
-          'min': values.min,
-          'max': values.max,
-        },
-        'sample_count': values.length,
-        // The types actually seen, not the metric's own: a component can roll
-        // several of them up (total sleep)
-        'record_type': (samples.map((r) => r.type.name).toSet().toList()..sort()).join(','),
-        // A rolled-over day is not the samples' calendar day, so keep the
-        // window they actually cover
-        if (metric.dayRollsOverAtHour != null) ...{
-          'date_from': samples.map((r) => r.date).reduce(_earlier).toIso8601String(),
-          'date_to': samples.map((r) => r.dateTo ?? r.date).reduce(_later).toIso8601String(),
-        },
-      };
-
-      if (_isInRange(value, category, metric)) {
-        final externalId = dailyAggregateExternalId(category.id!, day);
-        final existing = stored[externalId];
-        if (existing == null) {
-          await _measurements.addLocalDrift(
-            MeasurementEntry(
-              categoryId: category.id!,
-              date: day,
-              value: value,
-              notes: '',
-              source: source,
-              externalId: externalId,
-              extraData: extraData,
-            ),
-          );
-          synced++;
-        } else if (existing.value != value ||
-            !const MapEquality<String, dynamic>().equals(existing.extraData, extraData)) {
-          await _measurements.updateLocalDrift(
-            existing.copyWith(value: value, extraData: extraData),
-          );
-          synced++;
-        }
-      }
-
-      for (final sample in samples) {
-        if (latest == null || sample.date.isAfter(latest)) {
-          latest = sample.date;
-        }
-      }
+    if (!_isInRange(value, category, metric)) {
+      return 0;
     }
-    return (synced, latest);
+    final externalId = dailyAggregateExternalId(category.id!, day);
+    final existing = target.stored![externalId];
+    if (existing == null) {
+      await _measurements.addLocalDrift(
+        MeasurementEntry(
+          categoryId: category.id!,
+          date: day,
+          value: value,
+          notes: '',
+          source: source,
+          externalId: externalId,
+          extraData: extraData,
+        ),
+      );
+      return 1;
+    }
+    if (existing.value != value ||
+        !const MapEquality<String, dynamic>().equals(existing.extraData, extraData)) {
+      await _measurements.updateLocalDrift(existing.copyWith(value: value, extraData: extraData));
+      return 1;
+    }
+    return 0;
   }
 
   /// How far each metric has been imported.
@@ -552,6 +575,15 @@ class HealthImporter {
 
     // Calendar arithmetic, not +24h: a DST day is 23 or 25 hours long
     return DateTime(date.year, date.month, date.day + (rollsOver ? 1 : 0));
+  }
+
+  /// The first instant no longer attributed to [day], i.e. from when on no
+  /// later read window can add samples to it.
+  DateTime _dayEnd(DateTime day, HealthMetric metric) {
+    final rollover = metric.dayRollsOverAtHour;
+    return rollover == null
+        ? DateTime(day.year, day.month, day.day + 1)
+        : DateTime(day.year, day.month, day.day, rollover);
   }
 
   static DateTime _earlier(DateTime a, DateTime b) => a.isBefore(b) ? a : b;
@@ -704,6 +736,50 @@ class HealthImporter {
     return missing;
   }
 
+  /// The categories [metric] imports into, paired with the state their import
+  /// carries across the read windows.
+  ///
+  /// Throws [_SkipMetric] when the metric cannot be imported right now (no
+  /// official body weight category yet, or a group conflict); the cause is
+  /// logged where it is decided.
+  Future<List<_ImportTarget>> _resolveTargets(
+    HealthMetric metric,
+    List<MeasurementCategory> categories,
+    String userId,
+  ) async {
+    if (metric.components.isEmpty) {
+      final category = await _findOrCreateCategory(metric, categories, userId);
+      if (category == null) {
+        throw const _SkipMetric();
+      }
+      return [await _targetFor(metric, category, metric.dataTypes)];
+    }
+
+    final children = await _findOrCreateGroupChildren(metric, categories, userId);
+    if (children == null) {
+      throw const _SkipMetric();
+    }
+    return [
+      for (final (i, component) in metric.components.indexed)
+        await _targetFor(metric, children[i], component.dataTypes),
+    ];
+  }
+
+  Future<_ImportTarget> _targetFor(
+    HealthMetric metric,
+    MeasurementCategory category,
+    List<HealthDataType> dataTypes,
+  ) async => _ImportTarget(
+    category: category,
+    dataTypes: dataTypes,
+    // Loaded once per run: a full history holds one row per record or day,
+    // and every batch of the run deduplicates against the same state
+    seen: metric.dailyAggregation == null ? await _measurements.getExternalIds(category.id!) : null,
+    stored: metric.dailyAggregation != null
+        ? await _measurements.getEntriesByExternalId(category.id!)
+        : null,
+  );
+
   /// Finds the category for [metric] by its `metric_type`, or creates it. The
   /// created category is appended to [categories] so a later metric in the same
   /// run reuses it.
@@ -806,4 +882,32 @@ class HealthImporter {
     }
     return result;
   }
+}
+
+/// One category a metric imports into, with the state the import carries
+/// across the read windows.
+class _ImportTarget {
+  _ImportTarget({required this.category, required this.dataTypes, this.seen, this.stored});
+
+  final MeasurementCategory category;
+
+  /// The readings this target receives, matched by their platform type.
+  final List<HealthDataType> dataTypes;
+
+  /// External ids already imported; raw metrics only.
+  final Set<String>? seen;
+
+  /// Stored aggregates by external id; aggregating metrics only.
+  final Map<String, MeasurementEntry>? stored;
+
+  /// Days still collecting samples, until no read window can add to them
+  /// anymore. Never more than the newest day per window boundary, which is
+  /// what keeps the peak memory at one window plus one day.
+  final pending = <DateTime, List<HealthReading>>{};
+}
+
+/// Stops reading a metric that cannot be imported right now; its watermark
+/// then stays put and the readings are retried on the next sync.
+class _SkipMetric implements Exception {
+  const _SkipMetric();
 }

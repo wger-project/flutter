@@ -107,11 +107,12 @@ class MockHealthRepository extends _i1.Mock implements _i2.HealthRepository {
           as _i4.Future<bool>);
 
   @override
-  _i4.Future<List<_i6.HealthReading>> read({
+  _i4.Future<void> read({
     required List<_i5.HealthDataType>? types,
     required DateTime? start,
     required DateTime? end,
     required Duration? window,
+    required _i4.Future<void> Function(List<_i6.HealthReading>, DateTime)? onBatch,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#read, [], {
@@ -119,12 +120,12 @@ class MockHealthRepository extends _i1.Mock implements _i2.HealthRepository {
               #start: start,
               #end: end,
               #window: window,
+              #onBatch: onBatch,
             }),
-            returnValue: _i4.Future<List<_i6.HealthReading>>.value(
-              <_i6.HealthReading>[],
-            ),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
           )
-          as _i4.Future<List<_i6.HealthReading>>);
+          as _i4.Future<void>);
 }
 
 /// A class which mocks [MeasurementRepository].

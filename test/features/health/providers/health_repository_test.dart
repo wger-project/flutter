@@ -21,17 +21,23 @@ import 'package:health_bridge/health.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/features/health/models/health_metric.dart';
+import 'package:wger/features/health/models/health_reading.dart';
 import 'package:wger/features/health/providers/health_repository.dart';
 
 import 'health_repository_test.mocks.dart';
 
-HealthDataPoint dataPoint(HealthDataType type) => HealthDataPoint(
-  uuid: '${type.name}-1',
+HealthDataPoint dataPoint(
+  HealthDataType type, {
+  String? uuid,
+  DateTime? dateFrom,
+  DateTime? dateTo,
+}) => HealthDataPoint(
+  uuid: uuid ?? '${type.name}-1',
   value: NumericHealthValue(numericValue: 60),
   type: type,
   unit: HealthDataUnit.MINUTE,
-  dateFrom: DateTime(2026, 1, 2),
-  dateTo: DateTime(2026, 1, 2, 1),
+  dateFrom: dateFrom ?? DateTime(2026, 1, 2),
+  dateTo: dateTo ?? dateFrom ?? DateTime(2026, 1, 2, 1),
   sourcePlatform: HealthPlatformType.googleHealthConnect,
   sourceDeviceId: 'device',
   sourceId: 'source',
@@ -75,12 +81,30 @@ void main() {
     ];
   }
 
+  /// Runs a read and collects everything the batches delivered.
+  Future<List<HealthReading>> readAll({
+    required List<HealthDataType> types,
+    required DateTime start,
+    required DateTime end,
+    required Duration window,
+  }) async {
+    final readings = <HealthReading>[];
+    await repository.read(
+      types: types,
+      start: start,
+      end: end,
+      window: window,
+      onBatch: (batch, _) async => readings.addAll(batch),
+    );
+    return readings;
+  }
+
   group('read', () {
     test('a range shorter than the window is one query', () async {
       final start = DateTime(2026, 1, 1);
       final end = DateTime(2026, 1, 20);
 
-      await repository.read(
+      await readAll(
         types: [HealthDataType.WEIGHT],
         start: start,
         end: end,
@@ -96,7 +120,7 @@ void main() {
       final start = DateTime(2026, 1, 1);
       final end = DateTime(2026, 4, 10);
 
-      await repository.read(
+      await readAll(
         types: [HealthDataType.HEART_RATE],
         start: start,
         end: end,
@@ -122,7 +146,7 @@ void main() {
       final start = DateTime(2026, 1, 1);
       final end = DateTime(2026, 3, 1);
 
-      await repository.read(
+      await readAll(
         types: [HealthDataType.WEIGHT, HealthDataType.HEART_RATE],
         start: start,
         end: end,
@@ -134,6 +158,88 @@ void main() {
       expect(windows.where((w) => w.$1 == start), hasLength(2));
     });
 
+    test('hands each window over before the next one is read', () async {
+      // Holding the whole history until the end would fill the same Android
+      // heap the windowing exists to protect
+      final events = <String>[];
+      var window = 0;
+      when(
+        health.getHealthDataFromTypes(
+          types: anyNamed('types'),
+          startTime: anyNamed('startTime'),
+          endTime: anyNamed('endTime'),
+        ),
+      ).thenAnswer((_) async {
+        window++;
+        events.add('read window $window');
+        return [dataPoint(HealthDataType.WEIGHT, uuid: 'w-$window')];
+      });
+
+      await repository.read(
+        types: [HealthDataType.WEIGHT],
+        start: DateTime(2026, 1, 1),
+        end: DateTime(2026, 3, 1),
+        window: defaultReadWindow,
+        onBatch: (batch, _) async => events.add('batch of ${batch.length}'),
+      );
+
+      expect(events, ['read window 1', 'batch of 1', 'read window 2', 'batch of 1']);
+    });
+
+    test('a record on the window boundary is delivered once', () async {
+      // Both windows of a contiguous pair contain their shared boundary, so a
+      // record sitting exactly on it comes back from both queries
+      final boundary = DateTime(2026, 1, 1).add(defaultReadWindow);
+      when(
+        health.getHealthDataFromTypes(
+          types: anyNamed('types'),
+          startTime: anyNamed('startTime'),
+          endTime: anyNamed('endTime'),
+        ),
+      ).thenAnswer(
+        (_) async => [dataPoint(HealthDataType.WEIGHT, uuid: 'w-1', dateFrom: boundary)],
+      );
+
+      final readings = await readAll(
+        types: [HealthDataType.WEIGHT],
+        start: DateTime(2026, 1, 1),
+        end: DateTime(2026, 2, 15),
+        window: defaultReadWindow,
+      );
+
+      expect(readings, hasLength(1));
+    });
+
+    test('an interval spanning several windows is delivered once', () async {
+      // A duration record overlaps every window it reaches into and comes
+      // back from each of their queries
+      when(
+        health.getHealthDataFromTypes(
+          types: anyNamed('types'),
+          startTime: anyNamed('startTime'),
+          endTime: anyNamed('endTime'),
+        ),
+      ).thenAnswer(
+        (_) async => [
+          dataPoint(
+            HealthDataType.SLEEP_ASLEEP,
+            uuid: 's-1',
+            dateFrom: DateTime(2026, 1, 2),
+            dateTo: DateTime(2026, 1, 8),
+          ),
+        ],
+      );
+
+      final readings = await readAll(
+        types: [HealthDataType.SLEEP_ASLEEP],
+        start: DateTime(2026, 1, 1),
+        end: DateTime(2026, 1, 10),
+        window: highVolumeReadWindow,
+      );
+
+      expect(readings, hasLength(1));
+    });
+
     test('a failing window does not cost the other types their read', () async {
       when(
         health.getHealthDataFromTypes(
@@ -143,7 +249,7 @@ void main() {
         ),
       ).thenThrow(Exception('boom'));
 
-      final readings = await repository.read(
+      final readings = await readAll(
         types: [HealthDataType.HEART_RATE, HealthDataType.WEIGHT],
         start: DateTime(2026, 1, 1),
         end: DateTime(2026, 4, 1),
@@ -160,9 +266,10 @@ void main() {
       ).called(greaterThan(1));
     });
 
-    test('a type that fails halfway is dropped whole, windows it did read included', () async {
-      // The watermark moves with what was imported, so half a type would put
-      // the windows that never returned out of reach for good
+    test('a type that fails halfway keeps its delivered windows and stops', () async {
+      // What a batch delivered is already written; the failing type is only
+      // dropped from the remaining windows, and the caller's unchanged
+      // watermark makes the re-read harmless
       var call = 0;
       when(
         health.getHealthDataFromTypes(
@@ -170,11 +277,16 @@ void main() {
           startTime: anyNamed('startTime'),
           endTime: anyNamed('endTime'),
         ),
-      ).thenAnswer((_) async {
+      ).thenAnswer((invocation) async {
         if (call++ > 0) {
           throw Exception('boom');
         }
-        return [dataPoint(HealthDataType.SLEEP_DEEP)];
+        return [
+          dataPoint(
+            HealthDataType.SLEEP_DEEP,
+            dateFrom: invocation.namedArguments[#startTime] as DateTime,
+          ),
+        ];
       });
       when(
         health.getHealthDataFromTypes(
@@ -182,16 +294,35 @@ void main() {
           startTime: anyNamed('startTime'),
           endTime: anyNamed('endTime'),
         ),
-      ).thenAnswer((_) async => [dataPoint(HealthDataType.SLEEP_REM)]);
+      ).thenAnswer(
+        (invocation) async => [
+          dataPoint(
+            HealthDataType.SLEEP_REM,
+            uuid: 'rem-${invocation.namedArguments[#startTime]}',
+            dateFrom: invocation.namedArguments[#startTime] as DateTime,
+          ),
+        ],
+      );
 
-      final readings = await repository.read(
+      final readings = await readAll(
         types: [HealthDataType.SLEEP_DEEP, HealthDataType.SLEEP_REM],
         start: DateTime(2026, 1, 1),
         end: DateTime(2026, 4, 1),
         window: defaultReadWindow,
       );
 
-      expect(readings.map((r) => r.type).toSet(), {HealthDataType.SLEEP_REM});
+      // The first window of the failing type was handed over; the other type
+      // delivered every window
+      expect(readings.where((r) => r.type == HealthDataType.SLEEP_DEEP), hasLength(1));
+      expect(readings.where((r) => r.type == HealthDataType.SLEEP_REM), hasLength(3));
+      // After the failure the type is not asked again
+      verify(
+        health.getHealthDataFromTypes(
+          types: [HealthDataType.SLEEP_DEEP],
+          startTime: anyNamed('startTime'),
+          endTime: anyNamed('endTime'),
+        ),
+      ).called(2);
     });
 
     test('a wholesale failure still propagates', () async {
@@ -204,7 +335,7 @@ void main() {
       ).thenThrow(Exception('boom'));
 
       expect(
-        () => repository.read(
+        () => readAll(
           types: [HealthDataType.WEIGHT],
           start: DateTime(2026, 1, 1),
           end: DateTime(2026, 2, 1),

@@ -193,75 +193,113 @@ class HealthRepository {
   }
 
   /// Reads all [types] between [start] and [end], platform-deduplicated and
-  /// reduced to numeric [HealthReading]s.
+  /// reduced to numeric [HealthReading]s, handing each window over via
+  /// [onBatch] as soon as it returned.
   ///
-  /// Types are read one by one: a single type the platform refuses (an
-  /// unauthorized type throws rather than coming back empty) would otherwise
-  /// cost every other type its import too. A failing type is logged by name
-  /// and skipped; only when every type fails does the error propagate, so a
-  /// wholesale denial still surfaces as one.
-  ///
-  /// Each type is read in windows of [window]: the plugin turns every record
+  /// The range is read in windows of [window]: the plugin turns every record
   /// into a map and then serialises the whole batch for the method channel, so
   /// one query spanning years of a densely written type fills the Android app
   /// heap, which is capped at 256 MB however much RAM the device has, and the
   /// process is killed. How large a window a metric can afford is a property
-  /// of the metric, see [HealthMetric.readWindow]. The windows are contiguous,
-  /// and a record sitting exactly on a boundary is removed by the
-  /// deduplication below.
-  Future<List<HealthReading>> read({
+  /// of the metric, see [HealthMetric.readWindow]. Handing every window over
+  /// keeps the peak at one window: holding the full history until the end
+  /// would fill the same heap the window protects.
+  ///
+  /// The windows are contiguous and move forward, so everything a later batch
+  /// delivers starts at or after the previous batch's `windowEnd`; a record
+  /// on a boundary or spanning one is delivered exactly once, in its first
+  /// window. What [onBatch] wrote stays written when a later window fails,
+  /// which the caller has to keep harmless (the importer's writes are
+  /// idempotent via their external ids).
+  ///
+  /// Within a window the types are read one by one: a single type the
+  /// platform refuses (an unauthorized type throws rather than coming back
+  /// empty) would otherwise cost every other type its import too. A failing
+  /// type is logged by name and dropped from the remaining windows; only when
+  /// every type fails does the error propagate, so a wholesale denial still
+  /// surfaces as one.
+  Future<void> read({
     required List<HealthDataType> types,
     required DateTime start,
     required DateTime end,
     required Duration window,
+    required Future<void> Function(List<HealthReading> batch, DateTime windowEnd) onBatch,
   }) async {
-    final points = <HealthDataPoint>[];
+    final failed = <HealthDataType>{};
+    final counts = {for (final type in types) type: 0};
+    // Records that can reappear in a later window because their interval
+    // reaches the current window's end, per type: dedup key -> interval end
+    final carried = {for (final type in types) type: <String, DateTime>{}};
     Object? firstError;
-    var failed = 0;
 
-    for (final type in types) {
-      try {
-        // Collected per type and only handed over once every window of it
-        // returned, see the catch below
-        final readForType = <HealthDataPoint>[];
-        var windowStart = start;
-        while (windowStart.isBefore(end)) {
-          final windowEnd = windowStart.add(window);
-          final batch = await _health.getHealthDataFromTypes(
+    var windowStart = start;
+    while (windowStart.isBefore(end) && failed.length < types.length) {
+      final next = windowStart.add(window);
+      final windowEnd = next.isAfter(end) ? end : next;
+      final batch = <HealthReading>[];
+
+      for (final type in types) {
+        if (failed.contains(type)) {
+          continue;
+        }
+        final List<HealthDataPoint> points;
+        try {
+          points = await _health.getHealthDataFromTypes(
             types: [type],
             startTime: windowStart,
-            endTime: windowEnd.isAfter(end) ? end : windowEnd,
+            endTime: windowEnd,
           );
-          // How much a window holds is what decides whether [window] is small
-          // enough, so it is worth having in a bug report instead of being
-          // reconstructed from GC lines afterwards
-          if (batch.isNotEmpty) {
-            _logger.finer('Read ${batch.length} ${type.name} records from $windowStart');
+        } catch (e) {
+          failed.add(type);
+          firstError ??= e;
+          _logger.warning('Reading ${type.name} from the health platform failed: $e');
+          continue;
+        }
+        if (points.isEmpty) {
+          continue;
+        }
+        // How much a window holds is what decides whether [window] is small
+        // enough, so it is worth having in a bug report instead of being
+        // reconstructed from GC lines afterwards
+        _logger.finer('Read ${points.length} ${type.name} records from $windowStart');
+
+        final carry = carried[type]!;
+        for (final point in _health.removeDuplicates(points)) {
+          final reading = HealthReading.fromDataPoint(point);
+          if (reading == null) {
+            continue;
           }
-          readForType.addAll(batch);
-          windowStart = windowEnd;
+          if (carry.containsKey(_dedupKey(reading))) {
+            continue;
+          }
+          batch.add(reading);
+          counts[type] = counts[type]! + 1;
+          final intervalEnd = reading.dateTo ?? reading.date;
+          if (!intervalEnd.isBefore(windowEnd)) {
+            carry[_dedupKey(reading)] = intervalEnd;
+          }
         }
-        if (readForType.isNotEmpty) {
-          _logger.fine('Read ${readForType.length} ${type.name} records in total');
-        }
-        points.addAll(readForType);
-      } catch (e) {
-        // The whole type is dropped even when earlier windows delivered:
-        // importing half a type would let the watermark move past the readings
-        // the failing windows never returned
-        failed++;
-        firstError ??= e;
-        _logger.warning('Reading ${type.name} from the health platform failed: $e');
+        // A record whose interval ended inside this window cannot come back
+        carry.removeWhere((_, intervalEnd) => intervalEnd.isBefore(windowEnd));
       }
+
+      if (batch.isNotEmpty) {
+        await onBatch(batch, windowEnd);
+      }
+      windowStart = next;
     }
 
-    if (firstError != null && failed == types.length) {
+    for (final MapEntry(key: type, value: count) in counts.entries) {
+      if (count > 0) {
+        _logger.fine('Read $count ${type.name} records in total');
+      }
+    }
+    if (firstError != null && failed.length == types.length) {
       throw firstError;
     }
-    return _health
-        .removeDuplicates(points)
-        .map(HealthReading.fromDataPoint)
-        .whereType<HealthReading>()
-        .toList();
   }
+
+  static String _dedupKey(HealthReading reading) =>
+      reading.externalId ??
+      '${reading.type.name}|${reading.date}|${reading.dateTo}|${reading.value}';
 }

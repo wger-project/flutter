@@ -181,6 +181,7 @@ void main() {
         start: captureAnyNamed('start'),
         end: anyNamed('end'),
         window: anyNamed('window'),
+        onBatch: anyNamed('onBatch'),
       ),
     ).captured;
 
@@ -205,9 +206,12 @@ void main() {
       start: anyNamed('start'),
       end: anyNamed('end'),
       window: anyNamed('window'),
+      onBatch: anyNamed('onBatch'),
     ),
   ).captured.cast<List<HealthDataType>>().expand((types) => types).toList();
 
+  /// Stubs the platform read to hand [readings] over as one batch whose
+  /// window ends at the end of the read.
   void stubReadings(List<HealthReading> readings) {
     when(
       health.read(
@@ -215,8 +219,42 @@ void main() {
         start: anyNamed('start'),
         end: anyNamed('end'),
         window: anyNamed('window'),
+        onBatch: anyNamed('onBatch'),
       ),
-    ).thenAnswer((_) async => readings);
+    ).thenAnswer((invocation) async {
+      if (readings.isEmpty) {
+        return;
+      }
+      final onBatch =
+          invocation.namedArguments[#onBatch]
+              as Future<void> Function(List<HealthReading>, DateTime);
+      await onBatch(readings, invocation.namedArguments[#end] as DateTime);
+    });
+  }
+
+  /// Stubs the platform read to hand the metric reading [type] its
+  /// [batches] in order, each with its window end; a null window end means
+  /// the end of the read. Every other metric reads empty.
+  void stubBatchesFor(HealthDataType type, List<(List<HealthReading>, DateTime?)> batches) {
+    when(
+      health.read(
+        types: anyNamed('types'),
+        start: anyNamed('start'),
+        end: anyNamed('end'),
+        window: anyNamed('window'),
+        onBatch: anyNamed('onBatch'),
+      ),
+    ).thenAnswer((invocation) async {
+      if (!(invocation.namedArguments[#types] as List<HealthDataType>).contains(type)) {
+        return;
+      }
+      final onBatch =
+          invocation.namedArguments[#onBatch]
+              as Future<void> Function(List<HealthReading>, DateTime);
+      for (final (readings, windowEnd) in batches) {
+        await onBatch(readings, windowEnd ?? invocation.namedArguments[#end] as DateTime);
+      }
+    });
   }
 
   group('run', () {
@@ -242,6 +280,7 @@ void main() {
           start: anyNamed('start'),
           end: anyNamed('end'),
           window: anyNamed('window'),
+          onBatch: anyNamed('onBatch'),
         ),
       );
     });
@@ -335,6 +374,7 @@ void main() {
           start: anyNamed('start'),
           end: anyNamed('end'),
           window: anyNamed('window'),
+          onBatch: anyNamed('onBatch'),
         ),
       ).thenThrow(
         PlatformException(
@@ -356,6 +396,7 @@ void main() {
           start: anyNamed('start'),
           end: anyNamed('end'),
           window: anyNamed('window'),
+          onBatch: anyNamed('onBatch'),
         ),
       ).thenThrow(Exception('boom'));
 
@@ -773,6 +814,101 @@ void main() {
       expect(
         await watermarkOf(MetricType.heartRate),
         DateTime(2026, 1, 2, 9).toIso8601String(),
+      );
+    });
+
+    test('aggregates a day split across two read windows once', () async {
+      // The batches arrive per window, but a day whose samples straddle a
+      // window boundary must still become a single aggregate of all of them
+      when(measurements.getCategoriesOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
+      stubBatchesFor(HealthDataType.HEART_RATE, [
+        (
+          [
+            HealthReading(
+              type: HealthDataType.HEART_RATE,
+              value: 60,
+              date: DateTime(2026, 1, 1, 8),
+              externalId: _idHr1,
+            ),
+          ],
+          DateTime(2026, 1, 1, 12),
+        ),
+        (
+          [
+            HealthReading(
+              type: HealthDataType.HEART_RATE,
+              value: 70,
+              date: DateTime(2026, 1, 1, 20),
+              externalId: _idHr2,
+            ),
+            HealthReading(
+              type: HealthDataType.HEART_RATE,
+              value: 64,
+              date: DateTime(2026, 1, 2, 9),
+              externalId: _idHr3,
+            ),
+          ],
+          null,
+        ),
+      ]);
+
+      final count = await runImport();
+
+      expect(count, 2);
+      final entries = verify(
+        measurements.addLocalDrift(captureAny),
+      ).captured.cast<MeasurementEntry>();
+      expect(entries, hasLength(2));
+
+      final categoryId =
+          (verify(measurements.addLocalDriftCategory(captureAny)).captured.single
+                  as MeasurementCategory)
+              .id!;
+      final day1 = entries.firstWhere(
+        (e) => e.externalId == dailyAggregateExternalId(categoryId, DateTime(2026, 1, 1)),
+      );
+      expect(day1.value, 65); // (60 + 70) / 2, across the boundary
+      expect(day1.extraData?['sample_count'], 2);
+    });
+
+    test('a raw metric imports every window into one category', () async {
+      when(measurements.getCategoriesOnce()).thenAnswer((_) async => <MeasurementCategory>[]);
+      stubBatchesFor(HealthDataType.BODY_FAT_PERCENTAGE, [
+        (
+          [
+            HealthReading(
+              type: HealthDataType.BODY_FAT_PERCENTAGE,
+              value: 0.2,
+              date: DateTime(2026, 1, 1),
+              externalId: _idBf1,
+            ),
+          ],
+          DateTime(2026, 2, 1),
+        ),
+        (
+          [
+            HealthReading(
+              type: HealthDataType.BODY_FAT_PERCENTAGE,
+              value: 0.22,
+              date: DateTime(2026, 2, 10),
+              externalId: _idBf2,
+            ),
+          ],
+          null,
+        ),
+      ]);
+
+      final count = await runImport();
+
+      expect(count, 2);
+      // The category is resolved on the first delivering batch and reused
+      final created = verify(
+        measurements.addLocalDriftCategory(captureAny),
+      ).captured.cast<MeasurementCategory>();
+      expect(created.single.metricType, MetricType.bodyFat);
+      expect(
+        await watermarkOf(MetricType.bodyFat),
+        DateTime(2026, 2, 10).toIso8601String(),
       );
     });
 
@@ -1465,6 +1601,7 @@ void main() {
           start: anyNamed('start'),
           end: anyNamed('end'),
           window: captureAnyNamed('window'),
+          onBatch: anyNamed('onBatch'),
         ),
       ).captured;
       final windowByType = <HealthDataType, Duration>{
