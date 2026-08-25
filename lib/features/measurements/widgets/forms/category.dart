@@ -25,6 +25,7 @@ import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/exercises/providers/exercises_notifier.dart';
 import 'package:wger/features/measurements/models/measurement_calculation.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
+import 'package:wger/features/measurements/models/measurement_entry.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/measurements/widgets/calculation_params.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -99,6 +100,25 @@ class _MeasurementCategoryFormState extends ConsumerState<MeasurementCategoryFor
     });
   }
 
+  /// Persists the draft, as a new category or as an update of the stored one.
+  Future<void> _submit() async {
+    if (!_form.currentState!.validate()) {
+      return;
+    }
+    _form.currentState!.save();
+
+    final notifier = ref.read(measurementProvider.notifier);
+    if (_draft.id == null) {
+      await notifier.addCategory(_draft);
+    } else {
+      notifier.updateCategory(_draft);
+    }
+
+    if (mounted) {
+      Navigator.of(context).pop();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // A category with children is a group whatever its metric type says, which
@@ -114,7 +134,6 @@ class _MeasurementCategoryFormState extends ConsumerState<MeasurementCategoryFor
     // one takes both from its metric type, which is also what is shown for it
     final isCustom = _draft.metricType == MetricType.custom;
 
-    final i18n = AppLocalizations.of(context);
     // Watched rather than read where the prefill happens: a read subscribes
     // the stream and returns before it has emitted, i.e. an empty catalogue
     final exercises = ref.watch(exercisesProvider).value?.exercises ?? const <Exercise>[];
@@ -126,54 +145,17 @@ class _MeasurementCategoryFormState extends ConsumerState<MeasurementCategoryFor
       child: SingleChildScrollView(
         child: Column(
           children: [
-            // Name. The key is the prefill rather than the text: a controllerless
-            // field takes a new seed only as a new key, and one that followed
-            // what is typed would rebuild the field on every keystroke
+            // Name and unit belong to the user only for a free-form category. A
+            // typed one takes both from its metric type
             if (isCustom)
-              TextFormField(
-                key: ValueKey('name-$_nameSeed'),
-                initialValue: _nameSeed,
-                decoration: InputDecoration(
-                  labelText: i18n.name,
-                  helperText: i18n.measurementCategoriesHelpText,
-                ),
-                maxLength: MeasurementCategory.maxNameChars,
-                onChanged: (_) => _nameEdited = true,
-                onSaved: (value) => _draft = _draft.copyWith(name: value ?? ''),
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return i18n.enterValue;
-                  }
-                  if (value.length > MeasurementCategory.maxNameChars) {
-                    return i18n.enterMaxCharacters(MeasurementCategory.maxNameChars.toString());
-                  }
-                  return null;
-                },
-              ),
-
-            // Unit
-            if (isCustom)
-              TextFormField(
-                key: ValueKey('unit-$_unitSeed'),
-                initialValue: _unitSeed,
-                decoration: InputDecoration(
-                  labelText: i18n.unit,
-                  helperText: i18n.measurementEntriesHelpText,
-                ),
-                maxLength: MeasurementCategory.maxUnitChars,
-                onChanged: (_) => _unitEdited = true,
-                onSaved: (value) => _draft = _draft.copyWith(unit: value ?? ''),
-                validator: (value) {
-                  // A calculation defines what the number is, so it may well be
-                  // a bare ratio without a unit
-                  if (value!.isEmpty) {
-                    return _draft.isCalculated ? null : i18n.enterValue;
-                  }
-                  if (value.length > MeasurementCategory.maxUnitChars) {
-                    return i18n.enterMaxCharacters(MeasurementCategory.maxUnitChars.toString());
-                  }
-                  return null;
-                },
+              _IdentityFields(
+                nameSeed: _nameSeed,
+                unitSeed: _unitSeed,
+                unitOptional: _draft.isCalculated,
+                onNameEdited: () => _nameEdited = true,
+                onUnitEdited: () => _unitEdited = true,
+                onNameSaved: (value) => _draft = _draft.copyWith(name: value),
+                onUnitSaved: (value) => _draft = _draft.copyWith(unit: value),
               ),
 
             _CalculationSection(
@@ -206,80 +188,156 @@ class _MeasurementCategoryFormState extends ConsumerState<MeasurementCategoryFor
               }),
             ),
 
-            // Parent group (multi-value measurements, e.g. blood pressure).
-            // Mirrors the server rules: only top-level, entry-free categories
-            // can be parents, a category with children cannot be nested, a typed
-            // category stays top-level, and a group takes only its own
-            // components (which it is created with).
-            Builder(
-              builder: (context) {
-                if (hasChildren || _draft.metricType != MetricType.custom) {
-                  return const SizedBox.shrink();
-                }
-
-                final candidates = categories
-                    .where(
-                      (c) =>
-                          c.parentId == null &&
-                          c.id != _draft.id &&
-                          !withEntries.containsKey(c.id) &&
-                          !c.isOfficialBodyWeight &&
-                          !c.metricType.isGroup,
-                    )
-                    .toList();
-                if (candidates.isEmpty) {
-                  return const SizedBox.shrink();
-                }
-
-                final initialParent = candidates.any((c) => c.id == _draft.parentId)
-                    ? _draft.parentId
-                    : null;
-
-                return DropdownButtonFormField<String?>(
-                  initialValue: initialParent,
-                  decoration: InputDecoration(
-                    labelText: AppLocalizations.of(context).partOfGroup,
-                  ),
-                  items: [
-                    DropdownMenuItem<String?>(
-                      value: null,
-                      child: Text(AppLocalizations.of(context).noGroup),
-                    ),
-                    ...candidates.map(
-                      (c) => DropdownMenuItem<String?>(value: c.id, child: Text(c.name)),
-                    ),
-                  ],
-                  onChanged: (value) {
-                    setState(() {
-                      _draft = _draft.copyWith(parentId: value);
-                    });
-                  },
-                );
-              },
+            _ParentGroupSection(
+              draft: _draft,
+              categories: categories,
+              hasChildren: hasChildren,
+              withEntries: withEntries,
+              onChanged: (value) => setState(() {
+                _draft = _draft.copyWith(parentId: value);
+              }),
             ),
             FormSubmitButton(
               label: AppLocalizations.of(context).save,
-              onPressed: () async {
-                if (!_form.currentState!.validate()) {
-                  return;
-                }
-                _form.currentState!.save();
-
-                final notifier = ref.read(measurementProvider.notifier);
-                if (_draft.id == null) {
-                  await notifier.addCategory(_draft);
-                } else {
-                  notifier.updateCategory(_draft);
-                }
-
-                if (context.mounted) {
-                  Navigator.of(context).pop();
-                }
-              },
+              onPressed: _submit,
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+/// Name and unit, the two fields only a free-form category has.
+///
+/// The keys are the seeds rather than the text: a controllerless field takes a
+/// new seed only as a new [Key], and one that followed what is typed would
+/// rebuild the field on every keystroke.
+class _IdentityFields extends StatelessWidget {
+  const _IdentityFields({
+    required this.nameSeed,
+    required this.unitSeed,
+    required this.unitOptional,
+    required this.onNameEdited,
+    required this.onUnitEdited,
+    required this.onNameSaved,
+    required this.onUnitSaved,
+  });
+
+  final String nameSeed;
+  final String unitSeed;
+
+  /// Whether an empty unit passes: a calculation defines what the number is,
+  /// so it may well be a bare ratio without one.
+  final bool unitOptional;
+
+  final VoidCallback onNameEdited;
+  final VoidCallback onUnitEdited;
+  final ValueChanged<String> onNameSaved;
+  final ValueChanged<String> onUnitSaved;
+
+  @override
+  Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        TextFormField(
+          key: ValueKey('name-$nameSeed'),
+          initialValue: nameSeed,
+          decoration: InputDecoration(
+            labelText: i18n.name,
+            helperText: i18n.measurementCategoriesHelpText,
+          ),
+          maxLength: MeasurementCategory.maxNameChars,
+          onChanged: (_) => onNameEdited(),
+          onSaved: (value) => onNameSaved(value ?? ''),
+          validator: (value) => _lengthError(i18n, value, MeasurementCategory.maxNameChars, false),
+        ),
+        TextFormField(
+          key: ValueKey('unit-$unitSeed'),
+          initialValue: unitSeed,
+          decoration: InputDecoration(
+            labelText: i18n.unit,
+            helperText: i18n.measurementEntriesHelpText,
+          ),
+          maxLength: MeasurementCategory.maxUnitChars,
+          onChanged: (_) => onUnitEdited(),
+          onSaved: (value) => onUnitSaved(value ?? ''),
+          validator: (value) =>
+              _lengthError(i18n, value, MeasurementCategory.maxUnitChars, unitOptional),
+        ),
+      ],
+    );
+  }
+
+  static String? _lengthError(AppLocalizations i18n, String? value, int max, bool optional) {
+    if (value!.isEmpty) {
+      return optional ? null : i18n.enterValue;
+    }
+
+    return value.length > max ? i18n.enterMaxCharacters(max.toString()) : null;
+  }
+}
+
+/// The group this category is part of, for the multi-value measurements (e.g.
+/// blood pressure). Renders nothing where nothing can be picked.
+///
+/// Mirrors the server rules: only top-level, entry-free categories can be
+/// parents, a category with children cannot be nested, a typed category stays
+/// top-level, and a group takes only its own components (which it is created
+/// with).
+class _ParentGroupSection extends StatelessWidget {
+  const _ParentGroupSection({
+    required this.draft,
+    required this.categories,
+    required this.hasChildren,
+    required this.withEntries,
+    required this.onChanged,
+  });
+
+  final MeasurementCategory draft;
+  final List<MeasurementCategory> categories;
+  final bool hasChildren;
+
+  /// Keyed by the categories that hold entries, which cannot become groups
+  final Map<String, MeasurementEntry> withEntries;
+
+  final ValueChanged<String?> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    if (hasChildren || draft.metricType != MetricType.custom) {
+      return const SizedBox.shrink();
+    }
+
+    final candidates = categories
+        .where(
+          (c) =>
+              c.parentId == null &&
+              c.id != draft.id &&
+              !withEntries.containsKey(c.id) &&
+              !c.isOfficialBodyWeight &&
+              !c.metricType.isGroup,
+        )
+        .toList();
+    if (candidates.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return DropdownButtonFormField<String?>(
+      // A parent that dropped out of the candidates is no longer selectable
+      initialValue: candidates.any((c) => c.id == draft.parentId) ? draft.parentId : null,
+      decoration: InputDecoration(labelText: AppLocalizations.of(context).partOfGroup),
+      items: [
+        DropdownMenuItem<String?>(
+          value: null,
+          child: Text(AppLocalizations.of(context).noGroup),
+        ),
+        ...candidates.map((c) => DropdownMenuItem<String?>(value: c.id, child: Text(c.name))),
+      ],
+      onChanged: onChanged,
     );
   }
 }
