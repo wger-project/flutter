@@ -303,6 +303,32 @@ void main() {
       verify(inner.send(any)).called(1); // No retry attempted.
     });
 
+    test('refresh that leaves the credential untouched → 401 through, no logout', () async {
+      // What _runRefresh does on a network error: it keeps the session so
+      // local data stays accessible. A retry with the very same token can
+      // only 401 again, which must not count as a revoked session
+      auth = AuthState(
+        credential: JwtCredential(
+          accessToken: 'old-access',
+          expiresAt: DateTime.now().toUtc().add(const Duration(hours: 1)),
+        ),
+      );
+      // The default onRefresh is a no-op, like a refresh that failed on the
+      // network and returned without touching the credential
+      when(inner.send(any)).thenAnswer(
+        (_) async => http.StreamedResponse(Stream.value(<int>[]), 401),
+      );
+
+      final response = await buildClient().send(
+        http.Request('GET', Uri.parse('https://wger.example/api/v2/routine/')),
+      );
+
+      expect(response.statusCode, 401);
+      expect(refreshCalls, 1);
+      expect(sessionExpiredCalls, 0);
+      verify(inner.send(any)).called(1); // No retry with the same token.
+    });
+
     test('401 without a credential → no retry, original 401 surfaces', () async {
       auth = const AuthState();
       when(inner.send(any)).thenAnswer(
@@ -446,6 +472,25 @@ void main() {
 
       expect(response.statusCode, 401);
       expect(notifier.clearSessionCalls, 1);
+    });
+
+    test('a 401 whose refresh does not deliver keeps the session', () async {
+      final client = buildFromProvider(AuthState(credential: jwt('stale')));
+      await pumpEventQueue();
+      // refreshResult stays null: the notifier hit a network error on the
+      // refresh endpoint and kept the session for offline use
+      when(inner.send(any)).thenAnswer(
+        (_) async => http.StreamedResponse(Stream.value(<int>[]), 401),
+      );
+
+      final response = await client.send(
+        http.Request('GET', Uri.parse('https://wger.example/api/v2/routine/')),
+      );
+
+      expect(response.statusCode, 401);
+      expect(notifier.refreshCalls, 1);
+      expect(notifier.clearSessionCalls, 0);
+      verify(inner.send(any)).called(1);
     });
   });
 }

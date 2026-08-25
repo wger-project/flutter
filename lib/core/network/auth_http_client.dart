@@ -38,11 +38,11 @@ const refreshLeeway = Duration(seconds: 30);
 /// - Pre-emptively refresh when the stored expiry is within
 ///   [refreshLeeway] of now.
 /// - On a 401 reply for a *replayable* [http.Request] body, refresh once
-///   and retry. If the retry also returns 401 the session is treated as
-///   genuinely revoked: `onSessionExpired` runs (clear credentials +
-///   surface a snackbar) and a synthetic 401 is returned to the caller.
-///   Non-replayable bodies (multipart / streamed) are not retried; the
-///   pre-emptive refresh in the happy path is the primary safeguard.
+///   and retry with the renewed credential. If the refresh kept the old
+///   one (offline carve-out in `_runRefresh`) the 401 goes back without a
+///   retry; a 401 on the retry counts as revoked and runs
+///   `onSessionExpired`. Non-replayable bodies (multipart / streamed) are
+///   not retried.
 ///
 /// Wrapped behind [authenticatedHttpClientProvider] so consumers
 /// (`WgerBaseProvider`, PowerSync's connector) get the auth handling for
@@ -87,6 +87,11 @@ class AuthHttpClient extends http.BaseClient {
     await _refresh();
     final fresh = _readAuth()?.credential;
     if (fresh == null) {
+      return _syntheticUnauthorized();
+    }
+    if (fresh == credential) {
+      // Offline carve-out kept the token; the same token would 401 again
+      _logger.fine('Refresh produced no new credential, passing the 401 through');
       return _syntheticUnauthorized();
     }
 
