@@ -28,6 +28,7 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/network/auth_notifier.dart';
+import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/core/network/secure_token_storage.dart';
 import 'package:wger/core/powersync_unreachable_screen.dart';
 import 'package:wger/core/shared_preferences.dart';

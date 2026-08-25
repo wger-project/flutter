@@ -24,6 +24,7 @@ import 'package:logging/logging.dart';
 import 'package:wger/core/error_dialogs.dart';
 import 'package:wger/core/network/auth_notifier.dart';
 import 'package:wger/core/network/auth_state.dart';
+import 'package:wger/core/network/network_provider.dart';
 
 /// Pre-emptive refresh leeway: if the access JWT will expire within this
 /// window we refresh before sending the request. Chosen to absorb mild

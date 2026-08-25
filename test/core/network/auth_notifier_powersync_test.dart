@@ -24,6 +24,7 @@ import 'package:connectivity_plus_platform_interface/connectivity_plus_platform_
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart' show AppLifecycleState;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
@@ -33,12 +34,27 @@ import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/network/auth_notifier.dart';
 import 'package:wger/core/network/auth_state.dart';
+import 'package:wger/core/network/network_provider.dart';
+import 'package:wger/core/network/powersync_session.dart';
 import 'package:wger/core/network/secure_token_storage.dart';
 import 'package:wger/core/shared_preferences.dart';
 
 import '../../helpers/fake_auth_environment.dart';
 import '../../helpers/fake_connectivity.dart';
 import 'auth_notifier_powersync_test.mocks.dart';
+
+/// A PowerSync session whose disconnect never completes, for the deadlock
+/// regression below. The real one cannot be faked: `PowerSyncDatabase` is a
+/// `base` class.
+class _HangingPowerSyncSession extends PowerSyncSession {
+  int disconnectCalls = 0;
+
+  @override
+  Future<void> disconnect() {
+    disconnectCalls++;
+    return Completer<void>().future;
+  }
+}
 
 @GenerateMocks([http.Client, SecureTokenStorage])
 void main() {
@@ -80,11 +96,12 @@ void main() {
 
   /// Builds a fresh ProviderContainer with the mock HTTP client wired into
   /// the auth notifier. Auto-disposes after the test.
-  ProviderContainer makeContainer() {
+  ProviderContainer makeContainer({List<Override> overrides = const []}) {
     final c = ProviderContainer(
       overrides: [
         authHttpClientProvider.overrideWithValue(mockClient),
         secureTokenStorageProvider.overrideWithValue(mockSecureStorage),
+        ...overrides,
       ],
     );
     addTearDown(c.dispose);
@@ -1091,21 +1108,18 @@ void main() {
         mockClient.post(tRefresh, headers: anyNamed('headers'), body: anyNamed('body')),
       ).thenAnswer((_) async => Response('Bad Request', 400));
 
-      final container = makeContainer();
+      final session = _HangingPowerSyncSession();
+      final container = makeContainer(
+        overrides: [powerSyncSessionProvider.overrideWithValue(session)],
+      );
       await container.read(authProvider.future);
-
-      var disconnectCalls = 0;
       final notifier = container.read(authProvider.notifier);
-      notifier.disconnectPowerSync = () {
-        disconnectCalls++;
-        return Completer<void>().future; // never completes
-      };
 
       // Before the fix this future never completed.
       await notifier.refreshAccessToken().timeout(const Duration(seconds: 5));
 
       expect(container.read(authProvider).value!.status, AuthStatus.loggedOut);
-      expect(disconnectCalls, 1);
+      expect(session.disconnectCalls, 1);
     });
 
     test('network error → stays logged in', () async {

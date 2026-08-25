@@ -18,32 +18,29 @@
 
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:flutter/widgets.dart' show AppLifecycleListener;
-import 'package:flutter_riverpod/flutter_riverpod.dart' show Provider;
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/error_dialogs.dart';
-import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/core/exceptions/mfa_required_exception.dart';
-import 'package:wger/core/helpers.dart';
 import 'package:wger/core/http_overrides.dart';
 import 'package:wger/core/network/auth_credentials_storage.dart';
 import 'package:wger/core/network/auth_http_client.dart';
 import 'package:wger/core/network/auth_state.dart';
+import 'package:wger/core/network/headless_auth_api.dart';
 import 'package:wger/core/network/jwt.dart';
 import 'package:wger/core/network/network_provider.dart';
+import 'package:wger/core/network/powersync_session.dart';
 import 'package:wger/core/network/server_gating.dart';
 import 'package:wger/core/shared_preferences.dart';
 import 'package:wger/database/powersync/powersync.dart';
 import 'package:wger/features/account/providers/account_notifier.dart';
-import 'package:wger/features/account/providers/timezone_sync.dart';
 import 'package:wger/features/account/providers/user_profile_notifier.dart';
 import 'package:wger/features/gallery/providers/gallery_notifier.dart';
 import 'package:wger/features/nutrition/providers/nutrition_notifier.dart';
@@ -52,31 +49,13 @@ import 'package:wger/features/trophies/providers/trophy_notifier.dart';
 
 part 'auth_notifier.g.dart';
 
-/// `allauth.headless` `app` client endpoints, relative to the
-/// `/allauth/app/v1/` base.
-const HEADLESS_TOKENS_REFRESH_PATH = 'tokens/refresh';
-const HEADLESS_AUTH_LOGIN_PATH = 'auth/login';
-const HEADLESS_AUTH_SIGNUP_PATH = 'auth/signup';
-const HEADLESS_AUTH_MFA_AUTHENTICATE_PATH = 'auth/2fa/authenticate';
-
-/// Header that carries the short-lived `session_token` returned by
-/// `auth/login` when a follow-up step (currently only 2FA) is still pending.
-const HEADLESS_SESSION_TOKEN_HEADER = 'X-Session-Token';
-
-/// HTTP client used by the auth notifier. Override in tests.
-final authHttpClientProvider = Provider<http.Client>(
-  (ref) => ReachabilityReportingClient(
-    http.Client(),
-    () => ref.read(networkStatusProvider.notifier),
-  ),
-);
-
 @Riverpod(keepAlive: true)
 class AuthNotifier extends _$AuthNotifier {
   final _logger = Logger('AuthNotifier');
-  late http.Client _client;
+  late HeadlessAuthApi _api;
   late AuthCredentialsStorage _storage;
   late ServerGating _gating;
+  late PowerSyncSession _powerSync;
 
   /// Holds the in-flight refresh future so concurrent callers share a single
   /// network roundtrip. Cleared in `whenComplete` so the next refresh starts
@@ -99,17 +78,12 @@ class AuthNotifier extends _$AuthNotifier {
   @visibleForTesting
   int userSwitchWipeCount = 0;
 
-  /// Stops the PowerSync sync loop on the keep-data session-reset path.
-  /// Injectable because `PowerSyncDatabase` is a `base` class and cannot be
-  /// faked in tests.
-  @visibleForTesting
-  Future<void> Function() disconnectPowerSync = _disconnectBuiltPowerSync;
-
   @override
   Future<AuthState> build() async {
-    _client = ref.read(authHttpClientProvider);
+    _api = ref.read(headlessAuthApiProvider);
     _storage = ref.read(authCredentialsStorageProvider);
     _gating = ref.read(serverGatingProvider);
+    _powerSync = ref.read(powerSyncSessionProvider);
     ref.onDispose(() {
       _connectivitySub?.cancel();
       _lifecycleListener?.dispose();
@@ -132,17 +106,14 @@ class AuthNotifier extends _$AuthNotifier {
     if (version.tooOld) {
       return LoginActions.update;
     }
-    final body = <String, String>{'username': username, 'password': password};
-    if (email.isNotEmpty) {
-      body['email'] = email;
-    }
-
-    final response = await _client.post(
-      makeHeadlessUri(serverUrl, HEADLESS_AUTH_SIGNUP_PATH),
-      headers: jsonApiHeaders(appVersion, {HttpHeaders.acceptLanguageHeader: locale}),
-      body: json.encode(body),
+    final creds = await _api.signup(
+      username: username,
+      password: password,
+      email: email,
+      serverUrl: serverUrl,
+      appVersion: appVersion,
+      locale: locale,
     );
-    final creds = _consumeHeadlessAuthResponse(response);
     return _completeLogin(creds, serverUrl, appVersion, serverVersion: version.version);
   }
 
@@ -198,12 +169,12 @@ class AuthNotifier extends _$AuthNotifier {
     if (version.tooOld) {
       return LoginActions.update;
     }
-    final response = await _client.post(
-      makeHeadlessUri(serverUrl, HEADLESS_AUTH_MFA_AUTHENTICATE_PATH),
-      headers: jsonApiHeaders(appVersion, {HEADLESS_SESSION_TOKEN_HEADER: sessionToken}),
-      body: json.encode({'code': code}),
+    final creds = await _api.authenticateMfa(
+      sessionToken: sessionToken,
+      code: code,
+      serverUrl: serverUrl,
+      appVersion: appVersion,
     );
-    final creds = _consumeHeadlessAuthResponse(response);
     return _completeLogin(creds, serverUrl, appVersion, serverVersion: version.version);
   }
 
@@ -235,103 +206,29 @@ class AuthNotifier extends _$AuthNotifier {
     return gate;
   }
 
-  Future<_FreshCredentials> _obtainCredentials(
+  /// The credentials a login attempt yields: the pasted refresh token when
+  /// there is one (rotation invalidates it as part of the exchange), else
+  /// username and password.
+  Future<FreshCredentials> _obtainCredentials(
     String username,
     String password,
     String serverUrl,
     String? pastedRefreshToken,
     PackageInfo appVersion,
-  ) async {
+  ) {
     if (pastedRefreshToken != null && pastedRefreshToken.isNotEmpty) {
-      return _exchangePastedRefreshToken(pastedRefreshToken, serverUrl, appVersion);
+      return _api.exchangeRefreshToken(
+        refreshToken: pastedRefreshToken,
+        serverUrl: serverUrl,
+        appVersion: appVersion,
+      );
     }
 
-    final response = await _client.post(
-      makeHeadlessUri(serverUrl, HEADLESS_AUTH_LOGIN_PATH),
-      headers: jsonApiHeaders(appVersion),
-      body: json.encode({'username': username, 'password': password}),
-    );
-    return _consumeHeadlessAuthResponse(response);
-  }
-
-  /// Exchanges a manually-pasted refresh token for a fresh access + refresh
-  /// bundle. Rotation is on by default server-side, so the pasted token is
-  /// invalidated as part of this call and the new refresh token is what
-  /// ends up persisted in secure storage. Throws [WgerHttpException] when
-  /// the server rejects the pasted token.
-  Future<_FreshCredentials> _exchangePastedRefreshToken(
-    String refreshToken,
-    String serverUrl,
-    PackageInfo appVersion,
-  ) async {
-    final response = await _client.post(
-      makeHeadlessUri(serverUrl, HEADLESS_TOKENS_REFRESH_PATH),
-      headers: jsonApiHeaders(appVersion),
-      body: json.encode({'refresh_token': refreshToken}),
-    );
-    return _consumeHeadlessAuthResponse(response);
-  }
-
-  /// Parses the standard `allauth.headless` auth response envelope.
-  ///
-  /// Returns a populated [_FreshCredentials] on 200 (tokens carried in
-  /// `meta`).
-  ///
-  /// Throws:
-  /// - [MfaRequiredException] on a 401 that carries `meta.session_token`,
-  ///   signalling that the user must complete a second factor before tokens
-  ///   are issued.
-  /// - [WgerHttpException] for any other status, or for malformed / partial
-  ///   bodies on otherwise-successful responses.
-  _FreshCredentials _consumeHeadlessAuthResponse(http.Response response) {
-    final Map<String, dynamic> body;
-    try {
-      body = json.decode(response.body) as Map<String, dynamic>;
-    } catch (_) {
-      throw WgerHttpException(response);
-    }
-
-    if (response.statusCode == 401) {
-      final meta = body['meta'] as Map<String, dynamic>?;
-      final sessionToken = meta?['session_token'] as String?;
-      if (sessionToken != null && sessionToken.isNotEmpty) {
-        final flows = (body['data'] as Map<String, dynamic>?)?['flows'] as List<dynamic>?;
-        final factors =
-            flows
-                ?.whereType<Map<String, dynamic>>()
-                .where(
-                  (f) => f['id'] == 'mfa_authenticate' && (f['is_pending'] as bool? ?? false),
-                )
-                .expand((f) => (f['types'] as List<dynamic>?)?.cast<String>() ?? const <String>[])
-                .toList() ??
-            const <String>[];
-        throw MfaRequiredException(sessionToken: sessionToken, availableFactors: factors);
-      }
-      throw WgerHttpException(response);
-    }
-
-    if (response.statusCode != 200) {
-      throw WgerHttpException(response);
-    }
-
-    // auth/login and auth/signup return the tokens under `meta`, while
-    // tokens/refresh returns them under `data` (see allauth.headless source:
-    // base/response.py vs tokens/response.py). Read both so this parser
-    // works for either response shape.
-    final meta = body['meta'] as Map<String, dynamic>?;
-    final data = body['data'] as Map<String, dynamic>?;
-    final accessToken = (meta?['access_token'] ?? data?['access_token']) as String?;
-    if (accessToken == null || accessToken.isEmpty) {
-      // 200 without tokens, likely a still-pending flow we don't know how
-      // to drive. Surface as an HTTP error so the caller renders something.
-      throw WgerHttpException(response);
-    }
-    return (
-      credential: JwtCredential(
-        accessToken: accessToken,
-        expiresAt: jwtExp(decodeJwtPayload(accessToken)),
-      ),
-      refreshToken: (meta?['refresh_token'] ?? data?['refresh_token']) as String?,
+    return _api.login(
+      username: username,
+      password: password,
+      serverUrl: serverUrl,
+      appVersion: appVersion,
     );
   }
 
@@ -345,7 +242,7 @@ class AuthNotifier extends _$AuthNotifier {
   /// be uploaded under the new user's credentials, which is both a leak
   /// and would corrupt data ownership server-side.
   Future<LoginActions> _completeLogin(
-    _FreshCredentials creds,
+    FreshCredentials creds,
     String serverUrl,
     PackageInfo appVersion, {
     String? serverVersion,
@@ -403,7 +300,11 @@ class AuthNotifier extends _$AuthNotifier {
     state = AsyncData(newState);
 
     if (newState.status == AuthStatus.loggedIn) {
-      await _reconnectPowerSyncIfBuilt(serverUrl);
+      _powerSync.reconnect(
+        serverUrl,
+        ref.read(authenticatedHttpClientProvider),
+        ref.read(syncWatchdogProvider),
+      );
       _invalidatePostLoginProviders();
     }
 
@@ -713,10 +614,10 @@ class AuthNotifier extends _$AuthNotifier {
     final appVersion = current.applicationVersion ?? await PackageInfo.fromPlatform();
     final http.Response response;
     try {
-      response = await _client.post(
-        makeHeadlessUri(serverUrl, HEADLESS_TOKENS_REFRESH_PATH),
-        headers: jsonApiHeaders(appVersion),
-        body: json.encode({'refresh_token': refreshToken}),
+      response = await _api.postTokenRefresh(
+        refreshToken: refreshToken,
+        serverUrl: serverUrl,
+        appVersion: appVersion,
       );
     } on Exception catch (e, s) {
       _logger.warning(
@@ -829,7 +730,7 @@ class AuthNotifier extends _$AuthNotifier {
     var wiped = true;
     if (wipeLocalData) {
       try {
-        await _wipeLocalDb();
+        await _powerSync.wipe();
       } catch (e, s) {
         _logger.severe('logout wipe failed, keeping owner marker', e, s);
         wiped = false;
@@ -839,7 +740,7 @@ class AuthNotifier extends _$AuthNotifier {
       // refresh future, and the disconnect can block on a sync fetch that is
       // itself awaiting that future (refresh -> disconnect -> sync fetch ->
       // refresh deadlock). The DB is kept, so there is no wipe to race with.
-      unawaited(disconnectPowerSync());
+      unawaited(_powerSync.disconnect());
     }
 
     state = AsyncData(
@@ -864,59 +765,7 @@ class AuthNotifier extends _$AuthNotifier {
   /// Wipes the local PowerSync data when a different user logs in.
   Future<void> _wipeOnUserSwitch() async {
     userSwitchWipeCount++;
-    await _wipeLocalDb();
-  }
-
-  /// Removes the local PowerSync data whether or not the DB has been built:
-  /// when the instance exists we use PowerSync's own `disconnectAndClear`,
-  /// otherwise (cold start, before any data widget has built it) we delete
-  /// the on-disk files directly so no data survives.
-  ///
-  /// Throws if the wipe fails. Callers must abort before advancing the DB
-  /// owner marker, otherwise the previous user's data stay on disk
-  Future<void> _wipeLocalDb() async {
-    final db = builtPowerSyncInstance;
-    if (db != null) {
-      try {
-        await db.disconnectAndClear();
-      } catch (e, s) {
-        _logger.severe('local DB wipe via disconnectAndClear failed', e, s);
-        rethrow;
-      }
-    } else {
-      try {
-        await deletePowerSyncDatabaseFile();
-      } catch (e, s) {
-        _logger.severe('local DB wipe via file delete failed', e, s);
-        rethrow;
-      }
-    }
-
-    // The account-scoped preferences leave with the data: the next account
-    // must not inherit the health-sync opt-in and watermarks, nor a timezone
-    // marker that would let the sync overwrite its chosen zone
-    await PreferenceHelper.instance.clearHealthSyncPreferences();
-    await PreferenceHelper.asyncPref.remove(reportedTimezonePrefKey);
-  }
-
-  /// Reconnects an already-built PowerSync DB with a fresh connector for the
-  /// given [serverUrl]. No-op when PowerSync hasn't been built yet: the next
-  /// access will build it with the current (post-login) auth state.
-  Future<void> _reconnectPowerSyncIfBuilt(String serverUrl) async {
-    final db = builtPowerSyncInstance;
-    if (db == null) {
-      return;
-    }
-    try {
-      connectPowerSync(
-        db,
-        serverUrl,
-        ref.read(authenticatedHttpClientProvider),
-        ref.read(syncWatchdogProvider),
-      );
-    } catch (e, s) {
-      _logger.warning('PowerSync reconnect failed', e, s);
-    }
+    await _powerSync.wipe();
   }
 
   /// Refreshes the server version into the state.
@@ -939,50 +788,4 @@ class AuthNotifier extends _$AuthNotifier {
     final userData = json.decode((await prefs.getString(PREFS_LAST_SERVER))!);
     return userData['serverUrl'] as String;
   }
-}
-
-/// In-memory bundle returned by the login / signup flows. Always carries a
-/// [JwtCredential] (fresh logins go through `allauth.headless`); the refresh
-/// token is the one the caller still needs to write to secure storage.
-typedef _FreshCredentials = ({JwtCredential credential, String? refreshToken});
-
-/// Default for [AuthNotifier.disconnectPowerSync]: disconnects an
-/// already-built PowerSync DB but keeps its data on disk. No-op when
-/// PowerSync hasn't been built yet.
-Future<void> _disconnectBuiltPowerSync() async {
-  final db = builtPowerSyncInstance;
-  if (db == null) {
-    return;
-  }
-  try {
-    await db.disconnect();
-  } catch (e, s) {
-    Logger('AuthNotifier').warning('PowerSync disconnect failed', e, s);
-  }
-}
-
-/// User-agent header string identifying the app/version/platform.
-String getAppNameHeader(PackageInfo? applicationVersion) {
-  String out = '';
-  if (applicationVersion != null) {
-    out =
-        '/${applicationVersion.version} '
-        '(${applicationVersion.packageName}; '
-        'build: ${applicationVersion.buildNumber}; '
-        'platform: ${Platform.operatingSystem})'
-        ' - https://github.com/wger-project';
-  }
-  return 'wger App$out';
-}
-
-/// Standard JSON-API headers for the auth endpoints. The `Accept` header keeps
-/// a bot wall (e.g. Anubis) from serving an HTML challenge to these endpoints
-/// instead of JSON. [extra] adds per-request headers (session token, auth, ...).
-Map<String, String> jsonApiHeaders(PackageInfo? appVersion, [Map<String, String>? extra]) {
-  return {
-    HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8',
-    HttpHeaders.acceptHeader: 'application/json',
-    HttpHeaders.userAgentHeader: getAppNameHeader(appVersion),
-    ...?extra,
-  };
 }

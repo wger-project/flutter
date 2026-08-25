@@ -27,9 +27,10 @@ import 'package:version/version.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/errors.dart';
 import 'package:wger/core/helpers.dart';
+import 'package:wger/core/network/api_headers.dart';
 import 'package:wger/core/network/auth_credentials_storage.dart';
-import 'package:wger/core/network/auth_notifier.dart';
 import 'package:wger/core/network/auth_state.dart';
+import 'package:wger/core/network/network_provider.dart';
 
 /// `/api/v2/` endpoints used by the gating chain.
 const _MIN_APP_VERSION_PATH = 'min-app-version';

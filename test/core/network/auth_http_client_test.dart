@@ -26,7 +26,8 @@ import 'package:mockito/mockito.dart';
 import 'package:wger/core/network/auth_http_client.dart';
 import 'package:wger/core/network/auth_notifier.dart';
 import 'package:wger/core/network/auth_state.dart';
-import 'package:wger/core/network/network_provider.dart' show ReachabilityReportingClient;
+import 'package:wger/core/network/network_provider.dart'
+    show ReachabilityReportingClient, authHttpClientProvider;
 
 import 'auth_http_client_test.mocks.dart';
 
