@@ -17,12 +17,12 @@
  */
 
 import 'dart:math';
-import 'dart:ui' as ui;
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/features/measurements/charts/data.dart';
+import 'package:wger/features/measurements/widgets/charts/chart_painting.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 /// Histogram of how often each value occurred: the values of the selected
@@ -340,13 +340,8 @@ class _DistributionPainter extends CustomPainter {
     }
   }
 
-  /// Lays [text] out as a single unwrapped line; the call sites position it.
-  TextPainter _layoutLabel(String text, {required double maxWidth}) => TextPainter(
-    text: TextSpan(text: text, style: labelStyle),
-    textDirection: ui.TextDirection.ltr,
-    maxLines: 1,
-    ellipsis: '',
-  )..layout(maxWidth: maxWidth);
+  TextPainter _layoutLabel(String text, {required double maxWidth}) =>
+      singleLineLabel(text, labelStyle, maxWidth: maxWidth);
 
   @override
   bool shouldRepaint(_DistributionPainter oldDelegate) =>

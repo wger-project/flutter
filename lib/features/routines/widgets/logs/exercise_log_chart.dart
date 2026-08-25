@@ -19,7 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:wger/core/colors.dart';
 import 'package:wger/core/misc.dart';
-import 'package:wger/features/measurements/widgets/charts.dart';
+import 'package:wger/core/widgets/legend.dart';
 import 'package:wger/features/routines/models/log.dart';
 import 'package:wger/features/routines/widgets/charts.dart';
 

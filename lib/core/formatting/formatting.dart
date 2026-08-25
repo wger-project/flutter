@@ -31,6 +31,11 @@ DateFormat localizedDate(BuildContext context) =>
 NumberFormat localizedNumberFormat(BuildContext context) =>
     NumberFormat.decimalPattern(Localizations.localeOf(context).toString());
 
+/// The localized label of the profile's weight unit (kg or lb).
+String weightUnit(bool isMetric, BuildContext context) {
+  return isMetric ? AppLocalizations.of(context).kg : AppLocalizations.of(context).lb;
+}
+
 /// A date in the past as a relative phrase ("today", "3 weeks ago").
 ///
 /// Counts calendar days rather than elapsed hours, so an entry from late

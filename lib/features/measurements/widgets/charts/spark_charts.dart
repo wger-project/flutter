@@ -31,6 +31,7 @@ import 'package:wger/features/measurements/charts/colors.dart';
 import 'package:wger/features/measurements/charts/data.dart';
 import 'package:wger/features/measurements/charts/series.dart';
 import 'package:wger/features/measurements/charts/spark.dart';
+import 'package:wger/features/measurements/widgets/charts/chart_painting.dart';
 
 /// Fraction of the value span kept clear above and below a spark, so the
 /// extremes are not glued to the edges.
@@ -271,7 +272,7 @@ class _SparkHeatmapPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     // Square cells centered in the box, week columns and weekday rows
     final step = min(size.width / grid.weeks, size.height / DateTime.daysPerWeek);
-    final cell = step - (step * 0.18).clamp(1.0, 3.0);
+    final cell = step - heatmapCellGap(step);
     final left = (size.width - step * grid.weeks) / 2;
     final top = (size.height - step * DateTime.daysPerWeek) / 2;
     final endOfToday = DateTime(today.year, today.month, today.day);
@@ -284,26 +285,21 @@ class _SparkHeatmapPainter extends CustomPainter {
           continue;
         }
 
-        paint.color = _cellColor(grid.valueAt(week, weekday));
+        paint.color = heatmapCellColor(
+          grid.valueAt(week, weekday),
+          maxValue: grid.maxValue,
+          filled: filled,
+          empty: empty,
+        );
         canvas.drawRRect(
           RRect.fromRectAndRadius(
             Offset(left + week * step, top + weekday * step) & Size(cell, cell),
-            Radius.circular(min(2, cell / 4)),
+            heatmapCellRadius(cell),
           ),
           paint,
         );
       }
     }
-  }
-
-  /// The full heatmap's colour rule: neutral for a day without a measurement,
-  /// tinted by size for the rest, starting well above transparent.
-  Color _cellColor(num? value) {
-    if (value == null) {
-      return empty;
-    }
-    final share = grid.maxValue <= 0 ? 1.0 : (value / grid.maxValue).clamp(0.0, 1.0);
-    return Color.lerp(filled.withValues(alpha: 0.3), filled, share)!;
   }
 
   @override

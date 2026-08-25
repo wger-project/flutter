@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/core/widgets/error.dart';
+import 'package:wger/core/widgets/legend.dart';
 import 'package:wger/core/widgets/progress_indicator.dart';
 import 'package:wger/features/measurements/charts/colors.dart';
 import 'package:wger/features/measurements/charts/data.dart';
@@ -12,7 +13,12 @@ import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/unit_conversion.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/measurements/screens/measurement_entries_screen.dart';
-import 'package:wger/features/measurements/widgets/charts.dart';
+import 'package:wger/features/measurements/widgets/charts/bar_chart.dart';
+import 'package:wger/features/measurements/widgets/charts/distribution_chart.dart';
+import 'package:wger/features/measurements/widgets/charts/heatmap_chart.dart';
+import 'package:wger/features/measurements/widgets/charts/line_chart.dart';
+import 'package:wger/features/measurements/widgets/charts/overall_change.dart';
+import 'package:wger/features/measurements/widgets/charts/stacked_bar_chart.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 /// A chart with the overall change below it, for a Column to spread, titled

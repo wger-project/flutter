@@ -17,13 +17,13 @@
  */
 
 import 'dart:math';
-import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/features/measurements/charts/data.dart';
 import 'package:wger/features/measurements/charts/series.dart';
+import 'package:wger/features/measurements/widgets/charts/chart_painting.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 /// Calendar heatmap: one cell per day, coloured by that day's value.
@@ -153,10 +153,7 @@ class _HeatmapLayout {
       minCell,
       min(available.width / max(weeks, 1), available.height / DateTime.daysPerWeek),
     );
-    // The gap follows the cell size: a fixed one is a hairline on a wide grid
-    // and half the cell on a year of columns, where it turns the squares into
-    // scattered dots
-    final gap = (step * 0.18).clamp(1.0, 3.0);
+    final gap = heatmapCellGap(step);
 
     return _HeatmapLayout._(
       step: step,
@@ -209,19 +206,8 @@ class _HeatmapPainter extends CustomPainter {
     required this.locale,
   });
 
-  /// Colour of a cell holding [value].
-  ///
-  /// A day without a measurement is neutral, everything else is tinted by how
-  /// large its value is within the grid. The scale is continuous and starts
-  /// well above transparent: a day that was measured has to read as measured
-  /// even when its value is the smallest one.
-  Color _cellColor(num? value) {
-    if (value == null) {
-      return empty;
-    }
-    final share = grid.maxValue <= 0 ? 1.0 : (value / grid.maxValue).clamp(0.0, 1.0);
-    return Color.lerp(filled.withValues(alpha: 0.3), filled, share)!;
-  }
+  Color _cellColor(num? value) =>
+      heatmapCellColor(value, maxValue: grid.maxValue, filled: filled, empty: empty);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -240,8 +226,7 @@ class _HeatmapPainter extends CustomPainter {
 
         final rect = RRect.fromRectAndRadius(
           layout.originOf(week, weekday) & Size(layout.cell, layout.cell),
-          // Rounded, but never so much that a small cell becomes a dot
-          Radius.circular(min(2, layout.cell / 4)),
+          heatmapCellRadius(layout.cell),
         );
         canvas.drawRRect(rect, paint..color = _cellColor(grid.valueAt(week, weekday)));
 
@@ -310,12 +295,7 @@ class _HeatmapPainter extends CustomPainter {
     required double maxWidth,
     bool centered = false,
   }) {
-    final painter = TextPainter(
-      text: TextSpan(text: text, style: labelStyle),
-      textDirection: ui.TextDirection.ltr,
-      maxLines: 1,
-      ellipsis: '',
-    )..layout(maxWidth: maxWidth);
+    final painter = singleLineLabel(text, labelStyle, maxWidth: maxWidth);
     painter.paint(canvas, centered ? at.translate(0, -painter.height / 2) : at);
   }
 

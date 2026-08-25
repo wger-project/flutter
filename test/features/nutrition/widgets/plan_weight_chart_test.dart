@@ -24,7 +24,7 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/features/account/providers/user_profile_repository.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
-import 'package:wger/features/measurements/widgets/charts.dart';
+import 'package:wger/features/measurements/widgets/charts/overall_change.dart';
 import 'package:wger/features/nutrition/models/nutritional_plan.dart';
 import 'package:wger/features/nutrition/widgets/plan_weight_chart.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
