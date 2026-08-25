@@ -507,19 +507,6 @@ void main() {
       expect(average.last.value, closeTo(75, 1));
     });
   });
-  group('sensibleRange', () {
-    test('averages over the window the category configured', () {
-      final points = [
-        MeasurementChartEntry(10, DateTime.now().subtract(const Duration(days: 11))),
-        MeasurementChartEntry(20, DateTime.now()),
-      ];
-
-      // the older point is outside 7 days but inside 14
-      expect(sensibleRange(points).$2.last.value, 20);
-      expect(sensibleRange(points, averageDays: 14).$2.last.value, 15);
-    });
-  });
-
   group('niceBinWidth', () {
     test('rounds the span split into ~20 bins up to 1, 2 or 5 times a power of ten', () {
       // span 14.6 / 20 = 0.73 -> 1, not an edge like 59.3-61.3

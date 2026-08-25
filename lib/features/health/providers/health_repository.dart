@@ -192,32 +192,16 @@ class HealthRepository {
     return true;
   }
 
-  /// Reads all [types] between [start] and [end], platform-deduplicated and
-  /// reduced to numeric [HealthReading]s, handing each window over via
-  /// [onBatch] as soon as it returned.
+  /// Reads all [types] between [start] and [end] in windows of [window],
+  /// handing each window's readings to [onBatch] as soon as it returned:
+  /// the peak memory stays at one window (see [HealthMetric.readWindow];
+  /// years of a dense type would fill the 256 MB Android app heap).
   ///
-  /// The range is read in windows of [window]: the plugin turns every record
-  /// into a map and then serialises the whole batch for the method channel, so
-  /// one query spanning years of a densely written type fills the Android app
-  /// heap, which is capped at 256 MB however much RAM the device has, and the
-  /// process is killed. How large a window a metric can afford is a property
-  /// of the metric, see [HealthMetric.readWindow]. Handing every window over
-  /// keeps the peak at one window: holding the full history until the end
-  /// would fill the same heap the window protects.
-  ///
-  /// The windows are contiguous and move forward, so everything a later batch
-  /// delivers starts at or after the previous batch's `windowEnd`; a record
-  /// on a boundary or spanning one is delivered exactly once, in its first
-  /// window. What [onBatch] wrote stays written when a later window fails,
-  /// which the caller has to keep harmless (the importer's writes are
-  /// idempotent via their external ids).
-  ///
-  /// Within a window the types are read one by one: a single type the
-  /// platform refuses (an unauthorized type throws rather than coming back
-  /// empty) would otherwise cost every other type its import too. A failing
-  /// type is logged by name and dropped from the remaining windows; only when
-  /// every type fails does the error propagate, so a wholesale denial still
-  /// surfaces as one.
+  /// Windows are contiguous and move forward; a record on or across a
+  /// boundary is delivered once, in its first window. Delivered batches stay
+  /// written when a later window fails, so [onBatch] has to be idempotent.
+  /// A failing type is dropped from the remaining windows; the error only
+  /// propagates when every type fails.
   Future<void> read({
     required List<HealthDataType> types,
     required DateTime start,

@@ -178,39 +178,6 @@ List<MeasurementChartEntry> weeklyDeltas(
   ];
 }
 
-// the start of a "sensible range": something relatively recent, which is most
-// relevant for the user to track their progress, but a range should always
-// include at least 5 points, and if not we chose a bigger one.
-// we return the start of the last 2 months, 4 months, or null for the full history
-DateTime? sensibleRangeStart(List<MeasurementChartEntry> entriesAll) {
-  final twoMonthsAgo = DateTime.now().subtract(const Duration(days: 61));
-  final fourMonthsAgo = DateTime.now().subtract(const Duration(days: 122));
-
-  if (entriesAll.whereDate(twoMonthsAgo, null).length > 4) {
-    return twoMonthsAgo;
-  }
-  if (entriesAll.whereDate(fourMonthsAgo, null).length > 4) {
-    return fourMonthsAgo;
-  }
-  return null;
-}
-
-// return the raw and average measurements for a "sensible range", see
-// sensibleRangeStart. [averageDays] is the window of the moving average, which
-// the category can configure.
-(List<MeasurementChartEntry>, List<MeasurementChartEntry>) sensibleRange(
-  List<MeasurementChartEntry> entriesAll, {
-  int averageDays = 7,
-}) {
-  final average = movingAverage(entriesAll, days: averageDays);
-  final start = sensibleRangeStart(entriesAll);
-
-  if (start == null) {
-    return (entriesAll, average);
-  }
-  return (entriesAll.whereDate(start, null), average.whereDate(start, null));
-}
-
 /// Turns stored entries into chart points, converting the value to [targetUnit].
 ///
 /// Entries stored as a daily aggregate keep the range they summarise in

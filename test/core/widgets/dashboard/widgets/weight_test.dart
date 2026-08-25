@@ -19,6 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:wger/core/widgets/dashboard/widgets/nothing_found.dart';
 import 'package:wger/core/widgets/dashboard/widgets/weight.dart';
 import 'package:wger/core/widgets/error.dart';
 import 'package:wger/features/account/models/user_profile.dart';
@@ -27,9 +28,11 @@ import 'package:wger/features/measurements/charts/data.dart';
 import 'package:wger/features/measurements/models/measurement_bucket.dart';
 import 'package:wger/features/measurements/providers/body_weight_provider.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
+import 'package:wger/features/measurements/widgets/categories_card.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 import '../../../../../test_data/body_weight.dart';
+import '../../../../helpers/measurement_chart_buckets.dart';
 
 /// Feeds a fixed profile into the widget without the repository underneath.
 class _StubUserProfileNotifier extends UserProfileNotifier {
@@ -80,5 +83,23 @@ void main() {
 
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
     expect(find.byType(StreamErrorIndicator), findsNothing);
+  });
+
+  testWidgets('renders the shared category card, titled by the header alone', (tester) async {
+    await tester.pumpWidget(
+      renderWidget(Stream.value(entryBuckets([testWeightEntry1, testWeightEntry2]))),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byType(CategoriesCard), findsOneWidget);
+    expect(find.text('Weight'), findsOneWidget);
+  });
+
+  testWidgets('offers the first entry while there are no points', (tester) async {
+    await tester.pumpWidget(renderWidget(Stream.value(const [])));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(NothingFound), findsOneWidget);
+    expect(find.byType(CategoriesCard), findsNothing);
   });
 }

@@ -42,7 +42,8 @@ class CategoriesCard extends ConsumerWidget {
   final ChartRange range;
 
   /// Name the card is titled with, `category.displayName` by default. Body
-  /// weight is titled like the screen it leads to.
+  /// weight is titled like the screen it leads to; empty hides the row, for
+  /// a card sitting under its own header.
   final String? title;
 
   /// Unit the values are converted to, `category.unit` by default. Body weight
@@ -78,22 +79,24 @@ class CategoriesCard extends ConsumerWidget {
       return _buildGroupCard(context, ref);
     }
 
+    final cardTitle = title ?? currentCategory.displayName(context);
     return Card(
       elevation: elevation,
       child: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              child: Text(
-                title ?? currentCategory.displayName(context),
-                style: Theme.of(context).textTheme.titleLarge,
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
+            if (cardTitle.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                child: Text(
+                  cardTitle,
+                  style: Theme.of(context).textTheme.titleLarge,
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
-            ),
             MeasurementChartArea<List<MeasurementChartEntry>>(
               identity: currentCategory.id!,
               watch: (ref) => chartPointsFor(ref, currentCategory, range, targetUnit: displayUnit),

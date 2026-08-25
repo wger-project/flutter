@@ -20,19 +20,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:logging/logging.dart';
-import 'package:wger/core/form_screen.dart';
 import 'package:wger/core/widgets/dashboard/widgets/nothing_found.dart';
 import 'package:wger/core/widgets/error.dart';
 import 'package:wger/core/widgets/progress_indicator.dart';
-import 'package:wger/features/account/models/user_profile.dart';
 import 'package:wger/features/account/providers/user_profile_notifier.dart';
-import 'package:wger/features/measurements/charts/data.dart';
 import 'package:wger/features/measurements/charts/range.dart';
-import 'package:wger/features/measurements/charts/series.dart';
-import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/unit_conversion.dart';
 import 'package:wger/features/measurements/providers/body_weight_provider.dart';
 import 'package:wger/features/measurements/screens/weight_screen.dart';
+import 'package:wger/features/measurements/widgets/categories_card.dart';
 import 'package:wger/features/measurements/widgets/charts.dart';
 import 'package:wger/features/measurements/widgets/helpers.dart';
 import 'package:wger/features/measurements/widgets/weight_form.dart';
@@ -95,9 +91,9 @@ class DashboardWeightWidget extends ConsumerWidget {
     if (profile == null) {
       // The profile stream can legitimately emit null right after login,
       // before the local `user_profile` PowerSync bucket has finished its
-      // first sync (see WeightOverview / NutritionalPlansList, which treat
-      // this the same way). Keep showing the spinner instead of a
-      // permanent-looking error; the widget rebuilds once the row lands.
+      // first sync (see NutritionalPlansList, which treats this the same
+      // way). Keep showing the spinner instead of a permanent-looking error;
+      // the widget rebuilds once the row lands.
       return _shell(context, const BoxedProgressIndicator());
     }
     final category = categoryAsync.value;
@@ -107,9 +103,8 @@ class DashboardWeightWidget extends ConsumerWidget {
       return _shell(context, const BoxedProgressIndicator());
     }
 
-    // The chart is drawn from the aggregated query, so the card condenses the
-    // history in SQL rather than reading an object per entry. Mixed-unit
-    // entries (kg/lb) are normalized to the profile's display unit
+    // The same watch the card below runs (one underlying stream), resolved
+    // here as well so the empty state and errors render dashboard-style
     final pointsAsync = chartPointsFor(
       ref,
       category,
@@ -123,83 +118,31 @@ class DashboardWeightWidget extends ConsumerWidget {
     if (points == null) {
       return _shell(context, const BoxedProgressIndicator());
     }
-
-    return _shell(context, _buildContent(context, category, profile, points));
-  }
-
-  Widget _buildContent(
-    BuildContext context,
-    MeasurementCategory category,
-    UserProfile profile,
-    List<MeasurementChartEntry> points,
-  ) {
     if (points.isEmpty) {
-      return NothingFound(
-        AppLocalizations.of(context).noWeightEntries,
-        AppLocalizations.of(context).newEntry,
-        WeightForm(category),
+      return _shell(
+        context,
+        NothingFound(
+          AppLocalizations.of(context).noWeightEntries,
+          AppLocalizations.of(context).newEntry,
+          WeightForm(category),
+        ),
       );
     }
 
-    final (entriesAll, average) = sensibleRange(
-      points,
-      averageDays: category.chartSettings.averageWindow ?? ChartSettings.fallbackWindow,
-    );
-
-    return Column(
-      children: [
-        SizedBox(
-          height: 200,
-          child: MeasurementChartWidgetFl.singleMeasurement(
-            entriesAll,
-            weightUnit(profile.isMetric, context),
-            avgs: average,
-          ),
-        ),
-        if (average.isNotEmpty)
-          MeasurementOverallChangeWidget(
-            average.first,
-            average.last,
-            weightUnit(profile.isMetric, context),
-          ),
-        LayoutBuilder(
-          builder: (context, constraints) {
-            return SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minWidth: constraints.maxWidth),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    TextButton(
-                      child: Text(
-                        AppLocalizations.of(context).goToDetailPage,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).pushNamed(WeightScreen.routeName);
-                      },
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.add),
-                      onPressed: () {
-                        Navigator.pushNamed(
-                          context,
-                          FormScreen.routeName,
-                          arguments: FormScreenArguments(
-                            AppLocalizations.of(context).newEntry,
-                            WeightForm(category),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        ),
-      ],
+    // The card the body tab shows, over the full history; the shell above
+    // already titles the widget
+    return _shell(
+      context,
+      CategoriesCard(
+        category,
+        elevation: 0,
+        range: ChartRange.all,
+        title: '',
+        displayUnit: weightDisplayUnit(profile.isMetric),
+        displayUnitLabel: weightUnit(profile.isMetric, context),
+        newEntryForm: WeightForm(category),
+        onShowDetails: () => Navigator.pushNamed(context, WeightScreen.routeName),
+      ),
     );
   }
 }
