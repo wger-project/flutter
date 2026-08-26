@@ -50,10 +50,6 @@
     "@enterValue": {
         "description": "Error message when the user hasn't entered a value on a required field"
     },
-    "goToToday": "Ir a \"hoy\"",
-    "@goToToday": {
-        "description": "Label on button to jump back to 'today' in the calendar widget"
-    },
     "calendar": "Calendario",
     "aboutDescription": "¡Gracias por usar wger! wger es un proyecto colaborativo de código abierto, realizado por entusiastas del fitness de todo el planeta.",
     "@aboutDescription": {
@@ -75,10 +71,6 @@
         }
     },
     "delete": "Borrar",
-    "loadingText": "Cargando...",
-    "@loadingText": {
-        "description": "Text to show when entries are being loaded in the background: Loading..."
-    },
     "edit": "Editar",
     "noWeightEntries": "No tienes entradas de peso registradas",
     "@noWeightEntries": {
@@ -157,7 +149,6 @@
     "@addSet": {
         "description": "Label for the button that adds a set (to a workout day)"
     },
-    "cancel": "Cancelar",
     "save": "Guardar",
     "description": "Descripción",
     "logHelpEntriesUnits": "Tenga en cuenta que solo se registran las entradas con una unidad de peso (kg o lb) y las repeticiones; aquí se ignoran otras combinaciones, como el tiempo o hasta el fallo.",
@@ -167,7 +158,6 @@
     "@gymMode": {
         "description": "Label when starting the gym mode"
     },
-    "selectExercises": "Si quieres hacer una superserie puedes buscar varios ejercicios, se agruparán juntos",
     "newDay": "Nuevo día",
     "workoutSession": "Sesión de entrenamiento",
     "@workoutSession": {
@@ -181,7 +171,6 @@
     "@impression": {
         "description": "General impression (e.g. for a workout session) such as good, bad, etc."
     },
-    "sameRepetitions": "Si haces las mismas repeticiones y el mismo peso para todas las series, solo puedes completar una fila. Por ejemplo, para 4 series solo ingrese 10 para las repeticiones, esto automáticamente se convierte en \"4 x 10\".",
     "comment": "Comentar",
     "@comment": {
         "description": "Comment, additional information"
@@ -240,8 +229,6 @@
     "@labelWorkoutLogs": {
         "description": "(Workout) logs"
     },
-    "loginInstead": "¿Ya tiene una cuenta? Inicia sesión",
-    "registerInstead": "¿No tienes una cuenta? Regístrate ahora",
     "reset": "Reiniciar",
     "@reset": {
         "description": "Button text allowing the user to reset the entered values to the default"
@@ -277,14 +264,6 @@
     "invalidUrl": "Por favor, introduzca una URL válida",
     "@invalidUrl": {
         "description": "Error message when the user enters an invalid URL, e.g. in the login form"
-    },
-    "useCustomServer": "Utilizar un servidor personalizado",
-    "@useCustomServer": {
-        "description": "Toggle button allowing users to switch between the default and a custom wger server"
-    },
-    "useDefaultServer": "Usar el servidor predeterminado",
-    "@useDefaultServer": {
-        "description": "Toggle button allowing users to switch between the default and a custom wger server"
     },
     "register": "Registrarse",
     "@register": {
@@ -367,9 +346,6 @@
     },
     "measurement": "Medida",
     "measurementCategoriesHelpText": "Categoría de medición, como \"bíceps\" o \"grasa corporal\"",
-    "whatToTrack": "¿Qué quieres registrar?",
-    "customMeasurement": "Medición personalizada",
-    "metricAlreadyTracked": "Ya se está registrando",
     "measurementEntriesHelpText": "La unidad utilizada para medir la categoría, como \"cm\" o \"%\"",
     "value": "Valor",
     "@value": {
@@ -428,11 +404,6 @@
     "@gPerBodyKg": {
         "description": "Label used for total sums of e.g. calories or similar in grams per Kg of body weight"
     },
-    "setUnitsAndRir": "Unidades de serie y ReR",
-    "@setUnitsAndRir": {
-        "description": "Label shown on the slider where the user can toggle showing units and RiR",
-        "type": "text"
-    },
     "recentlyUsedIngredients": "Ingredientes añadidos recientemente",
     "@recentlyUsedIngredients": {
         "description": "A message when a user adds a new ingredient to a meal."
@@ -479,7 +450,6 @@
     "@close": {
         "description": "Translation for close"
     },
-    "noMeasurementEntries": "No has ingresado medidas",
     "moreMeasurementEntries": "Agrega una nueva medida",
     "@moreMeasurementEntries": {
         "description": "Message shown when the user wants to add new measurement"
@@ -571,11 +541,9 @@
     },
     "add_exercise_image_license": "Las imágenes deben ser compatibles con la licencia CC BY SA. Si tienes dudas, sube solamente fotos que hayas tomado tú mismo.",
     "biceps": "Bíceps",
-    "verifiedEmailReason": "Necesitas verificar tu correo electrónico para contribuir con ejercicios",
     "pull_up_bar": "Barra de dominadas",
     "shoulders": "Hombros",
     "sz_bar": "Barra SZ",
-    "searchNamesInEnglish": "También busque nombres en Ingles",
     "cacheWarning": "Debido al cache, puede tomar un tiempo hasta que los cambios sean visibles en toda la aplicación.",
     "cardio": "Aerobico",
     "contributeExerciseWarning": "Sólo puedes contribuir ejercicios únicamente si tu cuenta tiene más de {days} días y tu email está verificado",
@@ -637,23 +605,11 @@
         "description": "Message returned if no exercises match the searched string"
     },
     "aboutMastodonTitle": "Mastodon",
-    "settingsExerciseCacheDescription": "Cache de ejercicios",
     "aboutDonateTitle": "Realizar una donación",
     "aboutDonateText": "Si bien el proyecto es gratuito y siempre lo seguirá siendo, ¡ejecutar el servidor no lo es! El desarrollo también requiere mucho tiempo y esfuerzo por parte de los voluntarios. Su contribución respalda directamente estos costos, lo que ayuda a mantener el servicio confiable.",
     "selectAvailablePlates": "Elige los discos disponibles",
     "barWeight": "Peso de la barra",
     "useColors": "Usar colores",
-    "useApiToken": "Usar tokens API",
-    "useUsernameAndPassword": "Utilizar usuario y contraseña",
-    "apiToken": "Token API",
-    "invalidApiToken": "Por favor, Introduzca una clave API válida",
-    "@invalidApiToken": {
-        "description": "Error message when the user enters an invalid API key"
-    },
-    "apiTokenValidChars": "Una clave API solo puede contener las letras a-f, números 0-9 y tener exactamente 40 caracteres de longitud",
-    "@apiTokenValidChars": {
-        "description": "Error message when the user tries to input a API key with forbidden characters"
-    },
     "noIngredientsDefined": "Aún no se definen ingredientes",
     "routines": "Rutinas",
     "newRoutine": "Nueva rutina",
@@ -773,7 +729,6 @@
     "fitInWeekHelp": "Si está activado, los días se repetirán en un ciclo semanal, de la otra manera, los días serán secuenciales sin importar el inicio de una nueva semana.",
     "addSuperset": "Añadir superserie",
     "setHasNoExercises": "¡Esta rutina no tiene ejercicios!",
-    "settingsIngredientCacheDescription": "Cache de ingredientes",
     "simpleMode": "Modo simple",
     "simpleModeHelp": "Ocultar ajustes avanzados cuando se editan los ejercicios",
     "progressionRules": "Este ejercicio tiene reglas de progresión y no puede ser editado en la aplicación móvil. Por favor, usa la aplicación web para editarlo.",
@@ -805,18 +760,11 @@
     "@indicatorAvg": {
         "description": "added for localization of Class Indicator's field text"
     },
-    "indicatorTrend": "tendencia",
     "themeMode": "Modo del tema",
     "darkMode": "Siempre en modo oscuro",
     "lightMode": "Siempre en modo claro",
     "systemMode": "Configuracion del sistema",
-    "setHasProgression": "La serie tiene progresión",
-    "setHasProgressionWarning": "Tenga en cuenta que, por el momento, no es posible editar todos los ajustes de un set en la aplicación móvil ni configurar la progresión automática. Por ahora, utilice la aplicación web.",
     "applicationLogs": "Registro de la aplicación",
-    "creationDate": "Fecha de comienzo",
-    "@creationDate": {
-        "description": "The Start date of a nutritional plan"
-    },
     "openEnded": "Indefinido",
     "@openEnded": {
         "description": "When a nutrition plan has no pre-defined end date"
@@ -867,22 +815,6 @@
         "description": "Add button text"
     },
     "enterTextInLanguage": "¡Por favor ingrese el texto en el idioma correcto!",
-    "galleryImageTypeNotSupported": "Las imágenes {imageType} actualmente no son compatibles con esta plataforma.",
-    "@galleryImageTypeNotSupported": {
-        "placeholders": {
-            "imageType": {
-                "type": "String"
-            }
-        }
-    },
-    "galleryImageTypeNotSupportedDetail": "Esta imagen está en formato {imageType}, que actualmente no es compatible con esta plataforma.",
-    "@galleryImageTypeNotSupportedDetail": {
-        "placeholders": {
-            "imageType": {
-                "type": "String"
-            }
-        }
-    },
     "dayTypeCustom": "Personalizado",
     "dayTypeAmrap": "Tantas rondas como sea posible",
     "dayTypeHiit": "Entrenamiento en intervalos de alta intensidad",
@@ -1046,10 +978,6 @@
     "@filterNutriscore": {
         "description": "Heading for the Nutri-Score slider in the ingredient search filter dialog"
     },
-    "off": "Apagado",
-    "@off": {
-        "description": "Generic label for the option that switches something off, e.g. a filter or a line of a chart"
-    },
     "filterNutriscoreNoFilter": "Sin filtro",
     "@filterNutriscoreNoFilter": {
         "description": "Helper text shown under the Nutri-Score slider when it is at the Off position"
@@ -1120,7 +1048,6 @@
     "carbohydratesSugar": "Azúcar (carbohidratos)",
     "aboutViewDocsTitle": "Abrir la documentación",
     "aboutViewLicensesTitle": "Ver licencias",
-    "aboutPrivacyPolicyTitle": "Términos y política de privacidad",
     "enterMaxCharacters": "Introduce como máximo {max} caracteres",
     "powerSyncUnreachableTitle": "Servicio de sincronización no disponible",
     "powerSyncUnreachableContent": "Tu servidor de wger es accesible, pero el servicio (independiente) que gestiona la sincronización sin conexión no responde. Si alojas wger por tu cuenta, revisa tu configuración y asegúrate de que el servicio PowerSync funcione correctamente.",
@@ -1151,6 +1078,29 @@
     "endBeforeStart": "El final no puede ser anterior al inicio",
     "minLengthRoutine": "La rutina debe ser de al menos {number} semanas",
     "maxLengthRoutine": "La rutina debe tener como mucho {number} semanas",
+    "gymModeLogScope": "Registros anteriores",
+    "gymModeLogScopeHelp": "Qué registros mostrar como referencia durante el entrenamiento",
+    "gymModeLogScopeCurrentRoutine": "Rutina actual",
+    "gymModeLogScopeWeeks": "Últimas {weeks} semanas",
+    "gymModeDistinctLogs": "Ocultar valores duplicados",
+    "gymModeShowWorkoutDuration": "Mostrar la duración del entrenamiento",
+    "allowSelfSignedCertsTitle": "Permitir certificados autofirmados",
+    "allowSelfSignedCertsDetail": "Desactiva la validación del certificado TLS. Actívalo solo para un servidor de confianza.",
+    "certsNotVerifiedTitle": "La validación de certificados está desactivada",
+    "certsNotVerifiedDetail": "Los certificados de {host} no se comprueban. Para cambiarlo, cierra la sesión y ajusta la opción en la pantalla de inicio de sesión.",
+    "settingsVerboseLogging": "Registro detallado",
+    "settingsVerboseLoggingDescription": "Útil cuando informas de problemas persistentes.",
+    "syncStatusStalledNotStartedHint": "La aplicación solicitó sincronizar, pero la sincronización nunca se inició. Reiniciar la aplicación suele solucionarlo.",
+    "syncStatusStalledNotAppliedHint": "Están llegando datos, pero no se pueden aplicar, así que no aparece nada nuevo. Infórmanos del problema junto con los detalles copiados para que podamos solucionarlo.",
+    "whatToTrack": "¿Qué quieres registrar?",
+    "customMeasurement": "Medición personalizada",
+    "metricAlreadyTracked": "Ya se está registrando",
+    "indicatorTrend": "tendencia",
+    "off": "Apagado",
+    "@off": {
+        "description": "Generic label for the option that switches something off, e.g. a filter or a line of a chart"
+    },
+    "aboutPrivacyPolicyTitle": "Términos y política de privacidad",
     "reorderCategories": "Reordenar categorías",
     "metricCustom": "Personalizado",
     "metricLeanBodyMass": "Masa magra",
@@ -1179,16 +1129,6 @@
     "health": "Salud",
     "importedEntry": "Esta entrada se sincronizó desde una aplicación de salud y solo se puede cambiar allí",
     "healthSyncPermissionDenied": "No se concedió el acceso a los datos de salud",
-    "gymModeLogScope": "Registros anteriores",
-    "gymModeLogScopeHelp": "Qué registros mostrar como referencia durante el entrenamiento",
-    "gymModeLogScopeCurrentRoutine": "Rutina actual",
-    "gymModeLogScopeWeeks": "Últimas {weeks} semanas",
-    "gymModeDistinctLogs": "Ocultar valores duplicados",
-    "gymModeShowWorkoutDuration": "Mostrar la duración del entrenamiento",
-    "allowSelfSignedCertsTitle": "Permitir certificados autofirmados",
-    "allowSelfSignedCertsDetail": "Desactiva la validación del certificado TLS. Actívalo solo para un servidor de confianza.",
-    "certsNotVerifiedTitle": "La validación de certificados está desactivada",
-    "certsNotVerifiedDetail": "Los certificados de {host} no se comprueban. Para cambiarlo, cierra la sesión y ajusta la opción en la pantalla de inicio de sesión.",
     "chartRangeAll": "Todo",
     "chartRangeMonths": "{count, plural, one{1 mes} other{{count} meses}}",
     "chartRangeYears": "{count, plural, one{1 año} other{{count} años}}",
@@ -1231,11 +1171,7 @@
     "relativeWeeksAgo": "{count, plural, one{hace 1 semana} other{hace {count} semanas}}",
     "relativeMonthsAgo": "{count, plural, one{hace 1 mes} other{hace {count} meses}}",
     "relativeYearsAgo": "{count, plural, one{hace 1 año} other{hace {count} años}}",
-    "settingsVerboseLogging": "Registro detallado",
-    "settingsVerboseLoggingDescription": "Útil cuando informas de problemas persistentes.",
     "sessionTooLong": "Una sesión de entrenamiento no puede durar más de {hours} horas",
-    "syncStatusStalledNotStartedHint": "La aplicación solicitó sincronizar, pero la sincronización nunca se inició. Reiniciar la aplicación suele solucionarlo.",
-    "syncStatusStalledNotAppliedHint": "Están llegando datos, pero no se pueden aplicar, así que no aparece nada nuevo. Infórmanos del problema junto con los detalles copiados para que podamos solucionarlo.",
     "calculationValuesManual": "Introducido a mano",
     "calculationType": "Cálculo",
     "calculationUnknown": "Este cálculo se configuró en una versión más reciente de wger y no se puede cambiar aquí.",

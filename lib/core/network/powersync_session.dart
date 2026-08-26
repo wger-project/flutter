@@ -56,7 +56,7 @@ class PowerSyncSession {
       return;
     }
     try {
-      connectPowerSync(db, serverUrl, client, watchdog);
+      connectPowerSync(db, serverUrl, client, watchdog, reason: 'login completed');
     } catch (e, s) {
       _logger.warning('PowerSync reconnect failed', e, s);
     }

@@ -27,10 +27,6 @@
     "@enterValue": {
         "description": "Error message when the user hasn't entered a value on a required field"
     },
-    "goToToday": "Aller à aujourd’hui",
-    "@goToToday": {
-        "description": "Label on button to jump back to 'today' in the calendar widget"
-    },
     "calendar": "Calendrier",
     "toggleDetails": "Afficher les détails",
     "@toggleDetails": {
@@ -38,10 +34,6 @@
     },
     "newNutritionalPlan": "Nouveau programme nutritionnel",
     "delete": "Supprimer",
-    "loadingText": "Chargement…",
-    "@loadingText": {
-        "description": "Text to show when entries are being loaded in the background: Loading..."
-    },
     "edit": "Modifier",
     "noWeightEntries": "Aucune entrée de poids",
     "@noWeightEntries": {
@@ -112,7 +104,6 @@
     "addMeal": "Ajouter un repas",
     "meal": "Repas",
     "add": "Ajouter",
-    "cancel": "Supprimer",
     "save": "Sauvegarder",
     "description": "Description",
     "gymMode": "Mode entraînement",
@@ -161,15 +152,9 @@
     "@labelWorkoutPlan": {
         "description": "Title for screen workout plan"
     },
-    "registerInstead": "Vous n'avez pas de compte ? Inscrivez-vous maintenant",
-    "loginInstead": "Déjà un compte ? Connectez-vous",
     "reset": "Réinitialiser",
     "@reset": {
         "description": "Button text allowing the user to reset the entered values to the default"
-    },
-    "useCustomServer": "Utiliser un serveur personnalisé",
-    "@useCustomServer": {
-        "description": "Toggle button allowing users to switch between the default and a custom wger server"
     },
     "customServerHint": "Entrez l’adresse de votre propre serveur, sinon le serveur par défaut sera utilisé",
     "@customServerHint": {
@@ -202,10 +187,6 @@
     "invalidUrl": "Veuillez entrer une URL valide",
     "@invalidUrl": {
         "description": "Error message when the user enters an invalid URL, e.g. in the login form"
-    },
-    "useDefaultServer": "Utiliser le serveur par défaut",
-    "@useDefaultServer": {
-        "description": "Toggle button allowing users to switch between the default and a custom wger server"
     },
     "register": "S’inscrire",
     "@register": {
@@ -266,8 +247,6 @@
         "description": "Label for the button that adds a set (to a workout day)"
     },
     "todaysWorkout": "Entraînement d’aujourd’hui",
-    "selectExercises": "Si vous voulez faire une supersérie, vous pouvez rechercher plusieurs exercices, ils seront regroupés",
-    "sameRepetitions": "Si vous faites les mêmes répétitions et le même poids pour toutes les séries, vous pouvez simplement remplir une ligne. Par exemple, pour 4 séries, il suffit d’entrer 10 pour les répétitions, ce qui devient automatiquement « 4 × 10 ».",
     "setNr": "Série {nr}",
     "@setNr": {
         "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
@@ -333,11 +312,6 @@
     "@optionsLabel": {
         "description": "Label for the popup with general app options"
     },
-    "setUnitsAndRir": "Définir les unités et RiR",
-    "@setUnitsAndRir": {
-        "description": "Label shown on the slider where the user can toggle showing units and RiR",
-        "type": "text"
-    },
     "goToDetailPage": "Aller à la page de détails",
     "jumpTo": "Aller à",
     "@jumpTo": {
@@ -401,9 +375,6 @@
     },
     "measurementEntriesHelpText": "L'unité utilisée pour mesurer la catégorie, comme cm ou %",
     "measurementCategoriesHelpText": "Catégorie de mesure, comme « biceps » ou « graisse corporelle »",
-    "whatToTrack": "Que voulez-vous suivre ?",
-    "customMeasurement": "Mesure personnalisée",
-    "metricAlreadyTracked": "Déjà suivi",
     "measurements": "Mesures",
     "@measurements": {
         "description": "Categories for the measurements such as biceps size, body fat, etc."
@@ -523,7 +494,6 @@
         },
         "description": "List of alternative names for an exercise"
     },
-    "verifiedEmailReason": "Vous devez vérifier votre adresse e-mail pour contribuer aux exercices",
     "verifiedEmailInfo": "Un email de vérification a été envoyé à {email}",
     "@verifiedEmailInfo": {
         "placeholders": {
@@ -563,7 +533,6 @@
     "miles": "Miles",
     "legs": "Jambes",
     "quads": "Quadriceps",
-    "noMeasurementEntries": "Vous n'avez pas d'entrées de mesure",
     "aboutPageTitle": "À propos de nous et assistance",
     "userProfile": "Votre profil",
     "exerciseList": "Liste d'exercices",
@@ -618,7 +587,6 @@
     "@lb": {
         "description": "Generated entry for translation for server strings"
     },
-    "searchNamesInEnglish": "Recherchez également des noms en anglais",
     "max_reps": "Reps Maxi",
     "@max_reps": {
         "description": "Generated entry for translation for server strings"
@@ -688,7 +656,6 @@
     "aboutDonateText": "Si le projet est gratuit et le restera, l'exploitation du serveur ne l'est pas ! Le développement requiert également beaucoup de temps et d'efforts de la part des bénévoles. Votre contribution finance directement ces coûts et contribue à la fiabilité du service.",
     "settingsTitle": "Paramètres",
     "settingsCacheTitle": "Cache",
-    "settingsExerciseCacheDescription": "Cache d'exercices",
     "settingsCacheDeletedSnackbar": "Cache nettoyé avec succès",
     "log": "Journaliser",
     "@log": {
@@ -703,7 +670,6 @@
     "useColors": "Utiliser des couleurs",
     "newRoutine": "Nouvelle routine",
     "noRoutines": "Vous n’avez aucune de routine",
-    "useUsernameAndPassword": "Utiliser le nom d’utilisateur et mot de passe",
     "routines": "Routines",
     "restTime": "Temps de repos",
     "restDay": "Jour de repos",
@@ -718,7 +684,6 @@
             }
         }
     },
-    "apiToken": "Jeton API",
     "routineDays": "Jours de routine",
     "resultingRoutine": "Routine résultante",
     "errorInfoDescription": "Nous sommes désolés, mais quelque chose s'est mal passé. Vous pouvez nous aider à résoudre ce problème en le signalant sur GitHub.",
@@ -731,7 +696,6 @@
     "@indicatorAvg": {
         "description": "added for localization of Class Indicator's field text"
     },
-    "indicatorTrend": "tendance",
     "resistance_band": "Bande de résistance",
     "@resistance_band": {
         "description": "Generated entry for translation for server strings"
@@ -745,15 +709,6 @@
     "themeMode": "Thème",
     "fitInWeek": "Planning hebdomadaire fixe",
     "addSuperset": "Ajouter une supersérie",
-    "useApiToken": "Utiliser un jeton API",
-    "apiTokenValidChars": "Une clé API ne peut contenir que les lettres a-f, les chiffres 0-9 et 40 caractères exactement",
-    "@apiTokenValidChars": {
-        "description": "Error message when the user tries to input a API key with forbidden characters"
-    },
-    "invalidApiToken": "Veuillez saisir une clé API valide",
-    "@invalidApiToken": {
-        "description": "Error message when the user enters an invalid API key"
-    },
     "exerciseNr": "Exercice {nr}",
     "@exerciseNr": {
         "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Set Nr. xy'.",
@@ -787,11 +742,8 @@
     "@toAddMealsToThePlanGoToNutritionalPlanDetails": {
         "description": "Message shown to guide users to the nutritional plan details page to add meals"
     },
-    "setHasProgression": "La série a une progression",
     "aboutContributeTitle": "Contribuer",
-    "setHasProgressionWarning": "Veuillez noter qu'il n'est actuellement pas possible de modifier tous les paramètres d'une série sur l'application mobile ni de configurer la progression automatique. Pour l'instant, veuillez utiliser l'application web.",
     "setHasNoExercises": "Cette série n'a pas encore d'exercices !",
-    "settingsIngredientCacheDescription": "Cache d'ingrédients",
     "simpleMode": "Mode simple",
     "simpleModeHelp": "Masquer certains des paramètres les plus avancés lors de l'édition des exercices",
     "progressionRules": "Cet exercice a des règles de progression et ne peut pas être édité sur l'application mobile. Veuillez utiliser l'application web pour éditer cet exercice.",
@@ -1017,10 +969,6 @@
     "@filterNutriscore": {
         "description": "Heading for the Nutri-Score slider in the ingredient search filter dialog"
     },
-    "off": "Off",
-    "@off": {
-        "description": "Generic label for the option that switches something off, e.g. a filter or a line of a chart"
-    },
     "filterNutriscoreNoFilter": "Pas de filtre",
     "@filterNutriscoreNoFilter": {
         "description": "Helper text shown under the Nutri-Score slider when it is at the Off position"
@@ -1091,7 +1039,6 @@
     "carbohydratesSugar": "Sucre (glucides)",
     "aboutViewDocsTitle": "Ouvrir la documentation",
     "aboutViewLicensesTitle": "Voir les licences",
-    "aboutPrivacyPolicyTitle": "Conditions et politique de confidentialité",
     "enterMaxCharacters": "Veuillez saisir au maximum {max} caractères",
     "powerSyncUnreachableTitle": "Service de synchronisation inaccessible",
     "powerSyncUnreachableContent": "Votre serveur wger est accessible, mais le service (distinct) qui gère la synchronisation hors ligne ne répond pas. Si vous hébergez wger vous-même, vérifiez votre configuration et assurez-vous que le service PowerSync fonctionne correctement.",
@@ -1122,6 +1069,29 @@
     "endBeforeStart": "La valeur de fin ne peut être avant le début",
     "minLengthRoutine": "La routine doit durer au moins {number} semaines",
     "maxLengthRoutine": "La routine peut durer au maximum {number} semaines",
+    "gymModeLogScope": "Journaux précédents",
+    "gymModeLogScopeHelp": "Quels journaux afficher comme référence pendant l'entraînement",
+    "gymModeLogScopeCurrentRoutine": "Routine actuelle",
+    "gymModeLogScopeWeeks": "{weeks} dernières semaines",
+    "gymModeDistinctLogs": "Masquer les valeurs en double",
+    "gymModeShowWorkoutDuration": "Afficher la durée de l'entraînement",
+    "allowSelfSignedCertsTitle": "Autoriser les certificats auto-signés",
+    "allowSelfSignedCertsDetail": "Désactive la validation du certificat TLS. Ne l'activez que pour un serveur de confiance.",
+    "certsNotVerifiedTitle": "La validation des certificats est désactivée",
+    "certsNotVerifiedDetail": "Les certificats de {host} ne sont pas vérifiés. Pour changer cela, déconnectez-vous et modifiez l'option sur l'écran de connexion.",
+    "settingsVerboseLogging": "Journalisation détaillée",
+    "settingsVerboseLoggingDescription": "Utile lorsque vous signalez des problèmes persistants.",
+    "syncStatusStalledNotStartedHint": "L'application a demandé une synchronisation, mais celle-ci n'a jamais démarré. Redémarrer l'application suffit généralement.",
+    "syncStatusStalledNotAppliedHint": "Des données arrivent mais ne peuvent pas être appliquées, donc rien de nouveau n'apparaît. Signalez-le avec les détails copiés pour que nous puissions le corriger.",
+    "whatToTrack": "Que voulez-vous suivre ?",
+    "customMeasurement": "Mesure personnalisée",
+    "metricAlreadyTracked": "Déjà suivi",
+    "indicatorTrend": "tendance",
+    "off": "Off",
+    "@off": {
+        "description": "Generic label for the option that switches something off, e.g. a filter or a line of a chart"
+    },
+    "aboutPrivacyPolicyTitle": "Conditions et politique de confidentialité",
     "reorderCategories": "Réorganiser les catégories",
     "metricCustom": "Personnalisé",
     "metricLeanBodyMass": "Masse maigre",
@@ -1150,16 +1120,6 @@
     "health": "Santé",
     "importedEntry": "Cette entrée a été synchronisée depuis une app de santé et ne peut être modifiée que là-bas",
     "healthSyncPermissionDenied": "L'accès aux données de santé n'a pas été autorisé",
-    "gymModeLogScope": "Journaux précédents",
-    "gymModeLogScopeHelp": "Quels journaux afficher comme référence pendant l'entraînement",
-    "gymModeLogScopeCurrentRoutine": "Routine actuelle",
-    "gymModeLogScopeWeeks": "{weeks} dernières semaines",
-    "gymModeDistinctLogs": "Masquer les valeurs en double",
-    "gymModeShowWorkoutDuration": "Afficher la durée de l'entraînement",
-    "allowSelfSignedCertsTitle": "Autoriser les certificats auto-signés",
-    "allowSelfSignedCertsDetail": "Désactive la validation du certificat TLS. Ne l'activez que pour un serveur de confiance.",
-    "certsNotVerifiedTitle": "La validation des certificats est désactivée",
-    "certsNotVerifiedDetail": "Les certificats de {host} ne sont pas vérifiés. Pour changer cela, déconnectez-vous et modifiez l'option sur l'écran de connexion.",
     "chartRangeAll": "Tout",
     "chartRangeMonths": "{count, plural, one{1 mois} other{{count} mois}}",
     "chartRangeYears": "{count, plural, one{1 an} other{{count} ans}}",
@@ -1202,11 +1162,7 @@
     "relativeWeeksAgo": "{count, plural, one{il y a 1 semaine} other{il y a {count} semaines}}",
     "relativeMonthsAgo": "{count, plural, one{il y a 1 mois} other{il y a {count} mois}}",
     "relativeYearsAgo": "{count, plural, one{il y a 1 an} other{il y a {count} ans}}",
-    "settingsVerboseLogging": "Journalisation détaillée",
-    "settingsVerboseLoggingDescription": "Utile lorsque vous signalez des problèmes persistants.",
     "sessionTooLong": "Une session d’entraînement ne peut pas durer plus de {hours} heures",
-    "syncStatusStalledNotStartedHint": "L'application a demandé une synchronisation, mais celle-ci n'a jamais démarré. Redémarrer l'application suffit généralement.",
-    "syncStatusStalledNotAppliedHint": "Des données arrivent mais ne peuvent pas être appliquées, donc rien de nouveau n'apparaît. Signalez-le avec les détails copiés pour que nous puissions le corriger.",
     "calculationValuesManual": "Saisi à la main",
     "calculationType": "Calcul",
     "calculationUnknown": "Ce calcul a été configuré dans une version plus récente de wger et ne peut pas être modifié ici.",

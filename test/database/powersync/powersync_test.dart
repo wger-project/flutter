@@ -19,6 +19,8 @@
 import 'package:drift/drift.dart' show DriftSqlType, Table, TableInfo;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:powersync/powersync.dart' show SyncStatus;
+import 'package:wger/core/http_overrides.dart';
 import 'package:wger/database/powersync/database.dart';
 import 'package:wger/database/powersync/powersync.dart';
 import 'package:wger/powersync/schema.dart';
@@ -95,5 +97,54 @@ void main() {
         );
       }
     }
+  });
+
+  group('syncOptionsFor', () {
+    tearDown(() {
+      WgerHttpOverrides.allowSelfSignedCerts = false;
+      WgerHttpOverrides.trustedHost = null;
+    });
+
+    test('hands the sync isolate a client factory while the server cert is exempt', () {
+      WgerHttpOverrides.allowSelfSignedCerts = true;
+      WgerHttpOverrides.trustServer('https://gym.example.com');
+
+      expect(syncOptionsFor('https://gym.example.com')?.httpClient, isNotNull);
+    });
+
+    test('is null without an exemption', () {
+      expect(syncOptionsFor('https://gym.example.com'), isNull);
+    });
+  });
+
+  group('skipAdapterReconnect', () {
+    // SyncStatus has only @internal constructors, so there is no public way
+    // to build one in a test.
+    SyncStatus status({bool connected = false, bool connecting = false, Object? downloadError}) =>
+        // ignore: invalid_use_of_internal_member
+        SyncStatus(
+          connected: connected,
+          connecting: connecting,
+          lastSyncedAt: null,
+          downloadProgress: null,
+          downloading: false,
+          uploading: false,
+          downloadError: downloadError,
+          uploadError: null,
+          priorityStatusEntries: const [],
+          streamSubscriptions: null,
+        );
+
+    test('skips only while the stream is up', () {
+      expect(skipAdapterReconnect(status(connected: true)), isTrue);
+    });
+
+    test('still reconnects in every other state', () {
+      // connecting and the retry loop after an error are the "retry now"
+      // cases an adapter comeback must be able to interrupt.
+      expect(skipAdapterReconnect(status(connecting: true)), isFalse);
+      expect(skipAdapterReconnect(status(downloadError: Exception('stream died'))), isFalse);
+      expect(skipAdapterReconnect(status()), isFalse);
+    });
   });
 }

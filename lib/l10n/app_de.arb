@@ -32,10 +32,6 @@
     },
     "newNutritionalPlan": "Neuer Ernährungsplan",
     "delete": "Löschen",
-    "loadingText": "Wird geladen …",
-    "@loadingText": {
-        "description": "Text to show when entries are being loaded in the background: Loading..."
-    },
     "edit": "Bearbeiten",
     "newEntry": "Neuer Eintrag",
     "@newEntry": {
@@ -102,7 +98,6 @@
     "addMeal": "Mahlzeit hinzufügen",
     "meal": "Mahlzeit",
     "add": "Hinzufügen",
-    "cancel": "Abbrechen",
     "save": "Speichern",
     "description": "Beschreibung",
     "newDay": "Neuer Tag",
@@ -121,10 +116,6 @@
     "comment": "Kommentar",
     "@comment": {
         "description": "Comment, additional information"
-    },
-    "goToToday": "Zu heute gehen",
-    "@goToToday": {
-        "description": "Label on button to jump back to 'today' in the calendar widget"
     },
     "selectIngredient": "Bitte wähle eine Zutat",
     "@selectIngredient": {
@@ -149,8 +140,6 @@
     },
     "logHelpEntriesUnits": "Beachte, dass nur Einträge mit einer Gewichtseinheit (kg oder lb) und Wiederholungen aufgezeichnet werden, andere Kombinationen wie Zeit oder „bis zum Versagen“ werden hier ignoriert.",
     "logHelpEntries": "Gibt es an einem Tag mehrere Einträge mit der gleichen Anzahl von Wiederholungen, aber unterschiedlichen Gewichten, wird nur der Eintrag mit dem höheren Gewicht im Diagramm angezeigt.",
-    "loginInstead": "Du hast bereits einen Account? Stattdessen anmelden",
-    "registerInstead": "Du hast keinen Account? Jetzt registrieren",
     "reset": "Zurücksetzen",
     "@reset": {
         "description": "Button text allowing the user to reset the entered values to the default"
@@ -186,14 +175,6 @@
     "invalidUrl": "Bitte gebe eine gültige URL ein",
     "@invalidUrl": {
         "description": "Error message when the user enters an invalid URL, e.g. in the login form"
-    },
-    "useCustomServer": "Verwende Benutzerdefinierten Server",
-    "@useCustomServer": {
-        "description": "Toggle button allowing users to switch between the default and a custom wger server"
-    },
-    "useDefaultServer": "Verwende Standard-Server",
-    "@useDefaultServer": {
-        "description": "Toggle button allowing users to switch between the default and a custom wger server"
     },
     "register": "Registrieren",
     "@register": {
@@ -246,8 +227,6 @@
     "@selectExercise": {
         "description": "Error message when the user hasn't selected an exercise in the form"
     },
-    "selectExercises": "Wenn du einen Supersatz machen willst, kannst du nach mehreren Übungen suchen, sie werden dann gruppiert",
-    "sameRepetitions": "Wenn du für alle Sätze die gleichen Wiederholungen und das gleiche Gewicht verwendest, kannst du nur eine Zeile ausfüllen. Gebe z. B. für 4 Sätze einfach 10 für die Wiederholungen ein, daraus wird automatisch „4 × 10“.",
     "setNr": "Satz {nr}",
     "@setNr": {
         "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
@@ -345,11 +324,6 @@
     "@optionsLabel": {
         "description": "Label for the popup with general app options"
     },
-    "setUnitsAndRir": "Einheiten und RiR einstellen",
-    "@setUnitsAndRir": {
-        "description": "Label shown on the slider where the user can toggle showing units and RiR",
-        "type": "text"
-    },
     "searchExercise": "Suche Übung zum Hinzufügen",
     "@searchExercise": {
         "description": "Label on set form. Selected exercises are added to the set"
@@ -403,9 +377,6 @@
         "description": "The value of a measurement entry"
     },
     "measurementCategoriesHelpText": "Messkategorie, z. B. „Bizeps“ oder „Körperfett“",
-    "whatToTrack": "Was möchtest du aufzeichnen?",
-    "customMeasurement": "Eigene Messung",
-    "metricAlreadyTracked": "Wird bereits aufgezeichnet",
     "measurementEntriesHelpText": "Die Einheit, die verwendet wird, um die Kategorie zu messen, wie z.B. „cm“ oder „%“",
     "fatShort": "F",
     "@fatShort": {
@@ -491,7 +462,6 @@
     "legs": "Beine",
     "shoulders": "Schultern",
     "barbell": "Langhantel",
-    "noMeasurementEntries": "Du hast keine Messeingaben",
     "moreMeasurementEntries": "Neue Messung hinzufügen",
     "@moreMeasurementEntries": {
         "description": "Message shown when the user wants to add new measurement"
@@ -576,7 +546,6 @@
         "description": "Message when an action completed successfully, usually used as a heading"
     },
     "pull_up_bar": "Klimmzugstange",
-    "verifiedEmailReason": "Du musst deine E-Mail verifizieren, um Übungen hinzuzufügen",
     "kettlebell": "Kugelhantel",
     "verifiedEmail": "Verifizierte E-Mail",
     "unVerifiedEmail": "Unverifizierte E-Mail",
@@ -643,7 +612,6 @@
     },
     "useMetric": "Metrische Einheiten für das Körpergewicht verwenden",
     "done": "Fertig",
-    "searchNamesInEnglish": "Namen auch auf Englisch suchen",
     "goalMacro": "Makroziele",
     "@goalMacro": {
         "description": "The goal for macronutrients"
@@ -702,7 +670,6 @@
             }
         }
     },
-    "settingsIngredientCacheDescription": "Zutaten-Cache",
     "routines": "Routinen",
     "newRoutine": "Neue Routine",
     "noRoutines": "Du hast keine Routinen",
@@ -714,17 +681,6 @@
     "restDay": "Ruhetag",
     "copyToClipboard": "In Zwischenablage kopieren",
     "min": "Min",
-    "apiToken": "API Token",
-    "useApiToken": "API Token benutzen",
-    "useUsernameAndPassword": "Nutzername und Passwort benutzen",
-    "invalidApiToken": "Bitte geben Sie einen gültigen API-Schlüssel ein",
-    "@invalidApiToken": {
-        "description": "Error message when the user enters an invalid API key"
-    },
-    "apiTokenValidChars": "Ein API-Schlüssel darf nur die Buchstaben a-f und die Zahlen 0-9 enthalten und genau 40 Zeichen lang sein",
-    "@apiTokenValidChars": {
-        "description": "Error message when the user tries to input a API key with forbidden characters"
-    },
     "exerciseNr": "Übung {nr}",
     "@exerciseNr": {
         "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Set Nr. xy'.",
@@ -776,7 +732,6 @@
     "aboutJoinCommunityTitle": "Treten Sie der Community bei",
     "aboutDiscordTitle": "Discord",
     "others": "Sonstiges",
-    "setHasProgression": "Set hat Fortschritt",
     "progressionRules": "Diese Übung unterliegt Fortschrittsregeln und kann in der mobilen App nicht bearbeitet werden. Bitte verwenden Sie die Webanwendung, um diese Übung zu bearbeiten.",
     "goalTypeBasic": "Normal",
     "@goalTypeBasic": {
@@ -794,7 +749,6 @@
     "@indicatorAvg": {
         "description": "added for localization of Class Indicator's field text"
     },
-    "indicatorTrend": "Trend",
     "themeMode": "Theme Modus",
     "lightMode": "Immer Hellmodus",
     "systemMode": "Systemeinstellungen",
@@ -806,7 +760,6 @@
     "@resistance_band": {
         "description": "Generated entry for translation for server strings"
     },
-    "setHasProgressionWarning": "Bitte beachten Sie, dass es derzeit nicht möglich ist, alle Einstellungen für ein Set in der mobilen Anwendung zu bearbeiten oder den automatischen Fortschritt zu konfigurieren. Nutzen Sie vorerst bitte die Webanwendung.",
     "useColors": "farbig",
     "barWeight": "Gewicht der Stange",
     "selectAvailablePlates": "Verfügbare Platten auswählen",
@@ -1011,10 +964,6 @@
     "@filterNutriscore": {
         "description": "Heading for the Nutri-Score slider in the ingredient search filter dialog"
     },
-    "off": "Aus",
-    "@off": {
-        "description": "Generic label for the option that switches something off, e.g. a filter or a line of a chart"
-    },
     "filterNutriscoreNoFilter": "Kein Filter",
     "@filterNutriscoreNoFilter": {
         "description": "Helper text shown under the Nutri-Score slider when it is at the Off position"
@@ -1086,7 +1035,6 @@
     "carbohydratesSugar": "Zucker (Kohlenhydrate)",
     "aboutViewDocsTitle": "Dokumentation öffnen",
     "aboutViewLicensesTitle": "Lizenzen anzeigen",
-    "aboutPrivacyPolicyTitle": "Nutzungsbedingungen und Datenschutz",
     "powerSyncUnreachableTitle": "Sync-Dienst nicht erreichbar",
     "powerSyncUnreachableContent": "Dein wger-Server ist erreichbar, aber der (separate) Dienst für die Offline-Synchronisierung antwortet nicht. Wenn du wger selbst hostest, überprüfe deine Konfiguration und stelle sicher, dass der PowerSync-Dienst korrekt läuft.",
     "serverUnreachableRetry": "Erneut versuchen",
@@ -1112,6 +1060,29 @@
     "endBeforeStart": "Der Endwert darf nicht vor dem Startwert liegen",
     "minLengthRoutine": "Die Routine muss mindestens {number} Wochen lang sein",
     "maxLengthRoutine": "Die Routine darf maximal {number} Wochen lang sein",
+    "gymModeLogScope": "Frühere Protokolle",
+    "gymModeLogScopeHelp": "Welche Protokolle beim Training als Referenz angezeigt werden",
+    "gymModeLogScopeCurrentRoutine": "Aktuelle Routine",
+    "gymModeLogScopeWeeks": "Letzte {weeks} Wochen",
+    "gymModeDistinctLogs": "Doppelte Werte ausblenden",
+    "gymModeShowWorkoutDuration": "Trainingsdauer anzeigen",
+    "allowSelfSignedCertsTitle": "Selbstsignierte Zertifikate erlauben",
+    "allowSelfSignedCertsDetail": "Deaktiviert die Validierung des TLS-Zertifikats. Aktiviere das nur für einen Server, dem du vertraust.",
+    "certsNotVerifiedTitle": "Zertifikatsvalidierung ist deaktiviert",
+    "certsNotVerifiedDetail": "Zertifikate für {host} werden nicht geprüft. Zum Ändern melde dich ab und passe die Option im Anmeldebildschirm an.",
+    "settingsVerboseLogging": "Ausführliches Protokoll",
+    "settingsVerboseLoggingDescription": "Hilfreich, wenn du anhaltende Probleme meldest.",
+    "syncStatusStalledNotStartedHint": "Die App hat eine Synchronisierung angefordert, sie wurde aber nie gestartet. Ein Neustart der App hilft meistens.",
+    "syncStatusStalledNotAppliedHint": "Es kommen Daten an, sie können aber nicht übernommen werden, deshalb erscheint nichts Neues. Melde das bitte zusammen mit den kopierten Details, dann können wir es beheben.",
+    "whatToTrack": "Was möchtest du aufzeichnen?",
+    "customMeasurement": "Eigene Messung",
+    "metricAlreadyTracked": "Wird bereits aufgezeichnet",
+    "indicatorTrend": "Trend",
+    "off": "Aus",
+    "@off": {
+        "description": "Generic label for the option that switches something off, e.g. a filter or a line of a chart"
+    },
+    "aboutPrivacyPolicyTitle": "Nutzungsbedingungen und Datenschutz",
     "reorderCategories": "Kategorien neu anordnen",
     "metricCustom": "Benutzerdefiniert",
     "metricLeanBodyMass": "Magermasse",
@@ -1140,16 +1111,6 @@
     "health": "Gesundheit",
     "importedEntry": "Dieser Eintrag wurde aus einer Health-App synchronisiert und kann nur dort geändert werden",
     "healthSyncPermissionDenied": "Zugriff auf die Gesundheitsdaten wurde nicht gewährt",
-    "gymModeLogScope": "Frühere Protokolle",
-    "gymModeLogScopeHelp": "Welche Protokolle beim Training als Referenz angezeigt werden",
-    "gymModeLogScopeCurrentRoutine": "Aktuelle Routine",
-    "gymModeLogScopeWeeks": "Letzte {weeks} Wochen",
-    "gymModeDistinctLogs": "Doppelte Werte ausblenden",
-    "gymModeShowWorkoutDuration": "Trainingsdauer anzeigen",
-    "allowSelfSignedCertsTitle": "Selbstsignierte Zertifikate erlauben",
-    "allowSelfSignedCertsDetail": "Deaktiviert die Validierung des TLS-Zertifikats. Aktiviere das nur für einen Server, dem du vertraust.",
-    "certsNotVerifiedTitle": "Zertifikatsvalidierung ist deaktiviert",
-    "certsNotVerifiedDetail": "Zertifikate für {host} werden nicht geprüft. Zum Ändern melde dich ab und passe die Option im Anmeldebildschirm an.",
     "chartRangeAll": "Gesamt",
     "chartRangeMonths": "{count, plural, one{1 Monat} other{{count} Monate}}",
     "chartRangeYears": "{count, plural, one{1 Jahr} other{{count} Jahre}}",
@@ -1192,11 +1153,7 @@
     "relativeWeeksAgo": "{count, plural, one{vor 1 Woche} other{vor {count} Wochen}}",
     "relativeMonthsAgo": "{count, plural, one{vor 1 Monat} other{vor {count} Monaten}}",
     "relativeYearsAgo": "{count, plural, one{vor 1 Jahr} other{vor {count} Jahren}}",
-    "settingsVerboseLogging": "Ausführliches Protokoll",
-    "settingsVerboseLoggingDescription": "Hilfreich, wenn du anhaltende Probleme meldest.",
     "sessionTooLong": "Eine Trainingseinheit darf nicht länger als {hours} Stunden dauern",
-    "syncStatusStalledNotStartedHint": "Die App hat eine Synchronisierung angefordert, sie wurde aber nie gestartet. Ein Neustart der App hilft meistens.",
-    "syncStatusStalledNotAppliedHint": "Es kommen Daten an, sie können aber nicht übernommen werden, deshalb erscheint nichts Neues. Melde das bitte zusammen mit den kopierten Details, dann können wir es beheben.",
     "calculationValuesManual": "Von Hand eingetragen",
     "calculationType": "Berechnung",
     "calculationUnknown": "Diese Berechnung wurde in einer neueren Version von wger eingerichtet und kann hier nicht geändert werden.",
