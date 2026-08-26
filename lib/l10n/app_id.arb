@@ -191,8 +191,8 @@
         "description": "Imperative. Label used in popup allowing the user to jump to a specific exercise while in the gym mode"
     },
     "todaysWorkout": "Latihanmu hari ini",
-    "logHelpEntries": "Hanya beban yang lebih berat yang ditampilkan, jika dalam satu hari terdapat beberapa entri beban dengan jumlah repetisi yang sama.",
-    "logHelpEntriesUnits": "(Hanya mencantumkan entri berdasarkan berat (kg atau lb). Tidak ada kombinasi lainnya.)",
+    "logHelpEntries": "Jika dalam satu hari terdapat lebih dari satu entri dengan jumlah repetisi yang sama namun beban berbeda, hanya entri dengan beban tertinggi yang akan ditampilkan di diagram.",
+    "logHelpEntriesUnits": "Perlu dicatat bahwa hanya entri dengan satuan beban (kg atau lb) dan repetisi yang akan ditampilkan di grafik. Kombinasi lain seperti waktu atau hingga gagal tidak diperhitungkan di sini.",
     "description": "Description",
     "name": "Nama",
     "@name": {

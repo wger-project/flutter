@@ -1,1450 +1,1508 @@
 {
-    "@@last_modified": "2020-11-11T15:04:05.523531",
-    "userProfile": "Your profile",
-    "login": "Log in",
-    "@login": {
-        "description": "Text for login button"
-    },
-    "logout": "Log out",
-    "@logout": {
-        "description": "Text for logout button"
-    },
-    "register": "Register",
-    "@register": {
-        "description": "Text for registration button"
-    },
-    "invalidUrl": "Please enter a valid URL",
-    "@invalidUrl": {
-        "description": "Error message when the user enters an invalid URL, e.g. in the login form"
-    },
-    "usernameValidChars": "A username may only contain letters, digits, and the characters @, +, ., -, and _",
-    "@usernameValidChars": {
-        "description": "Error message when the user tries to register a username with forbidden characters"
-    },
-    "passwordsDontMatch": "The passwords don't match",
-    "@passwordsDontMatch": {
-        "description": "Error message when the user enters two different passwords during registration"
-    },
-    "passwordTooShort": "The password is too short",
-    "@passwordTooShort": {
-        "description": "Error message when the user a password that is too short"
-    },
-    "selectAvailablePlates": "Select available plates",
-    "barWeight": "Bar weight",
-    "useColors": "Use colors",
-    "password": "Password",
-    "confirmPassword": "Confirm password",
-    "invalidEmail": "Please enter a valid e-mail address",
-    "@invalidEmail": {
-        "description": "Error message when the user enters an invalid email"
-    },
-    "email": "E-mail address",
-    "username": "Username",
-    "invalidUsername": "Please enter a valid username",
-    "@invalidUsername": {
-        "description": "Error message when the user enters an invalid username"
-    },
-    "refreshToken": "Refresh token",
-    "invalidRefreshToken": "Please enter a valid refresh token",
-    "@invalidRefreshToken": {
-        "description": "Error message when the user enters an invalid refresh token"
-    },
-    "refreshTokenValidChars": "A refresh token has three dot-separated segments (header.payload.signature), each made of letters, digits, '-' and '_'",
-    "@refreshTokenValidChars": {
-        "description": "Error message when the user pastes a string that does not match the JWT shape"
-    },
-    "refreshTokenHelperText": "Generate a JWT refresh token on the wger website and paste it here. Useful when your server sits behind an auth proxy or when you want to skip the regular login flow.",
-    "@refreshTokenHelperText": {
-        "description": "Helper text on the refresh-token paste field"
-    },
-    "mfaChallengeTitle": "Two-factor authentication",
-    "@mfaChallengeTitle": {
-        "description": "App bar title on the 2FA challenge screen"
-    },
-    "mfaChallengeTotpPrompt": "Enter the 6-digit code from your authenticator app",
-    "@mfaChallengeTotpPrompt": {
-        "description": "Helper text above the TOTP input field"
-    },
-    "mfaChallengeRecoveryPrompt": "Enter one of your recovery codes",
-    "@mfaChallengeRecoveryPrompt": {
-        "description": "Helper text above the recovery-code input field"
-    },
-    "mfaCodeLabel": "Code",
-    "@mfaCodeLabel": {
-        "description": "Label on the 2FA code input field"
-    },
-    "mfaInvalidCode": "Please enter a code",
-    "@mfaInvalidCode": {
-        "description": "Validation error when the 2FA code field is empty"
-    },
-    "mfaUseRecoveryCode": "Use a recovery code instead",
-    "@mfaUseRecoveryCode": {
-        "description": "Button that switches the 2FA challenge to recovery-code mode"
-    },
-    "mfaUseTotpCode": "Use an authenticator app code",
-    "@mfaUseTotpCode": {
-        "description": "Button that switches the 2FA challenge back to TOTP mode"
-    },
-    "mfaSubmit": "Verify",
-    "@mfaSubmit": {
-        "description": "Submit button on the 2FA challenge screen"
-    },
-    "mfaUnsupportedFactor": "Your account is set up with a second factor this app does not support yet. Please sign in on the website.",
-    "@mfaUnsupportedFactor": {
-        "description": "Shown when the server reports only factor types the app cannot handle (e.g. webauthn)"
-    },
-    "manageAccountOnWeb": "Manage account on the web",
-    "@manageAccountOnWeb": {
-        "description": "Label on a button that opens the user's preferences page on the wger website"
-    },
-    "manageAccountOnWebSubtitle": "Change your password, set up two-factor authentication, manage API tokens, or delete your account.",
-    "@manageAccountOnWebSubtitle": {
-        "description": "Helper text below the 'Manage account on the web' button listing what is configurable there"
-    },
-    "customServerUrl": "URL of the wger instance",
-    "@customServerUrl": {
-        "description": "Label in the form where the users can enter their own wger instance"
-    },
-    "customServerHint": "Enter the address of your own server, otherwise the default one will be used",
-    "@customServerHint": {
-        "description": "Hint text for the form where the users can enter their own wger instance"
-    },
-    "reset": "Reset",
-    "@reset": {
-        "description": "Button text allowing the user to reset the entered values to the default"
-    },
-    "advanced": "Advanced",
-    "advancedSubtitle": "Server and authentication options",
-    "serverSectionLabel": "Server",
-    "signInMethodSectionLabel": "Sign-in method",
-    "serverOptionDefaultDetail": "The official server",
-    "serverOptionSelfHostedTitle": "Self-hosted",
-    "serverOptionSelfHostedDetail": "Connect to your own instance",
-    "allowSelfSignedCertsTitle": "Allow self-signed certificates",
-    "allowSelfSignedCertsDetail": "Disables TLS certificate validation. Only enable this for a server you trust.",
-    "certsNotVerifiedTitle": "Certificate validation is off",
-    "@certsNotVerifiedTitle": {
-        "description": "Warning shown in the settings while the app accepts invalid TLS certificates from the server the user is logged into."
-    },
-    "certsNotVerifiedDetail": "Certificates for {host} are not checked. To change this, log out and adjust the option on the login screen.",
-    "@certsNotVerifiedDetail": {
-        "description": "Explains the certificate warning. The option can only be set before logging in, hence the hint to log out.",
-        "type": "text",
-        "placeholders": {
-            "host": {
-                "type": "String"
-            }
-        }
-    },
-    "authOptionPasswordTitle": "Username and password",
-    "signInWithToken": "Sign in with token",
-    "tokenSubtitle": "Generate one on the wger website",
-    "newToWger": "New to wger?",
-    "alreadyHaveAccount": "Already have an account?",
-    "tokenLabel": "Token",
-    "webHandoffLinkLabel": "Other sign-in options",
-    "webHandoffLinkSubtitle": "Social login, passkey, SSO",
-    "labelBottomNavWorkout": "Workout",
-    "@labelBottomNavWorkout": {
-        "description": "Label used in bottom navigation, use a short word"
-    },
-    "labelBottomNavNutrition": "Nutrition",
-    "@labelBottomNavNutrition": {
-        "description": "Label used in bottom navigation, use a short word"
-    },
-    "labelWorkoutLogs": "Training logs",
-    "@labelWorkoutLogs": {
-        "description": "(Workout) logs"
-    },
-    "labelWorkoutPlan": "Workout plan",
-    "@labelWorkoutPlan": {
-        "description": "Title for screen workout plan"
-    },
-    "dashboardWidgets": "Dashboard widgets",
-    "labelDashboard": "Dashboard",
-    "@labelDashboard": {
-        "description": "Title for screen dashboard"
-    },
-    "success": "Success",
-    "@success": {
-        "description": "Message when an action completed successfully, usually used as a heading"
-    },
-    "successfullyDeleted": "Deleted",
-    "@successfullyDeleted": {
-        "description": "Message when an item was successfully deleted"
-    },
-    "successfullySaved": "Saved",
-    "@successfullySaved": {
-        "description": "Message when an item was successfully saved"
-    },
-    "exerciseList": "Exercise list",
-    "exercise": "Exercise",
-    "@exercise": {
-        "description": "An exercise for a workout"
-    },
-    "exercises": "Exercises",
-    "@exercises": {
-        "description": "Multiple exercises for a workout"
-    },
-    "exerciseName": "Exercise Name",
-    "@exerciseName": {
-        "description": "Label for the name of a workout exercise"
-    },
-    "searchExercise": "Search exercise to add",
-    "@searchExercise": {
-        "description": "Label on set form. Selected exercises are added to the set"
-    },
-    "noIngredientsDefined": "No ingredients defined yet",
-    "noMatchingExerciseFound": "No matching exercises found",
-    "@noMatchingExerciseFound": {
-        "description": "Message returned if no exercises match the searched string"
-    },
-    "equipment": "Equipment",
-    "@equipment": {
-        "description": "Equipment needed to perform an exercise"
-    },
-    "muscles": "Muscles",
-    "@muscles": {
-        "description": "(main) muscles trained by an exercise"
-    },
-    "musclesSecondary": "Secondary muscles",
-    "@musclesSecondary": {
-        "description": "secondary muscles trained by an exercise"
-    },
-    "category": "Category",
-    "@category": {
-        "description": "Category for an exercise, ingredient, etc."
-    },
-    "startDate": "Start date",
-    "@startDate": {
-        "description": "The start date of a nutritional plan or routine"
-    },
-    "dayTypeCustom": "Custom",
-    "dayTypeEnom": "Every minute on the minute",
-    "dayTypeAmrap": "As many rounds as possible",
-    "dayTypeHiit": "High intensity interval training",
-    "dayTypeTabata": "Tabata",
-    "dayTypeEdt": "Escalating density training",
-    "dayTypeRft": "Rounds for time",
-    "dayTypeAfap": "As fast as possible",
-    "slotEntryTypeNormal": "Normal",
-    "slotEntryTypeDropset": "Dropset",
-    "slotEntryTypeMyo": "Myo",
-    "slotEntryTypeWarmup": "Warmup",
-    "slotEntryTypePartial": "Partial",
-    "slotEntryTypeForced": "Forced",
-    "slotEntryTypeTut": "Time under Tension",
-    "slotEntryTypeIso": "Isometric hold",
-    "slotEntryTypeJump": "Jump",
-    "trophies": "Trophies",
-    "routines": "Routines",
-    "newRoutine": "New routine",
-    "noRoutines": "You have no routines",
-    "reps": "Reps",
-    "@reps": {
-        "description": "Shorthand for repetitions, used when space constraints are tighter"
-    },
-    "restTime": "Rest time",
-    "sets": "Sets",
-    "@sets": {
-        "description": "The number of sets to be done for one exercise"
-    },
-    "rir": "RiR",
-    "@rir": {
-        "description": "Shorthand for Repetitions In Reserve"
-    },
-    "rirNotUsed": "RiR not used",
-    "@rirNotUsed": {
-        "description": "Label used in RiR slider when the RiR value is not used/saved for the current setting or log"
-    },
-    "useMetric": "Use metric units for body weight",
-    "weightUnit": "Weight unit",
-    "repetitionUnit": "Repetition unit",
-    "set": "Set",
-    "@set": {
-        "description": "A set in a workout plan"
-    },
-    "dayDescriptionHelp": "A description of what is done on this day (e.g. 'pull day') or what body parts are trained (e.g. 'chest and shoulders')",
-    "exerciseNr": "Exercise {nr}",
-    "@exerciseNr": {
-        "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Set Nr. xy'.",
-        "type": "text",
-        "placeholders": {
-            "nr": {
-                "type": "String"
-            }
-        }
-    },
-    "supersetNr": "Superset {nr}",
-    "@supersetNr": {
-        "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Superset Nr. xy'.",
-        "type": "text",
-        "placeholders": {
-            "nr": {
-                "type": "String"
-            }
-        }
-    },
-    "setNr": "Set {nr}",
-    "@setNr": {
-        "description": "Header in form indicating the number of the current set within a group of same exercises.",
-        "type": "text",
-        "placeholders": {
-            "nr": {
-                "type": "String"
-            }
-        }
-    },
-    "comment": "Comment",
-    "@comment": {
-        "description": "Comment, additional information"
-    },
-    "topSet": "Top set: {value}",
-    "@topSet": {
-        "description": "Value is a representation of the set, like '10 x 80kg'",
-        "type": "text",
-        "placeholders": {
-            "value": {
-                "type": "String"
-            }
-        }
-    },
-    "impressionGood": "Good",
-    "impressionNeutral": "Neutral",
-    "impressionBad": "Bad",
-    "impression": "Impression",
-    "@impression": {
-        "description": "General impression (e.g. for a workout session) such as good, bad, etc."
-    },
-    "notes": "Notes",
-    "@notes": {
-        "description": "Personal notes, e.g. for a workout session"
-    },
-    "workoutSession": "Workout session",
-    "@workoutSession": {
-        "description": "A (logged) workout session"
-    },
-    "restDay": "Rest day",
-    "isRestDay": "Is rest day",
-    "isRestDayHelp": "Please note that all sets and exercises will be removed when you mark a day as a rest day.",
-    "needsLogsToAdvance": "Needs logs to advance",
-    "needsLogsToAdvanceHelp": "Select if you want the routine to progress to the next scheduled day only if you've logged a workout for the day",
-    "routineDays": "Days in routine",
-    "resultingRoutine": "Resulting routine",
-    "newDay": "New day",
-    "newSet": "New set",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
-    },
-    "personalRecords": "Personal records",
-    "gymMode": "Gym mode",
-    "@gymMode": {
-        "description": "Label when starting the gym mode"
-    },
-    "gymModeShowExercises": "Show exercise overview pages",
-    "gymModeShowTimer": "Show timer between sets",
-    "gymModeShowWorkoutDuration": "Show workout duration",
-    "gymModeTimerType": "Timer type",
-    "gymModeTimerTypeHelText": "If a set has pause time, a countdown is always used.",
-    "countdown": "Countdown",
-    "stopwatch": "Stopwatch",
-    "gymModeDefaultCountdownTime": "Default countdown time, in seconds",
-    "gymModeNotifyOnCountdownFinish": "Notify on countdown end",
-    "duration": "Duration",
-    "durationHoursMinutes": "{hours}h {minutes}m",
-    "@durationHoursMinutes": {
-        "description": "A duration, in hours and minutes",
-        "type": "text",
-        "placeholders": {
-            "hours": {
-                "type": "int"
-            },
-            "minutes": {
-                "type": "int"
-            }
-        }
-    },
-    "volume": "Volume",
-    "@volume": {
-        "description": "The volume of a workout or set, i.e. weight x reps"
-    },
-    "workoutCompleted": "Workout completed",
-    "plateCalculator": "Plates",
-    "@plateCalculator": {
-        "description": "Label used for the plate calculator in the gym mode"
-    },
-    "plateCalculatorNotDivisible": "Not possible to reach weight with available plates",
-    "@plateCalculatorNotDivisible": {
-        "description": "Error message when the current weight is not reachable with plates (e.g. 33.1 kg)"
-    },
-    "pause": "Pause",
-    "@pause": {
-        "description": "Noun, not an imperative! Label used for the pause when using the gym mode"
-    },
-    "jumpTo": "Jump to",
-    "@jumpTo": {
-        "description": "Imperative. Label used in popup allowing the user to jump to a specific exercise while in the gym mode"
-    },
-    "todaysWorkout": "Your workout today",
-    "logHelpEntries": "Only the heavier weight is shown if one day has different weight entries with the same amount of repetitions.",
-    "logHelpEntriesUnits": "(Only lists entries by weight (kg or lb). No other combinations.)",
-    "description": "Description",
-    "name": "Name",
-    "@name": {
-        "description": "Name for a workout or nutritional plan"
-    },
-    "save": "Save",
-    "verify": "Verify",
-    "addSet": "Add set",
-    "@addSet": {
-        "description": "Label for the button that adds a set (to a workout day)"
-    },
-    "gymModeLogScope": "Previous logs",
-    "gymModeLogScopeHelp": "Which logs to show as reference while training",
-    "gymModeLogScopeCurrentRoutine": "Current routine",
-    "gymModeLogScopeWeeks": "Last {weeks} weeks",
-    "@gymModeLogScopeWeeks": {
-        "placeholders": {
-            "weeks": {
-                "type": "int"
-            }
-        }
-    },
-    "gymModeDistinctLogs": "Hide duplicate values",
-    "addMeal": "Add meal",
-    "meal": "Meal",
-    "mealLogged": "Meal logged to diary",
-    "ingredientLogged": "Ingredient logged to diary",
-    "logMeal": "Log meal to nutrition diary",
-    "addIngredient": "Add ingredient",
-    "logIngredient": "Log ingredient to nutrition diary",
-    "searchIngredient": "Search ingredient",
-    "@searchIngredient": {
-        "description": "Label (or Hint text) on ingredient search form"
-    },
-    "nutritionalPlan": "Nutritional plan",
-    "nutritionalDiary": "Nutritional diary",
-    "nutritionalPlans": "Nutritional plans",
-    "noNutritionalPlans": "You have no nutritional plans",
-    "@noNutritionalPlans": {
-        "description": "Message shown when the user has no nutritional plans"
-    },
-    "clearSearchTerm": "Clear search term (text)",
-    "@clearSearchTerm": {
-        "description": "Tooltip for the icon-button that clears the ingredient search text field"
-    },
-    "ingredients": "Ingredients",
-    "@ingredients": {
-        "description": "Plural title for the ingredients overview screen"
-    },
-    "onlyLogging": "Only track calories",
-    "onlyLoggingHelpText": "Check the box if you only want to log your calories and don't want to setup a detailed nutritional plan with specific meals",
-    "goalMacro": "Macro goals",
-    "@goalMacro": {
-        "description": "The goal for macronutrients"
-    },
-    "selectMealToLog": "Select a meal to log to diary",
-    "yourCurrentNutritionPlanHasNoMealsDefinedYet": "Your current nutrition plan has no meals defined",
-    "@yourCurrentNutritionPlanHasNoMealsDefinedYet": {
-        "description": "Message shown when a nutrition plan doesn't have any meals"
-    },
-    "toAddMealsToThePlanGoToNutritionalPlanDetails": "To add meals to the plan, go to the nutritional plan details",
-    "@toAddMealsToThePlanGoToNutritionalPlanDetails": {
-        "description": "Message shown to guide users to the nutritional plan details page to add meals"
-    },
-    "planDateRange": "from {startDate} to {endDate}",
-    "@planDateRange": {
-        "description": "Label for the start and end date range of a plan",
-        "placeholders": {
-            "startDate": {
-                "type": "String"
-            },
-            "endDate": {
-                "type": "String"
-            }
-        }
-    },
-    "planStartDate": "from {startDate}",
-    "@planStartDate": {
-        "description": "Label for the start date of a plan",
-        "placeholders": {
-            "startDate": {
-                "type": "String"
-            }
-        }
-    },
-    "otherLogs": "Other logs",
-    "@otherLogs": {
-        "description": "Other unassigned logs. Label for the pseudo-meal section that groups all nutritional diary entries not assigned to a specific meal"
-    },
-    "goalEnergy": "Energy goal",
-    "goalProtein": "Protein goal",
-    "goalCarbohydrates": "Carbohydrates goal",
-    "goalFat": "Fat goal",
-    "goalFiber": "Fiber goal",
-    "anErrorOccurred": "An Error Occurred!",
-    "errorRawSource": "Raw",
-    "@errorRawSource": {
-        "description": "Tab label for showing an HTML error response in its raw (unrendered) form, opposite of 'Preview'."
-    },
-    "errorInfoDescription": "We're sorry, but something went wrong. You can help us fix this by reporting the issue on GitHub.",
-    "errorInfoDescription2": "You can continue using the app, but some features may not work.",
-    "errorViewDetails": "Technical details",
-    "applicationLogs": "Application logs",
-    "errorCouldNotConnectToServer": "Couldn't connect to server",
-    "copyToClipboard": "Copy to clipboard",
-    "weight": "Weight",
-    "@weight": {
-        "description": "The weight of a workout log or body weight entry"
-    },
-    "min": "Min",
-    "max": "Max",
-    "chartAllTimeTitle": "{name} all-time",
-    "@chartAllTimeTitle": {
-        "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chart30DaysTitle": "{name} last 30 days",
-    "@chart30DaysTitle": {
-        "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chartDuringPlanTitle": "{chartName} during nutritional plan {planName}",
-    "@chartDuringPlanTitle": {
-        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-        "type": "text",
-        "placeholders": {
-            "chartName": {
-                "type": "String"
-            },
-            "planName": {
-                "type": "String"
-            }
-        }
-    },
-    "measurement": "Measurement",
-    "measurements": "Measurements",
-    "@measurements": {
-        "description": "Categories for the measurements such as biceps size, body fat, etc."
-    },
-    "measurementCategoriesHelpText": "Measurement category, such as 'biceps' or 'body fat'",
-    "measurementEntriesHelpText": "The unit used to measure the category such as 'cm' or '%'",
-    "date": "Date",
-    "@date": {
-        "description": "The date of a workout log or body weight entry"
-    },
-    "endDate": "End date",
-    "@endDate": {
-        "description": "The End date of a nutritional plan or routine"
-    },
-    "endBeforeStart": "The end value cannot be before the start",
-    "@endBeforeStart": {
-        "description": "Validation error shown when a plan or routine end date is before its start date"
-    },
-    "minLengthRoutine": "The routine needs to be at least {number} weeks long",
-    "@minLengthRoutine": {
-        "description": "Validation error when a routine is shorter than the minimum allowed duration",
-        "placeholders": {
-            "number": {
-                "type": "int"
-            }
-        }
-    },
-    "maxLengthRoutine": "The routine can be at most {number} weeks long",
-    "@maxLengthRoutine": {
-        "description": "Validation error when a routine is longer than the maximum allowed duration",
-        "placeholders": {
-            "number": {
-                "type": "int"
-            }
-        }
-    },
-    "openEnded": "Open ended",
-    "@openEnded": {
-        "description": "When a nutrition plan has no pre-defined end date"
-    },
-    "value": "Value",
-    "@value": {
-        "description": "The value of a measurement entry"
-    },
-    "start": "Start",
-    "@start": {
-        "description": "Label on button to start the gym mode (i.e., an imperative)"
-    },
-    "time": "Time",
-    "@time": {
-        "description": "The time of a meal or workout"
-    },
-    "timeStart": "Start time",
-    "@timeStart": {
-        "description": "The starting time of a workout"
-    },
-    "timeEnd": "End time",
-    "@timeEnd": {
-        "description": "The end time of a workout"
-    },
-    "timeStartAhead": "Start time cannot be ahead of end time",
-    "ingredient": "Ingredient",
-    "@ingredient": {
-        "description": "Singular label for an ingredient"
-    },
-    "energy": "Energy",
-    "@energy": {
-        "description": "Energy in a meal, ingredient etc. e.g. in kJ"
-    },
-    "energyShort": "E",
-    "@energyShort": {
-        "description": "The first letter or short name of the word 'Energy', used in overviews"
-    },
-    "dietaryInformation": "Dietary information",
-    "macronutrients": "Macronutrients",
-    "planned": "Planned",
-    "@planned": {
-        "description": "Header for the column of 'planned' nutritional values, i.e. what should be eaten"
-    },
-    "logged": "Logged",
-    "@logged": {
-        "description": "Header for the column of 'logged' nutritional values, i.e. what was eaten"
-    },
-    "today": "Today",
-    "loggedToday": "Logged today",
-    "weekAverage": "7 day average",
-    "@weekAverage": {
-        "description": "Header for the column of '7 day average' nutritional values, i.e. what was logged last week"
-    },
-    "surplus": "surplus",
-    "@surplus": {
-        "description": "Caloric surplus (either planned or unplanned)"
-    },
-    "deficit": "deficit",
-    "@deficit": {
-        "description": "Caloric deficit (either planned or unplanned)"
-    },
-    "difference": "Difference",
-    "percentEnergy": "Percent of energy",
-    "gPerBodyKg": "g per body kg",
-    "@gPerBodyKg": {
-        "description": "Label used for total sums of e.g. calories or similar in grams per Kg of body weight"
-    },
-    "total": "Total",
-    "@total": {
-        "description": "Label used for total sums of e.g. calories or similar"
-    },
-    "kcal": "kcal",
-    "@kcal": {
-        "description": "Energy in a meal in kilocalories, kcal"
-    },
-    "kcalValue": "{value} kcal",
-    "@kcalValue": {
-        "description": "A value in kcal, e.g. 500 kcal",
-        "type": "text",
-        "placeholders": {
-            "value": {
-                "type": "String"
-            }
-        }
-    },
-    "kJ": "kJ",
-    "@kJ": {
-        "description": "Energy in a meal in kilo joules, kJ"
-    },
-    "g": "g",
-    "@g": {
-        "description": "Abbreviation for gram"
-    },
-    "gValue": "{value} g",
-    "@gValue": {
-        "description": "A value in grams, e.g. 5 g",
-        "type": "text",
-        "placeholders": {
-            "value": {
-                "type": "String"
-            }
-        }
-    },
-    "percentValue": "{value} %",
-    "@percentValue": {
-        "description": "A value in percent, e.g. 10 %",
-        "type": "text",
-        "placeholders": {
-            "value": {
-                "type": "String"
-            }
-        }
-    },
-    "protein": "Protein",
-    "proteinShort": "P",
-    "@proteinShort": {
-        "description": "The first letter or short name of the word 'Protein', used in overviews"
-    },
-    "carbohydrates": "Carbohydrates",
-    "carbohydratesShort": "C",
-    "@carbohydratesShort": {
-        "description": "The first letter or short name of the word 'Carbohydrates', used in overviews"
-    },
-    "sugars": "Sugars",
-    "fat": "Fat",
-    "fatShort": "F",
-    "@fatShort": {
-        "description": "The first letter or short name of the word 'Fat', used in overviews"
-    },
-    "saturatedFat": "Saturated fat",
-    "fiber": "Fibers",
-    "sodium": "Sodium",
-    "carbohydratesSugar": "Sugar (Carbohydrates)",
-    "@carbohydratesSugar": {
-        "description": "Label for the carbohydrates sugar"
-    },
-    "amount": "Amount",
-    "@amount": {
-        "description": "The amount (e.g. in grams) of an ingredient in a meal"
-    },
-    "unit": "Unit",
-    "@unit": {
-        "description": "The unit used for a repetition (kg, time, etc.)"
-    },
-    "newEntry": "New entry",
-    "@newEntry": {
-        "description": "Title when adding a new entry such as a weight or log entry"
-    },
-    "noTrophies": "You have no trophies yet",
-    "noWeightEntries": "You have no weight entries",
-    "@noWeightEntries": {
-        "description": "Message shown when the user has no logged weight entries"
-    },
-    "moreMeasurementEntries": "Add new measurement",
-    "@moreMeasurementEntries": {
-        "description": "Message shown when the user wants to add new measurement"
-    },
-    "edit": "Edit",
-    "preview": "Preview",
-    "delete": "Delete",
-    "confirmDelete": "Are you sure you want to delete '{toDelete}'?",
-    "@confirmDelete": {
-        "description": "Confirmation text before the user deletes an object",
-        "type": "text",
-        "placeholders": {
-            "toDelete": {
-                "type": "String"
-            }
-        }
-    },
-    "newNutritionalPlan": "New nutritional plan",
-    "overview": "Overview",
-    "toggleDetails": "Toggle details",
-    "@toggleDetails": {
-        "description": "Switch to toggle detail / overview"
-    },
-    "goToDetailPage": "Go to detail page",
-    "aboutWhySupportTitle": "Open Source & free to use ❤️",
-    "aboutDescription": "Thank you for using wger! wger is a collaborative open source project, made by fitness enthusiasts from around the world.",
-    "@aboutDescription": {
-        "description": "Text in the about dialog"
-    },
-    "aboutDonateTitle": "Make a donation",
-    "aboutDonateText": "While the project is free and will always remain it, running the server isn’t! Development also takes significant time and effort from volunteers. Your contribution directly supports these costs, helping to keep the service reliable.",
-    "aboutContributeTitle": "Contribute",
-    "aboutContributeText": "All types of contributions are encouraged. Whether you're a developer, a translator, or just passionate about fitness, every bit of support is appreciated!",
-    "aboutBugsListTitle": "Report a problem or suggest a feature",
-    "aboutTranslationListTitle": "Translate the application",
-    "aboutSourceListTitle": "View source code",
-    "aboutJoinCommunityTitle": "Join the community",
-    "aboutMastodonTitle": "Mastodon",
-    "aboutDiscordTitle": "Discord",
-    "aboutViewDocsTitle": "Open documentation",
-    "aboutViewLicensesTitle": "View licenses",
-    "others": "Others",
-    "calendar": "Calendar",
-    "enterValue": "Please enter a value",
-    "@enterValue": {
-        "description": "Error message when the user hasn't entered a value on a required field"
-    },
-    "selectEntry": "Please select an entry",
-    "selectExercise": "Please select an exercise",
-    "@selectExercise": {
-        "description": "Error message when the user hasn't selected an exercise in the form"
-    },
-    "enterCharacters": "Please enter between {min} and {max} characters",
-    "@enterCharacters": {
-        "description": "Error message when the user hasn't entered the correct number of characters in a form",
-        "type": "text",
-        "placeholders": {
-            "min": {
-                "type": "String"
-            },
-            "max": {
-                "type": "String"
-            }
-        }
-    },
-    "formMinMaxValues": "Please enter a value between {min} and {max}",
-    "@formMinMaxValues": {
-        "description": "Error message when the user needs to enter a value between min and max",
-        "type": "text",
-        "placeholders": {
-            "min": {
-                "type": "int"
-            },
-            "max": {
-                "type": "int"
-            }
-        }
-    },
-    "enterMinCharacters": "Please enter at least {min} characters",
-    "@enterMinCharacters": {
-        "description": "Error message when the user hasn't entered the minimum amount characters in a form",
-        "type": "text",
-        "placeholders": {
-            "min": {
-                "type": "String"
-            }
-        }
-    },
-    "enterMaxCharacters": "Please enter at most {max} characters",
-    "@enterMaxCharacters": {
-        "description": "Error message when the user has entered more than the allowed amount of characters in a form",
-        "type": "text",
-        "placeholders": {
-            "max": {
-                "type": "String"
-            }
-        }
-    },
-    "baseNameEnglish": "All exercises need a base name in English",
-    "nrOfSets": "Sets per exercise: {nrOfSets}",
-    "@nrOfSets": {
-        "description": "Label shown on the slider where the user selects the nr of sets",
-        "type": "text",
-        "placeholders": {
-            "nrOfSets": {
-                "type": "String"
-            }
-        }
-    },
-    "enterValidNumber": "Please enter a valid number",
-    "@enterValidNumber": {
-        "description": "Error message when the user has submitted an invalid number (e.g. '3,.,.,.')"
-    },
-    "selectIngredient": "Please select an ingredient",
-    "@selectIngredient": {
-        "description": "Error message when the user hasn't selected an ingredient from the autocompleter"
-    },
-    "recentlyUsedIngredients": "Recently added ingredients",
-    "@recentlyUsedIngredients": {
-        "description": "A message when a user adds a new ingredient to a meal."
-    },
-    "selectImage": "Please select an image",
-    "@selectImage": {
-        "description": "Label and error message when the user hasn't selected an image to save"
-    },
-    "optionsLabel": "Options",
-    "@optionsLabel": {
-        "description": "Label for the popup with general app options"
-    },
-    "takePicture": "Take a picture",
-    "chooseFromLibrary": "Choose from photo library",
-    "gallery": "Gallery",
-    "addImage": "Add image",
-    "dataCopied": "Data copied to new entry",
-    "@dataCopied": {
-        "description": "Snackbar message to show on copying data to a new log entry"
-    },
-    "appUpdateTitle": "Update needed",
-    "appUpdateContent": "This version of the app is not compatible with the server, please update your application.",
-    "serverUpdateTitle": "Server update required",
-    "serverUpdateContent": "The connected server is too old for this version of the app. Please ask the server administrator to update to at least version {minVersion}.",
-    "@serverUpdateContent": {
-        "description": "Message shown when the server version is too old. minVersion is the minimum required server version string.",
-        "type": "text",
-        "placeholders": {
-            "minVersion": {
-                "type": "String"
-            }
-        }
-    },
-    "powerSyncUnreachableTitle": "Sync service unreachable",
-    "powerSyncUnreachableContent": "Your wger server is reachable, but the (separate) service that handles offline sync is not responding. If you self-host wger, check your configuration and make sure the PowerSync service is running correctly.",
-    "serverUnreachableRetry": "Try again",
-    "@serverUnreachableRetry": {
-        "description": "Button that re-runs the auto-login attempt against the saved server."
-    },
-    "productFound": "Product found",
-    "@productFound": {
-        "description": "Header label for dialog when product is found with barcode"
-    },
-    "productFoundDescription": "The barcode corresponds to this product: {productName}. Do you want to continue?",
-    "@productFoundDescription": {
-        "description": "Dialog info when product is found with barcode",
-        "type": "text",
-        "placeholders": {
-            "productName": {
-                "type": "String"
-            }
-        }
-    },
-    "productNotFound": "Product not found",
-    "@productNotFound": {
-        "description": "Header label for dialog when product is not found with barcode"
-    },
-    "productNotFoundDescription": "The product with the scanned barcode {barcode} was not found in the wger database",
-    "@productNotFoundDescription": {
-        "description": "Dialog info when product is not found with barcode",
-        "type": "text",
-        "placeholders": {
-            "barcode": {
-                "type": "String"
-            }
-        }
-    },
-    "scanBarcode": "Scan barcode",
-    "@scanBarcode": {
-        "description": "Label for scan barcode button"
-    },
-    "close": "Close",
-    "@close": {
-        "description": "Translation for close"
-    },
-    "identicalExercisePleaseDiscard": "If you notice an exercise that is identical to the one you're adding, please discard your draft and edit that exercise instead.",
-    "checkInformationBeforeSubmitting": "Please check that the information you entered is correct before submitting the exercise",
-    "add_exercise_image_license": "Images must be compatible with the CC BY SA license. If in doubt, upload only photos you've taken yourself.",
-    "imageDetailsTitle": "Image details",
-    "@imageDetailsTitle": {
-        "description": "Title for image details form"
-    },
-    "imageDetailsLicenseTitle": "Title",
-    "@imageDetailsLicenseTitle": {
-        "description": "Label for image title field"
-    },
-    "imageDetailsLicenseTitleHint": "Enter image title",
-    "@imageDetailsLicenseTitleHint": {
-        "description": "Hint text for image title field"
-    },
-    "imageDetailsSourceLink": "Link to the source website",
-    "@imageDetailsSourceLink": {
-        "description": "Label for source link field"
-    },
-    "author": "Author(s)",
-    "authorHint": "Enter author name",
-    "@authorHint": {
-        "description": "Hint text for author field"
-    },
-    "imageDetailsAuthorLink": "Link to author website or profile",
-    "@imageDetailsAuthorLink": {
-        "description": "Label for author link field"
-    },
-    "imageDetailsDerivativeSource": "Link to the original source, if this is a derivative work",
-    "@imageDetailsDerivativeSource": {
-        "description": "Label for derivative source field"
-    },
-    "imageDetailsDerivativeHelp": "A derivative work is based on a previous work but contains sufficient new, creative content to entitle it to its own copyright.",
-    "@imageDetailsDerivativeHelp": {
-        "description": "Helper text explaining derivative works"
-    },
-    "imageDetailsImageType": "Image Type",
-    "@imageDetailsImageType": {
-        "description": "Label for image type selector"
-    },
-    "imageDetailsLicenseNotice": "By submitting this image, you agree to release it under the CC-BY-SA-4. The image must be either your own work or the author must have released it under a license compatible with it.",
-    "imageDetailsLicenseNoticeLinkToLicense": "See license text.",
-    "imageFormatNotSupported": "{imageFormat} not supported",
-    "@imageFormatNotSupported": {
-        "description": "Label shown on the error container when image format is not supported",
-        "type": "text",
-        "placeholders": {
-            "imageFormat": {
-                "type": "String"
-            }
-        }
-    },
-    "imageFormatNotSupportedDetail": "{imageFormat} images are not supported yet.",
-    "@imageFormatNotSupportedDetail": {
-        "description": "Label shown on the image preview container when image format is not supported",
-        "type": "text",
-        "placeholders": {
-            "imageFormat": {
-                "type": "String"
-            }
-        }
-    },
-    "add": "add",
-    "@add": {
-        "description": "Add button text"
-    },
-    "increase": "Increase",
-    "@increase": {
-        "description": "Tooltip / screen-reader label for a button that increases a numeric input by one step"
-    },
-    "decrease": "Decrease",
-    "@decrease": {
-        "description": "Tooltip / screen-reader label for a button that decreases a numeric input by one step"
-    },
-    "variations": "Variations",
-    "@variations": {
-        "description": "Variations of one exercise (e.g. benchpress and benchpress narrow)"
-    },
-    "alsoKnownAs": "Also known as: {aliases}",
-    "@alsoKnownAs": {
-        "placeholders": {
-            "aliases": {
-                "type": "String"
-            }
-        },
-        "description": "List of alternative names for an exercise"
-    },
-    "verifiedEmail": "Verified email",
-    "unVerifiedEmail": "Unverified email",
-    "verifiedEmailInfo": "A verification email was sent to {email}",
-    "@verifiedEmailInfo": {
-        "placeholders": {
-            "email": {
-                "type": "String"
-            }
-        }
-    },
-    "alternativeNames": "Alternative names",
-    "oneNamePerLine": "One name per line",
-    "whatVariationsExist": "What variations of this exercise exist, if any?",
-    "previous": "Previous",
-    "next": "Next",
-    "images": "Images",
-    "language": "Language",
-    "addExercise": "Add exercise",
-    "fitInWeek": "Fixed weekly schedule",
-    "fitInWeekHelp": "If enabled, the days will repeat in a weekly cycle, otherwise the days will follow sequentially without regards to the start of a new week.",
-    "addSuperset": "Add superset",
-    "superset": "Superset",
-    "setHasNoExercises": "This set has no exercises yet!",
-    "contributeExercise": "Contribute an exercise",
-    "translation": "Translation",
-    "translateExercise": "Translate this exercise now",
-    "baseData": "Basics in English",
-    "@baseData": {
-        "description": "The base data for an exercise such as category, trained muscles, etc."
-    },
-    "useBasicMarkdown": "You can use basic Markdown to format the text",
-    "editorBold": "Bold",
-    "@editorBold": {
-        "description": "Label for bold formatting"
-    },
-    "editorItalic": "Italic",
-    "editorList": "List",
-    "enterTextInLanguage": "Please enter the text in the correct language!",
-    "settingsTitle": "Settings",
-    "settingsCacheTitle": "Cache",
-    "settingsImageCacheDescription": "Image cache",
-    "settingsCacheDeletedSnackbar": "Cache successfully cleared",
-    "settingsDataTitle": "Privacy",
-    "settingsKeepDataOnLogout": "Keep data when logging out",
-    "settingsKeepDataOnLogoutDescription": "The local database stays on your device until a different account signs in.",
-    "settingsVerboseLogging": "Detailed logging",
-    "@settingsVerboseLogging": {
-        "description": "Title of the setting that makes the app write detailed diagnostic entries to the application log"
-    },
-    "settingsVerboseLoggingDescription": "Useful when reporting persistent problems.",
-    "aboutPageTitle": "About us & Support",
-    "contributeExerciseWarning": "You can only contribute exercises if your account is older than {days} days and have verified your email",
-    "@contributeExerciseWarning": {
-        "description": "Number of days before which a person can add exercise",
-        "placeholders": {
-            "days": {
-                "type": "String",
-                "example": "14"
-            }
-        }
-    },
-    "simpleMode": "Simple mode",
-    "simpleModeHelp": "Hide some of the more advanced settings when editing exercises",
-    "progressionRules": "This exercise has progression rules and can't be edited on the mobile app. Please use the web application to edit this exercise.",
-    "cacheWarning": "Due to caching it might take some time till the changes are visible throughout the application.",
-    "textPromptTitle": "Ready to start?",
-    "textPromptSubheading": "Press the action button to begin",
-    "abs": "Abs",
-    "@abs": {
-        "description": "Generated entry for translation for server strings"
-    },
-    "arms": "Arms",
-    "@arms": {
-        "description": "Generated entry for translation for server strings"
-    },
-    "back": "Back",
-    "@back": {
-        "description": "Generated entry for translation for server strings"
-    },
-    "barbell": "Barbell",
-    "@barbell": {
-        "description": "Generated entry for translation for server strings"
-    },
-    "bench": "Bench",
-    "@bench": {
-        "description": "Generated entry for translation for server strings"
-    },
-    "biceps": "Biceps",
-    "@biceps": {
-        "description": "Generated entry for translation for server strings"
-    },
-    "body_weight": "Body Weight",
-    "@body_weight": {
-        "description": "Generated entry for translation for server strings"
-    },
-    "calves": "Calves",
-    "@calves": {
-        "description": "Generated entry for translation for server strings"
-    },
-    "cardio": "Cardio",
-    "@cardio": {
-        "description": "Generated entry for translation for server strings"
-    },
-    "chest": "Chest",
-    "@chest": {
-        "description": "Generated entry for translation for server strings"
-    },
-    "dumbbell": "Dumbbell",
-    "@dumbbell": {
-        "description": "Generated entry for translation for server strings"
-    },
-    "glutes": "Glutes",
-    "@glutes": {
-        "description": "Generated entry for translation for server strings"
-    },
-    "gym_mat": "Gym mat",
-    "@gym_mat": {
-        "description": "Generated entry for translation for server strings"
-    },
-    "hamstrings": "Hamstrings",
-    "@hamstrings": {
-        "description": "Generated entry for translation for server strings"
-    },
-    "incline_bench": "Incline bench",
-    "@incline_bench": {
-        "description": "Generated entry for translation for server strings"
-    },
-    "kettlebell": "Kettlebell",
-    "@kettlebell": {
-        "description": "Generated entry for translation for server strings"
-    },
-    "kilometers": "Kilometers",
-    "@kilometers": {
-        "description": "Generated entry for translation for server strings"
-    },
-    "kilometers_per_hour": "Kilometers Per Hour",
-    "@kilometers_per_hour": {
-        "description": "Generated entry for translation for server strings"
-    },
-    "lats": "Lats",
-    "@lats": {
-        "description": "Generated entry for translation for server strings"
-    },
-    "legs": "Legs",
-    "@legs": {
-        "description": "Generated entry for translation for server strings"
-    },
-    "lower_back": "Lower back",
-    "@lower_back": {
-        "description": "Generated entry for translation for server strings"
-    },
-    "max_reps": "Max Reps",
-    "@max_reps": {
-        "description": "Generated entry for translation for server strings"
-    },
-    "miles": "Miles",
-    "@miles": {
-        "description": "Generated entry for translation for server strings"
-    },
-    "miles_per_hour": "Miles Per Hour",
-    "@miles_per_hour": {
-        "description": "Generated entry for translation for server strings"
-    },
-    "minutes": "Minutes",
-    "@minutes": {
-        "description": "Generated entry for translation for server strings"
-    },
-    "plates": "Plates",
-    "@plates": {
-        "description": "Generated entry for translation for server strings"
-    },
-    "pull_up_bar": "Pull-up bar",
-    "@pull_up_bar": {
-        "description": "Generated entry for translation for server strings"
-    },
-    "quads": "Quads",
-    "@quads": {
-        "description": "Generated entry for translation for server strings"
-    },
-    "repetitions": "Repetitions",
-    "@repetitions": {
-        "description": "Generated entry for translation for server strings"
-    },
-    "resistance_band": "Resistance band",
-    "@resistance_band": {
-        "description": "Generated entry for translation for server strings"
-    },
-    "sz_bar": "SZ-Bar",
-    "@sz_bar": {
-        "description": "Generated entry for translation for server strings"
-    },
-    "seconds": "Seconds",
-    "@seconds": {
-        "description": "Generated entry for translation for server strings"
-    },
-    "shoulders": "Shoulders",
-    "@shoulders": {
-        "description": "Generated entry for translation for server strings"
-    },
-    "swiss_ball": "Swiss Ball",
-    "@swiss_ball": {
-        "description": "Generated entry for translation for server strings"
-    },
-    "triceps": "Triceps",
-    "@triceps": {
-        "description": "Generated entry for translation for server strings"
-    },
-    "until_failure": "Until Failure",
-    "@until_failure": {
-        "description": "Generated entry for translation for server strings"
-    },
-    "kg": "kg",
-    "@kg": {
-        "description": "Generated entry for translation for server strings"
-    },
-    "lb": "lb",
-    "@lb": {
-        "description": "Generated entry for translation for server strings"
-    },
-    "none__bodyweight_exercise_": "none (bodyweight exercise)",
-    "@none__bodyweight_exercise_": {
-        "description": "Generated entry for translation for server strings"
-    },
-    "log": "Log",
-    "@log": {
-        "description": "Log a specific meal (imperative form)"
-    },
-    "done": "Done",
-    "overallChangeWeight": "Overall change",
-    "@overallChangeWeight": {
-        "description": "Overall change in weight, added for localization"
-    },
-    "goalTypeMeals": "From meals",
-    "@goalTypeMeals": {
-        "description": "added for localization of Class GoalType's filed meals"
-    },
-    "goalTypeBasic": "Basic",
-    "@goalTypeBasic": {
-        "description": "added for localization of Class GoalType's filed basic"
-    },
-    "goalTypeAdvanced": "Advanced",
-    "@goalTypeAdvanced": {
-        "description": "added for localization of Class GoalType's filed advanced"
-    },
-    "indicatorRaw": "raw",
-    "@indicatorRaw": {
-        "description": "added for localization of Class Indicator's field text"
-    },
-    "indicatorAvg": "avg",
-    "@indicatorAvg": {
-        "description": "added for localization of Class Indicator's field text"
-    },
-    "endWorkout": "End workout",
-    "@endWorkout": {
-        "description": "Use the imperative, label on button to finish the current workout in gym mode"
-    },
-    "themeMode": "Theme mode",
-    "darkMode": "Always dark mode",
-    "lightMode": "Always light mode",
-    "systemMode": "System settings",
-    "useDynamicColor": "Use dynamic color",
-    "@useDynamicColor": {
-        "description": "Settings toggle to follow the system wallpaper colors (Material You) on supported platforms"
-    },
-    "youAreOffline": "You are offline",
-    "appLanguage": "App language",
-    "@appLanguage": {
-        "description": "Label for the in-app language selector in settings"
-    },
-    "appLanguageSystem": "System default",
-    "@appLanguageSystem": {
-        "description": "Dropdown entry that follows the device system language"
-    },
-    "productNotFoundOpenFoodFacts": "You can add this product to Open Food Facts to help the community!",
-    "@productNotFoundOpenFoodFacts": {
-        "description": "Label shown when product is not found to encourage users to go on Open Food Facts and add it themselves"
-    },
-    "addToOpenFoodFacts": "Add to Open Food Facts",
-    "@addToOpenFoodFacts": {
-        "description": "Label shown as the clickable link to go on Open Food Facts"
-    },
-    "isVegan": "Vegan",
-    "@isVegan": {
-        "description": "Label for vegan toggle"
-    },
-    "isVegetarian": "Vegetarian",
-    "@isVegetarian": {
-        "description": "Label for vegetarian toggle"
-    },
-    "filter": "Filter",
-    "@filter": {
-        "description": "Label for filter button"
-    },
-    "searchLanguageCurrent": "Only in current language ({lang})",
-    "@searchLanguageCurrent": {
-        "type": "text",
-        "placeholders": {
-            "lang": {
-                "type": "String"
-            }
-        }
-    },
-    "searchLanguageEnglish": "Current language ({lang}) & English",
-    "@searchLanguageEnglish": {
-        "type": "text",
-        "placeholders": {
-            "lang": {
-                "type": "String"
-            }
-        }
-    },
-    "searchLanguageAll": "All languages",
-    "@searchLanguageAll": {
-        "description": "Label used in the language selector to indicate no specific language filter is applied"
-    },
-    "exerciseSearchMode": "Search mode",
-    "@exerciseSearchMode": {
-        "description": "Heading above the segmented control that lets the user pick between fuzzy and exact name matching"
-    },
-    "searchModeFuzzy": "Fuzzy",
-    "@searchModeFuzzy": {
-        "description": "Label for the search mode that performs a fuzzy/substring search on exercise names"
-    },
-    "searchModeExact": "Exact",
-    "@searchModeExact": {
-        "description": "Label for the search mode that only matches exercises with this exact name"
-    },
-    "syncStatusConnected": "Connected",
-    "@syncStatusConnected": {
-        "description": "Tooltip on the sync icon when the app is online and idle (no upload or download in progress)"
-    },
-    "syncStatusConnecting": "Connecting",
-    "@syncStatusConnecting": {
-        "description": "Tooltip on the sync icon while the app is establishing a connection to the sync service"
-    },
-    "syncStatusDisconnected": "Not connected",
-    "@syncStatusDisconnected": {
-        "description": "Tooltip on the sync icon when the app has no active connection to the sync service"
-    },
-    "syncStatusUploading": "Uploading",
-    "@syncStatusUploading": {
-        "description": "Tooltip on the sync icon while local changes are being uploaded to the server"
-    },
-    "syncStatusDownloading": "Downloading",
-    "@syncStatusDownloading": {
-        "description": "Tooltip on the sync icon while remote changes are being downloaded from the server"
-    },
-    "syncStatusSyncing": "Synchronizing",
-    "@syncStatusSyncing": {
-        "description": "Tooltip on the sync icon when the app is uploading and downloading at the same time"
-    },
-    "syncStatusError": "Sync error",
-    "@syncStatusError": {
-        "description": "Status label shown in the sync status dialog when the latest sync attempt failed"
-    },
-    "syncStatusDialogTitle": "Sync status",
-    "@syncStatusDialogTitle": {
-        "description": "Title of the dialog opened by tapping the sync icon in the app bar"
-    },
-    "syncStatusLastSynced": "Last synchronisation",
-    "@syncStatusLastSynced": {
-        "description": "Label in the sync status dialog above the timestamp of the last successful sync"
-    },
-    "syncStatusErrorDetails": "Error details",
-    "@syncStatusErrorDetails": {
-        "description": "Header of the expandable section in the sync status dialog that reveals the raw error message"
-    },
-    "syncStatusStalledHint": "The connection to the sync service seems to be blocked. A VPN, ad blocker, antivirus or firewall on this network may be interfering.",
-    "@syncStatusStalledHint": {
-        "description": "Hint shown in the sync status dialog when the app keeps connecting but never receives any sync data, which usually means something on the network is blocking the connection"
-    },
-    "syncStatusStalledNotStartedHint": "The app asked to synchronise, but the sync client never started. Restarting the app usually helps.",
-    "@syncStatusStalledNotStartedHint": {
-        "description": "Hint shown in the sync status dialog when a connection was requested but the sync client never reported any state at all"
-    },
-    "syncStatusStalledNotAppliedHint": "Data is arriving but cannot be applied, so nothing new shows up. Reporting this with the copied details helps us fix it.",
-    "@syncStatusStalledNotAppliedHint": {
-        "description": "Hint shown in the sync status dialog when sync data keeps arriving but no checkpoint ever completes, so the downloaded data stays invisible"
-    },
-    "syncStatusReconnect": "Reconnect",
-    "@syncStatusReconnect": {
-        "description": "Button in the sync status dialog that drops the stuck connection to the sync service and opens a fresh one"
-    },
-    "syncStatusPendingUploads": "{count, plural, =1{One local change waiting for upload} other{{count} local changes waiting for upload}}",
-    "@syncStatusPendingUploads": {
-        "description": "Line in the sync status dialog showing how many local changes have not reached the server yet",
-        "placeholders": {
-            "count": {
-                "type": "int"
-            }
-        }
-    },
-    "syncStatusNeverSynced": "Not yet synchronised",
-    "@syncStatusNeverSynced": {
-        "description": "Shown in the sync status dialog instead of the last-sync timestamp when this device has never completed a synchronisation"
-    },
-    "filterNutriscore": "Nutri-Score filter",
-    "@filterNutriscore": {
-        "description": "Heading for the Nutri-Score slider in the ingredient search filter dialog"
-    },
-    "filterNutriscoreOff": "Off",
-    "@filterNutriscoreOff": {
-        "description": "Label for the first slider stop, which disables the Nutri-Score filter"
-    },
-    "filterNutriscoreNoFilter": "No filter",
-    "@filterNutriscoreNoFilter": {
-        "description": "Helper text shown under the Nutri-Score slider when it is at the Off position"
-    },
-    "filterNutriscoreOrBetter": "{grade} or better",
-    "@filterNutriscoreOrBetter": {
-        "description": "Helper text shown under the Nutri-Score slider when a grade is selected (e.g. 'C or better')",
-        "placeholders": {
-            "grade": {
-                "type": "String",
-                "example": "C"
-            }
-        }
-    },
-    "serverConfigIssueTitle": "Server Configuration Issue",
-    "@serverConfigIssueTitle": {
-        "description": "Title of the dialog shown when server misconfiguration is detected"
-    },
-    "serverConfigIssueMessage": "Server misconfiguration detected, headers are not being passed correctly, please consult the documentation.",
-    "@serverConfigIssueMessage": {
-        "description": "Message explaining server misconfiguration and linking to documentation"
-    },
-    "understand": "I understand",
-    "@understand": {
-        "description": "Button label to acknowledge and dismiss the server configuration warning"
-    },
-    "viewDocumentation": "View documentation",
-    "@viewDocumentation": {
-        "description": "Button label to open the documentation about server configuration"
-    },
-    "sessionExpired": "Your session has expired, please log in again",
-    "@sessionExpired": {
-        "description": "Snackbar message shown when the saved login token is no longer valid"
-    },
-    "weightOrRepsRequired": "Please enter a weight, repetitions, or both",
-    "@weightOrRepsRequired": {
-        "description": "Validation error when both weight and repetitions are empty in a workout log"
-    },
-    "timeStartEndBothOrNeither": "Either set both start and end time or leave both empty",
-    "@timeStartEndBothOrNeither": {
-        "description": "Validation error when only one of start/end time is set on a workout session"
+  "@@last_modified": "2020-11-11T15:04:05.523531",
+  "userProfile": "Your profile",
+  "login": "Log in",
+  "@login": {
+    "description": "Text for login button"
+  },
+  "logout": "Log out",
+  "@logout": {
+    "description": "Text for logout button"
+  },
+  "register": "Register",
+  "@register": {
+    "description": "Text for registration button"
+  },
+  "invalidUrl": "Please enter a valid URL",
+  "@invalidUrl": {
+    "description": "Error message when the user enters an invalid URL, e.g. in the login form"
+  },
+  "usernameValidChars": "A username may only contain letters, digits, and the characters @, +, ., -, and _",
+  "@usernameValidChars": {
+    "description": "Error message when the user tries to register a username with forbidden characters"
+  },
+  "passwordsDontMatch": "The passwords don't match",
+  "@passwordsDontMatch": {
+    "description": "Error message when the user enters two different passwords during registration"
+  },
+  "passwordTooShort": "The password is too short",
+  "@passwordTooShort": {
+    "description": "Error message when the user a password that is too short"
+  },
+  "selectAvailablePlates": "Select available plates",
+  "barWeight": "Bar weight",
+  "useColors": "Use colors",
+  "password": "Password",
+  "@password": {},
+  "confirmPassword": "Confirm password",
+  "@confirmPassword": {},
+  "invalidEmail": "Please enter a valid e-mail address",
+  "@invalidEmail": {
+    "description": "Error message when the user enters an invalid email"
+  },
+  "email": "E-mail address",
+  "@email": {},
+  "username": "Username",
+  "@username": {},
+  "invalidUsername": "Please enter a valid username",
+  "@invalidUsername": {
+    "description": "Error message when the user enters an invalid username"
+  },
+  "refreshToken": "Refresh token",
+  "@refreshToken": {},
+  "invalidRefreshToken": "Please enter a valid refresh token",
+  "@invalidRefreshToken": {
+    "description": "Error message when the user enters an invalid refresh token"
+  },
+  "refreshTokenValidChars": "A refresh token has three dot-separated segments (header.payload.signature), each made of letters, digits, '-' and '_'",
+  "@refreshTokenValidChars": {
+    "description": "Error message when the user pastes a string that does not match the JWT shape"
+  },
+  "refreshTokenHelperText": "Generate a JWT refresh token on the wger website and paste it here. Useful when your server sits behind an auth proxy or when you want to skip the regular login flow.",
+  "@refreshTokenHelperText": {
+    "description": "Helper text on the refresh-token paste field"
+  },
+  "mfaChallengeTitle": "Two-factor authentication",
+  "@mfaChallengeTitle": {
+    "description": "App bar title on the 2FA challenge screen"
+  },
+  "mfaChallengeTotpPrompt": "Enter the 6-digit code from your authenticator app",
+  "@mfaChallengeTotpPrompt": {
+    "description": "Helper text above the TOTP input field"
+  },
+  "mfaChallengeRecoveryPrompt": "Enter one of your recovery codes",
+  "@mfaChallengeRecoveryPrompt": {
+    "description": "Helper text above the recovery-code input field"
+  },
+  "mfaCodeLabel": "Code",
+  "@mfaCodeLabel": {
+    "description": "Label on the 2FA code input field"
+  },
+  "mfaInvalidCode": "Please enter a code",
+  "@mfaInvalidCode": {
+    "description": "Validation error when the 2FA code field is empty"
+  },
+  "mfaUseRecoveryCode": "Use a recovery code instead",
+  "@mfaUseRecoveryCode": {
+    "description": "Button that switches the 2FA challenge to recovery-code mode"
+  },
+  "mfaUseTotpCode": "Use an authenticator app code",
+  "@mfaUseTotpCode": {
+    "description": "Button that switches the 2FA challenge back to TOTP mode"
+  },
+  "mfaSubmit": "Verify",
+  "@mfaSubmit": {
+    "description": "Submit button on the 2FA challenge screen"
+  },
+  "mfaUnsupportedFactor": "Your account is set up with a second factor this app does not support yet. Please sign in on the website.",
+  "@mfaUnsupportedFactor": {
+    "description": "Shown when the server reports only factor types the app cannot handle (e.g. webauthn)"
+  },
+  "manageAccountOnWeb": "Manage account on the web",
+  "@manageAccountOnWeb": {
+    "description": "Label on a button that opens the user's preferences page on the wger website"
+  },
+  "manageAccountOnWebSubtitle": "Change your password, set up two-factor authentication, manage API tokens, or delete your account.",
+  "@manageAccountOnWebSubtitle": {
+    "description": "Helper text below the 'Manage account on the web' button listing what is configurable there"
+  },
+  "customServerUrl": "URL of the wger instance",
+  "@customServerUrl": {
+    "description": "Label in the form where the users can enter their own wger instance"
+  },
+  "customServerHint": "Enter the address of your own server, otherwise the default one will be used",
+  "@customServerHint": {
+    "description": "Hint text for the form where the users can enter their own wger instance"
+  },
+  "reset": "Reset",
+  "@reset": {
+    "description": "Button text allowing the user to reset the entered values to the default"
+  },
+  "advanced": "Advanced",
+  "@advanced": {},
+  "advancedSubtitle": "Server and authentication options",
+  "@advancedSubtitle": {},
+  "serverSectionLabel": "Server",
+  "@serverSectionLabel": {},
+  "signInMethodSectionLabel": "Sign-in method",
+  "@signInMethodSectionLabel": {},
+  "serverOptionDefaultDetail": "The official server",
+  "@serverOptionDefaultDetail": {},
+  "serverOptionSelfHostedTitle": "Self-hosted",
+  "@serverOptionSelfHostedTitle": {},
+  "serverOptionSelfHostedDetail": "Connect to your own instance",
+  "@serverOptionSelfHostedDetail": {},
+  "allowSelfSignedCertsTitle": "Allow self-signed certificates",
+  "@allowSelfSignedCertsTitle": {},
+  "allowSelfSignedCertsDetail": "Disables TLS certificate validation. Only enable this for a server you trust.",
+  "@allowSelfSignedCertsDetail": {},
+  "certsNotVerifiedTitle": "Certificate validation is off",
+  "@certsNotVerifiedTitle": {
+    "description": "Warning shown in the settings while the app accepts invalid TLS certificates from the server the user is logged into."
+  },
+  "certsNotVerifiedDetail": "Certificates for {host} are not checked. To change this, log out and adjust the option on the login screen.",
+  "@certsNotVerifiedDetail": {
+    "description": "Explains the certificate warning. The option can only be set before logging in, hence the hint to log out.",
+    "type": "text",
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
     }
+  },
+  "authOptionPasswordTitle": "Username and password",
+  "@authOptionPasswordTitle": {},
+  "signInWithToken": "Sign in with token",
+  "@signInWithToken": {},
+  "tokenSubtitle": "Generate one on the wger website",
+  "@tokenSubtitle": {},
+  "newToWger": "New to wger?",
+  "@newToWger": {},
+  "alreadyHaveAccount": "Already have an account?",
+  "@alreadyHaveAccount": {},
+  "tokenLabel": "Token",
+  "@tokenLabel": {},
+  "webHandoffLinkLabel": "Other sign-in options",
+  "@webHandoffLinkLabel": {},
+  "webHandoffLinkSubtitle": "Social login, passkey, SSO",
+  "@webHandoffLinkSubtitle": {},
+  "labelBottomNavWorkout": "Workout",
+  "@labelBottomNavWorkout": {
+    "description": "Label used in bottom navigation, use a short word"
+  },
+  "labelBottomNavNutrition": "Nutrition",
+  "@labelBottomNavNutrition": {
+    "description": "Label used in bottom navigation, use a short word"
+  },
+  "labelWorkoutLogs": "Training logs",
+  "@labelWorkoutLogs": {
+    "description": "(Workout) logs"
+  },
+  "labelWorkoutPlan": "Workout plan",
+  "@labelWorkoutPlan": {
+    "description": "Title for screen workout plan"
+  },
+  "dashboardWidgets": "Dashboard widgets",
+  "labelDashboard": "Dashboard",
+  "@labelDashboard": {
+    "description": "Title for screen dashboard"
+  },
+  "success": "Success",
+  "@success": {
+    "description": "Message when an action completed successfully, usually used as a heading"
+  },
+  "successfullyDeleted": "Deleted",
+  "@successfullyDeleted": {
+    "description": "Message when an item was successfully deleted"
+  },
+  "successfullySaved": "Saved",
+  "@successfullySaved": {
+    "description": "Message when an item was successfully saved"
+  },
+  "exerciseList": "Exercise list",
+  "exercise": "Exercise",
+  "@exercise": {
+    "description": "An exercise for a workout"
+  },
+  "exercises": "Exercises",
+  "@exercises": {
+    "description": "Multiple exercises for a workout"
+  },
+  "exerciseName": "Exercise Name",
+  "@exerciseName": {
+    "description": "Label for the name of a workout exercise"
+  },
+  "searchExercise": "Search exercise to add",
+  "@searchExercise": {
+    "description": "Label on set form. Selected exercises are added to the set"
+  },
+  "noIngredientsDefined": "No ingredients defined yet",
+  "noMatchingExerciseFound": "No matching exercises found",
+  "@noMatchingExerciseFound": {
+    "description": "Message returned if no exercises match the searched string"
+  },
+  "equipment": "Equipment",
+  "@equipment": {
+    "description": "Equipment needed to perform an exercise"
+  },
+  "muscles": "Muscles",
+  "@muscles": {
+    "description": "(main) muscles trained by an exercise"
+  },
+  "musclesSecondary": "Secondary muscles",
+  "@musclesSecondary": {
+    "description": "secondary muscles trained by an exercise"
+  },
+  "category": "Category",
+  "@category": {
+    "description": "Category for an exercise, ingredient, etc."
+  },
+  "startDate": "Start date",
+  "@startDate": {
+    "description": "The start date of a nutritional plan or routine"
+  },
+  "dayTypeCustom": "Custom",
+  "dayTypeEnom": "Every minute on the minute",
+  "dayTypeAmrap": "As many rounds as possible",
+  "dayTypeHiit": "High intensity interval training",
+  "dayTypeTabata": "Tabata",
+  "dayTypeEdt": "Escalating density training",
+  "dayTypeRft": "Rounds for time",
+  "dayTypeAfap": "As fast as possible",
+  "slotEntryTypeNormal": "Normal",
+  "slotEntryTypeDropset": "Dropset",
+  "slotEntryTypeMyo": "Myo",
+  "slotEntryTypeWarmup": "Warmup",
+  "slotEntryTypePartial": "Partial",
+  "slotEntryTypeForced": "Forced",
+  "slotEntryTypeTut": "Time under Tension",
+  "slotEntryTypeIso": "Isometric hold",
+  "slotEntryTypeJump": "Jump",
+  "trophies": "Trophies",
+  "routines": "Routines",
+  "newRoutine": "New routine",
+  "noRoutines": "You have no routines",
+  "reps": "Reps",
+  "@reps": {
+    "description": "Shorthand for repetitions, used when space constraints are tighter"
+  },
+  "restTime": "Rest time",
+  "sets": "Sets",
+  "@sets": {
+    "description": "The number of sets to be done for one exercise"
+  },
+  "rir": "RiR",
+  "@rir": {
+    "description": "Shorthand for Repetitions In Reserve"
+  },
+  "rirNotUsed": "RiR not used",
+  "@rirNotUsed": {
+    "description": "Label used in RiR slider when the RiR value is not used/saved for the current setting or log"
+  },
+  "useMetric": "Use metric units for body weight",
+  "weightUnit": "Weight unit",
+  "@weightUnit": {},
+  "repetitionUnit": "Repetition unit",
+  "@repetitionUnit": {},
+  "set": "Set",
+  "@set": {
+    "description": "A set in a workout plan"
+  },
+  "dayDescriptionHelp": "A description of what is done on this day (e.g. 'pull day') or what body parts are trained (e.g. 'chest and shoulders')",
+  "@dayDescriptionHelp": {},
+  "exerciseNr": "Exercise {nr}",
+  "@exerciseNr": {
+    "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Set Nr. xy'.",
+    "type": "text",
+    "placeholders": {
+      "nr": {
+        "type": "String"
+      }
+    }
+  },
+  "supersetNr": "Superset {nr}",
+  "@supersetNr": {
+    "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Superset Nr. xy'.",
+    "type": "text",
+    "placeholders": {
+      "nr": {
+        "type": "String"
+      }
+    }
+  },
+  "setNr": "Set {nr}",
+  "@setNr": {
+    "description": "Header in form indicating the number of the current set within a group of same exercises.",
+    "type": "text",
+    "placeholders": {
+      "nr": {
+        "type": "String"
+      }
+    }
+  },
+  "comment": "Comment",
+  "@comment": {
+    "description": "Comment, additional information"
+  },
+  "topSet": "Top set: {value}",
+  "@topSet": {
+    "description": "Value is a representation of the set, like '10 x 80kg'",
+    "type": "text",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "impressionGood": "Good",
+  "impressionNeutral": "Neutral",
+  "impressionBad": "Bad",
+  "impression": "Impression",
+  "@impression": {
+    "description": "General impression (e.g. for a workout session) such as good, bad, etc."
+  },
+  "notes": "Notes",
+  "@notes": {
+    "description": "Personal notes, e.g. for a workout session"
+  },
+  "workoutSession": "Workout session",
+  "@workoutSession": {
+    "description": "A (logged) workout session"
+  },
+  "restDay": "Rest day",
+  "isRestDay": "Is rest day",
+  "isRestDayHelp": "Please note that all sets and exercises will be removed when you mark a day as a rest day.",
+  "needsLogsToAdvance": "Needs logs to advance",
+  "needsLogsToAdvanceHelp": "Select if you want the routine to progress to the next scheduled day only if you've logged a workout for the day",
+  "routineDays": "Days in routine",
+  "resultingRoutine": "Resulting routine",
+  "newDay": "New day",
+  "@newDay": {},
+  "newSet": "New set",
+  "@newSet": {
+    "description": "Header when adding a new set to a workout day"
+  },
+  "personalRecords": "Personal records",
+  "gymMode": "Gym mode",
+  "@gymMode": {
+    "description": "Label when starting the gym mode"
+  },
+  "gymModeShowExercises": "Show exercise overview pages",
+  "gymModeShowTimer": "Show timer between sets",
+  "gymModeShowWorkoutDuration": "Show workout duration",
+  "gymModeTimerType": "Timer type",
+  "gymModeTimerTypeHelText": "If a set has pause time, a countdown is always used.",
+  "countdown": "Countdown",
+  "stopwatch": "Stopwatch",
+  "gymModeDefaultCountdownTime": "Default countdown time, in seconds",
+  "gymModeNotifyOnCountdownFinish": "Notify on countdown end",
+  "duration": "Duration",
+  "durationHoursMinutes": "{hours}h {minutes}m",
+  "@durationHoursMinutes": {
+    "description": "A duration, in hours and minutes",
+    "type": "text",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "volume": "Volume",
+  "@volume": {
+    "description": "The volume of a workout or set, i.e. weight x reps"
+  },
+  "workoutCompleted": "Workout completed",
+  "plateCalculator": "Plates",
+  "@plateCalculator": {
+    "description": "Label used for the plate calculator in the gym mode"
+  },
+  "plateCalculatorNotDivisible": "Not possible to reach weight with available plates",
+  "@plateCalculatorNotDivisible": {
+    "description": "Error message when the current weight is not reachable with plates (e.g. 33.1 kg)"
+  },
+  "pause": "Pause",
+  "@pause": {
+    "description": "Noun, not an imperative! Label used for the pause when using the gym mode"
+  },
+  "jumpTo": "Jump to",
+  "@jumpTo": {
+    "description": "Imperative. Label used in popup allowing the user to jump to a specific exercise while in the gym mode"
+  },
+  "todaysWorkout": "Your workout today",
+  "@todaysWorkout": {},
+  "logHelpEntries": "If on a single day there is more than one entry with the same number of repetitions, but different weights, only the entry with the higher weight is shown in the diagram.",
+  "@logHelpEntries": {},
+  "logHelpEntriesUnits": "Note that only entries with a weight unit (kg or lb) and repetitions are charted, other combinations such as time or until failure are ignored here.",
+  "@logHelpEntriesUnits": {},
+  "description": "Description",
+  "@description": {},
+  "name": "Name",
+  "@name": {
+    "description": "Name for a workout or nutritional plan"
+  },
+  "save": "Save",
+  "@save": {},
+  "verify": "Verify",
+  "@verify": {},
+  "addSet": "Add set",
+  "@addSet": {
+    "description": "Label for the button that adds a set (to a workout day)"
+  },
+  
+"gymModeLogScope": "Previous logs",
+"gymModeLogScopeHelp": "Which logs to show as reference while training",
+"gymModeLogScopeCurrentRoutine": "Current routine",
+"gymModeLogScopeWeeks": "Last {weeks} weeks",
+"@gymModeLogScopeWeeks": {
+  "placeholders": {
+    "weeks": { "type": "int" }
+  }
+},
+"gymModeDistinctLogs": "Hide duplicate values",
+  "addMeal": "Add meal",
+  "@addMeal": {},
+  "meal": "Meal",
+  "@meal": {},
+  "mealLogged": "Meal logged to diary",
+  "@mealLogged": {},
+  "ingredientLogged": "Ingredient logged to diary",
+  "logMeal": "Log meal to nutrition diary",
+  "@logMeal": {},
+  "addIngredient": "Add ingredient",
+  "@addIngredient": {},
+  "logIngredient": "Log ingredient to nutrition diary",
+  "@logIngredient": {},
+  "searchIngredient": "Search ingredient",
+  "@searchIngredient": {
+    "description": "Label (or Hint text) on ingredient search form"
+  },
+  "nutritionalPlan": "Nutritional plan",
+  "@nutritionalPlan": {},
+  "nutritionalDiary": "Nutritional diary",
+  "@nutritionalDiary": {},
+  "nutritionalPlans": "Nutritional plans",
+  "@nutritionalPlans": {},
+  "noNutritionalPlans": "You have no nutritional plans",
+  "@noNutritionalPlans": {
+    "description": "Message shown when the user has no nutritional plans"
+  },
+  "clearSearchTerm": "Clear search term (text)",
+  "@clearSearchTerm": {
+    "description": "Tooltip for the icon-button that clears the ingredient search text field"
+  },
+  "ingredients": "Ingredients",
+  "@ingredients": {
+    "description": "Plural title for the ingredients overview screen"
+  },
+  "onlyLogging": "Only track calories",
+  "onlyLoggingHelpText": "Check the box if you only want to log your calories and don't want to setup a detailed nutritional plan with specific meals",
+  "goalMacro": "Macro goals",
+  "@goalMacro": {
+    "description": "The goal for macronutrients"
+  },
+  "selectMealToLog": "Select a meal to log to diary",
+  "yourCurrentNutritionPlanHasNoMealsDefinedYet": "Your current nutrition plan has no meals defined",
+  "@yourCurrentNutritionPlanHasNoMealsDefinedYet": {
+    "description": "Message shown when a nutrition plan doesn't have any meals"
+  },
+  "toAddMealsToThePlanGoToNutritionalPlanDetails": "To add meals to the plan, go to the nutritional plan details",
+  "@toAddMealsToThePlanGoToNutritionalPlanDetails": {
+    "description": "Message shown to guide users to the nutritional plan details page to add meals"
+  },
+  "planDateRange": "from {startDate} to {endDate}",
+  "@planDateRange": {
+    "description": "Label for the start and end date range of a plan",
+    "placeholders": {
+      "startDate": { "type": "String" },
+      "endDate": { "type": "String" }
+    }
+  },
+  "planStartDate": "from {startDate}",
+  "@planStartDate": {
+    "description": "Label for the start date of a plan",
+    "placeholders": {
+      "startDate": { "type": "String" }
+    }
+  },
+  "otherLogs": "Other logs",
+  "@otherLogs": {
+    "description": "Other unassigned logs. Label for the pseudo-meal section that groups all nutritional diary entries not assigned to a specific meal"
+  },
+  "goalEnergy": "Energy goal",
+  "goalProtein": "Protein goal",
+  "goalCarbohydrates": "Carbohydrates goal",
+  "goalFat": "Fat goal",
+  "goalFiber": "Fiber goal",
+  "anErrorOccurred": "An Error Occurred!",
+  "errorRawSource": "Raw",
+  "@errorRawSource": {
+    "description": "Tab label for showing an HTML error response in its raw (unrendered) form, opposite of 'Preview'."
+  },
+  "errorInfoDescription": "We're sorry, but something went wrong. You can help us fix this by reporting the issue on GitHub.",
+  "errorInfoDescription2": "You can continue using the app, but some features may not work.",
+  "errorViewDetails": "Technical details",
+  "applicationLogs": "Application logs",
+  "errorCouldNotConnectToServer": "Couldn't connect to server",
+  "copyToClipboard": "Copy to clipboard",
+  "weight": "Weight",
+  "min": "Min",
+  "max": "Max",
+  "@weight": {
+    "description": "The weight of a workout log or body weight entry"
+  },
+  "chartAllTimeTitle": "{name} all-time",
+  "@chartAllTimeTitle": {
+    "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chart30DaysTitle": "{name} last 30 days",
+  "@chart30DaysTitle": {
+    "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
+    "type": "text",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chartDuringPlanTitle": "{chartName} during nutritional plan {planName}",
+  "@chartDuringPlanTitle": {
+    "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
+    "type": "text",
+    "placeholders": {
+      "chartName": {
+        "type": "String"
+      },
+      "planName": {
+        "type": "String"
+      }
+    }
+  },
+  "measurement": "Measurement",
+  "@measurement": {},
+  "measurements": "Measurements",
+  "@measurements": {
+    "description": "Categories for the measurements such as biceps size, body fat, etc."
+  },
+  "measurementCategoriesHelpText": "Measurement category, such as 'biceps' or 'body fat'",
+  "@measurementCategoriesHelpText": {},
+  "measurementEntriesHelpText": "The unit used to measure the category such as 'cm' or '%'",
+  "@measurementEntriesHelpText": {},
+  "date": "Date",
+  "@date": {
+    "description": "The date of a workout log or body weight entry"
+  },
+  "endDate": "End date",
+  "@endDate": {
+    "description": "The End date of a nutritional plan or routine"
+  },
+  "endBeforeStart": "The end value cannot be before the start",
+  "@endBeforeStart": {
+    "description": "Validation error shown when a plan or routine end date is before its start date"
+  },
+  "minLengthRoutine": "The routine needs to be at least {number} weeks long",
+  "@minLengthRoutine": {
+    "description": "Validation error when a routine is shorter than the minimum allowed duration",
+    "placeholders": {
+      "number": { "type": "int" }
+    }
+  },
+  "maxLengthRoutine": "The routine can be at most {number} weeks long",
+  "@maxLengthRoutine": {
+    "description": "Validation error when a routine is longer than the maximum allowed duration",
+    "placeholders": {
+      "number": { "type": "int" }
+    }
+  },
+  "openEnded": "Open ended",
+  "@openEnded": {
+    "description": "When a nutrition plan has no pre-defined end date"
+  },
+  "value": "Value",
+  "@value": {
+    "description": "The value of a measurement entry"
+  },
+  "start": "Start",
+  "@start": {
+    "description": "Label on button to start the gym mode (i.e., an imperative)"
+  },
+  "time": "Time",
+  "@time": {
+    "description": "The time of a meal or workout"
+  },
+  "timeStart": "Start time",
+  "@timeStart": {
+    "description": "The starting time of a workout"
+  },
+  "timeEnd": "End time",
+  "@timeEnd": {
+    "description": "The end time of a workout"
+  },
+  "timeStartAhead": "Start time cannot be ahead of end time",
+  "@timeStartAhead": {},
+  "ingredient": "Ingredient",
+  "@ingredient": {
+    "description": "Singular label for an ingredient"
+  },
+  "energy": "Energy",
+  "@energy": {
+    "description": "Energy in a meal, ingredient etc. e.g. in kJ"
+  },
+  "energyShort": "E",
+  "@energyShort": {
+    "description": "The first letter or short name of the word 'Energy', used in overviews"
+  },
+  "dietaryInformation": "Dietary information",
+  "macronutrients": "Macronutrients",
+  "@macronutrients": {},
+  "planned": "Planned",
+  "@planned": {
+    "description": "Header for the column of 'planned' nutritional values, i.e. what should be eaten"
+  },
+  "logged": "Logged",
+  "@logged": {
+    "description": "Header for the column of 'logged' nutritional values, i.e. what was eaten"
+  },
+  "today": "Today",
+  "loggedToday": "Logged today",
+  "weekAverage": "7 day average",
+  "@weekAverage": {
+    "description": "Header for the column of '7 day average' nutritional values, i.e. what was logged last week"
+  },
+  "surplus": "surplus",
+  "@surplus": {
+    "description": "Caloric surplus (either planned or unplanned)"
+  },
+  "deficit": "deficit",
+  "@deficit": {
+    "description": "Caloric deficit (either planned or unplanned)"
+  },
+  "difference": "Difference",
+  "@difference": {},
+  "percentEnergy": "Percent of energy",
+  "@percentEnergy": {},
+  "gPerBodyKg": "g per body kg",
+  "@gPerBodyKg": {
+    "description": "Label used for total sums of e.g. calories or similar in grams per Kg of body weight"
+  },
+  "total": "Total",
+  "@total": {
+    "description": "Label used for total sums of e.g. calories or similar"
+  },
+  "kcal": "kcal",
+  "@kcal": {
+    "description": "Energy in a meal in kilocalories, kcal"
+  },
+  "kcalValue": "{value} kcal",
+  "@kcalValue": {
+    "description": "A value in kcal, e.g. 500 kcal",
+    "type": "text",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "kJ": "kJ",
+  "@kJ": {
+    "description": "Energy in a meal in kilo joules, kJ"
+  },
+  "g": "g",
+  "@g": {
+    "description": "Abbreviation for gram"
+  },
+  "gValue": "{value} g",
+  "@gValue": {
+    "description": "A value in grams, e.g. 5 g",
+    "type": "text",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "percentValue": "{value} %",
+  "@percentValue": {
+    "description": "A value in percent, e.g. 10 %",
+    "type": "text",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "protein": "Protein",
+  "@protein": {},
+  "proteinShort": "P",
+  "@proteinShort": {
+    "description": "The first letter or short name of the word 'Protein', used in overviews"
+  },
+  "carbohydrates": "Carbohydrates",
+  "@carbohydrates": {},
+  "carbohydratesShort": "C",
+  "@carbohydratesShort": {
+    "description": "The first letter or short name of the word 'Carbohydrates', used in overviews"
+  },
+  "sugars": "Sugars",
+  "@sugars": {},
+  "fat": "Fat",
+  "@fat": {},
+  "fatShort": "F",
+  "@fatShort": {
+    "description": "The first letter or short name of the word 'Fat', used in overviews"
+  },
+  "saturatedFat": "Saturated fat",
+  "@saturatedFat": {},
+  "fiber": "Fibers",
+  "sodium": "Sodium",
+  "@sodium": {},
+  "carbohydratesSugar": "Sugar (Carbohydrates)",
+  "@carbohydratesSugar": {
+    "description": "Label for the carbohydrates sugar"
+  },
+  "amount": "Amount",
+  "@amount": {
+    "description": "The amount (e.g. in grams) of an ingredient in a meal"
+  },
+  "unit": "Unit",
+  "@unit": {
+    "description": "The unit used for a repetition (kg, time, etc.)"
+  },
+  "newEntry": "New entry",
+  "@newEntry": {
+    "description": "Title when adding a new entry such as a weight or log entry"
+  },
+  "noTrophies": "You have no trophies yet",
+  "noWeightEntries": "You have no weight entries",
+  "@noWeightEntries": {
+    "description": "Message shown when the user has no logged weight entries"
+  },
+  "moreMeasurementEntries": "Add new measurement",
+  "@moreMeasurementEntries": {
+    "description": "Message shown when the user wants to add new measurement"
+  },
+  "edit": "Edit",
+  "@edit": {},
+  "preview": "Preview",
+  "delete": "Delete",
+  "@delete": {},
+  "confirmDelete": "Are you sure you want to delete '{toDelete}'?",
+  "@confirmDelete": {
+    "description": "Confirmation text before the user deletes an object",
+    "type": "text",
+    "placeholders": {
+      "toDelete": {
+        "type": "String"
+      }
+    }
+  },
+  "newNutritionalPlan": "New nutritional plan",
+  "@newNutritionalPlan": {},
+  "overview": "Overview",
+  "toggleDetails": "Toggle details",
+  "@toggleDetails": {
+    "description": "Switch to toggle detail / overview"
+  },
+  "goToDetailPage": "Go to detail page",
+  "@goToDetailPage": {},
+  "aboutWhySupportTitle": "Open Source & free to use ❤️",
+  "aboutDescription": "Thank you for using wger! wger is a collaborative open source project, made by fitness enthusiasts from around the world.",
+  "@aboutDescription": {
+    "description": "Text in the about dialog"
+  },
+  "aboutDonateTitle": "Make a donation",
+  "aboutDonateText": "While the project is free and will always remain it, running the server isn’t! Development also takes significant time and effort from volunteers. Your contribution directly supports these costs, helping to keep the service reliable.",
+  "aboutContributeTitle": "Contribute",
+  "aboutContributeText": "All types of contributions are encouraged. Whether you're a developer, a translator, or just passionate about fitness, every bit of support is appreciated!",
+  "aboutBugsListTitle": "Report a problem or suggest a feature",
+  "aboutTranslationListTitle": "Translate the application",
+  "aboutSourceListTitle": "View source code",
+  "aboutJoinCommunityTitle": "Join the community",
+  "aboutMastodonTitle": "Mastodon",
+  "aboutDiscordTitle": "Discord",
+  "aboutViewDocsTitle": "Open documentation",
+  "aboutViewLicensesTitle": "View licenses",
+  "others": "Others",
+  "calendar": "Calendar",
+  "@calendar": {},
+  "enterValue": "Please enter a value",
+  "@enterValue": {
+    "description": "Error message when the user hasn't entered a value on a required field"
+  },
+  "selectEntry": "Please select an entry",
+  "selectExercise": "Please select an exercise",
+  "@selectExercise": {
+    "description": "Error message when the user hasn't selected an exercise in the form"
+  },
+  "enterCharacters": "Please enter between {min} and {max} characters",
+  "@enterCharacters": {
+    "description": "Error message when the user hasn't entered the correct number of characters in a form",
+    "type": "text",
+    "placeholders": {
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "formMinMaxValues": "Please enter a value between {min} and {max}",
+  "@formMinMaxValues": {
+    "description": "Error message when the user needs to enter a value between min and max",
+    "type": "text",
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "enterMinCharacters": "Please enter at least {min} characters",
+  "@enterMinCharacters": {
+    "description": "Error message when the user hasn't entered the minimum amount characters in a form",
+    "type": "text",
+    "placeholders": {
+      "min": {
+        "type": "String"
+      }
+    }
+  },
+  "enterMaxCharacters": "Please enter at most {max} characters",
+  "@enterMaxCharacters": {
+    "description": "Error message when the user has entered more than the allowed amount of characters in a form",
+    "type": "text",
+    "placeholders": {
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "baseNameEnglish": "All exercises need a base name in English",
+  "nrOfSets": "Sets per exercise: {nrOfSets}",
+  "@nrOfSets": {
+    "description": "Label shown on the slider where the user selects the nr of sets",
+    "type": "text",
+    "placeholders": {
+      "nrOfSets": {
+        "type": "String"
+      }
+    }
+  },
+  "enterValidNumber": "Please enter a valid number",
+  "@enterValidNumber": {
+    "description": "Error message when the user has submitted an invalid number (e.g. '3,.,.,.')"
+  },
+  "selectIngredient": "Please select an ingredient",
+  "@selectIngredient": {
+    "description": "Error message when the user hasn't selected an ingredient from the autocompleter"
+  },
+  "recentlyUsedIngredients": "Recently added ingredients",
+  "@recentlyUsedIngredients": {
+    "description": "A message when a user adds a new ingredient to a meal."
+  },
+  "selectImage": "Please select an image",
+  "@selectImage": {
+    "description": "Label and error message when the user hasn't selected an image to save"
+  },
+  "optionsLabel": "Options",
+  "@optionsLabel": {
+    "description": "Label for the popup with general app options"
+  },
+  "takePicture": "Take a picture",
+  "@takePicture": {},
+  "chooseFromLibrary": "Choose from photo library",
+  "@chooseFromLibrary": {},
+  "gallery": "Gallery",
+  "@gallery": {},
+  "addImage": "Add image",
+  "@addImage": {},
+  "dataCopied": "Data copied to new entry",
+  "@dataCopied": {
+    "description": "Snackbar message to show on copying data to a new log entry"
+  },
+  "appUpdateTitle": "Update needed",
+  "@appUpdateTitle": {},
+  "appUpdateContent": "This version of the app is not compatible with the server, please update your application.",
+  "@appUpdateContent": {},
+  "serverUpdateTitle": "Server update required",
+  "@serverUpdateTitle": {},
+  "serverUpdateContent": "The connected server is too old for this version of the app. Please ask the server administrator to update to at least version {minVersion}.",
+  "@serverUpdateContent": {
+    "description": "Message shown when the server version is too old. minVersion is the minimum required server version string.",
+    "type": "text",
+    "placeholders": {
+      "minVersion": {
+        "type": "String"
+      }
+    }
+  },
+  "powerSyncUnreachableTitle": "Sync service unreachable",
+  "powerSyncUnreachableContent": "Your wger server is reachable, but the (separate) service that handles offline sync is not responding. If you self-host wger, check your configuration and make sure the PowerSync service is running correctly.",
+  "serverUnreachableRetry": "Try again",
+  "@serverUnreachableRetry": {
+    "description": "Button that re-runs the auto-login attempt against the saved server."
+  },
+  "productFound": "Product found",
+  "@productFound": {
+    "description": "Header label for dialog when product is found with barcode"
+  },
+  "productFoundDescription": "The barcode corresponds to this product: {productName}. Do you want to continue?",
+  "@productFoundDescription": {
+    "description": "Dialog info when product is found with barcode",
+    "type": "text",
+    "placeholders": {
+      "productName": {
+        "type": "String"
+      }
+    }
+  },
+  "productNotFound": "Product not found",
+  "@productNotFound": {
+    "description": "Header label for dialog when product is not found with barcode"
+  },
+  "productNotFoundDescription": "The product with the scanned barcode {barcode} was not found in the wger database",
+  "@productNotFoundDescription": {
+    "description": "Dialog info when product is not found with barcode",
+    "type": "text",
+    "placeholders": {
+      "barcode": {
+        "type": "String"
+      }
+    }
+  },
+  "scanBarcode": "Scan barcode",
+  "@scanBarcode": {
+    "description": "Label for scan barcode button"
+  },
+  "close": "Close",
+  "@close": {
+    "description": "Translation for close"
+  },
+  "identicalExercisePleaseDiscard": "If you notice an exercise that is identical to the one you're adding, please discard your draft and edit that exercise instead.",
+  "checkInformationBeforeSubmitting": "Please check that the information you entered is correct before submitting the exercise",
+  "add_exercise_image_license": "Images must be compatible with the CC BY SA license. If in doubt, upload only photos you've taken yourself.",
+  "imageDetailsTitle": "Image details",
+  "@imageDetailsTitle": {
+    "description": "Title for image details form"
+  },
+  "imageDetailsLicenseTitle": "Title",
+  "@imageDetailsLicenseTitle": {
+    "description": "Label for image title field"
+  },
+  "imageDetailsLicenseTitleHint": "Enter image title",
+  "@imageDetailsLicenseTitleHint": {
+    "description": "Hint text for image title field"
+  },
+  "imageDetailsSourceLink": "Link to the source website",
+  "@imageDetailsSourceLink": {
+    "description": "Label for source link field"
+  },
+  "author": "Author(s)",
+  "@Author": {
+    "description": "Label for author field"
+  },
+  "authorHint": "Enter author name",
+  "@authorHint": {
+    "description": "Hint text for author field"
+  },
+  "imageDetailsAuthorLink": "Link to author website or profile",
+  "@imageDetailsAuthorLink": {
+    "description": "Label for author link field"
+  },
+  "imageDetailsDerivativeSource": "Link to the original source, if this is a derivative work",
+  "@imageDetailsDerivativeSource": {
+    "description": "Label for derivative source field"
+  },
+  "imageDetailsDerivativeHelp": "A derivative work is based on a previous work but contains sufficient new, creative content to entitle it to its own copyright.",
+  "@imageDetailsDerivativeHelp": {
+    "description": "Helper text explaining derivative works"
+  },
+  "imageDetailsImageType": "Image Type",
+  "@imageDetailsImageType": {
+    "description": "Label for image type selector"
+  },
+  "imageDetailsLicenseNotice": "By submitting this image, you agree to release it under the CC-BY-SA-4. The image must be either your own work or the author must have released it under a license compatible with it.",
+  "imageDetailsLicenseNoticeLinkToLicense": "See license text.",
+  "imageFormatNotSupported": "{imageFormat} not supported",
+  "@imageFormatNotSupported": {
+      "description": "Label shown on the error container when image format is not supported",
+      "type": "text",
+      "placeholders": {
+          "imageFormat": {
+              "type": "String"
+          }
+      }
+  },
+  "imageFormatNotSupportedDetail": "{imageFormat} images are not supported yet.",
+  "@imageFormatNotSupportedDetail": {
+      "description": "Label shown on the image preview container when image format is not supported",
+      "type": "text",
+      "placeholders": {
+          "imageFormat": {
+              "type": "String"
+          }
+      }
+  },
+  "add": "add",
+  "@add": {
+    "description": "Add button text"
+  },
+  "increase": "Increase",
+  "@increase": {
+    "description": "Tooltip / screen-reader label for a button that increases a numeric input by one step"
+  },
+  "decrease": "Decrease",
+  "@decrease": {
+    "description": "Tooltip / screen-reader label for a button that decreases a numeric input by one step"
+  },
+  "variations": "Variations",
+  "@variations": {
+    "description": "Variations of one exercise (e.g. benchpress and benchpress narrow)"
+  },
+  "alsoKnownAs": "Also known as: {aliases}",
+  "@alsoKnownAs": {
+    "placeholders": {
+      "aliases": {
+        "type": "String"
+      }
+    },
+    "description": "List of alternative names for an exercise"
+  },
+  "verifiedEmail": "Verified email",
+  "unVerifiedEmail": "Unverified email",
+  "verifiedEmailInfo": "A verification email was sent to {email}",
+  "@verifiedEmailInfo": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "alternativeNames": "Alternative names",
+  "oneNamePerLine": "One name per line",
+  "whatVariationsExist": "What variations of this exercise exist, if any?",
+  "previous": "Previous",
+  "next": "Next",
+  "images": "Images",
+  "language": "Language",
+  "addExercise": "Add exercise",
+  "fitInWeek": "Fixed weekly schedule",
+  "fitInWeekHelp": "If enabled, the days will repeat in a weekly cycle, otherwise the days will follow sequentially without regards to the start of a new week.",
+  "addSuperset": "Add superset",
+  "superset": "Superset",
+  "setHasNoExercises": "This set has no exercises yet!",
+  "contributeExercise": "Contribute an exercise",
+  "translation": "Translation",
+  "translateExercise": "Translate this exercise now",
+  "baseData": "Basics in English",
+  "@baseData": {
+    "description": "The base data for an exercise such as category, trained muscles, etc."
+  },
+  "useBasicMarkdown": "You can use basic Markdown to format the text",
+  "editorBold": "Bold",
+  "@editorBold": {
+    "description": "Label for bold formatting"
+  },
+  "editorItalic": "Italic",
+  "editorList": "List",
+  "enterTextInLanguage": "Please enter the text in the correct language!",
+  "settingsTitle": "Settings",
+  "settingsCacheTitle": "Cache",
+  "settingsImageCacheDescription": "Image cache",
+  "settingsCacheDeletedSnackbar": "Cache successfully cleared",
+  "settingsDataTitle": "Privacy",
+  "settingsKeepDataOnLogout": "Keep data when logging out",
+  "settingsKeepDataOnLogoutDescription": "The local database stays on your device until a different account signs in.",
+  "settingsVerboseLogging": "Detailed logging",
+  "@settingsVerboseLogging": {
+    "description": "Title of the setting that makes the app write detailed diagnostic entries to the application log"
+  },
+  "settingsVerboseLoggingDescription": "Useful when reporting persistent problems.",
+  "aboutPageTitle": "About us & Support",
+  "contributeExerciseWarning": "You can only contribute exercises if your account is older than {days} days and have verified your email",
+  "@contributeExerciseWarning": {
+    "description": "Number of days before which a person can add exercise",
+    "placeholders": {
+      "days": {
+        "type": "String",
+        "example": "14"
+      }
+    }
+  },
+  "simpleMode": "Simple mode",
+  "simpleModeHelp": "Hide some of the more advanced settings when editing exercises",
+  "progressionRules": "This exercise has progression rules and can't be edited on the mobile app. Please use the web application to edit this exercise.",
+  "cacheWarning": "Due to caching it might take some time till the changes are visible throughout the application.",
+  "textPromptTitle": "Ready to start?",
+  "textPromptSubheading": "Press the action button to begin",
+  "abs": "Abs",
+  "@abs": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "arms": "Arms",
+  "@arms": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "back": "Back",
+  "@back": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "barbell": "Barbell",
+  "@barbell": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "bench": "Bench",
+  "@bench": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "biceps": "Biceps",
+  "@biceps": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "body_weight": "Body Weight",
+  "@body_weight": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "calves": "Calves",
+  "@calves": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "cardio": "Cardio",
+  "@cardio": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "chest": "Chest",
+  "@chest": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "dumbbell": "Dumbbell",
+  "@dumbbell": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "glutes": "Glutes",
+  "@glutes": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "gym_mat": "Gym mat",
+  "@gym_mat": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "hamstrings": "Hamstrings",
+  "@hamstrings": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "incline_bench": "Incline bench",
+  "@incline_bench": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kettlebell": "Kettlebell",
+  "@kettlebell": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kilometers": "Kilometers",
+  "@kilometers": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kilometers_per_hour": "Kilometers Per Hour",
+  "@kilometers_per_hour": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "lats": "Lats",
+  "@lats": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "legs": "Legs",
+  "@legs": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "lower_back": "Lower back",
+  "@lower_back": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "max_reps": "Max Reps",
+  "@max_reps": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "miles": "Miles",
+  "@miles": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "miles_per_hour": "Miles Per Hour",
+  "@miles_per_hour": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "minutes": "Minutes",
+  "@minutes": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "plates": "Plates",
+  "@plates": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "pull_up_bar": "Pull-up bar",
+  "@pull_up_bar": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "quads": "Quads",
+  "@quads": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "repetitions": "Repetitions",
+  "@repetitions": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "resistance_band": "Resistance band",
+  "@resistance_band": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "sz_bar": "SZ-Bar",
+  "@sz_bar": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "seconds": "Seconds",
+  "@seconds": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "shoulders": "Shoulders",
+  "@shoulders": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "swiss_ball": "Swiss Ball",
+  "@swiss_ball": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "triceps": "Triceps",
+  "@triceps": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "until_failure": "Until Failure",
+  "@until_failure": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "kg": "kg",
+  "@kg": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "lb": "lb",
+  "@lb": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "none__bodyweight_exercise_": "none (bodyweight exercise)",
+  "@none__bodyweight_exercise_": {
+    "description": "Generated entry for translation for server strings"
+  },
+  "log": "Log",
+  "@log": {
+    "description": "Log a specific meal (imperative form)"
+  },
+  "done": "Done",
+  "overallChangeWeight": "Overall change",
+  "@overallChangeWeight": {
+    "description": "Overall change in weight, added for localization"
+  },
+  "goalTypeMeals": "From meals",
+  "@goalTypeMeals": {
+    "description": "added for localization of Class GoalType's filed meals"
+  },
+  "goalTypeBasic": "Basic",
+  "@goalTypeBasic": {
+    "description": "added for localization of Class GoalType's filed basic"
+  },
+  "goalTypeAdvanced": "Advanced",
+  "@goalTypeAdvanced": {
+    "description": "added for localization of Class GoalType's filed advanced"
+  },
+  "indicatorRaw": "raw",
+  "@indicatorRaw": {
+    "description": "added for localization of Class Indicator's field text"
+  },
+  "indicatorAvg": "avg",
+  "@indicatorAvg": {
+    "description": "added for localization of Class Indicator's field text"
+  },
+  "endWorkout": "End workout",
+  "@endWorkout": {
+    "description": "Use the imperative, label on button to finish the current workout in gym mode"
+  },
+  "themeMode": "Theme mode",
+  "darkMode": "Always dark mode",
+  "lightMode": "Always light mode",
+  "systemMode": "System settings",
+  "useDynamicColor": "Use dynamic color",
+  "@useDynamicColor": {
+    "description": "Settings toggle to follow the system wallpaper colors (Material You) on supported platforms"
+  },
+  "youAreOffline": "You are offline",
+  "appLanguage": "App language",
+  "@appLanguage": {
+    "description": "Label for the in-app language selector in settings"
+  },
+  "appLanguageSystem": "System default",
+  "@appLanguageSystem": {
+    "description": "Dropdown entry that follows the device system language"
+  },
+  "productNotFoundOpenFoodFacts": "You can add this product to Open Food Facts to help the community!",
+  "@productNotFoundOpenFoodFacts": {
+  "description": "Label shown when product is not found to encourage users to go on Open Food Facts and add it themselves"
+  },
+  "addToOpenFoodFacts": "Add to Open Food Facts",
+  "@addToOpenFoodFacts": {
+    "description": "Label shown as the clickable link to go on Open Food Facts"
+   },
+  "isVegan": "Vegan",
+  "@isVegan": {
+    "description": "Label for vegan toggle"
+  },
+  "isVegetarian": "Vegetarian",
+  "@isVegetarian": {
+    "description": "Label for vegetarian toggle"
+  },
+  "filter": "Filter",
+  "@filter": {
+    "description": "Label for filter button"
+  },
+  "searchLanguageCurrent": "Only in current language ({lang})",
+  "@searchLanguageCurrent": {
+  "type": "text",
+  "placeholders": {
+    "lang": {
+      "type": "String"
+      }
+    }
+  },
+  "searchLanguageEnglish": "Current language ({lang}) & English",
+  "@searchLanguageEnglish": {
+    "type": "text",
+    "placeholders": {
+      "lang": {
+        "type": "String"
+      }
+    }
+  },
+  "searchLanguageAll": "All languages",
+  "@searchLanguageAll": {
+    "description": "Label used in the language selector to indicate no specific language filter is applied"
+  },
+  "exerciseSearchMode": "Search mode",
+  "@exerciseSearchMode": {
+    "description": "Heading above the segmented control that lets the user pick between fuzzy and exact name matching"
+  },
+  "searchModeFuzzy": "Fuzzy",
+  "@searchModeFuzzy": {
+    "description": "Label for the search mode that performs a fuzzy/substring search on exercise names"
+  },
+  "searchModeExact": "Exact",
+  "@searchModeExact": {
+    "description": "Label for the search mode that only matches exercises with this exact name"
+  },
+  "syncStatusConnected": "Connected",
+  "@syncStatusConnected": {
+    "description": "Tooltip on the sync icon when the app is online and idle (no upload or download in progress)"
+  },
+  "syncStatusConnecting": "Connecting",
+  "@syncStatusConnecting": {
+    "description": "Tooltip on the sync icon while the app is establishing a connection to the sync service"
+  },
+  "syncStatusDisconnected": "Not connected",
+  "@syncStatusDisconnected": {
+    "description": "Tooltip on the sync icon when the app has no active connection to the sync service"
+  },
+  "syncStatusUploading": "Uploading",
+  "@syncStatusUploading": {
+    "description": "Tooltip on the sync icon while local changes are being uploaded to the server"
+  },
+  "syncStatusDownloading": "Downloading",
+  "@syncStatusDownloading": {
+    "description": "Tooltip on the sync icon while remote changes are being downloaded from the server"
+  },
+  "syncStatusSyncing": "Synchronizing",
+  "@syncStatusSyncing": {
+    "description": "Tooltip on the sync icon when the app is uploading and downloading at the same time"
+  },
+  "syncStatusError": "Sync error",
+  "@syncStatusError": {
+    "description": "Status label shown in the sync status dialog when the latest sync attempt failed"
+  },
+  "syncStatusDialogTitle": "Sync status",
+  "@syncStatusDialogTitle": {
+    "description": "Title of the dialog opened by tapping the sync icon in the app bar"
+  },
+  "syncStatusLastSynced": "Last synchronisation",
+  "@syncStatusLastSynced": {
+    "description": "Label in the sync status dialog above the timestamp of the last successful sync"
+  },
+  "syncStatusErrorDetails": "Error details",
+  "@syncStatusErrorDetails": {
+    "description": "Header of the expandable section in the sync status dialog that reveals the raw error message"
+  },
+  "syncStatusStalledHint": "The connection to the sync service seems to be blocked. A VPN, ad blocker, antivirus or firewall on this network may be interfering.",
+  "@syncStatusStalledHint": {
+    "description": "Hint shown in the sync status dialog when the app keeps connecting but never receives any sync data, which usually means something on the network is blocking the connection"
+  },
+  "syncStatusStalledNotStartedHint": "The app asked to synchronise, but the sync client never started. Restarting the app usually helps.",
+  "@syncStatusStalledNotStartedHint": {
+    "description": "Hint shown in the sync status dialog when a connection was requested but the sync client never reported any state at all"
+  },
+  "syncStatusStalledNotAppliedHint": "Data is arriving but cannot be applied, so nothing new shows up. Reporting this with the copied details helps us fix it.",
+  "@syncStatusStalledNotAppliedHint": {
+    "description": "Hint shown in the sync status dialog when sync data keeps arriving but no checkpoint ever completes, so the downloaded data stays invisible"
+  },
+  "syncStatusReconnect": "Reconnect",
+  "@syncStatusReconnect": {
+    "description": "Button in the sync status dialog that drops the stuck connection to the sync service and opens a fresh one"
+  },
+  "syncStatusPendingUploads": "{count, plural, =1{One local change waiting for upload} other{{count} local changes waiting for upload}}",
+  "@syncStatusPendingUploads": {
+    "description": "Line in the sync status dialog showing how many local changes have not reached the server yet",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "syncStatusNeverSynced": "Not yet synchronised",
+  "@syncStatusNeverSynced": {
+    "description": "Shown in the sync status dialog instead of the last-sync timestamp when this device has never completed a synchronisation"
+  },
+  "filterNutriscore": "Nutri-Score filter",
+  "@filterNutriscore": {
+    "description": "Heading for the Nutri-Score slider in the ingredient search filter dialog"
+  },
+  "filterNutriscoreOff": "Off",
+  "@filterNutriscoreOff": {
+    "description": "Label for the first slider stop, which disables the Nutri-Score filter"
+  },
+  "filterNutriscoreNoFilter": "No filter",
+  "@filterNutriscoreNoFilter": {
+    "description": "Helper text shown under the Nutri-Score slider when it is at the Off position"
+  },
+  "filterNutriscoreOrBetter": "{grade} or better",
+  "@filterNutriscoreOrBetter": {
+    "description": "Helper text shown under the Nutri-Score slider when a grade is selected (e.g. 'C or better')",
+    "placeholders": {
+      "grade": {
+        "type": "String",
+        "example": "C"
+      }
+    }
+  },
+  "serverConfigIssueTitle": "Server Configuration Issue",
+  "@serverConfigIssueTitle": {
+   "description": "Title of the dialog shown when server misconfiguration is detected"
+   },
+   "serverConfigIssueMessage": "Server misconfiguration detected, headers are not being passed correctly, please consult the documentation.",
+   "@serverConfigIssueMessage": {
+   "description": "Message explaining server misconfiguration and linking to documentation"
+   },
+   "understand": "I understand",
+   "@understand": {
+   "description": "Button label to acknowledge and dismiss the server configuration warning"
+   },
+   "viewDocumentation": "View documentation",
+   "@viewDocumentation": {
+   "description": "Button label to open the documentation about server configuration"
+   },
+  "sessionExpired": "Your session has expired, please log in again",
+  "@sessionExpired": {
+    "description": "Snackbar message shown when the saved login token is no longer valid"
+  },
+  "weightOrRepsRequired": "Please enter a weight, repetitions, or both",
+  "@weightOrRepsRequired": {
+    "description": "Validation error when both weight and repetitions are empty in a workout log"
+  },
+  "timeStartEndBothOrNeither": "Either set both start and end time or leave both empty",
+  "@timeStartEndBothOrNeither": {
+    "description": "Validation error when only one of start/end time is set on a workout session"
+  }
 }
