@@ -547,7 +547,7 @@ class _CalculationSection extends ConsumerWidget {
           SegmentedButton<bool>(
             segments: [
               ButtonSegment(value: false, label: Text(i18n.calculationValuesManual)),
-              ButtonSegment(value: true, label: Text(i18n.calculationValuesCalculated)),
+              ButtonSegment(value: true, label: Text(i18n.calculationBadge)),
             ],
             selected: {draft.isCalculated},
             onSelectionChanged: (selection) => selection.single

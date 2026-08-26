@@ -7,8 +7,7 @@ import 'dart:async' as _i3;
 
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:wger/features/account/models/user_profile.dart' as _i4;
-import 'package:wger/features/account/providers/user_profile_repository.dart'
-    as _i2;
+import 'package:wger/features/account/providers/user_profile_repository.dart' as _i2;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -28,8 +27,7 @@ import 'package:wger/features/account/providers/user_profile_repository.dart'
 /// A class which mocks [UserProfileRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockUserProfileRepository extends _i1.Mock
-    implements _i2.UserProfileRepository {
+class MockUserProfileRepository extends _i1.Mock implements _i2.UserProfileRepository {
   MockUserProfileRepository() {
     _i1.throwOnMissingStub(this);
   }

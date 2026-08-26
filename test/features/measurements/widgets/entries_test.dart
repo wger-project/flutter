@@ -187,7 +187,9 @@ void main() {
     expect(find.byType(MeasurementStackedBarChartWidgetFl), findsOneWidget);
     // A duration is read in hours and minutes, not in the minutes it is stored as
     expect(find.text('8:00 h'), findsOneWidget);
-    expect(find.textContaining('Deep sleep 1:30'), findsOneWidget);
+    // The component is listed under the group's own "Sleep" heading, so its
+    // label drops the word: the stored name is "Deep sleep", the label "Deep"
+    expect(find.textContaining('Deep 1:30'), findsOneWidget);
     // Each component is a way into its own screen
     expect(find.byIcon(Icons.chevron_right), findsNWidgets(2));
   });

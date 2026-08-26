@@ -531,7 +531,7 @@
   "min": "Min",
   "max": "Max",
   "@weight": {
-    "description": "The weight of a workout log or body weight entry"
+    "description": "The weight of a workout log or body weight entry, and the name of the body weight measurement category"
   },
   "chartRangeAll": "All",
   "@chartRangeAll": {
@@ -761,10 +761,6 @@
   "@metricCustom": {
     "description": "Label for custom metric type"
   },
-  "metricBodyWeight": "Body weight",
-  "@metricBodyWeight": {
-    "description": "Label for body weight measurement"
-  },
   "metricLeanBodyMass": "Lean body mass",
   "@metricLeanBodyMass": {
     "description": "Label for lean body mass measurement"
@@ -809,10 +805,6 @@
   "@metricDistance": {
     "description": "Label for distance measurement"
   },
-  "metricEnergy": "Energy",
-  "@metricEnergy": {
-    "description": "Label for energy/calories burned measurement"
-  },
   "metricSleep": "Sleep",
   "@metricSleep": {
     "description": "Label for sleep duration measurement"
@@ -821,25 +813,25 @@
   "@noDataAvailable": {
     "description": "Shown in place of a chart when the category has no entries in the selected range"
   },
-  "metricSleepTotal": "Total sleep",
+  "metricSleepTotal": "Total",
   "@metricSleepTotal": {
-    "description": "Label for the total time asleep in a night, all sleep stages together"
+    "description": "Component of the 'Sleep' category, listed under that heading, so 'sleep' is not repeated. The total time asleep in a night, all sleep stages together"
   },
-  "metricSleepLight": "Light sleep",
+  "metricSleepLight": "Light",
   "@metricSleepLight": {
-    "description": "Label for the light sleep stage"
+    "description": "Component of the 'Sleep' category, listed under that heading, so 'sleep' is not repeated. The light sleep stage, meaning shallow sleep, never 'light' as in brightness or weight"
   },
-  "metricSleepDeep": "Deep sleep",
+  "metricSleepDeep": "Deep",
   "@metricSleepDeep": {
-    "description": "Label for the deep sleep stage"
+    "description": "Component of the 'Sleep' category, listed under that heading, so 'sleep' is not repeated. The deep sleep stage, also called slow-wave sleep"
   },
-  "metricSleepRem": "REM sleep",
+  "metricSleepRem": "REM",
   "@metricSleepRem": {
-    "description": "Label for the REM (rapid eye movement) sleep stage"
+    "description": "Component of the 'Sleep' category, listed under that heading, so 'sleep' is not repeated. The REM (rapid eye movement) sleep stage, usually kept as the abbreviation"
   },
   "metricSleepAwake": "Awake",
   "@metricSleepAwake": {
-    "description": "Label for the time spent awake during a night, not counted as sleep"
+    "description": "Component of the 'Sleep' category, listed under that heading. The time spent awake during a night, not counted as sleep"
   },
   "measurementEntriesHelpText": "The unit used to measure the category such as 'cm' or '%'",
   "@measurementEntriesHelpText": {},
@@ -909,7 +901,7 @@
   },
   "energy": "Energy",
   "@energy": {
-    "description": "Energy in a meal, ingredient etc. e.g. in kJ"
+    "description": "Energy in a meal, ingredient etc. e.g. in kJ, and the name of the energy burned measurement category"
   },
   "energyShort": "E",
   "@energyShort": {
@@ -1086,6 +1078,9 @@
   "aboutViewDocsTitle": "Open documentation",
   "aboutViewLicensesTitle": "View licenses",
   "aboutPrivacyPolicyTitle": "Terms and privacy policy",
+  "@aboutPrivacyPolicyTitle": {
+    "description": "Menu entry on the about page that opens the terms of service and privacy policy"
+  },
   "others": "Others",
   "calendar": "Calendar",
   "@calendar": {},
@@ -1869,17 +1864,21 @@
     "description": "Tooltip on the badge of a measurement entry imported from Apple Health / Health Connect; such entries cannot be edited or deleted in the app"
   },
   "calculationValuesManual": "Entered by hand",
-  "@calculationValuesManual": {},
-  "calculationValuesCalculated": "Calculated by wger",
-  "@calculationValuesCalculated": {},
+  "@calculationValuesManual": {
+    "description": "One of two options when creating a measurement category: the user types the values in themselves. The other option is 'Calculated'"
+  },
   "calculationType": "Calculation",
   "@calculationType": {
     "description": "Label of the field that picks what the server calculates for a category"
   },
   "calculationUnknown": "This calculation was set up in a newer version of wger and cannot be changed here.",
-  "@calculationUnknown": {},
+  "@calculationUnknown": {
+    "description": "Shown when the server uses a calculation type this version of the app does not know"
+  },
   "calculationParamsIncomplete": "The calculation is not configured completely yet",
-  "@calculationParamsIncomplete": {},
+  "@calculationParamsIncomplete": {
+    "description": "Validation error when a calculation is still missing one of its settings"
+  },
   "calculationDuplicate": "You already have a {name} category with these settings",
   "@calculationDuplicate": {
     "description": "Refuses a second calculated category that would compute exactly the same series",
@@ -1888,41 +1887,67 @@
     }
   },
   "calculationLocked": "The calculation cannot be changed. Delete the category to stop calculating it.",
-  "@calculationLocked": {},
+  "@calculationLocked": {
+    "description": "Helper text under the disabled calculation picker when editing a category that already calculates"
+  },
   "calculationMissingHeight": "The height in your profile is missing, so no values can be computed yet.",
-  "@calculationMissingHeight": {},
+  "@calculationMissingHeight": {
+    "description": "Warning shown when a calculation needs the height from the user profile but it is not set"
+  },
   "calculationNoSourceCategory": "You have no other category to read from yet.",
-  "@calculationNoSourceCategory": {},
+  "@calculationNoSourceCategory": {
+    "description": "Shown when a calculation needs another measurement category to read from and the user has none yet"
+  },
   "calculationBadge": "Calculated",
   "@calculationBadge": {
-    "description": "Badge marking a measurement category whose values the server computes"
+    "description": "Badge marking a measurement category whose values the server computes, and the matching option when creating one. Keep it short, it sits next to a category title and opposite 'Entered by hand'"
   },
   "calculationEntryInfo": "This value is calculated by wger and cannot be edited",
-  "@calculationEntryInfo": {},
+  "@calculationEntryInfo": {
+    "description": "Tooltip on a measurement entry that wger computed, so it cannot be edited by hand"
+  },
   "calculationNameBmi": "BMI",
-  "@calculationNameBmi": {},
+  "@calculationNameBmi": {
+    "description": "Body mass index, the name of a calculated measurement category. It is also prefilled as the category name and stored, so keep it short. Usually left as the abbreviation"
+  },
   "calculationNameWhtr": "Waist to height ratio",
-  "@calculationNameWhtr": {},
+  "@calculationNameWhtr": {
+    "description": "Name of a calculated category: waist circumference divided by height. It is also prefilled as the category name and stored, so keep it short"
+  },
   "calculationNameOneRepMax": "One-rep max",
-  "@calculationNameOneRepMax": {},
+  "@calculationNameOneRepMax": {
+    "description": "Name of a calculated category: the heaviest weight liftable for a single repetition. It is also prefilled as the category name and stored, so keep it short"
+  },
   "calculationNameOneRmTotal": "One-rep max total",
-  "@calculationNameOneRmTotal": {},
+  "@calculationNameOneRmTotal": {
+    "description": "Name of a calculated category: the one-rep maxima of several exercises added up. It is also prefilled as the category name and stored, so keep it short"
+  },
   "calculationDescriptionBmi": "From your body weight and the height in your profile",
-  "@calculationDescriptionBmi": {},
+  "@calculationDescriptionBmi": {
+    "description": "Explains where a calculated category takes its numbers from, shown under the calculation type picker"
+  },
   "calculationDescriptionWhtr": "From {category} and the height in your profile",
   "@calculationDescriptionWhtr": {
+    "description": "Explains where a calculated category takes its numbers from. {category} is the name of another measurement category, e.g. 'Waist'",
     "placeholders": {
       "category": { "type": "String", "example": "Waist" }
     }
   },
   "calculationParamCategory": "Source category",
-  "@calculationParamCategory": {},
+  "@calculationParamCategory": {
+    "description": "Form field label: which other measurement category a calculation reads its values from"
+  },
   "calculationParamMaxReps": "Max reps counted",
-  "@calculationParamMaxReps": {},
+  "@calculationParamMaxReps": {
+    "description": "Form field label: the highest number of repetitions a set may have to still count"
+  },
   "calculationParamWindowDays": "Window in days",
-  "@calculationParamWindowDays": {},
+  "@calculationParamWindowDays": {
+    "description": "Form field label: how many days back the calculation looks for a best set"
+  },
   "calculationHelpExercises": "Between {min} and {max} exercises, {count} selected.",
   "@calculationHelpExercises": {
+    "description": "Helper text under the exercise picker of a calculated category. {count} is how many are picked so far",
     "placeholders": {
       "min": { "type": "int" },
       "max": { "type": "int" },
@@ -1931,6 +1956,7 @@
   },
   "calculationHelpMaxReps": "{min} to {max}. Sets above this are ignored.",
   "@calculationHelpMaxReps": {
+    "description": "Helper text under the 'Max reps counted' field. Sets with more repetitions than this are left out of the calculation",
     "placeholders": {
       "min": { "type": "int" },
       "max": { "type": "int" }
@@ -1938,6 +1964,7 @@
   },
   "calculationHelpWindowDays": "{min} to {max}. How far back a best set counts.",
   "@calculationHelpWindowDays": {
+    "description": "Helper text under the 'Window in days' field, how many days back a best set still counts",
     "placeholders": {
       "min": { "type": "int" },
       "max": { "type": "int" }

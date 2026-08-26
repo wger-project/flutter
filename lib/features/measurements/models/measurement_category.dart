@@ -484,7 +484,7 @@ extension MeasurementMetricTypeL10n on MetricType {
     final l10n = AppLocalizations.of(context);
     return switch (this) {
       MetricType.custom => l10n.metricCustom,
-      MetricType.bodyWeight => l10n.metricBodyWeight,
+      MetricType.bodyWeight => l10n.weight,
       MetricType.bodyFat => l10n.metricBodyFat,
       MetricType.leanBodyMass => l10n.metricLeanBodyMass,
       MetricType.height => l10n.metricHeight,
@@ -496,7 +496,7 @@ extension MeasurementMetricTypeL10n on MetricType {
       MetricType.bloodOxygen => l10n.metricBloodOxygen,
       MetricType.steps => l10n.metricSteps,
       MetricType.distance => l10n.metricDistance,
-      MetricType.energy => l10n.metricEnergy,
+      MetricType.energy => l10n.energy,
       MetricType.sleep => l10n.metricSleep,
       MetricType.sleepTotal => l10n.metricSleepTotal,
       MetricType.sleepLight => l10n.metricSleepLight,

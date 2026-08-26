@@ -2369,17 +2369,6 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
-  String get metricBodyWeight =>
-      (super.noSuchMethod(
-            Invocation.getter(#metricBodyWeight),
-            returnValue: _i3.dummyValue<String>(
-              this,
-              Invocation.getter(#metricBodyWeight),
-            ),
-          )
-          as String);
-
-  @override
   String get metricLeanBodyMass =>
       (super.noSuchMethod(
             Invocation.getter(#metricLeanBodyMass),
@@ -2496,17 +2485,6 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.getter(#metricDistance),
-            ),
-          )
-          as String);
-
-  @override
-  String get metricEnergy =>
-      (super.noSuchMethod(
-            Invocation.getter(#metricEnergy),
-            returnValue: _i3.dummyValue<String>(
-              this,
-              Invocation.getter(#metricEnergy),
             ),
           )
           as String);
@@ -3330,6 +3308,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.getter(#aboutViewLicensesTitle),
+            ),
+          )
+          as String);
+
+  @override
+  String get aboutPrivacyPolicyTitle =>
+      (super.noSuchMethod(
+            Invocation.getter(#aboutPrivacyPolicyTitle),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#aboutPrivacyPolicyTitle),
             ),
           )
           as String);
@@ -5340,17 +5329,6 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.getter(#calculationValuesManual),
-            ),
-          )
-          as String);
-
-  @override
-  String get calculationValuesCalculated =>
-      (super.noSuchMethod(
-            Invocation.getter(#calculationValuesCalculated),
-            returnValue: _i3.dummyValue<String>(
-              this,
-              Invocation.getter(#calculationValuesCalculated),
             ),
           )
           as String);

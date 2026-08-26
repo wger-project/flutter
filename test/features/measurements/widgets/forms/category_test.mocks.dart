@@ -9,24 +9,17 @@ import 'package:mockito/mockito.dart' as _i1;
 import 'package:wger/core/language.dart' as _i14;
 import 'package:wger/core/search_options.dart' as _i8;
 import 'package:wger/features/account/models/user_profile.dart' as _i16;
-import 'package:wger/features/account/providers/user_profile_repository.dart'
-    as _i15;
+import 'package:wger/features/account/providers/user_profile_repository.dart' as _i15;
 import 'package:wger/features/exercises/models/category.dart' as _i10;
 import 'package:wger/features/exercises/models/equipment.dart' as _i12;
 import 'package:wger/features/exercises/models/exercise_filters.dart' as _i9;
 import 'package:wger/features/exercises/models/muscle.dart' as _i13;
-import 'package:wger/features/exercises/providers/exercise_repository.dart'
-    as _i7;
-import 'package:wger/features/exercises/providers/exercises_notifier.dart'
-    as _i11;
-import 'package:wger/features/measurements/models/measurement_bucket.dart'
-    as _i6;
-import 'package:wger/features/measurements/models/measurement_category.dart'
-    as _i4;
-import 'package:wger/features/measurements/models/measurement_entry.dart'
-    as _i5;
-import 'package:wger/features/measurements/providers/measurement_repository.dart'
-    as _i2;
+import 'package:wger/features/exercises/providers/exercise_repository.dart' as _i7;
+import 'package:wger/features/exercises/providers/exercises_notifier.dart' as _i11;
+import 'package:wger/features/measurements/models/measurement_bucket.dart' as _i6;
+import 'package:wger/features/measurements/models/measurement_category.dart' as _i4;
+import 'package:wger/features/measurements/models/measurement_entry.dart' as _i5;
+import 'package:wger/features/measurements/providers/measurement_repository.dart' as _i2;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -46,8 +39,7 @@ import 'package:wger/features/measurements/providers/measurement_repository.dart
 /// A class which mocks [MeasurementRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockMeasurementRepository extends _i1.Mock
-    implements _i2.MeasurementRepository {
+class MockMeasurementRepository extends _i1.Mock implements _i2.MeasurementRepository {
   MockMeasurementRepository() {
     _i1.throwOnMissingStub(this);
   }
@@ -144,8 +136,7 @@ class MockMeasurementRepository extends _i1.Mock
               [parentId],
               {#since: since, #level: level, #maxPoints: maxPoints},
             ),
-            returnValue:
-                _i3.Stream<Map<String, List<_i6.MeasurementBucket>>>.empty(),
+            returnValue: _i3.Stream<Map<String, List<_i6.MeasurementBucket>>>.empty(),
           )
           as _i3.Stream<Map<String, List<_i6.MeasurementBucket>>>);
 
@@ -153,8 +144,7 @@ class MockMeasurementRepository extends _i1.Mock
   _i3.Stream<Map<String, List<_i6.MeasurementBucket>>> watchDailyBuckets() =>
       (super.noSuchMethod(
             Invocation.method(#watchDailyBuckets, []),
-            returnValue:
-                _i3.Stream<Map<String, List<_i6.MeasurementBucket>>>.empty(),
+            returnValue: _i3.Stream<Map<String, List<_i6.MeasurementBucket>>>.empty(),
           )
           as _i3.Stream<Map<String, List<_i6.MeasurementBucket>>>);
 
@@ -303,8 +293,7 @@ class MockMeasurementRepository extends _i1.Mock
 /// A class which mocks [ExerciseRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockExerciseRepository extends _i1.Mock
-    implements _i7.ExerciseRepository {
+class MockExerciseRepository extends _i1.Mock implements _i7.ExerciseRepository {
   MockExerciseRepository() {
     _i1.throwOnMissingStub(this);
   }
@@ -392,8 +381,7 @@ class MockExerciseRepository extends _i1.Mock
 /// A class which mocks [UserProfileRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockUserProfileRepository extends _i1.Mock
-    implements _i15.UserProfileRepository {
+class MockUserProfileRepository extends _i1.Mock implements _i15.UserProfileRepository {
   MockUserProfileRepository() {
     _i1.throwOnMissingStub(this);
   }

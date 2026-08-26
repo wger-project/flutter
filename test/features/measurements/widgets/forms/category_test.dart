@@ -276,9 +276,9 @@ void main() {
   });
 
   group('MeasurementCategoryForm calculations', () {
-    /// Taps the "Calculated by wger" half of the source switch
+    /// Taps the "Calculated" half of the source switch
     Future<void> switchToCalculated(WidgetTester tester) async {
-      await tester.tap(find.text('Calculated by wger'));
+      await tester.tap(find.text('Calculated'));
       await tester.pumpAndSettle();
     }
 

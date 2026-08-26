@@ -52,14 +52,6 @@ class MockHealthRepository extends _i1.Mock implements _i2.HealthRepository {
           as String);
 
   @override
-  _i4.Future<bool> isAvailable() =>
-      (super.noSuchMethod(
-            Invocation.method(#isAvailable, []),
-            returnValue: _i4.Future<bool>.value(false),
-          )
-          as _i4.Future<bool>);
-
-  @override
   _i4.Future<_i2.HealthPlatformAvailability> availability() =>
       (super.noSuchMethod(
             Invocation.method(#availability, []),
