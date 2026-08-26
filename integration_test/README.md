@@ -57,8 +57,11 @@ so the setup above is only needed locally.
 ## Troubleshooting
 
 If a run ends with `DriverError: ... Service has disappeared` and writes no
-images, it lost the app before it could collect them. Fewer languages per run
-makes that less likely, otherwise just run it again.
+images, it lost the app before it could collect them. The tests themselves
+usually passed, only the hand-over failed, so running that block again is
+enough. A block that instead keeps printing `It is taking an unusually long
+time to connect to the VM` never gives up on its own, kill it. In CI the script
+puts every block on a ten minute leash and retries it up to three times.
 
 See also
 

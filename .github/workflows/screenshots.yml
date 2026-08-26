@@ -14,9 +14,8 @@ jobs:
   screenshots_apple:
     name: 'Apple - ${{ matrix.device.name }}'
     runs-on: macos-latest
-    # A run takes about 20 minutes. When flutter drive cannot reach the app's
-    # VM service it retries forever
-    timeout-minutes: 40
+    # A clean run takes about 30 minutes, the script may retry a block twice
+    timeout-minutes: 75
     strategy:
       # The jobs write into separate folders and a flaky one should not take
       # the healthy ones down with it
@@ -56,6 +55,10 @@ jobs:
           open -a Simulator || true
           n=0; until xcrun simctl bootstatus "$SIMULATOR" -b || [ $n -ge 60 ]; do sleep 1; n=$((n+1)); done
 
+      # The image ships no GNU coreutils, take-screenshots.sh needs gtimeout
+      - name: Install coreutils
+        run: brew install coreutils
+
       - name: Generate screenshots
         run: .github/scripts/take-screenshots.sh ${{ matrix.device.device_type }} -d "$SIMULATOR"
 
@@ -68,7 +71,8 @@ jobs:
   screenshots_android:
     name: 'Android - ${{ matrix.device.name }}'
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    # A clean run takes about 25 minutes, the script may retry a block twice
+    timeout-minutes: 60
     strategy:
       # The jobs write into separate folders and a flaky one should not take
       # the healthy ones down with it
