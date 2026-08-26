@@ -25,6 +25,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/core/network/network_provider.dart';
+import 'package:wger/features/account/providers/user_profile_repository.dart';
 import 'package:wger/features/routines/models/log.dart';
 import 'package:wger/features/routines/models/repetition_unit.dart';
 import 'package:wger/features/routines/models/routine.dart';
@@ -50,7 +51,7 @@ class _StubRoutinesRiverpod extends RoutinesRiverpod {
   Stream<RoutinesState> build() => Stream.value(RoutinesState(routines: _routines));
 }
 
-@GenerateMocks([TrophyRepository, WorkoutLogRepository])
+@GenerateMocks([TrophyRepository, WorkoutLogRepository, UserProfileRepository])
 void main() {
   late Routine routine;
   final mockWorkoutLogRepository = MockWorkoutLogRepository();
@@ -79,9 +80,17 @@ void main() {
       ),
     ).thenAnswer((_) async => getUserTrophies());
 
+    // The log calendar cuts its days in the owner's zone, which reaches the
+    // Drift-backed profile repository. Stub it so the real database is not
+    // pulled into a widget test: a failing stream there leaves Riverpod's
+    // retry timer pending after the tree is disposed.
+    final mockUserProfileRepository = MockUserProfileRepository();
+    when(mockUserProfileRepository.watchDrift()).thenAnswer((_) => Stream.value(null));
+
     final container = ProviderContainer.test(
       overrides: [
         networkStatusProvider.overrideWithValue(isOnline),
+        userProfileRepositoryProvider.overrideWithValue(mockUserProfileRepository),
         workoutLogRepositoryProvider.overrideWithValue(mockWorkoutLogRepository),
         trophyRepositoryProvider.overrideWithValue(mockRepository),
         routinesRiverpodProvider.overrideWith(
