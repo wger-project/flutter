@@ -749,7 +749,6 @@
   "@metricAlreadyTracked": {
     "description": "Shown for a metric the user already has a category for, which cannot be picked twice"
   },
-  "metricType": "Metric Type",
   "@metricType": {
     "description": "Metric type for a measurement category"
   },

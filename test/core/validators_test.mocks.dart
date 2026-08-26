@@ -2336,17 +2336,6 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
-  String get metricType =>
-      (super.noSuchMethod(
-            Invocation.getter(#metricType),
-            returnValue: _i3.dummyValue<String>(
-              this,
-              Invocation.getter(#metricType),
-            ),
-          )
-          as String);
-
-  @override
   String get reorderCategories =>
       (super.noSuchMethod(
             Invocation.getter(#reorderCategories),

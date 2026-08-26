@@ -1122,7 +1122,6 @@
     "endBeforeStart": "La valeur de fin ne peut être avant le début",
     "minLengthRoutine": "La routine doit durer au moins {number} semaines",
     "maxLengthRoutine": "La routine peut durer au maximum {number} semaines",
-    "metricType": "Type de métrique",
     "reorderCategories": "Réorganiser les catégories",
     "metricCustom": "Personnalisé",
     "metricLeanBodyMass": "Masse maigre",

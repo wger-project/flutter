@@ -1112,7 +1112,6 @@
     "endBeforeStart": "Der Endwert darf nicht vor dem Startwert liegen",
     "minLengthRoutine": "Die Routine muss mindestens {number} Wochen lang sein",
     "maxLengthRoutine": "Die Routine darf maximal {number} Wochen lang sein",
-    "metricType": "Metrik-Typ",
     "reorderCategories": "Kategorien neu anordnen",
     "metricCustom": "Benutzerdefiniert",
     "metricLeanBodyMass": "Magermasse",

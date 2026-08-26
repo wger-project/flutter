@@ -812,7 +812,7 @@ final class MeasurementNotifierProvider extends $NotifierProvider<MeasurementNot
   }
 }
 
-String _$measurementNotifierHash() => r'5dac4662d46ec3d421a0ae6e9d6e8a88d681072a';
+String _$measurementNotifierHash() => r'52860c3934c9f86860c431bc1cb48424808774f3';
 
 /// Writing side of the measurements: what the screens read is watched through
 /// the providers above, which this only changes the data of.
