@@ -1209,4 +1209,5 @@
     "settingsVerboseLogging": "Registro detallado",
     "settingsVerboseLoggingDescription": "Útil cuando informas de problemas persistentes.",
     "syncStatusStalledNotStartedHint": "La aplicación solicitó sincronizar, pero la sincronización nunca se inició. Reiniciar la aplicación suele solucionarlo.",
-    "syncStatusStalledNotAppliedHint": "Están llegando datos, pero no se pueden aplicar, así que no aparece nada nuevo. Infórmanos del problema junto con los detalles copiados para que podamos solucionarlo."}
+    "syncStatusStalledNotAppliedHint": "Están llegando datos, pero no se pueden aplicar, así que no aparece nada nuevo. Infórmanos del problema junto con los detalles copiados para que podamos solucionarlo."
+}
