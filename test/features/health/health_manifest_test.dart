@@ -20,6 +20,7 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:health_bridge/health.dart';
+import 'package:wger/database/powersync/powersync.dart';
 import 'package:wger/features/health/models/health_metric.dart';
 
 /// The Health Connect read permission each imported type needs declared, as
@@ -85,6 +86,75 @@ void main() {
         manifest,
         contains('android:name="android.permission.health.READ_HEALTH_DATA_HISTORY"'),
       );
+    });
+  });
+
+  group('Android backup rules', () {
+    late String manifest;
+    late String legacyRules;
+    late String extractionRules;
+
+    setUpAll(() {
+      manifest = File('android/app/src/main/AndroidManifest.xml').readAsStringSync();
+      legacyRules = File('android/app/src/main/res/xml/backup_rules.xml').readAsStringSync();
+      extractionRules = File(
+        'android/app/src/main/res/xml/data_extraction_rules.xml',
+      ).readAsStringSync();
+    });
+
+    test('the manifest points at both rule files', () {
+      // fullBackupContent covers Android 11 and lower, dataExtractionRules 12
+      // and higher. Losing either attribute puts those devices back in the
+      // default, which backs the database up.
+      expect(manifest, contains('android:fullBackupContent="@xml/backup_rules"'));
+      expect(manifest, contains('android:dataExtractionRules="@xml/data_extraction_rules"'));
+    });
+
+    test('the cloud backup leaves the database out', () {
+      // Built from the Dart constant: moving the database has to move the rule
+      const exclude = '<exclude domain="file" path="$dbDirectoryName" />';
+      final cloudBackup = RegExp(
+        r'<cloud-backup>(.*?)</cloud-backup>',
+        dotAll: true,
+      ).firstMatch(extractionRules)?.group(1);
+
+      expect(cloudBackup, isNotNull, reason: 'no cloud-backup section to exclude anything from');
+      expect(cloudBackup, contains(exclude));
+      expect(legacyRules, contains(exclude));
+    });
+
+    test('the device transfer stays unrestricted', () {
+      // It never leaves the user's hands and spares the new phone the initial
+      // sync. An omitted section covers everything, while a device-transfer
+      // section holding a single include would narrow it to that include.
+      final rules = extractionRules.replaceAll(RegExp(r'<!--.*?-->', dotAll: true), '');
+
+      expect(rules, isNot(contains('device-transfer')));
+    });
+  });
+
+  group('iOS Info.plist', () {
+    late String plist;
+
+    setUpAll(() => plist = File('ios/Runner/Info.plist').readAsStringSync());
+
+    test('describes the imported Health data scope', () {
+      expect(plist, contains('<key>NSHealthShareUsageDescription</key>'));
+      expect(plist, contains('Apple Health'));
+      expect(plist, contains('sleep, steps, distance, and active energy'));
+      expect(plist, contains('wger account'));
+    });
+  });
+
+  group('iOS AppDelegate', () {
+    test('answers the channel the database setup calls', () {
+      // Swift is out of reach from here, so the two sides are pinned to the
+      // same strings rather than exercised together
+      final appDelegate = File('ios/Runner/AppDelegate.swift').readAsStringSync();
+
+      expect(appDelegate, contains('de.wger.flutter/storage'));
+      expect(appDelegate, contains('excludeFromBackup'));
+      expect(appDelegate, contains('values.isExcludedFromBackup = true'));
     });
   });
 }
