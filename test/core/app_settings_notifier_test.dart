@@ -132,6 +132,33 @@ void main() {
       expect(items.isWidgetVisible(DashboardWidget.weight), true);
       expect(items.isWidgetVisible(DashboardWidget.trophies), true);
     });
+
+    // The settings screen shows the default arrangement while the stored one
+    // is still being read, so an edit can land before it arrives
+    test('an edit during the load applies to the stored arrangement', () async {
+      SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+      final prefs = SharedPreferencesAsync();
+      await prefs.setString(
+        PREFS_DASHBOARD_CONFIG,
+        jsonEncode([
+          for (final widget in DashboardWidget.values.reversed)
+            {'widget': widget.value, 'visible': true},
+        ]),
+      );
+
+      container.dispose();
+      container = ProviderContainer(
+        overrides: [appSettingsPrefsProvider.overrideWithValue(prefs)],
+      );
+
+      // Deliberately not awaiting the provider first
+      final notifier = container.read(appSettingsProvider.notifier);
+      await notifier.setDashboardOrder(0, 1);
+
+      final items = container.read(appSettingsProvider).requireValue.dashboardItems;
+      expect(items.allWidgets[0], DashboardWidget.measurements);
+      expect(items.allWidgets[1], DashboardWidget.calendar);
+    });
   });
 
   group('user locale', () {

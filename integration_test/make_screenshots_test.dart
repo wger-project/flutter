@@ -163,6 +163,10 @@ void main() {
       testWidgets('dashboard screen - $language', (WidgetTester tester) async {
         await tester.pumpWidget(createDashboardScreen(locale: locale));
         await tester.pumpAndSettle();
+
+        // The cards render their shell before their data, so a screenshot of
+        // an empty dashboard looks like a finished one
+        expect(find.text('3 day split'), findsOneWidget);
         await takeScreenshot(tester, binding, language, '01 - dashboard');
       });
 

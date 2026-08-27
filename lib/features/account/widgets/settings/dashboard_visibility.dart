@@ -46,7 +46,7 @@ class SettingsDashboardVisibility extends ConsumerWidget {
     }
 
     final items = ref.watch(
-      appSettingsProvider.select((s) => s.value?.dashboardItems ?? const <DashboardItem>[]),
+      appSettingsProvider.select((s) => s.value?.dashboardItems ?? defaultDashboardItems),
     );
     final notifier = ref.read(appSettingsProvider.notifier);
 
