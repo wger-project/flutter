@@ -23,8 +23,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import 'consts.dart';
+
+final _logger = Logger('errors');
 
 /// How an error should be surfaced to the user.
 enum ErrorSeverity {
@@ -89,10 +92,29 @@ Future<T> serverWithLocalFallback<T>({
   return local();
 }
 
+/// The app version for a bug report, e.g. "2.1.0+260 on android, installed
+/// by org.fdroid.fdroid".
+///
+/// Never throws: a missing version must not keep a report from being filed,
+/// so an unavailable platform channel yields null.
+Future<String?> collectAppVersion() async {
+  try {
+    final info = await PackageInfo.fromPlatform();
+    final installer = info.installerStore;
+    return '${info.version}+${info.buildNumber} on ${defaultTargetPlatform.name}'
+        '${installer == null || installer.isEmpty ? '' : ', installed by $installer'}';
+  } catch (e, s) {
+    _logger.warning('Could not read the app version', e, s);
+    return null;
+  }
+}
+
 /// Builds the URL that opens a pre-filled GitHub bug report.
 ///
 /// All error-related parameters are optional so user-initiated reports (no
 /// crash, just logs and diagnostics) render without empty error sections.
+/// [appVersion] and [serverVersion] fill the corresponding fields of the bug
+/// template, the rest goes into its description.
 /// The details are passed to GitHub as query parameters and since GitHub
 /// rejects URLs longer than [GITHUB_ISSUES_MAX_URL_LENGTH], an oversized
 /// report first drops the oldest log entries and then, if still too long,
@@ -103,6 +125,8 @@ String buildGithubIssueUrl({
   String? issueErrorMessage,
   String? stackTrace,
   String? syncDiagnostics,
+  String? appVersion,
+  String? serverVersion,
 }) {
   final descriptionPrompt = issueErrorMessage != null
       ? '[Please describe what you were doing when the error occurred.]'
@@ -125,6 +149,8 @@ String buildGithubIssueUrl({
     final description = sections.join('\n\n');
     return '$GITHUB_ISSUES_BUG_URL'
         '${issueTitle != null ? '&title=${Uri.encodeComponent(issueTitle)}' : ''}'
+        '${appVersion != null ? '&app-version=${Uri.encodeComponent(appVersion)}' : ''}'
+        '${serverVersion != null ? '&server-version=${Uri.encodeComponent(serverVersion)}' : ''}'
         '&description=${Uri.encodeComponent(description)}';
   }
 

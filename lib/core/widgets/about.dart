@@ -22,7 +22,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:wger/core/consts.dart';
-import 'package:wger/core/errors.dart' show buildGithubIssueUrl;
+import 'package:wger/core/errors.dart' show buildGithubIssueUrl, collectAppVersion;
 import 'package:wger/core/helpers.dart' show makePageUri;
 import 'package:wger/core/logs.dart';
 import 'package:wger/core/misc.dart';
@@ -131,6 +131,8 @@ class AboutPage extends ConsumerWidget {
                     syncDiagnostics: await collectSyncDiagnostics(
                       serverUrl: ref.read(wgerBaseProvider).serverUrl,
                     ),
+                    appVersion: await collectAppVersion(),
+                    serverVersion: authState?.serverVersion,
                   );
                   if (context.mounted) {
                     launchURL(url, context);
