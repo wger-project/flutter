@@ -1742,6 +1742,46 @@ void main() {
       expect(reports.last.windowsDone, reports.last.windowsTotal);
     });
 
+    test('a finished metric persists its watermark before the next one runs', () async {
+      // A first sync reads years of history for a dozen metrics; an app the
+      // user closes meanwhile must not start over from the beginning
+      Map<String, String>? watermarksDuringSteps;
+      when(
+        health.read(
+          types: anyNamed('types'),
+          start: anyNamed('start'),
+          end: anyNamed('end'),
+          window: anyNamed('window'),
+          onBatch: anyNamed('onBatch'),
+          onWindow: anyNamed('onWindow'),
+        ),
+      ).thenAnswer((invocation) async {
+        final types = invocation.namedArguments[#types] as List<HealthDataType>;
+        // Steps is read long after height, see healthMetrics
+        if (types.contains(HealthDataType.STEPS)) {
+          watermarksDuringSteps = await PreferenceHelper.instance.getHealthSyncWatermarks();
+        }
+        if (!types.contains(HealthDataType.HEIGHT)) {
+          return;
+        }
+        final onBatch =
+            invocation.namedArguments[#onBatch]
+                as Future<void> Function(List<HealthReading>, DateTime);
+        await onBatch([
+          HealthReading(
+            type: HealthDataType.HEIGHT,
+            value: 1.8,
+            date: DateTime(2026, 1, 2),
+            externalId: _idH1,
+          ),
+        ], invocation.namedArguments[#end] as DateTime);
+      });
+
+      await runImport();
+
+      expect(watermarksDuringSteps, contains(MetricType.height.name));
+    });
+
     test('each metric is read with the window its density affords', () async {
       // A month of heart rate does not fit into the Android app heap, a month
       // of scale readings is nothing, so the window comes from the metric

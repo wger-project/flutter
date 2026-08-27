@@ -164,6 +164,10 @@ class HealthImporter {
       _reportProgress(run);
       for (final metric in metrics) {
         await _syncMetric(metric, run);
+        // Written per metric, not once at the end: a first sync reads years of
+        // history for a dozen metrics, and an app the user closes meanwhile
+        // would otherwise start over from the beginning
+        await _writeWatermarks(run.watermarks);
       }
       await _persist(run, readable);
 
@@ -314,7 +318,6 @@ class HealthImporter {
     await _prefs.setHealthSyncReadableTypes(readable.map((t) => t.name).toList());
     // A metric that threw is in neither set and keeps its full-window read
     await _prefs.setHealthSyncEmptyMetrics(run.knownEmpty.toList());
-    await _writeWatermarks(run.watermarks);
 
     if (_writer.normalizedIdCount > 0) {
       _logger.warning(
