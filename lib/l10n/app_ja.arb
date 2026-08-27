@@ -36,17 +36,13 @@
         "description": "Error message when the user a password that is too short"
     },
     "password": "パスワード",
-    "@password": {},
     "confirmPassword": "パスワードを決定する",
-    "@confirmPassword": {},
     "invalidEmail": "有効なメールアドレスを入力してください",
     "@invalidEmail": {
         "description": "Error message when the user enters an invalid email"
     },
     "email": "Eメールアドレス",
-    "@email": {},
     "username": "ユーザー名",
-    "@username": {},
     "invalidUsername": "有効なユーザー名を入力してください",
     "@invalidUsername": {
         "description": "Error message when the user enters an invalid username"
@@ -64,9 +60,7 @@
         "description": "Button text allowing the user to reset the entered values to the default"
     },
     "registerInstead": "新規登録",
-    "@registerInstead": {},
     "loginInstead": "既にアカウントをお持ちの方はこちらからログイン",
-    "@loginInstead": {},
     "labelBottomNavWorkout": "運動",
     "@labelBottomNavWorkout": {
         "description": "Label used in bottom navigation, use a short word"
@@ -136,15 +130,12 @@
         "description": "Label used in RiR slider when the RiR value is not used/saved for the current setting or log"
     },
     "weightUnit": "重量単位",
-    "@weightUnit": {},
     "repetitionUnit": "反復単位",
-    "@repetitionUnit": {},
     "set": "セット",
     "@set": {
         "description": "A set in a workout plan"
     },
     "dayDescriptionHelp": "A description of what is done on this day (e.g. 'pull day') or what body parts are trained (e.g. 'chest and shoulders')",
-    "@dayDescriptionHelp": {},
     "setNr": "Set {nr}",
     "@setNr": {
         "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
@@ -156,7 +147,6 @@
         }
     },
     "sameRepetitions": "If you do the same repetitions and weight for all sets you can just fill in one row. For example for 4 sets just enter 10 for the repetitions, this automatically becomes \"4 x 10\".",
-    "@sameRepetitions": {},
     "comment": "コメント",
     "@comment": {
         "description": "Comment, additional information"
@@ -174,13 +164,11 @@
         "description": "A (logged) workout session"
     },
     "newDay": "新しい日",
-    "@newDay": {},
     "newSet": "新しいセット",
     "@newSet": {
         "description": "Header when adding a new set to a workout day"
     },
     "selectExercises": "If you want to do a superset you can search for several exercises, they will be grouped together",
-    "@selectExercises": {},
     "gymMode": "ジムモード",
     "@gymMode": {
         "description": "Label when starting the gym mode"
@@ -202,63 +190,46 @@
         "description": "Imperative. Label used in popup allowing the user to jump to a specific exercise while in the gym mode"
     },
     "todaysWorkout": "あなたの今日の運動",
-    "@todaysWorkout": {},
     "logHelpEntries": "If on a single day there is more than one entry with the same number of repetitions, but different weights, only the entry with the higher weight is shown in the diagram.",
-    "@logHelpEntries": {},
     "logHelpEntriesUnits": "Note that only entries with a weight unit (kg or lb) and repetitions are charted, other combinations such as time or until failure are ignored here.",
-    "@logHelpEntriesUnits": {},
     "description": "説明",
-    "@description": {},
     "name": "名称",
     "@name": {
         "description": "Name for a workout or nutritional plan"
     },
     "save": "保存",
-    "@save": {},
     "addSet": "セットを追加",
     "@addSet": {
         "description": "Label for the button that adds a set (to a workout day)"
     },
     "addMeal": "食事を追加",
-    "@addMeal": {},
     "mealLogged": "食事が日記に記録されました",
-    "@mealLogged": {},
     "logMeal": "この食事を記録する",
-    "@logMeal": {},
     "addIngredient": "食材を追加する",
-    "@addIngredient": {},
     "logIngredient": "栄養日記に記録する",
-    "@logIngredient": {},
     "searchIngredient": "食材を探す",
     "@searchIngredient": {
         "description": "Label on ingredient search form"
     },
     "nutritionalPlan": "栄養メニュー",
-    "@nutritionalPlan": {},
     "nutritionalDiary": "栄養日記",
-    "@nutritionalDiary": {},
     "nutritionalPlans": "栄養メニュー一覧",
-    "@nutritionalPlans": {},
     "noNutritionalPlans": "栄養メニューがありません",
     "@noNutritionalPlans": {
         "description": "Message shown when the user has no nutritional plans"
     },
     "anErrorOccurred": "エラーが発生しました",
-    "@anErrorOccurred": {},
     "weight": "重量",
     "@weight": {
         "description": "The weight of a workout log or body weight entry"
     },
     "measurement": "測定",
-    "@measurement": {},
     "measurements": "測定結果",
     "@measurements": {
         "description": "Categories for the measurements such as biceps size, body fat, etc."
     },
     "measurementCategoriesHelpText": "Measurement category, such as 'biceps' or 'body fat'",
-    "@measurementCategoriesHelpText": {},
     "measurementEntriesHelpText": "The unit used to measure the category such as 'cm' or '%'",
-    "@measurementEntriesHelpText": {},
     "date": "日付",
     "@date": {
         "description": "The date of a workout log or body weight entry"
@@ -284,9 +255,7 @@
         "description": "The end time of a workout"
     },
     "timeStartAhead": "終了時刻を開始時刻より前にすることはできません",
-    "@timeStartAhead": {},
     "ingredient": "食材",
-    "@ingredient": {},
     "energy": "エネルギー",
     "@energy": {
         "description": "Energy in a meal, ingredient etc. e.g. in kJ"
@@ -300,7 +269,6 @@
         "description": "Energy in a meal in kilocalories, kcal"
     },
     "macronutrients": "大栄養素",
-    "@macronutrients": {},
     "planned": "計画された",
     "@planned": {
         "description": "Header for the column of 'planned' nutritional values, i.e. what should be eaten"
@@ -314,9 +282,7 @@
         "description": "Header for the column of '7 day average' nutritional values, i.e. what was logged last week"
     },
     "difference": "違い",
-    "@difference": {},
     "percentEnergy": "エネルギーの割合（%）",
-    "@percentEnergy": {},
     "gPerBodyKg": "体重（kg）に対するエネルギー（g）の割合",
     "@gPerBodyKg": {
         "description": "Label used for total sums of e.g. calories or similar in grams per Kg of body weight"
@@ -334,31 +300,24 @@
         "description": "Abbreviation for gram"
     },
     "protein": "タンパク質",
-    "@protein": {},
     "proteinShort": "P",
     "@proteinShort": {
         "description": "The first letter or short name of the word 'Protein', used in overviews"
     },
     "carbohydrates": "炭水化物",
-    "@carbohydrates": {},
     "carbohydratesShort": "C",
     "@carbohydratesShort": {
         "description": "The first letter or short name of the word 'Carbohydrates', used in overviews"
     },
     "sugars": "糖分",
-    "@sugars": {},
     "fat": "脂肪",
-    "@fat": {},
     "fatShort": "F",
     "@fatShort": {
         "description": "The first letter or short name of the word 'Fat', used in overviews"
     },
     "saturatedFat": "Saturated fat",
-    "@saturatedFat": {},
     "fiber": "Fibre",
-    "@fiber": {},
     "sodium": "Sodium",
-    "@sodium": {},
     "amount": "Amount",
     "@amount": {
         "description": "The amount (e.g. in grams) of an ingredient in a meal"
@@ -376,13 +335,11 @@
         "description": "Message shown when the user has no logged weight entries"
     },
     "edit": "Edit",
-    "@edit": {},
     "loadingText": "Loading...",
     "@loadingText": {
         "description": "Text to show when entries are being loaded in the background: Loading..."
     },
     "delete": "Delete",
-    "@delete": {},
     "confirmDelete": "Are you sure you want to delete '{toDelete}'?",
     "@confirmDelete": {
         "description": "Confirmation text before the user deletes an object",
@@ -394,19 +351,16 @@
         }
     },
     "newNutritionalPlan": "New nutritional plan",
-    "@newNutritionalPlan": {},
     "toggleDetails": "Toggle details",
     "@toggleDetails": {
         "description": "Switch to toggle detail / overview"
     },
     "goToDetailPage": "Go to detail page",
-    "@goToDetailPage": {},
     "aboutDescription": "Thank you for using wger! wger is a collaborative open source project, made by fitness enthusiasts from around the world.",
     "@aboutDescription": {
         "description": "Text in the about dialog"
     },
     "calendar": "Calendar",
-    "@calendar": {},
     "goToToday": "Go to today",
     "@goToToday": {
         "description": "Label on button to jump back to 'today' in the calendar widget"
@@ -468,11 +422,8 @@
         "description": "Label for the popup with general app options"
     },
     "takePicture": "Take a picture",
-    "@takePicture": {},
     "chooseFromLibrary": "Choose from photo library",
-    "@chooseFromLibrary": {},
     "gallery": "Gallery",
-    "@gallery": {},
     "imageFormatNotSupported": "{imageFormat}はサポートされていません",
     "@imageFormatNotSupported": {
         "description": "Label shown on the error container when image format is not supported",
@@ -494,15 +445,12 @@
         }
     },
     "addImage": "Add image",
-    "@addImage": {},
     "dataCopied": "Data copied to new entry",
     "@dataCopied": {
         "description": "Snackbar message to show on copying data to a new log entry"
     },
     "appUpdateTitle": "Update needed",
-    "@appUpdateTitle": {},
     "appUpdateContent": "This version of the app is not compatible with the server, please update your application.",
-    "@appUpdateContent": {},
     "productFound": "Product found",
     "@productFound": {
         "description": "Header label for dialog when product is found with barcode"
@@ -540,7 +488,6 @@
         "description": "Translation for close"
     },
     "userProfile": "あなたのプロフィール",
-    "@userProfile": {},
     "barbell": "バーベル",
     "@barbell": {
         "description": "Generated entry for translation for server strings"
@@ -570,11 +517,8 @@
         "description": "Generated entry for translation for server strings"
     },
     "settingsExerciseCacheDescription": "エクササイズキャッシュ",
-    "@settingsExerciseCacheDescription": {},
     "settingsTitle": "設定",
-    "@settingsTitle": {},
     "settingsCacheTitle": "キャッシュ",
-    "@settingsCacheTitle": {},
     "back": "戻る",
     "@back": {
         "description": "Generated entry for translation for server strings"
@@ -592,23 +536,16 @@
         "description": "Generated entry for translation for server strings"
     },
     "verify": "確認する",
-    "@verify": {},
     "calves": "ふくらはぎ",
     "@calves": {
         "description": "Generated entry for translation for server strings"
     },
     "selectAvailablePlates": "利用可能なプレートを選択してください",
-    "@selectAvailablePlates": {},
     "barWeight": "バーの重さ",
-    "@barWeight": {},
     "useColors": "色を使用する",
-    "@useColors": {},
     "useApiToken": "APIトークンを使用する",
-    "@useApiToken": {},
     "useUsernameAndPassword": "ユーザー名とパスワードを使用する",
-    "@useUsernameAndPassword": {},
     "apiToken": "APIトークン",
-    "@apiToken": {},
     "invalidApiToken": "有効なAPIキーを入力してください",
     "@invalidApiToken": {
         "description": "Error message when the user enters an invalid API key"
@@ -618,7 +555,6 @@
         "description": "Error message when the user tries to input a API key with forbidden characters"
     },
     "exerciseList": "エクササイズ一覧",
-    "@exerciseList": {},
     "exercises": "ワークアウトを構成する複数のエクササイズ",
     "@exercises": {
         "description": "Multiple exercises for a workout"
@@ -628,31 +564,22 @@
         "description": "Label for the name of a workout exercise"
     },
     "noIngredientsDefined": "要素が定義されていません",
-    "@noIngredientsDefined": {},
     "noMatchingExerciseFound": "一致するエクササイズがありません",
     "@noMatchingExerciseFound": {
         "description": "Message returned if no exercises match the searched string"
     },
     "searchNamesInEnglish": "英語での名前検索",
-    "@searchNamesInEnglish": {},
     "endDate": "終了日",
-    "@endDate": {},
     "startDate": "開始日",
-    "@startDate": {},
     "routines": "ルーティン",
-    "@routines": {},
     "newRoutine": "新しいルーティン",
-    "@newRoutine": {},
     "noRoutines": "ルーティンがありません",
-    "@noRoutines": {},
     "restTime": "休憩時間",
-    "@restTime": {},
     "sets": "セット",
     "@sets": {
         "description": "The number of sets to be done for one exercise"
     },
     "useMetric": "体重の単位",
-    "@useMetric": {},
     "exerciseNr": "エクササイズ {nr}",
     "@exerciseNr": {
         "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Set Nr. xy'.",
@@ -674,9 +601,6 @@
         }
     },
     "restDay": "休息日",
-    "@restDay": {},
     "isRestDay": "休息日",
-    "@isRestDay": {},
-    "isRestDayHelp": "休憩日を設定する際はすべてのセットとエクササイズが削除されていることを確認してください。",
-    "@isRestDayHelp": {}
+    "isRestDayHelp": "休憩日を設定する際はすべてのセットとエクササイズが削除されていることを確認してください。"
 }

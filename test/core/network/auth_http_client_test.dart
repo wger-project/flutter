@@ -26,6 +26,7 @@ import 'package:mockito/mockito.dart';
 import 'package:wger/core/network/auth_http_client.dart';
 import 'package:wger/core/network/auth_notifier.dart';
 import 'package:wger/core/network/auth_state.dart';
+import 'package:wger/core/network/network_provider.dart' show ReachabilityReportingClient;
 
 import 'auth_http_client_test.mocks.dart';
 
@@ -390,6 +391,13 @@ void main() {
     // AuthHttpClient have to reach the notifier, or every request goes out
     // unauthenticated and an expired session is never noticed.
     late _RecordingAuthNotifier notifier;
+
+    test('the raw client is wrapped for reachability reporting', () {
+      // Wrapping sits at the bottom of the stack, so login and refresh
+      // traffic through the raw client feeds the network status as well.
+      final container = ProviderContainer.test();
+      expect(container.read(authHttpClientProvider), isA<ReachabilityReportingClient>());
+    });
 
     JwtCredential jwt(String token) => JwtCredential(
       accessToken: token,

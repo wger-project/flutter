@@ -1199,5 +1199,261 @@
     "viewDocumentation": "Lihat Dokumentasi",
     "@viewDocumentation": {
         "description": "Button label to open the documentation about server configuration"
-    }
+    },
+    "manageAccountOnWebSubtitle": "Ubah kata sandi Anda, atur otentikasi dua faktor, kelola token API, atau hapus akun Anda.",
+    "@manageAccountOnWebSubtitle": {
+        "description": "Helper text below the 'Manage account on the web' button listing what is configurable there"
+    },
+    "clearSearchTerm": "Hapus kata kunci pencarian (teks)",
+    "@clearSearchTerm": {
+        "description": "Tooltip for the icon-button that clears the ingredient search text field"
+    },
+    "webHandoffLinkLabel": "Pilihan masuk lainnya",
+    "useDynamicColor": "Mengikuti tema perangkat",
+    "@useDynamicColor": {
+        "description": "Settings toggle to follow the system wallpaper colors (Material You) on supported platforms"
+    },
+    "youAreOffline": "Anda sedang offline",
+    "advancedSubtitle": "Opsi server dan otentikasi",
+    "serverUnreachableRetry": "Coba lagi",
+    "@serverUnreachableRetry": {
+        "description": "Button that re-runs the auto-login attempt against the saved server."
+    },
+    "powerSyncUnreachableContent": "Server wger Anda dapat diakses, namun layanan sinkronisasi offline tidak merespons. Jika Anda mengelola server wger sendiri, periksa konfigurasi dan pastikan layanan PowerSync sudah berjalan.",
+    "sessionExpired": "Sesi Anda telah berakhir, silakan masuk kembali",
+    "@sessionExpired": {
+        "description": "Snackbar message shown when the saved login token is no longer valid"
+    },
+    "weightOrRepsRequired": "Masukkan beban, jumlah repetisi, atau keduanya.",
+    "@weightOrRepsRequired": {
+        "description": "Validation error when both weight and repetitions are empty in a workout log"
+    },
+    "timeStartEndBothOrNeither": "Isi waktu mulai dan selesai, atau kosongkan keduanya",
+    "@timeStartEndBothOrNeither": {
+        "description": "Validation error when only one of start/end time is set on a workout session"
+    },
+    "syncStatusConnecting": "Menghubungkan",
+    "@syncStatusConnecting": {
+        "description": "Tooltip on the sync icon while the app is establishing a connection to the sync service"
+    },
+    "syncStatusSyncing": "Menyinkronkan",
+    "@syncStatusSyncing": {
+        "description": "Tooltip on the sync icon when the app is uploading and downloading at the same time"
+    },
+    "syncStatusConnected": "Terhubung",
+    "@syncStatusConnected": {
+        "description": "Tooltip on the sync icon when the app is online and idle (no upload or download in progress)"
+    },
+    "syncStatusDialogTitle": "Status sinkronisasi",
+    "@syncStatusDialogTitle": {
+        "description": "Title of the dialog opened by tapping the sync icon in the app bar"
+    },
+    "syncStatusDisconnected": "Tidak terhubung",
+    "@syncStatusDisconnected": {
+        "description": "Tooltip on the sync icon when the app has no active connection to the sync service"
+    },
+    "syncStatusDownloading": "Mengunduh",
+    "@syncStatusDownloading": {
+        "description": "Tooltip on the sync icon while remote changes are being downloaded from the server"
+    },
+    "syncStatusError": "Kesalahan sinkronisasi",
+    "@syncStatusError": {
+        "description": "Status label shown in the sync status dialog when the latest sync attempt failed"
+    },
+    "syncStatusErrorDetails": "Detail kesalahan",
+    "@syncStatusErrorDetails": {
+        "description": "Header of the expandable section in the sync status dialog that reveals the raw error message"
+    },
+    "syncStatusReconnect": "Hubungkan kembali",
+    "@syncStatusReconnect": {
+        "description": "Button in the sync status dialog that drops the stuck connection to the sync service and opens a fresh one"
+    },
+    "syncStatusLastSynced": "Sinkronisasi terakhir",
+    "@syncStatusLastSynced": {
+        "description": "Label in the sync status dialog above the timestamp of the last successful sync"
+    },
+    "syncStatusNeverSynced": "Belum pernah disinkronkan",
+    "@syncStatusNeverSynced": {
+        "description": "Shown in the sync status dialog instead of the last-sync timestamp when this device has never completed a synchronisation"
+    },
+    "syncStatusUploading": "Mengunggah",
+    "@syncStatusUploading": {
+        "description": "Tooltip on the sync icon while local changes are being uploaded to the server"
+    },
+    "tokenLabel": "Token",
+    "tokenSubtitle": "Buat token di situs web wger",
+    "mfaChallengeTitle": "Autentikasi dua faktor",
+    "@mfaChallengeTitle": {
+        "description": "App bar title on the 2FA challenge screen"
+    },
+    "mfaChallengeTotpPrompt": "Masukkan kode 6 digit dari aplikasi autentikator Anda",
+    "@mfaChallengeTotpPrompt": {
+        "description": "Helper text above the TOTP input field"
+    },
+    "mfaChallengeRecoveryPrompt": "Masukkan salah satu kode pemulihan Anda",
+    "@mfaChallengeRecoveryPrompt": {
+        "description": "Helper text above the recovery-code input field"
+    },
+    "mfaCodeLabel": "Kode",
+    "@mfaCodeLabel": {
+        "description": "Label on the 2FA code input field"
+    },
+    "mfaInvalidCode": "Masukkan kode",
+    "@mfaInvalidCode": {
+        "description": "Validation error when the 2FA code field is empty"
+    },
+    "mfaUseRecoveryCode": "Gunakan kode pemulihan",
+    "@mfaUseRecoveryCode": {
+        "description": "Button that switches the 2FA challenge to recovery-code mode"
+    },
+    "mfaUseTotpCode": "Gunakan kode dari aplikasi autentikator",
+    "@mfaUseTotpCode": {
+        "description": "Button that switches the 2FA challenge back to TOTP mode"
+    },
+    "mfaSubmit": "Verifikasi",
+    "@mfaSubmit": {
+        "description": "Submit button on the 2FA challenge screen"
+    },
+    "manageAccountOnWeb": "Kelola akun di web",
+    "@manageAccountOnWeb": {
+        "description": "Label on a button that opens the user's preferences page on the wger website"
+    },
+    "serverSectionLabel": "Server",
+    "invalidRefreshToken": "Masukkan token yang valid",
+    "@invalidRefreshToken": {
+        "description": "Error message when the user enters an invalid refresh token"
+    },
+    "increase": "Tingkatkan",
+    "@increase": {
+        "description": "Tooltip / screen-reader label for a button that increases a numeric input by one step"
+    },
+    "ingredients": "Bahan",
+    "@ingredients": {
+        "description": "Plural title for the ingredients overview screen"
+    },
+    "meal": "Makanan",
+    "gymModeLogScopeWeeks": "{weeks} minggu terakhir",
+    "@gymModeLogScopeWeeks": {
+        "placeholders": {
+            "weeks": {
+                "type": "int"
+            }
+        }
+    },
+    "gymModeDistinctLogs": "Sembunyikan nilai duplikat",
+    "gymModeLogScope": "Log sebelumnya",
+    "gymModeLogScopeHelp": "Log mana yang ditampilkan sebagai referensi saat latihan",
+    "gymModeLogScopeCurrentRoutine": "Rutinitas saat ini",
+    "refreshTokenValidChars": "Token refresh terdiri dari tiga bagian yang dipisahkan oleh titik (header.payload.signature), yang masing-masing terdiri dari huruf, angka, tanda “-”, dan “_”",
+    "@refreshTokenValidChars": {
+        "description": "Error message when the user pastes a string that does not match the JWT shape"
+    },
+    "refreshTokenHelperText": "Buat token JWT di situs wger, lalu tempelkan di sini. Berguna jika server Anda berada di balik proxy autentikasi atau jika Anda ingin melewati proses login biasa.",
+    "@refreshTokenHelperText": {
+        "description": "Helper text on the refresh-token paste field"
+    },
+    "mfaUnsupportedFactor": "Akun Anda menggunakan faktor autentikasi tambahan yang belum didukung oleh aplikasi ini. Silakan masuk melalui situs web.",
+    "@mfaUnsupportedFactor": {
+        "description": "Shown when the server reports only factor types the app cannot handle (e.g. webauthn)"
+    },
+    "advanced": "Lebih lanjut",
+    "signInMethodSectionLabel": "Metode login",
+    "serverOptionDefaultDetail": "Server resmi",
+    "serverOptionSelfHostedTitle": "Server sendiri",
+    "serverOptionSelfHostedDetail": "Hubungkan ke server Anda sendiri",
+    "allowSelfSignedCertsTitle": "Izinkan sertifikat yang ditandatangani sendiri",
+    "allowSelfSignedCertsDetail": "Menonaktifkan validasi sertifikat TLS. Aktifkan hanya untuk server yang Anda percaya.",
+    "certsNotVerifiedTitle": "Validasi sertifikat dinonaktifkan",
+    "@certsNotVerifiedTitle": {
+        "description": "Warning shown in the settings while the app accepts invalid TLS certificates from the server the user is logged into."
+    },
+    "certsNotVerifiedDetail": "Sertifikat untuk {host} tidak diperiksa. Untuk mengubahnya, keluar dari akun dan sesuaikan opsi ini di layar login.",
+    "@certsNotVerifiedDetail": {
+        "description": "Explains the certificate warning. The option can only be set before logging in, hence the hint to log out.",
+        "type": "text",
+        "placeholders": {
+            "host": {
+                "type": "String"
+            }
+        }
+    },
+    "authOptionPasswordTitle": "Nama pengguna dan kata sandi",
+    "signInWithToken": "Login dengan token",
+    "newToWger": "Baru menggunakan wger?",
+    "alreadyHaveAccount": "Sudah punya akun?",
+    "gymModeShowWorkoutDuration": "Tampilkan durasi latihan",
+    "planDateRange": "dari {startDate} sampai {endDate}",
+    "@planDateRange": {
+        "description": "Label for the start and end date range of a plan",
+        "placeholders": {
+            "startDate": {
+                "type": "String"
+            },
+            "endDate": {
+                "type": "String"
+            }
+        }
+    },
+    "planStartDate": "mulai {startDate}",
+    "@planStartDate": {
+        "description": "Label for the start date of a plan",
+        "placeholders": {
+            "startDate": {
+                "type": "String"
+            }
+        }
+    },
+    "otherLogs": "Log lainnya",
+    "@otherLogs": {
+        "description": "Other unassigned logs. Label for the pseudo-meal section that groups all nutritional diary entries not assigned to a specific meal"
+    },
+    "endBeforeStart": "Tanggal akhir tidak boleh sebelum tanggal mulai",
+    "@endBeforeStart": {
+        "description": "Validation error shown when a plan or routine end date is before its start date"
+    },
+    "minLengthRoutine": "Rutinitas harus berlangsung setidaknya {number} minggu",
+    "@minLengthRoutine": {
+        "description": "Validation error when a routine is shorter than the minimum allowed duration",
+        "placeholders": {
+            "number": {
+                "type": "int"
+            }
+        }
+    },
+    "maxLengthRoutine": "Rutinitas dapat berlangsung maksimal {number} minggu",
+    "@maxLengthRoutine": {
+        "description": "Validation error when a routine is longer than the maximum allowed duration",
+        "placeholders": {
+            "number": {
+                "type": "int"
+            }
+        }
+    },
+    "dietaryInformation": "Informasi nutrisi",
+    "carbohydratesSugar": "Gula (Karbohidrat)",
+    "@carbohydratesSugar": {
+        "description": "Label for the carbohydrates sugar"
+    },
+    "aboutViewDocsTitle": "Buka dokumentasi",
+    "aboutViewLicensesTitle": "Lihat lisensi",
+    "enterMaxCharacters": "Masukkan maksimal {max} karakter",
+    "@enterMaxCharacters": {
+        "description": "Error message when the user has entered more than the allowed amount of characters in a form",
+        "type": "text",
+        "placeholders": {
+            "max": {
+                "type": "String"
+            }
+        }
+    },
+    "powerSyncUnreachableTitle": "Layanan sinkronisasi tidak dapat diakses",
+    "decrease": "Kurangi",
+    "@decrease": {
+        "description": "Tooltip / screen-reader label for a button that decreases a numeric input by one step"
+    },
+    "settingsImageCacheDescription": "Cache gambar",
+    "settingsDataTitle": "Privasi",
+    "settingsKeepDataOnLogout": "Simpan data saat keluar",
+    "settingsKeepDataOnLogoutDescription": "Database lokal tetap tersimpan di perangkat Anda sampai akun lain masuk.",
+    "settingsVerboseLoggingDescription": "Berguna saat melaporkan masalah yang terus terjadi."
 }

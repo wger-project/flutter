@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wger/core/form_screen.dart';
@@ -41,7 +43,11 @@ class MainAppBar extends ConsumerWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final syncState = ref.watch(syncStatus);
-    final status = syncStatusIconAndLabel(syncState, AppLocalizations.of(context));
+    final status = syncStatusIconAndLabel(
+      syncState,
+      AppLocalizations.of(context),
+      deviceOnline: ref.watch(networkStatusProvider),
+    );
 
     return AppBar(
       title: Text(_title),
@@ -54,28 +60,48 @@ class MainAppBar extends ConsumerWidget implements PreferredSizeWidget {
         ),
         IconButton(
           icon: Icon(status.icon),
-          onPressed: () => showDialog<void>(
-            context: context,
-            // The dialog watches the sync state itself; only the server URL
-            // and the offline gate are snapshots taken when it opens.
-            // No reconnect while offline: the app deliberately disconnects
-            // there (see powerSyncInstance). The tap-time check covers the
-            // network dropping while the dialog is open
-            builder: (_) => SyncStatusDialog(
-              serverUrl: ref.read(wgerBaseProvider).serverUrl,
-              onReconnect: !ref.read(networkStatusProvider)
-                  ? null
-                  : () {
-                      final db = builtPowerSyncInstance;
-                      final serverUrl = ref.read(wgerBaseProvider).serverUrl;
-                      if (db == null || serverUrl == null || !ref.read(networkStatusProvider)) {
-                        return;
-                      }
-                      ref.read(syncWatchdogProvider).reset();
-                      connectPowerSync(db, serverUrl, ref.read(authenticatedHttpClientProvider));
-                    },
-            ),
-          ),
+          onPressed: () {
+            // The dialog watches the sync state itself; the server URL and
+            // adapter gate are tap-time snapshots. The route builder runs
+            // during build, where a dirty provider read forces a mid-build
+            // refresh. Reconnect gates on the adapter, a platform fact,
+            // never on the reachability status (it exists for when that
+            // status is wrong).
+            final serverUrl = ref.read(wgerBaseProvider).serverUrl;
+            final adapterAvailable = ref.read(networkAdapterAvailableProvider);
+
+            showDialog<void>(
+              context: context,
+              builder: (_) => SyncStatusDialog(
+                serverUrl: serverUrl,
+                onReconnect: !adapterAvailable
+                    ? null
+                    : () {
+                        unawaited(ref.read(networkStatusProvider.notifier).check(optimistic: true));
+
+                        final db = builtPowerSyncInstance;
+                        final url = ref.read(wgerBaseProvider).serverUrl;
+                        // The adapter re-check covers it disappearing while
+                        // the dialog was open.
+                        if (db == null ||
+                            url == null ||
+                            !ref.read(networkAdapterAvailableProvider)) {
+                          return;
+                        }
+                        // A manual reconnect is a deliberate new connection epoch.
+                        final watchdog = ref.read(syncWatchdogProvider);
+                        watchdog.reset();
+                        connectPowerSync(
+                          db,
+                          url,
+                          ref.read(authenticatedHttpClientProvider),
+                          watchdog,
+                          reason: 'manual retry',
+                        );
+                      },
+              ),
+            );
+          },
         ),
         IconButton(
           icon: const Icon(Icons.settings),

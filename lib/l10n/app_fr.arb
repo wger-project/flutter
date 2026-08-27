@@ -1178,5 +1178,7 @@
     "certsNotVerifiedTitle": "La validation des certificats est désactivée",
     "certsNotVerifiedDetail": "Les certificats de {host} ne sont pas vérifiés. Pour changer cela, déconnectez-vous et modifiez l'option sur l'écran de connexion.",
     "settingsVerboseLogging": "Journalisation détaillée",
-    "settingsVerboseLoggingDescription": "Utile lorsque vous signalez des problèmes persistants."
+    "settingsVerboseLoggingDescription": "Utile lorsque vous signalez des problèmes persistants.",
+    "syncStatusStalledNotStartedHint": "L'application a demandé une synchronisation, mais celle-ci n'a jamais démarré. Redémarrer l'application suffit généralement.",
+    "syncStatusStalledNotAppliedHint": "Des données arrivent mais ne peuvent pas être appliquées, donc rien de nouveau n'apparaît. Signalez-le avec les détails copiés pour que nous puissions le corriger."
 }

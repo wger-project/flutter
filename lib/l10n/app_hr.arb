@@ -1392,5 +1392,65 @@
     "powerSyncUnreachableContent": "Tvoj je wger server dostupan, ali (zasebna) usluga koja obrađuje izvanmrežnu sinkronizaciju ne odgovara. Ako pokrećeš vlastiti hosting za wger, provjeri konfiguraciju i provjeri je li PowerSync usluga ispravno radi.",
     "endBeforeStart": "Vrijednost kraja ne može biti prije vrijednosti početka",
     "minLengthRoutine": "Rutina mora trajati najmanje {number} tjedna",
-    "maxLengthRoutine": "Rutina mora trajati najviše {number} tjedna"
+    "maxLengthRoutine": "Rutina mora trajati najviše {number} tjedna",
+    "allowSelfSignedCertsTitle": "Dopusti samopotpisane certifikate",
+    "allowSelfSignedCertsDetail": "Deaktivira provjeru valjanosti TLS certifikata. Aktiviraj ovo samo za server kojem vjeruješ.",
+    "certsNotVerifiedTitle": "Provjera valjanosti certifikata je isključena",
+    "@certsNotVerifiedTitle": {
+        "description": "Warning shown in the settings while the app accepts invalid TLS certificates from the server the user is logged into."
+    },
+    "certsNotVerifiedDetail": "Certifikati za {host} nisu provjereni. Promijeni to na sljedeći način: odjavi se i prilagodi opciju na ekranu za prijavu.",
+    "@certsNotVerifiedDetail": {
+        "description": "Explains the certificate warning. The option can only be set before logging in, hence the hint to log out.",
+        "type": "text",
+        "placeholders": {
+            "host": {
+                "type": "String"
+            }
+        }
+    },
+    "gymModeShowWorkoutDuration": "Prikaži trajanje treninga",
+    "gymModeLogScope": "Prethodni zapisi",
+    "gymModeLogScopeHelp": "Koje zapise prikazati kao referencu tijekom treniranja",
+    "gymModeLogScopeCurrentRoutine": "Trenutačna rutina",
+    "gymModeLogScopeWeeks": "Zadnjih {weeks} tjedna",
+    "@gymModeLogScopeWeeks": {
+        "placeholders": {
+            "weeks": {
+                "type": "int"
+            }
+        }
+    },
+    "gymModeDistinctLogs": "Sakrij duple vrijednosti",
+    "meal": "Obrok",
+    "settingsVerboseLogging": "Detaljno zapisivanje",
+    "@settingsVerboseLogging": {
+        "description": "Title of the setting that makes the app write detailed diagnostic entries to the application log"
+    },
+    "settingsVerboseLoggingDescription": "Korisno za prijavljivanje ponavljajućih problema.",
+    "useDynamicColor": "Koristi dinamičnu boju",
+    "@useDynamicColor": {
+        "description": "Settings toggle to follow the system wallpaper colors (Material You) on supported platforms"
+    },
+    "syncStatusStalledHint": "Čini se da je veza s uslugom sinkronizacije blokirana. VPN, blokator oglasa, antivirusni program ili vatrozid na ovoj mreži možda ometaju rad.",
+    "@syncStatusStalledHint": {
+        "description": "Hint shown in the sync status dialog when the app keeps connecting but never receives any sync data, which usually means something on the network is blocking the connection"
+    },
+    "syncStatusReconnect": "Poveži se ponovo",
+    "@syncStatusReconnect": {
+        "description": "Button in the sync status dialog that drops the stuck connection to the sync service and opens a fresh one"
+    },
+    "syncStatusPendingUploads": "{count, plural, =1{Jedna lokalna promjena čeka na prijenos} few{{count} lokalne promjene čekaju na prijenos} other{{count} lokalnih promjena čeka na prijenos}}",
+    "@syncStatusPendingUploads": {
+        "description": "Line in the sync status dialog showing how many local changes have not reached the server yet",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "syncStatusNeverSynced": "Još nije sinkronizirano",
+    "@syncStatusNeverSynced": {
+        "description": "Shown in the sync status dialog instead of the last-sync timestamp when this device has never completed a synchronisation"
+    }
 }

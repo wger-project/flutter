@@ -18,12 +18,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg_icons/flutter_svg_icons.dart';
 import 'package:wger/core/form_screen.dart';
 import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/core/widgets/async_value_widget.dart';
 import 'package:wger/core/widgets/dashboard/widgets/nothing_found.dart';
 import 'package:wger/core/widgets/error.dart';
+import 'package:wger/core/widgets/svg_icon.dart';
 import 'package:wger/features/nutrition/providers/nutrition_notifier.dart';
 import 'package:wger/features/nutrition/screens/log_meals_screen.dart';
 import 'package:wger/features/nutrition/screens/nutritional_plan_screen.dart';
@@ -143,9 +143,7 @@ class DashboardNutritionWidget extends ConsumerWidget {
                           Row(
                             children: [
                               IconButton(
-                                icon: const SvgIcon(
-                                  icon: SvgIconData('assets/icons/ingredient-diary.svg'),
-                                ),
+                                icon: const SvgIcon('assets/icons/ingredient-diary.svg'),
                                 tooltip: i18n.logIngredient,
                                 onPressed: () {
                                   Navigator.pushNamed(
@@ -160,9 +158,7 @@ class DashboardNutritionWidget extends ConsumerWidget {
                                 },
                               ),
                               IconButton(
-                                icon: const SvgIcon(
-                                  icon: SvgIconData('assets/icons/meal-diary.svg'),
-                                ),
+                                icon: const SvgIcon('assets/icons/meal-diary.svg'),
                                 tooltip: i18n.logMeal,
                                 onPressed: () {
                                   Navigator.of(

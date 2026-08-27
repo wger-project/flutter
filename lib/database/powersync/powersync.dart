@@ -27,6 +27,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:powersync/powersync.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:stream_transform/stream_transform.dart';
+import 'package:wger/core/http_overrides.dart';
+import 'package:wger/core/logs.dart';
 import 'package:wger/core/network/auth_http_client.dart';
 import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/core/network/wger_base.dart';
@@ -66,7 +68,9 @@ Future<PowerSyncDatabase> powerSyncInstance(Ref ref) async {
   final db = PowerSyncDatabase(
     schema: schema,
     path: await _getDatabasePath(),
-    logger: attachedLogger,
+    // The SDK's retry loop logs identical lines every few seconds during an
+    // outage; collapsed so they don't crowd out the exportable log store.
+    logger: repeatCollapsingLogger('PowerSync'),
   );
   await db.initialize();
   await _createRawTables(db);
@@ -100,28 +104,36 @@ Future<PowerSyncDatabase> powerSyncInstance(Ref ref) async {
     }
   });
 
-  // Connect to the sync service only while the device is online. PowerSync's
-  // own retry loop would otherwise log a credential error on every iteration
-  // against an unreachable backend
-  void syncConnection(bool isOnline) {
-    if (isOnline) {
+  // Gated on the network adapter only, never on the reachability probe: a
+  // probe failure is an indication, an unreachable backend is PowerSync's own
+  // retry loop to handle (the connector throttles its log output while the
+  // backend does not answer).
+  void syncConnection(bool hasAdapter) {
+    if (hasAdapter) {
       final serverUrl = ref.read(wgerBaseProvider).serverUrl;
-      if (serverUrl != null) {
-        _logger.info('Device online, connecting to the sync service');
-        connectPowerSync(db, serverUrl, client);
+      if (serverUrl == null) {
+        _logger.info('Network adapter available, but no server configured: not connecting');
+      } else if (skipAdapterReconnect(db.currentStatus)) {
+        _logger.fine('Sync already connected, skipping reconnect');
       } else {
-        _logger.info('Device online, but no server configured: not connecting');
+        connectPowerSync(db, serverUrl, client, watchdog, reason: 'network adapter available');
       }
     } else {
-      _logger.info('Device offline, disconnecting from the sync service');
+      _logger.info('No network adapter, disconnecting from the sync service');
       db.disconnect();
       // Deliberate disconnect: an offline device is not a blocked stream.
       watchdog.reset();
     }
   }
 
-  syncConnection(ref.read(networkStatusProvider));
-  ref.listen(networkStatusProvider, (_, isOnline) => syncConnection(isOnline));
+  syncConnection(ref.read(networkAdapterAvailableProvider));
+  ref.listen(networkAdapterAvailableProvider, (_, hasAdapter) => syncConnection(hasAdapter));
+
+  // The probe stays a diagnostic input for the watchdog: while short REST
+  // requests fail too, a stream without checkpoints says nothing about the
+  // blocked middlebox the watchdog looks for.
+  watchdog.offline = !ref.read(networkStatusProvider);
+  ref.listen(networkStatusProvider, (_, isOnline) => watchdog.offline = !isOnline);
 
   ref.onDispose(() {
     _builtInstance = null;
@@ -203,20 +215,51 @@ Future<void> _createRawTables(PowerSyncDatabase db) async {
   });
 }
 
+/// Whether an adapter-triggered connect may be skipped: only while the stream
+/// is already up. The SDK's connect() is never a no-op and would abort a
+/// healthy stream; every other state (connecting, error, retry delay) still
+/// reconnects, which doubles as the "retry now" signal when the adapter comes
+/// back. Deliberate reconnects (login, manual retry) bypass this guard.
+@visibleForTesting
+bool skipAdapterReconnect(SyncStatus status) => status.connected;
+
 /// Creates a fresh [DjangoConnector] for [baseUrl] and connects [db] to it.
 /// Used both at initial creation and after a logout/login cycle to pick up
 /// the new user's server URL / credentials. [client] is the authenticated
 /// HTTP client (see [authenticatedHttpClientProvider]); the connector reuses
 /// it for its REST calls so the same `Authorization` injection and
 /// pre-emptive refresh apply.
-void connectPowerSync(PowerSyncDatabase db, String baseUrl, http.Client client) {
+///
+/// [reason] just names the trigger in the log
+void connectPowerSync(
+  PowerSyncDatabase db,
+  String baseUrl,
+  http.Client client,
+  SyncStreamWatchdog watchdog, {
+  required String reason,
+}) {
+  _logger.info('Connecting to the sync service ($reason)');
   db.connect(
     connector: DjangoConnector(
       baseUrl: baseUrl,
       apiClient: ApiClient(baseUrl, client: client),
       client: client,
     ),
+    options: syncOptionsFor(baseUrl),
   );
+  // A connect that never starts the sync client emits no status event, so
+  // arming the watchdog is inseparable from requesting the connection.
+  watchdog.onConnectRequested();
+}
+
+/// Sync options carrying the self-signed cert exemption for [baseUrl], or
+/// null when there is none. The stream downloads in a separate isolate whose
+/// HTTP client does not see HttpOverrides.global, so it travels explicitly.
+SyncOptions? syncOptionsFor(String baseUrl) {
+  final exemptHost = kIsWeb ? null : WgerHttpOverrides.exemptHost(baseUrl);
+  return exemptHost == null
+      ? null
+      : SyncOptions(httpClient: WgerHttpOverrides.syncHttpClientFactory(exemptHost));
 }
 
 /// Number of local changes still waiting in the upload queue. Emits again

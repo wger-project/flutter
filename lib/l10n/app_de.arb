@@ -1168,5 +1168,7 @@
     "certsNotVerifiedTitle": "Zertifikatsvalidierung ist deaktiviert",
     "certsNotVerifiedDetail": "Zertifikate für {host} werden nicht geprüft. Zum Ändern melde dich ab und passe die Option im Anmeldebildschirm an.",
     "settingsVerboseLogging": "Ausführliches Protokoll",
-    "settingsVerboseLoggingDescription": "Hilfreich, wenn du anhaltende Probleme meldest."
+    "settingsVerboseLoggingDescription": "Hilfreich, wenn du anhaltende Probleme meldest.",
+    "syncStatusStalledNotStartedHint": "Die App hat eine Synchronisierung angefordert, sie wurde aber nie gestartet. Ein Neustart der App hilft meistens.",
+    "syncStatusStalledNotAppliedHint": "Es kommen Daten an, sie können aber nicht übernommen werden, deshalb erscheint nichts Neues. Melde das bitte zusammen mit den kopierten Details, dann können wir es beheben."
 }

@@ -22,6 +22,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
+import 'package:logging/logging.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/errors.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
@@ -280,6 +281,69 @@ void main() {
       expect(classifyError(Exception('boom')), ErrorSeverity.fatal);
       expect(classifyError(StateError('bad state')), ErrorSeverity.fatal);
       expect(classifyError(null), ErrorSeverity.fatal);
+    });
+  });
+
+  group('serverWithLocalFallback', () {
+    final logger = Logger('test');
+
+    test('online: returns the server result without touching local', () async {
+      var localCalls = 0;
+      final result = await serverWithLocalFallback(
+        isOnline: true,
+        server: () async => 'server',
+        local: () {
+          localCalls++;
+          return 'local';
+        },
+        logger: logger,
+        fallbackLog: 'falling back',
+      );
+
+      expect(result, 'server');
+      expect(localCalls, 0);
+    });
+
+    test('offline: skips the server attempt entirely', () async {
+      var serverCalls = 0;
+      final result = await serverWithLocalFallback(
+        isOnline: false,
+        server: () async {
+          serverCalls++;
+          return 'server';
+        },
+        local: () => 'local',
+        logger: logger,
+        fallbackLog: 'falling back',
+      );
+
+      expect(result, 'local');
+      expect(serverCalls, 0);
+    });
+
+    test('online: a network error falls back to local', () async {
+      final result = await serverWithLocalFallback(
+        isOnline: true,
+        server: () async => throw const SocketException('no route to host'),
+        local: () => 'local',
+        logger: logger,
+        fallbackLog: 'falling back',
+      );
+
+      expect(result, 'local');
+    });
+
+    test('online: an error that is not about the network rethrows', () async {
+      await expectLater(
+        serverWithLocalFallback<String>(
+          isOnline: true,
+          server: () async => throw StateError('broken'),
+          local: () => 'local',
+          logger: logger,
+          fallbackLog: 'falling back',
+        ),
+        throwsStateError,
+      );
     });
   });
 }
