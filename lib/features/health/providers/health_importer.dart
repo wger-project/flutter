@@ -67,6 +67,12 @@ enum HealthSyncIssue {
 /// is what tells a caller apart from an import that simply found nothing.
 typedef HealthImportResult = ({int imported, HealthSyncIssue? issue, bool completed});
 
+/// How far a run has come, in the platform queries it walks through.
+///
+/// Their durations vary by orders of magnitude (an empty window returns in
+/// milliseconds), so this says how much is left, not how long it takes.
+typedef HealthSyncProgress = ({int windowsDone, int windowsTotal});
+
 /// Imports body metrics from Apple Health / Health Connect into measurement
 /// categories.
 ///
@@ -84,6 +90,7 @@ class HealthImporter {
     required MeasurementRepository measurements,
     required PreferenceHelper prefs,
     required AuthCredentialsStorage credentials,
+    this.onProgress,
   }) : _health = health,
        _measurements = measurements,
        _prefs = prefs,
@@ -93,6 +100,10 @@ class HealthImporter {
   final MeasurementRepository _measurements;
   final PreferenceHelper _prefs;
   final AuthCredentialsStorage _credentials;
+
+  /// Reports how far the run has come, after every read window and at the end
+  /// of every metric.
+  final void Function(HealthSyncProgress progress)? onProgress;
 
   final _logger = Logger('HealthImporter');
 
@@ -150,6 +161,7 @@ class HealthImporter {
 
       _writer = HealthEntryWriter(_measurements, _health.sourceName);
       final run = await _prepare(metrics, readable, userId);
+      _reportProgress(run);
       for (final metric in metrics) {
         await _syncMetric(metric, run);
       }
@@ -174,7 +186,7 @@ class HealthImporter {
   ) async {
     final categories = await _measurements.getCategoriesOnce();
 
-    return _SyncRun(
+    final run = _SyncRun(
       userId: userId,
       categories: categories,
       endTime: DateTime.now(),
@@ -188,6 +200,12 @@ class HealthImporter {
       ).map((m) => m.metricType.name).toSet(),
       newlyReadable: await _newlyReadableTypes(readable),
     );
+    // Only known once the starts are: a metric reading its full history is
+    // hundreds of windows, one starting at its watermark a handful
+    run.windowsPerMetric.addEntries(
+      metrics.map((m) => MapEntry(m.metricType.name, run.windowsFor(m))),
+    );
+    return run;
   }
 
   /// Reads one metric and writes what it delivers, then moves its watermark.
@@ -199,6 +217,7 @@ class HealthImporter {
     final name = metric.metricType.name;
     final startTime = run.startFor(metric);
     final readsFullHistory = startTime == _fullHistoryStart;
+    final windowsBefore = run.windowsDone;
     // One line per metric would be eight per sync in the exportable log,
     // where the summary at the end is what a report needs
     _logger.fine('Syncing $name from $startTime to ${run.endTime}');
@@ -221,6 +240,10 @@ class HealthImporter {
         start: windowStartFor(startTime, metric),
         end: run.endTime,
         window: metric.readWindow,
+        onWindow: () {
+          run.windowsDone++;
+          _reportProgress(run);
+        },
         onBatch: (batch, windowEnd) async {
           final readings = batch.where((r) => metric.dataTypes.contains(r.type)).toList();
           if (readings.isEmpty) {
@@ -273,8 +296,16 @@ class HealthImporter {
         _logger.severe('Importing $name failed', e, s);
         run.failedMetric = true;
       }
+    } finally {
+      // A metric that stopped early read fewer windows than it was counted
+      // for, and the progress must not stay short of its share for that
+      run.windowsDone = windowsBefore + run.windowsPerMetric[name]!;
+      _reportProgress(run);
     }
   }
+
+  void _reportProgress(_SyncRun run) =>
+      onProgress?.call((windowsDone: run.windowsDone, windowsTotal: run.windowsTotal));
 
   /// Writes what the run learned, once every metric has had its turn.
   Future<void> _persist(_SyncRun run, Set<HealthDataType> readable) async {
@@ -429,9 +460,23 @@ class _SyncRun {
   /// Type names the platform lets us read but did not last time
   final Set<String> newlyReadable;
 
+  /// How many read windows each metric takes, by metric name
+  final windowsPerMetric = <String, int>{};
+
+  /// Windows read so far, across the metrics that already ran
+  var windowsDone = 0;
+
   var synced = 0;
   var failedMetric = false;
   var permissionsMissing = false;
+
+  int get windowsTotal => windowsPerMetric.values.sum;
+
+  /// Into how many windows [HealthRepository.read] slices this metric's span.
+  int windowsFor(HealthMetric metric) {
+    final span = endTime.difference(windowStartFor(startFor(metric), metric));
+    return span.isNegative ? 0 : (span.inMicroseconds / metric.readWindow.inMicroseconds).ceil();
+  }
 
   /// Where the read of [metric] starts.
   ///

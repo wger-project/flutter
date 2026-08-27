@@ -199,12 +199,17 @@ class HealthRepository {
   /// written when a later window fails, so [onBatch] has to be idempotent.
   /// A failing type is dropped from the remaining windows; the error only
   /// propagates when every type fails.
+  ///
+  /// [onWindow] runs once per window, empty ones included, which is what makes
+  /// it usable as a progress counter: a full history starts years before the
+  /// first record, and those windows have no batch to report.
   Future<void> read({
     required List<HealthDataType> types,
     required DateTime start,
     required DateTime end,
     required Duration window,
     required Future<void> Function(List<HealthReading> batch, DateTime windowEnd) onBatch,
+    void Function()? onWindow,
   }) async {
     final failed = <HealthDataType>{};
     final counts = {for (final type in types) type: 0};
@@ -267,6 +272,7 @@ class HealthRepository {
       if (batch.isNotEmpty) {
         await onBatch(batch, windowEnd);
       }
+      onWindow?.call();
       windowStart = next;
     }
 

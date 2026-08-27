@@ -1179,6 +1179,7 @@ class MockHealthRepository extends _i1.Mock implements _i43.HealthRepository {
     required DateTime? end,
     required Duration? window,
     required _i11.Future<void> Function(List<_i45.HealthReading>, DateTime)? onBatch,
+    void Function()? onWindow,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#read, [], {
@@ -1187,6 +1188,7 @@ class MockHealthRepository extends _i1.Mock implements _i43.HealthRepository {
               #end: end,
               #window: window,
               #onBatch: onBatch,
+              #onWindow: onWindow,
             }),
             returnValue: _i11.Future<void>.value(),
             returnValueForMissingStub: _i11.Future<void>.value(),

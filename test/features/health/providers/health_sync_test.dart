@@ -98,6 +98,7 @@ void main() {
         end: anyNamed('end'),
         window: anyNamed('window'),
         onBatch: anyNamed('onBatch'),
+        onWindow: anyNamed('onWindow'),
       ),
     ).thenAnswer((invocation) async {
       if (readings.isEmpty) {
@@ -107,6 +108,30 @@ void main() {
           invocation.namedArguments[#onBatch]
               as Future<void> Function(List<HealthReading>, DateTime);
       await onBatch(readings, invocation.namedArguments[#end] as DateTime);
+    });
+  }
+
+  /// Stubs the platform read to walk through the windows its range asks for,
+  /// the way the repository does, without delivering anything.
+  void stubEmptyWindows() {
+    when(
+      health.read(
+        types: anyNamed('types'),
+        start: anyNamed('start'),
+        end: anyNamed('end'),
+        window: anyNamed('window'),
+        onBatch: anyNamed('onBatch'),
+        onWindow: anyNamed('onWindow'),
+      ),
+    ).thenAnswer((invocation) async {
+      final span = (invocation.namedArguments[#end] as DateTime).difference(
+        invocation.namedArguments[#start] as DateTime,
+      );
+      final window = invocation.namedArguments[#window] as Duration;
+      final onWindow = invocation.namedArguments[#onWindow] as void Function();
+      for (var i = 0; i < (span.inMicroseconds / window.inMicroseconds).ceil(); i++) {
+        onWindow();
+      }
     });
   }
 
@@ -143,6 +168,7 @@ void main() {
           end: anyNamed('end'),
           window: anyNamed('window'),
           onBatch: anyNamed('onBatch'),
+          onWindow: anyNamed('onWindow'),
         ),
       );
     });
@@ -229,6 +255,39 @@ void main() {
 
       expect(container.read(healthSyncProvider).issue, HealthSyncIssue.permissionsMissing);
       expect(container.read(healthSyncProvider).lastSyncTime, stamped);
+    });
+
+    test('publishes how far the run has come and drops it at the end', () async {
+      stubEmptyWindows();
+      final states = <HealthSyncState>[];
+      final notifier = createNotifier();
+      container.listen(healthSyncProvider, (_, next) => states.add(next));
+
+      await notifier.sync();
+
+      final reported = states.map((s) => s.progress).nonNulls.toList();
+      expect(reported, isNotEmpty);
+      expect(reported.every((p) => p.windowsDone <= p.windowsTotal), isTrue);
+      // Nothing is running anymore, so there is no progress to show either
+      expect(container.read(healthSyncProvider).progress, isNull);
+    });
+
+    test('publishes at most one state per percent', () async {
+      // A full history is thousands of windows, most of them empty and back
+      // in milliseconds: the settings must not be rebuilt for every one
+      stubEmptyWindows();
+      final states = <HealthSyncState>[];
+      final notifier = createNotifier();
+      container.listen(healthSyncProvider, (_, next) => states.add(next));
+
+      await notifier.sync();
+
+      final percents = states
+          .map((s) => s.progress)
+          .nonNulls
+          .map((p) => (100 * p.windowsDone / p.windowsTotal).floor())
+          .toList();
+      expect(percents, percents.toSet().toList());
     });
 
     test('carries the imported count into the state', () async {

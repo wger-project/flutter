@@ -17,7 +17,8 @@ mixin _$HealthSyncState {
  bool get isEnabled; bool get isSyncing; int get lastSyncCount;/// When the last successful sync finished; null until one succeeded in
 /// this session.
  DateTime? get lastSyncTime;/// What went wrong during the last sync, null when it went through.
- HealthSyncIssue? get issue;
+ HealthSyncIssue? get issue;/// How far the running sync has come, null while none is running.
+ HealthSyncProgress? get progress;
 /// Create a copy of HealthSyncState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +29,16 @@ $HealthSyncStateCopyWith<HealthSyncState> get copyWith => _$HealthSyncStateCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is HealthSyncState&&(identical(other.isEnabled, isEnabled) || other.isEnabled == isEnabled)&&(identical(other.isSyncing, isSyncing) || other.isSyncing == isSyncing)&&(identical(other.lastSyncCount, lastSyncCount) || other.lastSyncCount == lastSyncCount)&&(identical(other.lastSyncTime, lastSyncTime) || other.lastSyncTime == lastSyncTime)&&(identical(other.issue, issue) || other.issue == issue));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HealthSyncState&&(identical(other.isEnabled, isEnabled) || other.isEnabled == isEnabled)&&(identical(other.isSyncing, isSyncing) || other.isSyncing == isSyncing)&&(identical(other.lastSyncCount, lastSyncCount) || other.lastSyncCount == lastSyncCount)&&(identical(other.lastSyncTime, lastSyncTime) || other.lastSyncTime == lastSyncTime)&&(identical(other.issue, issue) || other.issue == issue)&&(identical(other.progress, progress) || other.progress == progress));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isEnabled,isSyncing,lastSyncCount,lastSyncTime,issue);
+int get hashCode => Object.hash(runtimeType,isEnabled,isSyncing,lastSyncCount,lastSyncTime,issue,progress);
 
 @override
 String toString() {
-  return 'HealthSyncState(isEnabled: $isEnabled, isSyncing: $isSyncing, lastSyncCount: $lastSyncCount, lastSyncTime: $lastSyncTime, issue: $issue)';
+  return 'HealthSyncState(isEnabled: $isEnabled, isSyncing: $isSyncing, lastSyncCount: $lastSyncCount, lastSyncTime: $lastSyncTime, issue: $issue, progress: $progress)';
 }
 
 
@@ -48,7 +49,7 @@ abstract mixin class $HealthSyncStateCopyWith<$Res>  {
   factory $HealthSyncStateCopyWith(HealthSyncState value, $Res Function(HealthSyncState) _then) = _$HealthSyncStateCopyWithImpl;
 @useResult
 $Res call({
- bool isEnabled, bool isSyncing, int lastSyncCount, DateTime? lastSyncTime, HealthSyncIssue? issue
+ bool isEnabled, bool isSyncing, int lastSyncCount, DateTime? lastSyncTime, HealthSyncIssue? issue, HealthSyncProgress? progress
 });
 
 
@@ -65,14 +66,15 @@ class _$HealthSyncStateCopyWithImpl<$Res>
 
 /// Create a copy of HealthSyncState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? isEnabled = null,Object? isSyncing = null,Object? lastSyncCount = null,Object? lastSyncTime = freezed,Object? issue = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? isEnabled = null,Object? isSyncing = null,Object? lastSyncCount = null,Object? lastSyncTime = freezed,Object? issue = freezed,Object? progress = freezed,}) {
   return _then(_self.copyWith(
 isEnabled: null == isEnabled ? _self.isEnabled : isEnabled // ignore: cast_nullable_to_non_nullable
 as bool,isSyncing: null == isSyncing ? _self.isSyncing : isSyncing // ignore: cast_nullable_to_non_nullable
 as bool,lastSyncCount: null == lastSyncCount ? _self.lastSyncCount : lastSyncCount // ignore: cast_nullable_to_non_nullable
 as int,lastSyncTime: freezed == lastSyncTime ? _self.lastSyncTime : lastSyncTime // ignore: cast_nullable_to_non_nullable
 as DateTime?,issue: freezed == issue ? _self.issue : issue // ignore: cast_nullable_to_non_nullable
-as HealthSyncIssue?,
+as HealthSyncIssue?,progress: freezed == progress ? _self.progress : progress // ignore: cast_nullable_to_non_nullable
+as HealthSyncProgress?,
   ));
 }
 
@@ -154,10 +156,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isEnabled,  bool isSyncing,  int lastSyncCount,  DateTime? lastSyncTime,  HealthSyncIssue? issue)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isEnabled,  bool isSyncing,  int lastSyncCount,  DateTime? lastSyncTime,  HealthSyncIssue? issue,  HealthSyncProgress? progress)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _HealthSyncState() when $default != null:
-return $default(_that.isEnabled,_that.isSyncing,_that.lastSyncCount,_that.lastSyncTime,_that.issue);case _:
+return $default(_that.isEnabled,_that.isSyncing,_that.lastSyncCount,_that.lastSyncTime,_that.issue,_that.progress);case _:
   return orElse();
 
 }
@@ -175,10 +177,10 @@ return $default(_that.isEnabled,_that.isSyncing,_that.lastSyncCount,_that.lastSy
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isEnabled,  bool isSyncing,  int lastSyncCount,  DateTime? lastSyncTime,  HealthSyncIssue? issue)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isEnabled,  bool isSyncing,  int lastSyncCount,  DateTime? lastSyncTime,  HealthSyncIssue? issue,  HealthSyncProgress? progress)  $default,) {final _that = this;
 switch (_that) {
 case _HealthSyncState():
-return $default(_that.isEnabled,_that.isSyncing,_that.lastSyncCount,_that.lastSyncTime,_that.issue);}
+return $default(_that.isEnabled,_that.isSyncing,_that.lastSyncCount,_that.lastSyncTime,_that.issue,_that.progress);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -192,10 +194,10 @@ return $default(_that.isEnabled,_that.isSyncing,_that.lastSyncCount,_that.lastSy
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isEnabled,  bool isSyncing,  int lastSyncCount,  DateTime? lastSyncTime,  HealthSyncIssue? issue)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isEnabled,  bool isSyncing,  int lastSyncCount,  DateTime? lastSyncTime,  HealthSyncIssue? issue,  HealthSyncProgress? progress)?  $default,) {final _that = this;
 switch (_that) {
 case _HealthSyncState() when $default != null:
-return $default(_that.isEnabled,_that.isSyncing,_that.lastSyncCount,_that.lastSyncTime,_that.issue);case _:
+return $default(_that.isEnabled,_that.isSyncing,_that.lastSyncCount,_that.lastSyncTime,_that.issue,_that.progress);case _:
   return null;
 
 }
@@ -207,7 +209,7 @@ return $default(_that.isEnabled,_that.isSyncing,_that.lastSyncCount,_that.lastSy
 
 
 class _HealthSyncState implements HealthSyncState {
-  const _HealthSyncState({this.isEnabled = false, this.isSyncing = false, this.lastSyncCount = 0, this.lastSyncTime, this.issue});
+  const _HealthSyncState({this.isEnabled = false, this.isSyncing = false, this.lastSyncCount = 0, this.lastSyncTime, this.issue, this.progress});
   
 
 @override@JsonKey() final  bool isEnabled;
@@ -218,6 +220,8 @@ class _HealthSyncState implements HealthSyncState {
 @override final  DateTime? lastSyncTime;
 /// What went wrong during the last sync, null when it went through.
 @override final  HealthSyncIssue? issue;
+/// How far the running sync has come, null while none is running.
+@override final  HealthSyncProgress? progress;
 
 /// Create a copy of HealthSyncState
 /// with the given fields replaced by the non-null parameter values.
@@ -229,16 +233,16 @@ _$HealthSyncStateCopyWith<_HealthSyncState> get copyWith => __$HealthSyncStateCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _HealthSyncState&&(identical(other.isEnabled, isEnabled) || other.isEnabled == isEnabled)&&(identical(other.isSyncing, isSyncing) || other.isSyncing == isSyncing)&&(identical(other.lastSyncCount, lastSyncCount) || other.lastSyncCount == lastSyncCount)&&(identical(other.lastSyncTime, lastSyncTime) || other.lastSyncTime == lastSyncTime)&&(identical(other.issue, issue) || other.issue == issue));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _HealthSyncState&&(identical(other.isEnabled, isEnabled) || other.isEnabled == isEnabled)&&(identical(other.isSyncing, isSyncing) || other.isSyncing == isSyncing)&&(identical(other.lastSyncCount, lastSyncCount) || other.lastSyncCount == lastSyncCount)&&(identical(other.lastSyncTime, lastSyncTime) || other.lastSyncTime == lastSyncTime)&&(identical(other.issue, issue) || other.issue == issue)&&(identical(other.progress, progress) || other.progress == progress));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isEnabled,isSyncing,lastSyncCount,lastSyncTime,issue);
+int get hashCode => Object.hash(runtimeType,isEnabled,isSyncing,lastSyncCount,lastSyncTime,issue,progress);
 
 @override
 String toString() {
-  return 'HealthSyncState(isEnabled: $isEnabled, isSyncing: $isSyncing, lastSyncCount: $lastSyncCount, lastSyncTime: $lastSyncTime, issue: $issue)';
+  return 'HealthSyncState(isEnabled: $isEnabled, isSyncing: $isSyncing, lastSyncCount: $lastSyncCount, lastSyncTime: $lastSyncTime, issue: $issue, progress: $progress)';
 }
 
 
@@ -249,7 +253,7 @@ abstract mixin class _$HealthSyncStateCopyWith<$Res> implements $HealthSyncState
   factory _$HealthSyncStateCopyWith(_HealthSyncState value, $Res Function(_HealthSyncState) _then) = __$HealthSyncStateCopyWithImpl;
 @override @useResult
 $Res call({
- bool isEnabled, bool isSyncing, int lastSyncCount, DateTime? lastSyncTime, HealthSyncIssue? issue
+ bool isEnabled, bool isSyncing, int lastSyncCount, DateTime? lastSyncTime, HealthSyncIssue? issue, HealthSyncProgress? progress
 });
 
 
@@ -266,14 +270,15 @@ class __$HealthSyncStateCopyWithImpl<$Res>
 
 /// Create a copy of HealthSyncState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? isEnabled = null,Object? isSyncing = null,Object? lastSyncCount = null,Object? lastSyncTime = freezed,Object? issue = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? isEnabled = null,Object? isSyncing = null,Object? lastSyncCount = null,Object? lastSyncTime = freezed,Object? issue = freezed,Object? progress = freezed,}) {
   return _then(_HealthSyncState(
 isEnabled: null == isEnabled ? _self.isEnabled : isEnabled // ignore: cast_nullable_to_non_nullable
 as bool,isSyncing: null == isSyncing ? _self.isSyncing : isSyncing // ignore: cast_nullable_to_non_nullable
 as bool,lastSyncCount: null == lastSyncCount ? _self.lastSyncCount : lastSyncCount // ignore: cast_nullable_to_non_nullable
 as int,lastSyncTime: freezed == lastSyncTime ? _self.lastSyncTime : lastSyncTime // ignore: cast_nullable_to_non_nullable
 as DateTime?,issue: freezed == issue ? _self.issue : issue // ignore: cast_nullable_to_non_nullable
-as HealthSyncIssue?,
+as HealthSyncIssue?,progress: freezed == progress ? _self.progress : progress // ignore: cast_nullable_to_non_nullable
+as HealthSyncProgress?,
   ));
 }
 

@@ -186,6 +186,24 @@ void main() {
       expect(events, ['read window 1', 'batch of 1', 'read window 2', 'batch of 1']);
     });
 
+    test('reports every window, empty ones included', () async {
+      // Most windows of a full history return nothing, so a progress counter
+      // fed by the batches alone would sit at zero for minutes and then jump
+      var windows = 0;
+
+      await repository.read(
+        types: [HealthDataType.WEIGHT],
+        start: DateTime(2026, 1, 1),
+        end: DateTime(2026, 4, 1),
+        window: defaultReadWindow,
+        onBatch: (batch, _) async {},
+        onWindow: () => windows++,
+      );
+
+      expect(windows, 3);
+      expect(windows, capturedWindows().length);
+    });
+
     test('a record on the window boundary is delivered once', () async {
       // Both windows of a contiguous pair contain their shared boundary, so a
       // record sitting exactly on it comes back from both queries

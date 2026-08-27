@@ -107,11 +107,12 @@ void main() {
     when(measurements.hasEntries(any)).thenAnswer((_) async => false);
   });
 
-  HealthImporter createImporter() => HealthImporter(
+  HealthImporter createImporter({void Function(HealthSyncProgress)? onProgress}) => HealthImporter(
     health: health,
     measurements: measurements,
     prefs: PreferenceHelper.instance,
     credentials: credentials,
+    onProgress: onProgress,
   );
 
   /// One run, reduced to the number of entries it wrote.
@@ -184,6 +185,7 @@ void main() {
         end: anyNamed('end'),
         window: anyNamed('window'),
         onBatch: anyNamed('onBatch'),
+        onWindow: anyNamed('onWindow'),
       ),
     ).captured;
 
@@ -201,6 +203,28 @@ void main() {
   DateTime capturedReadStart([HealthDataType type = HealthDataType.WEIGHT]) =>
       capturedReadStarts()[type]!;
 
+  /// How many windows the platform reads the sync asked for add up to, i.e.
+  /// how often [HealthRepository.read] queries the platform.
+  int capturedWindowCount() {
+    final captured = verify(
+      health.read(
+        types: anyNamed('types'),
+        start: captureAnyNamed('start'),
+        end: captureAnyNamed('end'),
+        window: captureAnyNamed('window'),
+        onBatch: anyNamed('onBatch'),
+        onWindow: anyNamed('onWindow'),
+      ),
+    ).captured;
+
+    var windows = 0;
+    for (var i = 0; i < captured.length; i += 3) {
+      final span = (captured[i + 1] as DateTime).difference(captured[i] as DateTime);
+      windows += (span.inMicroseconds / (captured[i + 2] as Duration).inMicroseconds).ceil();
+    }
+    return windows;
+  }
+
   /// Every health data type the sync asked the platform for
   List<HealthDataType> capturedReadTypes() => verify(
     health.read(
@@ -209,6 +233,7 @@ void main() {
       end: anyNamed('end'),
       window: anyNamed('window'),
       onBatch: anyNamed('onBatch'),
+      onWindow: anyNamed('onWindow'),
     ),
   ).captured.cast<List<HealthDataType>>().expand((types) => types).toList();
 
@@ -222,6 +247,7 @@ void main() {
         end: anyNamed('end'),
         window: anyNamed('window'),
         onBatch: anyNamed('onBatch'),
+        onWindow: anyNamed('onWindow'),
       ),
     ).thenAnswer((invocation) async {
       if (readings.isEmpty) {
@@ -245,6 +271,7 @@ void main() {
         end: anyNamed('end'),
         window: anyNamed('window'),
         onBatch: anyNamed('onBatch'),
+        onWindow: anyNamed('onWindow'),
       ),
     ).thenAnswer((invocation) async {
       if (!(invocation.namedArguments[#types] as List<HealthDataType>).contains(type)) {
@@ -283,6 +310,7 @@ void main() {
           end: anyNamed('end'),
           window: anyNamed('window'),
           onBatch: anyNamed('onBatch'),
+          onWindow: anyNamed('onWindow'),
         ),
       );
     });
@@ -377,6 +405,7 @@ void main() {
           end: anyNamed('end'),
           window: anyNamed('window'),
           onBatch: anyNamed('onBatch'),
+          onWindow: anyNamed('onWindow'),
         ),
       ).thenThrow(
         PlatformException(
@@ -399,6 +428,7 @@ void main() {
           end: anyNamed('end'),
           window: anyNamed('window'),
           onBatch: anyNamed('onBatch'),
+          onWindow: anyNamed('onWindow'),
         ),
       ).thenThrow(Exception('boom'));
 
@@ -1656,6 +1686,62 @@ void main() {
       );
     });
 
+    test('the progress totals the windows the metrics are read in', () async {
+      stubReadings([]);
+      final reports = <HealthSyncProgress>[];
+
+      await createImporter(onProgress: reports.add).run();
+
+      // Known before the first read, so the settings show a share of the
+      // whole run rather than a spinner
+      expect(reports.first.windowsDone, 0);
+      expect(reports.first.windowsTotal, capturedWindowCount());
+      expect(reports.last.windowsDone, reports.last.windowsTotal);
+    });
+
+    test('counts the windows a metric reports while it reads', () async {
+      when(
+        health.read(
+          types: anyNamed('types'),
+          start: anyNamed('start'),
+          end: anyNamed('end'),
+          window: anyNamed('window'),
+          onBatch: anyNamed('onBatch'),
+          onWindow: anyNamed('onWindow'),
+        ),
+      ).thenAnswer((invocation) async {
+        final onWindow = invocation.namedArguments[#onWindow] as void Function();
+        onWindow();
+        onWindow();
+      });
+      final reports = <HealthSyncProgress>[];
+
+      await createImporter(onProgress: reports.add).run();
+
+      expect(reports.take(3).map((r) => r.windowsDone), [0, 1, 2]);
+    });
+
+    test('a metric that gave up still hands over its share of the progress', () async {
+      // Nothing else counts the windows it did not read, and a bar that stops
+      // at 40% is worse than no bar at all
+      when(
+        health.read(
+          types: anyNamed('types'),
+          start: anyNamed('start'),
+          end: anyNamed('end'),
+          window: anyNamed('window'),
+          onBatch: anyNamed('onBatch'),
+          onWindow: anyNamed('onWindow'),
+        ),
+      ).thenThrow(Exception('boom'));
+      final reports = <HealthSyncProgress>[];
+
+      await createImporter(onProgress: reports.add).run();
+
+      expect(reports.last.windowsTotal, greaterThan(0));
+      expect(reports.last.windowsDone, reports.last.windowsTotal);
+    });
+
     test('each metric is read with the window its density affords', () async {
       // A month of heart rate does not fit into the Android app heap, a month
       // of scale readings is nothing, so the window comes from the metric
@@ -1670,6 +1756,7 @@ void main() {
           end: anyNamed('end'),
           window: captureAnyNamed('window'),
           onBatch: anyNamed('onBatch'),
+          onWindow: anyNamed('onWindow'),
         ),
       ).captured;
       final windowByType = <HealthDataType, Duration>{

@@ -19,6 +19,7 @@
 import 'package:flutter/foundation.dart' show TargetPlatform, defaultTargetPlatform;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/features/health/providers/health_repository.dart';
@@ -150,6 +151,27 @@ class _HealthSyncSettingsTileState extends ConsumerState<HealthSyncSettingsTile>
     );
   }
 
+  /// How far the running import has come, null until it knows.
+  ///
+  /// A share of the queries, not an estimate of the time left: an empty window
+  /// returns in milliseconds and a dense one takes seconds.
+  Widget? _progressBar(HealthSyncProgress? progress) {
+    if (progress == null || progress.windowsTotal == 0) {
+      return null;
+    }
+
+    final fraction = progress.windowsDone / progress.windowsTotal;
+    return Row(
+      children: [
+        Expanded(child: LinearProgressIndicator(value: fraction)),
+        const SizedBox(width: 8),
+        Text(
+          NumberFormat.percentPattern(Localizations.localeOf(context).toString()).format(fraction),
+        ),
+      ],
+    );
+  }
+
   /// Status line under the toggle: what the last sync did or why it didn't,
   /// a spinner while one is running, and tapping it syncs (or, when the
   /// platform withholds the data, asks for access again).
@@ -162,6 +184,7 @@ class _HealthSyncSettingsTileState extends ConsumerState<HealthSyncSettingsTile>
           child: CircularProgressIndicator(strokeWidth: 2.5),
         ),
         title: Text(i18n.healthSyncSyncing),
+        subtitle: _progressBar(syncState.progress),
         enabled: false,
       );
     }

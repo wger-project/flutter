@@ -30,7 +30,7 @@ import 'package:wger/features/measurements/providers/measurement_repository.dart
 /// The importer's outcome is part of what this notifier exposes, so it reads
 /// as one API from the outside.
 export 'package:wger/features/health/providers/health_importer.dart'
-    show HealthSyncIssue, dailyAggregateExternalId;
+    show HealthSyncIssue, HealthSyncProgress, dailyAggregateExternalId;
 
 part 'health_sync.freezed.dart';
 part 'health_sync.g.dart';
@@ -48,6 +48,9 @@ sealed class HealthSyncState with _$HealthSyncState {
 
     /// What went wrong during the last sync, null when it went through.
     HealthSyncIssue? issue,
+
+    /// How far the running sync has come, null while none is running.
+    HealthSyncProgress? progress,
   }) = _HealthSyncState;
 }
 
@@ -65,6 +68,9 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
   late final HealthRepository _health;
   late final HealthImporter _importer;
 
+  /// Percent the state was last updated for, see [_onProgress].
+  int? _reportedPercent;
+
   @override
   HealthSyncState build() {
     _health = ref.read(healthRepositoryProvider);
@@ -73,6 +79,7 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
       measurements: ref.read(measurementRepositoryProvider),
       prefs: PreferenceHelper.instance,
       credentials: ref.read(authCredentialsStorageProvider),
+      onProgress: _onProgress,
     );
     _loadPersistedState();
 
@@ -156,6 +163,22 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
     await sync();
   }
 
+  /// Publishes the import's progress, at most once per percent.
+  ///
+  /// A full history is thousands of windows, most of them back in
+  /// milliseconds: every one of them would rebuild the settings for nothing.
+  void _onProgress(HealthSyncProgress progress) {
+    if (progress.windowsTotal == 0) {
+      return;
+    }
+    final percent = (100 * progress.windowsDone / progress.windowsTotal).floor();
+    if (percent == _reportedPercent) {
+      return;
+    }
+    _reportedPercent = percent;
+    state = state.copyWith(progress: progress);
+  }
+
   /// Runs one import and reports it in the state. Returns the number of
   /// imported entries. A no-op unless the user enabled sync, and while one is
   /// already running. Triggered on app open, on app resume, and manually from
@@ -167,7 +190,8 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
     if (state.isSyncing) {
       return 0;
     }
-    state = state.copyWith(isEnabled: true, isSyncing: true, issue: null);
+    _reportedPercent = null;
+    state = state.copyWith(isEnabled: true, isSyncing: true, issue: null, progress: null);
 
     final result = await _importer.run();
 
@@ -181,6 +205,7 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
       lastSyncCount: result.imported,
       lastSyncTime: result.completed ? DateTime.now() : state.lastSyncTime,
       issue: result.issue,
+      progress: null,
     );
     return result.imported;
   }

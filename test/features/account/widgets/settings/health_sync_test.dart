@@ -101,6 +101,7 @@ void main() {
         healthSyncProvider.overrideWith(() => fake),
       ],
       child: const MaterialApp(
+        locale: Locale('en'),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(body: HealthSyncSettingsTile()),
@@ -286,5 +287,31 @@ void main() {
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
     expect(find.text('Syncing health data…'), findsOneWidget);
     expect(tester.widget<SwitchListTile>(find.byType(SwitchListTile)).onChanged, isNull);
+    // The run has not worked out yet how much there is to read
+    expect(find.byType(LinearProgressIndicator), findsNothing);
+  });
+
+  testWidgets('shows how far a running sync has come', (tester) async {
+    // A first import reads years of history, which takes long enough that a
+    // spinner alone leaves the user wondering whether anything happens
+    await tester.pumpWidget(
+      createTile(
+        _FakeHealthSyncNotifier(
+          null,
+          initialState: const HealthSyncState(
+            isEnabled: true,
+            isSyncing: true,
+            progress: (windowsDone: 2100, windowsTotal: 5000),
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+
+    expect(
+      tester.widget<LinearProgressIndicator>(find.byType(LinearProgressIndicator)).value,
+      0.42,
+    );
+    expect(find.text('42%'), findsOneWidget);
   });
 }
