@@ -727,7 +727,7 @@
   },
   "trackNewMetric": "Track something new",
   "@trackNewMetric": {
-    "description": "Action in the overview's expanding + button that opens the sheet for starting a new measurement category"
+    "description": "Tooltip of the overview's + button, which opens the sheet for starting a new measurement category"
   },
   "measurement": "Measurement",
   "@measurement": {},

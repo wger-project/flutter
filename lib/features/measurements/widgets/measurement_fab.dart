@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2026 wger Team
+ * Copyright (c) 2026 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,78 +17,23 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:wger/features/measurements/models/measurement_category.dart';
-import 'package:wger/features/measurements/models/measurement_entry.dart';
-import 'package:wger/features/measurements/providers/measurement_notifier.dart';
-import 'package:wger/features/measurements/widgets/helpers.dart';
 import 'package:wger/features/measurements/widgets/metric_picker.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
-/// The overview's add button: opens a menu with one action per hand-kept
-/// category (straight into its entry form) plus the metric picker for
-/// starting something new.
+/// The overview's add button: opens the picker for starting a new metric.
 ///
-/// A [MenuAnchor] rather than a hand-rolled expanding FAB: dismissal,
-/// positioning and focus come with it. Flutter's M3 menu is also as close as
-/// the stable SDK gets to the M3 FAB menu for now.
-class MeasurementsFab extends ConsumerWidget {
+/// Logging a reading is not on it. That belongs to the category, and the
+/// category has it: every tile carries its own button, and body weight its
+/// card.
+class MeasurementsFab extends StatelessWidget {
   const MeasurementsFab({super.key});
 
-  /// Whether [category] is fed by hand rather than by the health sync or by
-  /// the server, judged by who wrote its newest reading. A category without
-  /// entries counts as hand-kept: it was just created and logging is what it
-  /// is waiting for. A calculated one never does, also while it is still
-  /// empty, since the server refuses entries there.
-  ///
-  /// Only the menu narrows itself this way: a machine-fed category still takes
-  /// a reading by hand, its tile and its entries screen offer that.
-  bool _isHandKept(MeasurementCategory category, Map<String, MeasurementEntry> latest) {
-    if (category.isCalculated) {
-      return false;
-    }
-
-    final newest = category.hasChildren
-        ? category.children.map((c) => latest[c.id])
-        : [latest[category.id]];
-
-    return newest.nonNulls.every((entry) => entry.source == measurementSourceUser);
-  }
-
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final categories = ref.watch(measurementCategoriesProvider).value ?? const [];
-    final latest = ref.watch(latestMeasurementEntriesProvider).value ?? const {};
-    final handKept = [
-      for (final category in categories)
-        if (category.parentId == null &&
-            !category.isOfficialBodyWeight &&
-            _isHandKept(category, latest))
-          category,
-    ];
-
-    return MenuAnchor(
-      menuChildren: [
-        for (final category in handKept)
-          MenuItemButton(
-            leadingIcon: const Icon(Icons.add),
-            onPressed: () => openMeasurementEntryForm(context, category),
-            child: Text(category.displayName(context)),
-          ),
-        MenuItemButton(
-          leadingIcon: const Icon(Icons.playlist_add),
-          onPressed: () => showMetricPicker(context),
-          child: Text(AppLocalizations.of(context).trackNewMetric),
-        ),
-      ],
-      builder: (context, controller, child) => FloatingActionButton(
-        onPressed: () => controller.isOpen ? controller.close() : controller.open(),
-        child: AnimatedRotation(
-          turns: controller.isOpen ? 0.125 : 0,
-          duration: const Duration(milliseconds: 200),
-          child: const Icon(Icons.add, color: Colors.white),
-        ),
-      ),
+  Widget build(BuildContext context) {
+    return FloatingActionButton(
+      onPressed: () => showMetricPicker(context),
+      tooltip: AppLocalizations.of(context).trackNewMetric,
+      child: const Icon(Icons.add, color: Colors.white),
     );
   }
 }

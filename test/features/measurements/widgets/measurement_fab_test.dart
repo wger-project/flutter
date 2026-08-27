@@ -20,9 +20,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
-import 'package:wger/core/form_screen.dart';
-import 'package:wger/features/measurements/models/measurement_category.dart';
-import 'package:wger/features/measurements/models/measurement_entry.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
 import 'package:wger/features/measurements/widgets/measurement_fab.dart';
 import 'package:wger/features/measurements/widgets/metric_picker.dart';
@@ -31,111 +28,41 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import '../../../helpers/measurement_repository_stubs.dart';
 import 'measurement_fab_test.mocks.dart';
 
-MeasurementEntry _entry(String categoryId, {required String source}) => MeasurementEntry(
-  id: '$categoryId-1',
-  categoryId: categoryId,
-  date: DateTime(2026, 8, 1),
-  value: 1,
-  notes: '',
-  source: source,
-);
-
-Widget _wrap(
-  List<MeasurementCategory> categories,
-  Map<String, List<MeasurementEntry>> entries,
-) {
+Widget _wrap() {
   final mockRepo = MockMeasurementRepository();
-  stubMeasurementReads(mockRepo, categories, entries);
+  stubMeasurementReads(mockRepo, const [], const {});
 
   return ProviderScope(
     overrides: [measurementRepositoryProvider.overrideWithValue(mockRepo)],
-    child: MaterialApp(
+    child: const MaterialApp(
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      routes: {FormScreen.routeName: (_) => const Text('form-screen')},
-      home: const Scaffold(floatingActionButton: MeasurementsFab()),
+      home: Scaffold(floatingActionButton: MeasurementsFab()),
     ),
   );
 }
 
 @GenerateMocks([MeasurementRepository])
 void main() {
-  final biceps = MeasurementCategory(id: 'biceps', name: 'Biceps', unit: 'cm');
-  final restingHeartRate = MeasurementCategory(
-    id: 'rhr',
-    name: 'Resting heart rate',
-    unit: 'bpm',
-    metricType: MetricType.restingHeartRate,
-  );
-
-  final categories = [biceps, restingHeartRate];
-  final entries = {
-    'biceps': [_entry('biceps', source: 'user')],
-    'rhr': [_entry('rhr', source: 'google')],
-  };
-
   group('MeasurementsFab', () {
-    testWidgets('opens into the hand-kept categories and the picker action', (tester) async {
-      await tester.pumpWidget(_wrap(categories, entries));
-      await tester.pumpAndSettle();
-
-      // Closed: the menu is not tappable
-      expect(find.text('Biceps').hitTestable(), findsNothing);
-
-      await tester.tap(find.byType(FloatingActionButton));
-      await tester.pumpAndSettle();
-
-      expect(find.text('Biceps').hitTestable(), findsOneWidget);
-      expect(find.text('Track something new').hitTestable(), findsOneWidget);
-      // Machine-fed by its newest reading, so logging by hand is not offered
-      expect(find.text('Resting heart rate').hitTestable(), findsNothing);
-    });
-
-    testWidgets('a category action opens its entry form', (tester) async {
-      await tester.pumpWidget(_wrap(categories, entries));
+    testWidgets('opens the metric picker sheet', (tester) async {
+      await tester.pumpWidget(_wrap());
       await tester.pumpAndSettle();
 
       await tester.tap(find.byType(FloatingActionButton));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Biceps'));
-      await tester.pumpAndSettle();
-
-      expect(find.text('form-screen'), findsOneWidget);
-    });
-
-    testWidgets('the picker action opens the metric picker sheet', (tester) async {
-      await tester.pumpWidget(_wrap(categories, entries));
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.byType(FloatingActionButton));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Track something new'));
       await tester.pumpAndSettle();
 
       expect(find.byType(MetricPickerSheet), findsOneWidget);
     });
 
-    testWidgets('a category without entries counts as hand-kept', (tester) async {
-      await tester.pumpWidget(_wrap([restingHeartRate], const {}));
+    testWidgets('says what it does: readings are logged on the tiles', (tester) async {
+      await tester.pumpWidget(_wrap());
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byType(FloatingActionButton));
-      await tester.pumpAndSettle();
-
-      expect(find.text('Resting heart rate').hitTestable(), findsOneWidget);
-    });
-
-    testWidgets('a calculated category is not offered, also while still empty', (tester) async {
-      final bmi = MeasurementCategory(id: 'bmi', name: 'BMI', unit: '', dynamicType: 'BMI');
-
-      await tester.pumpWidget(_wrap([biceps, bmi], const {}));
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.byType(FloatingActionButton));
-      await tester.pumpAndSettle();
-
-      expect(find.text('Biceps').hitTestable(), findsOneWidget);
-      expect(find.text('BMI').hitTestable(), findsNothing);
+      expect(
+        tester.widget<FloatingActionButton>(find.byType(FloatingActionButton)).tooltip,
+        'Track something new',
+      );
     });
   });
 }
