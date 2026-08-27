@@ -19,6 +19,7 @@
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
@@ -40,6 +41,9 @@ import 'package:wger/powersync/sync_watchdog.dart';
 part 'powersync.g.dart';
 
 final _logger = Logger('powersync');
+const _storageChannel = MethodChannel('de.wger.flutter/storage');
+const _dbFilename = 'powersync-wger.db';
+const _iosDbDirectoryName = 'de.wger.flutter.community';
 
 PowerSyncDatabase? _builtInstance;
 
@@ -283,14 +287,47 @@ final syncStatus = Provider((ref) {
 });
 
 Future<String> _getDatabasePath() async {
-  const dbFilename = 'powersync-wger.db';
-
   // getApplicationSupportDirectory is not supported on Web
   if (kIsWeb) {
-    return dbFilename;
+    return _dbFilename;
   }
+
   final dir = await getApplicationSupportDirectory();
-  return join(dir.path, dbFilename);
+  if (!Platform.isIOS) {
+    return join(dir.path, _dbFilename);
+  }
+
+  final dbDir = Directory(join(dir.path, _iosDbDirectoryName));
+  await dbDir.create(recursive: true);
+  await _migrateLegacyIosDatabaseFiles(fromDirectory: dir, toDirectory: dbDir);
+  await _excludeFromBackup(dbDir.path);
+  return join(dbDir.path, _dbFilename);
+}
+
+Future<void> _migrateLegacyIosDatabaseFiles({
+  required Directory fromDirectory,
+  required Directory toDirectory,
+}) async {
+  for (final suffix in ['', '-wal', '-shm', '-journal']) {
+    final from = File(join(fromDirectory.path, '$_dbFilename$suffix'));
+    final to = File(join(toDirectory.path, '$_dbFilename$suffix'));
+
+    if (!from.existsSync() || to.existsSync()) {
+      continue;
+    }
+
+    await from.rename(to.path);
+  }
+}
+
+Future<void> _excludeFromBackup(String path) async {
+  try {
+    await _storageChannel.invokeMethod<void>('excludeFromBackup', {'path': path});
+  } on MissingPluginException {
+    _logger.warning('Could not exclude $path from backups: storage channel unavailable');
+  } on PlatformException catch (e, s) {
+    _logger.warning('Could not exclude $path from backups', e, s);
+  }
 }
 
 /// Deletes the on-disk PowerSync SQLite files (main DB plus WAL/SHM/journal

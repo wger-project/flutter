@@ -88,7 +88,7 @@
 		<key>NSCameraUsageDescription</key>
 		<string>Workout photos</string>
 		<key>NSHealthShareUsageDescription</key>
-		<string>wger reads your health data to automatically import body measurements such as weight, body fat, blood pressure, heart rate and blood oxygen</string>
+		<string>wger reads your Apple Health data to import measurements and activity such as weight, body fat, blood pressure, heart rate, blood oxygen, sleep, steps, distance, and active energy into your wger account</string>
 		<key>UIApplicationSceneManifest</key>
 		<dict>
 			<key>UIApplicationSupportsMultipleScenes</key>
