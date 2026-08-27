@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2026 wger Team
+ * Copyright (c) 2026 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -93,7 +93,7 @@ getScreenshotMeasurements() {
   final steps = MeasurementCategory(
     id: 'screenshot-steps',
     name: 'Steps',
-    unit: 'count',
+    unit: '',
     metricType: MetricType.steps,
     isOfficial: true,
   );

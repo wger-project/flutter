@@ -31,6 +31,18 @@ import 'package:wger/features/routines/models/slot_entry.dart';
 import '../routines.dart';
 import 'exercises.dart';
 
+/// The set description the way the server builds it, which is where the app
+/// reads it from: `4 Sets, 8 × 80 kg @ 2 RiR 120s rest`.
+String _textRepr({int sets = 1, required int reps, num? weight, num? rir, int? rest}) => [
+  if (sets > 1) '$sets Sets,',
+  if (weight != null) '$reps × ${_number(weight)} kg' else '$reps Reps',
+  if (rir != null) '@ ${_number(rir)} RiR',
+  if (rest != null) '${rest}s rest',
+].join(' ');
+
+/// Whole numbers without their decimal part, the way the server writes them
+String _number(num value) => value % 1 == 0 ? '${value.toInt()}' : '$value';
+
 /// A three day push/pull/legs routine, running relative to today, with a
 /// completed push session for the gym mode summary. Built from the screenshot
 /// exercises so names are localized and the muscle distribution is real.
@@ -137,7 +149,7 @@ Routine getScreenshotRoutine() {
     restTime: restTime,
     rir: rir,
     rpe: null,
-    textRepr: weight == null ? '$sets sets $reps reps' : '$sets sets ${reps}x${weight}kg',
+    textRepr: _textRepr(sets: sets, reps: reps, weight: weight, rir: rir, rest: restTime),
   );
 
   // One entry per set, the way gym mode steps through a day
@@ -154,7 +166,7 @@ Routine getScreenshotRoutine() {
         restTime: 120,
         rir: 2,
         rpe: null,
-        textRepr: '${reps}x${weight}kg',
+        textRepr: _textRepr(reps: reps, weight: weight, rir: 2, rest: 120),
       );
 
   final dayData = [
