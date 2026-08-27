@@ -60,8 +60,14 @@ private final class StorageExclusionPlugin: NSObject, FlutterPlugin {
 
   func didInitializeImplicitFlutterEngine(_ engineBridge: FlutterImplicitEngineBridge) {
     GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
-    StorageExclusionPlugin.register(
-      with: engineBridge.pluginRegistry.registrar(forPlugin: StorageExclusionPlugin.pluginName)
-    )
+    guard
+      let registrar = engineBridge.pluginRegistry.registrar(
+        forPlugin: StorageExclusionPlugin.pluginName
+      )
+    else {
+      NSLog("StorageExclusionPlugin registrar unavailable")
+      return
+    }
+    StorageExclusionPlugin.register(with: registrar)
   }
 }
