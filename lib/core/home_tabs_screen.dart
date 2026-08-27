@@ -18,7 +18,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:wger/core/dashboard.dart';
 import 'package:wger/core/material.dart';
 import 'package:wger/features/account/providers/timezone_sync.dart';
@@ -100,7 +99,7 @@ class _HomeTabsScreenState extends ConsumerState<HomeTabsScreen>
         label: AppLocalizations.of(context).labelBottomNavNutrition,
       ),
       NavigationDestination(
-        icon: const FaIcon(FontAwesomeIcons.weightScale, size: 20),
+        icon: const Icon(Icons.area_chart),
         label: AppLocalizations.of(context).labelBottomNavBody,
       ),
       NavigationDestination(
