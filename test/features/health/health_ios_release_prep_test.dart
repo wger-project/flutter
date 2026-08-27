@@ -36,10 +36,10 @@ void main() {
 
       expect(databaseSetup, contains("const _iosDbDirectoryName = 'de.wger.flutter.community';"));
       expect(databaseSetup, contains("MethodChannel('de.wger.flutter/storage')"));
-      expect(databaseSetup, contains("await _excludeFromBackup(dbDir.path);"));
+      expect(databaseSetup, contains('await _excludeFromBackup(dbDir.path);'));
       expect(
         databaseSetup,
-        contains("await _migrateLegacyIosDatabaseFiles(fromDirectory: dir, toDirectory: dbDir);"),
+        contains('await _migrateLegacyIosDatabaseFiles(fromDirectory: dir, toDirectory: dbDir);'),
       );
     });
 
