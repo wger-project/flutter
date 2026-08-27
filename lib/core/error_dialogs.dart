@@ -23,6 +23,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:logging/logging.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:wger/core/build_safety.dart';
 import 'package:wger/core/errors.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/core/keys.dart';
@@ -94,27 +95,12 @@ String _formatHttpExceptionDetail(WgerHttpException error) {
 }
 
 void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext? context}) {
-  // Attempt to get the BuildContext from our global navigatorKey.
-  // This allows us to show a dialog even if the error occurs outside
-  // of a widget's build method.
-  final BuildContext? dialogContext = context ?? navigatorKey.currentContext;
-
   final logger = Logger('showGeneralErrorDialog');
-
-  if (dialogContext == null) {
-    if (kDebugMode) {
-      logger.warning('Error: Could not error show dialog because the context is null.');
-    }
-    return;
-  }
 
   if (_errorDialogVisible) {
     logger.info('Suppressing error dialog, one is already visible: $error');
     return;
   }
-  _errorDialogVisible = true;
-
-  final i18n = AppLocalizations.of(dialogContext);
 
   // If possible, determine the issue title and message based on the error type.
   // (Note that issue titles and error messages are not localized)
@@ -139,6 +125,26 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
   final String fullStackTrace = stackTrace?.toString() ?? 'No stack trace available.';
   final applicationLogs = InMemoryLogStore().getFormattedLogs();
 
+  runAfterFrame(() {
+    // Attempt to get the BuildContext from our global navigatorKey.
+    // This allows us to show a dialog even if the error occurs outside
+    // of a widget's build method.
+    final BuildContext? dialogContext = context ?? navigatorKey.currentContext;
+
+    if (dialogContext == null) {
+      if (kDebugMode) {
+        logger.warning('Error: Could not error show dialog because the context is null.');
+      }
+      return;
+    }
+
+    if (_errorDialogVisible) {
+      logger.info('Suppressing error dialog, one is already visible: $error');
+      return;
+    }
+    _errorDialogVisible = true;
+
+    final i18n = AppLocalizations.of(dialogContext);
   showDialog(
     context: dialogContext,
     barrierDismissible: false,
@@ -257,6 +263,7 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
       );
     },
   ).whenComplete(() => _errorDialogVisible = false);
+  });
 }
 
 /// Routes [error] to the appropriate UI based on its [ErrorSeverity].
