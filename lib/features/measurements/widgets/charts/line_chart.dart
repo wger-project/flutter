@@ -78,15 +78,12 @@ class MeasurementChartWidgetFl extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: 1.70,
-      child: Padding(
-        padding: const EdgeInsets.all(4),
-        // Dot size is in pixels, so it has to follow from how many points
-        // share the available space, otherwise they merge into a blob
-        child: LayoutBuilder(
-          builder: (context, constraints) => LineChart(mainData(context, constraints.maxWidth)),
-        ),
+    return Padding(
+      padding: const EdgeInsets.all(4),
+      // Dot size is in pixels, so it has to follow from how many points share
+      // the available space, otherwise they merge into a blob
+      child: LayoutBuilder(
+        builder: (context, constraints) => LineChart(mainData(context, constraints.maxWidth)),
       ),
     );
   }

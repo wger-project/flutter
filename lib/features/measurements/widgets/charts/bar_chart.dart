@@ -46,13 +46,10 @@ class MeasurementBarChartWidgetFl extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: 1.70,
-      child: Padding(
-        padding: const EdgeInsets.all(4),
-        child: LayoutBuilder(
-          builder: (context, constraints) => BarChart(mainData(context, constraints.maxWidth)),
-        ),
+    return Padding(
+      padding: const EdgeInsets.all(4),
+      child: LayoutBuilder(
+        builder: (context, constraints) => BarChart(mainData(context, constraints.maxWidth)),
       ),
     );
   }
