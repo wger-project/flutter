@@ -6,8 +6,7 @@
 set -euo pipefail
 
 blocks=5
-attempts=3
-block_timeout=10m
+attempts=5
 
 # Homebrew installs coreutils under the g-prefixed names only
 timeout=$(command -v timeout || command -v gtimeout) || {
@@ -17,6 +16,13 @@ timeout=$(command -v timeout || command -v gtimeout) || {
 
 device_type=${1:?Usage: take-screenshots.sh <device type> [flutter drive args]}
 shift
+
+# A healthy block takes about two minutes on Android and five on Apple, where
+# the Xcode build dominates. A hang never recovers, so waiting longer is waste
+case $device_type in
+  iOS*) block_timeout=10m ;;
+  *) block_timeout=5m ;;
+esac
 
 # flutter drive gives up within seconds on an offline device, so wait for it
 # to come back instead of burning the next attempt on it
