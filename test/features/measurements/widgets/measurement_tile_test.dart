@@ -17,9 +17,11 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
+import 'package:wger/core/form_screen.dart';
 import 'package:wger/features/measurements/charts/range.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/measurement_entry.dart';
@@ -73,6 +75,7 @@ Widget _wrap(
       supportedLocales: AppLocalizations.supportedLocales,
       routes: {
         MeasurementEntriesScreen.routeName: (_) => const Text('entries-screen'),
+        FormScreen.routeName: (_) => const Text('form-screen'),
       },
       home: Scaffold(
         body: Center(
@@ -363,6 +366,55 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('entries-screen'), findsOneWidget);
+    });
+
+    testWidgets('a tile logs a reading without leaving the grid', (tester) async {
+      final biceps = MeasurementCategory(id: 'biceps', name: 'Biceps', unit: 'cm');
+      final entries = {
+        'biceps': [_entry('biceps', 38.5, _day(3))],
+      };
+
+      await tester.pumpWidget(_wrap(biceps, entries: entries));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byIcon(Icons.add));
+      await tester.pumpAndSettle();
+
+      expect(find.text('form-screen'), findsOneWidget);
+    });
+
+    testWidgets('a machine-fed tile takes a reading by hand as well', (tester) async {
+      final entries = {
+        'rhr': [_entry('rhr', 61, _day(0), source: 'google')],
+      };
+
+      await tester.pumpWidget(_wrap(restingHeartRate, entries: entries));
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.add), findsOneWidget);
+    });
+
+    testWidgets('the chip keeps the room the button leaves it', (tester) async {
+      final entries = {
+        'rhr': [for (var day = 6; day >= 0; day--) _entry('rhr', 61, _day(day))],
+      };
+
+      await tester.pumpWidget(_wrap(restingHeartRate, entries: entries));
+      await tester.pumpAndSettle();
+
+      final chip = tester.renderObject<RenderParagraph>(find.textContaining('stable'));
+      expect(chip.didExceedMaxLines, isFalse);
+    });
+
+    testWidgets('a calculated tile has nothing to log: the server derives it', (tester) async {
+      final bmi = MeasurementCategory(id: 'bmi', name: 'BMI', unit: 'kg/m²', dynamicType: 'BMI');
+      final entries = {
+        'bmi': [_entry('bmi', 22.4, _day(0))],
+      };
+
+      await tester.pumpWidget(_wrap(bmi, entries: entries));
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.add), findsNothing);
     });
   });
 }

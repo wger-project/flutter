@@ -18,12 +18,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:wger/core/form_screen.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/measurement_entry.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
-import 'package:wger/features/measurements/widgets/forms/entry.dart';
-import 'package:wger/features/measurements/widgets/forms/group_entry.dart';
+import 'package:wger/features/measurements/widgets/helpers.dart';
 import 'package:wger/features/measurements/widgets/metric_picker.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
@@ -37,24 +35,14 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 class MeasurementsFab extends ConsumerWidget {
   const MeasurementsFab({super.key});
 
-  Future<void> _addEntry(BuildContext context, MeasurementCategory category) async {
-    await Navigator.pushNamed(
-      context,
-      FormScreen.routeName,
-      arguments: FormScreenArguments(
-        AppLocalizations.of(context).newEntry,
-        category.hasChildren
-            ? GroupMeasurementEntryForm(category)
-            : MeasurementEntryForm(category.id!),
-      ),
-    );
-  }
-
   /// Whether [category] is fed by hand rather than by the health sync or by
   /// the server, judged by who wrote its newest reading. A category without
   /// entries counts as hand-kept: it was just created and logging is what it
   /// is waiting for. A calculated one never does, also while it is still
   /// empty, since the server refuses entries there.
+  ///
+  /// Only the menu narrows itself this way: a machine-fed category still takes
+  /// a reading by hand, its tile and its entries screen offer that.
   bool _isHandKept(MeasurementCategory category, Map<String, MeasurementEntry> latest) {
     if (category.isCalculated) {
       return false;
@@ -84,7 +72,7 @@ class MeasurementsFab extends ConsumerWidget {
         for (final category in handKept)
           MenuItemButton(
             leadingIcon: const Icon(Icons.add),
-            onPressed: () => _addEntry(context, category),
+            onPressed: () => openMeasurementEntryForm(context, category),
             child: Text(category.displayName(context)),
           ),
         MenuItemButton(

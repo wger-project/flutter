@@ -45,7 +45,7 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 /// spare: they are laid out at their natural heights, so a tile sized to
 /// exactly fit them overflows as soon as the text does not render at the size
 /// it was measured at.
-const measurementTileExtent = 172.0;
+const measurementTileExtent = 184.0;
 
 /// Height of the spark chart inside a tile.
 const _sparkHeight = 40.0;
@@ -53,6 +53,10 @@ const _sparkHeight = 40.0;
 /// Height of a heatmap spark: it has no axis row, its grid takes that room
 /// instead, which is what makes the cells legible.
 const _heatmapHeight = 58.0;
+
+/// Height of the footer row, fixed so that the sparks line up across the grid
+/// whether or not a tile carries the add button.
+const _footerHeight = 28.0;
 
 /// One category of the overview grid: latest value as the hero, a spark chart
 /// as context over the range the filter selects. A tap opens the category's
@@ -204,18 +208,20 @@ class MeasurementTile extends ConsumerWidget {
           ),
           // The same footer its kind would get elsewhere: a level for the
           // summed types, a direction for the sample ones
-          if (category.metricType.isSummedPerDay)
-            _AverageChip(
-              points: points,
-              unit: category.unit,
-              decimals: category.metricType.displayDecimals,
-            )
-          else
-            _TrendChip(
-              points: points,
-              unit: category.unit,
-              decimals: category.metricType.displayDecimals,
-            ),
+          _Footer(
+            onAdd: _onAdd(context),
+            chip: category.metricType.isSummedPerDay
+                ? _AverageChip(
+                    points: points,
+                    unit: category.unit,
+                    decimals: category.metricType.displayDecimals,
+                  )
+                : _TrendChip(
+                    points: points,
+                    unit: category.unit,
+                    decimals: category.metricType.displayDecimals,
+                  ),
+          ),
         ];
 
       case SparkKind.delta:
@@ -230,6 +236,7 @@ class MeasurementTile extends ConsumerWidget {
             ),
           ),
           _MonthAxis(window.start!),
+          _Footer(onAdd: _onAdd(context)),
         ];
 
       case SparkKind.bars:
@@ -244,10 +251,13 @@ class MeasurementTile extends ConsumerWidget {
         return [
           _SparkArea(child: SparkBarChart(data)),
           _axis(window.start!, window.days!, weekly: window.weekly),
-          _AverageChip(
-            points: points,
-            unit: category.unit,
-            decimals: category.metricType.displayDecimals,
+          _Footer(
+            onAdd: _onAdd(context),
+            chip: _AverageChip(
+              points: points,
+              unit: category.unit,
+              decimals: category.metricType.displayDecimals,
+            ),
           ),
         ];
 
@@ -261,10 +271,13 @@ class MeasurementTile extends ConsumerWidget {
             child: SparkLineChart(points, start: start, days: days, dots: sparse),
           ),
           _axis(start, days, weekly: false),
-          _TrendChip(
-            points: points,
-            unit: category.unit,
-            decimals: category.metricType.displayDecimals,
+          _Footer(
+            onAdd: _onAdd(context),
+            chip: _TrendChip(
+              points: points,
+              unit: category.unit,
+              decimals: category.metricType.displayDecimals,
+            ),
           ),
         ];
     }
@@ -312,10 +325,13 @@ class MeasurementTile extends ConsumerWidget {
       return [
         _SparkArea(child: SparkBarChart(data)),
         _axis(start, window.days!, weekly: window.weekly),
-        _AverageChip(
-          points: [for (final day in stacked) MeasurementChartEntry(day.total, day.date)],
-          unit: category.unit,
-          decimals: category.metricType.displayDecimals,
+        _Footer(
+          onAdd: _onAdd(context),
+          chip: _AverageChip(
+            points: [for (final day in stacked) MeasurementChartEntry(day.total, day.date)],
+            unit: category.unit,
+            decimals: category.metricType.displayDecimals,
+          ),
         ),
       ];
     }
@@ -337,7 +353,7 @@ class MeasurementTile extends ConsumerWidget {
         _axis(start, window.days!, weekly: window.weekly),
         // A range spans a reading rather than tracking a level, so the spread
         // is what a chip could quote; the hero already says how recent it is
-        const SizedBox.shrink(),
+        _Footer(onAdd: _onAdd(context)),
       ];
     }
 
@@ -351,9 +367,15 @@ class MeasurementTile extends ConsumerWidget {
         child: SparkLineChart(fallback ?? const [], start: start, days: window.days!),
       ),
       _axis(start, window.days!, weekly: window.weekly),
-      const SizedBox.shrink(),
+      _Footer(onAdd: _onAdd(context)),
     ];
   }
+
+  /// Logging from the tile, or null for a calculated category: the server
+  /// derives those and refuses entries. A health-synced one takes a reading by
+  /// hand like any other.
+  VoidCallback? _onAdd(BuildContext context) =>
+      category.isCalculated ? null : () => openMeasurementEntryForm(context, category);
 
   /// The entry the hero value comes from: the category's own for a leaf, the
   /// newest of the components for a group.
@@ -462,6 +484,42 @@ class _MonthAxis extends StatelessWidget {
   }
 }
 
+/// The tile's last row: the chip on the left, and on the right the way to log
+/// a reading without opening the category first, where [onAdd] says that the
+/// category takes one.
+class _Footer extends StatelessWidget {
+  const _Footer({this.chip, this.onAdd});
+
+  final Widget? chip;
+  final VoidCallback? onAdd;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: _footerHeight,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          // Flexible against the alignment, not against a Spacer: two flex
+          // children would split the room evenly and cut the chip off at half
+          // the row, however much of it is free
+          Flexible(child: chip ?? const SizedBox.shrink()),
+          if (onAdd != null)
+            IconButton(
+              onPressed: onAdd,
+              icon: const Icon(Icons.add),
+              iconSize: 18,
+              padding: EdgeInsets.zero,
+              visualDensity: VisualDensity.compact,
+              constraints: const BoxConstraints.tightFor(width: 32, height: _footerHeight),
+              tooltip: AppLocalizations.of(context).newEntry,
+            ),
+        ],
+      ),
+    );
+  }
+}
+
 /// A neutral fact in chip form, see [_TrendChip] and [_AverageChip]. States
 /// what the numbers do, never whether that is good: which direction is the
 /// good one depends on the goal, and the tile should not assert one.
@@ -480,7 +538,12 @@ class _FooterChip extends StatelessWidget {
         color: theme.colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(8),
       ),
-      child: Text(text, style: theme.textTheme.labelSmall, maxLines: 1),
+      child: Text(
+        text,
+        style: theme.textTheme.labelSmall,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
     );
   }
 }

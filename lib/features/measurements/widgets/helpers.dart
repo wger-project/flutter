@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wger/core/form_screen.dart';
 import 'package:wger/core/widgets/error.dart';
 import 'package:wger/core/widgets/legend.dart';
 import 'package:wger/core/widgets/progress_indicator.dart';
@@ -19,6 +20,8 @@ import 'package:wger/features/measurements/widgets/charts/heatmap_chart.dart';
 import 'package:wger/features/measurements/widgets/charts/line_chart.dart';
 import 'package:wger/features/measurements/widgets/charts/overall_change.dart';
 import 'package:wger/features/measurements/widgets/charts/stacked_bar_chart.dart';
+import 'package:wger/features/measurements/widgets/forms/entry.dart';
+import 'package:wger/features/measurements/widgets/forms/group_entry.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 /// A chart with the overall change below it, for a Column to spread, titled
@@ -494,4 +497,19 @@ class GroupComponentRows extends StatelessWidget {
       }).toList(),
     );
   }
+}
+
+/// Opens the form that logs a new entry for [category], the group variant
+/// where it has components.
+Future<void> openMeasurementEntryForm(BuildContext context, MeasurementCategory category) async {
+  await Navigator.pushNamed(
+    context,
+    FormScreen.routeName,
+    arguments: FormScreenArguments(
+      AppLocalizations.of(context).newEntry,
+      category.hasChildren
+          ? GroupMeasurementEntryForm(category)
+          : MeasurementEntryForm(category.id!),
+    ),
+  );
 }
