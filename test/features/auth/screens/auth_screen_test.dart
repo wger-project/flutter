@@ -30,7 +30,6 @@ import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:url_launcher_platform_interface/url_launcher_platform_interface.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/http_overrides.dart';
-import 'package:wger/core/network/auth_notifier.dart';
 import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/core/network/secure_token_storage.dart';
 import 'package:wger/core/shared_preferences.dart';

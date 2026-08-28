@@ -6,6 +6,9 @@
 import 'dart:async' as _i3;
 
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:wger/core/network/auth_credentials_storage.dart' as _i7;
+import 'package:wger/core/network/auth_state.dart' as _i8;
+import 'package:wger/features/measurements/models/measurement_bucket.dart' as _i6;
 import 'package:wger/features/measurements/models/measurement_category.dart' as _i4;
 import 'package:wger/features/measurements/models/measurement_entry.dart' as _i5;
 import 'package:wger/features/measurements/providers/measurement_repository.dart' as _i2;
@@ -34,22 +37,162 @@ class MockMeasurementRepository extends _i1.Mock implements _i2.MeasurementRepos
   }
 
   @override
-  _i3.Stream<List<_i4.MeasurementCategory>> watchAll() =>
+  _i3.Stream<List<_i4.MeasurementCategory>> watchAllWithoutEntries() =>
       (super.noSuchMethod(
-            Invocation.method(#watchAll, []),
+            Invocation.method(#watchAllWithoutEntries, []),
             returnValue: _i3.Stream<List<_i4.MeasurementCategory>>.empty(),
           )
           as _i3.Stream<List<_i4.MeasurementCategory>>);
 
   @override
-  _i3.Stream<_i4.MeasurementCategory?> watchLocalDriftCategoryById(
+  _i3.Stream<_i4.MeasurementCategory?> watchCategoryWithoutEntries(
     String? id,
   ) =>
       (super.noSuchMethod(
-            Invocation.method(#watchLocalDriftCategoryById, [id]),
+            Invocation.method(#watchCategoryWithoutEntries, [id]),
             returnValue: _i3.Stream<_i4.MeasurementCategory?>.empty(),
           )
           as _i3.Stream<_i4.MeasurementCategory?>);
+
+  @override
+  _i3.Stream<_i4.MeasurementCategory?> watchOfficialBodyWeightCategory() =>
+      (super.noSuchMethod(
+            Invocation.method(#watchOfficialBodyWeightCategory, []),
+            returnValue: _i3.Stream<_i4.MeasurementCategory?>.empty(),
+          )
+          as _i3.Stream<_i4.MeasurementCategory?>);
+
+  @override
+  _i3.Stream<List<_i5.MeasurementEntry>> watchEntries(
+    String? categoryId, {
+    required int? limit,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#watchEntries, [categoryId], {#limit: limit}),
+            returnValue: _i3.Stream<List<_i5.MeasurementEntry>>.empty(),
+          )
+          as _i3.Stream<List<_i5.MeasurementEntry>>);
+
+  @override
+  _i3.Stream<List<_i5.MeasurementEntry>> watchGroupEntries(
+    String? parentId, {
+    required int? limit,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#watchGroupEntries, [parentId], {#limit: limit}),
+            returnValue: _i3.Stream<List<_i5.MeasurementEntry>>.empty(),
+          )
+          as _i3.Stream<List<_i5.MeasurementEntry>>);
+
+  @override
+  _i3.Stream<Map<String, _i5.MeasurementEntry>> watchLatestEntries() =>
+      (super.noSuchMethod(
+            Invocation.method(#watchLatestEntries, []),
+            returnValue: _i3.Stream<Map<String, _i5.MeasurementEntry>>.empty(),
+          )
+          as _i3.Stream<Map<String, _i5.MeasurementEntry>>);
+
+  @override
+  _i3.Stream<List<_i6.MeasurementBucket>> watchEntryBuckets(
+    String? categoryId, {
+    DateTime? since,
+    DateTime? until,
+    _i6.MeasurementBucketLevel? level = _i6.MeasurementBucketLevel.auto,
+    int? maxPoints = 200,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #watchEntryBuckets,
+              [categoryId],
+              {
+                #since: since,
+                #until: until,
+                #level: level,
+                #maxPoints: maxPoints,
+              },
+            ),
+            returnValue: _i3.Stream<List<_i6.MeasurementBucket>>.empty(),
+          )
+          as _i3.Stream<List<_i6.MeasurementBucket>>);
+
+  @override
+  _i3.Stream<Map<String, List<_i6.MeasurementBucket>>> watchGroupBuckets(
+    String? parentId, {
+    DateTime? since,
+    _i6.MeasurementBucketLevel? level = _i6.MeasurementBucketLevel.auto,
+    int? maxPoints = 200,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #watchGroupBuckets,
+              [parentId],
+              {#since: since, #level: level, #maxPoints: maxPoints},
+            ),
+            returnValue: _i3.Stream<Map<String, List<_i6.MeasurementBucket>>>.empty(),
+          )
+          as _i3.Stream<Map<String, List<_i6.MeasurementBucket>>>);
+
+  @override
+  _i3.Stream<Map<String, List<_i6.MeasurementBucket>>> watchDailyBuckets() =>
+      (super.noSuchMethod(
+            Invocation.method(#watchDailyBuckets, []),
+            returnValue: _i3.Stream<Map<String, List<_i6.MeasurementBucket>>>.empty(),
+          )
+          as _i3.Stream<Map<String, List<_i6.MeasurementBucket>>>);
+
+  @override
+  _i3.Stream<List<_i6.MeasurementValueCount>> watchValueCounts(
+    String? categoryId, {
+    DateTime? since,
+    bool? summedPerDay = false,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #watchValueCounts,
+              [categoryId],
+              {#since: since, #summedPerDay: summedPerDay},
+            ),
+            returnValue: _i3.Stream<List<_i6.MeasurementValueCount>>.empty(),
+          )
+          as _i3.Stream<List<_i6.MeasurementValueCount>>);
+
+  @override
+  _i3.Future<List<_i4.MeasurementCategory>> getCategoriesOnce() =>
+      (super.noSuchMethod(
+            Invocation.method(#getCategoriesOnce, []),
+            returnValue: _i3.Future<List<_i4.MeasurementCategory>>.value(
+              <_i4.MeasurementCategory>[],
+            ),
+          )
+          as _i3.Future<List<_i4.MeasurementCategory>>);
+
+  @override
+  _i3.Future<Set<String>> getExternalIds(String? categoryId) =>
+      (super.noSuchMethod(
+            Invocation.method(#getExternalIds, [categoryId]),
+            returnValue: _i3.Future<Set<String>>.value(<String>{}),
+          )
+          as _i3.Future<Set<String>>);
+
+  @override
+  _i3.Future<Map<String, _i5.MeasurementEntry>> getEntriesByExternalId(
+    String? categoryId,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#getEntriesByExternalId, [categoryId]),
+            returnValue: _i3.Future<Map<String, _i5.MeasurementEntry>>.value(
+              <String, _i5.MeasurementEntry>{},
+            ),
+          )
+          as _i3.Future<Map<String, _i5.MeasurementEntry>>);
+
+  @override
+  _i3.Future<bool> hasEntries(String? categoryId) =>
+      (super.noSuchMethod(
+            Invocation.method(#hasEntries, [categoryId]),
+            returnValue: _i3.Future<bool>.value(false),
+          )
+          as _i3.Future<bool>);
 
   @override
   _i3.Future<void> deleteLocalDrift(String? id) =>
@@ -73,6 +216,17 @@ class MockMeasurementRepository extends _i1.Mock implements _i2.MeasurementRepos
   _i3.Future<void> addLocalDrift(_i5.MeasurementEntry? entry) =>
       (super.noSuchMethod(
             Invocation.method(#addLocalDrift, [entry]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
+
+  @override
+  _i3.Future<void> addLocalDriftGroupEntries(
+    List<_i5.MeasurementEntry>? entries,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#addLocalDriftGroupEntries, [entries]),
             returnValue: _i3.Future<void>.value(),
             returnValueForMissingStub: _i3.Future<void>.value(),
           )
@@ -106,4 +260,150 @@ class MockMeasurementRepository extends _i1.Mock implements _i2.MeasurementRepos
             returnValueForMissingStub: _i3.Future<void>.value(),
           )
           as _i3.Future<void>);
+
+  @override
+  _i3.Future<void> addLocalDriftCategoryGroup(
+    List<_i4.MeasurementCategory>? categories,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#addLocalDriftCategoryGroup, [categories]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
+
+  @override
+  _i3.Future<void> reorderCategories(List<String>? orderedIds) =>
+      (super.noSuchMethod(
+            Invocation.method(#reorderCategories, [orderedIds]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
+}
+
+/// A class which mocks [AuthCredentialsStorage].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockAuthCredentialsStorage extends _i1.Mock implements _i7.AuthCredentialsStorage {
+  MockAuthCredentialsStorage() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i3.Future<_i7.StoredAuth?> load() =>
+      (super.noSuchMethod(
+            Invocation.method(#load, []),
+            returnValue: _i3.Future<_i7.StoredAuth?>.value(),
+          )
+          as _i3.Future<_i7.StoredAuth?>);
+
+  @override
+  _i3.Future<void> saveJwt({
+    required _i8.JwtCredential? credential,
+    required String? serverUrl,
+    String? refreshToken,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#saveJwt, [], {
+              #credential: credential,
+              #serverUrl: serverUrl,
+              #refreshToken: refreshToken,
+            }),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
+
+  @override
+  _i3.Future<void> updateJwt({
+    required _i8.JwtCredential? credential,
+    String? refreshToken,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#updateJwt, [], {
+              #credential: credential,
+              #refreshToken: refreshToken,
+            }),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
+
+  @override
+  _i3.Future<void> clearCredentials() =>
+      (super.noSuchMethod(
+            Invocation.method(#clearCredentials, []),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
+
+  @override
+  _i3.Future<void> clearLegacyDrfToken() =>
+      (super.noSuchMethod(
+            Invocation.method(#clearLegacyDrfToken, []),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
+
+  @override
+  _i3.Future<void> clearAll() =>
+      (super.noSuchMethod(
+            Invocation.method(#clearAll, []),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
+
+  @override
+  _i3.Future<String?> dbOwnerUserId() =>
+      (super.noSuchMethod(
+            Invocation.method(#dbOwnerUserId, []),
+            returnValue: _i3.Future<String?>.value(),
+          )
+          as _i3.Future<String?>);
+
+  @override
+  _i3.Future<void> setDbOwnerUserId(String? userId) =>
+      (super.noSuchMethod(
+            Invocation.method(#setDbOwnerUserId, [userId]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
+
+  @override
+  _i3.Future<bool> keepDataOnLogout() =>
+      (super.noSuchMethod(
+            Invocation.method(#keepDataOnLogout, []),
+            returnValue: _i3.Future<bool>.value(false),
+          )
+          as _i3.Future<bool>);
+
+  @override
+  _i3.Future<bool> hasEverSynced() =>
+      (super.noSuchMethod(
+            Invocation.method(#hasEverSynced, []),
+            returnValue: _i3.Future<bool>.value(false),
+          )
+          as _i3.Future<bool>);
+
+  @override
+  _i3.Future<void> markEverSynced() =>
+      (super.noSuchMethod(
+            Invocation.method(#markEverSynced, []),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
+
+  @override
+  _i3.Future<String?> readRefreshToken() =>
+      (super.noSuchMethod(
+            Invocation.method(#readRefreshToken, []),
+            returnValue: _i3.Future<String?>.value(),
+          )
+          as _i3.Future<String?>);
 }

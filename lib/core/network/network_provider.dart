@@ -22,6 +22,7 @@ import 'dart:io';
 import 'package:collection/collection.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' show Provider;
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -341,6 +342,16 @@ class NetworkStatus extends _$NetworkStatus {
     state = isOnline;
   }
 }
+
+/// Raw HTTP client of the auth endpoints: deliberately unauthenticated
+/// (login, refresh, version probe), so it does not recurse through the
+/// authenticated wrapper. Override in tests.
+final authHttpClientProvider = Provider<http.Client>(
+  (ref) => ReachabilityReportingClient(
+    http.Client(),
+    () => ref.read(networkStatusProvider.notifier),
+  ),
+);
 
 /// Feeds every request outcome into [NetworkStatus]: any response means the
 /// backend was reached (4xx/5xx included), a network error means it was not.

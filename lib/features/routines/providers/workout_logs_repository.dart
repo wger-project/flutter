@@ -23,6 +23,7 @@
 import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
+import 'package:wger/core/json.dart';
 import 'package:wger/database/powersync/database.dart';
 import 'package:wger/features/routines/models/log.dart';
 import 'package:wger/features/routines/models/session.dart';
@@ -121,37 +122,84 @@ class WorkoutLogRepository {
     _logger.finer('Adding local workout log entry ${log.date}');
 
     await _db.transaction(() async {
-      if (log.sessionId == null) {
-        final dayMidnightUtc = DateTime.utc(log.date.year, log.date.month, log.date.day);
-
-        final existing =
-            await (_db.select(_db.workoutSessionTable)
-                  ..where(
-                    (t) =>
-                        t.routineId.equalsNullable(log.routineId) &
-                        t.date.equalsValue(dayMidnightUtc),
-                  )
-                  ..limit(1))
-                .getSingleOrNull();
-
-        if (existing != null) {
-          log.sessionId = existing.id;
-        } else {
-          final newSession = WorkoutSession(
-            routineId: log.routineId,
-            dayId: dayId,
-            date: dayMidnightUtc,
-          );
-          final inserted = await _db
-              .into(_db.workoutSessionTable)
-              .insertReturning(newSession.toCompanion());
-          log.sessionId = inserted.id;
-          _logger.finer('Created lazy session ${inserted.id} for log');
-        }
-      }
+      log.sessionId ??= await _sessionIdFor(log, dayId: dayId);
 
       final inserted = await _db.into(_db.workoutLogTable).insertReturning(log.toCompanion());
       log.id = inserted.id;
     });
+  }
+
+  /// The session a log without one belongs to, creating it if nothing fits.
+  ///
+  /// In order: a session the log falls into, then the most recent session that
+  /// is still open and started no more than [sessionMaxDuration] ago, then one
+  /// on the same day that carries no time at all, otherwise a new one. The first
+  /// three mirror what the server does for logs uploaded without a session.
+  Future<String?> _sessionIdFor(Log log, {int? dayId}) async {
+    final at = dateToUtcIso8601(log.date);
+
+    final covering =
+        await (_db.select(_db.workoutSessionTable)
+              ..where(
+                (t) =>
+                    t.routineId.equalsNullable(log.routineId) &
+                    t.datetimeStart.isSmallerOrEqualValue(at) &
+                    t.datetimeEnd.isBiggerOrEqualValue(at),
+              )
+              ..limit(1))
+            .getSingleOrNull();
+    if (covering != null) {
+      return covering.id;
+    }
+
+    final windowStart = dateToUtcIso8601(log.date.subtract(sessionMaxDuration));
+    final open =
+        await (_db.select(_db.workoutSessionTable)
+              ..where(
+                (t) =>
+                    t.routineId.equalsNullable(log.routineId) &
+                    t.datetimeEnd.isNull() &
+                    t.datetimeStart.isBiggerOrEqualValue(windowStart) &
+                    t.datetimeStart.isSmallerOrEqualValue(at),
+              )
+              ..orderBy([(t) => OrderingTerm.desc(t.datetimeStart)])
+              ..limit(1))
+            .getSingleOrNull();
+    if (open != null) {
+      return open.id;
+    }
+
+    // Sessions that came from the server without a time can only be matched by
+    // their day. Dropping this would create a duplicate next to every one of them.
+    final dayMidnightUtc = DateTime.utc(log.date.year, log.date.month, log.date.day);
+    final sameDay =
+        await (_db.select(_db.workoutSessionTable)
+              ..where(
+                (t) =>
+                    t.routineId.equalsNullable(log.routineId) &
+                    t.datetimeStart.isNull() &
+                    t.date.equalsValue(dayMidnightUtc),
+              )
+              ..limit(1))
+            .getSingleOrNull();
+    if (sameDay != null) {
+      return sameDay.id;
+    }
+
+    // The start has to be set, otherwise the lookups above can never find this
+    // session again and every further log would create one of its own. The day
+    // is set so the routine's date sequence advances (issue wger#2460).
+    final created = await _db
+        .into(_db.workoutSessionTable)
+        .insertReturning(
+          WorkoutSession(
+            routineId: log.routineId,
+            dayId: dayId,
+            datetimeStart: log.date,
+          ).toCompanion(),
+        );
+    _logger.finer('Created lazy session ${created.id} for log');
+
+    return created.id;
   }
 }

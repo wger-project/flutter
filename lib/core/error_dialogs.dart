@@ -259,6 +259,7 @@ void showGeneralErrorDialog(dynamic error, StackTrace? stackTrace, {BuildContext
                   stackTrace: fullStackTrace,
                   applicationLogs: applicationLogs,
                   syncDiagnostics: await collectSyncDiagnostics(),
+                  appVersion: await collectAppVersion(),
                 );
                 final Uri reportUri = Uri.parse(githubIssueUrl);
 

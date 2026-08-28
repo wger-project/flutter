@@ -17,10 +17,10 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:wger/core/form_screen.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
+import 'package:wger/features/measurements/screens/measurement_category_sort_screen.dart';
 import 'package:wger/features/measurements/widgets/categories.dart';
-import 'package:wger/features/measurements/widgets/forms.dart';
+import 'package:wger/features/measurements/widgets/measurement_fab.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 class MeasurementCategoriesScreen extends StatelessWidget {
@@ -30,21 +30,20 @@ class MeasurementCategoriesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: AppBar(title: Text(AppLocalizations.of(context).measurements)),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add, color: Colors.white),
-        onPressed: () {
-          Navigator.pushNamed(
-            context,
-            FormScreen.routeName,
-            arguments: FormScreenArguments(
-              AppLocalizations.of(context).newEntry,
-              const MeasurementCategoryForm(),
-            ),
-          );
-        },
+      appBar: AppBar(
+        title: Text(i18n.labelBottomNavBody),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.sort),
+            tooltip: i18n.reorderCategories,
+            onPressed: () =>
+                Navigator.of(context).pushNamed(MeasurementCategorySortScreen.routeName),
+          ),
+        ],
       ),
+      floatingActionButton: const MeasurementsFab(),
       body: const WidescreenWrapper(
         child: CategoriesList(),
       ),

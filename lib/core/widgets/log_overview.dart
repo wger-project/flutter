@@ -19,7 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/core/error_dialogs.dart' show CopyToClipboardButton;
-import 'package:wger/core/errors.dart' show buildGithubIssueUrl;
+import 'package:wger/core/errors.dart' show buildGithubIssueUrl, collectAppVersion;
 import 'package:wger/core/log_file_store.dart';
 import 'package:wger/core/logs.dart';
 import 'package:wger/core/misc.dart';
@@ -73,6 +73,7 @@ class _LogOverviewPageState extends State<LogOverviewPage> {
               final url = buildGithubIssueUrl(
                 applicationLogs: InMemoryLogStore().getFormattedLogs(),
                 syncDiagnostics: await collectSyncDiagnostics(),
+                appVersion: await collectAppVersion(),
               );
               if (context.mounted) {
                 launchURL(url, context);

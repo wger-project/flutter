@@ -34,6 +34,7 @@ import 'package:wger/features/routines/models/slot_entry.dart';
 import 'package:wger/features/routines/models/weight_unit.dart';
 import 'package:wger/features/routines/providers/routines_repository.dart';
 import 'package:wger/features/routines/providers/workout_session_notifier.dart';
+
 part 'routines_notifier.g.dart';
 
 // Reference-data streams: kept alive across the app's lifetime so that

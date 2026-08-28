@@ -16,14 +16,6 @@
     "@register": {
         "description": "Text for registration button"
     },
-    "useDefaultServer": "استفاده از سرور پیش فرض",
-    "@useDefaultServer": {
-        "description": "Toggle button allowing users to switch between the default and a custom wger server"
-    },
-    "useCustomServer": "استفاده از سرور سفارشی (خصوصی)",
-    "@useCustomServer": {
-        "description": "Toggle button allowing users to switch between the default and a custom wger server"
-    },
     "edit": "ویرایش",
     "invalidUrl": "لطفا یک لینک معتبر وارد کنید",
     "@invalidUrl": {
@@ -65,20 +57,9 @@
     "@start": {
         "description": "Label on button to start the gym mode (i.e., an imperative)"
     },
-    "useApiToken": "استفاده از توکن API",
-    "useUsernameAndPassword": "استفاده از نام کاربری و رمز عبور",
     "comment": "نظر",
     "@comment": {
         "description": "Comment, additional information"
-    },
-    "apiToken": "توکن API",
-    "invalidApiToken": "لطفا یک کلید API معتبر وارد کنید",
-    "@invalidApiToken": {
-        "description": "Error message when the user enters an invalid API key"
-    },
-    "apiTokenValidChars": "یک کلید API می‌تواند فقط شامل حروف انگلیسی a تا f، اعداد انگلیسی 0 تا 9 و دقیقاً 40 کاراکتر باشد",
-    "@apiTokenValidChars": {
-        "description": "Error message when the user tries to input a API key with forbidden characters"
     },
     "customServerUrl": "آدرس اینترنتی (URL) به منبع WGER",
     "@customServerUrl": {
@@ -92,8 +73,6 @@
     "@reset": {
         "description": "Button text allowing the user to reset the entered values to the default"
     },
-    "registerInstead": "حساب کاربری ندارید؟ همین حالا ثبت نام کنید",
-    "loginInstead": "حساب کاربری دارید؟ وارد شوید",
     "nutritionalPlan": "برنامه غذایی",
     "labelBottomNavWorkout": "تمرین ورزشی",
     "@labelBottomNavWorkout": {
@@ -137,11 +116,6 @@
         "description": "The value of a measurement entry"
     },
     "newDay": "روز جدید",
-    "newSet": "مجموعه جدید",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
-    },
-    "selectExercises": "اگر می‌خواهید مجموعه ای از حرکات را انجام دهید، می‌توانید چندین تمرین را جستجو کنید، آنها در یک گروه قرار می‌گیرند",
     "gymMode": "حالت باشگاه",
     "@gymMode": {
         "description": "Label when starting the gym mode"
@@ -225,39 +199,6 @@
     },
     "min": "حداقل",
     "max": "حداکثر",
-    "chartAllTimeTitle": "نمودار کلی {name}",
-    "@chartAllTimeTitle": {
-        "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chart30DaysTitle": "نمودار 30 روزه {name}",
-    "@chart30DaysTitle": {
-        "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chartDuringPlanTitle": "نمودار {chartName} در برنامه {planName}",
-    "@chartDuringPlanTitle": {
-        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-        "type": "text",
-        "placeholders": {
-            "chartName": {
-                "type": "String"
-            },
-            "planName": {
-                "type": "String"
-            }
-        }
-    },
     "measurement": "اندازه گیری",
     "measurements": "اندازه گیری ها",
     "@measurements": {
@@ -265,10 +206,6 @@
     },
     "measurementCategoriesHelpText": "دسته اندازه گیری ، مانند \"دوسر\" یا \"چربی بدن\"",
     "measurementEntriesHelpText": "واحد مورد استفاده برای اندازه گیری دسته مانند \"سانتی متر\" یا \"٪\"",
-    "creationDate": "تاریخ شروع",
-    "@creationDate": {
-        "description": "The Start date of a nutritional plan"
-    },
     "endDate": "تاریخ پایان",
     "@endDate": {
         "description": "The End date of a nutritional plan"
@@ -321,7 +258,6 @@
     "@noMatchingExerciseFound": {
         "description": "Message returned if no exercises match the searched string"
     },
-    "searchNamesInEnglish": "اسامی را به زبان انگلیسی هم جستجو کنید",
     "equipment": "تجهیزات",
     "@equipment": {
         "description": "Equipment needed to perform an exercise"

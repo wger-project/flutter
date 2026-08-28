@@ -18,6 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:wger/core/formatting/formatting.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 
 /// Read-only field that opens a time picker on tap.
 ///
@@ -218,6 +219,75 @@ class _DateInputWidgetState extends State<DateInputWidget> {
           widget.onChanged(picked);
         }
       },
+    );
+  }
+}
+
+/// The two halves of one [DateTime]: a date field above a time field, each
+/// reporting the whole moment through [onChanged].
+///
+/// For the entries that are stamped with a single point in time. Where date
+/// and time are stored apart (a meal has a time and no date), the two fields
+/// are used on their own instead.
+class DateTimeInputWidget extends StatefulWidget {
+  const DateTimeInputWidget({
+    required this.value,
+    required this.onChanged,
+    this.firstDate,
+    this.lastDate,
+    super.key,
+  });
+
+  /// The moment both fields show, and the one edits are applied to.
+  final DateTime value;
+
+  /// Called with the full moment after either half was picked.
+  final ValueChanged<DateTime> onChanged;
+
+  /// Earliest selectable date, ten years back by default.
+  final DateTime? firstDate;
+
+  /// Latest selectable date, today by default.
+  final DateTime? lastDate;
+
+  @override
+  State<DateTimeInputWidget> createState() => _DateTimeInputWidgetState();
+}
+
+class _DateTimeInputWidgetState extends State<DateTimeInputWidget> {
+  /// The moment as far as it has been edited. Kept here because the callers
+  /// collect what they build without rebuilding, so the value passed in would
+  /// still be the one the form started with when the second half is picked.
+  late DateTime _value = widget.value;
+
+  void _report(DateTime value) {
+    setState(() => _value = value);
+    widget.onChanged(value);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
+
+    return Column(
+      children: [
+        DateInputWidget(
+          value: _value,
+          labelText: i18n.date,
+          firstDate: widget.firstDate ?? DateTime(DateTime.now().year - 10),
+          lastDate: widget.lastDate ?? DateTime.now(),
+          onChanged: (date) => _report(
+            _value.copyWith(year: date.year, month: date.month, day: date.day),
+          ),
+        ),
+        TimeInputWidget(
+          value: TimeOfDay.fromDateTime(_value),
+          labelText: i18n.time,
+          onChanged: (time) => _report(
+            _value.copyWith(hour: time.hour, minute: time.minute, second: 0),
+          ),
+        ),
+      ],
     );
   }
 }

@@ -99,6 +99,22 @@ sealed class AppSettings with _$AppSettings {
   }) = _AppSettings;
 }
 
+/// Every widget in its declared order, all visible: what a fresh install gets
+/// and what is shown while the stored arrangement is still being read
+final defaultDashboardItems = List<DashboardItem>.unmodifiable(
+  DashboardWidget.values.map((widget) => DashboardItem(widget)),
+);
+
+const _storedKeys = {
+  PREFS_USER_DARK_THEME,
+  PREFS_USER_LOCALE,
+  PREFS_DASHBOARD_CONFIG,
+  PREFS_KEEP_DATA_ON_LOGOUT,
+  PREFS_ALLOW_SELF_SIGNED_CERTS,
+  PREFS_USE_DYNAMIC_COLOR,
+  PREFS_VERBOSE_LOGGING,
+};
+
 /// SharedPreferences accessor for local settings. Override in tests.
 final appSettingsPrefsProvider = Provider<SharedPreferencesAsync>(
   (ref) => PreferenceHelper.asyncPref,
@@ -111,21 +127,19 @@ class AppSettingsNotifier extends _$AppSettingsNotifier {
   @override
   Future<AppSettings> build() async {
     _prefs = ref.read(appSettingsPrefsProvider);
-    final themeMode = await _loadThemeMode();
-    final userLocale = await _loadUserLocale();
-    final items = await _loadDashboardItems();
-    final keepDataOnLogout = await _loadKeepDataOnLogout();
-    final allowSelfSignedCerts = await _loadAllowSelfSignedCerts();
-    final useDynamicColor = await _loadUseDynamicColor();
-    final verboseLogging = await _loadVerboseLogging();
+
+    // One round trip for all of them: every consumer shows a default until
+    // this resolves, and the dashboard has nothing to show at all
+    final stored = await _prefs.getAll(allowList: _storedKeys);
+
     return AppSettings(
-      themeMode: themeMode,
-      userLocale: userLocale,
-      dashboardItems: items,
-      keepDataOnLogout: keepDataOnLogout,
-      allowSelfSignedCerts: allowSelfSignedCerts,
-      useDynamicColor: useDynamicColor,
-      verboseLogging: verboseLogging,
+      themeMode: _readThemeMode(stored),
+      userLocale: _matchSupportedLocale(stored[PREFS_USER_LOCALE] as String?),
+      dashboardItems: _readDashboardItems(stored),
+      keepDataOnLogout: stored[PREFS_KEEP_DATA_ON_LOGOUT] as bool? ?? KEEP_DATA_ON_LOGOUT_DEFAULT,
+      allowSelfSignedCerts: _readAllowSelfSignedCerts(stored),
+      useDynamicColor: stored[PREFS_USE_DYNAMIC_COLOR] as bool? ?? USE_DYNAMIC_COLOR_DEFAULT,
+      verboseLogging: _readVerboseLogging(stored),
     );
   }
 
@@ -133,8 +147,8 @@ class AppSettingsNotifier extends _$AppSettingsNotifier {
   // Theme mode
   //
 
-  Future<ThemeMode> _loadThemeMode() async {
-    final dark = await _prefs.getBool(PREFS_USER_DARK_THEME);
+  static ThemeMode _readThemeMode(Map<String, Object?> stored) {
+    final dark = stored[PREFS_USER_DARK_THEME] as bool?;
     if (dark == null) {
       return ThemeMode.system;
     }
@@ -155,11 +169,6 @@ class AppSettingsNotifier extends _$AppSettingsNotifier {
   //
   // Locale override
   //
-
-  Future<Locale?> _loadUserLocale() async {
-    final raw = await _prefs.getString(PREFS_USER_LOCALE);
-    return _matchSupportedLocale(raw);
-  }
 
   /// Match a stored locale tag (`languageCode` or `languageCode_subtag`)
   /// against [AppLocalizations.supportedLocales]. Returns the exact supported
@@ -202,9 +211,6 @@ class AppSettingsNotifier extends _$AppSettingsNotifier {
   // Keep local data on logout
   //
 
-  Future<bool> _loadKeepDataOnLogout() async =>
-      (await _prefs.getBool(PREFS_KEEP_DATA_ON_LOGOUT)) ?? KEEP_DATA_ON_LOGOUT_DEFAULT;
-
   Future<void> setKeepDataOnLogout(bool value) async {
     final current = state.asData?.value ?? const AppSettings();
     state = AsyncData(current.copyWith(keepDataOnLogout: value));
@@ -215,9 +221,8 @@ class AppSettingsNotifier extends _$AppSettingsNotifier {
   // Allow self-signed certificates
   //
 
-  Future<bool> _loadAllowSelfSignedCerts() async {
-    final value =
-        (await _prefs.getBool(PREFS_ALLOW_SELF_SIGNED_CERTS)) ?? ALLOW_SELF_SIGNED_CERTS_DEFAULT;
+  static bool _readAllowSelfSignedCerts(Map<String, Object?> stored) {
+    final value = stored[PREFS_ALLOW_SELF_SIGNED_CERTS] as bool? ?? ALLOW_SELF_SIGNED_CERTS_DEFAULT;
     // The override reads a static, so mirror the setting on both load and write
     // and it can never drift from this provider.
     WgerHttpOverrides.allowSelfSignedCerts = value;
@@ -235,9 +240,6 @@ class AppSettingsNotifier extends _$AppSettingsNotifier {
   // Use dynamic color
   //
 
-  Future<bool> _loadUseDynamicColor() async =>
-      (await _prefs.getBool(PREFS_USE_DYNAMIC_COLOR)) ?? USE_DYNAMIC_COLOR_DEFAULT;
-
   Future<void> setUseDynamicColor(bool value) async {
     final current = state.asData?.value ?? const AppSettings();
     state = AsyncData(current.copyWith(useDynamicColor: value));
@@ -248,8 +250,8 @@ class AppSettingsNotifier extends _$AppSettingsNotifier {
   // Verbose logging
   //
 
-  Future<bool> _loadVerboseLogging() async {
-    final value = (await _prefs.getBool(PREFS_VERBOSE_LOGGING)) ?? VERBOSE_LOGGING_DEFAULT;
+  static bool _readVerboseLogging(Map<String, Object?> stored) {
+    final value = stored[PREFS_VERBOSE_LOGGING] as bool? ?? VERBOSE_LOGGING_DEFAULT;
     // main() already seeds the level from the same key, applying it here as
     // well keeps the two from drifting apart.
     applyVerboseLogging(value);
@@ -267,10 +269,10 @@ class AppSettingsNotifier extends _$AppSettingsNotifier {
   // Dashboard config
   //
 
-  Future<List<DashboardItem>> _loadDashboardItems() async {
-    final jsonString = await _prefs.getString(PREFS_DASHBOARD_CONFIG);
+  static List<DashboardItem> _readDashboardItems(Map<String, Object?> stored) {
+    final jsonString = stored[PREFS_DASHBOARD_CONFIG] as String?;
     if (jsonString == null) {
-      return DashboardWidget.values.map((w) => DashboardItem(w)).toList();
+      return defaultDashboardItems;
     }
 
     try {
@@ -307,7 +309,9 @@ class AppSettingsNotifier extends _$AppSettingsNotifier {
   }
 
   Future<void> setWidgetVisible(DashboardWidget key, bool visible) async {
-    final current = state.asData?.value ?? const AppSettings();
+    // The screen shows the default arrangement while this resolves, editing
+    // on top of that would persist it over the stored one
+    final current = await future;
     final updated = current.dashboardItems.map((item) {
       if (item.widget == key) {
         return item.copyWith(isVisible: visible);
@@ -320,7 +324,7 @@ class AppSettingsNotifier extends _$AppSettingsNotifier {
   }
 
   Future<void> setDashboardOrder(int oldIndex, int newIndex) async {
-    final current = state.asData?.value ?? const AppSettings();
+    final current = await future;
     final items = List<DashboardItem>.of(current.dashboardItems);
     final item = items.removeAt(oldIndex);
     items.insert(newIndex, item);

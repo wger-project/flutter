@@ -25,6 +25,7 @@ import 'package:wger/core/date.dart';
 import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/core/widgets/error.dart';
 import 'package:wger/core/widgets/progress_indicator.dart';
+import 'package:wger/features/account/providers/user_profile_notifier.dart';
 import 'package:wger/features/routines/models/session.dart';
 import 'package:wger/features/routines/providers/gym_state_notifier.dart';
 import 'package:wger/features/routines/providers/routines_notifier.dart';
@@ -75,6 +76,7 @@ class _WorkoutSummaryState extends ConsumerState<WorkoutSummary> {
     final routinesState = ref.watch(routinesRiverpodProvider).value;
     final routine = routinesState?.routines.firstWhereOrNull((r) => r.id == routineId);
     final trophyState = ref.watch(trophyStateProvider);
+    final ownerZone = ref.watch(ownerTimeZoneProvider);
 
     return Column(
       children: [
@@ -100,8 +102,10 @@ class _WorkoutSummaryState extends ConsumerState<WorkoutSummary> {
                 return const BoxedProgressIndicator();
               }
 
+              // Both sides of the comparison cut in the owner's zone, so the
+              // summary shows the session of the same "today" the server uses
               final session = routine.sessions.firstWhereOrNull(
-                (s) => s.date.isSameDayAs(clock.now()),
+                (s) => s.localDayIn(ownerZone).isSameDayAs(dayIn(clock.now(), ownerZone)),
               );
               final userTrophies = trophyState.prTrophies
                   .where((t) => t.contextData?.sessionId == session?.id)

@@ -112,7 +112,7 @@ const PowersyncWorkoutLogTable = ps.Table(
   ],
 );
 
-@UseRowClass(WorkoutSession)
+@UseRowClass(WorkoutSession, constructor: 'fromDb')
 class WorkoutSessionTable extends Table {
   @override
   String get tableName => 'manager_workoutsession';
@@ -120,9 +120,20 @@ class WorkoutSessionTable extends Table {
   TextColumn get id => text().clientDefault(() => ps.uuid.v7())();
   IntColumn get routineId => integer().named('routine_id').nullable()();
   IntColumn get dayId => integer().named('day_id').nullable()();
-  TextColumn get date => text().map(const DateOnlyTextConverter())();
   TextColumn get notes => text().nullable()();
   TextColumn get impression => text().map(const WorkoutImpressionConverter())();
+
+  // Nullable, and permanently so: rows that were replicated before 2.7 have no
+  // such key in the stored JSON and read as NULL for as long as that local
+  // database lives. WorkoutSession.fromDb rebuilds them from the columns below.
+  TextColumn get datetimeStart =>
+      text().named('datetime_start').nullable().map(const DateTimeTextConverter())();
+  TextColumn get datetimeEnd =>
+      text().named('datetime_end').nullable().map(const DateTimeTextConverter())();
+
+  // Pre-2.7 shape, only ever read. Remove once MIN_APP_VERSION has passed the
+  // versions that wrote them.
+  TextColumn get date => text().nullable().map(const DateOnlyTextConverter())();
   TextColumn get timeStart =>
       text().named('time_start').nullable().map(const TimeOfDayConverter())();
   TextColumn get timeEnd => text().named('time_end').nullable().map(const TimeOfDayConverter())();
@@ -133,9 +144,11 @@ const PowersyncWorkoutSessionTable = ps.Table(
   [
     ps.Column.integer('routine_id'),
     ps.Column.integer('day_id'),
-    ps.Column.text('date'),
     ps.Column.text('notes'),
     ps.Column.text('impression'),
+    ps.Column.text('datetime_start'),
+    ps.Column.text('datetime_end'),
+    ps.Column.text('date'),
     ps.Column.text('time_start'),
     ps.Column.text('time_end'),
   ],

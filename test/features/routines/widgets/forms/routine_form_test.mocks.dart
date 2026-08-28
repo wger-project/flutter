@@ -438,6 +438,15 @@ class MockUserProfileRepository extends _i1.Mock implements _i21.UserProfileRepo
           as _i9.Stream<_i22.UserProfile?>);
 
   @override
+  _i9.Future<void> updateTimeZoneDrift(int? id, String? timeZone) =>
+      (super.noSuchMethod(
+            Invocation.method(#updateTimeZoneDrift, [id, timeZone]),
+            returnValue: _i9.Future<void>.value(),
+            returnValueForMissingStub: _i9.Future<void>.value(),
+          )
+          as _i9.Future<void>);
+
+  @override
   _i9.Future<void> editLocalDrift(_i22.UserProfile? profile) =>
       (super.noSuchMethod(
             Invocation.method(#editLocalDrift, [profile]),

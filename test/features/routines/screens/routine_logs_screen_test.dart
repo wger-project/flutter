@@ -25,6 +25,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/core/network/network_provider.dart';
+import 'package:wger/features/account/providers/user_profile_repository.dart';
 import 'package:wger/features/routines/models/log.dart';
 import 'package:wger/features/routines/models/repetition_unit.dart';
 import 'package:wger/features/routines/models/routine.dart';
@@ -34,6 +35,7 @@ import 'package:wger/features/routines/providers/workout_logs_repository.dart';
 import 'package:wger/features/routines/screens/routine_logs_screen.dart';
 import 'package:wger/features/routines/screens/routine_screen.dart';
 import 'package:wger/features/routines/widgets/logs/log_overview_routine.dart';
+import 'package:wger/features/routines/widgets/logs/session_info.dart';
 import 'package:wger/features/trophies/providers/trophy_repository.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
@@ -49,14 +51,14 @@ class _StubRoutinesRiverpod extends RoutinesRiverpod {
   Stream<RoutinesState> build() => Stream.value(RoutinesState(routines: _routines));
 }
 
-@GenerateMocks([TrophyRepository, WorkoutLogRepository])
+@GenerateMocks([TrophyRepository, WorkoutLogRepository, UserProfileRepository])
 void main() {
   late Routine routine;
   final mockWorkoutLogRepository = MockWorkoutLogRepository();
 
   setUp(() {
     routine = getTestRoutine();
-    routine.sessions[0] = routine.sessions[0].copyWith(date: DateTime(2025, 3, 29));
+    routine.sessions[0] = routine.sessions[0].copyWith(datetimeStart: DateTime(2025, 3, 29));
     // Pin every log to a known session id so we can verify the edit
     // dialog round-trips the value through the model.
     for (final log in routine.sessions[0].logs) {
@@ -78,9 +80,17 @@ void main() {
       ),
     ).thenAnswer((_) async => getUserTrophies());
 
+    // The log calendar cuts its days in the owner's zone, which reaches the
+    // Drift-backed profile repository. Stub it so the real database is not
+    // pulled into a widget test: a failing stream there leaves Riverpod's
+    // retry timer pending after the tree is disposed.
+    final mockUserProfileRepository = MockUserProfileRepository();
+    when(mockUserProfileRepository.watchDrift()).thenAnswer((_) => Stream.value(null));
+
     final container = ProviderContainer.test(
       overrides: [
         networkStatusProvider.overrideWithValue(isOnline),
+        userProfileRepositoryProvider.overrideWithValue(mockUserProfileRepository),
         workoutLogRepositoryProvider.overrideWithValue(mockWorkoutLogRepository),
         trophyRepositoryProvider.overrideWithValue(mockRepository),
         routinesRiverpodProvider.overrideWith(
@@ -214,6 +224,29 @@ void main() {
       expect(updated.id, '1');
       expect(updated.repetitions, 15);
       expect(updated.sessionId, 'session-fixture-1');
+    });
+  });
+
+  testWidgets('Shows every session logged on the selected day', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(500, 1200);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+
+    // A second workout later the same day, which the server allows since 2.7
+    routine.sessions[1] = routine.sessions[1].copyWith(
+      datetimeStart: DateTime(2025, 3, 29, 18, 0),
+      datetimeEnd: DateTime(2025, 3, 29, 19, 30),
+    );
+
+    await withClock(Clock.fixed(DateTime(2025, 3, 29)), () async {
+      await tester.pumpWidget(renderWidget());
+      await tester.tap(find.byType(TextButton));
+      await tester.pumpAndSettle();
+
+      // Both sessions are rendered, each with its own logs
+      expect(find.byType(SessionInfo), findsNWidgets(2));
+      expect(find.byKey(const ValueKey('delete-log-1')), findsOneWidget);
+      expect(find.byKey(const ValueKey('delete-log-3')), findsOneWidget);
     });
   });
 

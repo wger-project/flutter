@@ -325,7 +325,6 @@
     "@close": {
         "description": "Translation for close"
     },
-    "identicalExercisePleaseDiscard": "Ако забележите вежба што е идентична со онаа што ја додавате, тогаш отфрлете го вашиот нацрт и наместо тоа уредете ја таа постоечка вежба.",
     "checkInformationBeforeSubmitting": "Ве молиме проверете дали информацијата што ја внесовте е точна пред да ја зачувате вежбата",
     "imageDetailsTitle": "Детали за слика",
     "@imageDetailsTitle": {
@@ -356,16 +355,6 @@
     "imageFormatNotSupported": "{imageFormat} не е поддржан",
     "@imageFormatNotSupported": {
         "description": "Label shown on the error container when image format is not supported",
-        "type": "text",
-        "placeholders": {
-            "imageFormat": {
-                "type": "String"
-            }
-        }
-    },
-    "imageFormatNotSupportedDetail": "{imageFormat} сликите сеште не се поддржани.",
-    "@imageFormatNotSupportedDetail": {
-        "description": "Label shown on the image preview container when image format is not supported",
         "type": "text",
         "placeholders": {
             "imageFormat": {
@@ -612,26 +601,6 @@
     },
     "min": "Минимум",
     "max": "Максимум",
-    "chart30DaysTitle": "{name} последни 30 дена",
-    "@chart30DaysTitle": {
-        "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chartAllTimeTitle": "{name} цело време",
-    "@chartAllTimeTitle": {
-        "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
     "copyToClipboard": "Копирај",
     "measurement": "Мерење",
     "measurements": "Мерења",

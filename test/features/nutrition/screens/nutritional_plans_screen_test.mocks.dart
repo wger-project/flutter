@@ -11,8 +11,12 @@ import 'package:http/http.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i14;
 import 'package:wger/core/search_options.dart' as _i12;
-import 'package:wger/features/account/models/user_profile.dart' as _i19;
-import 'package:wger/features/account/providers/user_profile_repository.dart' as _i18;
+import 'package:wger/features/account/models/user_profile.dart' as _i21;
+import 'package:wger/features/account/providers/user_profile_repository.dart' as _i20;
+import 'package:wger/features/measurements/models/measurement_bucket.dart' as _i19;
+import 'package:wger/features/measurements/models/measurement_category.dart' as _i17;
+import 'package:wger/features/measurements/models/measurement_entry.dart' as _i18;
+import 'package:wger/features/measurements/providers/measurement_repository.dart' as _i16;
 import 'package:wger/features/nutrition/models/ingredient.dart' as _i10;
 import 'package:wger/features/nutrition/models/ingredient_filters.dart' as _i11;
 import 'package:wger/features/nutrition/models/log.dart' as _i8;
@@ -21,8 +25,6 @@ import 'package:wger/features/nutrition/models/meal_item.dart' as _i7;
 import 'package:wger/features/nutrition/models/nutritional_plan.dart' as _i5;
 import 'package:wger/features/nutrition/providers/ingredient_repository.dart' as _i9;
 import 'package:wger/features/nutrition/providers/nutrition_repository.dart' as _i3;
-import 'package:wger/features/weight/models/weight_entry.dart' as _i17;
-import 'package:wger/features/weight/providers/body_weight_repository.dart' as _i16;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -486,21 +488,171 @@ class MockClient extends _i1.Mock implements _i2.Client {
   );
 }
 
-/// A class which mocks [BodyWeightRepository].
+/// A class which mocks [MeasurementRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockBodyWeightRepository extends _i1.Mock implements _i16.BodyWeightRepository {
-  MockBodyWeightRepository() {
+class MockMeasurementRepository extends _i1.Mock implements _i16.MeasurementRepository {
+  MockMeasurementRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i4.Stream<List<_i17.WeightEntry>> watchAllDrift() =>
+  _i4.Stream<List<_i17.MeasurementCategory>> watchAllWithoutEntries() =>
       (super.noSuchMethod(
-            Invocation.method(#watchAllDrift, []),
-            returnValue: _i4.Stream<List<_i17.WeightEntry>>.empty(),
+            Invocation.method(#watchAllWithoutEntries, []),
+            returnValue: _i4.Stream<List<_i17.MeasurementCategory>>.empty(),
           )
-          as _i4.Stream<List<_i17.WeightEntry>>);
+          as _i4.Stream<List<_i17.MeasurementCategory>>);
+
+  @override
+  _i4.Stream<_i17.MeasurementCategory?> watchCategoryWithoutEntries(
+    String? id,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#watchCategoryWithoutEntries, [id]),
+            returnValue: _i4.Stream<_i17.MeasurementCategory?>.empty(),
+          )
+          as _i4.Stream<_i17.MeasurementCategory?>);
+
+  @override
+  _i4.Stream<_i17.MeasurementCategory?> watchOfficialBodyWeightCategory() =>
+      (super.noSuchMethod(
+            Invocation.method(#watchOfficialBodyWeightCategory, []),
+            returnValue: _i4.Stream<_i17.MeasurementCategory?>.empty(),
+          )
+          as _i4.Stream<_i17.MeasurementCategory?>);
+
+  @override
+  _i4.Stream<List<_i18.MeasurementEntry>> watchEntries(
+    String? categoryId, {
+    required int? limit,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#watchEntries, [categoryId], {#limit: limit}),
+            returnValue: _i4.Stream<List<_i18.MeasurementEntry>>.empty(),
+          )
+          as _i4.Stream<List<_i18.MeasurementEntry>>);
+
+  @override
+  _i4.Stream<List<_i18.MeasurementEntry>> watchGroupEntries(
+    String? parentId, {
+    required int? limit,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#watchGroupEntries, [parentId], {#limit: limit}),
+            returnValue: _i4.Stream<List<_i18.MeasurementEntry>>.empty(),
+          )
+          as _i4.Stream<List<_i18.MeasurementEntry>>);
+
+  @override
+  _i4.Stream<Map<String, _i18.MeasurementEntry>> watchLatestEntries() =>
+      (super.noSuchMethod(
+            Invocation.method(#watchLatestEntries, []),
+            returnValue: _i4.Stream<Map<String, _i18.MeasurementEntry>>.empty(),
+          )
+          as _i4.Stream<Map<String, _i18.MeasurementEntry>>);
+
+  @override
+  _i4.Stream<List<_i19.MeasurementBucket>> watchEntryBuckets(
+    String? categoryId, {
+    DateTime? since,
+    DateTime? until,
+    _i19.MeasurementBucketLevel? level = _i19.MeasurementBucketLevel.auto,
+    int? maxPoints = 200,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #watchEntryBuckets,
+              [categoryId],
+              {
+                #since: since,
+                #until: until,
+                #level: level,
+                #maxPoints: maxPoints,
+              },
+            ),
+            returnValue: _i4.Stream<List<_i19.MeasurementBucket>>.empty(),
+          )
+          as _i4.Stream<List<_i19.MeasurementBucket>>);
+
+  @override
+  _i4.Stream<Map<String, List<_i19.MeasurementBucket>>> watchGroupBuckets(
+    String? parentId, {
+    DateTime? since,
+    _i19.MeasurementBucketLevel? level = _i19.MeasurementBucketLevel.auto,
+    int? maxPoints = 200,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #watchGroupBuckets,
+              [parentId],
+              {#since: since, #level: level, #maxPoints: maxPoints},
+            ),
+            returnValue: _i4.Stream<Map<String, List<_i19.MeasurementBucket>>>.empty(),
+          )
+          as _i4.Stream<Map<String, List<_i19.MeasurementBucket>>>);
+
+  @override
+  _i4.Stream<Map<String, List<_i19.MeasurementBucket>>> watchDailyBuckets() =>
+      (super.noSuchMethod(
+            Invocation.method(#watchDailyBuckets, []),
+            returnValue: _i4.Stream<Map<String, List<_i19.MeasurementBucket>>>.empty(),
+          )
+          as _i4.Stream<Map<String, List<_i19.MeasurementBucket>>>);
+
+  @override
+  _i4.Stream<List<_i19.MeasurementValueCount>> watchValueCounts(
+    String? categoryId, {
+    DateTime? since,
+    bool? summedPerDay = false,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #watchValueCounts,
+              [categoryId],
+              {#since: since, #summedPerDay: summedPerDay},
+            ),
+            returnValue: _i4.Stream<List<_i19.MeasurementValueCount>>.empty(),
+          )
+          as _i4.Stream<List<_i19.MeasurementValueCount>>);
+
+  @override
+  _i4.Future<List<_i17.MeasurementCategory>> getCategoriesOnce() =>
+      (super.noSuchMethod(
+            Invocation.method(#getCategoriesOnce, []),
+            returnValue: _i4.Future<List<_i17.MeasurementCategory>>.value(
+              <_i17.MeasurementCategory>[],
+            ),
+          )
+          as _i4.Future<List<_i17.MeasurementCategory>>);
+
+  @override
+  _i4.Future<Set<String>> getExternalIds(String? categoryId) =>
+      (super.noSuchMethod(
+            Invocation.method(#getExternalIds, [categoryId]),
+            returnValue: _i4.Future<Set<String>>.value(<String>{}),
+          )
+          as _i4.Future<Set<String>>);
+
+  @override
+  _i4.Future<Map<String, _i18.MeasurementEntry>> getEntriesByExternalId(
+    String? categoryId,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#getEntriesByExternalId, [categoryId]),
+            returnValue: _i4.Future<Map<String, _i18.MeasurementEntry>>.value(
+              <String, _i18.MeasurementEntry>{},
+            ),
+          )
+          as _i4.Future<Map<String, _i18.MeasurementEntry>>);
+
+  @override
+  _i4.Future<bool> hasEntries(String? categoryId) =>
+      (super.noSuchMethod(
+            Invocation.method(#hasEntries, [categoryId]),
+            returnValue: _i4.Future<bool>.value(false),
+          )
+          as _i4.Future<bool>);
 
   @override
   _i4.Future<void> deleteLocalDrift(String? id) =>
@@ -512,7 +664,7 @@ class MockBodyWeightRepository extends _i1.Mock implements _i16.BodyWeightReposi
           as _i4.Future<void>);
 
   @override
-  _i4.Future<void> updateLocalDrift(_i17.WeightEntry? entry) =>
+  _i4.Future<void> updateLocalDrift(_i18.MeasurementEntry? entry) =>
       (super.noSuchMethod(
             Invocation.method(#updateLocalDrift, [entry]),
             returnValue: _i4.Future<void>.value(),
@@ -521,9 +673,69 @@ class MockBodyWeightRepository extends _i1.Mock implements _i16.BodyWeightReposi
           as _i4.Future<void>);
 
   @override
-  _i4.Future<void> addLocalDrift(_i17.WeightEntry? entry) =>
+  _i4.Future<void> addLocalDrift(_i18.MeasurementEntry? entry) =>
       (super.noSuchMethod(
             Invocation.method(#addLocalDrift, [entry]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> addLocalDriftGroupEntries(
+    List<_i18.MeasurementEntry>? entries,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#addLocalDriftGroupEntries, [entries]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> deleteLocalDriftCategory(String? id) =>
+      (super.noSuchMethod(
+            Invocation.method(#deleteLocalDriftCategory, [id]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> updateLocalDriftCategory(
+    _i17.MeasurementCategory? category,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#updateLocalDriftCategory, [category]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> addLocalDriftCategory(_i17.MeasurementCategory? category) =>
+      (super.noSuchMethod(
+            Invocation.method(#addLocalDriftCategory, [category]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> addLocalDriftCategoryGroup(
+    List<_i17.MeasurementCategory>? categories,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#addLocalDriftCategoryGroup, [categories]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> reorderCategories(List<String>? orderedIds) =>
+      (super.noSuchMethod(
+            Invocation.method(#reorderCategories, [orderedIds]),
             returnValue: _i4.Future<void>.value(),
             returnValueForMissingStub: _i4.Future<void>.value(),
           )
@@ -533,21 +745,30 @@ class MockBodyWeightRepository extends _i1.Mock implements _i16.BodyWeightReposi
 /// A class which mocks [UserProfileRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockUserProfileRepository extends _i1.Mock implements _i18.UserProfileRepository {
+class MockUserProfileRepository extends _i1.Mock implements _i20.UserProfileRepository {
   MockUserProfileRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i4.Stream<_i19.UserProfile?> watchDrift() =>
+  _i4.Stream<_i21.UserProfile?> watchDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchDrift, []),
-            returnValue: _i4.Stream<_i19.UserProfile?>.empty(),
+            returnValue: _i4.Stream<_i21.UserProfile?>.empty(),
           )
-          as _i4.Stream<_i19.UserProfile?>);
+          as _i4.Stream<_i21.UserProfile?>);
 
   @override
-  _i4.Future<void> editLocalDrift(_i19.UserProfile? profile) =>
+  _i4.Future<void> updateTimeZoneDrift(int? id, String? timeZone) =>
+      (super.noSuchMethod(
+            Invocation.method(#updateTimeZoneDrift, [id, timeZone]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> editLocalDrift(_i21.UserProfile? profile) =>
       (super.noSuchMethod(
             Invocation.method(#editLocalDrift, [profile]),
             returnValue: _i4.Future<void>.value(),

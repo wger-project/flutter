@@ -242,10 +242,6 @@
     "routineDays": "Dagen in routine",
     "resultingRoutine": "Resulterende routine",
     "newDay": "Nieuwe dag",
-    "newSet": "Nieuwe set",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
-    },
     "selectExercises": "Als je een superset wilt doen kan je naar verschillende oefeningen zoeken, en kan je ze samen groeperen",
     "gymMode": "Gym modus",
     "@gymMode": {
@@ -358,39 +354,6 @@
     },
     "min": "Min",
     "max": "Max",
-    "chartAllTimeTitle": "{name} door de tijd heen",
-    "@chartAllTimeTitle": {
-        "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chart30DaysTitle": "{name} afgelopen 30 dagen",
-    "@chart30DaysTitle": {
-        "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chartDuringPlanTitle": "{chartName} tijdens voedingsplan {planName}",
-    "@chartDuringPlanTitle": {
-        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-        "type": "text",
-        "placeholders": {
-            "chartName": {
-                "type": "String"
-            },
-            "planName": {
-                "type": "String"
-            }
-        }
-    },
     "measurement": "Meting",
     "measurements": "Metingen",
     "@measurements": {
@@ -726,7 +689,6 @@
     "@close": {
         "description": "Translation for close"
     },
-    "identicalExercisePleaseDiscard": "Als je een oefening ziet die identiek is aan degene die je toevoegt, gooi dan je concept weg en bewerk die oefening in plaats daarvan.",
     "checkInformationBeforeSubmitting": "Controleer of de ingevoerde gegevens correct zijn voordat u de oefening indient",
     "add_exercise_image_license": "Afbeeldingen moeten compatibel zijn met de CC BY SA-licentie. Upload bij twijfel alleen foto's die je zelf hebt gemaakt.",
     "imageDetailsTitle": "Afbeeldingsdetails",
@@ -778,16 +740,6 @@
             }
         }
     },
-    "imageFormatNotSupportedDetail": "Afbeeldingen met het formaat {imageFormat} worden nog niet ondersteund.",
-    "@imageFormatNotSupportedDetail": {
-        "description": "Label shown on the image preview container when image format is not supported",
-        "type": "text",
-        "placeholders": {
-            "imageFormat": {
-                "type": "String"
-            }
-        }
-    },
     "add": "toevoegen",
     "@add": {
         "description": "Add button text"
@@ -827,7 +779,6 @@
     "fitInWeek": "Vast week­rooster",
     "fitInWeekHelp": "Indien ingeschakeld, zullen de dagen zich herhalen in een wekelijkse cyclus; anders zullen de dagen elkaar opeenvolgend opvolgen, ongeacht het begin van een nieuwe week.",
     "addSuperset": "Superset toevoegen",
-    "superset": "Superset",
     "setHasProgression": "Set heeft progressie",
     "setHasProgressionWarning": "Houd er rekening mee dat het momenteel niet mogelijk is om alle instellingen voor een set te bewerken in de mobiele app of om de automatische voortgang te configureren. Gebruik hiervoor voorlopig de webapp.",
     "setHasNoExercises": "Deze set heeft nog geen oefeningen!",
@@ -1099,9 +1050,9 @@
     },
     "editorItalic": "Cursief",
     "editorList": "Lijst",
-    "filterNutriscoreOff": "Uit",
-    "@filterNutriscoreOff": {
-        "description": "Label for the first slider stop, which disables the Nutri-Score filter"
+    "off": "Uit",
+    "@off": {
+        "description": "Generic label for the option that switches something off, e.g. a filter or a line of a chart"
     },
     "searchModeExact": "Exact",
     "@searchModeExact": {

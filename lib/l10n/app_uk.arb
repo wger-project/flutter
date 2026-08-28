@@ -194,10 +194,6 @@
     "@notes": {
         "description": "Personal notes, e.g. for a workout session"
     },
-    "newSet": "Новий набір",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
-    },
     "measurementCategoriesHelpText": "Категорія вимірювання, така як \"біцепс\" або \"жир тіла\"",
     "time": "Час",
     "@time": {
@@ -440,16 +436,6 @@
             }
         }
     },
-    "imageFormatNotSupportedDetail": "Зображення {imageFormat} поки що не підтримуються.",
-    "@imageFormatNotSupportedDetail": {
-        "description": "Label shown on the image preview container when image format is not supported",
-        "type": "text",
-        "placeholders": {
-            "imageFormat": {
-                "type": "String"
-            }
-        }
-    },
     "addImage": "Додати зображення",
     "dataCopied": "Дані скопійовано до нового запису",
     "@dataCopied": {
@@ -672,39 +658,6 @@
         }
     },
     "settingsExerciseCacheDescription": "Кеш вправ",
-    "chartAllTimeTitle": "{name} за весь час",
-    "@chartAllTimeTitle": {
-        "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chart30DaysTitle": "{name} останні 30 днів",
-    "@chart30DaysTitle": {
-        "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chartDuringPlanTitle": "{chartName} під час плану харчування {planName}",
-    "@chartDuringPlanTitle": {
-        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-        "type": "text",
-        "placeholders": {
-            "chartName": {
-                "type": "String"
-            },
-            "planName": {
-                "type": "String"
-            }
-        }
-    },
     "kcalValue": "{value} ккал",
     "@kcalValue": {
         "description": "A value in kcal, e.g. 500 kcal",
@@ -863,7 +816,6 @@
         "description": "When a nutrition plan has no pre-defined end date"
     },
     "overview": "Огляд",
-    "identicalExercisePleaseDiscard": "Якщо ви помітили вправу, ідентичну тій, яку ви додаєте, будь ласка, відкиньте свій чернетку та відредагуйте цю вправу.",
     "checkInformationBeforeSubmitting": "Будь ласка, перевірте правильність введеної вами інформації, перш ніж надсилати вправу",
     "enterTextInLanguage": "Будь ласка, введіть текст правильною мовою!",
     "imageDetailsTitle": "Деталі зображення",
@@ -1001,7 +953,6 @@
             }
         }
     },
-    "superset": "Суперсет",
     "dashboardWidgets": "Віджети панелі інструментів",
     "trophies": "Трофеї",
     "topSet": "Верхній набір: {value}",

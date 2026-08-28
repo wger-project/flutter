@@ -32,11 +32,13 @@ import 'package:wger/core/exceptions/mfa_required_exception.dart';
 import 'package:wger/core/network/auth_credentials_storage.dart';
 import 'package:wger/core/network/auth_notifier.dart';
 import 'package:wger/core/network/auth_state.dart';
+import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/core/network/secure_token_storage.dart';
 import 'package:wger/core/shared_preferences.dart';
 import 'package:wger/features/account/models/account.dart';
 import 'package:wger/features/account/providers/account_notifier.dart';
 import 'package:wger/features/account/providers/account_repository.dart';
+import 'package:wger/features/account/providers/timezone_sync.dart';
 
 import '../../helpers/fake_auth_environment.dart';
 import 'auth_notifier_login_test.mocks.dart';
@@ -173,7 +175,7 @@ void main() {
   });
 
   group('login: headless happy path', () {
-    test('200 → stores headless JWT bundle, wipes legacy PREFS_USER, state has tokens', () async {
+    test('200 → stores headless JWT bundle, state has tokens', () async {
       final accessJwt = makeJwt({'sub': '7', 'exp': 1900000000});
       when(
         mockClient.post(tHeadlessLogin, headers: anyNamed('headers'), body: anyNamed('body')),
@@ -189,16 +191,8 @@ void main() {
       );
 
       final container = makeContainer();
-      // Let auto-login settle as logged-out (no PREFS_USER yet).
+      // Let auto-login settle as logged-out (nothing stored yet).
       await container.read(authProvider.future);
-
-      // Seed a stale legacy blob *after* auto-login, so we can assert
-      // login() wipes it on success without auto-login itself trying to
-      // probe with it.
-      await PreferenceHelper.asyncPref.setString(
-        PREFS_USER,
-        jsonEncode({'token': 'stale-legacy', 'serverUrl': serverUrl}),
-      );
 
       final result = await container
           .read(authProvider.notifier)
@@ -217,12 +211,8 @@ void main() {
       // logged-in user so the next login can detect a user-switch.
       final prefs = PreferenceHelper.asyncPref;
       expect(await prefs.getString(PREFS_ACCESS_TOKEN), accessJwt);
-      expect(await prefs.getString(PREFS_TOKEN_TYPE), AuthTokenType.headlessJwt.name);
       expect(await prefs.getString(PREFS_SERVER_URL), serverUrl);
       expect(await prefs.getString(PREFS_DB_OWNER_USER_ID), '7');
-
-      // Stale legacy blob wiped.
-      expect(await prefs.containsKey(PREFS_USER), false);
 
       // No prior session, so the user-switch wipe path must not have fired.
       expect(container.read(authProvider.notifier).userSwitchWipeCount, 0);
@@ -405,6 +395,23 @@ void main() {
       // And ownership is now claimed for the new user so a future re-login
       // can detect the next switch.
       expect(await PreferenceHelper.asyncPref.getString(PREFS_DB_OWNER_USER_ID), '7');
+    });
+
+    test('a user switch drops the previous account-scoped preferences', () async {
+      // Health opt-in, watermarks and the timezone-report marker describe the
+      // previous account: inherited, they would import health data without an
+      // opt-in and let the sync overwrite the new user's chosen zone
+      await PreferenceHelper.asyncPref.setString(PREFS_DB_OWNER_USER_ID, '5');
+      await PreferenceHelper.instance.setHealthSyncEnabled(true);
+      await PreferenceHelper.asyncPref.setString(reportedTimezonePrefKey, 'Pacific/Auckland');
+      stubLoginSuccess(makeJwt({'sub': '7', 'exp': 1900000000}));
+
+      final container = makeContainer();
+      await container.read(authProvider.future);
+      await container.read(authProvider.notifier).login(username, password, serverUrl, null);
+
+      expect(await PreferenceHelper.instance.getHealthSyncEnabled(), isFalse);
+      expect(await PreferenceHelper.asyncPref.getString(reportedTimezonePrefKey), isNull);
     });
 
     test('same user logging back in keeps the local DB', () async {

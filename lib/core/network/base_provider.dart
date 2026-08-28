@@ -26,7 +26,7 @@ import 'package:logging/logging.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/core/helpers.dart';
-import 'package:wger/core/network/auth_notifier.dart' show getAppNameHeader;
+import 'package:wger/core/network/api_headers.dart' show getAppNameHeader;
 
 /// default timeout for GET requests
 const DEFAULT_TIMEOUT = Duration(seconds: 15);

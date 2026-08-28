@@ -90,6 +90,23 @@ Uri makeUri(
   return uri;
 }
 
+/// Builds the URL of a page the server renders itself, e.g. its terms of
+/// service. Unlike [makeUri] the path is used as given, without the API prefix
+/// and without a trailing slash.
+Uri makePageUri(String serverUrl, String path) {
+  final server = Uri.parse(serverUrl);
+  final basePath = server.path.endsWith('/')
+      ? server.path.substring(0, server.path.length - 1)
+      : server.path;
+
+  return Uri(
+    scheme: server.scheme,
+    host: server.host,
+    port: server.port,
+    path: '$basePath/$path',
+  );
+}
+
 /// Builds a URL for the `allauth.headless` `app` client API at
 /// `/allauth/app/v1/<path>`. Used by the auth notifier for login,
 /// signup, MFA, refresh, etc. The headless API does not use a trailing

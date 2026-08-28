@@ -42,20 +42,23 @@ class WorkoutSessionRepository {
   Stream<List<WorkoutSession>> watchAllDrift() {
     _logger.finer('Watching all local workout session entries');
 
-    final query = _db.select(_db.workoutSessionTable).join([
-      leftOuterJoin(
-        _db.workoutLogTable,
-        _db.workoutLogTable.sessionId.equalsExp(_db.workoutSessionTable.id),
-      ),
-      leftOuterJoin(
-        _db.routineRepetitionUnitTable,
-        _db.routineRepetitionUnitTable.id.equalsExp(_db.workoutLogTable.repetitionsUnitId),
-      ),
-      leftOuterJoin(
-        _db.routineWeightUnitTable,
-        _db.routineWeightUnitTable.id.equalsExp(_db.workoutLogTable.weightUnitId),
-      ),
-    ])..orderBy([OrderingTerm(expression: _db.workoutSessionTable.date, mode: OrderingMode.desc)]);
+    final query =
+        _db.select(_db.workoutSessionTable).join([
+          leftOuterJoin(
+            _db.workoutLogTable,
+            _db.workoutLogTable.sessionId.equalsExp(_db.workoutSessionTable.id),
+          ),
+          leftOuterJoin(
+            _db.routineRepetitionUnitTable,
+            _db.routineRepetitionUnitTable.id.equalsExp(_db.workoutLogTable.repetitionsUnitId),
+          ),
+          leftOuterJoin(
+            _db.routineWeightUnitTable,
+            _db.routineWeightUnitTable.id.equalsExp(_db.workoutLogTable.weightUnitId),
+          ),
+        ])..orderBy([
+          OrderingTerm(expression: _db.workoutSessionTable.datetimeStart, mode: OrderingMode.desc),
+        ]);
 
     return query.watch().map((rows) {
       final sessions = <String, WorkoutSession>{};
@@ -103,7 +106,7 @@ class WorkoutSessionRepository {
   /// `session.id` is null, Drift mints one, so the returned session carries
   /// the id the caller needs to reference it.
   Future<WorkoutSession> addLocalDrift(WorkoutSession session) async {
-    _logger.finer('Adding local workout session entry ${session.date}');
+    _logger.finer('Adding local workout session entry ${session.datetimeStart}');
     return _db.into(_db.workoutSessionTable).insertReturning(session.toCompanion());
   }
 }

@@ -118,10 +118,6 @@
     "@gymMode": {
         "description": "Label when starting the gym mode"
     },
-    "newSet": "Nuova serie",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
-    },
     "newDay": "Nuovo giorno",
     "workoutSession": "Sessione di allenamento",
     "@workoutSession": {
@@ -722,29 +718,6 @@
     "settingsCacheDeletedSnackbar": "Cache svuotata con successo",
     "done": "Fatto",
     "ingredientLogged": "Ingrediente registrato nel diario",
-    "chartDuringPlanTitle": "{chartName} durante il piano nutrizionale {planName}",
-    "@chartDuringPlanTitle": {
-        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-        "type": "text",
-        "placeholders": {
-            "chartName": {
-                "type": "String"
-            },
-            "planName": {
-                "type": "String"
-            }
-        }
-    },
-    "chart30DaysTitle": "{name} ultimi 30 giorni",
-    "@chart30DaysTitle": {
-        "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
     "goalMacro": "Obiettivi dei macronutrienti",
     "@goalMacro": {
         "description": "The goal for macronutrients"
@@ -825,16 +798,6 @@
     "deficit": "deficit",
     "@deficit": {
         "description": "Caloric deficit (either planned or unplanned)"
-    },
-    "chartAllTimeTitle": "{name} storico",
-    "@chartAllTimeTitle": {
-        "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
     },
     "darkMode": "Sempre in modalità scura",
     "routines": "Routine",
@@ -934,7 +897,6 @@
         "description": "When a nutrition plan has no pre-defined end date"
     },
     "overview": "Panoramica",
-    "identicalExercisePleaseDiscard": "Se trovate un esercizio identico a quello che state cercando di aggiungere, per favore scartate la vostra bozza e se necessario modificate l'esercizio esistente.",
     "checkInformationBeforeSubmitting": "Verificate che le informazioni siano corrette prima di aggiungere l'esercizio",
     "enterTextInLanguage": "Aggiungete il testo usando la lingua giusta!",
     "applicationLogs": "Registri dell'applicazione",
@@ -1073,17 +1035,6 @@
             }
         }
     },
-    "imageFormatNotSupportedDetail": "Le immagini in formato {imageFormat} non sono ancora supportate.",
-    "@imageFormatNotSupportedDetail": {
-        "description": "Label shown on the image preview container when image format is not supported",
-        "type": "text",
-        "placeholders": {
-            "imageFormat": {
-                "type": "String"
-            }
-        }
-    },
-    "superset": "Superset",
     "useBasicMarkdown": "Puoi usare il Markdown di base per formattare il testo",
     "editorBold": "Grassetto",
     "@editorBold": {
@@ -1161,9 +1112,9 @@
     "@filterNutriscore": {
         "description": "Heading for the Nutri-Score slider in the ingredient search filter dialog"
     },
-    "filterNutriscoreOff": "Spento",
-    "@filterNutriscoreOff": {
-        "description": "Label for the first slider stop, which disables the Nutri-Score filter"
+    "off": "Spento",
+    "@off": {
+        "description": "Generic label for the option that switches something off, e.g. a filter or a line of a chart"
     },
     "filterNutriscoreNoFilter": "Nessun filtro",
     "@filterNutriscoreNoFilter": {
