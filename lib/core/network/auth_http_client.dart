@@ -24,6 +24,7 @@ import 'package:logging/logging.dart';
 import 'package:wger/core/error_dialogs.dart';
 import 'package:wger/core/network/auth_notifier.dart';
 import 'package:wger/core/network/auth_state.dart';
+import 'package:wger/core/network/network_provider.dart';
 
 /// Pre-emptive refresh leeway: if the access JWT will expire within this
 /// window we refresh before sending the request. Chosen to absorb mild
@@ -34,21 +35,19 @@ const refreshLeeway = Duration(seconds: 30);
 /// authenticated request to the wger backend.
 ///
 /// Responsibilities:
-/// - Inject the right `Authorization` value for the current credential
-///   ([AuthCredential.authHeaderValue] does the dispatch).
-/// - For [JwtCredential], pre-emptively refresh when the stored expiry is
-///   within [refreshLeeway] of now.
-/// - On a 401 reply for a *replayable* [http.Request] body that was sent
-///   with a JWT, refresh once and retry. If the retry also returns 401
-///   the session is treated as genuinely revoked: `onSessionExpired`
-///   runs (clear credentials + surface a snackbar) and a synthetic 401
-///   is returned to the caller. Non-replayable bodies (multipart /
-///   streamed) are not retried; the pre-emptive refresh in the happy
-///   path is the primary safeguard.
+/// - Inject the `Authorization` value for the current credential.
+/// - Pre-emptively refresh when the stored expiry is within
+///   [refreshLeeway] of now.
+/// - On a 401 reply for a *replayable* [http.Request] body, refresh once
+///   and retry with the renewed credential. If the refresh kept the old
+///   one (offline carve-out in `_runRefresh`) the 401 goes back without a
+///   retry; a 401 on the retry counts as revoked and runs
+///   `onSessionExpired`. Non-replayable bodies (multipart / streamed) are
+///   not retried.
 ///
 /// Wrapped behind [authenticatedHttpClientProvider] so consumers
 /// (`WgerBaseProvider`, PowerSync's connector) get the auth handling for
-/// free without needing to know about the migration state.
+/// free.
 class AuthHttpClient extends http.BaseClient {
   final http.Client _inner;
   final AuthState? Function() _readAuth;
@@ -79,17 +78,21 @@ class AuthHttpClient extends http.BaseClient {
     _applyAuthHeader(request, credential);
     final response = await _inner.send(request);
 
-    final canRetry =
-        response.statusCode == 401 && credential is JwtCredential && request is http.Request;
+    final canRetry = response.statusCode == 401 && credential != null && request is http.Request;
     if (!canRetry) {
       return response;
     }
 
-    _logger.fine('401 on JWT request, refreshing once and retrying');
+    _logger.fine('401 on authenticated request, refreshing once and retrying');
     await response.stream.drain<void>();
     await _refresh();
     final fresh = _readAuth()?.credential;
-    if (fresh is! JwtCredential) {
+    if (fresh == null) {
+      return _syntheticUnauthorized();
+    }
+    if (fresh == credential) {
+      // Offline carve-out kept the token; the same token would 401 again
+      _logger.fine('Refresh produced no new credential, passing the 401 through');
       return _syntheticUnauthorized();
     }
 
@@ -110,14 +113,14 @@ class AuthHttpClient extends http.BaseClient {
   @override
   void close() => _inner.close();
 
-  void _applyAuthHeader(http.BaseRequest req, AuthCredential? credential) {
+  void _applyAuthHeader(http.BaseRequest req, JwtCredential? credential) {
     if (credential == null) {
       return;
     }
     req.headers[HttpHeaders.authorizationHeader] = credential.authHeaderValue;
   }
 
-  http.Request _cloneRequest(http.Request orig, AuthCredential credential) {
+  http.Request _cloneRequest(http.Request orig, JwtCredential credential) {
     final retry = http.Request(orig.method, orig.url)
       ..bodyBytes = orig.bodyBytes
       ..encoding = orig.encoding

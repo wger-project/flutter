@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 mixin _$WorkoutSession {
 
 /// Client-generated UUID, is `null` only before the first persist
- String? get id; int? get routineId; int? get dayId; DateTime get date; WorkoutImpression get impression; String? get notes; TimeOfDay? get timeStart; TimeOfDay? get timeEnd; List<Log> get logs;
+ String? get id; int? get routineId; int? get dayId; WorkoutImpression get impression; String? get notes; DateTime get datetimeStart; DateTime? get datetimeEnd; List<Log> get logs;
 /// Create a copy of WorkoutSession
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -26,16 +26,16 @@ $WorkoutSessionCopyWith<WorkoutSession> get copyWith => _$WorkoutSessionCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WorkoutSession&&(identical(other.id, id) || other.id == id)&&(identical(other.routineId, routineId) || other.routineId == routineId)&&(identical(other.dayId, dayId) || other.dayId == dayId)&&(identical(other.date, date) || other.date == date)&&(identical(other.impression, impression) || other.impression == impression)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.timeStart, timeStart) || other.timeStart == timeStart)&&(identical(other.timeEnd, timeEnd) || other.timeEnd == timeEnd)&&const DeepCollectionEquality().equals(other.logs, logs));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WorkoutSession&&(identical(other.id, id) || other.id == id)&&(identical(other.routineId, routineId) || other.routineId == routineId)&&(identical(other.dayId, dayId) || other.dayId == dayId)&&(identical(other.impression, impression) || other.impression == impression)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.datetimeStart, datetimeStart) || other.datetimeStart == datetimeStart)&&(identical(other.datetimeEnd, datetimeEnd) || other.datetimeEnd == datetimeEnd)&&const DeepCollectionEquality().equals(other.logs, logs));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,routineId,dayId,date,impression,notes,timeStart,timeEnd,const DeepCollectionEquality().hash(logs));
+int get hashCode => Object.hash(runtimeType,id,routineId,dayId,impression,notes,datetimeStart,datetimeEnd,const DeepCollectionEquality().hash(logs));
 
 @override
 String toString() {
-  return 'WorkoutSession(id: $id, routineId: $routineId, dayId: $dayId, date: $date, impression: $impression, notes: $notes, timeStart: $timeStart, timeEnd: $timeEnd, logs: $logs)';
+  return 'WorkoutSession(id: $id, routineId: $routineId, dayId: $dayId, impression: $impression, notes: $notes, datetimeStart: $datetimeStart, datetimeEnd: $datetimeEnd, logs: $logs)';
 }
 
 
@@ -46,7 +46,7 @@ abstract mixin class $WorkoutSessionCopyWith<$Res>  {
   factory $WorkoutSessionCopyWith(WorkoutSession value, $Res Function(WorkoutSession) _then) = _$WorkoutSessionCopyWithImpl;
 @useResult
 $Res call({
- String? id, int? dayId, int? routineId, DateTime date, WorkoutImpression impression, String? notes, TimeOfDay? timeStart, TimeOfDay? timeEnd, List<Log> logs
+ String? id, int? dayId, int? routineId, DateTime datetimeStart, DateTime? datetimeEnd, WorkoutImpression impression, String? notes, List<Log> logs
 });
 
 
@@ -63,17 +63,16 @@ class _$WorkoutSessionCopyWithImpl<$Res>
 
 /// Create a copy of WorkoutSession
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? dayId = freezed,Object? routineId = freezed,Object? date = null,Object? impression = null,Object? notes = freezed,Object? timeStart = freezed,Object? timeEnd = freezed,Object? logs = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? dayId = freezed,Object? routineId = freezed,Object? datetimeStart = null,Object? datetimeEnd = freezed,Object? impression = null,Object? notes = freezed,Object? logs = null,}) {
   return _then(WorkoutSession(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String?,dayId: freezed == dayId ? _self.dayId : dayId // ignore: cast_nullable_to_non_nullable
 as int?,routineId: freezed == routineId ? _self.routineId : routineId // ignore: cast_nullable_to_non_nullable
-as int?,date: null == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
-as DateTime,impression: null == impression ? _self.impression : impression // ignore: cast_nullable_to_non_nullable
+as int?,datetimeStart: null == datetimeStart ? _self.datetimeStart : datetimeStart // ignore: cast_nullable_to_non_nullable
+as DateTime,datetimeEnd: freezed == datetimeEnd ? _self.datetimeEnd : datetimeEnd // ignore: cast_nullable_to_non_nullable
+as DateTime?,impression: null == impression ? _self.impression : impression // ignore: cast_nullable_to_non_nullable
 as WorkoutImpression,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
-as String?,timeStart: freezed == timeStart ? _self.timeStart : timeStart // ignore: cast_nullable_to_non_nullable
-as TimeOfDay?,timeEnd: freezed == timeEnd ? _self.timeEnd : timeEnd // ignore: cast_nullable_to_non_nullable
-as TimeOfDay?,logs: null == logs ? _self.logs : logs // ignore: cast_nullable_to_non_nullable
+as String?,logs: null == logs ? _self.logs : logs // ignore: cast_nullable_to_non_nullable
 as List<Log>,
   ));
 }

@@ -27,10 +27,6 @@
     "@enterValue": {
         "description": "Error message when the user hasn't entered a value on a required field"
     },
-    "goToToday": "Aller à aujourd’hui",
-    "@goToToday": {
-        "description": "Label on button to jump back to 'today' in the calendar widget"
-    },
     "calendar": "Calendrier",
     "toggleDetails": "Afficher les détails",
     "@toggleDetails": {
@@ -38,10 +34,6 @@
     },
     "newNutritionalPlan": "Nouveau programme nutritionnel",
     "delete": "Supprimer",
-    "loadingText": "Chargement…",
-    "@loadingText": {
-        "description": "Text to show when entries are being loaded in the background: Loading..."
-    },
     "edit": "Modifier",
     "noWeightEntries": "Aucune entrée de poids",
     "@noWeightEntries": {
@@ -112,16 +104,11 @@
     "addMeal": "Ajouter un repas",
     "meal": "Repas",
     "add": "Ajouter",
-    "cancel": "Supprimer",
     "save": "Sauvegarder",
     "description": "Description",
     "gymMode": "Mode entraînement",
     "@gymMode": {
         "description": "Label when starting the gym mode"
-    },
-    "newSet": "Nouvelle série",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
     },
     "newDay": "Nouvelle journée",
     "workoutSession": "Session d’entraînement",
@@ -165,15 +152,9 @@
     "@labelWorkoutPlan": {
         "description": "Title for screen workout plan"
     },
-    "registerInstead": "Vous n'avez pas de compte ? Inscrivez-vous maintenant",
-    "loginInstead": "Déjà un compte ? Connectez-vous",
     "reset": "Réinitialiser",
     "@reset": {
         "description": "Button text allowing the user to reset the entered values to the default"
-    },
-    "useCustomServer": "Utiliser un serveur personnalisé",
-    "@useCustomServer": {
-        "description": "Toggle button allowing users to switch between the default and a custom wger server"
     },
     "customServerHint": "Entrez l’adresse de votre propre serveur, sinon le serveur par défaut sera utilisé",
     "@customServerHint": {
@@ -206,10 +187,6 @@
     "invalidUrl": "Veuillez entrer une URL valide",
     "@invalidUrl": {
         "description": "Error message when the user enters an invalid URL, e.g. in the login form"
-    },
-    "useDefaultServer": "Utiliser le serveur par défaut",
-    "@useDefaultServer": {
-        "description": "Toggle button allowing users to switch between the default and a custom wger server"
     },
     "register": "S’inscrire",
     "@register": {
@@ -270,8 +247,6 @@
         "description": "Label for the button that adds a set (to a workout day)"
     },
     "todaysWorkout": "Entraînement d’aujourd’hui",
-    "selectExercises": "Si vous voulez faire une supersérie, vous pouvez rechercher plusieurs exercices, ils seront regroupés",
-    "sameRepetitions": "Si vous faites les mêmes répétitions et le même poids pour toutes les séries, vous pouvez simplement remplir une ligne. Par exemple, pour 4 séries, il suffit d’entrer 10 pour les répétitions, ce qui devient automatiquement « 4 × 10 ».",
     "setNr": "Série {nr}",
     "@setNr": {
         "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
@@ -323,16 +298,6 @@
             }
         }
     },
-    "imageFormatNotSupportedDetail": "{imageFormat} pas encore pris en charge.",
-    "@imageFormatNotSupportedDetail": {
-        "description": "Label shown on the image preview container when image format is not supported",
-        "type": "text",
-        "placeholders": {
-            "imageFormat": {
-                "type": "String"
-            }
-        }
-    },
     "chooseFromLibrary": "Choisir depuis la bibliothèque",
     "takePicture": "Prendre une photo",
     "selectImage": "Veuillez sélectionner une image",
@@ -346,11 +311,6 @@
     "optionsLabel": "Options",
     "@optionsLabel": {
         "description": "Label for the popup with general app options"
-    },
-    "setUnitsAndRir": "Définir les unités et RiR",
-    "@setUnitsAndRir": {
-        "description": "Label shown on the slider where the user can toggle showing units and RiR",
-        "type": "text"
     },
     "goToDetailPage": "Aller à la page de détails",
     "jumpTo": "Aller à",
@@ -534,7 +494,6 @@
         },
         "description": "List of alternative names for an exercise"
     },
-    "verifiedEmailReason": "Vous devez vérifier votre adresse e-mail pour contribuer aux exercices",
     "verifiedEmailInfo": "Un email de vérification a été envoyé à {email}",
     "@verifiedEmailInfo": {
         "placeholders": {
@@ -574,7 +533,6 @@
     "miles": "Miles",
     "legs": "Jambes",
     "quads": "Quadriceps",
-    "noMeasurementEntries": "Vous n'avez pas d'entrées de mesure",
     "aboutPageTitle": "À propos de nous et assistance",
     "userProfile": "Votre profil",
     "exerciseList": "Liste d'exercices",
@@ -629,7 +587,6 @@
     "@lb": {
         "description": "Generated entry for translation for server strings"
     },
-    "searchNamesInEnglish": "Recherchez également des noms en anglais",
     "max_reps": "Reps Maxi",
     "@max_reps": {
         "description": "Generated entry for translation for server strings"
@@ -699,7 +656,6 @@
     "aboutDonateText": "Si le projet est gratuit et le restera, l'exploitation du serveur ne l'est pas ! Le développement requiert également beaucoup de temps et d'efforts de la part des bénévoles. Votre contribution finance directement ces coûts et contribue à la fiabilité du service.",
     "settingsTitle": "Paramètres",
     "settingsCacheTitle": "Cache",
-    "settingsExerciseCacheDescription": "Cache d'exercices",
     "settingsCacheDeletedSnackbar": "Cache nettoyé avec succès",
     "log": "Journaliser",
     "@log": {
@@ -709,32 +665,11 @@
     "lightMode": "Mode clair permanent",
     "darkMode": "Mode sombre permanent",
     "systemMode": "Paramètres du système",
-    "chart30DaysTitle": "{name} les 30 derniers jours",
-    "@chart30DaysTitle": {
-        "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chartAllTimeTitle": "{name} depuis le début",
-    "@chartAllTimeTitle": {
-        "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
     "selectAvailablePlates": "Sélectionnez les poids disponibles",
     "barWeight": "Poids de la barre",
     "useColors": "Utiliser des couleurs",
     "newRoutine": "Nouvelle routine",
     "noRoutines": "Vous n’avez aucune de routine",
-    "useUsernameAndPassword": "Utiliser le nom d’utilisateur et mot de passe",
     "routines": "Routines",
     "restTime": "Temps de repos",
     "restDay": "Jour de repos",
@@ -749,7 +684,6 @@
             }
         }
     },
-    "apiToken": "Jeton API",
     "routineDays": "Jours de routine",
     "resultingRoutine": "Routine résultante",
     "errorInfoDescription": "Nous sommes désolés, mais quelque chose s'est mal passé. Vous pouvez nous aider à résoudre ce problème en le signalant sur GitHub.",
@@ -773,30 +707,8 @@
     "needsLogsToAdvanceHelp": "Sélectionnez si vous souhaitez que la routine passe au jour programmé suivant uniquement si vous avez enregistré une séance d'entraînement pour la journée",
     "min": "Min",
     "themeMode": "Thème",
-    "chartDuringPlanTitle": "{chartName} pendant le plan nutritionnel {planName}",
-    "@chartDuringPlanTitle": {
-        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-        "type": "text",
-        "placeholders": {
-            "chartName": {
-                "type": "String"
-            },
-            "planName": {
-                "type": "String"
-            }
-        }
-    },
     "fitInWeek": "Planning hebdomadaire fixe",
     "addSuperset": "Ajouter une supersérie",
-    "useApiToken": "Utiliser un jeton API",
-    "apiTokenValidChars": "Une clé API ne peut contenir que les lettres a-f, les chiffres 0-9 et 40 caractères exactement",
-    "@apiTokenValidChars": {
-        "description": "Error message when the user tries to input a API key with forbidden characters"
-    },
-    "invalidApiToken": "Veuillez saisir une clé API valide",
-    "@invalidApiToken": {
-        "description": "Error message when the user enters an invalid API key"
-    },
     "exerciseNr": "Exercice {nr}",
     "@exerciseNr": {
         "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Set Nr. xy'.",
@@ -830,11 +742,8 @@
     "@toAddMealsToThePlanGoToNutritionalPlanDetails": {
         "description": "Message shown to guide users to the nutritional plan details page to add meals"
     },
-    "setHasProgression": "La série a une progression",
     "aboutContributeTitle": "Contribuer",
-    "setHasProgressionWarning": "Veuillez noter qu'il n'est actuellement pas possible de modifier tous les paramètres d'une série sur l'application mobile ni de configurer la progression automatique. Pour l'instant, veuillez utiliser l'application web.",
     "setHasNoExercises": "Cette série n'a pas encore d'exercices !",
-    "settingsIngredientCacheDescription": "Cache d'ingrédients",
     "simpleMode": "Mode simple",
     "simpleModeHelp": "Masquer certains des paramètres les plus avancés lors de l'édition des exercices",
     "progressionRules": "Cet exercice a des règles de progression et ne peut pas être édité sur l'application mobile. Veuillez utiliser l'application web pour éditer cet exercice.",
@@ -877,7 +786,6 @@
         "description": "When a nutrition plan has no pre-defined end date"
     },
     "overview": "Aperçu",
-    "identicalExercisePleaseDiscard": "Si vous remarquez un exercice identique à celui que vous ajoutez, veuillez supprimer votre brouillon et modifier cet exercice à la place.",
     "checkInformationBeforeSubmitting": "Veuillez vérifier que les informations que vous avez saisies sont correctes avant de soumettre l'exercice",
     "imageDetailsTitle": "Détails de l'image",
     "@imageDetailsTitle": {
@@ -964,7 +872,6 @@
             }
         }
     },
-    "superset": "Superset",
     "personalRecords": "Enregistrements personnels",
     "noTrophies": "Vous n'avez pas encore de trophées",
     "serverUpdateTitle": "Mise à jour du serveur requise",
@@ -1061,10 +968,6 @@
     "filterNutriscore": "Filtre Nutri-Score",
     "@filterNutriscore": {
         "description": "Heading for the Nutri-Score slider in the ingredient search filter dialog"
-    },
-    "filterNutriscoreOff": "Off",
-    "@filterNutriscoreOff": {
-        "description": "Label for the first slider stop, which disables the Nutri-Score filter"
     },
     "filterNutriscoreNoFilter": "Pas de filtre",
     "@filterNutriscoreNoFilter": {
@@ -1163,7 +1066,6 @@
     "syncStatusNeverSynced": "Pas encore synchronisé",
     "sessionExpired": "Votre session a expiré, veuillez vous reconnecter",
     "weightOrRepsRequired": "Veuillez saisir un poids, des répétitions, ou les deux",
-    "timeStartEndBothOrNeither": "Indiquez l'heure de début et de fin, ou laissez les deux vides",
     "endBeforeStart": "La valeur de fin ne peut être avant le début",
     "minLengthRoutine": "La routine doit durer au moins {number} semaines",
     "maxLengthRoutine": "La routine peut durer au maximum {number} semaines",
@@ -1180,5 +1082,108 @@
     "settingsVerboseLogging": "Journalisation détaillée",
     "settingsVerboseLoggingDescription": "Utile lorsque vous signalez des problèmes persistants.",
     "syncStatusStalledNotStartedHint": "L'application a demandé une synchronisation, mais celle-ci n'a jamais démarré. Redémarrer l'application suffit généralement.",
-    "syncStatusStalledNotAppliedHint": "Des données arrivent mais ne peuvent pas être appliquées, donc rien de nouveau n'apparaît. Signalez-le avec les détails copiés pour que nous puissions le corriger."
+    "syncStatusStalledNotAppliedHint": "Des données arrivent mais ne peuvent pas être appliquées, donc rien de nouveau n'apparaît. Signalez-le avec les détails copiés pour que nous puissions le corriger.",
+    "whatToTrack": "Que voulez-vous suivre ?",
+    "customMeasurement": "Mesure personnalisée",
+    "metricAlreadyTracked": "Déjà suivi",
+    "indicatorTrend": "tendance",
+    "off": "Off",
+    "@off": {
+        "description": "Generic label for the option that switches something off, e.g. a filter or a line of a chart"
+    },
+    "aboutPrivacyPolicyTitle": "Conditions et politique de confidentialité",
+    "reorderCategories": "Réorganiser les catégories",
+    "metricCustom": "Personnalisé",
+    "metricLeanBodyMass": "Masse maigre",
+    "metricBodyFat": "Graisse corporelle",
+    "metricHeight": "Taille",
+    "metricBloodPressure": "Pression artérielle",
+    "metricBloodPressureSystolic": "Systolique",
+    "metricBloodPressureDiastolic": "Diastolique",
+    "metricHeartRate": "Fréquence cardiaque",
+    "metricRestingHeartRate": "Fréquence cardiaque au repos",
+    "metricBloodOxygen": "Saturation en oxygène",
+    "metricSteps": "Pas",
+    "metricDistance": "Distance",
+    "metricSleep": "Sommeil",
+    "metricSleepTotal": "Total",
+    "metricSleepLight": "Léger",
+    "metricSleepDeep": "Profond",
+    "metricSleepRem": "REM",
+    "metricSleepAwake": "Éveillé",
+    "noDataAvailable": "Aucune donnée disponible",
+    "partOfGroup": "Fait partie du groupe",
+    "noGroup": "Aucun groupe",
+    "healthSync": "Synchronisation santé",
+    "healthSyncDescription": "Importe les mesures corporelles depuis Apple Santé ou Health Connect",
+    "healthSyncSuccess": "{count} mesures de santé importées",
+    "health": "Santé",
+    "importedEntry": "Cette entrée a été synchronisée depuis une app de santé et ne peut être modifiée que là-bas",
+    "healthSyncPermissionDenied": "L'accès aux données de santé n'a pas été autorisé",
+    "chartRangeAll": "Tout",
+    "chartRangeMonths": "{count, plural, one{1 mois} other{{count} mois}}",
+    "chartRangeYears": "{count, plural, one{1 an} other{{count} ans}}",
+    "chartType": "Type de graphique",
+    "chartTypeAuto": "Automatique",
+    "chartTypeLine": "Ligne",
+    "chartTypeBar": "Barres",
+    "chartTypeHeatmap": "Carte thermique",
+    "chartTypeDelta": "Variation",
+    "chartWeeklyChangeTitle": "{name}, variation par semaine",
+    "chartTrend": "Courbe de tendance",
+    "trendReactive": "Réactive",
+    "trendBalanced": "Équilibrée",
+    "trendSluggish": "Lissée",
+    "chartAverageWindow": "Moyenne sur",
+    "chartAverageWindowDays": "{days, plural, one{1 jour} other{{days} jours}}",
+    "chartTypeDistribution": "Répartition",
+    "chartDistributionTitle": "{name}, répartition",
+    "distributionMedian": "Médiane",
+    "distributionLatest": "Actuel",
+    "distributionEntryCount": "{count, plural, one{1 entrée} other{{count} entrées}}",
+    "distributionDayCount": "{count, plural, one{1 jour} other{{count} jours}}",
+    "healthSyncNoData": "Aucune donnée de santé n'a été trouvée. Vérifiez dans {platform} que wger peut lire vos données.",
+    "healthSyncStatus": "{count, plural, =0{Dernière synchronisation : {time}, aucune nouvelle entrée} one{Dernière synchronisation : {time}, 1 nouvelle entrée} other{Dernière synchronisation : {time}, {count} nouvelles entrées}}",
+    "healthSyncSyncing": "Synchronisation des données de santé…",
+    "healthSyncNow": "Synchroniser maintenant",
+    "healthSyncPermissionMissing": "{platform} ne partage pas vos données",
+    "healthSyncGrantAccess": "Appuyez pour autoriser l'accès à nouveau",
+    "healthSyncFailed": "La dernière synchronisation n'a pas pu être terminée",
+    "healthConnectInstall": "Installer Health Connect",
+    "healthConnectUpdate": "Mettre à jour Health Connect",
+    "healthConnectRequired": "Health Connect est nécessaire pour importer les mensurations",
+    "labelBottomNavBody": "Corps",
+    "sparkAverage": "moy. {value}",
+    "sparkTrendPerWeek": "{value}/semaine",
+    "sparkTrendStable": "stable",
+    "trackNewMetric": "Suivre autre chose",
+    "chartRangeWeeks": "{count, plural, one{1 semaine} other{{count} semaines}}",
+    "relativeDaysAgo": "{count, plural, =0{aujourd'hui} =1{hier} other{il y a {count} jours}}",
+    "relativeWeeksAgo": "{count, plural, one{il y a 1 semaine} other{il y a {count} semaines}}",
+    "relativeMonthsAgo": "{count, plural, one{il y a 1 mois} other{il y a {count} mois}}",
+    "relativeYearsAgo": "{count, plural, one{il y a 1 an} other{il y a {count} ans}}",
+    "sessionTooLong": "Une session d’entraînement ne peut pas durer plus de {hours} heures",
+    "calculationValuesManual": "Saisi à la main",
+    "calculationType": "Calcul",
+    "calculationUnknown": "Ce calcul a été configuré dans une version plus récente de wger et ne peut pas être modifié ici.",
+    "calculationParamsIncomplete": "Le calcul n'est pas encore entièrement configuré",
+    "calculationDuplicate": "Vous avez déjà une catégorie {name} avec ces réglages",
+    "calculationLocked": "Le calcul ne peut pas être modifié. Supprimez la catégorie pour arrêter de la calculer.",
+    "calculationMissingHeight": "La taille manque dans votre profil, aucune valeur ne peut donc encore être calculée.",
+    "calculationNoSourceCategory": "Vous n'avez pas encore d'autre catégorie dans laquelle puiser.",
+    "calculationBadge": "Calculé",
+    "calculationEntryInfo": "Cette valeur est calculée par wger et ne peut pas être modifiée",
+    "calculationNameBmi": "IMC",
+    "calculationNameWhtr": "Rapport taille-hauteur",
+    "calculationNameOneRepMax": "1RM",
+    "calculationNameOneRmTotal": "Total 1RM",
+    "calculationDescriptionBmi": "À partir de votre poids et de la taille indiquée dans votre profil",
+    "calculationDescriptionWhtr": "À partir de {category} et de la taille indiquée dans votre profil",
+    "calculationParamCategory": "Catégorie source",
+    "calculationParamMaxReps": "Répétitions maximales comptées",
+    "calculationParamWindowDays": "Fenêtre en jours",
+    "calculationHelpExercises": "Entre {min} et {max} exercices, {count} sélectionnés.",
+    "calculationHelpMaxReps": "De {min} à {max}. Les séries au-dessus sont ignorées.",
+    "calculationHelpWindowDays": "De {min} à {max}. Jusqu’où remonte la meilleure série.",
+    "useDynamicColor": "Utiliser les couleurs dynamiques"
 }

@@ -12,14 +12,6 @@
     "@register": {
         "description": "Text for registration button"
     },
-    "useDefaultServer": "Použiť predvolený server",
-    "@useDefaultServer": {
-        "description": "Toggle button allowing users to switch between the default and a custom wger server"
-    },
-    "useCustomServer": "Použiť vlastný server",
-    "@useCustomServer": {
-        "description": "Toggle button allowing users to switch between the default and a custom wger server"
-    },
     "invalidUrl": "Zadajte platnú URL adresu",
     "@invalidUrl": {
         "description": "Error message when the user enters an invalid URL, e.g. in the login form"
@@ -51,17 +43,6 @@
     "@invalidUsername": {
         "description": "Error message when the user enters an invalid username"
     },
-    "useApiToken": "Použite token API",
-    "useUsernameAndPassword": "Použite používateľské meno a heslo",
-    "apiToken": "API token",
-    "invalidApiToken": "Zadajte platný kľúč API",
-    "@invalidApiToken": {
-        "description": "Error message when the user enters an invalid API key"
-    },
-    "apiTokenValidChars": "Kľúč API môže obsahovať iba písmená a-f, číslice 0-9 a musí mať presne 40 znakov",
-    "@apiTokenValidChars": {
-        "description": "Error message when the user tries to input a API key with forbidden characters"
-    },
     "customServerUrl": "URL inštancie wger",
     "@customServerUrl": {
         "description": "Label in the form where the users can enter their own wger instance"
@@ -74,8 +55,6 @@
     "@reset": {
         "description": "Button text allowing the user to reset the entered values to the default"
     },
-    "registerInstead": "Nemáte účet? Zaregistrujte sa teraz",
-    "loginInstead": "Už máte účet? Prihláste sa",
     "labelBottomNavWorkout": "Tréning",
     "@labelBottomNavWorkout": {
         "description": "Label used in bottom navigation, use a short word"
@@ -130,7 +109,6 @@
     "@noMatchingExerciseFound": {
         "description": "Message returned if no exercises match the searched string"
     },
-    "searchNamesInEnglish": "Hľadať aj mená v angličtine",
     "equipment": "Vybavenie",
     "@equipment": {
         "description": "Equipment needed to perform an exercise"
@@ -169,7 +147,6 @@
     "weightUnit": "Jednotka hmotnosti",
     "repetitionUnit": "Opakovacie jednotky",
     "dayDescriptionHelp": "Popis toho, čo sa v tento deň robí (napr. „ťahací deň“) alebo ktoré časti tela sa trénujú (napr. „hrudník a ramená“)",
-    "sameRepetitions": "",
     "comment": "Komentár",
     "@comment": {
         "description": "Comment, additional information"
@@ -190,11 +167,6 @@
     "routineDays": "Dni v rutine",
     "resultingRoutine": "Výsledná rutina",
     "newDay": "Nový deň",
-    "newSet": "Nová séria",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
-    },
-    "selectExercises": "Ak chcete urobiť superset, môžete vyhľadať niekoľko cvikov, ktoré budú zoskupené dohromady",
     "gymMode": "Režim posilňovňa",
     "@gymMode": {
         "description": "Label when starting the gym mode"

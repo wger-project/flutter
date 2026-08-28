@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wger/core/misc.dart';
@@ -47,6 +48,10 @@ class _UserProfileFormState extends ConsumerState<UserProfileForm> {
 
   /// Pending weight-unit edit, null while it still mirrors the synced value.
   String? _weightUnitStr;
+
+  /// Body height in cm as the field last held it, filled on save. Null is a
+  /// profile without one, which the server allows.
+  int? _height;
 
   /// The email field is seeded from the loaded account exactly once; later
   /// rebuilds must not clobber what the user typed.
@@ -96,6 +101,39 @@ class _UserProfileFormState extends ConsumerState<UserProfileForm> {
               });
             },
             dense: true,
+          ),
+          // The height is what BMI and the waist-to-height ratio are computed
+          // from, so a calculated category stays empty until it is set
+          ListTile(
+            leading: Icon(Icons.straighten, color: Theme.of(context).colorScheme.primary),
+            title: TextFormField(
+              key: const Key('heightField'),
+              initialValue: profile.height?.toString() ?? '',
+              decoration: InputDecoration(
+                labelText: i18n.metricHeight,
+                suffixText: 'cm',
+              ),
+              keyboardType: TextInputType.number,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              onSaved: (value) => _height = value == null ? null : int.tryParse(value),
+              validator: (value) {
+                // Empty is a profile that has none, which is what an account
+                // starts as
+                if (value == null || value.isEmpty) {
+                  return null;
+                }
+                final parsed = int.tryParse(value);
+                if (parsed == null ||
+                    parsed < UserProfile.minHeightCm ||
+                    parsed > UserProfile.maxHeightCm) {
+                  return i18n.formMinMaxValues(
+                    UserProfile.minHeightCm,
+                    UserProfile.maxHeightCm,
+                  );
+                }
+                return null;
+              },
+            ),
           ),
           ListTile(
             leading: Icon(Icons.email_rounded, color: Theme.of(context).colorScheme.primary),
@@ -156,12 +194,17 @@ class _UserProfileFormState extends ConsumerState<UserProfileForm> {
               if (!_form.currentState!.validate()) {
                 return;
               }
+              _form.currentState!.save();
 
-              // The weight unit is synced through PowerSync and saves offline.
+              // Both are synced through PowerSync and save offline.
               await ref
                   .read(userProfileProvider.notifier)
                   .updateProfile(
-                    UserProfile(id: profile.id, weightUnitStr: weightUnitStr),
+                    UserProfile(
+                      id: profile.id,
+                      weightUnitStr: weightUnitStr,
+                      height: _height,
+                    ),
                   );
 
               // Changing the email needs the server: a verification mail is

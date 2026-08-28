@@ -32,10 +32,6 @@
     },
     "newNutritionalPlan": "Neuer Ernährungsplan",
     "delete": "Löschen",
-    "loadingText": "Wird geladen …",
-    "@loadingText": {
-        "description": "Text to show when entries are being loaded in the background: Loading..."
-    },
     "edit": "Bearbeiten",
     "newEntry": "Neuer Eintrag",
     "@newEntry": {
@@ -102,13 +98,8 @@
     "addMeal": "Mahlzeit hinzufügen",
     "meal": "Mahlzeit",
     "add": "Hinzufügen",
-    "cancel": "Abbrechen",
     "save": "Speichern",
     "description": "Beschreibung",
-    "newSet": "Neuer Satz",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
-    },
     "newDay": "Neuer Tag",
     "workoutSession": "Trainingseinheit",
     "@workoutSession": {
@@ -125,10 +116,6 @@
     "comment": "Kommentar",
     "@comment": {
         "description": "Comment, additional information"
-    },
-    "goToToday": "Zu heute gehen",
-    "@goToToday": {
-        "description": "Label on button to jump back to 'today' in the calendar widget"
     },
     "selectIngredient": "Bitte wähle eine Zutat",
     "@selectIngredient": {
@@ -153,8 +140,6 @@
     },
     "logHelpEntriesUnits": "Beachte, dass nur Einträge mit einer Gewichtseinheit (kg oder lb) und Wiederholungen aufgezeichnet werden, andere Kombinationen wie Zeit oder „bis zum Versagen“ werden hier ignoriert.",
     "logHelpEntries": "Gibt es an einem Tag mehrere Einträge mit der gleichen Anzahl von Wiederholungen, aber unterschiedlichen Gewichten, wird nur der Eintrag mit dem höheren Gewicht im Diagramm angezeigt.",
-    "loginInstead": "Du hast bereits einen Account? Stattdessen anmelden",
-    "registerInstead": "Du hast keinen Account? Jetzt registrieren",
     "reset": "Zurücksetzen",
     "@reset": {
         "description": "Button text allowing the user to reset the entered values to the default"
@@ -190,14 +175,6 @@
     "invalidUrl": "Bitte gebe eine gültige URL ein",
     "@invalidUrl": {
         "description": "Error message when the user enters an invalid URL, e.g. in the login form"
-    },
-    "useCustomServer": "Verwende Benutzerdefinierten Server",
-    "@useCustomServer": {
-        "description": "Toggle button allowing users to switch between the default and a custom wger server"
-    },
-    "useDefaultServer": "Verwende Standard-Server",
-    "@useDefaultServer": {
-        "description": "Toggle button allowing users to switch between the default and a custom wger server"
     },
     "register": "Registrieren",
     "@register": {
@@ -250,8 +227,6 @@
     "@selectExercise": {
         "description": "Error message when the user hasn't selected an exercise in the form"
     },
-    "selectExercises": "Wenn du einen Supersatz machen willst, kannst du nach mehreren Übungen suchen, sie werden dann gruppiert",
-    "sameRepetitions": "Wenn du für alle Sätze die gleichen Wiederholungen und das gleiche Gewicht verwendest, kannst du nur eine Zeile ausfüllen. Gebe z. B. für 4 Sätze einfach 10 für die Wiederholungen ein, daraus wird automatisch „4 × 10“.",
     "setNr": "Satz {nr}",
     "@setNr": {
         "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
@@ -326,16 +301,6 @@
             }
         }
     },
-    "imageFormatNotSupportedDetail": "{imageFormat}-Bilder werden noch nicht unterstützt.",
-    "@imageFormatNotSupportedDetail": {
-        "description": "Label shown on the image preview container when image format is not supported",
-        "type": "text",
-        "placeholders": {
-            "imageFormat": {
-                "type": "String"
-            }
-        }
-    },
     "chooseFromLibrary": "Wähle aus der Bibliothek",
     "takePicture": "Bild aufnehmen",
     "selectImage": "Bitte wähle ein Bild aus",
@@ -358,11 +323,6 @@
     "optionsLabel": "Optionen",
     "@optionsLabel": {
         "description": "Label for the popup with general app options"
-    },
-    "setUnitsAndRir": "Einheiten und RiR einstellen",
-    "@setUnitsAndRir": {
-        "description": "Label shown on the slider where the user can toggle showing units and RiR",
-        "type": "text"
     },
     "searchExercise": "Suche Übung zum Hinzufügen",
     "@searchExercise": {
@@ -502,7 +462,6 @@
     "legs": "Beine",
     "shoulders": "Schultern",
     "barbell": "Langhantel",
-    "noMeasurementEntries": "Du hast keine Messeingaben",
     "moreMeasurementEntries": "Neue Messung hinzufügen",
     "@moreMeasurementEntries": {
         "description": "Message shown when the user wants to add new measurement"
@@ -587,7 +546,6 @@
         "description": "Message when an action completed successfully, usually used as a heading"
     },
     "pull_up_bar": "Klimmzugstange",
-    "verifiedEmailReason": "Du musst deine E-Mail verifizieren, um Übungen hinzuzufügen",
     "kettlebell": "Kugelhantel",
     "verifiedEmail": "Verifizierte E-Mail",
     "unVerifiedEmail": "Unverifizierte E-Mail",
@@ -654,7 +612,6 @@
     },
     "useMetric": "Metrische Einheiten für das Körpergewicht verwenden",
     "done": "Fertig",
-    "searchNamesInEnglish": "Namen auch auf Englisch suchen",
     "goalMacro": "Makroziele",
     "@goalMacro": {
         "description": "The goal for macronutrients"
@@ -675,39 +632,6 @@
     "noIngredientsDefined": "Noch keine Zutaten definiert",
     "ingredientLogged": "Zutat im Tagebuch protokolliert",
     "selectMealToLog": "Wähle eine Mahlzeit, um sie im Tagebuch zu protokollieren",
-    "chartAllTimeTitle": "{name} aller Zeiten",
-    "@chartAllTimeTitle": {
-        "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chart30DaysTitle": "{name} der letzten 30 Tage",
-    "@chart30DaysTitle": {
-        "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chartDuringPlanTitle": "{chartName} während des Ernährungsplans {planName}",
-    "@chartDuringPlanTitle": {
-        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-        "type": "text",
-        "placeholders": {
-            "chartName": {
-                "type": "String"
-            },
-            "planName": {
-                "type": "String"
-            }
-        }
-    },
     "surplus": "Überschuss",
     "@surplus": {
         "description": "Caloric surplus (either planned or unplanned)"
@@ -746,7 +670,6 @@
             }
         }
     },
-    "settingsIngredientCacheDescription": "Zutaten-Cache",
     "routines": "Routinen",
     "newRoutine": "Neue Routine",
     "noRoutines": "Du hast keine Routinen",
@@ -758,17 +681,6 @@
     "restDay": "Ruhetag",
     "copyToClipboard": "In Zwischenablage kopieren",
     "min": "Min",
-    "apiToken": "API Token",
-    "useApiToken": "API Token benutzen",
-    "useUsernameAndPassword": "Nutzername und Passwort benutzen",
-    "invalidApiToken": "Bitte geben Sie einen gültigen API-Schlüssel ein",
-    "@invalidApiToken": {
-        "description": "Error message when the user enters an invalid API key"
-    },
-    "apiTokenValidChars": "Ein API-Schlüssel darf nur die Buchstaben a-f und die Zahlen 0-9 enthalten und genau 40 Zeichen lang sein",
-    "@apiTokenValidChars": {
-        "description": "Error message when the user tries to input a API key with forbidden characters"
-    },
     "exerciseNr": "Übung {nr}",
     "@exerciseNr": {
         "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Set Nr. xy'.",
@@ -820,7 +732,6 @@
     "aboutJoinCommunityTitle": "Treten Sie der Community bei",
     "aboutDiscordTitle": "Discord",
     "others": "Sonstiges",
-    "setHasProgression": "Set hat Fortschritt",
     "progressionRules": "Diese Übung unterliegt Fortschrittsregeln und kann in der mobilen App nicht bearbeitet werden. Bitte verwenden Sie die Webanwendung, um diese Übung zu bearbeiten.",
     "goalTypeBasic": "Normal",
     "@goalTypeBasic": {
@@ -849,7 +760,6 @@
     "@resistance_band": {
         "description": "Generated entry for translation for server strings"
     },
-    "setHasProgressionWarning": "Bitte beachten Sie, dass es derzeit nicht möglich ist, alle Einstellungen für ein Set in der mobilen Anwendung zu bearbeiten oder den automatischen Fortschritt zu konfigurieren. Nutzen Sie vorerst bitte die Webanwendung.",
     "useColors": "farbig",
     "barWeight": "Gewicht der Stange",
     "selectAvailablePlates": "Verfügbare Platten auswählen",
@@ -883,7 +793,6 @@
         "description": "When a nutrition plan has no pre-defined end date"
     },
     "overview": "Überblick",
-    "identicalExercisePleaseDiscard": "Wenn Sie eine Übung entdecken, die mit der von Ihnen hinzugefügten identisch ist, verwerfen Sie bitte Ihren Entwurf und bearbeiten Sie stattdessen diese Übung.",
     "checkInformationBeforeSubmitting": "Bitte überprüfe, ob die eingegebenen Informationen korrekt sind, bevor du die Übung abschickst",
     "imageDetailsTitle": "Bilddetails",
     "@imageDetailsTitle": {
@@ -971,7 +880,6 @@
             }
         }
     },
-    "superset": "Supersatz",
     "isVegan": "Vegan",
     "isVegetarian": "Vegetarisch",
     "filter": "Filtern",
@@ -1008,7 +916,6 @@
         }
     },
     "weightOrRepsRequired": "Bitte Gewicht, Wiederholungen oder beides eingeben",
-    "timeStartEndBothOrNeither": "Entweder Start- und Endzeit beide setzen oder beide leer lassen",
     "personalRecords": "Persönliche Rekorde",
     "noTrophies": "Du hast noch keine Trophäen",
     "preview": "Vorschau",
@@ -1056,10 +963,6 @@
     "filterNutriscore": "Nährwertfilter",
     "@filterNutriscore": {
         "description": "Heading for the Nutri-Score slider in the ingredient search filter dialog"
-    },
-    "filterNutriscoreOff": "Aus",
-    "@filterNutriscoreOff": {
-        "description": "Label for the first slider stop, which disables the Nutri-Score filter"
     },
     "filterNutriscoreNoFilter": "Kein Filter",
     "@filterNutriscoreNoFilter": {
@@ -1170,5 +1073,108 @@
     "settingsVerboseLogging": "Ausführliches Protokoll",
     "settingsVerboseLoggingDescription": "Hilfreich, wenn du anhaltende Probleme meldest.",
     "syncStatusStalledNotStartedHint": "Die App hat eine Synchronisierung angefordert, sie wurde aber nie gestartet. Ein Neustart der App hilft meistens.",
-    "syncStatusStalledNotAppliedHint": "Es kommen Daten an, sie können aber nicht übernommen werden, deshalb erscheint nichts Neues. Melde das bitte zusammen mit den kopierten Details, dann können wir es beheben."
+    "syncStatusStalledNotAppliedHint": "Es kommen Daten an, sie können aber nicht übernommen werden, deshalb erscheint nichts Neues. Melde das bitte zusammen mit den kopierten Details, dann können wir es beheben.",
+    "whatToTrack": "Was möchtest du aufzeichnen?",
+    "customMeasurement": "Eigene Messung",
+    "metricAlreadyTracked": "Wird bereits aufgezeichnet",
+    "indicatorTrend": "Trend",
+    "off": "Aus",
+    "@off": {
+        "description": "Generic label for the option that switches something off, e.g. a filter or a line of a chart"
+    },
+    "aboutPrivacyPolicyTitle": "Nutzungsbedingungen und Datenschutz",
+    "reorderCategories": "Kategorien neu anordnen",
+    "metricCustom": "Benutzerdefiniert",
+    "metricLeanBodyMass": "Magermasse",
+    "metricBodyFat": "Körperfett",
+    "metricHeight": "Körpergröße",
+    "metricBloodPressure": "Blutdruck",
+    "metricBloodPressureSystolic": "Systolisch",
+    "metricBloodPressureDiastolic": "Diastolisch",
+    "metricHeartRate": "Herzfrequenz",
+    "metricRestingHeartRate": "Ruhepuls",
+    "metricBloodOxygen": "Sauerstoffsättigung",
+    "metricSteps": "Schritte",
+    "metricDistance": "Distanz",
+    "metricSleep": "Schlaf",
+    "metricSleepTotal": "Gesamt",
+    "metricSleepLight": "Leicht",
+    "metricSleepDeep": "Tief",
+    "metricSleepRem": "REM",
+    "metricSleepAwake": "Wach",
+    "noDataAvailable": "Keine Daten vorhanden",
+    "partOfGroup": "Teil der Gruppe",
+    "noGroup": "Keine Gruppe",
+    "healthSync": "Health-Synchronisation",
+    "healthSyncDescription": "Importiert Körpermesswerte aus Apple Health oder Health Connect",
+    "healthSyncSuccess": "{count} Messwerte aus Health importiert",
+    "health": "Gesundheit",
+    "importedEntry": "Dieser Eintrag wurde aus einer Health-App synchronisiert und kann nur dort geändert werden",
+    "healthSyncPermissionDenied": "Zugriff auf die Gesundheitsdaten wurde nicht gewährt",
+    "chartRangeAll": "Gesamt",
+    "chartRangeMonths": "{count, plural, one{1 Monat} other{{count} Monate}}",
+    "chartRangeYears": "{count, plural, one{1 Jahr} other{{count} Jahre}}",
+    "chartType": "Diagrammtyp",
+    "chartTypeAuto": "Automatisch",
+    "chartTypeLine": "Linie",
+    "chartTypeBar": "Balken",
+    "chartTypeHeatmap": "Heatmap",
+    "chartTypeDelta": "Veränderung",
+    "chartWeeklyChangeTitle": "{name}, Veränderung pro Woche",
+    "chartTrend": "Trendlinie",
+    "trendReactive": "Reaktiv",
+    "trendBalanced": "Ausgewogen",
+    "trendSluggish": "Geglättet",
+    "chartAverageWindow": "Durchschnitt über",
+    "chartAverageWindowDays": "{days, plural, one{1 Tag} other{{days} Tage}}",
+    "chartTypeDistribution": "Verteilung",
+    "chartDistributionTitle": "{name}, Verteilung",
+    "distributionMedian": "Median",
+    "distributionLatest": "Aktuell",
+    "distributionEntryCount": "{count, plural, one{1 Eintrag} other{{count} Einträge}}",
+    "distributionDayCount": "{count, plural, one{1 Tag} other{{count} Tage}}",
+    "healthSyncNoData": "Es wurden keine Gesundheitsdaten gefunden. Prüfe in {platform}, ob wger deine Daten lesen darf.",
+    "healthSyncStatus": "{count, plural, =0{Letzter Abgleich: {time}, keine neuen Einträge} one{Letzter Abgleich: {time}, 1 neuer Eintrag} other{Letzter Abgleich: {time}, {count} neue Einträge}}",
+    "healthSyncSyncing": "Gesundheitsdaten werden synchronisiert …",
+    "healthSyncNow": "Jetzt synchronisieren",
+    "healthSyncPermissionMissing": "{platform} gibt deine Daten nicht frei",
+    "healthSyncGrantAccess": "Zum erneuten Erlauben antippen",
+    "healthSyncFailed": "Der letzte Abgleich konnte nicht abgeschlossen werden",
+    "healthConnectInstall": "Health Connect installieren",
+    "healthConnectUpdate": "Health Connect aktualisieren",
+    "healthConnectRequired": "Health Connect wird benötigt, um Körpermesswerte zu importieren",
+    "labelBottomNavBody": "Körper",
+    "sparkAverage": "Ø {value}",
+    "sparkTrendPerWeek": "{value}/Woche",
+    "sparkTrendStable": "stabil",
+    "trackNewMetric": "Etwas Neues aufzeichnen",
+    "chartRangeWeeks": "{count, plural, one{1 Woche} other{{count} Wochen}}",
+    "relativeDaysAgo": "{count, plural, =0{heute} =1{gestern} other{vor {count} Tagen}}",
+    "relativeWeeksAgo": "{count, plural, one{vor 1 Woche} other{vor {count} Wochen}}",
+    "relativeMonthsAgo": "{count, plural, one{vor 1 Monat} other{vor {count} Monaten}}",
+    "relativeYearsAgo": "{count, plural, one{vor 1 Jahr} other{vor {count} Jahren}}",
+    "sessionTooLong": "Eine Trainingseinheit darf nicht länger als {hours} Stunden dauern",
+    "calculationValuesManual": "Von Hand eingetragen",
+    "calculationType": "Berechnung",
+    "calculationUnknown": "Diese Berechnung wurde in einer neueren Version von wger eingerichtet und kann hier nicht geändert werden.",
+    "calculationParamsIncomplete": "Die Berechnung ist noch nicht vollständig eingerichtet",
+    "calculationDuplicate": "Du hast bereits eine {name}-Kategorie mit diesen Einstellungen",
+    "calculationLocked": "Die Berechnung kann nicht geändert werden. Lösche die Kategorie, um sie zu beenden.",
+    "calculationMissingHeight": "In deinem Profil fehlt die Körpergröße, daher können noch keine Werte berechnet werden.",
+    "calculationNoSourceCategory": "Du hast noch keine andere Kategorie, aus der gelesen werden kann.",
+    "calculationBadge": "Berechnet",
+    "calculationEntryInfo": "Dieser Wert wird von wger berechnet und kann nicht geändert werden",
+    "calculationNameBmi": "BMI",
+    "calculationNameWhtr": "Taille-Größe-Verhältnis",
+    "calculationNameOneRepMax": "1RM",
+    "calculationNameOneRmTotal": "1RM-Summe",
+    "calculationDescriptionBmi": "Aus deinem Körpergewicht und der Körpergröße in deinem Profil",
+    "calculationDescriptionWhtr": "Aus {category} und der Körpergröße in deinem Profil",
+    "calculationParamCategory": "Quellkategorie",
+    "calculationParamMaxReps": "Maximale Wiederholungen",
+    "calculationParamWindowDays": "Zeitfenster in Tagen",
+    "calculationHelpExercises": "Zwischen {min} und {max} Übungen, {count} ausgewählt.",
+    "calculationHelpMaxReps": "{min} bis {max}. Sätze darüber werden ignoriert.",
+    "calculationHelpWindowDays": "{min} bis {max}. Wie weit zurück ein bester Satz zählt.",
+    "useDynamicColor": "Dynamische Farben verwenden"
 }

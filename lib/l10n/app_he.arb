@@ -1,5 +1,4 @@
 {
-    "sameRepetitions": "אם אתם משתמשים באותה כמות של חזרות ומשקל עבור כל הסטים, ניתן למלא רק שורה אחת. למשל עבור 4 סטים, הזינו 10 עבור חזרות, ואוטומטית הערך יהיה \"4x10\".",
     "equipment": "ציוד",
     "@equipment": {
         "description": "Equipment needed to perform an exercise"
@@ -11,10 +10,6 @@
     "logout": "יציאה",
     "@logout": {
         "description": "Text for logout button"
-    },
-    "useCustomServer": "שימוש בשרת מותאם אישית",
-    "@useCustomServer": {
-        "description": "Toggle button allowing users to switch between the default and a custom wger server"
     },
     "invalidUrl": "אנא הכנס/י כתובת URL תקינה",
     "@invalidUrl": {
@@ -128,10 +123,6 @@
         "description": "A (logged) workout session"
     },
     "newDay": "יום חדש",
-    "newSet": "סט חדש",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
-    },
     "plateCalculator": "צלחות",
     "@plateCalculator": {
         "description": "Label used for the plate calculator in the gym mode"
@@ -272,24 +263,14 @@
     },
     "goToDetailPage": "עבור לדף פירוט",
     "calendar": "לוח שנה",
-    "goToToday": "עבור להיום",
-    "@goToToday": {
-        "description": "Label on button to jump back to 'today' in the calendar widget"
-    },
     "enterValue": "אנא הכנס ערך",
     "@enterValue": {
         "description": "Error message when the user hasn't entered a value on a required field"
-    },
-    "setUnitsAndRir": "יחידות סט וחזרות בעתודה",
-    "@setUnitsAndRir": {
-        "description": "Label shown on the slider where the user can toggle showing units and RiR",
-        "type": "text"
     },
     "reset": "איפוס",
     "@reset": {
         "description": "Button text allowing the user to reset the entered values to the default"
     },
-    "loginInstead": "כבר יש לך חשבון? ניתן להיכנס",
     "selectExercise": "אנא בחר/י אימון",
     "@selectExercise": {
         "description": "Error message when the user hasn't selected an exercise in the form"
@@ -347,10 +328,6 @@
     "@register": {
         "description": "Text for registration button"
     },
-    "useDefaultServer": "שימוש בשרת ברירת מחדל",
-    "@useDefaultServer": {
-        "description": "Toggle button allowing users to switch between the default and a custom wger server"
-    },
     "passwordsDontMatch": "הסיסמאות לא תואמות",
     "@passwordsDontMatch": {
         "description": "Error message when the user enters two different passwords during registration"
@@ -359,7 +336,6 @@
     "@invalidEmail": {
         "description": "Error message when the user enters an invalid email"
     },
-    "registerInstead": "אין לך חשבון? הירשם עכשיו",
     "labelBottomNavWorkout": "אימון",
     "@labelBottomNavWorkout": {
         "description": "Label used in bottom navigation, use a short word"
@@ -386,17 +362,11 @@
     "@gPerBodyKg": {
         "description": "Label used for total sums of e.g. calories or similar in grams per Kg of body weight"
     },
-    "loadingText": "טוען...",
-    "@loadingText": {
-        "description": "Text to show when entries are being loaded in the background: Loading..."
-    },
     "aboutDescription": "תודה לך על השימוש בווגר! ווגר הוא פרויקט קוד פתוח שנעשה על ידי אוהבי כושר מרחבי העולם.",
     "@aboutDescription": {
         "description": "Text in the about dialog"
     },
-    "selectExercises": "אם ברצונך לבצע סופר סט ניתן לחפש כמה אימונים כך שהם יהיו מקובצים ביחד",
     "logHelpEntries": "אם ביום אחד ישנה יותר מרשומה אחת עם אותה כמות חזרות, אבל משקל שונה, רק הרשומה עם המשקל הגבוה יותר תופיע בדיאגרמה.",
-    "searchNamesInEnglish": "לחפש גם לפי השמות באנגלית",
     "success": "הפעולה צלחה",
     "@success": {
         "description": "Message when an action completed successfully, usually used as a heading"
@@ -416,13 +386,6 @@
         "description": "Message returned if no exercises match the searched string"
     },
     "useColors": "שימוש בצבעים",
-    "useApiToken": "שימוש באסימון API",
-    "useUsernameAndPassword": "שימוש בשם משתמש וסיסמה",
-    "apiToken": "אסימון API",
-    "invalidApiToken": "נא להקליד אסימון API תקין",
-    "@invalidApiToken": {
-        "description": "Error message when the user enters an invalid API key"
-    },
     "routines": "שגרות",
     "newRoutine": "שגרה חדשה",
     "noRoutines": "אין לך שגרות",
@@ -531,7 +494,6 @@
     "translateExercise": "לתרגם את התרגיל הזה כעת",
     "settingsTitle": "הגדרות",
     "settingsCacheTitle": "מטמון",
-    "settingsExerciseCacheDescription": "מטמון תרגילים",
     "aboutPageTitle": "מידע כללי ותמיכה",
     "simpleMode": "מצב פשוט",
     "arms": "זרועות",
@@ -692,7 +654,6 @@
         }
     },
     "setHasNoExercises": "עדיין אין אימונים בסט זה!",
-    "settingsIngredientCacheDescription": "מטמון מרכיב",
     "settingsCacheDeletedSnackbar": "המטמון נוקה בהצלחה",
     "textPromptTitle": "מוכנים להתחיל?",
     "abs": "שרירי בטן",
@@ -712,10 +673,6 @@
     "darkMode": "עיצוב כהה תמיד",
     "lightMode": "עיצוב בהיר תמיד",
     "barWeight": "משקל Bar",
-    "apiTokenValidChars": "מפתח API יכול להכיל רק את האותיות a-f, את הספרות 0-9, ועליו להיות באורך 40 תווים בדיוק",
-    "@apiTokenValidChars": {
-        "description": "Error message when the user tries to input a API key with forbidden characters"
-    },
     "exerciseNr": "תרגיל {nr}",
     "@exerciseNr": {
         "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Set Nr. xy'.",
@@ -736,39 +693,6 @@
     "@toAddMealsToThePlanGoToNutritionalPlanDetails": {
         "description": "Message shown to guide users to the nutritional plan details page to add meals"
     },
-    "chartAllTimeTitle": "{name} בכל הזמנים",
-    "@chartAllTimeTitle": {
-        "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chart30DaysTitle": "{name} ב־30 הימים האחרונים",
-    "@chart30DaysTitle": {
-        "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chartDuringPlanTitle": "{chartName} במסגרת התוכנית התזונתית {planName}",
-    "@chartDuringPlanTitle": {
-        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-        "type": "text",
-        "placeholders": {
-            "chartName": {
-                "type": "String"
-            },
-            "planName": {
-                "type": "String"
-            }
-        }
-    },
     "aboutDonateText": "בעוד המיזם הזה חופשי ותמיד יישאר כך, תפעול השרת כן עולה לנו כסף! גם הפיתוח דורש השקעה משמעותית של זמן ומאמץ של מתנדבים. התרומה שלך תלך ישירות לכיסוי העלויות האלה, המאפשרות לספק את השירות שלנו נאמנה.",
     "aboutContributeText": "אנחנו מעודדים את כל סוגי התרומה. בין אם היא מתבטאת בפיתוח קוד, תרגום, או אפילו רק תשוקה לכושר, אנו מעריכים כל סוג של תמיכה!",
     "aboutMastodonTitle": "Mastodon",
@@ -778,7 +702,6 @@
     "@variations": {
         "description": "Variations of one exercise (e.g. benchpress and benchpress narrow)"
     },
-    "verifiedEmailReason": "עליך לאמת את הדואר האלקטרוני שלך כדי לתרום תרגילים",
     "oneNamePerLine": "שם אחד בכל שורה",
     "whatVariationsExist": "מהן הווריאציות שיש לתרגיל זה, אם קיימות?",
     "contributeExercise": "לתרום תרגיל",

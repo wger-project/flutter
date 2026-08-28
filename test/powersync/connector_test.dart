@@ -21,6 +21,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:drift/drift.dart' show GeneratedColumnWithTypeConverter;
+import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
@@ -80,6 +81,16 @@ void main() {
       expect(out.containsKey('routine_id'), isFalse);
     });
 
+    test('keeps `external_id`, which is a value column and not a foreign key', () {
+      final out = connector.genericTransform(
+        'measurements_measurement',
+        {'external_id': 'abc-123', 'category_id': 5},
+        '1',
+      );
+      expect(out['external_id'], 'abc-123');
+      expect(out['category'], 5);
+    });
+
     test('handles null opData (delete events)', () {
       final out = connector.genericTransform('manager_routine', null, '99');
       expect(out, {'id': '99'});
@@ -104,17 +115,19 @@ void main() {
         expect(out['created'], '2024-10-30T10:15:00.000Z');
       });
 
-      test('strips the time component on `manager_workoutsession.date`', () {
+      test('leaves the session timestamps untouched', () {
+        // The session no longer has a date-only column, both timestamps go to
+        // the server as the full ISO8601 values they are.
         final out = connector.genericTransform(
           'manager_workoutsession',
           {
-            'date': '2024-11-01T00:00:00.000Z',
+            'datetime_start': '2024-11-01T18:30:00.000Z',
             'notes': 'felt great',
             'impression': '1',
           },
           '12',
         );
-        expect(out['date'], '2024-11-01');
+        expect(out['datetime_start'], '2024-11-01T18:30:00.000Z');
         expect(out['notes'], 'felt great');
       });
 
@@ -370,6 +383,33 @@ void main() {
       ).thenThrow(http.ClientException('Connection refused'));
 
       await expectLater(connector.fetchCredentials(), throwsA(isA<http.ClientException>()));
+    });
+
+    test('times out when the token request hangs', () {
+      // On token expiry the SDK awaits fetchCredentials inline in its sync
+      // loop; without the ceiling a request that never answers freezes sync
+      // (disconnect included) until process restart.
+      fakeAsync((async) {
+        final mockApi = MockApiClient();
+        final connector = DjangoConnector(baseUrl: 'http://example.invalid', apiClient: mockApi);
+        when(
+          mockApi.getPowersyncToken(),
+        ).thenAnswer((_) => Completer<Map<String, dynamic>>().future);
+
+        Object? error;
+        connector.fetchCredentials().then<void>(
+          (_) {},
+          onError: (Object e) {
+            error = e;
+          },
+        );
+
+        async.elapse(DjangoConnector.credentialFetchTimeout - const Duration(seconds: 1));
+        expect(error, isNull);
+
+        async.elapse(const Duration(seconds: 2));
+        expect(error, isA<TimeoutException>());
+      });
     });
 
     test('anchors expiresAt to the local clock via the token lifetime', () async {

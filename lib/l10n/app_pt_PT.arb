@@ -295,39 +295,6 @@
     },
     "min": "Mín",
     "max": "Máx",
-    "chartAllTimeTitle": "{name} total",
-    "@chartAllTimeTitle": {
-        "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chart30DaysTitle": "{name} últimos 30 dias",
-    "@chart30DaysTitle": {
-        "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chartDuringPlanTitle": "{chartName} durante o plano nutricional {planName}",
-    "@chartDuringPlanTitle": {
-        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-        "type": "text",
-        "placeholders": {
-            "chartName": {
-                "type": "String"
-            },
-            "planName": {
-                "type": "String"
-            }
-        }
-    },
     "measurement": "Medição",
     "measurementCategoriesHelpText": "Categoria de medição, como 'bíceps' ou 'gordura corporal'",
     "measurementEntriesHelpText": "Unidade usada para medir, como 'cm' ou '%'",
@@ -418,10 +385,6 @@
     "noIngredientsDefined": "Ainda não há ingredientes definidos",
     "routineDays": "Dias na rotina",
     "newDay": "Novo dia",
-    "newSet": "Nova série",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
-    },
     "kcalValue": "{value} kcal",
     "@kcalValue": {
         "description": "A value in kcal, e.g. 500 kcal",

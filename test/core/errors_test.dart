@@ -19,10 +19,12 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/errors.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
@@ -129,6 +131,41 @@ void main() {
     });
   });
 
+  group('collectAppVersion', () {
+    void mockPackageInfo({String? installerStore}) {
+      PackageInfo.setMockInitialValues(
+        appName: 'wger',
+        packageName: 'de.wger.flutter',
+        version: '2.1.0',
+        buildNumber: '260',
+        buildSignature: '',
+        installerStore: installerStore,
+      );
+    }
+
+    setUp(() {
+      debugDefaultTargetPlatformOverride = TargetPlatform.android;
+      addTearDown(() {
+        debugDefaultTargetPlatformOverride = null;
+      });
+    });
+
+    test('Reports version, build, platform and installer', () async {
+      mockPackageInfo(installerStore: 'org.fdroid.fdroid');
+
+      expect(
+        await collectAppVersion(),
+        '2.1.0+260 on android, installed by org.fdroid.fdroid',
+      );
+    });
+
+    test('Omits the installer when the platform reports none', () async {
+      mockPackageInfo();
+
+      expect(await collectAppVersion(), '2.1.0+260 on android');
+    });
+  });
+
   group('buildGithubIssueUrl', () {
     test('Encodes the title and pre-fills the description', () {
       final url = buildGithubIssueUrl(
@@ -136,11 +173,18 @@ void main() {
         issueErrorMessage: 'Something broke',
         stackTrace: '#0 main (file.dart:1)',
         applicationLogs: ['log line 1', 'log line 2'],
+        appVersion: '2.1.0+260 on android',
+        serverVersion: '2.7.0',
       );
 
       expect(url, startsWith(GITHUB_ISSUES_BUG_URL));
       expect(url, contains('&title=An%20error%20occurred'));
       expect(url.length, lessThanOrEqualTo(GITHUB_ISSUES_MAX_URL_LENGTH));
+
+      // The template renders these as its own fields, not in the description
+      final query = Uri.parse(url).queryParameters;
+      expect(query['app-version'], '2.1.0+260 on android');
+      expect(query['server-version'], '2.7.0');
 
       final description = Uri.parse(url).queryParameters['description']!;
       expect(description, contains('Error message: Something broke'));
@@ -156,6 +200,8 @@ void main() {
 
       expect(url, startsWith(GITHUB_ISSUES_BUG_URL));
       expect(url, isNot(contains('&title=')));
+      expect(url, isNot(contains('&app-version=')));
+      expect(url, isNot(contains('&server-version=')));
       final description = Uri.parse(url).queryParameters['description']!;
       expect(description, contains('[Please describe the problem you are seeing.]'));
       expect(description, isNot(contains('Error details')));

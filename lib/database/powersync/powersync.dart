@@ -19,6 +19,7 @@
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
@@ -40,6 +41,17 @@ import 'package:wger/powersync/sync_watchdog.dart';
 part 'powersync.g.dart';
 
 final _logger = Logger('powersync');
+const _storageChannel = MethodChannel('de.wger.flutter/storage');
+const _dbFilename = 'powersync-wger.db';
+
+/// The database file plus the sidecars SQLite keeps next to it.
+const _dbFileSuffixes = ['', '-wal', '-shm', '-journal'];
+
+/// Subdirectory of the application support directory holding the database, so
+/// the main file and its sidecars leave device backups as one unit: iOS marks
+/// it `isExcludedFromBackup`, Android lists it in res/xml/backup_rules.xml.
+@visibleForTesting
+const dbDirectoryName = 'database';
 
 PowerSyncDatabase? _builtInstance;
 
@@ -67,7 +79,7 @@ final syncWatchdogProvider = Provider<SyncStreamWatchdog>((ref) {
 Future<PowerSyncDatabase> powerSyncInstance(Ref ref) async {
   final db = PowerSyncDatabase(
     schema: schema,
-    path: await _getDatabasePath(),
+    path: await getDatabasePath(),
     // The SDK's retry loop logs identical lines every few seconds during an
     // outage; collapsed so they don't crowd out the exportable log store.
     logger: repeatCollapsingLogger('PowerSync'),
@@ -282,15 +294,64 @@ final syncStatus = Provider((ref) {
   return ref.watch(_syncStatusInternal).value ?? const SyncStatus.uninitialized();
 });
 
-Future<String> _getDatabasePath() async {
-  const dbFilename = 'powersync-wger.db';
-
+/// Absolute path of the PowerSync database file. Creates [dbDirectoryName] and
+/// moves a database left in the support directory root into it; a failed move
+/// is logged and leaves the app on an empty database that syncs itself again.
+@visibleForTesting
+Future<String> getDatabasePath() async {
   // getApplicationSupportDirectory is not supported on Web
   if (kIsWeb) {
-    return dbFilename;
+    return _dbFilename;
   }
-  final dir = await getApplicationSupportDirectory();
-  return join(dir.path, dbFilename);
+
+  final supportDir = await getApplicationSupportDirectory();
+  final dbDir = Directory(join(supportDir.path, dbDirectoryName));
+  await dbDir.create(recursive: true);
+
+  // Android declares the exclusion in its backup rules instead
+  if (Platform.isIOS) {
+    await excludeFromBackup(dbDir.path);
+  }
+
+  try {
+    await _migrateLegacyDatabaseFiles(fromDirectory: supportDir, toDirectory: dbDir);
+  } catch (e, s) {
+    _logger.severe('Could not move the database into ${dbDir.path}', e, s);
+  }
+
+  return join(dbDir.path, _dbFilename);
+}
+
+/// Moves the database and its sidecars from [fromDirectory] into
+/// [toDirectory], leaving behind whatever is missing or already there.
+Future<void> _migrateLegacyDatabaseFiles({
+  required Directory fromDirectory,
+  required Directory toDirectory,
+}) async {
+  for (final suffix in _dbFileSuffixes) {
+    final from = File(join(fromDirectory.path, '$_dbFilename$suffix'));
+    final to = File(join(toDirectory.path, '$_dbFilename$suffix'));
+
+    if (!from.existsSync() || to.existsSync()) {
+      continue;
+    }
+
+    await from.rename(to.path);
+  }
+}
+
+/// Asks the platform to keep [path] out of device backups. Best effort: the
+/// database works either way, so a missing channel or a platform error is
+/// logged rather than raised.
+@visibleForTesting
+Future<void> excludeFromBackup(String path) async {
+  try {
+    await _storageChannel.invokeMethod<void>('excludeFromBackup', {'path': path});
+  } on MissingPluginException {
+    _logger.warning('Could not exclude $path from backups: storage channel unavailable');
+  } on PlatformException catch (e, s) {
+    _logger.warning('Could not exclude $path from backups', e, s);
+  }
 }
 
 /// Deletes the on-disk PowerSync SQLite files (main DB plus WAL/SHM/journal
@@ -307,8 +368,8 @@ Future<void> deletePowerSyncDatabaseFile() async {
     _logger.warning('deletePowerSyncDatabaseFile: not supported on web, skipping');
     return;
   }
-  final path = await _getDatabasePath();
-  for (final suffix in ['', '-wal', '-shm', '-journal']) {
+  final path = await getDatabasePath();
+  for (final suffix in _dbFileSuffixes) {
     final file = File('$path$suffix');
     try {
       if (file.existsSync()) {

@@ -3,42 +3,53 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i10;
+import 'dart:async' as _i11;
 
-import 'package:image_picker/image_picker.dart' as _i11;
+import 'package:health_bridge/health.dart' as _i44;
+import 'package:image_picker/image_picker.dart' as _i12;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i32;
+import 'package:wger/core/language.dart' as _i42;
 import 'package:wger/core/network/base_provider.dart' as _i8;
-import 'package:wger/core/search_options.dart' as _i20;
+import 'package:wger/core/search_options.dart' as _i21;
 import 'package:wger/features/account/models/user_profile.dart' as _i27;
 import 'package:wger/features/account/providers/user_profile_repository.dart' as _i26;
+import 'package:wger/features/exercises/models/category.dart' as _i38;
+import 'package:wger/features/exercises/models/equipment.dart' as _i40;
+import 'package:wger/features/exercises/models/exercise_filters.dart' as _i37;
+import 'package:wger/features/exercises/models/muscle.dart' as _i41;
+import 'package:wger/features/exercises/providers/exercise_repository.dart' as _i36;
+import 'package:wger/features/exercises/providers/exercises_notifier.dart' as _i39;
 import 'package:wger/features/gallery/models/image.dart' as _i2;
-import 'package:wger/features/gallery/providers/gallery_repository.dart' as _i9;
-import 'package:wger/features/measurements/models/measurement_category.dart' as _i24;
-import 'package:wger/features/measurements/models/measurement_entry.dart' as _i25;
-import 'package:wger/features/measurements/providers/measurement_repository.dart' as _i23;
-import 'package:wger/features/nutrition/models/ingredient.dart' as _i18;
-import 'package:wger/features/nutrition/models/ingredient_filters.dart' as _i19;
-import 'package:wger/features/nutrition/models/log.dart' as _i16;
-import 'package:wger/features/nutrition/models/meal.dart' as _i14;
-import 'package:wger/features/nutrition/models/meal_item.dart' as _i15;
-import 'package:wger/features/nutrition/models/nutritional_plan.dart' as _i13;
-import 'package:wger/features/nutrition/providers/ingredient_repository.dart' as _i17;
-import 'package:wger/features/nutrition/providers/nutrition_repository.dart' as _i12;
+import 'package:wger/features/gallery/providers/gallery_repository.dart' as _i10;
+import 'package:wger/features/health/models/health_reading.dart' as _i45;
+import 'package:wger/features/health/providers/health_repository.dart' as _i43;
+import 'package:wger/features/measurements/models/measurement_bucket.dart' as _i25;
+import 'package:wger/features/measurements/models/measurement_category.dart' as _i23;
+import 'package:wger/features/measurements/models/measurement_entry.dart' as _i24;
+import 'package:wger/features/measurements/providers/measurement_repository.dart' as _i22;
+import 'package:wger/features/nutrition/models/ingredient.dart' as _i19;
+import 'package:wger/features/nutrition/models/ingredient_filters.dart' as _i20;
+import 'package:wger/features/nutrition/models/log.dart' as _i17;
+import 'package:wger/features/nutrition/models/meal.dart' as _i15;
+import 'package:wger/features/nutrition/models/meal_item.dart' as _i16;
+import 'package:wger/features/nutrition/models/nutritional_plan.dart' as _i14;
+import 'package:wger/features/nutrition/providers/ingredient_repository.dart' as _i18;
+import 'package:wger/features/nutrition/providers/nutrition_repository.dart' as _i13;
 import 'package:wger/features/routines/models/base_config.dart' as _i7;
 import 'package:wger/features/routines/models/day.dart' as _i4;
 import 'package:wger/features/routines/models/repetition_unit.dart' as _i30;
 import 'package:wger/features/routines/models/routine.dart' as _i3;
+import 'package:wger/features/routines/models/session.dart' as _i9;
 import 'package:wger/features/routines/models/slot.dart' as _i5;
 import 'package:wger/features/routines/models/slot_entry.dart' as _i6;
 import 'package:wger/features/routines/models/weight_unit.dart' as _i29;
 import 'package:wger/features/routines/providers/routines_repository.dart' as _i28;
+import 'package:wger/features/routines/providers/workout_session_repository.dart' as _i46;
 import 'package:wger/features/trophies/models/trophy.dart' as _i33;
 import 'package:wger/features/trophies/models/user_trophy.dart' as _i34;
 import 'package:wger/features/trophies/models/user_trophy_progression.dart' as _i35;
 import 'package:wger/features/trophies/providers/trophy_repository.dart' as _i31;
-import 'package:wger/features/weight/models/weight_entry.dart' as _i22;
-import 'package:wger/features/weight/providers/body_weight_repository.dart' as _i21;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -84,240 +95,245 @@ class _FakeWgerBaseProvider_6 extends _i1.SmartFake implements _i8.WgerBaseProvi
     : super(parent, parentInvocation);
 }
 
+class _FakeWorkoutSession_7 extends _i1.SmartFake implements _i9.WorkoutSession {
+  _FakeWorkoutSession_7(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
 /// A class which mocks [GalleryRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockGalleryRepository extends _i1.Mock implements _i9.GalleryRepository {
+class MockGalleryRepository extends _i1.Mock implements _i10.GalleryRepository {
   MockGalleryRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i10.Stream<List<_i2.GalleryImage>> watchAllDrift() =>
+  _i11.Stream<List<_i2.GalleryImage>> watchAllDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchAllDrift, []),
-            returnValue: _i10.Stream<List<_i2.GalleryImage>>.empty(),
+            returnValue: _i11.Stream<List<_i2.GalleryImage>>.empty(),
           )
-          as _i10.Stream<List<_i2.GalleryImage>>);
+          as _i11.Stream<List<_i2.GalleryImage>>);
 
   @override
-  _i10.Future<_i2.GalleryImage> addImageServer(
+  _i11.Future<_i2.GalleryImage> addImageServer(
     _i2.GalleryImage? image,
-    _i11.XFile? imageFile,
+    _i12.XFile? imageFile,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#addImageServer, [image, imageFile]),
-            returnValue: _i10.Future<_i2.GalleryImage>.value(
+            returnValue: _i11.Future<_i2.GalleryImage>.value(
               _FakeGalleryImage_0(
                 this,
                 Invocation.method(#addImageServer, [image, imageFile]),
               ),
             ),
           )
-          as _i10.Future<_i2.GalleryImage>);
+          as _i11.Future<_i2.GalleryImage>);
 
   @override
-  _i10.Future<String?> editImageServer(
+  _i11.Future<String?> editImageServer(
     _i2.GalleryImage? image,
-    _i11.XFile? imageFile,
+    _i12.XFile? imageFile,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#editImageServer, [image, imageFile]),
-            returnValue: _i10.Future<String?>.value(),
+            returnValue: _i11.Future<String?>.value(),
           )
-          as _i10.Future<String?>);
+          as _i11.Future<String?>);
 
   @override
-  _i10.Future<void> editLocalDrift(_i2.GalleryImage? image) =>
+  _i11.Future<void> editLocalDrift(_i2.GalleryImage? image) =>
       (super.noSuchMethod(
             Invocation.method(#editLocalDrift, [image]),
-            returnValue: _i10.Future<void>.value(),
-            returnValueForMissingStub: _i10.Future<void>.value(),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
           )
-          as _i10.Future<void>);
+          as _i11.Future<void>);
 
   @override
-  _i10.Future<void> deleteLocalDrift(int? id) =>
+  _i11.Future<void> deleteLocalDrift(int? id) =>
       (super.noSuchMethod(
             Invocation.method(#deleteLocalDrift, [id]),
-            returnValue: _i10.Future<void>.value(),
-            returnValueForMissingStub: _i10.Future<void>.value(),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
           )
-          as _i10.Future<void>);
+          as _i11.Future<void>);
 }
 
 /// A class which mocks [NutritionRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockNutritionRepository extends _i1.Mock implements _i12.NutritionRepository {
+class MockNutritionRepository extends _i1.Mock implements _i13.NutritionRepository {
   MockNutritionRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i10.Stream<List<_i13.NutritionalPlan>> watchAllDrift() =>
+  _i11.Stream<List<_i14.NutritionalPlan>> watchAllDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchAllDrift, []),
-            returnValue: _i10.Stream<List<_i13.NutritionalPlan>>.empty(),
+            returnValue: _i11.Stream<List<_i14.NutritionalPlan>>.empty(),
           )
-          as _i10.Stream<List<_i13.NutritionalPlan>>);
+          as _i11.Stream<List<_i14.NutritionalPlan>>);
 
   @override
-  _i10.Future<void> addPlanLocalDrift(_i13.NutritionalPlan? plan) =>
+  _i11.Future<void> addPlanLocalDrift(_i14.NutritionalPlan? plan) =>
       (super.noSuchMethod(
             Invocation.method(#addPlanLocalDrift, [plan]),
-            returnValue: _i10.Future<void>.value(),
-            returnValueForMissingStub: _i10.Future<void>.value(),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
           )
-          as _i10.Future<void>);
+          as _i11.Future<void>);
 
   @override
-  _i10.Future<void> editLocalDrift(_i13.NutritionalPlan? plan) =>
+  _i11.Future<void> editLocalDrift(_i14.NutritionalPlan? plan) =>
       (super.noSuchMethod(
             Invocation.method(#editLocalDrift, [plan]),
-            returnValue: _i10.Future<void>.value(),
-            returnValueForMissingStub: _i10.Future<void>.value(),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
           )
-          as _i10.Future<void>);
+          as _i11.Future<void>);
 
   @override
-  _i10.Future<void> deleteLocalDrift(String? id) =>
+  _i11.Future<void> deleteLocalDrift(String? id) =>
       (super.noSuchMethod(
             Invocation.method(#deleteLocalDrift, [id]),
-            returnValue: _i10.Future<void>.value(),
-            returnValueForMissingStub: _i10.Future<void>.value(),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
           )
-          as _i10.Future<void>);
+          as _i11.Future<void>);
 
   @override
-  _i10.Stream<List<_i14.Meal>> watchAllMealsHydrated() =>
+  _i11.Stream<List<_i15.Meal>> watchAllMealsHydrated() =>
       (super.noSuchMethod(
             Invocation.method(#watchAllMealsHydrated, []),
-            returnValue: _i10.Stream<List<_i14.Meal>>.empty(),
+            returnValue: _i11.Stream<List<_i15.Meal>>.empty(),
           )
-          as _i10.Stream<List<_i14.Meal>>);
+          as _i11.Stream<List<_i15.Meal>>);
 
   @override
-  _i10.Future<void> addMealLocalDrift(_i14.Meal? meal) =>
+  _i11.Future<void> addMealLocalDrift(_i15.Meal? meal) =>
       (super.noSuchMethod(
             Invocation.method(#addMealLocalDrift, [meal]),
-            returnValue: _i10.Future<void>.value(),
-            returnValueForMissingStub: _i10.Future<void>.value(),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
           )
-          as _i10.Future<void>);
+          as _i11.Future<void>);
 
   @override
-  _i10.Future<void> editMealLocalDrift(_i14.Meal? meal) =>
+  _i11.Future<void> editMealLocalDrift(_i15.Meal? meal) =>
       (super.noSuchMethod(
             Invocation.method(#editMealLocalDrift, [meal]),
-            returnValue: _i10.Future<void>.value(),
-            returnValueForMissingStub: _i10.Future<void>.value(),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
           )
-          as _i10.Future<void>);
+          as _i11.Future<void>);
 
   @override
-  _i10.Future<void> deleteMealLocalDrift(String? id) =>
+  _i11.Future<void> deleteMealLocalDrift(String? id) =>
       (super.noSuchMethod(
             Invocation.method(#deleteMealLocalDrift, [id]),
-            returnValue: _i10.Future<void>.value(),
-            returnValueForMissingStub: _i10.Future<void>.value(),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
           )
-          as _i10.Future<void>);
+          as _i11.Future<void>);
 
   @override
-  _i10.Future<void> addMealItemLocalDrift(_i15.MealItem? item) =>
+  _i11.Future<void> addMealItemLocalDrift(_i16.MealItem? item) =>
       (super.noSuchMethod(
             Invocation.method(#addMealItemLocalDrift, [item]),
-            returnValue: _i10.Future<void>.value(),
-            returnValueForMissingStub: _i10.Future<void>.value(),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
           )
-          as _i10.Future<void>);
+          as _i11.Future<void>);
 
   @override
-  _i10.Future<void> editMealItemLocalDrift(_i15.MealItem? item) =>
+  _i11.Future<void> editMealItemLocalDrift(_i16.MealItem? item) =>
       (super.noSuchMethod(
             Invocation.method(#editMealItemLocalDrift, [item]),
-            returnValue: _i10.Future<void>.value(),
-            returnValueForMissingStub: _i10.Future<void>.value(),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
           )
-          as _i10.Future<void>);
+          as _i11.Future<void>);
 
   @override
-  _i10.Future<void> deleteMealItemLocalDrift(String? id) =>
+  _i11.Future<void> deleteMealItemLocalDrift(String? id) =>
       (super.noSuchMethod(
             Invocation.method(#deleteMealItemLocalDrift, [id]),
-            returnValue: _i10.Future<void>.value(),
-            returnValueForMissingStub: _i10.Future<void>.value(),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
           )
-          as _i10.Future<void>);
+          as _i11.Future<void>);
 
   @override
-  _i10.Stream<List<_i16.LogItem>> watchAllLogsHydrated() =>
+  _i11.Stream<List<_i17.LogItem>> watchAllLogsHydrated() =>
       (super.noSuchMethod(
             Invocation.method(#watchAllLogsHydrated, []),
-            returnValue: _i10.Stream<List<_i16.LogItem>>.empty(),
+            returnValue: _i11.Stream<List<_i17.LogItem>>.empty(),
           )
-          as _i10.Stream<List<_i16.LogItem>>);
+          as _i11.Stream<List<_i17.LogItem>>);
 
   @override
-  _i10.Future<void> addLogLocalDrift(_i16.LogItem? log) =>
+  _i11.Future<void> addLogLocalDrift(_i17.LogItem? log) =>
       (super.noSuchMethod(
             Invocation.method(#addLogLocalDrift, [log]),
-            returnValue: _i10.Future<void>.value(),
-            returnValueForMissingStub: _i10.Future<void>.value(),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
           )
-          as _i10.Future<void>);
+          as _i11.Future<void>);
 
   @override
-  _i10.Future<void> deleteLogLocalDrift(String? id) =>
+  _i11.Future<void> deleteLogLocalDrift(String? id) =>
       (super.noSuchMethod(
             Invocation.method(#deleteLogLocalDrift, [id]),
-            returnValue: _i10.Future<void>.value(),
-            returnValueForMissingStub: _i10.Future<void>.value(),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
           )
-          as _i10.Future<void>);
+          as _i11.Future<void>);
 }
 
 /// A class which mocks [IngredientRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockIngredientRepository extends _i1.Mock implements _i17.IngredientRepository {
+class MockIngredientRepository extends _i1.Mock implements _i18.IngredientRepository {
   MockIngredientRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i10.Stream<_i18.Ingredient?> watchById(int? id) =>
+  _i11.Stream<_i19.Ingredient?> watchById(int? id) =>
       (super.noSuchMethod(
             Invocation.method(#watchById, [id]),
-            returnValue: _i10.Stream<_i18.Ingredient?>.empty(),
+            returnValue: _i11.Stream<_i19.Ingredient?>.empty(),
           )
-          as _i10.Stream<_i18.Ingredient?>);
+          as _i11.Stream<_i19.Ingredient?>);
 
   @override
-  _i10.Stream<List<_i18.Ingredient>> watchAllDrift({
-    _i19.IngredientFilters? filters = const _i19.IngredientFilters(),
+  _i11.Stream<List<_i19.Ingredient>> watchAllDrift({
+    _i20.IngredientFilters? filters = const _i20.IngredientFilters(),
   }) =>
       (super.noSuchMethod(
             Invocation.method(#watchAllDrift, [], {#filters: filters}),
-            returnValue: _i10.Stream<List<_i18.Ingredient>>.empty(),
+            returnValue: _i11.Stream<List<_i19.Ingredient>>.empty(),
           )
-          as _i10.Stream<List<_i18.Ingredient>>);
+          as _i11.Stream<List<_i19.Ingredient>>);
 
   @override
-  _i10.Future<_i18.Ingredient?> getById(int? id) =>
+  _i11.Future<_i19.Ingredient?> getById(int? id) =>
       (super.noSuchMethod(
             Invocation.method(#getById, [id]),
-            returnValue: _i10.Future<_i18.Ingredient?>.value(),
+            returnValue: _i11.Future<_i19.Ingredient?>.value(),
           )
-          as _i10.Future<_i18.Ingredient?>);
+          as _i11.Future<_i19.Ingredient?>);
 
   @override
-  _i10.Future<List<_i18.Ingredient>> searchIngredientLocal(
+  _i11.Future<List<_i19.Ingredient>> searchIngredientLocal(
     String? term, {
     bool? isVegan = false,
     bool? isVegetarian = false,
-    _i18.NutriScore? nutriscoreMax,
+    _i19.NutriScore? nutriscoreMax,
     int? limit = 100,
   }) =>
       (super.noSuchMethod(
@@ -331,20 +347,20 @@ class MockIngredientRepository extends _i1.Mock implements _i17.IngredientReposi
                 #limit: limit,
               },
             ),
-            returnValue: _i10.Future<List<_i18.Ingredient>>.value(
-              <_i18.Ingredient>[],
+            returnValue: _i11.Future<List<_i19.Ingredient>>.value(
+              <_i19.Ingredient>[],
             ),
           )
-          as _i10.Future<List<_i18.Ingredient>>);
+          as _i11.Future<List<_i19.Ingredient>>);
 
   @override
-  _i10.Future<List<_i18.Ingredient>> searchIngredientServer(
+  _i11.Future<List<_i19.Ingredient>> searchIngredientServer(
     String? name, {
     String? languageCode = 'en',
-    _i20.SearchLanguage? searchLanguage = _i20.SearchLanguage.current,
+    _i21.SearchLanguage? searchLanguage = _i21.SearchLanguage.current,
     bool? isVegan = false,
     bool? isVegetarian = false,
-    _i18.NutriScore? nutriscoreMax,
+    _i19.NutriScore? nutriscoreMax,
   }) =>
       (super.noSuchMethod(
             Invocation.method(
@@ -358,21 +374,21 @@ class MockIngredientRepository extends _i1.Mock implements _i17.IngredientReposi
                 #nutriscoreMax: nutriscoreMax,
               },
             ),
-            returnValue: _i10.Future<List<_i18.Ingredient>>.value(
-              <_i18.Ingredient>[],
+            returnValue: _i11.Future<List<_i19.Ingredient>>.value(
+              <_i19.Ingredient>[],
             ),
           )
-          as _i10.Future<List<_i18.Ingredient>>);
+          as _i11.Future<List<_i19.Ingredient>>);
 
   @override
-  _i10.Future<List<_i18.Ingredient>> search(
+  _i11.Future<List<_i19.Ingredient>> search(
     String? name, {
     required bool? isOnline,
     String? languageCode = 'en',
-    _i20.SearchLanguage? searchLanguage = _i20.SearchLanguage.current,
+    _i21.SearchLanguage? searchLanguage = _i21.SearchLanguage.current,
     bool? isVegan = false,
     bool? isVegetarian = false,
-    _i18.NutriScore? nutriscoreMax,
+    _i19.NutriScore? nutriscoreMax,
   }) =>
       (super.noSuchMethod(
             Invocation.method(
@@ -387,146 +403,273 @@ class MockIngredientRepository extends _i1.Mock implements _i17.IngredientReposi
                 #nutriscoreMax: nutriscoreMax,
               },
             ),
-            returnValue: _i10.Future<List<_i18.Ingredient>>.value(
-              <_i18.Ingredient>[],
+            returnValue: _i11.Future<List<_i19.Ingredient>>.value(
+              <_i19.Ingredient>[],
             ),
           )
-          as _i10.Future<List<_i18.Ingredient>>);
+          as _i11.Future<List<_i19.Ingredient>>);
 
   @override
-  _i10.Future<_i18.Ingredient?> searchIngredientByBarcode(String? barcode) =>
+  _i11.Future<_i19.Ingredient?> searchIngredientByBarcode(String? barcode) =>
       (super.noSuchMethod(
             Invocation.method(#searchIngredientByBarcode, [barcode]),
-            returnValue: _i10.Future<_i18.Ingredient?>.value(),
+            returnValue: _i11.Future<_i19.Ingredient?>.value(),
           )
-          as _i10.Future<_i18.Ingredient?>);
-}
-
-/// A class which mocks [BodyWeightRepository].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockBodyWeightRepository extends _i1.Mock implements _i21.BodyWeightRepository {
-  MockBodyWeightRepository() {
-    _i1.throwOnMissingStub(this);
-  }
-
-  @override
-  _i10.Stream<List<_i22.WeightEntry>> watchAllDrift() =>
-      (super.noSuchMethod(
-            Invocation.method(#watchAllDrift, []),
-            returnValue: _i10.Stream<List<_i22.WeightEntry>>.empty(),
-          )
-          as _i10.Stream<List<_i22.WeightEntry>>);
-
-  @override
-  _i10.Future<void> deleteLocalDrift(String? id) =>
-      (super.noSuchMethod(
-            Invocation.method(#deleteLocalDrift, [id]),
-            returnValue: _i10.Future<void>.value(),
-            returnValueForMissingStub: _i10.Future<void>.value(),
-          )
-          as _i10.Future<void>);
-
-  @override
-  _i10.Future<void> updateLocalDrift(_i22.WeightEntry? entry) =>
-      (super.noSuchMethod(
-            Invocation.method(#updateLocalDrift, [entry]),
-            returnValue: _i10.Future<void>.value(),
-            returnValueForMissingStub: _i10.Future<void>.value(),
-          )
-          as _i10.Future<void>);
-
-  @override
-  _i10.Future<void> addLocalDrift(_i22.WeightEntry? entry) =>
-      (super.noSuchMethod(
-            Invocation.method(#addLocalDrift, [entry]),
-            returnValue: _i10.Future<void>.value(),
-            returnValueForMissingStub: _i10.Future<void>.value(),
-          )
-          as _i10.Future<void>);
+          as _i11.Future<_i19.Ingredient?>);
 }
 
 /// A class which mocks [MeasurementRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockMeasurementRepository extends _i1.Mock implements _i23.MeasurementRepository {
+class MockMeasurementRepository extends _i1.Mock implements _i22.MeasurementRepository {
   MockMeasurementRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i10.Stream<List<_i24.MeasurementCategory>> watchAll() =>
+  _i11.Stream<List<_i23.MeasurementCategory>> watchAllWithoutEntries() =>
       (super.noSuchMethod(
-            Invocation.method(#watchAll, []),
-            returnValue: _i10.Stream<List<_i24.MeasurementCategory>>.empty(),
+            Invocation.method(#watchAllWithoutEntries, []),
+            returnValue: _i11.Stream<List<_i23.MeasurementCategory>>.empty(),
           )
-          as _i10.Stream<List<_i24.MeasurementCategory>>);
+          as _i11.Stream<List<_i23.MeasurementCategory>>);
 
   @override
-  _i10.Stream<_i24.MeasurementCategory?> watchLocalDriftCategoryById(
+  _i11.Stream<_i23.MeasurementCategory?> watchCategoryWithoutEntries(
     String? id,
   ) =>
       (super.noSuchMethod(
-            Invocation.method(#watchLocalDriftCategoryById, [id]),
-            returnValue: _i10.Stream<_i24.MeasurementCategory?>.empty(),
+            Invocation.method(#watchCategoryWithoutEntries, [id]),
+            returnValue: _i11.Stream<_i23.MeasurementCategory?>.empty(),
           )
-          as _i10.Stream<_i24.MeasurementCategory?>);
+          as _i11.Stream<_i23.MeasurementCategory?>);
 
   @override
-  _i10.Future<void> deleteLocalDrift(String? id) =>
+  _i11.Stream<_i23.MeasurementCategory?> watchOfficialBodyWeightCategory() =>
+      (super.noSuchMethod(
+            Invocation.method(#watchOfficialBodyWeightCategory, []),
+            returnValue: _i11.Stream<_i23.MeasurementCategory?>.empty(),
+          )
+          as _i11.Stream<_i23.MeasurementCategory?>);
+
+  @override
+  _i11.Stream<List<_i24.MeasurementEntry>> watchEntries(
+    String? categoryId, {
+    required int? limit,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#watchEntries, [categoryId], {#limit: limit}),
+            returnValue: _i11.Stream<List<_i24.MeasurementEntry>>.empty(),
+          )
+          as _i11.Stream<List<_i24.MeasurementEntry>>);
+
+  @override
+  _i11.Stream<List<_i24.MeasurementEntry>> watchGroupEntries(
+    String? parentId, {
+    required int? limit,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#watchGroupEntries, [parentId], {#limit: limit}),
+            returnValue: _i11.Stream<List<_i24.MeasurementEntry>>.empty(),
+          )
+          as _i11.Stream<List<_i24.MeasurementEntry>>);
+
+  @override
+  _i11.Stream<Map<String, _i24.MeasurementEntry>> watchLatestEntries() =>
+      (super.noSuchMethod(
+            Invocation.method(#watchLatestEntries, []),
+            returnValue: _i11.Stream<Map<String, _i24.MeasurementEntry>>.empty(),
+          )
+          as _i11.Stream<Map<String, _i24.MeasurementEntry>>);
+
+  @override
+  _i11.Stream<List<_i25.MeasurementBucket>> watchEntryBuckets(
+    String? categoryId, {
+    DateTime? since,
+    DateTime? until,
+    _i25.MeasurementBucketLevel? level = _i25.MeasurementBucketLevel.auto,
+    int? maxPoints = 200,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #watchEntryBuckets,
+              [categoryId],
+              {
+                #since: since,
+                #until: until,
+                #level: level,
+                #maxPoints: maxPoints,
+              },
+            ),
+            returnValue: _i11.Stream<List<_i25.MeasurementBucket>>.empty(),
+          )
+          as _i11.Stream<List<_i25.MeasurementBucket>>);
+
+  @override
+  _i11.Stream<Map<String, List<_i25.MeasurementBucket>>> watchGroupBuckets(
+    String? parentId, {
+    DateTime? since,
+    _i25.MeasurementBucketLevel? level = _i25.MeasurementBucketLevel.auto,
+    int? maxPoints = 200,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #watchGroupBuckets,
+              [parentId],
+              {#since: since, #level: level, #maxPoints: maxPoints},
+            ),
+            returnValue: _i11.Stream<Map<String, List<_i25.MeasurementBucket>>>.empty(),
+          )
+          as _i11.Stream<Map<String, List<_i25.MeasurementBucket>>>);
+
+  @override
+  _i11.Stream<Map<String, List<_i25.MeasurementBucket>>> watchDailyBuckets() =>
+      (super.noSuchMethod(
+            Invocation.method(#watchDailyBuckets, []),
+            returnValue: _i11.Stream<Map<String, List<_i25.MeasurementBucket>>>.empty(),
+          )
+          as _i11.Stream<Map<String, List<_i25.MeasurementBucket>>>);
+
+  @override
+  _i11.Stream<List<_i25.MeasurementValueCount>> watchValueCounts(
+    String? categoryId, {
+    DateTime? since,
+    bool? summedPerDay = false,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #watchValueCounts,
+              [categoryId],
+              {#since: since, #summedPerDay: summedPerDay},
+            ),
+            returnValue: _i11.Stream<List<_i25.MeasurementValueCount>>.empty(),
+          )
+          as _i11.Stream<List<_i25.MeasurementValueCount>>);
+
+  @override
+  _i11.Future<List<_i23.MeasurementCategory>> getCategoriesOnce() =>
+      (super.noSuchMethod(
+            Invocation.method(#getCategoriesOnce, []),
+            returnValue: _i11.Future<List<_i23.MeasurementCategory>>.value(
+              <_i23.MeasurementCategory>[],
+            ),
+          )
+          as _i11.Future<List<_i23.MeasurementCategory>>);
+
+  @override
+  _i11.Future<Set<String>> getExternalIds(String? categoryId) =>
+      (super.noSuchMethod(
+            Invocation.method(#getExternalIds, [categoryId]),
+            returnValue: _i11.Future<Set<String>>.value(<String>{}),
+          )
+          as _i11.Future<Set<String>>);
+
+  @override
+  _i11.Future<Map<String, _i24.MeasurementEntry>> getEntriesByExternalId(
+    String? categoryId,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#getEntriesByExternalId, [categoryId]),
+            returnValue: _i11.Future<Map<String, _i24.MeasurementEntry>>.value(
+              <String, _i24.MeasurementEntry>{},
+            ),
+          )
+          as _i11.Future<Map<String, _i24.MeasurementEntry>>);
+
+  @override
+  _i11.Future<bool> hasEntries(String? categoryId) =>
+      (super.noSuchMethod(
+            Invocation.method(#hasEntries, [categoryId]),
+            returnValue: _i11.Future<bool>.value(false),
+          )
+          as _i11.Future<bool>);
+
+  @override
+  _i11.Future<void> deleteLocalDrift(String? id) =>
       (super.noSuchMethod(
             Invocation.method(#deleteLocalDrift, [id]),
-            returnValue: _i10.Future<void>.value(),
-            returnValueForMissingStub: _i10.Future<void>.value(),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
           )
-          as _i10.Future<void>);
+          as _i11.Future<void>);
 
   @override
-  _i10.Future<void> updateLocalDrift(_i25.MeasurementEntry? entry) =>
+  _i11.Future<void> updateLocalDrift(_i24.MeasurementEntry? entry) =>
       (super.noSuchMethod(
             Invocation.method(#updateLocalDrift, [entry]),
-            returnValue: _i10.Future<void>.value(),
-            returnValueForMissingStub: _i10.Future<void>.value(),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
           )
-          as _i10.Future<void>);
+          as _i11.Future<void>);
 
   @override
-  _i10.Future<void> addLocalDrift(_i25.MeasurementEntry? entry) =>
+  _i11.Future<void> addLocalDrift(_i24.MeasurementEntry? entry) =>
       (super.noSuchMethod(
             Invocation.method(#addLocalDrift, [entry]),
-            returnValue: _i10.Future<void>.value(),
-            returnValueForMissingStub: _i10.Future<void>.value(),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
           )
-          as _i10.Future<void>);
+          as _i11.Future<void>);
 
   @override
-  _i10.Future<void> deleteLocalDriftCategory(String? id) =>
+  _i11.Future<void> addLocalDriftGroupEntries(
+    List<_i24.MeasurementEntry>? entries,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#addLocalDriftGroupEntries, [entries]),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
+          )
+          as _i11.Future<void>);
+
+  @override
+  _i11.Future<void> deleteLocalDriftCategory(String? id) =>
       (super.noSuchMethod(
             Invocation.method(#deleteLocalDriftCategory, [id]),
-            returnValue: _i10.Future<void>.value(),
-            returnValueForMissingStub: _i10.Future<void>.value(),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
           )
-          as _i10.Future<void>);
+          as _i11.Future<void>);
 
   @override
-  _i10.Future<void> updateLocalDriftCategory(
-    _i24.MeasurementCategory? category,
+  _i11.Future<void> updateLocalDriftCategory(
+    _i23.MeasurementCategory? category,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#updateLocalDriftCategory, [category]),
-            returnValue: _i10.Future<void>.value(),
-            returnValueForMissingStub: _i10.Future<void>.value(),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
           )
-          as _i10.Future<void>);
+          as _i11.Future<void>);
 
   @override
-  _i10.Future<void> addLocalDriftCategory(_i24.MeasurementCategory? category) =>
+  _i11.Future<void> addLocalDriftCategory(_i23.MeasurementCategory? category) =>
       (super.noSuchMethod(
             Invocation.method(#addLocalDriftCategory, [category]),
-            returnValue: _i10.Future<void>.value(),
-            returnValueForMissingStub: _i10.Future<void>.value(),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
           )
-          as _i10.Future<void>);
+          as _i11.Future<void>);
+
+  @override
+  _i11.Future<void> addLocalDriftCategoryGroup(
+    List<_i23.MeasurementCategory>? categories,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#addLocalDriftCategoryGroup, [categories]),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
+          )
+          as _i11.Future<void>);
+
+  @override
+  _i11.Future<void> reorderCategories(List<String>? orderedIds) =>
+      (super.noSuchMethod(
+            Invocation.method(#reorderCategories, [orderedIds]),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
+          )
+          as _i11.Future<void>);
 }
 
 /// A class which mocks [UserProfileRepository].
@@ -538,21 +681,30 @@ class MockUserProfileRepository extends _i1.Mock implements _i26.UserProfileRepo
   }
 
   @override
-  _i10.Stream<_i27.UserProfile?> watchDrift() =>
+  _i11.Stream<_i27.UserProfile?> watchDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchDrift, []),
-            returnValue: _i10.Stream<_i27.UserProfile?>.empty(),
+            returnValue: _i11.Stream<_i27.UserProfile?>.empty(),
           )
-          as _i10.Stream<_i27.UserProfile?>);
+          as _i11.Stream<_i27.UserProfile?>);
 
   @override
-  _i10.Future<void> editLocalDrift(_i27.UserProfile? profile) =>
+  _i11.Future<void> updateTimeZoneDrift(int? id, String? timeZone) =>
+      (super.noSuchMethod(
+            Invocation.method(#updateTimeZoneDrift, [id, timeZone]),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
+          )
+          as _i11.Future<void>);
+
+  @override
+  _i11.Future<void> editLocalDrift(_i27.UserProfile? profile) =>
       (super.noSuchMethod(
             Invocation.method(#editLocalDrift, [profile]),
-            returnValue: _i10.Future<void>.value(),
-            returnValueForMissingStub: _i10.Future<void>.value(),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
           )
-          as _i10.Future<void>);
+          as _i11.Future<void>);
 }
 
 /// A class which mocks [RoutinesRepository].
@@ -564,213 +716,213 @@ class MockRoutinesRepository extends _i1.Mock implements _i28.RoutinesRepository
   }
 
   @override
-  _i10.Future<_i3.Routine> fetchAndSetRoutineFullServer(int? routineId) =>
+  _i11.Future<_i3.Routine> fetchAndSetRoutineFullServer(int? routineId) =>
       (super.noSuchMethod(
             Invocation.method(#fetchAndSetRoutineFullServer, [routineId]),
-            returnValue: _i10.Future<_i3.Routine>.value(
+            returnValue: _i11.Future<_i3.Routine>.value(
               _FakeRoutine_1(
                 this,
                 Invocation.method(#fetchAndSetRoutineFullServer, [routineId]),
               ),
             ),
           )
-          as _i10.Future<_i3.Routine>);
+          as _i11.Future<_i3.Routine>);
 
   @override
-  _i10.Future<_i3.Routine> addRoutineServer(_i3.Routine? routine) =>
+  _i11.Future<_i3.Routine> addRoutineServer(_i3.Routine? routine) =>
       (super.noSuchMethod(
             Invocation.method(#addRoutineServer, [routine]),
-            returnValue: _i10.Future<_i3.Routine>.value(
+            returnValue: _i11.Future<_i3.Routine>.value(
               _FakeRoutine_1(
                 this,
                 Invocation.method(#addRoutineServer, [routine]),
               ),
             ),
           )
-          as _i10.Future<_i3.Routine>);
+          as _i11.Future<_i3.Routine>);
 
   @override
-  _i10.Stream<List<_i3.Routine>> watchAllDrift() =>
+  _i11.Stream<List<_i3.Routine>> watchAllDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchAllDrift, []),
-            returnValue: _i10.Stream<List<_i3.Routine>>.empty(),
+            returnValue: _i11.Stream<List<_i3.Routine>>.empty(),
           )
-          as _i10.Stream<List<_i3.Routine>>);
+          as _i11.Stream<List<_i3.Routine>>);
 
   @override
-  _i10.Future<void> editLocalDrift(_i3.Routine? routine) =>
+  _i11.Future<void> editLocalDrift(_i3.Routine? routine) =>
       (super.noSuchMethod(
             Invocation.method(#editLocalDrift, [routine]),
-            returnValue: _i10.Future<void>.value(),
-            returnValueForMissingStub: _i10.Future<void>.value(),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
           )
-          as _i10.Future<void>);
+          as _i11.Future<void>);
 
   @override
-  _i10.Future<void> deleteLocalDrift(int? id) =>
+  _i11.Future<void> deleteLocalDrift(int? id) =>
       (super.noSuchMethod(
             Invocation.method(#deleteLocalDrift, [id]),
-            returnValue: _i10.Future<void>.value(),
-            returnValueForMissingStub: _i10.Future<void>.value(),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
           )
-          as _i10.Future<void>);
+          as _i11.Future<void>);
 
   @override
-  _i10.Stream<List<_i29.WeightUnit>> watchWeightUnitsDrift() =>
+  _i11.Stream<List<_i29.WeightUnit>> watchWeightUnitsDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchWeightUnitsDrift, []),
-            returnValue: _i10.Stream<List<_i29.WeightUnit>>.empty(),
+            returnValue: _i11.Stream<List<_i29.WeightUnit>>.empty(),
           )
-          as _i10.Stream<List<_i29.WeightUnit>>);
+          as _i11.Stream<List<_i29.WeightUnit>>);
 
   @override
-  _i10.Stream<List<_i30.RepetitionUnit>> watchRepetitionUnitsDrift() =>
+  _i11.Stream<List<_i30.RepetitionUnit>> watchRepetitionUnitsDrift() =>
       (super.noSuchMethod(
             Invocation.method(#watchRepetitionUnitsDrift, []),
-            returnValue: _i10.Stream<List<_i30.RepetitionUnit>>.empty(),
+            returnValue: _i11.Stream<List<_i30.RepetitionUnit>>.empty(),
           )
-          as _i10.Stream<List<_i30.RepetitionUnit>>);
+          as _i11.Stream<List<_i30.RepetitionUnit>>);
 
   @override
-  _i10.Future<_i4.Day> addDayServer(_i4.Day? day) =>
+  _i11.Future<_i4.Day> addDayServer(_i4.Day? day) =>
       (super.noSuchMethod(
             Invocation.method(#addDayServer, [day]),
-            returnValue: _i10.Future<_i4.Day>.value(
+            returnValue: _i11.Future<_i4.Day>.value(
               _FakeDay_2(this, Invocation.method(#addDayServer, [day])),
             ),
           )
-          as _i10.Future<_i4.Day>);
+          as _i11.Future<_i4.Day>);
 
   @override
-  _i10.Future<void> editDayServer(_i4.Day? day) =>
+  _i11.Future<void> editDayServer(_i4.Day? day) =>
       (super.noSuchMethod(
             Invocation.method(#editDayServer, [day]),
-            returnValue: _i10.Future<void>.value(),
-            returnValueForMissingStub: _i10.Future<void>.value(),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
           )
-          as _i10.Future<void>);
+          as _i11.Future<void>);
 
   @override
-  _i10.Future<void> deleteDayServer(int? dayId) =>
+  _i11.Future<void> deleteDayServer(int? dayId) =>
       (super.noSuchMethod(
             Invocation.method(#deleteDayServer, [dayId]),
-            returnValue: _i10.Future<void>.value(),
-            returnValueForMissingStub: _i10.Future<void>.value(),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
           )
-          as _i10.Future<void>);
+          as _i11.Future<void>);
 
   @override
-  _i10.Future<_i5.Slot> addSlotServer(_i5.Slot? slot) =>
+  _i11.Future<_i5.Slot> addSlotServer(_i5.Slot? slot) =>
       (super.noSuchMethod(
             Invocation.method(#addSlotServer, [slot]),
-            returnValue: _i10.Future<_i5.Slot>.value(
+            returnValue: _i11.Future<_i5.Slot>.value(
               _FakeSlot_3(this, Invocation.method(#addSlotServer, [slot])),
             ),
           )
-          as _i10.Future<_i5.Slot>);
+          as _i11.Future<_i5.Slot>);
 
   @override
-  _i10.Future<void> deleteSlotServer(int? slotId) =>
+  _i11.Future<void> deleteSlotServer(int? slotId) =>
       (super.noSuchMethod(
             Invocation.method(#deleteSlotServer, [slotId]),
-            returnValue: _i10.Future<void>.value(),
-            returnValueForMissingStub: _i10.Future<void>.value(),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
           )
-          as _i10.Future<void>);
+          as _i11.Future<void>);
 
   @override
-  _i10.Future<void> editSlotServer(_i5.Slot? slot) =>
+  _i11.Future<void> editSlotServer(_i5.Slot? slot) =>
       (super.noSuchMethod(
             Invocation.method(#editSlotServer, [slot]),
-            returnValue: _i10.Future<void>.value(),
-            returnValueForMissingStub: _i10.Future<void>.value(),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
           )
-          as _i10.Future<void>);
+          as _i11.Future<void>);
 
   @override
-  _i10.Future<_i6.SlotEntry> addSlotEntryServer(_i6.SlotEntry? entry) =>
+  _i11.Future<_i6.SlotEntry> addSlotEntryServer(_i6.SlotEntry? entry) =>
       (super.noSuchMethod(
             Invocation.method(#addSlotEntryServer, [entry]),
-            returnValue: _i10.Future<_i6.SlotEntry>.value(
+            returnValue: _i11.Future<_i6.SlotEntry>.value(
               _FakeSlotEntry_4(
                 this,
                 Invocation.method(#addSlotEntryServer, [entry]),
               ),
             ),
           )
-          as _i10.Future<_i6.SlotEntry>);
+          as _i11.Future<_i6.SlotEntry>);
 
   @override
-  _i10.Future<void> deleteSlotEntryServer(int? id) =>
+  _i11.Future<void> deleteSlotEntryServer(int? id) =>
       (super.noSuchMethod(
             Invocation.method(#deleteSlotEntryServer, [id]),
-            returnValue: _i10.Future<void>.value(),
-            returnValueForMissingStub: _i10.Future<void>.value(),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
           )
-          as _i10.Future<void>);
+          as _i11.Future<void>);
 
   @override
-  _i10.Future<void> editSlotEntryServer(_i6.SlotEntry? entry) =>
+  _i11.Future<void> editSlotEntryServer(_i6.SlotEntry? entry) =>
       (super.noSuchMethod(
             Invocation.method(#editSlotEntryServer, [entry]),
-            returnValue: _i10.Future<void>.value(),
-            returnValueForMissingStub: _i10.Future<void>.value(),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
           )
-          as _i10.Future<void>);
+          as _i11.Future<void>);
 
   @override
-  _i10.Future<_i7.BaseConfig> editConfigServer(
+  _i11.Future<_i7.BaseConfig> editConfigServer(
     _i7.BaseConfig? config,
     _i6.ConfigType? type,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#editConfigServer, [config, type]),
-            returnValue: _i10.Future<_i7.BaseConfig>.value(
+            returnValue: _i11.Future<_i7.BaseConfig>.value(
               _FakeBaseConfig_5(
                 this,
                 Invocation.method(#editConfigServer, [config, type]),
               ),
             ),
           )
-          as _i10.Future<_i7.BaseConfig>);
+          as _i11.Future<_i7.BaseConfig>);
 
   @override
-  _i10.Future<_i7.BaseConfig> addConfigServer(
+  _i11.Future<_i7.BaseConfig> addConfigServer(
     _i7.BaseConfig? config,
     _i6.ConfigType? type,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#addConfigServer, [config, type]),
-            returnValue: _i10.Future<_i7.BaseConfig>.value(
+            returnValue: _i11.Future<_i7.BaseConfig>.value(
               _FakeBaseConfig_5(
                 this,
                 Invocation.method(#addConfigServer, [config, type]),
               ),
             ),
           )
-          as _i10.Future<_i7.BaseConfig>);
+          as _i11.Future<_i7.BaseConfig>);
 
   @override
-  _i10.Future<void> deleteConfigServer(int? id, _i6.ConfigType? type) =>
+  _i11.Future<void> deleteConfigServer(int? id, _i6.ConfigType? type) =>
       (super.noSuchMethod(
             Invocation.method(#deleteConfigServer, [id, type]),
-            returnValue: _i10.Future<void>.value(),
-            returnValueForMissingStub: _i10.Future<void>.value(),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
           )
-          as _i10.Future<void>);
+          as _i11.Future<void>);
 
   @override
-  _i10.Future<void> handleConfigServer(
+  _i11.Future<void> handleConfigServer(
     _i6.SlotEntry? entry,
     num? value,
     _i6.ConfigType? type,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#handleConfigServer, [entry, value, type]),
-            returnValue: _i10.Future<void>.value(),
-            returnValueForMissingStub: _i10.Future<void>.value(),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
           )
-          as _i10.Future<void>);
+          as _i11.Future<void>);
 }
 
 /// A class which mocks [TrophyRepository].
@@ -826,15 +978,15 @@ class MockTrophyRepository extends _i1.Mock implements _i31.TrophyRepository {
           as String);
 
   @override
-  _i10.Future<List<_i33.Trophy>> fetchTrophies({String? language}) =>
+  _i11.Future<List<_i33.Trophy>> fetchTrophies({String? language}) =>
       (super.noSuchMethod(
             Invocation.method(#fetchTrophies, [], {#language: language}),
-            returnValue: _i10.Future<List<_i33.Trophy>>.value(<_i33.Trophy>[]),
+            returnValue: _i11.Future<List<_i33.Trophy>>.value(<_i33.Trophy>[]),
           )
-          as _i10.Future<List<_i33.Trophy>>);
+          as _i11.Future<List<_i33.Trophy>>);
 
   @override
-  _i10.Future<List<_i34.UserTrophy>> fetchUserTrophies({
+  _i11.Future<List<_i34.UserTrophy>> fetchUserTrophies({
     Map<String, String>? filterQuery,
     String? language,
   }) =>
@@ -843,14 +995,14 @@ class MockTrophyRepository extends _i1.Mock implements _i31.TrophyRepository {
               #filterQuery: filterQuery,
               #language: language,
             }),
-            returnValue: _i10.Future<List<_i34.UserTrophy>>.value(
+            returnValue: _i11.Future<List<_i34.UserTrophy>>.value(
               <_i34.UserTrophy>[],
             ),
           )
-          as _i10.Future<List<_i34.UserTrophy>>);
+          as _i11.Future<List<_i34.UserTrophy>>);
 
   @override
-  _i10.Future<List<_i35.UserTrophyProgression>> fetchProgression({
+  _i11.Future<List<_i35.UserTrophyProgression>> fetchProgression({
     Map<String, String>? filterQuery,
     String? language,
   }) =>
@@ -859,9 +1011,235 @@ class MockTrophyRepository extends _i1.Mock implements _i31.TrophyRepository {
               #filterQuery: filterQuery,
               #language: language,
             }),
-            returnValue: _i10.Future<List<_i35.UserTrophyProgression>>.value(
+            returnValue: _i11.Future<List<_i35.UserTrophyProgression>>.value(
               <_i35.UserTrophyProgression>[],
             ),
           )
-          as _i10.Future<List<_i35.UserTrophyProgression>>);
+          as _i11.Future<List<_i35.UserTrophyProgression>>);
+}
+
+/// A class which mocks [ExerciseRepository].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockExerciseRepository extends _i1.Mock implements _i36.ExerciseRepository {
+  MockExerciseRepository() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i11.Future<List<int>> searchExerciseServer(
+    String? term, {
+    String? languageCode = 'en',
+    bool? searchEnglish = false,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #searchExerciseServer,
+              [term],
+              {#languageCode: languageCode, #searchEnglish: searchEnglish},
+            ),
+            returnValue: _i11.Future<List<int>>.value(<int>[]),
+          )
+          as _i11.Future<List<int>>);
+
+  @override
+  _i11.Future<List<int>> searchExerciseServerWithSearchMode(
+    String? term, {
+    String? languageCode = 'en',
+    _i21.SearchLanguage? searchLanguage = _i21.SearchLanguage.currentAndEnglish,
+    _i37.ExerciseSearchMode? searchMode = _i37.ExerciseSearchMode.fulltext,
+    Set<_i38.ExerciseCategory>? categories = const {},
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #searchExerciseServerWithSearchMode,
+              [term],
+              {
+                #languageCode: languageCode,
+                #searchLanguage: searchLanguage,
+                #searchMode: searchMode,
+                #categories: categories,
+              },
+            ),
+            returnValue: _i11.Future<List<int>>.value(<int>[]),
+          )
+          as _i11.Future<List<int>>);
+
+  @override
+  _i11.Stream<_i39.ExerciseState> watchAllDrift() =>
+      (super.noSuchMethod(
+            Invocation.method(#watchAllDrift, []),
+            returnValue: _i11.Stream<_i39.ExerciseState>.empty(),
+          )
+          as _i11.Stream<_i39.ExerciseState>);
+
+  @override
+  _i11.Stream<List<_i38.ExerciseCategory>> watchCategoriesDrift() =>
+      (super.noSuchMethod(
+            Invocation.method(#watchCategoriesDrift, []),
+            returnValue: _i11.Stream<List<_i38.ExerciseCategory>>.empty(),
+          )
+          as _i11.Stream<List<_i38.ExerciseCategory>>);
+
+  @override
+  _i11.Stream<List<_i40.Equipment>> watchEquipmentDrift() =>
+      (super.noSuchMethod(
+            Invocation.method(#watchEquipmentDrift, []),
+            returnValue: _i11.Stream<List<_i40.Equipment>>.empty(),
+          )
+          as _i11.Stream<List<_i40.Equipment>>);
+
+  @override
+  _i11.Stream<List<_i41.Muscle>> watchMusclesDrift() =>
+      (super.noSuchMethod(
+            Invocation.method(#watchMusclesDrift, []),
+            returnValue: _i11.Stream<List<_i41.Muscle>>.empty(),
+          )
+          as _i11.Stream<List<_i41.Muscle>>);
+
+  @override
+  _i11.Stream<List<_i42.Language>> watchLanguagesDrift() =>
+      (super.noSuchMethod(
+            Invocation.method(#watchLanguagesDrift, []),
+            returnValue: _i11.Stream<List<_i42.Language>>.empty(),
+          )
+          as _i11.Stream<List<_i42.Language>>);
+}
+
+/// A class which mocks [HealthRepository].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockHealthRepository extends _i1.Mock implements _i43.HealthRepository {
+  MockHealthRepository() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  String get sourceName =>
+      (super.noSuchMethod(
+            Invocation.getter(#sourceName),
+            returnValue: _i32.dummyValue<String>(
+              this,
+              Invocation.getter(#sourceName),
+            ),
+          )
+          as String);
+
+  @override
+  _i11.Future<_i43.HealthPlatformAvailability> availability() =>
+      (super.noSuchMethod(
+            Invocation.method(#availability, []),
+            returnValue: _i11.Future<_i43.HealthPlatformAvailability>.value(
+              _i43.HealthPlatformAvailability.available,
+            ),
+          )
+          as _i11.Future<_i43.HealthPlatformAvailability>);
+
+  @override
+  _i11.Future<void> openHealthConnectInstall() =>
+      (super.noSuchMethod(
+            Invocation.method(#openHealthConnectInstall, []),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
+          )
+          as _i11.Future<void>);
+
+  @override
+  _i11.Future<bool> ensureHistoryAuthorized() =>
+      (super.noSuchMethod(
+            Invocation.method(#ensureHistoryAuthorized, []),
+            returnValue: _i11.Future<bool>.value(false),
+          )
+          as _i11.Future<bool>);
+
+  @override
+  _i11.Future<Set<_i44.HealthDataType>> readableTypes(
+    List<_i44.HealthDataType>? types,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#readableTypes, [types]),
+            returnValue: _i11.Future<Set<_i44.HealthDataType>>.value(
+              <_i44.HealthDataType>{},
+            ),
+          )
+          as _i11.Future<Set<_i44.HealthDataType>>);
+
+  @override
+  _i11.Future<bool> ensureAuthorized(List<_i44.HealthDataType>? types) =>
+      (super.noSuchMethod(
+            Invocation.method(#ensureAuthorized, [types]),
+            returnValue: _i11.Future<bool>.value(false),
+          )
+          as _i11.Future<bool>);
+
+  @override
+  _i11.Future<void> read({
+    required List<_i44.HealthDataType>? types,
+    required DateTime? start,
+    required DateTime? end,
+    required Duration? window,
+    required _i11.Future<void> Function(List<_i45.HealthReading>, DateTime)? onBatch,
+    void Function()? onWindow,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#read, [], {
+              #types: types,
+              #start: start,
+              #end: end,
+              #window: window,
+              #onBatch: onBatch,
+              #onWindow: onWindow,
+            }),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
+          )
+          as _i11.Future<void>);
+}
+
+/// A class which mocks [WorkoutSessionRepository].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockWorkoutSessionRepository extends _i1.Mock implements _i46.WorkoutSessionRepository {
+  MockWorkoutSessionRepository() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i11.Stream<List<_i9.WorkoutSession>> watchAllDrift() =>
+      (super.noSuchMethod(
+            Invocation.method(#watchAllDrift, []),
+            returnValue: _i11.Stream<List<_i9.WorkoutSession>>.empty(),
+          )
+          as _i11.Stream<List<_i9.WorkoutSession>>);
+
+  @override
+  _i11.Future<void> deleteLocalDrift(String? id) =>
+      (super.noSuchMethod(
+            Invocation.method(#deleteLocalDrift, [id]),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
+          )
+          as _i11.Future<void>);
+
+  @override
+  _i11.Future<void> editLocalDrift(_i9.WorkoutSession? session) =>
+      (super.noSuchMethod(
+            Invocation.method(#editLocalDrift, [session]),
+            returnValue: _i11.Future<void>.value(),
+            returnValueForMissingStub: _i11.Future<void>.value(),
+          )
+          as _i11.Future<void>);
+
+  @override
+  _i11.Future<_i9.WorkoutSession> addLocalDrift(_i9.WorkoutSession? session) =>
+      (super.noSuchMethod(
+            Invocation.method(#addLocalDrift, [session]),
+            returnValue: _i11.Future<_i9.WorkoutSession>.value(
+              _FakeWorkoutSession_7(
+                this,
+                Invocation.method(#addLocalDrift, [session]),
+              ),
+            ),
+          )
+          as _i11.Future<_i9.WorkoutSession>);
 }

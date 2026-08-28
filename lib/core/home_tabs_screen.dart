@@ -18,13 +18,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:wger/core/dashboard.dart';
 import 'package:wger/core/material.dart';
+import 'package:wger/features/account/providers/timezone_sync.dart';
 import 'package:wger/features/gallery/screens/gallery_screen.dart';
+import 'package:wger/features/health/providers/health_sync.dart';
+import 'package:wger/features/measurements/screens/measurement_categories_screen.dart';
 import 'package:wger/features/nutrition/screens/nutritional_plans_screen.dart';
 import 'package:wger/features/routines/screens/routine_list_screen.dart';
-import 'package:wger/features/weight/screens/weight_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 class HomeTabsScreen extends ConsumerStatefulWidget {
@@ -40,6 +41,25 @@ class _HomeTabsScreenState extends ConsumerState<HomeTabsScreen>
     with SingleTickerProviderStateMixin {
   int _selectedIndex = 0;
   bool _isWideScreen = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Pull any new readings from Apple Health / Health Connect once the app is
+    // open. A no-op unless the user enabled it in the settings, and unless the
+    // last sync is long enough ago.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+      ref.read(healthSyncProvider.notifier).syncIfDue();
+
+      // Report the device timezone to the profile, so the server calculates
+      // streaks and trophies in the user's own zone. A no-op when unchanged.
+      ref.read(timezoneSyncProvider).reportIfNeeded();
+    });
+  }
 
   @override
   void didChangeDependencies() {
@@ -59,7 +79,7 @@ class _HomeTabsScreenState extends ConsumerState<HomeTabsScreen>
     const DashboardScreen(),
     const RoutineListScreen(),
     const NutritionalPlansScreen(),
-    const WeightScreen(),
+    const MeasurementCategoriesScreen(),
     const GalleryScreen(),
   ];
 
@@ -79,8 +99,8 @@ class _HomeTabsScreenState extends ConsumerState<HomeTabsScreen>
         label: AppLocalizations.of(context).labelBottomNavNutrition,
       ),
       NavigationDestination(
-        icon: const FaIcon(FontAwesomeIcons.weightScale, size: 20),
-        label: AppLocalizations.of(context).weight,
+        icon: const Icon(Icons.area_chart),
+        label: AppLocalizations.of(context).labelBottomNavBody,
       ),
       NavigationDestination(
         icon: const Icon(Icons.photo_library),

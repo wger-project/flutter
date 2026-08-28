@@ -22,9 +22,10 @@ import 'package:logging/logging.dart';
 import 'package:powersync/powersync.dart' show SyncStatus;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wger/core/error_dialogs.dart' show CopyToClipboardButton;
-import 'package:wger/core/errors.dart' show buildGithubIssueUrl;
+import 'package:wger/core/errors.dart' show buildGithubIssueUrl, collectAppVersion;
 import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/core/logs.dart';
+import 'package:wger/core/network/auth_notifier.dart' show authProvider;
 import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/core/widgets/log_overview.dart' show LogOverviewPage;
 import 'package:wger/database/powersync/powersync.dart'
@@ -274,6 +275,8 @@ class SyncStatusDialog extends ConsumerWidget {
                     server: serverCategory(serverUrl),
                     local: local,
                   ),
+                  appVersion: await collectAppVersion(),
+                  serverVersion: ref.read(authProvider).value?.serverVersion,
                 );
                 try {
                   await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);

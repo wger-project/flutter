@@ -57,7 +57,7 @@ class DashboardScreen extends ConsumerWidget {
     final isMobile = width < MATERIAL_XS_BREAKPOINT;
     final visibleWidgets = ref.watch(
       appSettingsProvider.select(
-        (s) => s.value?.dashboardItems.visibleWidgets ?? const <DashboardWidget>[],
+        (s) => (s.value?.dashboardItems ?? defaultDashboardItems).visibleWidgets,
       ),
     );
 

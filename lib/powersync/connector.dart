@@ -17,6 +17,7 @@
  */
 
 // This file performs setup of the PowerSync database
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -103,6 +104,11 @@ class DjangoConnector extends PowerSyncBackendConnector {
   /// Resets on app restart.
   final Set<String> _reportedFailedOps = {};
 
+  /// Ceiling for one token fetch. On token expiry the SDK awaits the fetch
+  /// inline in its sync loop, so a request that never answers would freeze
+  /// sync, disconnect() included, until the process restarts.
+  static const credentialFetchTimeout = Duration(seconds: 30);
+
   /// Spacing between repeated "backend unreachable" log lines while the
   /// credential fetch keeps failing, so PowerSync's retry loop doesn't
   /// flood the app logs during a longer outage.
@@ -140,7 +146,7 @@ class DjangoConnector extends PowerSyncBackendConnector {
     // https://docs.powersync.com/usage/installation/authentication-setup/custom
     final Map<String, dynamic> session;
     try {
-      session = await apiClient.getPowersyncToken();
+      session = await apiClient.getPowersyncToken().timeout(credentialFetchTimeout);
     } on http.ClientException catch (e) {
       // Backend unreachable. Null would mean "not logged in" to the SDK and
       // surface as a CredentialsException; rethrowing keeps it a connection
@@ -149,6 +155,9 @@ class DjangoConnector extends PowerSyncBackendConnector {
       rethrow;
     } on SocketException catch (e) {
       _logUnreachable(e.message);
+      rethrow;
+    } on TimeoutException {
+      _logUnreachable('token fetch timed out after ${credentialFetchTimeout.inSeconds}s');
       rethrow;
     }
     _logReachableAgain();
@@ -231,7 +240,6 @@ class DjangoConnector extends PowerSyncBackendConnector {
   /// are read-only on the serializer and therefore safe to leave out.
   static const Map<String, Set<String>> _dateOnlyFields = {
     'manager_routine': {'start', 'end'},
-    'manager_workoutsession': {'date'},
     'nutrition_nutritionplan': {'start', 'end'},
     'gallery_image': {'date'},
   };
@@ -270,7 +278,10 @@ class DjangoConnector extends PowerSyncBackendConnector {
       if (k == 'id') {
         return;
       }
-      final key = k.endsWith('_id') ? k.substring(0, k.length - 3) : k;
+      // Trailing `_id` marks a foreign key, which Django exposes without the
+      // suffix (`category_id` -> `category`). `external_id` is a plain value
+      // column, not an FK, so it keeps its name.
+      final key = (k.endsWith('_id') && k != 'external_id') ? k.substring(0, k.length - 3) : k;
       out[key] = (dateFields.contains(key) && v is String && v.length >= 10)
           ? v.substring(0, 10)
           : v;

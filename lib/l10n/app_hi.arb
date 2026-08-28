@@ -7,17 +7,9 @@
     "@logout": {
         "description": "Text for logout button"
     },
-    "useDefaultServer": "डिफ़ॉल्ट सर्वर का प्रयोग करें",
-    "@useDefaultServer": {
-        "description": "Toggle button allowing users to switch between the default and a custom wger server"
-    },
     "register": "रजिस्टर",
     "@register": {
         "description": "Text for registration button"
-    },
-    "useCustomServer": "कस्टम सर्वर का प्रयोग करें",
-    "@useCustomServer": {
-        "description": "Toggle button allowing users to switch between the default and a custom wger server"
     },
     "invalidUrl": "कृपया एक वैलिड URL दीजिये",
     "@invalidUrl": {
@@ -34,8 +26,6 @@
     "customServerUrl": "कस्टम सर्वर URL wger के लिए",
     "customServerHint": "अपने स्वयं के सर्वर का पता दर्ज करें, अन्यथा डिफ़ॉल्ट का उपयोग किया जाएगा",
     "reset": "रीसेट",
-    "registerInstead": "इसके बजाय रजिस्टर करें",
-    "loginInstead": "इसके बजाय लॉग इन करें",
     "labelBottomNavWorkout": "कसरत",
     "labelBottomNavNutrition": "पोषण",
     "labelWorkoutLogs": "प्रशिक्षण लॉग",
@@ -58,14 +48,11 @@
     "set": "सेट",
     "dayDescriptionHelp": "इस दिन क्या किया जाता है (जैसे 'पुल डे') या शरीर के किन अंगों को प्रशिक्षित किया जाता है (जैसे 'छाती और कंधे') का विवरण",
     "setNr": "सेट {nr}",
-    "sameRepetitions": "यदि आप सभी सेटों के लिए समान दोहराव और वजन करते हैं तो आप केवल एक पंक्ति भर सकते हैं। उदाहरण के लिए, 4 सेटों के लिए, दोहराव के लिए केवल 10 दर्ज करें, यह स्वचालित रूप से \"4 x 10\" हो जाता है।",
     "comment": "टिप्पणी",
     "impression": "प्रभाव जमाना",
     "notes": "टिप्पणियाँ",
     "workoutSession": "कसरत सत्र",
     "newDay": "नया दिन",
-    "newSet": "नया सेट",
-    "selectExercises": "यदि आप एक सुपरसेट करना चाहते हैं तो आप कई अभ्यास खोज सकते हैं, उन्हें एक साथ समूहीकृत किया जाएगा",
     "gymMode": "जिम मोड",
     "plateCalculator": "प्लेट्स",
     "plateCalculatorNotDivisible": "उपलब्ध प्लेटों के साथ वजन तक पहुंचना संभव नहीं है",
@@ -130,7 +117,6 @@
     "newEntry": "नया प्रविष्टि",
     "noWeightEntries": "आपके पास कोई वजन प्रविष्टि नहीं है",
     "edit": "संपादित करें",
-    "loadingText": "लोड हो रहा है...",
     "delete": "हटाएं",
     "confirmDelete": "क्या आप वाकई '{toDelete}' को हटाना चाहते हैं?",
     "newNutritionalPlan": "नई पोषण योजना",
@@ -142,7 +128,6 @@
     "selectExercise": "कृपया एक पाठ्यक्रम का चयन करें",
     "enterCharacters": "कृपया {min} और {max} वर्णों के बीच दर्ज करें",
     "nrOfSets": "प्रति व्यायाम सेट: {nrOfSets}",
-    "setUnitsAndRir": "इकाइयाँ सेट करें और RiR",
     "enterValidNumber": "कृपया वैध संख्या दर्ज करें",
     "selectIngredient": "कृपया एक सामग्री का चयन करें",
     "recentlyUsedIngredients": "हाल ही में उपयोग की गई सामग्री",

@@ -51,8 +51,6 @@
     "@labelBottomNavWorkout": {
         "description": "Label used in bottom navigation, use a short word"
     },
-    "loginInstead": "Zaten hesabınız var mı? Oturum açın",
-    "registerInstead": "Hesabınız yok mu? Şimdi kaydolun",
     "reset": "Sıfırla",
     "@reset": {
         "description": "Button text allowing the user to reset the entered values to the default"
@@ -92,14 +90,6 @@
     "invalidUrl": "Lütfen geçerli bir URL girin",
     "@invalidUrl": {
         "description": "Error message when the user enters an invalid URL, e.g. in the login form"
-    },
-    "useCustomServer": "Özel sunucu kullan",
-    "@useCustomServer": {
-        "description": "Toggle button allowing users to switch between the default and a custom wger server"
-    },
-    "useDefaultServer": "Varsayılan sunucuyu kullan",
-    "@useDefaultServer": {
-        "description": "Toggle button allowing users to switch between the default and a custom wger server"
     },
     "register": "Kayıt ol",
     "@register": {
@@ -142,8 +132,6 @@
             }
         }
     },
-    "sameRepetitions": "Eğer tüm setler için aynı ağırlıklarla aynı setleri yapıyorsanız, sadece bir satır doldurabilirsiniz. Örneğin, 4 set için sadece 10 girin, bu otomatik olarak \"4 x 10\"a dönüşüyor.",
-    "selectExercises": "Eğer bir süper set yapmak istiyorsanız, birkaç egzersiz için arama yapabilirsiniz, birlikte gruplanacaklardır",
     "logHelpEntries": "Tek bir günde, aynı sayıda tekrara sahip ancak farklı ağırlıklara sahip birden fazla giriş varsa, diyagramda yalnızca daha yüksek ağırlığa sahip giriş gösterilir.",
     "addSet": "Set ekle",
     "@addSet": {
@@ -190,10 +178,6 @@
         "description": "A (logged) workout session"
     },
     "newDay": "Yeni gün",
-    "newSet": "Yeni set",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
-    },
     "gymMode": "Spor salonu modu",
     "@gymMode": {
         "description": "Label when starting the gym mode"
@@ -333,10 +317,6 @@
             }
         }
     },
-    "goToToday": "Bugüne git",
-    "@goToToday": {
-        "description": "Label on button to jump back to 'today' in the calendar widget"
-    },
     "appUpdateContent": "Uygulamanın bu sürümü sunucuyla uyumlu değil, lütfen uygulamanızı güncelleyin.",
     "productFound": "Ürün bulundu",
     "@productFound": {
@@ -402,11 +382,6 @@
             }
         }
     },
-    "setUnitsAndRir": "RiR ve birimleri ayarla",
-    "@setUnitsAndRir": {
-        "description": "Label shown on the slider where the user can toggle showing units and RiR",
-        "type": "text"
-    },
     "selectIngredient": "Lütfen bir malzeme seçin",
     "@selectIngredient": {
         "description": "Error message when the user hasn't selected an ingredient from the autocompleter"
@@ -458,10 +433,6 @@
     "@noWeightEntries": {
         "description": "Message shown when the user has no logged weight entries"
     },
-    "loadingText": "Yükleniyor...",
-    "@loadingText": {
-        "description": "Text to show when entries are being loaded in the background: Loading..."
-    },
     "takePicture": "Fotoğraf çek",
     "dataCopied": "Veriler yeni girişe kopyalandı",
     "@dataCopied": {
@@ -493,7 +464,6 @@
         }
     },
     "add_exercise_image_license": "Görseller CC BY SA lisansı ile uyumlu olmalıdır. Emin değilseniz, yalnızca kendi çektiğiniz fotoğrafları yükleyin.",
-    "verifiedEmailReason": "Egzersizlere katkıda bulunmak için e-posta adresinizi doğrulamanız gerekiyor",
     "alternativeNames": "Alternatif isimler",
     "minutes": "Dakika",
     "seconds": "Saniye",
@@ -558,7 +528,6 @@
     "@baseData": {
         "description": "The base data for an exercise such as category, trained muscles, etc."
     },
-    "noMeasurementEntries": "Ölçüm girdiniz yok",
     "moreMeasurementEntries": "Yeni ölçüm ekle",
     "@moreMeasurementEntries": {
         "description": "Message shown when the user wants to add new measurement"
@@ -580,7 +549,6 @@
         "description": "Message when an action completed successfully, usually used as a heading"
     },
     "cacheWarning": "Önbelleğe alma nedeniyle değişikliklerin uygulama genelinde görünür olması biraz zaman alabilir.",
-    "searchNamesInEnglish": "Ayrıca İngilizce adları da arayın",
     "textPromptTitle": "Başlamaya hazır mısınız?",
     "textPromptSubheading": "Başlamak için eylem düğmesine basın",
     "verify": "Doğrula",
@@ -621,7 +589,6 @@
     },
     "aboutDonateTitle": "Bağış yap",
     "aboutDonateText": "Projeye yardımcı olmak, sunucu masraflarını karşılamak ve geliştirmeyi desteklemek için bağış yapın",
-    "settingsExerciseCacheDescription": "Egzersiz önbelleği",
     "settingsCacheDeletedSnackbar": "Önbellek başarıyla temizlendi",
     "log": "Kaydet",
     "@log": {
@@ -683,40 +650,6 @@
     "ingredientLogged": "Malzeme günlüğe kaydedildi",
     "selectMealToLog": "Günlüğe kaydetmek için bir yemek seçin",
     "noIngredientsDefined": "Henüz malzeme tanımlanmadı",
-    "settingsIngredientCacheDescription": "Malzeme önbelleği",
-    "chartAllTimeTitle": "tüm zamanlar {name}",
-    "@chartAllTimeTitle": {
-        "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chart30DaysTitle": "son 30 gün {name}",
-    "@chart30DaysTitle": {
-        "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chartDuringPlanTitle": "{planName} beslenme planı boyunca {chartName}",
-    "@chartDuringPlanTitle": {
-        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-        "type": "text",
-        "placeholders": {
-            "chartName": {
-                "type": "String"
-            },
-            "planName": {
-                "type": "String"
-            }
-        }
-    },
     "endBeforeStart": "Son değer, başlangıç değerinden önce olamaz",
     "minLengthRoutine": "Program en az {number} hafta sürmelidir",
     "maxLengthRoutine": "Bu program en fazla {number} hafta sürebilir"

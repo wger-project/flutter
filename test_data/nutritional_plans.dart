@@ -16,8 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:wger/features/nutrition/models/ingredient.dart';
 import 'package:wger/features/nutrition/models/log.dart';
@@ -227,67 +225,6 @@ NutritionalPlan getNutritionalPlan() {
   );
   plan.meals = [meal1, meal2];
   plan.diaryEntries = getTestNutritionLogs();
-
-  return plan;
-}
-
-NutritionalPlan getNutritionalPlanScreenshot() {
-  final random = Random();
-
-  final mealItem1 = MealItem(ingredientId: 1, amount: 100, ingredient: muesli);
-  final mealItem2 = MealItem(ingredientId: 2, amount: 75, ingredient: milk);
-  final mealItem3 = MealItem(ingredientId: 3, amount: 100, ingredient: apple);
-
-  final meal1 = Meal(
-    id: testMealUuid1,
-    plan: testPlanUuid1,
-    time: const TimeOfDay(hour: 8, minute: 30),
-    name: 'Breakfast',
-    mealItems: [mealItem1, mealItem2],
-  );
-
-  final meal2 = Meal(
-    id: testMealUuid2,
-    plan: testPlanUuid1,
-    time: const TimeOfDay(hour: 11, minute: 0),
-    name: 'Snack 1',
-    mealItems: [mealItem3],
-  );
-
-  final NutritionalPlan plan = NutritionalPlan(
-    id: testPlanUuid1,
-    description: 'Diet',
-    creationDate: DateTime(2021, 5, 23),
-    startDate: DateTime(2021, 5, 23),
-    meals: [meal1, meal2],
-  );
-
-  // Add logs
-  plan.diaryEntries.add(
-    LogItem.fromMealItem(mealItem1, testPlanUuid1, testMealUuid1, DateTime.now()),
-  );
-  plan.diaryEntries.add(
-    LogItem.fromMealItem(mealItem2, testPlanUuid1, testMealUuid1, DateTime.now()),
-  );
-  plan.diaryEntries.add(
-    LogItem.fromMealItem(mealItem3, testPlanUuid1, testMealUuid1, DateTime.now()),
-  );
-
-  for (final i in plan.diaryEntries) {
-    i.datetime = DateTime.now();
-    i.amount = i.amount / (1.0 + random.nextDouble() * (4.0 - 1.0));
-  }
-
-  final log = LogItem(
-    mealId: meal1.id,
-    ingredientId: 1,
-    weightUnitId: 1,
-    amount: 40,
-    planId: plan.id!,
-    datetime: DateTime.now(),
-  );
-  log.ingredient = cake;
-  plan.diaryEntries.add(log);
 
   return plan;
 }

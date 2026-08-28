@@ -33,9 +33,12 @@ import 'package:wger/features/routines/models/weight_unit.dart';
 
 part 'routines_repository.g.dart';
 
-@Riverpod(keepAlive: true)
+// Read, not watched: a watch invalidates this provider whenever the auth
+// chain is flushed, which crashes if that happens during a widget build.
+// Callers read per operation, so the instance stays short-lived and current.
+@riverpod
 RoutinesRepository routinesRepository(Ref ref) {
-  final baseProvider = ref.watch(wgerBaseProvider);
+  final baseProvider = ref.read(wgerBaseProvider);
   final db = ref.read(driftPowerSyncDatabase);
   return RoutinesRepository(baseProvider, db);
 }

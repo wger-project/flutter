@@ -19,21 +19,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:wger/core/form_screen.dart';
+import 'package:logging/logging.dart';
+import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/core/widgets/dashboard/widgets/nothing_found.dart';
 import 'package:wger/core/widgets/error.dart';
 import 'package:wger/core/widgets/progress_indicator.dart';
-import 'package:wger/features/account/models/user_profile.dart';
 import 'package:wger/features/account/providers/user_profile_notifier.dart';
-import 'package:wger/features/measurements/widgets/charts.dart';
+import 'package:wger/features/measurements/charts/range.dart';
+import 'package:wger/features/measurements/models/unit_conversion.dart';
+import 'package:wger/features/measurements/providers/body_weight_provider.dart';
+import 'package:wger/features/measurements/screens/weight_screen.dart';
+import 'package:wger/features/measurements/widgets/categories_card.dart';
 import 'package:wger/features/measurements/widgets/helpers.dart';
-import 'package:wger/features/weight/models/weight_entry.dart';
-import 'package:wger/features/weight/providers/body_weight_notifier.dart';
-import 'package:wger/features/weight/screens/weight_screen.dart';
-import 'package:wger/features/weight/widgets/forms.dart';
+import 'package:wger/features/measurements/widgets/weight_form.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 class DashboardWeightWidget extends ConsumerWidget {
+  static final _logger = Logger('DashboardWeightWidget');
+
   const DashboardWeightWidget();
 
   Widget _shell(BuildContext context, Widget body) {
@@ -57,115 +60,89 @@ class DashboardWeightWidget extends ConsumerWidget {
     );
   }
 
+  /// The error state of one of the providers the card resolves, logged the way
+  /// `AsyncValueWidget` logs the cards that only resolve a single one.
+  Widget _errorShell(BuildContext context, AsyncValue<Object?> value) {
+    _logger.warning('Async error in DashboardWeightWidget', value.error, value.stackTrace);
+
+    return _shell(context, StreamErrorIndicator(value.error!, stacktrace: value.stackTrace));
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final entriesAsync = ref.watch(weightEntryProvider);
+    final categoryAsync = ref.watch(bodyWeightCategoryOnlyProvider);
     final profileAsync = ref.watch(userProfileProvider);
 
     // Composite loading / error / data resolution. We need both providers
-    // ready before we can render the chart (entries → series, profile →
+    // ready before we can render the chart (category → series, profile →
     // unit). Treating them independently with a nested .when() is what gave
     // us the eternal-spinner bug when fetchProfile() returned null, so we
     // funnel everything through a single decision tree here.
-    if (entriesAsync.isLoading || profileAsync.isLoading) {
+    if (categoryAsync.isLoading || profileAsync.isLoading) {
       return _shell(context, const BoxedProgressIndicator());
     }
-    if (entriesAsync.hasError) {
-      return _shell(
-        context,
-        StreamErrorIndicator(entriesAsync.error!, stacktrace: entriesAsync.stackTrace),
-      );
+    if (categoryAsync.hasError) {
+      return _errorShell(context, categoryAsync);
     }
     if (profileAsync.hasError) {
-      return _shell(
-        context,
-        StreamErrorIndicator(profileAsync.error!, stacktrace: profileAsync.stackTrace),
-      );
+      return _errorShell(context, profileAsync);
     }
     final profile = profileAsync.value;
     if (profile == null) {
       // The profile stream can legitimately emit null right after login,
       // before the local `user_profile` PowerSync bucket has finished its
-      // first sync (see WeightOverview / NutritionalPlansList, which treat
-      // this the same way). Keep showing the spinner instead of a
-      // permanent-looking error; the widget rebuilds once the row lands.
+      // first sync (see NutritionalPlansList, which treats this the same
+      // way). Keep showing the spinner instead of a permanent-looking error;
+      // the widget rebuilds once the row lands.
+      return _shell(context, const BoxedProgressIndicator());
+    }
+    final category = categoryAsync.value;
+    if (category == null) {
+      // The official body weight category is created by the server; it is
+      // missing only while the initial sync is still running.
       return _shell(context, const BoxedProgressIndicator());
     }
 
-    return _shell(context, _buildContent(context, entriesAsync.value!, profile));
-  }
-
-  Widget _buildContent(
-    BuildContext context,
-    List<WeightEntry> entriesList,
-    UserProfile profile,
-  ) {
-    if (entriesList.isEmpty) {
-      return NothingFound(
-        AppLocalizations.of(context).noWeightEntries,
-        AppLocalizations.of(context).newEntry,
-        WeightForm(),
+    // The same watch the card below runs (one underlying stream), resolved
+    // here as well so the empty state and errors render dashboard-style
+    final pointsAsync = chartPointsFor(
+      ref,
+      category,
+      ChartRange.all,
+      targetUnit: weightDisplayUnit(profile.isMetric),
+    );
+    if (pointsAsync.hasError) {
+      return _errorShell(context, pointsAsync);
+    }
+    final points = pointsAsync.value;
+    if (points == null) {
+      return _shell(context, const BoxedProgressIndicator());
+    }
+    if (points.isEmpty) {
+      return _shell(
+        context,
+        NothingFound(
+          AppLocalizations.of(context).noWeightEntries,
+          AppLocalizations.of(context).newEntry,
+          WeightForm(category),
+        ),
       );
     }
 
-    final (entriesAll, entries7dAvg) = sensibleRange(
-      entriesList.map((e) => MeasurementChartEntry(e.weight, e.date)).toList(),
-    );
-
-    return Column(
-      children: [
-        SizedBox(
-          height: 200,
-          child: MeasurementChartWidgetFl(
-            entriesAll,
-            weightUnit(profile.isMetric, context),
-            avgs: entries7dAvg,
-          ),
-        ),
-        if (entries7dAvg.isNotEmpty)
-          MeasurementOverallChangeWidget(
-            entries7dAvg.first,
-            entries7dAvg.last,
-            weightUnit(profile.isMetric, context),
-          ),
-        LayoutBuilder(
-          builder: (context, constraints) {
-            return SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minWidth: constraints.maxWidth),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    TextButton(
-                      child: Text(
-                        AppLocalizations.of(context).goToDetailPage,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).pushNamed(WeightScreen.routeName);
-                      },
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.add),
-                      onPressed: () {
-                        Navigator.pushNamed(
-                          context,
-                          FormScreen.routeName,
-                          arguments: FormScreenArguments(
-                            AppLocalizations.of(context).newEntry,
-                            WeightForm(),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        ),
-      ],
+    // The card the body tab shows, over the full history; the shell above
+    // already titles the widget
+    return _shell(
+      context,
+      CategoriesCard(
+        category,
+        elevation: 0,
+        range: ChartRange.all,
+        title: '',
+        displayUnit: weightDisplayUnit(profile.isMetric),
+        displayUnitLabel: weightUnit(profile.isMetric, context),
+        newEntryForm: WeightForm(category),
+        onShowDetails: () => Navigator.pushNamed(context, WeightScreen.routeName),
+      ),
     );
   }
 }

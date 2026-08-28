@@ -94,11 +94,11 @@ void main() {
       expect(loggedKeyringWarning(), isTrue);
     });
 
-    test('clearJwt clears the prefs, logs, and does not rethrow', () async {
+    test('clearCredentials clears the prefs, logs, and does not rethrow', () async {
       when(secureStorage.deleteRefreshToken()).thenThrow(keyringLocked);
       await PreferenceHelper.asyncPref.setString(PREFS_ACCESS_TOKEN, 'stale');
 
-      await expectLater(storage.clearJwt(), completes);
+      await expectLater(storage.clearCredentials(), completes);
 
       verify(secureStorage.deleteRefreshToken()).called(1);
       expect(await PreferenceHelper.asyncPref.getString(PREFS_ACCESS_TOKEN), isNull);

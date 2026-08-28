@@ -8,6 +8,8 @@ import 'dart:async' as _i5;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i4;
 import 'package:wger/core/network/base_provider.dart' as _i2;
+import 'package:wger/features/account/models/user_profile.dart' as _i12;
+import 'package:wger/features/account/providers/user_profile_repository.dart' as _i11;
 import 'package:wger/features/routines/models/log.dart' as _i10;
 import 'package:wger/features/routines/providers/workout_logs_repository.dart' as _i9;
 import 'package:wger/features/trophies/models/trophy.dart' as _i6;
@@ -174,6 +176,41 @@ class MockWorkoutLogRepository extends _i1.Mock implements _i9.WorkoutLogReposit
   _i5.Future<void> addLocalDrift(_i10.Log? log, {int? dayId}) =>
       (super.noSuchMethod(
             Invocation.method(#addLocalDrift, [log], {#dayId: dayId}),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
+}
+
+/// A class which mocks [UserProfileRepository].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockUserProfileRepository extends _i1.Mock implements _i11.UserProfileRepository {
+  MockUserProfileRepository() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i5.Stream<_i12.UserProfile?> watchDrift() =>
+      (super.noSuchMethod(
+            Invocation.method(#watchDrift, []),
+            returnValue: _i5.Stream<_i12.UserProfile?>.empty(),
+          )
+          as _i5.Stream<_i12.UserProfile?>);
+
+  @override
+  _i5.Future<void> updateTimeZoneDrift(int? id, String? timeZone) =>
+      (super.noSuchMethod(
+            Invocation.method(#updateTimeZoneDrift, [id, timeZone]),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> editLocalDrift(_i12.UserProfile? profile) =>
+      (super.noSuchMethod(
+            Invocation.method(#editLocalDrift, [profile]),
             returnValue: _i5.Future<void>.value(),
             returnValueForMissingStub: _i5.Future<void>.value(),
           )

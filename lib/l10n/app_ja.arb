@@ -11,14 +11,6 @@
     "@register": {
         "description": "Text for registration button"
     },
-    "useDefaultServer": "デフォルトサーバを使用する",
-    "@useDefaultServer": {
-        "description": "Toggle button allowing users to switch between the default and a custom wger server"
-    },
-    "useCustomServer": "カスタムサーバを使用する",
-    "@useCustomServer": {
-        "description": "Toggle button allowing users to switch between the default and a custom wger server"
-    },
     "invalidUrl": "有効なURLを入力してください",
     "@invalidUrl": {
         "description": "Error message when the user enters an invalid URL, e.g. in the login form"
@@ -59,8 +51,6 @@
     "@reset": {
         "description": "Button text allowing the user to reset the entered values to the default"
     },
-    "registerInstead": "新規登録",
-    "loginInstead": "既にアカウントをお持ちの方はこちらからログイン",
     "labelBottomNavWorkout": "運動",
     "@labelBottomNavWorkout": {
         "description": "Label used in bottom navigation, use a short word"
@@ -146,7 +136,6 @@
             }
         }
     },
-    "sameRepetitions": "If you do the same repetitions and weight for all sets you can just fill in one row. For example for 4 sets just enter 10 for the repetitions, this automatically becomes \"4 x 10\".",
     "comment": "コメント",
     "@comment": {
         "description": "Comment, additional information"
@@ -164,11 +153,6 @@
         "description": "A (logged) workout session"
     },
     "newDay": "新しい日",
-    "newSet": "新しいセット",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
-    },
-    "selectExercises": "If you want to do a superset you can search for several exercises, they will be grouped together",
     "gymMode": "ジムモード",
     "@gymMode": {
         "description": "Label when starting the gym mode"
@@ -335,10 +319,6 @@
         "description": "Message shown when the user has no logged weight entries"
     },
     "edit": "Edit",
-    "loadingText": "Loading...",
-    "@loadingText": {
-        "description": "Text to show when entries are being loaded in the background: Loading..."
-    },
     "delete": "Delete",
     "confirmDelete": "Are you sure you want to delete '{toDelete}'?",
     "@confirmDelete": {
@@ -361,10 +341,6 @@
         "description": "Text in the about dialog"
     },
     "calendar": "Calendar",
-    "goToToday": "Go to today",
-    "@goToToday": {
-        "description": "Label on button to jump back to 'today' in the calendar widget"
-    },
     "enterValue": "Please enter a value",
     "@enterValue": {
         "description": "Error message when the user hasn't entered a value on a required field"
@@ -396,11 +372,6 @@
             }
         }
     },
-    "setUnitsAndRir": "Set units and RiR",
-    "@setUnitsAndRir": {
-        "description": "Label shown on the slider where the user can toggle showing units and RiR",
-        "type": "text"
-    },
     "enterValidNumber": "Please enter a valid number",
     "@enterValidNumber": {
         "description": "Error message when the user has submitted an invalid number (e.g. '3,.,.,.')"
@@ -427,16 +398,6 @@
     "imageFormatNotSupported": "{imageFormat}はサポートされていません",
     "@imageFormatNotSupported": {
         "description": "Label shown on the error container when image format is not supported",
-        "type": "text",
-        "placeholders": {
-            "imageFormat": {
-                "type": "String"
-            }
-        }
-    },
-    "imageFormatNotSupportedDetail": "{imageFormat}形式の画像はまだサポートされていません。",
-    "@imageFormatNotSupportedDetail": {
-        "description": "Label shown on the image preview container when image format is not supported",
         "type": "text",
         "placeholders": {
             "imageFormat": {
@@ -516,7 +477,6 @@
     "@bench": {
         "description": "Generated entry for translation for server strings"
     },
-    "settingsExerciseCacheDescription": "エクササイズキャッシュ",
     "settingsTitle": "設定",
     "settingsCacheTitle": "キャッシュ",
     "back": "戻る",
@@ -543,17 +503,6 @@
     "selectAvailablePlates": "利用可能なプレートを選択してください",
     "barWeight": "バーの重さ",
     "useColors": "色を使用する",
-    "useApiToken": "APIトークンを使用する",
-    "useUsernameAndPassword": "ユーザー名とパスワードを使用する",
-    "apiToken": "APIトークン",
-    "invalidApiToken": "有効なAPIキーを入力してください",
-    "@invalidApiToken": {
-        "description": "Error message when the user enters an invalid API key"
-    },
-    "apiTokenValidChars": "APIキーはアルファベットのa~f、数字の0~9のみで構成されており、ちょうど40文字の長さです",
-    "@apiTokenValidChars": {
-        "description": "Error message when the user tries to input a API key with forbidden characters"
-    },
     "exerciseList": "エクササイズ一覧",
     "exercises": "ワークアウトを構成する複数のエクササイズ",
     "@exercises": {
@@ -568,7 +517,6 @@
     "@noMatchingExerciseFound": {
         "description": "Message returned if no exercises match the searched string"
     },
-    "searchNamesInEnglish": "英語での名前検索",
     "endDate": "終了日",
     "startDate": "開始日",
     "routines": "ルーティン",

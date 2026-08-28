@@ -79,12 +79,6 @@
                 https://media.githubusercontent.com/media/wger-project/flutter/refs/heads/master/fastlane/metadata/android/en-US/images/phoneScreenshots/05%20-%20nutritional%20plan.png
             </image>
         </screenshot>
-        <screenshot>
-            <caption>Body weight</caption>
-            <image type="source">
-                https://media.githubusercontent.com/media/wger-project/flutter/refs/heads/master/fastlane/metadata/android/en-US/images/phoneScreenshots/06%20-%20weight.png
-            </image>
-        </screenshot>
     </screenshots>
     <releases>
         <release version="2.0.5" date="2026-08-21">

@@ -31,8 +31,8 @@ jobs:
       - name: Push a commit with the changed files
         continue-on-error: true
         run: |
-          git config user.name Github-actions
-          git config user.email github-actions@github.com
+          git config user.name git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add .
           git commit -m "Automatic linting"
           git push

@@ -16,31 +16,43 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:wger/features/measurements/models/measurement_category.dart';
+import 'package:wger/database/powersync/database.dart';
+import 'package:wger/features/account/providers/user_profile_repository.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
 import 'package:wger/features/measurements/screens/measurement_categories_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/theme/theme.dart';
 
-import '../../test_data/measurements.dart';
+import '../../test_data/profile.dart';
+import '../../test_data/screenshots/measurements.dart';
+import '../helpers/measurement_repository_stubs.dart';
 import 'screenshots_04_measurements.mocks.dart';
 
-@GenerateMocks([MeasurementRepository])
+@GenerateMocks([MeasurementRepository, UserProfileRepository])
 Widget createMeasurementScreen({Locale? locale}) {
   locale ??= const Locale('en');
 
   final mockMeasurementRepo = MockMeasurementRepository();
-  when(
-    mockMeasurementRepo.watchAll(),
-  ).thenAnswer((_) => Stream<List<MeasurementCategory>>.value(getMeasurementCategories()));
+  final measurements = getScreenshotMeasurements();
+  stubMeasurementReads(mockMeasurementRepo, measurements.categories, measurements.entries);
+
+  // The weight card shows the values in the profile unit, so it only appears
+  // once the profile is there
+  final mockUserProfileRepo = MockUserProfileRepository();
+  when(mockUserProfileRepo.watchDrift()).thenAnswer((_) => Stream.value(tUserProfile1));
 
   final container = ProviderContainer.test(
     overrides: [
+      // Backstop for repositories that are not mocked: they all read the
+      // database, and none of them should reach the real PowerSync file
+      driftPowerSyncDatabase.overrideWithValue(DriftPowersyncDatabase(NativeDatabase.memory())),
       measurementRepositoryProvider.overrideWithValue(mockMeasurementRepo),
+      userProfileRepositoryProvider.overrideWithValue(mockUserProfileRepo),
     ],
   );
 
