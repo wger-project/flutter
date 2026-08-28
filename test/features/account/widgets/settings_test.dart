@@ -52,6 +52,9 @@ void main() {
     when(mockSharedPreferences.getBool(any)).thenAnswer((_) async => null);
     when(mockSharedPreferences.getString(any)).thenAnswer((_) async => null);
     when(
+      mockSharedPreferences.getAll(allowList: anyNamed('allowList')),
+    ).thenAnswer((_) async => {});
+    when(
       mockSharedPreferences.setBool(any, any),
     ).thenAnswer((_) async {});
     when(
@@ -103,7 +106,9 @@ void main() {
     });
 
     testWidgets('dynamic color switch reflects a stored preference', (WidgetTester tester) async {
-      when(mockSharedPreferences.getBool(PREFS_USE_DYNAMIC_COLOR)).thenAnswer((_) async => true);
+      when(
+        mockSharedPreferences.getAll(allowList: anyNamed('allowList')),
+      ).thenAnswer((_) async => {PREFS_USE_DYNAMIC_COLOR: true});
 
       await tester.pumpWidget(createSettingsScreen());
       await tester.pumpAndSettle();
