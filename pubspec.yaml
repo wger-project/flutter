@@ -107,7 +107,7 @@ dev_dependencies:
   xml: ^7.0.1
   flutter_lints: ^6.0.0
   flutter_native_splash: ^2.4.8
-  freezed: ^3.2.0
+  freezed: ^4.0.0
   # Used to strip the alpha channel from the generated store screenshots
   image: ^4.9.1
   json_serializable: ^6.14.1
