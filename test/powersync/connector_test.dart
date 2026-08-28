@@ -21,6 +21,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:drift/drift.dart' show GeneratedColumnWithTypeConverter;
+import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
@@ -382,6 +383,33 @@ void main() {
       ).thenThrow(http.ClientException('Connection refused'));
 
       await expectLater(connector.fetchCredentials(), throwsA(isA<http.ClientException>()));
+    });
+
+    test('times out when the token request hangs', () {
+      // On token expiry the SDK awaits fetchCredentials inline in its sync
+      // loop; without the ceiling a request that never answers freezes sync
+      // (disconnect included) until process restart.
+      fakeAsync((async) {
+        final mockApi = MockApiClient();
+        final connector = DjangoConnector(baseUrl: 'http://example.invalid', apiClient: mockApi);
+        when(
+          mockApi.getPowersyncToken(),
+        ).thenAnswer((_) => Completer<Map<String, dynamic>>().future);
+
+        Object? error;
+        connector.fetchCredentials().then<void>(
+          (_) {},
+          onError: (Object e) {
+            error = e;
+          },
+        );
+
+        async.elapse(DjangoConnector.credentialFetchTimeout - const Duration(seconds: 1));
+        expect(error, isNull);
+
+        async.elapse(const Duration(seconds: 2));
+        expect(error, isA<TimeoutException>());
+      });
     });
 
     test('anchors expiresAt to the local clock via the token lifetime', () async {

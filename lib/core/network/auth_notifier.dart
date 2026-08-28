@@ -49,6 +49,11 @@ import 'package:wger/features/trophies/providers/trophy_notifier.dart';
 
 part 'auth_notifier.g.dart';
 
+/// Ceiling for the refresh POST. Callers are deduplicated onto one in-flight
+/// refresh, so a request that never answers would block them all, PowerSync's
+/// credential fetch included.
+const tokenRefreshTimeout = Duration(seconds: 15);
+
 @Riverpod(keepAlive: true)
 class AuthNotifier extends _$AuthNotifier {
   final _logger = Logger('AuthNotifier');
@@ -614,11 +619,13 @@ class AuthNotifier extends _$AuthNotifier {
     final appVersion = current.applicationVersion ?? await PackageInfo.fromPlatform();
     final http.Response response;
     try {
-      response = await _api.postTokenRefresh(
-        refreshToken: refreshToken,
-        serverUrl: serverUrl,
-        appVersion: appVersion,
-      );
+      response = await _api
+          .postTokenRefresh(
+            refreshToken: refreshToken,
+            serverUrl: serverUrl,
+            appVersion: appVersion,
+          )
+          .timeout(tokenRefreshTimeout);
     } on Exception catch (e, s) {
       _logger.warning(
         'refreshAccessToken: network error, keeping session so local data stays accessible',

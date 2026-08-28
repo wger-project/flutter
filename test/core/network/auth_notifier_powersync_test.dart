@@ -21,6 +21,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:connectivity_plus_platform_interface/connectivity_plus_platform_interface.dart';
+import 'package:fake_async/fake_async.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart' show AppLifecycleState;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -965,6 +966,41 @@ void main() {
 
       expect(container.read(authProvider).value!.isAuth, isFalse);
       verifyNever(mockSecureStorage.writeRefreshToken(any));
+    });
+
+    test('a hanging refresh POST times out and keeps the session', () {
+      // Callers are deduplicated onto one in-flight refresh, so a POST that
+      // never answers would block them all, PowerSync's credential fetch
+      // included. The timeout must land in the keep-session branch.
+      fakeAsync((async) {
+        var seeded = false;
+        seedHeadlessBundle().then((_) => seeded = true);
+        async.flushMicrotasks();
+        expect(seeded, isTrue);
+
+        when(mockSecureStorage.readRefreshToken()).thenAnswer((_) async => 'old-refresh');
+        when(
+          mockClient.post(tRefresh, headers: anyNamed('headers'), body: anyNamed('body')),
+        ).thenAnswer((_) => Completer<Response>().future);
+
+        final container = makeContainer();
+        AuthState? state;
+        container.read(authProvider.future).then((s) => state = s);
+        async.flushMicrotasks();
+        expect(state, isNotNull);
+
+        var completed = false;
+        container.read(authProvider.notifier).refreshAccessToken().then((_) => completed = true);
+
+        async.elapse(tokenRefreshTimeout - const Duration(seconds: 1));
+        expect(completed, isFalse);
+
+        async.elapse(const Duration(seconds: 2));
+        expect(completed, isTrue);
+
+        expect(container.read(authProvider).value!.isAuth, isTrue);
+        verifyNever(mockSecureStorage.writeRefreshToken(any));
+      });
     });
 
     test('clearSessionOnly keeps the DB-owner marker (the local DB is preserved)', () async {
