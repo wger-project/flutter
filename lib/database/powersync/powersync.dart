@@ -65,6 +65,15 @@ PowerSyncDatabase? _builtInstance;
 /// those paths need.
 PowerSyncDatabase? get builtPowerSyncInstance => _builtInstance;
 
+String? _connectedServerUrl;
+
+/// The server the sync was last connected to, null before the first connect.
+///
+/// What the sync diagnostics name as the backend: a report has to say where
+/// the rejected uploads went, and it is written from paths that have no `ref`
+/// to read the auth state with.
+String? get connectedServerUrl => _connectedServerUrl;
+
 /// Watches the sync status for a stream that keeps reconnecting without ever
 /// delivering data (e.g. blocked by a VPN or firewall) and flags it, see
 /// [SyncStreamWatchdog]. Fed from the DB's status stream by
@@ -251,6 +260,7 @@ void connectPowerSync(
   required String reason,
 }) {
   _logger.info('Connecting to the sync service ($reason)');
+  _connectedServerUrl = baseUrl;
   db.connect(
     connector: DjangoConnector(
       baseUrl: baseUrl,

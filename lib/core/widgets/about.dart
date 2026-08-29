@@ -28,7 +28,6 @@ import 'package:wger/core/logs.dart';
 import 'package:wger/core/misc.dart';
 import 'package:wger/core/network/auth_notifier.dart';
 import 'package:wger/core/network/network_provider.dart';
-import 'package:wger/core/network/wger_base.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/features/exercises/screens/add_exercise_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -128,9 +127,7 @@ class AboutPage extends ConsumerWidget {
                 onTap: () async {
                   final url = buildGithubIssueUrl(
                     applicationLogs: InMemoryLogStore().getFormattedLogs(),
-                    syncDiagnostics: await collectSyncDiagnostics(
-                      serverUrl: ref.read(wgerBaseProvider).serverUrl,
-                    ),
+                    syncDiagnostics: await collectSyncDiagnostics(),
                     appVersion: await collectAppVersion(),
                     serverVersion: authState?.serverVersion,
                   );
