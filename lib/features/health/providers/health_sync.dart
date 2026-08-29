@@ -71,6 +71,13 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
   /// Percent the state was last updated for, see [_onProgress].
   int? _reportedPercent;
 
+  /// Whether a run is in flight, checked before the first await.
+  ///
+  /// Not [HealthSyncState.isSyncing]: that one is reset from outside while a
+  /// run is still reading (see [disableSync]), which let a second run start
+  /// into the same categories.
+  bool _isRunning = false;
+
   @override
   HealthSyncState build() {
     _health = ref.read(healthRepositoryProvider);
@@ -184,29 +191,34 @@ class HealthSyncNotifier extends _$HealthSyncNotifier {
   /// already running. Triggered on app open, on app resume, and manually from
   /// the settings.
   Future<int> sync() async {
-    if (!await PreferenceHelper.instance.getHealthSyncEnabled()) {
+    if (_isRunning) {
       return 0;
     }
-    if (state.isSyncing) {
-      return 0;
-    }
-    _reportedPercent = null;
-    state = state.copyWith(isEnabled: true, isSyncing: true, issue: null, progress: null);
+    _isRunning = true;
+    try {
+      if (!await PreferenceHelper.instance.getHealthSyncEnabled()) {
+        return 0;
+      }
+      _reportedPercent = null;
+      state = state.copyWith(isEnabled: true, isSyncing: true, issue: null, progress: null);
 
-    final result = await _importer.run();
+      final result = await _importer.run();
 
-    // The timestamp says when the metrics were last read, so a run that gave
-    // up before reading any of them leaves the previous one standing
-    if (result.completed) {
-      await PreferenceHelper.instance.setHealthSyncLastRun(DateTime.now());
+      // The timestamp says when the metrics were last read, so a run that gave
+      // up before reading any of them leaves the previous one standing
+      if (result.completed) {
+        await PreferenceHelper.instance.setHealthSyncLastRun(DateTime.now());
+      }
+      state = state.copyWith(
+        isSyncing: false,
+        lastSyncCount: result.imported,
+        lastSyncTime: result.completed ? DateTime.now() : state.lastSyncTime,
+        issue: result.issue,
+        progress: null,
+      );
+      return result.imported;
+    } finally {
+      _isRunning = false;
     }
-    state = state.copyWith(
-      isSyncing: false,
-      lastSyncCount: result.imported,
-      lastSyncTime: result.completed ? DateTime.now() : state.lastSyncTime,
-      issue: result.issue,
-      progress: null,
-    );
-    return result.imported;
   }
 }
