@@ -933,6 +933,56 @@ void main() {
       expect(emitted.single.isOfficial, isFalse);
     });
 
+    test('addLocalDriftCategory keeps the row a stored id already has', () async {
+      await repo.addLocalDriftCategory(
+        MeasurementCategory(id: 'steps', name: 'Renamed by the user', unit: 'x'),
+      );
+
+      // Same derived id, as another device would send it down
+      await repo.addLocalDriftCategory(
+        MeasurementCategory(
+          id: 'steps',
+          name: 'Steps',
+          unit: '',
+          metricType: MetricType.steps,
+        ),
+      );
+
+      final emitted = await repo.watchAllWithoutEntries().first;
+      expect(emitted, hasLength(1));
+      expect(emitted.single.name, 'Renamed by the user');
+    });
+
+    test('addLocalDriftCategoryGroup only inserts the members that are missing', () async {
+      await repo.addLocalDriftCategory(
+        MeasurementCategory(
+          id: 'sleep',
+          name: 'Sleep',
+          unit: 'min',
+          metricType: MetricType.sleep,
+        ),
+      );
+
+      await repo.addLocalDriftCategoryGroup([
+        MeasurementCategory(
+          id: 'sleep',
+          name: 'Sleep',
+          unit: 'min',
+          metricType: MetricType.sleep,
+        ),
+        MeasurementCategory(
+          id: 'sleep-deep',
+          name: 'Deep sleep',
+          unit: 'min',
+          metricType: MetricType.sleepDeep,
+          parentId: 'sleep',
+        ),
+      ]);
+
+      final emitted = await repo.watchAllWithoutEntries().first;
+      expect(emitted.map((c) => c.id), unorderedEquals(['sleep', 'sleep-deep']));
+    });
+
     test('isOfficial and metricType round-trip through the table', () async {
       await repo.addLocalDriftCategory(
         MeasurementCategory(

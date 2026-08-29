@@ -568,20 +568,41 @@ class MeasurementRepository {
     await stmt.write(category.toCompanion().copyWith(metricType: const Value.absent()));
   }
 
+  /// Adds [category], keeping the stored row when its id is already taken.
+  ///
+  /// A typed category carries a derived id, so a row already holding it is
+  /// that same category, created on another device and synced in meanwhile.
   Future<void> addLocalDriftCategory(MeasurementCategory category) async {
     _logger.finer('Adding local measurement category ${category.name}');
-    await _db.into(_db.measurementCategoryTable).insert(category.toCompanion());
+    await _db.transaction(() => _insertUnlessStored(category));
   }
 
   /// Inserts a group together with its components, in a single transaction so
-  /// a group is never left without the children its readings live in.
+  /// a group is never left without the children its readings live in. Members
+  /// the database already holds keep their stored row, see
+  /// [addLocalDriftCategory].
   Future<void> addLocalDriftCategoryGroup(List<MeasurementCategory> categories) async {
     _logger.finer('Adding a local measurement group of ${categories.length} categories');
     await _db.transaction(() async {
       for (final category in categories) {
-        await _db.into(_db.measurementCategoryTable).insert(category.toCompanion());
+        await _insertUnlessStored(category);
       }
     });
+  }
+
+  /// Inserts [category] unless its id is taken, in which case the stored row
+  /// stands. Runs inside the caller's transaction, so the sync cannot insert
+  /// between the check and the insert.
+  Future<void> _insertUnlessStored(MeasurementCategory category) async {
+    final id = category.id;
+    if (id != null) {
+      final query = _db.select(_db.measurementCategoryTable)..where((t) => t.id.equals(id));
+      if (await query.getSingleOrNull() != null) {
+        _logger.info('Measurement category $id is already stored, keeping that row');
+        return;
+      }
+    }
+    await _db.into(_db.measurementCategoryTable).insert(category.toCompanion());
   }
 
   /// Persists the given display order: each category gets its list index as
