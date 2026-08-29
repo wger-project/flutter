@@ -95,14 +95,14 @@ class DjangoConnector extends PowerSyncBackendConnector {
   /// Client for the endpoint liveness probes in [fetchCredentials].
   final http.Client _probeClient;
 
-  /// IDs of CRUD operations that already triggered a user-facing
-  /// rejection dialog this session. Without this gate the same
-  /// permanent-failure op would re-pop the dialog on every sync tick
-  /// (PowerSync keeps re-driving `uploadData` until the transaction
-  /// is completed, and our `transaction.complete()` only fires once
-  /// the loop finishes, so we'd see the dialog at every iteration).
-  /// Resets on app restart.
-  final Set<String> _reportedFailedOps = {};
+  /// Refusals that already triggered a user-facing dialog this session, as
+  /// table, operation and the backend's answer.
+  ///
+  /// Keyed by the refusal rather than by the row it happened on: a category
+  /// the backend rejects orphans every measurement pointing at it, and one
+  /// dialog per orphan is thousands of them, each one re-popping as the user
+  /// dismisses the last. Resets on app restart.
+  final Set<String> _reportedRejections = {};
 
   /// Ceiling for one token fetch. On token expiry the SDK awaits the fetch
   /// inline in its sync loop, so a request that never answers would freeze
@@ -393,20 +393,22 @@ class DjangoConnector extends PowerSyncBackendConnector {
     return _UploadOutcome.reject;
   }
 
-  /// Surfaces a permanently refused op via the global error dialog, once per op
-  /// per session (a re-driven transaction would otherwise re-pop it each tick).
+  /// Surfaces a permanently refused op via the global error dialog, once per
+  /// refusal per session, see [_reportedRejections].
   void _reportRejection(CrudEntry op, http.Response response) {
-    if (!_reportedFailedOps.add(op.id)) {
-      // Already shown for this operation in the current session.
-      return;
-    }
-
     final exception = WgerHttpException(
       response,
       source: ExceptionSource.powersync,
       context: {'table': op.table, 'op': op.op.name},
     );
     final ctx = '${op.op.name} ${op.table}';
+
+    if (!_reportedRejections.add('$ctx|${response.body}')) {
+      // Below the exportable log level: the repeats say nothing the first line
+      // did not, and thousands of them would push everything else out of it
+      logger.fine('Backend rejected $ctx again: $exception');
+      return;
+    }
     // 200 + {error} is the expected contract (warning); other statuses are
     // unexpected (severe).
     if (response.statusCode == 200) {

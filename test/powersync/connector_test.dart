@@ -542,6 +542,7 @@ void main() {
   group('processTransaction', () {
     late MockApiClient api;
     late DjangoConnector conn;
+    late List<LogRecord> records;
 
     // Mirrors PowerSync clearing the op from the local queue: set to true once
     // transaction.complete() runs.
@@ -551,7 +552,13 @@ void main() {
       api = MockApiClient();
       conn = DjangoConnector(baseUrl: 'http://example.invalid', apiClient: api);
       completed = false;
+      records = [];
+      final sub = Logger.root.onRecord.listen(records.add);
+      addTearDown(sub.cancel);
     });
+
+    Iterable<LogRecord> logLines(Level level, String needle) =>
+        records.where((r) => r.level == level && r.message.contains(needle));
 
     CrudTransaction txWithAll(List<CrudEntry> entries) => CrudTransaction(
       transactionId: 1,
@@ -663,6 +670,45 @@ void main() {
 
       verify(api.update(any)).called(1);
       expect(completed, isTrue);
+    });
+
+    test('the same refusal is only surfaced once, however many rows it hits', () async {
+      // A category the backend refuses orphans every measurement pointing at
+      // it. One dialog per orphan is thousands of them, each one re-popping as
+      // the user dismisses the last, so the refusal is reported per reason.
+      // The warning and the dialog sit behind the same gate.
+      when(api.upsert(any)).thenAnswer(
+        (_) async => http.Response(
+          json.encode({'error': 'Forbidden', 'details': 'Measurement references an object'}),
+          200,
+        ),
+      );
+
+      for (final id in ['m1', 'm2', 'm3']) {
+        await conn.processTransaction(
+          txWith(CrudEntry(1, UpdateType.put, 'measurements_measurement', id, 1, {'value': 1})),
+        );
+      }
+
+      expect(logLines(Level.WARNING, 'Backend rejected'), hasLength(1));
+    });
+
+    test('a different refusal is surfaced on its own', () async {
+      when(api.upsert(any)).thenAnswer(
+        (_) async => http.Response(json.encode({'error': 'Forbidden'}), 200),
+      );
+      await conn.processTransaction(
+        txWith(CrudEntry(1, UpdateType.put, 'measurements_measurement', 'm1', 1, {'value': 1})),
+      );
+
+      when(api.upsert(any)).thenAnswer(
+        (_) async => http.Response(json.encode({'error': 'Validation failed'}), 200),
+      );
+      await conn.processTransaction(
+        txWith(CrudEntry(1, UpdateType.put, 'measurements_category', 'c1', 1, {'unit': ''})),
+      );
+
+      expect(logLines(Level.WARNING, 'Backend rejected'), hasLength(2));
     });
 
     test('a retryable op leaves the whole transaction queued for a replay', () async {
