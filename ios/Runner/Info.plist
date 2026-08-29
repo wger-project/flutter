@@ -89,6 +89,11 @@
 		<string>Workout photos</string>
 		<key>NSHealthShareUsageDescription</key>
 		<string>wger reads your Apple Health data to import measurements and activity such as weight, body fat, blood pressure, heart rate, blood oxygen, sleep, steps, distance, and active energy into your wger account</string>
+		<!-- wger only reads from HealthKit, but health_bridge links Apple's write API
+		     (requestAuthorization(toShare:read:), save, delete), so App Store validation
+		     rejects the upload without this key (ITMS-90683). -->
+		<key>NSHealthUpdateUsageDescription</key>
+		<string>wger does not save any data to Apple Health; the health integration only reads measurements and activity such as weight, body fat, heart rate and sleep</string>
 		<key>UIApplicationSceneManifest</key>
 		<dict>
 			<key>UIApplicationSupportsMultipleScenes</key>
