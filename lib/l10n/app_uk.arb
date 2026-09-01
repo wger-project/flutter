@@ -194,7 +194,7 @@
     "@notes": {
         "description": "Personal notes, e.g. for a workout session"
     },
-    "measurementCategoriesHelpText": "Категорія вимірювання, така як \"біцепс\" або \"жир тіла\"",
+    "measurementCategoriesHelpText": "Категорія вимірювання, така як \"біцепс\" або \"відсоток жиру\"",
     "time": "Час",
     "@time": {
         "description": "The time of a meal or workout"
@@ -217,7 +217,7 @@
     },
     "fat": "Жири",
     "newNutritionalPlan": "Новий план харчування",
-    "sugars": "Цукри",
+    "sugars": "із них цукор",
     "aboutDescription": "Дякуємо за використання wger! wger - це спільний проєкт з відкритим кодом, створений ентузіастами фітнесу з усього світу.",
     "@aboutDescription": {
         "description": "Text in the about dialog"
@@ -338,7 +338,7 @@
         "description": "The first letter or short name of the word 'Fat', used in overviews"
     },
     "saturatedFat": "Насичені жири",
-    "fiber": "Волокон",
+    "fiber": "Клітковина",
     "sodium": "Натрій",
     "amount": "Сума",
     "@amount": {
@@ -489,7 +489,7 @@
         }
     },
     "addExercise": "Додати вправу",
-    "none__bodyweight_exercise_": "немає (вправи з власною вагою)",
+    "none__bodyweight_exercise_": "Вправи з власною вагою тіла",
     "abs": "Живіт",
     "baseData": "Основи англійської",
     "@baseData": {
@@ -516,7 +516,7 @@
     "back": "Спина",
     "quads": "Квадрицепс",
     "arms": "Руки",
-    "sz_bar": "SZ-Штанга",
+    "sz_bar": "W-подібний гриф",
     "kettlebell": "Гиря",
     "calves": "Ікри",
     "pull_up_bar": "Перекладина",
@@ -632,8 +632,8 @@
         "description": "added for localization of Class GoalType's filed advanced"
     },
     "useMetric": "Використовуйте метричні одиниці вимірювання маси тіла",
-    "settingsTitle": "налаштування",
-    "deficit": "дефіцит",
+    "settingsTitle": "Налаштування",
+    "deficit": "Дефіцит калорій",
     "@deficit": {
         "description": "Caloric deficit (either planned or unplanned)"
     },
@@ -714,12 +714,12 @@
     "aboutMastodonTitle": "Мастодонт",
     "settingsCacheTitle": "Кеш",
     "settingsCacheDeletedSnackbar": "Кеш успішно очищено",
-    "themeMode": "Тематичний режим",
+    "themeMode": "Тема",
     "darkMode": "Завжди темний режим",
-    "lightMode": "Завжди легкий режим",
+    "lightMode": "Завжди світлий режим",
     "systemMode": "Налаштування системи",
     "restDay": "День відпочинку",
-    "noRoutines": "У вас немає рутин",
+    "noRoutines": "У вас немає програми тренувань",
     "restTime": "Час відпочинку",
     "sets": "Підходи",
     "@sets": {
@@ -737,20 +737,20 @@
     },
     "isRestDay": "Є День відпочинку",
     "isRestDayHelp": "Будь ласка, зверніть увагу, що всі підходи та вправи будуть видалені, коли ви позначите день як вихідний.",
-    "routineDays": "Дні в рутині",
+    "routineDays": "Днів в програмі тренувань",
     "fitInWeek": "Вписується в тиждень",
     "fitInWeekHelp": "Якщо ввімкнено, дні повторюватимуться в тижневому циклі, інакше дні будуть йти послідовно незалежно від початку нового тижня.",
     "addSuperset": "Додайте надмножину",
     "setHasProgression": "Набір має прогресію",
     "simpleMode": "Простий режим",
-    "resultingRoutine": "Результативна рутина",
+    "resultingRoutine": "Підсумкова програма тренувань",
     "simpleModeHelp": "Приховайте деякі розширені налаштування під час редагування вправ",
     "progressionRules": "Ця вправа має правила прогресу, і її не можна редагувати в мобільному додатку. Щоб відредагувати цю вправу, використовуйте веб-додаток.",
     "min": "Мін",
     "max": "Макс",
-    "newRoutine": "Нова рутина",
+    "newRoutine": "Нова програма тренувань",
     "needsLogsToAdvance": "Для просування потрібні журнали",
-    "routines": "Рутини",
+    "routines": "Програми тренувань",
     "exerciseNr": "Вправа {nr}",
     "@exerciseNr": {
         "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Set Nr. xy'.",
@@ -793,7 +793,7 @@
     "@resistance_band": {
         "description": "Generated entry for translation for server strings"
     },
-    "selectAvailablePlates": "Виберіть доступні тарілки",
+    "selectAvailablePlates": "Виберіть наявні вагові диски",
     "barWeight": "Вага штанги",
     "useColors": "Використовуйте кольори",
     "yourCurrentNutritionPlanHasNoMealsDefinedYet": "У вашому поточному плані харчування не визначено жодного прийому їжі",
@@ -1504,7 +1504,7 @@
     "@searchModeExact": {
         "description": "Label for the search mode that only matches exercises with this exact name"
     },
-    "syncStatusConnected": "Підключено",
+    "syncStatusConnected": "З'єднано",
     "@syncStatusConnected": {
         "description": "Tooltip on the sync icon when the app is online and idle (no upload or download in progress)"
     },
