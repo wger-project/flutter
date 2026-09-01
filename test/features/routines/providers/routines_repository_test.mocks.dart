@@ -3,6 +3,7 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+
 import 'dart:async' as _i6;
 
 import 'package:drift/drift.dart' as _i3;
@@ -848,12 +849,12 @@ class MockDriftPowersyncDatabase extends _i1.Mock implements _i4.DriftPowersyncD
           as _i4.$GalleryImageTableTable);
 
   @override
-  Iterable<_i3.TableInfo<_i3.Table, Object?>> get allTables =>
+  Iterable<_i3.TableInfo<dynamic, Object?>> get allTables =>
       (super.noSuchMethod(
             Invocation.getter(#allTables),
-            returnValue: <_i3.TableInfo<_i3.Table, Object?>>[],
+            returnValue: <_i3.TableInfo<dynamic, Object?>>[],
           )
-          as Iterable<_i3.TableInfo<_i3.Table, Object?>>);
+          as Iterable<_i3.TableInfo<dynamic, Object?>>);
 
   @override
   List<_i3.DatabaseSchemaEntity> get allSchemaEntities =>

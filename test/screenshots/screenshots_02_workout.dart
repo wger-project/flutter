@@ -14,11 +14,10 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
-// import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
