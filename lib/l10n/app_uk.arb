@@ -392,7 +392,7 @@
             }
         }
     },
-    "nrOfSets": "Наборів на вправу: {nrOfSets}",
+    "nrOfSets": "Підходів на вправу: {nrOfSets}",
     "@nrOfSets": {
         "description": "Label shown on the slider where the user selects the nr of sets",
         "type": "text",
@@ -721,7 +721,7 @@
     "restDay": "День відпочинку",
     "noRoutines": "У вас немає рутин",
     "restTime": "Час відпочинку",
-    "sets": "Набори",
+    "sets": "Підходи",
     "@sets": {
         "description": "The number of sets to be done for one exercise"
     },
@@ -736,7 +736,7 @@
         }
     },
     "isRestDay": "Є День відпочинку",
-    "isRestDayHelp": "Будь ласка, зверніть увагу, що всі комплекси та вправи будуть видалені, коли ви позначите день як вихідний.",
+    "isRestDayHelp": "Будь ласка, зверніть увагу, що всі підходи та вправи будуть видалені, коли ви позначите день як вихідний.",
     "routineDays": "Дні в рутині",
     "fitInWeek": "Вписується в тиждень",
     "fitInWeekHelp": "Якщо ввімкнено, дні повторюватимуться в тижневому циклі, інакше дні будуть йти послідовно незалежно від початку нового тижня.",
@@ -914,7 +914,7 @@
     "impressionNeutral": "Нейтральний",
     "impressionBad": "Погано",
     "gymModeShowExercises": "Показати сторінки огляду вправ",
-    "gymModeShowTimer": "Показувати таймер між сетами",
+    "gymModeShowTimer": "Показувати таймер між підходами",
     "gymModeTimerType": "Тип таймера",
     "gymModeTimerTypeHelText": "Якщо сет має час паузи, завжди використовується зворотний відлік.",
     "countdown": "Зворотний відлік",
