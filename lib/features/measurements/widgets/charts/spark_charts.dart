@@ -25,7 +25,7 @@ library;
 import 'dart:math';
 import 'dart:ui' show PointMode;
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/features/measurements/charts/calendar.dart';
 import 'package:wger/features/measurements/charts/colors.dart';
 import 'package:wger/features/measurements/charts/data.dart';

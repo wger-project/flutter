@@ -19,7 +19,7 @@
 import 'dart:math';
 
 import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:intl/intl.dart';
 import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/features/measurements/charts/colors.dart';

@@ -84,7 +84,8 @@ dependencies:
   powersync: ^2.3.3
   flutter_timezone: ^5.1.0
   timezone: ^0.11.1
-
+  material_ui: ^1.1.0
+  
 dependency_overrides:
   # health -> device_info_plus ^12.1.0 pins win32 5.x, which conflicts with
   # package_info_plus 10.2.0 (win32 ^6). device_info_plus 13.x is a pure win32
