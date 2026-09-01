@@ -16,7 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:material_ui/material_ui.dart';
+// import 'package:material_ui/material_ui.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wger/core/error_dialogs.dart';
@@ -99,6 +100,12 @@ void main() {
     Widget app(Widget home) => MaterialApp(
       localizationsDelegates: const [
         AppLocalizations.delegate,
+
+// Error
+//         The values in a const list literal must be constants.
+// Try removing the keyword 'const' from the list literal.dartnon_constant_list_element
+// The name 'GlobalMaterialLocalizations' is defined in the libraries 'package:flutter_localizations/src/material_localizations.dart (via package:flutter_localizations/flutter_localizations.dart)' and 'package:material_ui/src/global_material_localizations.dart (via package:material_ui/material_ui.dart)'.
+// Try using 'as prefix' for one of the import directives, or hiding the name from all but one of the imports.
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
       ],

@@ -19,7 +19,7 @@
 import 'dart:math';
 
 import 'package:collection/collection.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:flutter/material.dart';
 import 'package:wger/features/measurements/charts/calendar.dart';
 import 'package:wger/features/measurements/charts/range.dart';
 import 'package:wger/features/measurements/charts/series.dart';

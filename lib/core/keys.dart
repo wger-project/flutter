@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:material_ui/material_ui.dart';
+import 'package:flutter/material.dart';
 
 /// App-wide navigator key. Lets code outside the widget tree (the global error
 /// handlers, background callbacks) reach a [BuildContext] and the navigator.

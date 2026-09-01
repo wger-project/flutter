@@ -17,7 +17,8 @@
  */
 
 import 'package:flex_color_scheme/flex_color_scheme.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:flutter/material.dart';
+// import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wger/core/colors.dart';
 import 'package:wger/theme/theme.dart';
@@ -65,6 +66,9 @@ void main() {
 
     test('ramps the tone across the palette', () {
       for (final scheme in [light, dark]) {
+        // Error
+        // The argument type 'Diagnosticable' can't be assigned to the parameter type 'ColorScheme'. dartargument_type_not_assignable
+
         final tones = chartColorPalette(5, scheme).map(toneOf).toList();
 
         for (var i = 1; i < tones.length; i++) {
@@ -75,6 +79,8 @@ void main() {
 
     test('keeps the dark palette light enough for a dark surface', () {
       // The old fixed palette was tuned for light backgrounds only.
+
+      // The argument type 'ColorScheme (where ColorScheme is defined in C:\Users\saurav\dev\tooling\flutter\packages\flutter\lib\src\material\color_scheme.dart)' can't be assigned to the parameter type 'ColorScheme (where ColorScheme is defined in C:\Users\saurav\AppData\Local\Pub\Cache\hosted\pub.dev\material_ui-1.1.0\lib\src\color_scheme.dart)'.
       expect(chartColorPalette(6, dark).every((c) => toneOf(c) >= 55), isTrue);
     });
   });
