@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/core/widgets/confirm_delete_dialog.dart';
 import 'package:wger/features/routines/models/log.dart';
 import 'package:wger/features/routines/providers/workout_logs_notifier.dart';

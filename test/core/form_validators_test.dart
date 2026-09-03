@@ -16,9 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/intl.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/core/form_validators.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/l10n/generated/app_localizations_en.dart';

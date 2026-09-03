@@ -18,10 +18,10 @@
 
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/core/widgets/dashboard/widgets/routines.dart';
 import 'package:wger/features/routines/models/routine.dart';

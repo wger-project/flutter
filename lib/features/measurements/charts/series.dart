@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/material.dart' show DateTimeRange;
+import 'package:flutter/material.dart';
 
 /// A nutrition plan period shown for context: shaded as a vertical band in
 /// the chart, and named in the tooltip of the points it contains.

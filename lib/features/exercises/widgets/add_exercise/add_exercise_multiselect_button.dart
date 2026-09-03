@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 class AddExerciseMultiselectButton<T> extends StatefulWidget {

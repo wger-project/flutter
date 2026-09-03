@@ -75,6 +75,7 @@ void main() {
 
     test('keeps the dark palette light enough for a dark surface', () {
       // The old fixed palette was tuned for light backgrounds only.
+
       expect(chartColorPalette(6, dark).every((c) => toneOf(c) >= 55), isTrue);
     });
   });

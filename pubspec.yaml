@@ -38,7 +38,7 @@ dependencies:
   collection: ^1.19.1
   cupertino_icons: ^1.0.9
   drift: ^2.34.3
-  dynamic_color: ^1.8.1
+  dynamic_color: ^2.1.0
   equatable: ^2.1.0
   extended_image: ^10.1.0
   fl_chart: ^1.2.0
@@ -84,7 +84,8 @@ dependencies:
   powersync: ^2.3.3
   flutter_timezone: ^5.1.0
   timezone: ^0.11.1
-
+  material_ui: ^1.1.0
+  
 dependency_overrides:
   # health -> device_info_plus ^12.1.0 pins win32 5.x, which conflicts with
   # package_info_plus 10.2.0 (win32 ^6). device_info_plus 13.x is a pure win32

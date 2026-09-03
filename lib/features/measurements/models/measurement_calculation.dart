@@ -25,7 +25,7 @@
 /// wger/measurements/dynamic/types.py.
 library;
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
