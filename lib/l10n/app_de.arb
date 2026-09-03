@@ -920,7 +920,7 @@
     "noTrophies": "Du hast noch keine Trophäen",
     "preview": "Vorschau",
     "serverUpdateTitle": "Server-Update erforderlich",
-    "serverUpdateContent": "Der verbundene Server ist für diese Version der App zu alt. Bitte fragen Sie den Serveradministrator, ob er ein Update auf mindestens Version {minVersion} durchführen kann.",
+    "serverUpdateContent": "Der verbundene Server ist für diese Version der App zu alt. Bitte fragen Sie den Serveradministrator, ob er  mindestens auf die Version {minVersion} updaten kann.",
     "@serverUpdateContent": {
         "description": "Message shown when the server version is too old. minVersion is the minimum required server version string.",
         "type": "text",
@@ -982,7 +982,7 @@
     "@serverConfigIssueTitle": {
         "description": "Title of the dialog shown when server misconfiguration is detected"
     },
-    "serverConfigIssueMessage": "Fehlerhafte Serverkonfiguration festgestellt, Überschriften werden nicht korrekt übermittelt, bitte konsultieren Sie die Dokumentation.",
+    "serverConfigIssueMessage": "Fehlerhafte Serverkonfiguration festgestellt, Überschriften werden nicht korrekt übermittelt, bitte ziehen  Sie für weitere Information die Dokumentation hinzu.",
     "@serverConfigIssueMessage": {
         "description": "Message explaining server misconfiguration and linking to documentation"
     },
