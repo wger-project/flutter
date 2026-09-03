@@ -18,9 +18,9 @@
 
 import 'dart:io';
 
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/errors.dart' show buildGithubIssueUrl, collectAppVersion;
 import 'package:wger/core/helpers.dart' show makePageUri;

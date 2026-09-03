@@ -16,10 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:markdown/markdown.dart' as md;
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/core/widgets/cards.dart';
 import 'package:wger/features/exercises/providers/add_exercise_notifier.dart';
 import 'package:wger/features/exercises/widgets/add_exercise/preview_images.dart';

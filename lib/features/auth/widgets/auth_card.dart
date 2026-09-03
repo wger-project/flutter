@@ -17,8 +17,8 @@
  */
 
 import 'package:flutter/foundation.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wger/core/app_link_router.dart';
 import 'package:wger/core/app_settings_notifier.dart';

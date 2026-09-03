@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/features/measurements/charts/data.dart';
 import 'package:wger/features/measurements/widgets/charts/distribution_chart.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';

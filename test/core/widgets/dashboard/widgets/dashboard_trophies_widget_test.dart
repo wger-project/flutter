@@ -16,10 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:network_image_mock/network_image_mock.dart';
 import 'package:wger/core/widgets/dashboard/widgets/trophies.dart';
 import 'package:wger/features/trophies/providers/trophy_notifier.dart';

@@ -19,8 +19,8 @@
 import 'dart:async';
 
 import 'package:clock/clock.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/features/routines/providers/gym_state_notifier.dart';
 
 /// Shows the time elapsed since the start of the current workout.

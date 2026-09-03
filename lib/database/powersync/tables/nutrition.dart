@@ -17,6 +17,7 @@
  */
 
 import 'package:drift/drift.dart';
+import 'package:flutter/material.dart' show TimeOfDay;
 import 'package:powersync/powersync.dart' as ps;
 import 'package:wger/database/converters/date_only_text_converter.dart';
 import 'package:wger/database/converters/time_of_day_converter.dart';

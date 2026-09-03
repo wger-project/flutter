@@ -19,9 +19,9 @@
 import 'dart:math';
 
 import 'package:collection/collection.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/features/measurements/charts/calendar.dart';
 import 'package:wger/features/measurements/charts/data.dart';

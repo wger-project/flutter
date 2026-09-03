@@ -18,9 +18,9 @@
 
 import 'dart:io';
 
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/core/widgets/datetime_input.dart';

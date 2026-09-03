@@ -21,9 +21,9 @@
 import 'dart:io';
 
 import 'package:drift/drift.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../test/screenshots/screenshots_01_dashboard.dart';
 import '../test/screenshots/screenshots_02_workout.dart';

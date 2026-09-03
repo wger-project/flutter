@@ -17,8 +17,8 @@
  */
 
 import 'package:flex_color_scheme/flex_color_scheme.dart';
-import 'package:table_calendar/table_calendar.dart';
 import 'package:flutter/material.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 // Color scheme, please consult
 // * https://pub.dev/packages/flex_color_scheme
@@ -46,7 +46,7 @@ const List<FontVariation> displayFontBoldWeight = [FontVariation('wght', 600)];
 const List<FontVariation> displayFontHeavyWeight = [FontVariation('wght', 800)];
 
 // Make a light ColorScheme from the seeds.
-final ColorScheme? schemeLight = SeedColorScheme.fromSeeds(
+final ColorScheme schemeLight = SeedColorScheme.fromSeeds(
   primary: wgerPrimaryColor,
   primaryKey: wgerPrimaryColor,
   secondaryKey: wgerSecondaryColor,

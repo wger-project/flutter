@@ -17,8 +17,8 @@
  */
 
 import 'package:fl_chart/fl_chart.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/features/routines/models/log.dart';
 import 'package:wger/features/routines/widgets/charts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
