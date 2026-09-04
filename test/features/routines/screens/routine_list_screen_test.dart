@@ -25,6 +25,7 @@ import 'package:wger/core/form_screen.dart';
 import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/features/routines/models/routine.dart';
 import 'package:wger/features/routines/providers/routines_repository.dart';
+import 'package:wger/features/routines/screens/routine_edit_screen.dart';
 import 'package:wger/features/routines/screens/routine_list_screen.dart';
 import 'package:wger/features/routines/screens/routine_screen.dart';
 import 'package:wger/features/routines/widgets/forms/routine.dart';
@@ -80,6 +81,7 @@ void main() {
         routes: {
           FormScreen.routeName: (ctx) => const FormScreen(),
           RoutineScreen.routeName: (ctx) => const RoutineScreen(),
+          RoutineEditScreen.routeName: (ctx) => const Scaffold(body: Text('Edit Routine Screen')),
         },
       ),
     );
@@ -96,6 +98,30 @@ void main() {
     expect(find.text('test 2'), findsOneWidget);
     expect(find.byType(Card), findsNWidgets(2));
     expect(find.byType(ListTile), findsNWidgets(2));
+    expect(find.byIcon(Icons.edit), findsNWidgets(2));
+    expect(find.byIcon(Icons.delete), findsNWidgets(2));
+  });
+
+  testWidgets('Test the Edit button navigates to RoutineEditScreen', (WidgetTester tester) async {
+    await tester.pumpWidget(renderWidget());
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byIcon(Icons.edit).first);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Edit Routine Screen'), findsOneWidget);
+  });
+
+  testWidgets('Edit button is disabled when offline and routine is not hydrated', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(renderWidget(isOnline: false));
+    await tester.pumpAndSettle();
+
+    final editButton = tester.widget<IconButton>(
+      find.widgetWithIcon(IconButton, Icons.edit).first,
+    );
+    expect(editButton.onPressed, isNull);
   });
 
   testWidgets('Test deleting an item using the Delete button', (WidgetTester tester) async {
