@@ -116,11 +116,11 @@
         "description": "Label used in RiR slider when the RiR value is not used/saved for the current setting or log"
     },
     "repetitionUnit": "Одиниця повторень",
-    "set": "Набір",
+    "set": "Підхід",
     "@set": {
         "description": "A set in a workout plan"
     },
-    "setNr": "Набір {nr}",
+    "setNr": "Підхід {nr}",
     "@setNr": {
         "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
         "type": "text",
@@ -251,7 +251,7 @@
         "description": "Name for a workout or nutritional plan"
     },
     "save": "Зберегти",
-    "addSet": "Додати набір",
+    "addSet": "Додати підхід",
     "@addSet": {
         "description": "Label for the button that adds a set (to a workout day)"
     },
@@ -379,7 +379,7 @@
     "@goToToday": {
         "description": "Label on button to jump back to 'today' in the calendar widget"
     },
-    "enterCharacters": "Будь ласка, введіть між{min} та {max} символами",
+    "enterCharacters": "Будь ласка, введіть від {min} до {max} символів",
     "@enterCharacters": {
         "description": "Error message when the user hasn't entered the correct number of characters in a form",
         "type": "text",
@@ -407,7 +407,7 @@
         "description": "Label shown on the slider where the user can toggle showing units and RiR",
         "type": "text"
     },
-    "enterValidNumber": "Будь ласка, введіть прийнятний номер",
+    "enterValidNumber": "Будь ласка, введіть коректне число",
     "@enterValidNumber": {
         "description": "Error message when the user has submitted an invalid number (e.g. '3,.,.,.')"
     },
@@ -443,15 +443,15 @@
     },
     "appUpdateTitle": "Потрібне оновлення",
     "appUpdateContent": "Ця версія застосунку несумісна з сервером, будь ласка, оновіть застосунок.",
-    "productFound": "Виріб знайдено",
+    "productFound": "Продукт знайдено",
     "@productFound": {
         "description": "Header label for dialog when product is found with barcode"
     },
-    "productNotFound": "Виріб не знайдено",
+    "productNotFound": "Продукт не знайдено",
     "@productNotFound": {
         "description": "Header label for dialog when product is not found with barcode"
     },
-    "productNotFoundDescription": "Виріб із відсканованим штрих-кодом {barcode} не знайдено в базі даних Wger",
+    "productNotFoundDescription": "Продукт із відсканованим штрих-кодом {barcode} не знайдено в базі даних Wger",
     "@productNotFoundDescription": {
         "description": "Dialog info when product is not found with barcode",
         "type": "text",
@@ -508,7 +508,7 @@
     "hamstrings": "Підколінні сухожилля",
     "chest": "Груди",
     "biceps": "Біцепс",
-    "dumbbell": "Гантеля",
+    "dumbbell": "Гантель",
     "gym_mat": "Гімнастичний мат",
     "incline_bench": "Похила лавка",
     "lats": "Найширші м'язи спини",
@@ -518,7 +518,7 @@
     "arms": "Руки",
     "sz_bar": "W-подібний гриф",
     "kettlebell": "Гиря",
-    "calves": "Ікри",
+    "calves": "Литкові м'язи",
     "pull_up_bar": "Перекладина",
     "until_failure": "До відмови",
     "userProfile": "Твій профіль",
@@ -562,7 +562,7 @@
     "unVerifiedEmail": "Непідтверджена електронна пошта",
     "verifiedEmailReason": "Вам потрібно підтвердити свою електронну пошту, щоб виконувати вправи",
     "alternativeNames": "Альтернативні назви",
-    "oneNamePerLine": "Одне ім'я на рядок",
+    "oneNamePerLine": "Одна назва на рядок",
     "whatVariationsExist": "Які варіації цієї вправи існують, якщо такі є?",
     "previous": "Попередній",
     "next": "Наступний",
@@ -622,7 +622,7 @@
     "@goalMacro": {
         "description": "The goal for macronutrients"
     },
-    "goalFiber": "Волокно гол",
+    "goalFiber": "Норма клітковини",
     "goalTypeBasic": "Базовий",
     "@goalTypeBasic": {
         "description": "added for localization of Class GoalType's filed basic"
@@ -694,11 +694,11 @@
     "goalEnergy": "Енергетична мета",
     "goalProtein": "Білкова мета",
     "goalCarbohydrates": "Мета вуглеводів",
-    "goalFat": "Товстий гол",
+    "goalFat": "Норма жирів",
     "today": "Сьогодні",
     "loggedToday": "Зареєстровано сьогодні",
     "aboutDonateTitle": "Зробіть пожертву",
-    "aboutDonateText": "Хоча проект є безкоштовним і завжди ним залишатиметься, запуск сервера - ні! Розвиток також вимагає значного часу і зусиль від волонтерів. Ваш внесок безпосередньо підтримує ці витрати, допомагаючи підтримувати надійність сервісу.",
+    "aboutDonateText": "Хоча проєкт є безкоштовним і завжди ним залишатиметься, запуск сервера - ні! Розвиток також вимагає значного часу і зусиль від волонтерів. Ваш внесок безпосередньо підтримує ці витрати, допомагаючи підтримувати надійність сервісу.",
     "surplus": "надлишок",
     "@surplus": {
         "description": "Caloric surplus (either planned or unplanned)"
@@ -740,12 +740,12 @@
     "routineDays": "Днів в програмі тренувань",
     "fitInWeek": "Фіксований тижневий розклад",
     "fitInWeekHelp": "Якщо ввімкнено, дні повторюватимуться в тижневому циклі, інакше дні будуть йти послідовно незалежно від початку нового тижня.",
-    "addSuperset": "Додайте надмножину",
+    "addSuperset": "Додати суперсет",
     "setHasProgression": "Набір має прогресію",
     "simpleMode": "Простий режим",
     "resultingRoutine": "Підсумкова програма тренувань",
     "simpleModeHelp": "Приховайте деякі розширені налаштування під час редагування вправ",
-    "progressionRules": "Ця вправа має правила прогресу, і її не можна редагувати в мобільному додатку. Щоб відредагувати цю вправу, використовуйте веб-додаток.",
+    "progressionRules": "Ця вправа має правила прогресу, і її не можна редагувати в мобільному застосунку. Щоб відредагувати цю вправу, використовуйте вебдодаток.",
     "min": "Мін",
     "max": "Макс",
     "newRoutine": "Нова програма тренувань",
@@ -830,7 +830,7 @@
     "@imageDetailsLicenseTitleHint": {
         "description": "Hint text for image title field"
     },
-    "imageDetailsSourceLink": "Посилання на веб-сайт джерела",
+    "imageDetailsSourceLink": "Посилання на вебсайт джерела",
     "@imageDetailsSourceLink": {
         "description": "Label for source link field"
     },
@@ -842,7 +842,7 @@
     "@imageDetailsAuthorHint": {
         "description": "Hint text for author field"
     },
-    "imageDetailsAuthorLink": "Посилання на веб-сайт або профіль автора",
+    "imageDetailsAuthorLink": "Посилання на вебсайт або профіль автора",
     "@imageDetailsAuthorLink": {
         "description": "Label for author link field"
     },
@@ -898,7 +898,7 @@
     "dayTypeAmrap": "Якомога більше раундів",
     "dayTypeHiit": "Високоінтенсивне інтервальне тренування",
     "dayTypeTabata": "Табата",
-    "dayTypeEdt": "Збільшення щільності навчання",
+    "dayTypeEdt": "Тренування зі збільшенням щільності",
     "dayTypeRft": "Раунди на час",
     "dayTypeAfap": "Якомога швидше",
     "slotEntryTypeNormal": "Звичайний",
@@ -906,7 +906,7 @@
     "slotEntryTypeMyo": "Міо",
     "slotEntryTypePartial": "Часткове",
     "slotEntryTypeForced": "Примусово",
-    "slotEntryTypeTut": "Час під Напруги",
+    "slotEntryTypeTut": "Час під навантаженням",
     "slotEntryTypeIso": "Ізометричне утримання",
     "slotEntryTypeJump": "Стрибок",
     "endWorkout": "Закінчити тренування",
@@ -955,7 +955,7 @@
     },
     "dashboardWidgets": "Віджети панелі інструментів",
     "trophies": "Трофеї",
-    "topSet": "Верхній набір: {value}",
+    "topSet": "Найкращий підхід: {value}",
     "@topSet": {
         "description": "Value is a representation of the set, like '10 x 80kg'",
         "type": "text",
@@ -971,7 +971,7 @@
     "minLengthRoutine": "Розпорядок має тривати принаймні {number} тижнів",
     "maxLengthRoutine": "Процедура може тривати щонайбільше {number} тижнів",
     "preview": "Попередній перегляд",
-    "refreshToken": "Оновлення токенів",
+    "refreshToken": "Оновити токен",
     "invalidRefreshToken": "Будь ласка, введіть дійсний токен оновлення",
     "@invalidRefreshToken": {
         "description": "Error message when the user enters an invalid refresh token"
@@ -1016,7 +1016,7 @@
     "@mfaSubmit": {
         "description": "Submit button on the 2FA challenge screen"
     },
-    "mfaUnsupportedFactor": "Для вашого акаунта налаштовано другий фактор захисту, який цей додаток ще не підтримує. Будь ласка, увійдіть через вебсайт.",
+    "mfaUnsupportedFactor": "Для вашого акаунта налаштовано другий фактор захисту, який цей застосунок ще не підтримує. Будь ласка, увійдіть через вебсайт.",
     "@mfaUnsupportedFactor": {
         "description": "Shown when the server reports only factor types the app cannot handle (e.g. webauthn)"
     },
@@ -1337,7 +1337,7 @@
     "@metricBloodPressureSystolic": {
         "description": "Label for the systolic component of a blood pressure reading"
     },
-    "metricBloodPressureDiastolic": "Систолічний тиск",
+    "metricBloodPressureDiastolic": "Діастолічний тиск",
     "@metricBloodPressureDiastolic": {
         "description": "Label for the diastolic component of a blood pressure reading"
     },
@@ -1388,7 +1388,7 @@
     "dietaryInformation": "Поживна цінність",
     "aboutViewDocsTitle": "Відкрити документацію",
     "aboutViewLicensesTitle": "Переглянути ліцензії",
-    "aboutPrivacyPolicyTitle": "Умови та політика конфиденційності",
+    "aboutPrivacyPolicyTitle": "Умови та політика конфіденційності",
     "@aboutPrivacyPolicyTitle": {
         "description": "Menu entry on the about page that opens the terms of service and privacy policy"
     },
@@ -1548,7 +1548,7 @@
     "@syncStatusStalledHint": {
         "description": "Hint shown in the sync status dialog when the app keeps connecting but never receives any sync data, which usually means something on the network is blocking the connection"
     },
-    "syncStatusStalledNotStartedHint": "Додаток надіслав запит на синхронізацію, але клієнт синхронізації не запустився. Зазвичай допомагає перезапуск додатка.",
+    "syncStatusStalledNotStartedHint": "Застосунок надіслав запит на синхронізацію, але клієнт синхронізації не запустився. Зазвичай допомагає перезапуск застосунку.",
     "@syncStatusStalledNotStartedHint": {
         "description": "Hint shown in the sync status dialog when a connection was requested but the sync client never reported any state at all"
     },
@@ -1693,7 +1693,7 @@
     "@healthConnectUpdate": {
         "description": "Action shown instead of the health sync toggle when the installed Health Connect is too old"
     },
-    "healthConnectRequired": "Для імпорту вимірювань тіла потрібен додаток Health Connect",
+    "healthConnectRequired": "Для імпорту вимірювань тіла потрібен застосунок Health Connect",
     "@healthConnectRequired": {
         "description": "Explanation below the install/update Health Connect action"
     },
