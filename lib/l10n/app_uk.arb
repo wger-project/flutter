@@ -23,7 +23,7 @@
     "@useCustomServer": {
         "description": "Toggle button allowing users to switch between the default and a custom wger server"
     },
-    "invalidUrl": "Будь ласка, введіть прийнятну URL-адресу",
+    "invalidUrl": "Будь ласка, введіть коректну URL-адресу",
     "@invalidUrl": {
         "description": "Error message when the user enters an invalid URL, e.g. in the login form"
     },
@@ -45,7 +45,7 @@
     },
     "confirmPassword": "Підтвердьте пароль",
     "email": "Адреса електронної пошти",
-    "invalidUsername": "Будь ласка, введіть припустиме ім'я користувача",
+    "invalidUsername": "Будь ласка, введіть коректне ім'я користувача",
     "@invalidUsername": {
         "description": "Error message when the user enters an invalid username"
     },
@@ -107,7 +107,7 @@
     "@repetitions": {
         "description": "Repetitions for an exercise set"
     },
-    "reps": "Повтор",
+    "reps": "Повтори",
     "@reps": {
         "description": "Shorthand for repetitions, used when space constraints are tighter"
     },
@@ -145,11 +145,11 @@
     "@gymMode": {
         "description": "Label when starting the gym mode"
     },
-    "plateCalculator": "Пластини",
+    "plateCalculator": "Вагові диски",
     "@plateCalculator": {
         "description": "Label used for the plate calculator in the gym mode"
     },
-    "plateCalculatorNotDivisible": "Неможливо досягти ваги з наявними пластинами",
+    "plateCalculatorNotDivisible": "Неможливо досягти ваги з наявними ваговими дисками",
     "@plateCalculatorNotDivisible": {
         "description": "Error message when the current weight is not reachable with plates (e.g. 33.1 kg)"
     },
@@ -167,7 +167,7 @@
     "@passwordTooShort": {
         "description": "Error message when the user a password that is too short"
     },
-    "invalidEmail": "Будь ласка, введіть прийнятну адресу електронної пошти",
+    "invalidEmail": "Будь ласка, введіть коректну адресу електронної пошти",
     "@invalidEmail": {
         "description": "Error message when the user enters an invalid email"
     },
@@ -235,7 +235,7 @@
     "@selectIngredient": {
         "description": "Error message when the user hasn't selected an ingredient from the autocompleter"
     },
-    "productFoundDescription": "Штрих-код відповідає цьому виробу: {productName}. Бажаєте продовжити?",
+    "productFoundDescription": "Штрих-код відповідає цьому продукту: {productName}. Бажаєте продовжити?",
     "@productFoundDescription": {
         "description": "Dialog info when product is found with barcode",
         "type": "text",
@@ -490,7 +490,7 @@
     },
     "addExercise": "Додати вправу",
     "none__bodyweight_exercise_": "Вправи з власною вагою тіла",
-    "abs": "Живіт",
+    "abs": "Прес",
     "baseData": "Основи англійської",
     "@baseData": {
         "description": "The base data for an exercise such as category, trained muscles, etc."
@@ -502,7 +502,7 @@
     "bench": "Лавка",
     "barbell": "Штанга",
     "triceps": "Трицепс",
-    "swiss_ball": "Швейцарський м'яч",
+    "swiss_ball": "Фітбол",
     "lower_back": "Нижня частина спини",
     "shoulders": "Плечі",
     "hamstrings": "Підколінні сухожилля",
@@ -549,7 +549,7 @@
     "@variations": {
         "description": "Variations of one exercise (e.g. benchpress and benchpress narrow)"
     },
-    "alsoKnownAs": "Також відомий як: {aliases}",
+    "alsoKnownAs": "Також відома як: {aliases}",
     "@alsoKnownAs": {
         "placeholders": {
             "aliases": {
@@ -571,7 +571,7 @@
     "contributeExercise": "Внести вправу",
     "translation": "Переклад",
     "cardio": "Кардіо",
-    "contributeExerciseWarning": "Ви можете брати участь у вправах, лише якщо ваш обліковий запис старший за {days} днів і підтвердив вашу електронну пошту",
+    "contributeExerciseWarning": "Ви можете додавати нові вправи, якщо вашому обліковому запису більше ніж {days} днів і є підтвердження вашої електронної пошти",
     "@contributeExerciseWarning": {
         "description": "Number of days before which a person can add exercise",
         "placeholders": {
@@ -609,7 +609,7 @@
     "@lb": {
         "description": "Generated entry for translation for server strings"
     },
-    "plates": "Пластини",
+    "plates": "Вагові диски",
     "@plates": {
         "description": "Generated entry for translation for server strings"
     },
@@ -763,10 +763,10 @@
     },
     "needsLogsToAdvanceHelp": "Виберіть, якщо ви бажаєте, щоб програма перейшла до наступного запланованого дня, лише якщо ви зареєстрували тренування на цей день",
     "setHasProgressionWarning": "Зверніть увагу, що на даний момент неможливо змінити всі параметри набору в мобільному додатку або налаштувати автоматичний прогрес. Наразі використовуйте веб-додаток.",
-    "setHasNoExercises": "У цьому комплексі ще немає вправ!",
+    "setHasNoExercises": "У цьому підході ще немає вправ!",
     "errorViewDetails": "Технічні деталі",
     "errorCouldNotConnectToServer": "Не вдалося підключитися до сервера",
-    "errorInfoDescription2": "Ви можете продовжувати користуватися додатком, але деякі функції можуть не працювати.",
+    "errorInfoDescription2": "Ви можете продовжувати користуватися застосунком, але деякі функції можуть не працювати.",
     "errorInfoDescription": "Вибачте, але щось пішло не так. Ви можете допомогти нам виправити це, повідомивши про проблему на GitHub.",
     "copyToClipboard": "Копіювати в буфер обміну",
     "aboutWhySupportTitle": "Відкритий код та безкоштовний у використанні ❤️",
@@ -988,7 +988,7 @@
     "@mfaChallengeTitle": {
         "description": "App bar title on the 2FA challenge screen"
     },
-    "mfaChallengeTotpPrompt": "Введіть 6-значний код із вашого додатка для автентифікації",
+    "mfaChallengeTotpPrompt": "Введіть 6-значний код із вашого застосунку для автентифікації",
     "@mfaChallengeTotpPrompt": {
         "description": "Helper text above the TOTP input field"
     },
@@ -1008,7 +1008,7 @@
     "@mfaUseRecoveryCode": {
         "description": "Button that switches the 2FA challenge to recovery-code mode"
     },
-    "mfaUseTotpCode": "Використати код із додатка для автентифікації",
+    "mfaUseTotpCode": "Використати код із застосунку для автентифікації",
     "@mfaUseTotpCode": {
         "description": "Button that switches the 2FA challenge back to TOTP mode"
     },
@@ -1393,7 +1393,7 @@
         "description": "Menu entry on the about page that opens the terms of service and privacy policy"
     },
     "serverUpdateTitle": "Необхідно оновити сервер",
-    "serverUpdateContent": "Підключений сервер застарілий для цієї версії додатка. Будь ласка, зверніться до адміністратора сервера з проханням оновити його принаймні до версії {minVersion}.",
+    "serverUpdateContent": "Підключений сервер застарілий для цієї версії застосунку. Будь ласка, зверніться до адміністратора сервера з проханням оновити його принаймні до версії {minVersion}.",
     "@serverUpdateContent": {
         "description": "Message shown when the server version is too old. minVersion is the minimum required server version string.",
         "type": "text",
@@ -1442,7 +1442,7 @@
         "description": "Settings toggle to follow the system wallpaper colors (Material You) on supported platforms"
     },
     "youAreOffline": "Ви поза мережею",
-    "appLanguage": "Мова додатка",
+    "appLanguage": "Мова застосунку",
     "@appLanguage": {
         "description": "Label for the in-app language selector in settings"
     },
@@ -1701,7 +1701,7 @@
     "@health": {
         "description": "Section header for health-related settings"
     },
-    "importedEntry": "Цей запис синхронізовано з додатка «Здоров'я», тому змінити його можна лише там",
+    "importedEntry": "Цей запис синхронізовано з застосунку «Здоров'я», тому змінити його можна лише там",
     "@importedEntry": {
         "description": "Tooltip on the badge of a measurement entry imported from Apple Health / Health Connect; such entries cannot be edited or deleted in the app"
     },
