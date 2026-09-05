@@ -738,7 +738,7 @@
     "isRestDay": "Є День відпочинку",
     "isRestDayHelp": "Будь ласка, зверніть увагу, що всі підходи та вправи будуть видалені, коли ви позначите день як вихідний.",
     "routineDays": "Днів в програмі тренувань",
-    "fitInWeek": "Вписується в тиждень",
+    "fitInWeek": "Фіксований тижневий розклад",
     "fitInWeekHelp": "Якщо ввімкнено, дні повторюватимуться в тижневому циклі, інакше дні будуть йти послідовно незалежно від початку нового тижня.",
     "addSuperset": "Додайте надмножину",
     "setHasProgression": "Набір має прогресію",
@@ -1199,7 +1199,7 @@
     "@distributionLatest": {
         "description": "Label of the marker for the most recent value in the distribution histogram"
     },
-    "distributionEntryCount": "",
+    "distributionEntryCount": "{count, plural, one{1 запис} few{{count} записи} many{{count} записів} other{{count} запису}}",
     "@distributionEntryCount": {
         "description": "How many measurements fall into the tapped histogram bin",
         "placeholders": {
@@ -1217,7 +1217,7 @@
             }
         }
     },
-    "relativeMonthsAgo": "",
+    "relativeMonthsAgo": "{count, plural, one{1 місяць тому} few{{count} місяці тому} many{{count} місяців тому} other{{count} місяця тому}}",
     "@relativeMonthsAgo": {
         "description": "How long ago something was measured, for distances below a year",
         "placeholders": {
@@ -1226,7 +1226,7 @@
             }
         }
     },
-    "relativeYearsAgo": "",
+    "relativeYearsAgo": "{count, plural, one{1 рік тому} few{{count} роки тому} many{{count} років тому} other{{count} року тому}}",
     "@relativeYearsAgo": {
         "description": "How long ago something was measured, for distances of a year and more",
         "placeholders": {
@@ -1261,7 +1261,7 @@
     "@trackNewMetric": {
         "description": "Tooltip of the overview's + button, which opens the sheet for starting a new measurement category"
     },
-    "distributionDayCount": "",
+    "distributionDayCount": "{count, plural, one{1 день} few{{count} дні} many{{count} днів} other{{count} дня}}",
     "@distributionDayCount": {
         "description": "How many days fall into the tapped histogram bin, for metrics summed per day",
         "placeholders": {
@@ -1270,7 +1270,7 @@
             }
         }
     },
-    "chartRangeWeeks": "",
+    "chartRangeWeeks": "{count, plural, one{1 тиждень} few{{count} тижні} many{{count} тижнів} other{{count} тижня}}",
     "@chartRangeWeeks": {
         "description": "Chart time-range selector option covering a number of weeks",
         "placeholders": {
@@ -1279,7 +1279,7 @@
             }
         }
     },
-    "chartRangeMonths": "",
+    "chartRangeMonths": "{count, plural, one{1 місяць} few{{count} місяці} many{{count} місяців} other{{count} місяця}}",
     "@chartRangeMonths": {
         "description": "Chart time-range selector option covering a number of months",
         "placeholders": {
@@ -1288,7 +1288,7 @@
             }
         }
     },
-    "chartRangeYears": "",
+    "chartRangeYears": "{count, plural, one{1 рік} few{{count} роки} many{{count} років} other{{count} року}}",
     "@chartRangeYears": {
         "description": "Chart time-range selector option covering a number of years",
         "placeholders": {
@@ -1560,7 +1560,7 @@
     "@syncStatusReconnect": {
         "description": "Button in the sync status dialog that drops the stuck connection to the sync service and opens a fresh one"
     },
-    "syncStatusPendingUploads": "",
+    "syncStatusPendingUploads": "{count, plural, =1{Одна локальна зміна очікує на завантаження} few{{count} локальні зміни очікують на завантаження} many{{count} локальних змін очікують на завантаження} other{{count} локальної зміни очікує на завантаження}}",
     "@syncStatusPendingUploads": {
         "description": "Line in the sync status dialog showing how many local changes have not reached the server yet",
         "placeholders": {
@@ -1646,7 +1646,7 @@
             }
         }
     },
-    "healthSyncStatus": "",
+    "healthSyncStatus": "{count, plural, =0{Остання синхронізація: {time}, нових записів немає} one{Остання синхронізація: {time}, 1 новий запис} few{Остання синхронізація: {time}, {count} нові записи} many{Остання синхронізація: {time}, {count} нових записів} other{Остання синхронізація: {time}, {count} нового запису}}",
     "@healthSyncStatus": {
         "description": "Status line under the health sync toggle showing when the last sync ran and how many entries it imported",
         "placeholders": {
@@ -1793,7 +1793,7 @@
     "@calculationParamWindowDays": {
         "description": "Form field label: how many days back the calculation looks for a best set"
     },
-    "calculationHelpExercises": "",
+    "calculationHelpExercises": "Від {min} до {max} вправ, вибрано: {count}.",
     "@calculationHelpExercises": {
         "description": "Helper text under the exercise picker of a calculated category. {count} is how many are picked so far",
         "placeholders": {
@@ -1832,7 +1832,7 @@
             }
         }
     },
-    "relativeWeeksAgo": "",
+    "relativeWeeksAgo": "{count, plural, one{1 тиждень тому} few{{count} тижні тому} many{{count} тижнів тому} other{{count} тижня тому}}",
     "@relativeWeeksAgo": {
         "description": "How long ago something was measured, for distances below a month",
         "placeholders": {
@@ -1861,7 +1861,7 @@
     "@carbohydratesSugar": {
         "description": "Label for the carbohydrates sugar"
     },
-    "enterMaxCharacters": "",
+    "enterMaxCharacters": "Введіть не більше ніж {max} символів",
     "@enterMaxCharacters": {
         "description": "Error message when the user has entered more than the allowed amount of characters in a form",
         "type": "text",
@@ -1870,5 +1870,19 @@
                 "type": "String"
             }
         }
-    }
+    },
+    "healthSyncSuccess": "Імпортовано {count} вимірювань із Health",
+    "@healthSyncSuccess": {
+        "description": "Snackbar message after successful health sync",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "filterNutriscore": "Фільтр Nutri-Score",
+    "@filterNutriscore": {
+        "description": "Heading for the Nutri-Score slider in the ingredient search filter dialog"
+    },
+    "meal": "Прийом їжі"
 }
