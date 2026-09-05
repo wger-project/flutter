@@ -116,11 +116,11 @@
         "description": "Label used in RiR slider when the RiR value is not used/saved for the current setting or log"
     },
     "repetitionUnit": "Одиниця повторень",
-    "set": "Набір",
+    "set": "Підхід",
     "@set": {
         "description": "A set in a workout plan"
     },
-    "setNr": "Набір {nr}",
+    "setNr": "Підхід {nr}",
     "@setNr": {
         "description": "Header in form indicating the number of the current set. Can also be translated as something like 'Set Nr. xy'.",
         "type": "text",
@@ -194,7 +194,7 @@
     "@notes": {
         "description": "Personal notes, e.g. for a workout session"
     },
-    "measurementCategoriesHelpText": "Категорія вимірювання, така як \"біцепс\" або \"жир тіла\"",
+    "measurementCategoriesHelpText": "Категорія вимірювання, така як \"біцепс\" або \"відсоток жиру\"",
     "time": "Час",
     "@time": {
         "description": "The time of a meal or workout"
@@ -217,7 +217,7 @@
     },
     "fat": "Жири",
     "newNutritionalPlan": "Новий план харчування",
-    "sugars": "Цукри",
+    "sugars": "із них цукор",
     "aboutDescription": "Дякуємо за використання wger! wger - це спільний проєкт з відкритим кодом, створений ентузіастами фітнесу з усього світу.",
     "@aboutDescription": {
         "description": "Text in the about dialog"
@@ -251,7 +251,7 @@
         "description": "Name for a workout or nutritional plan"
     },
     "save": "Зберегти",
-    "addSet": "Додати набір",
+    "addSet": "Додати підхід",
     "@addSet": {
         "description": "Label for the button that adds a set (to a workout day)"
     },
@@ -338,7 +338,7 @@
         "description": "The first letter or short name of the word 'Fat', used in overviews"
     },
     "saturatedFat": "Насичені жири",
-    "fiber": "Волокон",
+    "fiber": "Клітковина",
     "sodium": "Натрій",
     "amount": "Сума",
     "@amount": {
@@ -379,7 +379,7 @@
     "@goToToday": {
         "description": "Label on button to jump back to 'today' in the calendar widget"
     },
-    "enterCharacters": "Будь ласка, введіть між{min} та {max} символами",
+    "enterCharacters": "Будь ласка, введіть від {min} до {max} символів",
     "@enterCharacters": {
         "description": "Error message when the user hasn't entered the correct number of characters in a form",
         "type": "text",
@@ -392,7 +392,7 @@
             }
         }
     },
-    "nrOfSets": "Наборів на вправу: {nrOfSets}",
+    "nrOfSets": "Підходів на вправу: {nrOfSets}",
     "@nrOfSets": {
         "description": "Label shown on the slider where the user selects the nr of sets",
         "type": "text",
@@ -407,7 +407,7 @@
         "description": "Label shown on the slider where the user can toggle showing units and RiR",
         "type": "text"
     },
-    "enterValidNumber": "Будь ласка, введіть прийнятний номер",
+    "enterValidNumber": "Будь ласка, введіть коректне число",
     "@enterValidNumber": {
         "description": "Error message when the user has submitted an invalid number (e.g. '3,.,.,.')"
     },
@@ -443,15 +443,15 @@
     },
     "appUpdateTitle": "Потрібне оновлення",
     "appUpdateContent": "Ця версія застосунку несумісна з сервером, будь ласка, оновіть застосунок.",
-    "productFound": "Виріб знайдено",
+    "productFound": "Продукт знайдено",
     "@productFound": {
         "description": "Header label for dialog when product is found with barcode"
     },
-    "productNotFound": "Виріб не знайдено",
+    "productNotFound": "Продукт не знайдено",
     "@productNotFound": {
         "description": "Header label for dialog when product is not found with barcode"
     },
-    "productNotFoundDescription": "Виріб із відсканованим штрих-кодом {barcode} не знайдено в базі даних Wger",
+    "productNotFoundDescription": "Продукт із відсканованим штрих-кодом {barcode} не знайдено в базі даних Wger",
     "@productNotFoundDescription": {
         "description": "Dialog info when product is not found with barcode",
         "type": "text",
@@ -489,7 +489,7 @@
         }
     },
     "addExercise": "Додати вправу",
-    "none__bodyweight_exercise_": "немає (вправи з власною вагою)",
+    "none__bodyweight_exercise_": "Вправи з власною вагою тіла",
     "abs": "Живіт",
     "baseData": "Основи англійської",
     "@baseData": {
@@ -508,7 +508,7 @@
     "hamstrings": "Підколінні сухожилля",
     "chest": "Груди",
     "biceps": "Біцепс",
-    "dumbbell": "Гантеля",
+    "dumbbell": "Гантель",
     "gym_mat": "Гімнастичний мат",
     "incline_bench": "Похила лавка",
     "lats": "Найширші м'язи спини",
@@ -516,9 +516,9 @@
     "back": "Спина",
     "quads": "Квадрицепс",
     "arms": "Руки",
-    "sz_bar": "SZ-Штанга",
+    "sz_bar": "W-подібний гриф",
     "kettlebell": "Гиря",
-    "calves": "Ікри",
+    "calves": "Литкові м'язи",
     "pull_up_bar": "Перекладина",
     "until_failure": "До відмови",
     "userProfile": "Твій профіль",
@@ -562,7 +562,7 @@
     "unVerifiedEmail": "Непідтверджена електронна пошта",
     "verifiedEmailReason": "Вам потрібно підтвердити свою електронну пошту, щоб виконувати вправи",
     "alternativeNames": "Альтернативні назви",
-    "oneNamePerLine": "Одне ім'я на рядок",
+    "oneNamePerLine": "Одна назва на рядок",
     "whatVariationsExist": "Які варіації цієї вправи існують, якщо такі є?",
     "previous": "Попередній",
     "next": "Наступний",
@@ -622,7 +622,7 @@
     "@goalMacro": {
         "description": "The goal for macronutrients"
     },
-    "goalFiber": "Волокно гол",
+    "goalFiber": "Норма клітковини",
     "goalTypeBasic": "Базовий",
     "@goalTypeBasic": {
         "description": "added for localization of Class GoalType's filed basic"
@@ -632,8 +632,8 @@
         "description": "added for localization of Class GoalType's filed advanced"
     },
     "useMetric": "Використовуйте метричні одиниці вимірювання маси тіла",
-    "settingsTitle": "налаштування",
-    "deficit": "дефіцит",
+    "settingsTitle": "Налаштування",
+    "deficit": "Дефіцит калорій",
     "@deficit": {
         "description": "Caloric deficit (either planned or unplanned)"
     },
@@ -694,11 +694,11 @@
     "goalEnergy": "Енергетична мета",
     "goalProtein": "Білкова мета",
     "goalCarbohydrates": "Мета вуглеводів",
-    "goalFat": "Товстий гол",
+    "goalFat": "Норма жирів",
     "today": "Сьогодні",
     "loggedToday": "Зареєстровано сьогодні",
     "aboutDonateTitle": "Зробіть пожертву",
-    "aboutDonateText": "Хоча проект є безкоштовним і завжди ним залишатиметься, запуск сервера - ні! Розвиток також вимагає значного часу і зусиль від волонтерів. Ваш внесок безпосередньо підтримує ці витрати, допомагаючи підтримувати надійність сервісу.",
+    "aboutDonateText": "Хоча проєкт є безкоштовним і завжди ним залишатиметься, запуск сервера - ні! Розвиток також вимагає значного часу і зусиль від волонтерів. Ваш внесок безпосередньо підтримує ці витрати, допомагаючи підтримувати надійність сервісу.",
     "surplus": "надлишок",
     "@surplus": {
         "description": "Caloric surplus (either planned or unplanned)"
@@ -714,14 +714,14 @@
     "aboutMastodonTitle": "Мастодонт",
     "settingsCacheTitle": "Кеш",
     "settingsCacheDeletedSnackbar": "Кеш успішно очищено",
-    "themeMode": "Тематичний режим",
+    "themeMode": "Тема",
     "darkMode": "Завжди темний режим",
-    "lightMode": "Завжди легкий режим",
+    "lightMode": "Завжди світлий режим",
     "systemMode": "Налаштування системи",
     "restDay": "День відпочинку",
-    "noRoutines": "У вас немає рутин",
+    "noRoutines": "У вас немає програми тренувань",
     "restTime": "Час відпочинку",
-    "sets": "Набори",
+    "sets": "Підходи",
     "@sets": {
         "description": "The number of sets to be done for one exercise"
     },
@@ -736,21 +736,21 @@
         }
     },
     "isRestDay": "Є День відпочинку",
-    "isRestDayHelp": "Будь ласка, зверніть увагу, що всі комплекси та вправи будуть видалені, коли ви позначите день як вихідний.",
-    "routineDays": "Дні в рутині",
-    "fitInWeek": "Вписується в тиждень",
+    "isRestDayHelp": "Будь ласка, зверніть увагу, що всі підходи та вправи будуть видалені, коли ви позначите день як вихідний.",
+    "routineDays": "Днів в програмі тренувань",
+    "fitInWeek": "Фіксований тижневий розклад",
     "fitInWeekHelp": "Якщо ввімкнено, дні повторюватимуться в тижневому циклі, інакше дні будуть йти послідовно незалежно від початку нового тижня.",
-    "addSuperset": "Додайте надмножину",
+    "addSuperset": "Додати суперсет",
     "setHasProgression": "Набір має прогресію",
     "simpleMode": "Простий режим",
-    "resultingRoutine": "Результативна рутина",
+    "resultingRoutine": "Підсумкова програма тренувань",
     "simpleModeHelp": "Приховайте деякі розширені налаштування під час редагування вправ",
-    "progressionRules": "Ця вправа має правила прогресу, і її не можна редагувати в мобільному додатку. Щоб відредагувати цю вправу, використовуйте веб-додаток.",
+    "progressionRules": "Ця вправа має правила прогресу, і її не можна редагувати в мобільному застосунку. Щоб відредагувати цю вправу, використовуйте вебдодаток.",
     "min": "Мін",
     "max": "Макс",
-    "newRoutine": "Нова рутина",
+    "newRoutine": "Нова програма тренувань",
     "needsLogsToAdvance": "Для просування потрібні журнали",
-    "routines": "Рутини",
+    "routines": "Програми тренувань",
     "exerciseNr": "Вправа {nr}",
     "@exerciseNr": {
         "description": "Header in form indicating the number of the current exercise. Can also be translated as something like 'Set Nr. xy'.",
@@ -793,7 +793,7 @@
     "@resistance_band": {
         "description": "Generated entry for translation for server strings"
     },
-    "selectAvailablePlates": "Виберіть доступні тарілки",
+    "selectAvailablePlates": "Виберіть наявні вагові диски",
     "barWeight": "Вага штанги",
     "useColors": "Використовуйте кольори",
     "yourCurrentNutritionPlanHasNoMealsDefinedYet": "У вашому поточному плані харчування не визначено жодного прийому їжі",
@@ -830,7 +830,7 @@
     "@imageDetailsLicenseTitleHint": {
         "description": "Hint text for image title field"
     },
-    "imageDetailsSourceLink": "Посилання на веб-сайт джерела",
+    "imageDetailsSourceLink": "Посилання на вебсайт джерела",
     "@imageDetailsSourceLink": {
         "description": "Label for source link field"
     },
@@ -842,7 +842,7 @@
     "@imageDetailsAuthorHint": {
         "description": "Hint text for author field"
     },
-    "imageDetailsAuthorLink": "Посилання на веб-сайт або профіль автора",
+    "imageDetailsAuthorLink": "Посилання на вебсайт або профіль автора",
     "@imageDetailsAuthorLink": {
         "description": "Label for author link field"
     },
@@ -898,7 +898,7 @@
     "dayTypeAmrap": "Якомога більше раундів",
     "dayTypeHiit": "Високоінтенсивне інтервальне тренування",
     "dayTypeTabata": "Табата",
-    "dayTypeEdt": "Збільшення щільності навчання",
+    "dayTypeEdt": "Тренування зі збільшенням щільності",
     "dayTypeRft": "Раунди на час",
     "dayTypeAfap": "Якомога швидше",
     "slotEntryTypeNormal": "Звичайний",
@@ -906,7 +906,7 @@
     "slotEntryTypeMyo": "Міо",
     "slotEntryTypePartial": "Часткове",
     "slotEntryTypeForced": "Примусово",
-    "slotEntryTypeTut": "Час під Напруги",
+    "slotEntryTypeTut": "Час під навантаженням",
     "slotEntryTypeIso": "Ізометричне утримання",
     "slotEntryTypeJump": "Стрибок",
     "endWorkout": "Закінчити тренування",
@@ -914,7 +914,7 @@
     "impressionNeutral": "Нейтральний",
     "impressionBad": "Погано",
     "gymModeShowExercises": "Показати сторінки огляду вправ",
-    "gymModeShowTimer": "Показувати таймер між сетами",
+    "gymModeShowTimer": "Показувати таймер між підходами",
     "gymModeTimerType": "Тип таймера",
     "gymModeTimerTypeHelText": "Якщо сет має час паузи, завжди використовується зворотний відлік.",
     "countdown": "Зворотний відлік",
@@ -955,7 +955,7 @@
     },
     "dashboardWidgets": "Віджети панелі інструментів",
     "trophies": "Трофеї",
-    "topSet": "Верхній набір: {value}",
+    "topSet": "Найкращий підхід: {value}",
     "@topSet": {
         "description": "Value is a representation of the set, like '10 x 80kg'",
         "type": "text",
@@ -969,5 +969,920 @@
     "noTrophies": "У вас ще немає трофеїв",
     "endBeforeStart": "Кінцеве значення не може передувати початку",
     "minLengthRoutine": "Розпорядок має тривати принаймні {number} тижнів",
-    "maxLengthRoutine": "Процедура може тривати щонайбільше {number} тижнів"
+    "maxLengthRoutine": "Процедура може тривати щонайбільше {number} тижнів",
+    "preview": "Попередній перегляд",
+    "refreshToken": "Оновити токен",
+    "invalidRefreshToken": "Будь ласка, введіть дійсний токен оновлення",
+    "@invalidRefreshToken": {
+        "description": "Error message when the user enters an invalid refresh token"
+    },
+    "refreshTokenValidChars": "Токен оновлення має складатися з трьох частин, розділених крапками (заголовок.корисне_навантаження.підпис), кожна з яких містить літери, цифри, дефіс '-' та підкреслення '_'",
+    "@refreshTokenValidChars": {
+        "description": "Error message when the user pastes a string that does not match the JWT shape"
+    },
+    "refreshTokenHelperText": "Згенеруйте токен оновлення JWT на вебсайті wger і вставте його сюди. Це корисно, якщо ваш сервер перебуває за проксі-сервером автентифікації або якщо ви хочете пропустити звичайну процедуру входу.",
+    "@refreshTokenHelperText": {
+        "description": "Helper text on the refresh-token paste field"
+    },
+    "mfaChallengeTitle": "Двофакторна автентифікація",
+    "@mfaChallengeTitle": {
+        "description": "App bar title on the 2FA challenge screen"
+    },
+    "mfaChallengeTotpPrompt": "Введіть 6-значний код із вашого додатка для автентифікації",
+    "@mfaChallengeTotpPrompt": {
+        "description": "Helper text above the TOTP input field"
+    },
+    "mfaChallengeRecoveryPrompt": "Введіть один із ваших кодів відновлення",
+    "@mfaChallengeRecoveryPrompt": {
+        "description": "Helper text above the recovery-code input field"
+    },
+    "mfaCodeLabel": "Код",
+    "@mfaCodeLabel": {
+        "description": "Label on the 2FA code input field"
+    },
+    "mfaInvalidCode": "Будь ласка, введіть код",
+    "@mfaInvalidCode": {
+        "description": "Validation error when the 2FA code field is empty"
+    },
+    "mfaUseRecoveryCode": "Використати код відновлення",
+    "@mfaUseRecoveryCode": {
+        "description": "Button that switches the 2FA challenge to recovery-code mode"
+    },
+    "mfaUseTotpCode": "Використати код із додатка для автентифікації",
+    "@mfaUseTotpCode": {
+        "description": "Button that switches the 2FA challenge back to TOTP mode"
+    },
+    "mfaSubmit": "Підтвердити",
+    "@mfaSubmit": {
+        "description": "Submit button on the 2FA challenge screen"
+    },
+    "mfaUnsupportedFactor": "Для вашого акаунта налаштовано другий фактор захисту, який цей застосунок ще не підтримує. Будь ласка, увійдіть через вебсайт.",
+    "@mfaUnsupportedFactor": {
+        "description": "Shown when the server reports only factor types the app cannot handle (e.g. webauthn)"
+    },
+    "manageAccountOnWeb": "Керування акаунтом на сайті",
+    "@manageAccountOnWeb": {
+        "description": "Label on a button that opens the user's preferences page on the wger website"
+    },
+    "manageAccountOnWebSubtitle": "Змінюйте пароль, налаштовуйте двофакторну автентифікацію, керуйте токенами API або видаляйте свій акаунт.",
+    "@manageAccountOnWebSubtitle": {
+        "description": "Helper text below the 'Manage account on the web' button listing what is configurable there"
+    },
+    "advanced": "Додатково",
+    "advancedSubtitle": "Параметри сервера та автентифікації",
+    "serverSectionLabel": "Сервер",
+    "signInMethodSectionLabel": "Спосіб входу",
+    "serverOptionDefaultDetail": "Офіційний сервер",
+    "serverOptionSelfHostedTitle": "Власний сервер",
+    "serverOptionSelfHostedDetail": "Підключитися до власного екземпляра",
+    "allowSelfSignedCertsTitle": "Дозволити самопідписані сертифікати",
+    "allowSelfSignedCertsDetail": "Вимикає перевірку сертифікатів TLS. Вмикайте це лише для сервера, якому довіряєте.",
+    "certsNotVerifiedTitle": "Перевірку сертифікатів вимкнено",
+    "@certsNotVerifiedTitle": {
+        "description": "Warning shown in the settings while the app accepts invalid TLS certificates from the server the user is logged into."
+    },
+    "certsNotVerifiedDetail": "Сертифікати для {host} не перевіряються. Щоб змінити це, вийдіть із системи та налаштуйте цей параметр на екрані входу.",
+    "@certsNotVerifiedDetail": {
+        "description": "Explains the certificate warning. The option can only be set before logging in, hence the hint to log out.",
+        "type": "text",
+        "placeholders": {
+            "host": {
+                "type": "String"
+            }
+        }
+    },
+    "authOptionPasswordTitle": "Ім'я користувача та пароль",
+    "signInWithToken": "Увійти за допомогою токена",
+    "tokenSubtitle": "Згенеруйте його на вебсайті wger",
+    "newToWger": "Уперше у wger?",
+    "alreadyHaveAccount": "Вже маєте акаунт?",
+    "tokenLabel": "Токен",
+    "webHandoffLinkLabel": "Інші способи входу",
+    "webHandoffLinkSubtitle": "Вхід через соцмережі, Passkey, SSO",
+    "labelBottomNavBody": "Тіло",
+    "@labelBottomNavBody": {
+        "description": "Label used in bottom navigation and as the title of the screen holding the body weight and the other measurements, use a short word"
+    },
+    "slotEntryTypeWarmup": "Розминка",
+    "gymModeShowWorkoutDuration": "Показувати тривалість тренування",
+    "gymModeLogScope": "Попередні записи",
+    "gymModeLogScopeHelp": "Які записи показувати для довідки під час тренування",
+    "gymModeLogScopeCurrentRoutine": "Поточний план тренування",
+    "gymModeLogScopeWeeks": "За останні {weeks} тижнів",
+    "@gymModeLogScopeWeeks": {
+        "placeholders": {
+            "weeks": {
+                "type": "int"
+            }
+        }
+    },
+    "gymModeDistinctLogs": "Приховати дублікати",
+    "clearSearchTerm": "Очистити пошуковий запит",
+    "@clearSearchTerm": {
+        "description": "Tooltip for the icon-button that clears the ingredient search text field"
+    },
+    "ingredients": "Інгредієнти",
+    "@ingredients": {
+        "description": "Plural title for the ingredients overview screen"
+    },
+    "planDateRange": "з {startDate} до {endDate}",
+    "@planDateRange": {
+        "description": "Label for the start and end date range of a plan",
+        "placeholders": {
+            "startDate": {
+                "type": "String"
+            },
+            "endDate": {
+                "type": "String"
+            }
+        }
+    },
+    "planStartDate": "з {startDate}",
+    "@planStartDate": {
+        "description": "Label for the start date of a plan",
+        "placeholders": {
+            "startDate": {
+                "type": "String"
+            }
+        }
+    },
+    "otherLogs": "Інші записи",
+    "@otherLogs": {
+        "description": "Other unassigned logs. Label for the pseudo-meal section that groups all nutritional diary entries not assigned to a specific meal"
+    },
+    "chartRangeAll": "Весь час",
+    "@chartRangeAll": {
+        "description": "Label for the chart time-range selector option showing all data"
+    },
+    "chartType": "Тип графіка",
+    "@chartType": {
+        "description": "Label of the chart type picker of a measurement category"
+    },
+    "chartTypeAuto": "Автоматично",
+    "@chartTypeAuto": {
+        "description": "Chart type option that leaves the chart to the metric type of the category"
+    },
+    "chartTypeLine": "Лінійний",
+    "@chartTypeLine": {
+        "description": "Chart type option: a line through the measured values"
+    },
+    "chartTypeBar": "Стовпчиками",
+    "@chartTypeBar": {
+        "description": "Chart type option: one bar per day"
+    },
+    "chartTypeHeatmap": "Теплова карта",
+    "@chartTypeHeatmap": {
+        "description": "Chart type option: a calendar grid with one coloured cell per day"
+    },
+    "chartTypeDelta": "Графік змін",
+    "@chartTypeDelta": {
+        "description": "Chart type option: one bar per week, showing how much the value changed"
+    },
+    "chartWeeklyChangeTitle": "{name}, зміна за тиждень",
+    "@chartWeeklyChangeTitle": {
+        "description": "Title of the chart showing the weekly change of 'name' (e.g. 'weight', 'body fat' etc.)",
+        "type": "text",
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "chartTrend": "Лінія тренду",
+    "@chartTrend": {
+        "description": "Label of the setting for how closely the trend line follows the values"
+    },
+    "trendReactive": "Швидкий",
+    "@trendReactive": {
+        "description": "Trend line option: follows the values closely"
+    },
+    "trendBalanced": "Збалансований",
+    "@trendBalanced": {
+        "description": "Trend line option: the default, between reactive and sluggish"
+    },
+    "trendSluggish": "Плавний",
+    "@trendSluggish": {
+        "description": "Trend line option: ignores short-term swings"
+    },
+    "chartAverageWindow": "Період усереднення",
+    "@chartAverageWindow": {
+        "description": "Label of the setting for how many days the moving average covers"
+    },
+    "chartAverageWindowDays": "{days, plural, one{1 день} few{{days} дні} many{{days} днів} other{{days} дня}}",
+    "@chartAverageWindowDays": {
+        "description": "One option of the average window setting, e.g. '7 days'",
+        "placeholders": {
+            "days": {
+                "type": "int"
+            }
+        }
+    },
+    "chartTypeDistribution": "Розподіл",
+    "@chartTypeDistribution": {
+        "description": "Chart type option: a histogram of how often each value occurred"
+    },
+    "chartDistributionTitle": "{name}, розподіл",
+    "@chartDistributionTitle": {
+        "description": "Title of the histogram showing how the values of 'name' (e.g. 'weight') are distributed",
+        "type": "text",
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "distributionMedian": "Медіана",
+    "@distributionMedian": {
+        "description": "Label of the median marker in the distribution histogram"
+    },
+    "distributionLatest": "Останнє значення",
+    "@distributionLatest": {
+        "description": "Label of the marker for the most recent value in the distribution histogram"
+    },
+    "distributionEntryCount": "{count, plural, one{1 запис} few{{count} записи} many{{count} записів} other{{count} запису}}",
+    "@distributionEntryCount": {
+        "description": "How many measurements fall into the tapped histogram bin",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "relativeDaysAgo": "{count, plural, =0{сьогодні} =1{учора} few{{count} дні тому} many{{count} днів тому} other{{count} дня тому}}",
+    "@relativeDaysAgo": {
+        "description": "How long ago something was measured, for distances below a week",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "relativeMonthsAgo": "{count, plural, one{1 місяць тому} few{{count} місяці тому} many{{count} місяців тому} other{{count} місяця тому}}",
+    "@relativeMonthsAgo": {
+        "description": "How long ago something was measured, for distances below a year",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "relativeYearsAgo": "{count, plural, one{1 рік тому} few{{count} роки тому} many{{count} років тому} other{{count} року тому}}",
+    "@relativeYearsAgo": {
+        "description": "How long ago something was measured, for distances of a year and more",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "sparkAverage": "середнє {value}",
+    "@sparkAverage": {
+        "description": "Chip on an overview tile: the average over the charted days, e.g. 'avg 7:05' for sleep",
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    },
+    "sparkTrendPerWeek": "{value}/тижд",
+    "@sparkTrendPerWeek": {
+        "description": "Chip on an overview tile: how much the value changes per week, shown after a direction arrow",
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    },
+    "sparkTrendStable": "стабільно",
+    "@sparkTrendStable": {
+        "description": "Chip on an overview tile when the value barely changes, shown after a right arrow"
+    },
+    "trackNewMetric": "Відстежувати нову метрику",
+    "@trackNewMetric": {
+        "description": "Tooltip of the overview's + button, which opens the sheet for starting a new measurement category"
+    },
+    "distributionDayCount": "{count, plural, one{1 день} few{{count} дні} many{{count} днів} other{{count} дня}}",
+    "@distributionDayCount": {
+        "description": "How many days fall into the tapped histogram bin, for metrics summed per day",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "chartRangeWeeks": "{count, plural, one{1 тиждень} few{{count} тижні} many{{count} тижнів} other{{count} тижня}}",
+    "@chartRangeWeeks": {
+        "description": "Chart time-range selector option covering a number of weeks",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "chartRangeMonths": "{count, plural, one{1 місяць} few{{count} місяці} many{{count} місяців} other{{count} місяця}}",
+    "@chartRangeMonths": {
+        "description": "Chart time-range selector option covering a number of months",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "chartRangeYears": "{count, plural, one{1 рік} few{{count} роки} many{{count} років} other{{count} року}}",
+    "@chartRangeYears": {
+        "description": "Chart time-range selector option covering a number of years",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "whatToTrack": "Що ви хочете відстежувати?",
+    "@whatToTrack": {
+        "description": "Title of the sheet that starts a new measurement category"
+    },
+    "customMeasurement": "Власне вимірювання",
+    "@customMeasurement": {
+        "description": "Option that creates a free-form measurement category with its own name and unit"
+    },
+    "metricAlreadyTracked": "Вже відстежується",
+    "@metricAlreadyTracked": {
+        "description": "Shown for a metric the user already has a category for, which cannot be picked twice"
+    },
+    "reorderCategories": "Змінити порядок категорій",
+    "@reorderCategories": {
+        "description": "measurement categories reordering"
+    },
+    "metricCustom": "Інша метрика",
+    "@metricCustom": {
+        "description": "Label for custom metric type"
+    },
+    "metricLeanBodyMass": "Суха маса тіла",
+    "@metricLeanBodyMass": {
+        "description": "Label for lean body mass measurement"
+    },
+    "metricBodyFat": "Відсоток жиру",
+    "@metricBodyFat": {
+        "description": "Label for body fat percentage measurement"
+    },
+    "metricHeight": "Зріст",
+    "@metricHeight": {
+        "description": "Label for height measurement"
+    },
+    "metricBloodPressure": "Кров'яний тиск",
+    "@metricBloodPressure": {
+        "description": "Label for blood pressure measurement"
+    },
+    "metricBloodPressureSystolic": "Систолічний тиск",
+    "@metricBloodPressureSystolic": {
+        "description": "Label for the systolic component of a blood pressure reading"
+    },
+    "metricBloodPressureDiastolic": "Діастолічний тиск",
+    "@metricBloodPressureDiastolic": {
+        "description": "Label for the diastolic component of a blood pressure reading"
+    },
+    "metricHeartRate": "Пульс",
+    "@metricHeartRate": {
+        "description": "Label for heart rate measurement"
+    },
+    "metricRestingHeartRate": "Пульс у стані спокою",
+    "@metricRestingHeartRate": {
+        "description": "Label for resting heart rate measurement"
+    },
+    "metricBloodOxygen": "Рівень кисню в крові",
+    "@metricBloodOxygen": {
+        "description": "Label for blood oxygen saturation measurement"
+    },
+    "metricSteps": "Кроки",
+    "@metricSteps": {
+        "description": "Label for step count measurement"
+    },
+    "metricDistance": "Дистанція",
+    "@metricDistance": {
+        "description": "Label for distance measurement"
+    },
+    "metricSleep": "Сон",
+    "@metricSleep": {
+        "description": "Label for sleep duration measurement"
+    },
+    "noDataAvailable": "Немає даних",
+    "@noDataAvailable": {
+        "description": "Shown in place of a chart when the category has no entries in the selected range"
+    },
+    "metricSleepTotal": "Загалом",
+    "@metricSleepTotal": {
+        "description": "Component of the 'Sleep' category, listed under that heading, so 'sleep' is not repeated. The total time asleep in a night, all sleep stages together"
+    },
+    "metricSleepLight": "Поверхневий сон",
+    "@metricSleepLight": {
+        "description": "Component of the 'Sleep' category, listed under that heading, so 'sleep' is not repeated. The light sleep stage, meaning shallow sleep, never 'light' as in brightness or weight"
+    },
+    "metricSleepAwake": "Пробудження",
+    "@metricSleepAwake": {
+        "description": "Component of the 'Sleep' category, listed under that heading. The time spent awake during a night, not counted as sleep"
+    },
+    "noGroup": "Без групи",
+    "@noGroup": {
+        "description": "Dropdown option for a measurement category that is not part of any group"
+    },
+    "dietaryInformation": "Поживна цінність",
+    "aboutViewDocsTitle": "Відкрити документацію",
+    "aboutViewLicensesTitle": "Переглянути ліцензії",
+    "aboutPrivacyPolicyTitle": "Умови та політика конфіденційності",
+    "@aboutPrivacyPolicyTitle": {
+        "description": "Menu entry on the about page that opens the terms of service and privacy policy"
+    },
+    "serverUpdateTitle": "Необхідно оновити сервер",
+    "serverUpdateContent": "Підключений сервер застарілий для цієї версії додатка. Будь ласка, зверніться до адміністратора сервера з проханням оновити його принаймні до версії {minVersion}.",
+    "@serverUpdateContent": {
+        "description": "Message shown when the server version is too old. minVersion is the minimum required server version string.",
+        "type": "text",
+        "placeholders": {
+            "minVersion": {
+                "type": "String"
+            }
+        }
+    },
+    "powerSyncUnreachableTitle": "Служба синхронізації недоступна",
+    "powerSyncUnreachableContent": "Ваш сервер wger доступний, але (окрема) служба, яка відповідає за офлайн-синхронізацію, не відповідає. Якщо ви використовуєте власний сервер wger, перевірте його конфігурацію та переконайтеся, що служба PowerSync працює коректно.",
+    "serverUnreachableRetry": "Спробуйте знову",
+    "@serverUnreachableRetry": {
+        "description": "Button that re-runs the auto-login attempt against the saved server."
+    },
+    "increase": "Збільшити",
+    "@increase": {
+        "description": "Tooltip / screen-reader label for a button that increases a numeric input by one step"
+    },
+    "decrease": "Зменшити",
+    "@decrease": {
+        "description": "Tooltip / screen-reader label for a button that decreases a numeric input by one step"
+    },
+    "useBasicMarkdown": "Для форматування тексту можна використовувати базовий Markdown",
+    "editorBold": "Жирний",
+    "@editorBold": {
+        "description": "Label for bold formatting"
+    },
+    "editorItalic": "Курсив",
+    "editorList": "Список",
+    "settingsImageCacheDescription": "Кеш зображень",
+    "settingsDataTitle": "Конфіденційність",
+    "settingsKeepDataOnLogout": "Зберігати дані після виходу з акаунта",
+    "settingsKeepDataOnLogoutDescription": "Локальна база даних залишається на пристрої, доки не ввійде інший обліковий запис.",
+    "settingsVerboseLogging": "Детальний журнал логів",
+    "@settingsVerboseLogging": {
+        "description": "Title of the setting that makes the app write detailed diagnostic entries to the application log"
+    },
+    "settingsVerboseLoggingDescription": "Корисно для звітування про стійкі або повторювані помилки.",
+    "indicatorTrend": "тренд",
+    "@indicatorTrend": {
+        "description": "Legend label for the smoothed trendline on measurement charts"
+    },
+    "useDynamicColor": "Динамічні кольори",
+    "@useDynamicColor": {
+        "description": "Settings toggle to follow the system wallpaper colors (Material You) on supported platforms"
+    },
+    "youAreOffline": "Ви поза мережею",
+    "appLanguage": "Мова додатка",
+    "@appLanguage": {
+        "description": "Label for the in-app language selector in settings"
+    },
+    "appLanguageSystem": "Як у системі",
+    "@appLanguageSystem": {
+        "description": "Dropdown entry that follows the device system language"
+    },
+    "productNotFoundOpenFoodFacts": "Ви можете додати цей продукт до Open Food Facts, щоб допомогти спільноті!",
+    "@productNotFoundOpenFoodFacts": {
+        "description": "Label shown when product is not found to encourage users to go on Open Food Facts and add it themselves"
+    },
+    "addToOpenFoodFacts": "Додати до Open Food Facts",
+    "@addToOpenFoodFacts": {
+        "description": "Label shown as the clickable link to go on Open Food Facts"
+    },
+    "isVegan": "Веганський",
+    "@isVegan": {
+        "description": "Label for vegan toggle"
+    },
+    "isVegetarian": "Вегетаріанський",
+    "@isVegetarian": {
+        "description": "Label for vegetarian toggle"
+    },
+    "filter": "Фільтр",
+    "@filter": {
+        "description": "Label for filter button"
+    },
+    "searchLanguageCurrent": "Лише поточною мовою ({lang})",
+    "@searchLanguageCurrent": {
+        "type": "text",
+        "placeholders": {
+            "lang": {
+                "type": "String"
+            }
+        }
+    },
+    "searchLanguageEnglish": "Поточною мовою ({lang}) та англійською",
+    "@searchLanguageEnglish": {
+        "type": "text",
+        "placeholders": {
+            "lang": {
+                "type": "String"
+            }
+        }
+    },
+    "searchLanguageAll": "Усіма мовами",
+    "@searchLanguageAll": {
+        "description": "Label used in the language selector to indicate no specific language filter is applied"
+    },
+    "exerciseSearchMode": "Режим пошуку",
+    "@exerciseSearchMode": {
+        "description": "Heading above the segmented control that lets the user pick between fuzzy and exact name matching"
+    },
+    "searchModeFuzzy": "Неточний збіг",
+    "@searchModeFuzzy": {
+        "description": "Label for the search mode that performs a fuzzy/substring search on exercise names"
+    },
+    "searchModeExact": "Точний збіг",
+    "@searchModeExact": {
+        "description": "Label for the search mode that only matches exercises with this exact name"
+    },
+    "syncStatusConnected": "З'єднано",
+    "@syncStatusConnected": {
+        "description": "Tooltip on the sync icon when the app is online and idle (no upload or download in progress)"
+    },
+    "syncStatusConnecting": "Підключення",
+    "@syncStatusConnecting": {
+        "description": "Tooltip on the sync icon while the app is establishing a connection to the sync service"
+    },
+    "syncStatusDisconnected": "Не підключено",
+    "@syncStatusDisconnected": {
+        "description": "Tooltip on the sync icon when the app has no active connection to the sync service"
+    },
+    "syncStatusUploading": "Завантаження на сервер",
+    "@syncStatusUploading": {
+        "description": "Tooltip on the sync icon while local changes are being uploaded to the server"
+    },
+    "syncStatusDownloading": "Завантаження з сервера",
+    "@syncStatusDownloading": {
+        "description": "Tooltip on the sync icon while remote changes are being downloaded from the server"
+    },
+    "syncStatusSyncing": "Синхронізація",
+    "@syncStatusSyncing": {
+        "description": "Tooltip on the sync icon when the app is uploading and downloading at the same time"
+    },
+    "syncStatusError": "Помилка синхронізації",
+    "@syncStatusError": {
+        "description": "Status label shown in the sync status dialog when the latest sync attempt failed"
+    },
+    "syncStatusDialogTitle": "Статус синхронізації",
+    "@syncStatusDialogTitle": {
+        "description": "Title of the dialog opened by tapping the sync icon in the app bar"
+    },
+    "syncStatusLastSynced": "Остання синхронізація",
+    "@syncStatusLastSynced": {
+        "description": "Label in the sync status dialog above the timestamp of the last successful sync"
+    },
+    "syncStatusErrorDetails": "Деталі помилки",
+    "@syncStatusErrorDetails": {
+        "description": "Header of the expandable section in the sync status dialog that reveals the raw error message"
+    },
+    "syncStatusStalledHint": "З'єднання зі службою синхронізації схоже на заблоковане. Можливо, заважає VPN, блокувальник реклами, антивірус або брандмауер у цій мережі.",
+    "@syncStatusStalledHint": {
+        "description": "Hint shown in the sync status dialog when the app keeps connecting but never receives any sync data, which usually means something on the network is blocking the connection"
+    },
+    "syncStatusStalledNotStartedHint": "Застосунок надіслав запит на синхронізацію, але клієнт синхронізації не запустився. Зазвичай допомагає перезапуск застосунку.",
+    "@syncStatusStalledNotStartedHint": {
+        "description": "Hint shown in the sync status dialog when a connection was requested but the sync client never reported any state at all"
+    },
+    "syncStatusStalledNotAppliedHint": "Дані надходять, але не можуть бути застосовані, тому нічого нового не з'являється. Повідомлення про це разом із скопійованими деталями допоможе нам це виправити.",
+    "@syncStatusStalledNotAppliedHint": {
+        "description": "Hint shown in the sync status dialog when sync data keeps arriving but no checkpoint ever completes, so the downloaded data stays invisible"
+    },
+    "syncStatusReconnect": "Перепідключитися",
+    "@syncStatusReconnect": {
+        "description": "Button in the sync status dialog that drops the stuck connection to the sync service and opens a fresh one"
+    },
+    "syncStatusPendingUploads": "{count, plural, =1{Одна локальна зміна очікує на завантаження} few{{count} локальні зміни очікують на завантаження} many{{count} локальних змін очікують на завантаження} other{{count} локальної зміни очікує на завантаження}}",
+    "@syncStatusPendingUploads": {
+        "description": "Line in the sync status dialog showing how many local changes have not reached the server yet",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "syncStatusNeverSynced": "Ще не синхронізовано",
+    "@syncStatusNeverSynced": {
+        "description": "Shown in the sync status dialog instead of the last-sync timestamp when this device has never completed a synchronisation"
+    },
+    "off": "Вимкнено",
+    "@off": {
+        "description": "Generic label for the option that switches something off, e.g. a filter or a line of a chart"
+    },
+    "filterNutriscoreNoFilter": "Без фільтра",
+    "@filterNutriscoreNoFilter": {
+        "description": "Helper text shown under the Nutri-Score slider when it is at the Off position"
+    },
+    "filterNutriscoreOrBetter": "{grade} або краще",
+    "@filterNutriscoreOrBetter": {
+        "description": "Helper text shown under the Nutri-Score slider when a grade is selected (e.g. 'C or better')",
+        "placeholders": {
+            "grade": {
+                "type": "String",
+                "example": "C"
+            }
+        }
+    },
+    "serverConfigIssueTitle": "Помилка конфігурації сервера",
+    "@serverConfigIssueTitle": {
+        "description": "Title of the dialog shown when server misconfiguration is detected"
+    },
+    "serverConfigIssueMessage": "Виявлено помилку конфігурації сервера: заголовки передаються некоректно. Будь ласка, зверніться до документації.",
+    "@serverConfigIssueMessage": {
+        "description": "Message explaining server misconfiguration and linking to documentation"
+    },
+    "understand": "Зрозуміло",
+    "@understand": {
+        "description": "Button label to acknowledge and dismiss the server configuration warning"
+    },
+    "viewDocumentation": "Переглянути документацію",
+    "@viewDocumentation": {
+        "description": "Button label to open the documentation about server configuration"
+    },
+    "sessionExpired": "Термін дії сесії закінчився, будь ласка, увійдіть знову",
+    "@sessionExpired": {
+        "description": "Snackbar message shown when the saved login token is no longer valid"
+    },
+    "weightOrRepsRequired": "Будь ласка, введіть вагу, кількість повторень або і те, і інше",
+    "@weightOrRepsRequired": {
+        "description": "Validation error when both weight and repetitions are empty in a workout log"
+    },
+    "sessionTooLong": "Сесія не може тривати довше ніж {hours} год",
+    "@sessionTooLong": {
+        "description": "Validation error when a workout session exceeds the maximum length",
+        "placeholders": {
+            "hours": {
+                "type": "int"
+            }
+        }
+    },
+    "healthSync": "Синхронізація зі «Здоров'ям»",
+    "@healthSync": {
+        "description": "Title for the health platform sync setting"
+    },
+    "healthSyncDescription": "Імпорт вимірювань тіла з Apple Health або Health Connect",
+    "@healthSyncDescription": {
+        "description": "Subtitle for the health platform sync setting"
+    },
+    "healthSyncPermissionDenied": "Доступ до даних про здоров'я не надано",
+    "@healthSyncPermissionDenied": {
+        "description": "Snackbar shown when enabling health sync fails because the platform permissions were denied"
+    },
+    "healthSyncNoData": "Даних про здоров'я не знайдено. Перевірте у {platform}, чи має wger дозвіл на читання ваших даних.",
+    "@healthSyncNoData": {
+        "description": "Snackbar shown when enabling health sync imported nothing, pointing at the platform's permission settings",
+        "placeholders": {
+            "platform": {
+                "type": "String",
+                "example": "Apple Health"
+            }
+        }
+    },
+    "healthSyncStatus": "{count, plural, =0{Остання синхронізація: {time}, нових записів немає} one{Остання синхронізація: {time}, 1 новий запис} few{Остання синхронізація: {time}, {count} нові записи} many{Остання синхронізація: {time}, {count} нових записів} other{Остання синхронізація: {time}, {count} нового запису}}",
+    "@healthSyncStatus": {
+        "description": "Status line under the health sync toggle showing when the last sync ran and how many entries it imported",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            },
+            "time": {
+                "type": "String",
+                "example": "7/31/2026 14:32"
+            }
+        }
+    },
+    "healthSyncSyncing": "Синхронізація даних про здоров'я…",
+    "@healthSyncSyncing": {
+        "description": "Status line under the health sync toggle while a sync is running"
+    },
+    "healthSyncNow": "Синхронізувати зараз",
+    "@healthSyncNow": {
+        "description": "Label of the manual health sync action in the settings"
+    },
+    "healthSyncPermissionMissing": "{platform} не ділиться вашими даними",
+    "@healthSyncPermissionMissing": {
+        "description": "Status line under the health sync toggle when the platform refuses to hand over data",
+        "placeholders": {
+            "platform": {
+                "type": "String",
+                "example": "Apple Health"
+            }
+        }
+    },
+    "healthSyncGrantAccess": "Натисніть, щоб знову надати доступ",
+    "@healthSyncGrantAccess": {
+        "description": "Action hint below the missing-permission status line"
+    },
+    "healthSyncFailed": "Не вдалося завершити останню синхронізацію",
+    "@healthSyncFailed": {
+        "description": "Status line under the health sync toggle after a failed sync"
+    },
+    "healthConnectInstall": "Встановити Health Connect",
+    "@healthConnectInstall": {
+        "description": "Action shown instead of the health sync toggle when Health Connect is missing on Android"
+    },
+    "healthConnectUpdate": "Оновити Health Connect",
+    "@healthConnectUpdate": {
+        "description": "Action shown instead of the health sync toggle when the installed Health Connect is too old"
+    },
+    "healthConnectRequired": "Для імпорту вимірювань тіла потрібен застосунок Health Connect",
+    "@healthConnectRequired": {
+        "description": "Explanation below the install/update Health Connect action"
+    },
+    "health": "Здоров'я",
+    "@health": {
+        "description": "Section header for health-related settings"
+    },
+    "importedEntry": "Цей запис синхронізовано з додатка «Здоров'я», тому змінити його можна лише там",
+    "@importedEntry": {
+        "description": "Tooltip on the badge of a measurement entry imported from Apple Health / Health Connect; such entries cannot be edited or deleted in the app"
+    },
+    "calculationValuesManual": "Введено вручну",
+    "@calculationValuesManual": {
+        "description": "One of two options when creating a measurement category: the user types the values in themselves. The other option is 'Calculated'"
+    },
+    "calculationType": "Розрахунок",
+    "@calculationType": {
+        "description": "Label of the field that picks what the server calculates for a category"
+    },
+    "calculationUnknown": "Цей розрахунок було налаштовано у новішій версії wger, тому його не можна змінити тут.",
+    "@calculationUnknown": {
+        "description": "Shown when the server uses a calculation type this version of the app does not know"
+    },
+    "calculationParamsIncomplete": "Розрахунок ще не налаштовано повністю",
+    "@calculationParamsIncomplete": {
+        "description": "Validation error when a calculation is still missing one of its settings"
+    },
+    "calculationDuplicate": "У вас уже є категорія {name} з такими налаштуваннями",
+    "@calculationDuplicate": {
+        "description": "Refuses a second calculated category that would compute exactly the same series",
+        "placeholders": {
+            "name": {
+                "type": "String",
+                "example": "Waist to height ratio"
+            }
+        }
+    },
+    "calculationLocked": "Цей розрахунок неможливо змінити. Видаліть категорію, щоб зупинити його обчислення.",
+    "@calculationLocked": {
+        "description": "Helper text under the disabled calculation picker when editing a category that already calculates"
+    },
+    "calculationMissingHeight": "У вашому профілі не вказано зріст, тому значення поки що не можуть бути обчислені.",
+    "@calculationMissingHeight": {
+        "description": "Warning shown when a calculation needs the height from the user profile but it is not set"
+    },
+    "calculationNoSourceCategory": "У вас ще немає іншої категорії, з якої можна зчитати дані.",
+    "@calculationNoSourceCategory": {
+        "description": "Shown when a calculation needs another measurement category to read from and the user has none yet"
+    },
+    "calculationBadge": "Розраховано",
+    "@calculationBadge": {
+        "description": "Badge marking a measurement category whose values the server computes, and the matching option when creating one. Keep it short, it sits next to a category title and opposite 'Entered by hand'"
+    },
+    "calculationEntryInfo": "Це значення розраховане wger і його не можна редагувати",
+    "@calculationEntryInfo": {
+        "description": "Tooltip on a measurement entry that wger computed, so it cannot be edited by hand"
+    },
+    "calculationNameBmi": "Індекс маси тіла (ІМТ)",
+    "@calculationNameBmi": {
+        "description": "Body mass index, the name of a calculated measurement category. It is also prefilled as the category name and stored, so keep it short. Usually left as the abbreviation"
+    },
+    "calculationNameWhtr": "Співвідношення талії до зросту",
+    "@calculationNameWhtr": {
+        "description": "Name of a calculated category: waist circumference divided by height. It is also prefilled as the category name and stored, so keep it short"
+    },
+    "calculationNameOneRepMax": "Повторний максимум",
+    "@calculationNameOneRepMax": {
+        "description": "Name of a calculated category: the heaviest weight liftable for a single repetition. It is also prefilled as the category name and stored, so keep it short"
+    },
+    "calculationNameOneRmTotal": "Сума повторних максимумів",
+    "@calculationNameOneRmTotal": {
+        "description": "Name of a calculated category: the one-rep maxima of several exercises added up. It is also prefilled as the category name and stored, so keep it short"
+    },
+    "calculationDescriptionBmi": "На основі ваги вашого тіла та зросту у профілі",
+    "@calculationDescriptionBmi": {
+        "description": "Explains where a calculated category takes its numbers from, shown under the calculation type picker"
+    },
+    "calculationDescriptionWhtr": "На основі категорії «{category}» та зросту у профілі",
+    "@calculationDescriptionWhtr": {
+        "description": "Explains where a calculated category takes its numbers from. {category} is the name of another measurement category, e.g. 'Waist'",
+        "placeholders": {
+            "category": {
+                "type": "String",
+                "example": "Waist"
+            }
+        }
+    },
+    "calculationParamCategory": "Вихідна категорія",
+    "@calculationParamCategory": {
+        "description": "Form field label: which other measurement category a calculation reads its values from"
+    },
+    "calculationParamMaxReps": "Макс. кількість повторень",
+    "@calculationParamMaxReps": {
+        "description": "Form field label: the highest number of repetitions a set may have to still count"
+    },
+    "calculationParamWindowDays": "Період у днях",
+    "@calculationParamWindowDays": {
+        "description": "Form field label: how many days back the calculation looks for a best set"
+    },
+    "calculationHelpExercises": "Від {min} до {max} вправ, вибрано: {count}.",
+    "@calculationHelpExercises": {
+        "description": "Helper text under the exercise picker of a calculated category. {count} is how many are picked so far",
+        "placeholders": {
+            "min": {
+                "type": "int"
+            },
+            "max": {
+                "type": "int"
+            },
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "calculationHelpMaxReps": "Від {min} до {max}. Підходи з більшою кількістю повторень ігноруються.",
+    "@calculationHelpMaxReps": {
+        "description": "Helper text under the 'Max reps counted' field. Sets with more repetitions than this are left out of the calculation",
+        "placeholders": {
+            "min": {
+                "type": "int"
+            },
+            "max": {
+                "type": "int"
+            }
+        }
+    },
+    "calculationHelpWindowDays": "Від {min} до {max}. За який період часу враховується найкращий підхід.",
+    "@calculationHelpWindowDays": {
+        "description": "Helper text under the 'Window in days' field, how many days back a best set still counts",
+        "placeholders": {
+            "min": {
+                "type": "int"
+            },
+            "max": {
+                "type": "int"
+            }
+        }
+    },
+    "relativeWeeksAgo": "{count, plural, one{1 тиждень тому} few{{count} тижні тому} many{{count} тижнів тому} other{{count} тижня тому}}",
+    "@relativeWeeksAgo": {
+        "description": "How long ago something was measured, for distances below a month",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "metricSleepDeep": "Глибокий сон",
+    "@metricSleepDeep": {
+        "description": "Component of the 'Sleep' category, listed under that heading, so 'sleep' is not repeated. The deep sleep stage, also called slow-wave sleep"
+    },
+    "metricSleepRem": "Швидкий сон",
+    "@metricSleepRem": {
+        "description": "Component of the 'Sleep' category, listed under that heading, so 'sleep' is not repeated. The REM (rapid eye movement) sleep stage, usually kept as the abbreviation"
+    },
+    "errorRawSource": "Код",
+    "@errorRawSource": {
+        "description": "Tab label for showing an HTML error response in its raw (unrendered) form, opposite of 'Preview'."
+    },
+    "partOfGroup": "У складі групи",
+    "@partOfGroup": {
+        "description": "Dropdown label: makes a measurement category a component of a multi-value group (e.g. blood pressure)"
+    },
+    "carbohydratesSugar": "із них цукри",
+    "@carbohydratesSugar": {
+        "description": "Label for the carbohydrates sugar"
+    },
+    "enterMaxCharacters": "Введіть не більше ніж {max} символів",
+    "@enterMaxCharacters": {
+        "description": "Error message when the user has entered more than the allowed amount of characters in a form",
+        "type": "text",
+        "placeholders": {
+            "max": {
+                "type": "String"
+            }
+        }
+    },
+    "healthSyncSuccess": "Імпортовано {count} вимірювань із Health",
+    "@healthSyncSuccess": {
+        "description": "Snackbar message after successful health sync",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "filterNutriscore": "Фільтр Nutri-Score",
+    "@filterNutriscore": {
+        "description": "Heading for the Nutri-Score slider in the ingredient search filter dialog"
+    },
+    "meal": "Прийом їжі"
 }
