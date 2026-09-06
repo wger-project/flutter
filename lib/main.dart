@@ -48,6 +48,7 @@ import 'package:wger/core/update_app_screen.dart';
 import 'package:wger/core/update_server_screen.dart';
 import 'package:wger/core/widgets/about.dart';
 import 'package:wger/core/widgets/log_overview.dart';
+import 'package:wger/core/widgets/scroll_behavior.dart';
 import 'package:wger/features/account/widgets/settings.dart';
 import 'package:wger/features/auth/screens/auth_screen.dart';
 import 'package:wger/features/auth/screens/auto_login_error_screen.dart';
@@ -240,12 +241,14 @@ class MainApp extends ConsumerWidget {
 
         return authAsync.when(
           loading: () => MaterialApp(
+            scrollBehavior: const WgerScrollBehavior(),
             theme: light,
             darkTheme: dark,
             themeMode: themeMode,
             home: const SplashScreen(),
           ),
           error: (error, stack) => MaterialApp(
+            scrollBehavior: const WgerScrollBehavior(),
             theme: light,
             darkTheme: dark,
             themeMode: themeMode,
@@ -258,6 +261,7 @@ class MainApp extends ConsumerWidget {
               title: 'wger',
               navigatorKey: navigatorKey,
               scaffoldMessengerKey: scaffoldMessengerKey,
+              scrollBehavior: const WgerScrollBehavior(),
               theme: light,
               darkTheme: dark,
               highContrastTheme: lightHc,
