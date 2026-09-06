@@ -35,8 +35,8 @@ import 'package:wger/powersync/api_client.dart';
 final logger = Logger('powersync-django');
 
 /// Thrown for an upload status that should be retried, not discarded such as
-/// HTTP status codes 5xx, 408, 429, or an unrecovered 401. Throwing leaves the
-/// transaction queued for PowerSync to retry. Carries table/op/status for
+/// HTTP status codes 5xx, 408, 429, or an unrecovered 401/403. Throwing leaves
+/// the transaction queued for PowerSync to retry. Carries table/op/status for
 /// logging and tests.
 class RetryableUploadException implements Exception {
   final String table;
@@ -305,8 +305,8 @@ class DjangoConnector extends PowerSyncBackendConnector {
 
   /// Uploads every op in [transaction] and decides its fate: all accepted
   /// completes it; a permanent refusal is surfaced but still completes (so one
-  /// bad op can't block the queue); a transient status (5xx, 408, 429, 401) or
-  /// an unreachable backend throws, leaving it queued for PowerSync to retry.
+  /// bad op can't block the queue); a transient status (5xx, 408, 429, 401,
+  /// 403) or an unreachable backend throws, leaving it queued for retry.
   ///
   /// A retry re-sends the whole transaction (at-least-once), so backend handlers
   /// must be idempotent. Anything unexpected is rethrown as an
@@ -381,10 +381,10 @@ class DjangoConnector extends PowerSyncBackendConnector {
       return _isErrorBody(response) ? _UploadOutcome.reject : _UploadOutcome.ok;
     }
 
-    // Transient or retryable. 401 lands here because AuthHttpClient already
-    // tried to refresh; a 401 still reaching us means the session is gone, so
-    // queue the op for re-auth rather than dropping it.
-    if (status >= 500 || status == 408 || status == 429 || status == 401) {
+    // Transient or retryable. 401 and 403 only ever mean "not authenticated"
+    // here (a refused row comes as 200 + `{error}`), so the op waits for a
+    // working session instead of being dropped.
+    if (status >= 500 || status == 408 || status == 429 || status == 401 || status == 403) {
       return _UploadOutcome.retry;
     }
 

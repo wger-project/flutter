@@ -721,28 +721,6 @@ class MockHealth extends _i1.Mock implements _i2.Health {
           as _i4.Future<_i2.HealthWorkoutLookupResult>);
 
   @override
-  _i4.Future<_i2.HealthBodyMassLookupResult> lookupBodyMassData({
-    required String? clientRecordId,
-    required DateTime? measuredAt,
-  }) =>
-      (super.noSuchMethod(
-            Invocation.method(#lookupBodyMassData, [], {
-              #clientRecordId: clientRecordId,
-              #measuredAt: measuredAt,
-            }),
-            returnValue: _i4.Future<_i2.HealthBodyMassLookupResult>.value(
-              _i3.dummyValue<_i2.HealthBodyMassLookupResult>(
-                this,
-                Invocation.method(#lookupBodyMassData, [], {
-                  #clientRecordId: clientRecordId,
-                  #measuredAt: measuredAt,
-                }),
-              ),
-            ),
-          )
-          as _i4.Future<_i2.HealthBodyMassLookupResult>);
-
-  @override
   _i4.Future<String> startWorkoutRoute() =>
       (super.noSuchMethod(
             Invocation.method(#startWorkoutRoute, []),

@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -38,12 +39,12 @@ const refreshLeeway = Duration(seconds: 30);
 /// - Inject the `Authorization` value for the current credential.
 /// - Pre-emptively refresh when the stored expiry is within
 ///   [refreshLeeway] of now.
-/// - On a 401 reply for a *replayable* [http.Request] body, refresh once
-///   and retry with the renewed credential. If the refresh kept the old
-///   one (offline carve-out in `_runRefresh`) the 401 goes back without a
-///   retry; a 401 on the retry counts as revoked and runs
-///   `onSessionExpired`. Non-replayable bodies (multipart / streamed) are
-///   not retried.
+/// - On a refused credential (see [_isAuthFailure]) for a *replayable*
+///   [http.Request] body, refresh once and retry with the renewed
+///   credential. If the refresh kept the old one (offline carve-out in
+///   `_runRefresh`) the 401 goes back without a retry; a second refusal
+///   counts as revoked and runs `onSessionExpired`. Non-replayable bodies
+///   (multipart / streamed) are not retried.
 ///
 /// Wrapped behind [authenticatedHttpClientProvider] so consumers
 /// (`WgerBaseProvider`, PowerSync's connector) get the auth handling for
@@ -76,14 +77,14 @@ class AuthHttpClient extends http.BaseClient {
     }
 
     _applyAuthHeader(request, credential);
-    final response = await _inner.send(request);
+    final (refused, response) = await _isAuthFailure(await _inner.send(request));
 
-    final canRetry = response.statusCode == 401 && credential != null && request is http.Request;
+    final canRetry = refused && credential != null && request is http.Request;
     if (!canRetry) {
       return response;
     }
 
-    _logger.fine('401 on authenticated request, refreshing once and retrying');
+    _logger.fine('Credential refused, refreshing once and retrying');
     await response.stream.drain<void>();
     await _refresh();
     final fresh = _readAuth()?.credential;
@@ -91,16 +92,16 @@ class AuthHttpClient extends http.BaseClient {
       return _syntheticUnauthorized();
     }
     if (fresh == credential) {
-      // Offline carve-out kept the token; the same token would 401 again
-      _logger.fine('Refresh produced no new credential, passing the 401 through');
+      // Offline carve-out kept the token; the same token would be refused again
+      _logger.fine('Refresh produced no new credential, reporting the refusal as 401');
       return _syntheticUnauthorized();
     }
 
     final retry = _cloneRequest(request, fresh);
-    final retryResponse = await _inner.send(retry);
-    if (retryResponse.statusCode == 401) {
+    final (stillRefused, retryResponse) = await _isAuthFailure(await _inner.send(retry));
+    if (stillRefused) {
       _logger.warning(
-        'Retry after refresh still returned 401 for '
+        'Retry after refresh was refused again for '
         '${request.method} ${request.url.path}, treating session as revoked',
       );
       await retryResponse.stream.drain<void>();
@@ -109,6 +110,49 @@ class AuthHttpClient extends http.BaseClient {
     }
     return retryResponse;
   }
+
+  /// Whether [response] means the credential we sent was refused, paired with
+  /// a response the caller can still read.
+  ///
+  /// A 403 only counts when the body carries SimpleJWT's `token_not_valid`:
+  /// the API answers an expired token with 403 rather than 401 because
+  /// SessionAuthentication runs first, but a plain permission denial is not a
+  /// reason to refresh or to end the session.
+  Future<(bool, http.StreamedResponse)> _isAuthFailure(http.StreamedResponse response) async {
+    if (response.statusCode == 401) {
+      return (true, response);
+    }
+    if (response.statusCode != 403) {
+      return (false, response);
+    }
+    final body = await response.stream.toBytes();
+    return (_isRejectedToken(body), _withBody(response, body));
+  }
+
+  bool _isRejectedToken(List<int> body) {
+    try {
+      final decoded = json.decode(utf8.decode(body));
+      return decoded is Map && decoded['code'] == 'token_not_valid';
+    } on FormatException {
+      // Not the API's JSON error shape, e.g. the plain 403 of an unauthenticated
+      // request or an HTML page from a proxy in front of the server.
+      return false;
+    }
+  }
+
+  /// Rebuilds [response] around an already-read [body], so consuming the
+  /// stream to look at it stays invisible to the caller.
+  http.StreamedResponse _withBody(http.StreamedResponse response, List<int> body) =>
+      http.StreamedResponse(
+        Stream.value(body),
+        response.statusCode,
+        contentLength: body.length,
+        request: response.request,
+        headers: response.headers,
+        isRedirect: response.isRedirect,
+        persistentConnection: response.persistentConnection,
+        reasonPhrase: response.reasonPhrase,
+      );
 
   @override
   void close() => _inner.close();

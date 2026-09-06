@@ -761,10 +761,10 @@ void main() {
     });
 
     test('rethrows RetryableUploadException on transient/retryable statuses', () async {
-      // Server errors, gateway timeout, rate limiting and a non-recoverable 401
-      // are retried: throw so PowerSync keeps the transaction queued. Mirrors
-      // the ClientException test above.
-      for (final status in [500, 502, 503, 504, 408, 429, 401]) {
+      // Server errors, gateway timeout, rate limiting and a non-recoverable
+      // 401/403 are retried: throw so PowerSync keeps the transaction queued.
+      // Mirrors the ClientException test above.
+      for (final status in [500, 502, 503, 504, 408, 429, 401, 403]) {
         completed = false;
         when(api.upsert(any)).thenAnswer((_) async => http.Response('', status));
 
@@ -781,10 +781,10 @@ void main() {
 
     test('reports and completes on unexpected permanent client errors', () async {
       // Retrying these would not help, so the op is surfaced and discarded
-      // rather than blocking the queue. 403 is here, not in the retry set: the
-      // backend delivers ownership refusals as 200 + {error}, so a real 403 is
-      // a permanent refusal.
-      for (final status in [400, 403, 404, 409, 422]) {
+      // rather than blocking the queue. 403 is not here: the endpoint only
+      // answers 403 for an unauthenticated request, and dropping the op would
+      // lose the row over an expired token (issue #1350).
+      for (final status in [400, 404, 409, 422]) {
         completed = false;
         when(api.upsert(any)).thenAnswer((_) async => http.Response('', status));
 
