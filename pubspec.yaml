@@ -51,15 +51,13 @@ dependencies:
   flutter_zxing: ^2.3.0
   font_awesome_flutter: ^11.0.0
   freezed_annotation: ^3.1.0
-  # Temporarily swap `health` with a fork with Swift Package Manager support.
-  # Once that is available on upstream (see e.g. https://github.com/carp-dk/carp-health-flutter/issues/480 )
-  # we can switch back. Note that if this doesn't happen in the near future we
-  # can just re-activate the cocoapods infrastructure.
-  # health: ^13.3.1
+  # A maintained fork of `health` 13.3.1. We need its per-type authorization
+  # snapshot (see HealthRepository.readableTypes) plus its Health Connect and
+  # iOS crash fixes, none of which upstream has picked up.
   health_bridge:
     git:
       url: https://github.com/ytsni/health_bridge.git
-      ref: 3d52dfef40534bf57d449c9be94eddba31852b34
+      ref: v2.0.0
   http: ^1.6.0
   image_picker: ^1.2.3
   intl: ^0.20.2
@@ -84,12 +82,6 @@ dependencies:
   powersync: ^2.3.3
   flutter_timezone: ^5.1.0
   timezone: ^0.11.1
-
-dependency_overrides:
-  # health -> device_info_plus ^12.1.0 pins win32 5.x, which conflicts with
-  # package_info_plus 10.2.0 (win32 ^6). device_info_plus 13.x is a pure win32
-  # bump with no Dart API change, so it satisfies health while keeping win32 6.
-  device_info_plus: ^13.0.0
 
 dev_dependencies:
   flutter_test:
