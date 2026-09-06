@@ -89,6 +89,42 @@ void main() {
       expect(serverUpdateRequired('$belowMin.0 (git-abc1234)'), true);
     });
 
+    test('alpha of the min version counts as that version, no update needed', () {
+      expect(serverUpdateRequired('$atMin.0a2'), false);
+    });
+
+    test('dev release of the min version counts as that version, no update needed', () {
+      expect(serverUpdateRequired('$atMin.0.dev0'), false);
+    });
+
+    test('release candidate of the min version counts as that version, no update needed', () {
+      expect(serverUpdateRequired('$atMin.0rc1'), false);
+    });
+
+    test('semver spelled pre-release of the min version, no update needed', () {
+      expect(serverUpdateRequired('$atMin.0-alpha2'), false);
+    });
+
+    test('pre-release with git build metadata, no update needed', () {
+      expect(serverUpdateRequired('$atMin.0a2+git1234567'), false);
+    });
+
+    test('post release of the min version, no update needed', () {
+      expect(serverUpdateRequired('$atMin.0.post1'), false);
+    });
+
+    test('pre-release above the min version, no update needed', () {
+      expect(serverUpdateRequired('$aboveMin-alpha1'), false);
+    });
+
+    test('semver spelled pre-release below the min version, update needed', () {
+      expect(serverUpdateRequired('$belowMin.0-alpha2'), true);
+    });
+
+    test('dev release below the min version, update needed', () {
+      expect(serverUpdateRequired('$belowMin.0.dev0'), true);
+    });
+
     test('completely unparseable server version, returns false (lenient)', () {
       expect(serverUpdateRequired('unknown'), false);
     });
