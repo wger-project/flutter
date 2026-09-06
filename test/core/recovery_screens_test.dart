@@ -51,7 +51,7 @@ void main() {
   const accessToken = 'access-token-12345';
   const powerSyncUrl = 'https://ps.example/';
 
-  final tProbe = Uri.parse('$serverUrl/api/v2/routine/');
+  final tProbe = Uri.parse('$serverUrl/api/v2/routine/?limit=1');
   final tVersion = Uri.parse('$serverUrl/api/v2/version/');
   final tMinAppVersion = Uri.parse('$serverUrl/api/v2/min-app-version/');
   final tPowerSyncToken = Uri.parse('$serverUrl/api/v2/powersync-token');
@@ -110,7 +110,7 @@ void main() {
     // Default happy-path mocks. Test groups override one of these to
     // steer the auth notifier into the targeted recovery state.
     when(
-      mockClient.head(tProbe, headers: anyNamed('headers')),
+      mockClient.get(tProbe, headers: anyNamed('headers')),
     ).thenAnswer((_) async => Response('', 200));
     when(mockClient.get(tVersion)).thenAnswer((_) async => Response('"99.99.99"', 200));
     when(mockClient.get(tMinAppVersion)).thenAnswer((_) async => Response('"0.0.1"', 200));

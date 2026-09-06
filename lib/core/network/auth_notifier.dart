@@ -381,9 +381,8 @@ class AuthNotifier extends _$AuthNotifier {
     }
 
     // The server actively rejected our token: wipe the stored credentials and
-    // route to login. Only 401/403 count, a transient 5xx must not log the
-    // user out.
-    if (_isAuthRejection(response.statusCode)) {
+    // route to login. A transient 5xx must not log the user out.
+    if (_isAuthRejection(response)) {
       _logger.info('autologin failed, token rejected: ${response.statusCode}');
       await _storage.clearCredentials();
       return AuthState(applicationVersion: appVersion);
@@ -501,13 +500,18 @@ class AuthNotifier extends _$AuthNotifier {
     );
   }
 
-  /// Whether [statusCode] means the server actively rejected our token, as
-  /// opposed to a transient error that must not invalidate the session.
-  bool _isAuthRejection(int statusCode) => statusCode == 401 || statusCode == 403;
+  /// Whether the probe [response] means the server actively rejected our
+  /// token, as opposed to a transient error that must not invalidate the
+  /// session. A 403 counts only with the API's `token_not_valid` body, like
+  /// in [AuthHttpClient]: a proxy or bot filter answers 403 too.
+  bool _isAuthRejection(http.Response response) =>
+      response.statusCode == 401 ||
+      (response.statusCode == 403 && isTokenNotValidBody(response.body));
 
   /// Same question for the refresh endpoint, which reports an invalid or
   /// rotated-away refresh token as 400 (allauth's `ErrorResponse`).
-  bool _isRefreshRejection(int statusCode) => statusCode == 400 || _isAuthRejection(statusCode);
+  bool _isRefreshRejection(int statusCode) =>
+      statusCode == 400 || statusCode == 401 || statusCode == 403;
 
   /// Schedules a non-blocking revalidation of the restored session.
   ///
@@ -592,7 +596,7 @@ class AuthNotifier extends _$AuthNotifier {
         _logger.fine('revalidation: server unreachable, keeping session');
         return;
       }
-      if (_isAuthRejection(response.statusCode)) {
+      if (_isAuthRejection(response)) {
         _logger.info(
           'revalidation: token rejected (${response.statusCode}), clearing session',
         );

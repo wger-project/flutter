@@ -126,18 +126,8 @@ class AuthHttpClient extends http.BaseClient {
       return (false, response);
     }
     final body = await response.stream.toBytes();
-    return (_isRejectedToken(body), _withBody(response, body));
-  }
-
-  bool _isRejectedToken(List<int> body) {
-    try {
-      final decoded = json.decode(utf8.decode(body));
-      return decoded is Map && decoded['code'] == 'token_not_valid';
-    } on FormatException {
-      // Not the API's JSON error shape, e.g. the plain 403 of an unauthenticated
-      // request or an HTML page from a proxy in front of the server.
-      return false;
-    }
+    final refused = isTokenNotValidBody(utf8.decode(body, allowMalformed: true));
+    return (refused, _withBody(response, body));
   }
 
   /// Rebuilds [response] around an already-read [body], so consuming the
@@ -181,6 +171,19 @@ class AuthHttpClient extends http.BaseClient {
     401,
     reasonPhrase: 'Authentication lost',
   );
+}
+
+/// Whether a 403 [body] is the API refusing the credential: SimpleJWT's
+/// `token_not_valid` (expired, blacklisted or unsigned token). Anything else,
+/// such as the plain 403 of an anonymous request or an HTML page from a proxy
+/// in front of the server, is not a reason to refresh or to end the session.
+bool isTokenNotValidBody(String body) {
+  try {
+    final decoded = json.decode(body);
+    return decoded is Map && decoded['code'] == 'token_not_valid';
+  } on FormatException {
+    return false;
+  }
 }
 
 /// Provider of the authenticated HTTP client used by every data-API call.

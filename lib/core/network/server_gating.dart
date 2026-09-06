@@ -72,21 +72,23 @@ class ServerGating {
     return (version: version, tooOld: serverUpdateRequired(version));
   }
 
-  /// HEAD probe against `/routine` to confirm the server is reachable
-  /// and accepts our credential. Returns null when the request couldn't
-  /// leave the device (offline, TLS handshake failure, etc.) so callers
-  /// can distinguish "we couldn't reach the server" from "the server said
-  /// no". Only the latter is grounds for logging the user out.
+  /// Probe against `/routine` to confirm the server is reachable and
+  /// accepts our credential. Returns null when the request couldn't leave
+  /// the device (offline, TLS handshake failure, etc.) so callers can
+  /// distinguish "we couldn't reach the server" from "the server said no".
+  /// Only the latter is grounds for logging the user out, and a 403 counts
+  /// only with the API's error body, so the probe is a GET (HEAD carries no
+  /// body) limited to one row.
   Future<http.Response?> probe({
     required JwtCredential credential,
     required String serverUrl,
     required PackageInfo appVersion,
   }) async {
     try {
-      return await _client.head(
-        makeUri(serverUrl, 'routine'),
+      return await _client.get(
+        makeUri(serverUrl, 'routine', query: {'limit': '1'}),
         headers: {
-          HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
+          HttpHeaders.acceptHeader: 'application/json',
           HttpHeaders.userAgentHeader: getAppNameHeader(appVersion),
           HttpHeaders.authorizationHeader: credential.authHeaderValue,
         },

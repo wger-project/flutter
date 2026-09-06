@@ -57,6 +57,10 @@ class _HangingPowerSyncSession extends PowerSyncSession {
   }
 }
 
+/// What SimpleJWT answers with when the access token has expired.
+const tokenNotValid =
+    '{"detail":"Given token not valid for any token type","code":"token_not_valid"}';
+
 @GenerateMocks([http.Client, SecureTokenStorage])
 void main() {
   // Required so showSessionExpiredSnackbar can look up the global keys via
@@ -87,7 +91,7 @@ void main() {
 
   // makeUri() defaults to a trailing slash; powersync-token is registered
   // without one on the Django side.
-  final tProbe = Uri.parse('$serverUrl/api/v2/routine/');
+  final tProbe = Uri.parse('$serverUrl/api/v2/routine/?limit=1');
   final tVersion = Uri.parse('$serverUrl/api/v2/version/');
   final tMinAppVersion = Uri.parse('$serverUrl/api/v2/min-app-version/');
   final tPowerSyncToken = Uri.parse('$serverUrl/api/v2/powersync-token');
@@ -150,7 +154,7 @@ void main() {
 
     // Default happy-path mocks. Individual tests override what they need.
     when(
-      mockClient.head(tProbe, headers: anyNamed('headers')),
+      mockClient.get(tProbe, headers: anyNamed('headers')),
     ).thenAnswer((_) async => Response('', 200));
 
     when(mockClient.get(tVersion)).thenAnswer((_) async => Response('"99.99.99"', 200));
@@ -189,7 +193,7 @@ void main() {
 
       // The startup path must not touch the network at all; every probe
       // happens later, in the background revalidation.
-      verifyNever(mockClient.head(tProbe, headers: anyNamed('headers')));
+      verifyNever(mockClient.get(tProbe, headers: anyNamed('headers')));
       verifyNever(mockClient.get(tVersion));
       verifyNever(mockClient.get(tMinAppVersion));
       verifyNever(mockClient.get(tPowerSyncToken, headers: anyNamed('headers')));
@@ -243,7 +247,7 @@ void main() {
       // user can re-authenticate without losing queued writes. Pure network
       // failures are covered by the separate 'network error' test below.
       when(
-        mockClient.head(tProbe, headers: anyNamed('headers')),
+        mockClient.get(tProbe, headers: anyNamed('headers')),
       ).thenAnswer((_) async => Response('Unauthorized', 401));
 
       final container = makeContainer();
@@ -258,9 +262,34 @@ void main() {
       expect(await PreferenceHelper.asyncPref.getBool(PREFS_HAS_EVER_SYNCED), true);
     });
 
+    test('token rejected (403 with token_not_valid) → session cleared', () async {
+      when(
+        mockClient.get(tProbe, headers: anyNamed('headers')),
+      ).thenAnswer((_) async => Response(tokenNotValid, 403));
+
+      final container = makeContainer();
+      await container.read(authProvider.future);
+      await container.read(authProvider.notifier).revalidationDone;
+
+      expect(container.read(authProvider).value?.status, AuthStatus.loggedOut);
+    });
+
+    test('403 without the API body → stays logged in', () async {
+      when(
+        mockClient.get(tProbe, headers: anyNamed('headers')),
+      ).thenAnswer((_) async => Response('<h1>Forbidden</h1>', 403));
+
+      final container = makeContainer();
+      await container.read(authProvider.future);
+      await container.read(authProvider.notifier).revalidationDone;
+
+      expect(container.read(authProvider).value?.status, AuthStatus.loggedIn);
+      expect(await PreferenceHelper.asyncPref.containsKey(PREFS_ACCESS_TOKEN), true);
+    });
+
     test('probe returns 500 → stays logged in', () async {
       when(
-        mockClient.head(tProbe, headers: anyNamed('headers')),
+        mockClient.get(tProbe, headers: anyNamed('headers')),
       ).thenAnswer((_) async => Response('Server Error', 500));
 
       final container = makeContainer();
@@ -275,7 +304,7 @@ void main() {
 
     test('probe returns 502 → stays logged in', () async {
       when(
-        mockClient.head(tProbe, headers: anyNamed('headers')),
+        mockClient.get(tProbe, headers: anyNamed('headers')),
       ).thenAnswer((_) async => Response('Bad Gateway', 502));
 
       final container = makeContainer();
@@ -288,7 +317,7 @@ void main() {
     });
 
     test('network error → stays logged in', () async {
-      when(mockClient.head(tProbe, headers: anyNamed('headers'))).thenThrow(
+      when(mockClient.get(tProbe, headers: anyNamed('headers'))).thenThrow(
         http.ClientException('SocketException: Connection refused'),
       );
 
@@ -354,7 +383,7 @@ void main() {
 
       // Wait out the initial fire-and-forget revalidation.
       await container.read(authProvider.notifier).revalidationDone;
-      verify(mockClient.head(tProbe, headers: anyNamed('headers'))).called(1);
+      verify(mockClient.get(tProbe, headers: anyNamed('headers'))).called(1);
 
       // Simulate a reconnect (going from offline to wifi).
       connectivityStream.add(const [ConnectivityResult.wifi]);
@@ -362,19 +391,19 @@ void main() {
       await container.read(authProvider.notifier).revalidationDone;
 
       // The HEAD probe must have run again.
-      verify(mockClient.head(tProbe, headers: anyNamed('headers'))).called(1);
+      verify(mockClient.get(tProbe, headers: anyNamed('headers'))).called(1);
     });
 
     test('offline-only event (none) does not trigger revalidation', () async {
       final container = makeContainer();
       await container.read(authProvider.future);
       await container.read(authProvider.notifier).revalidationDone;
-      verify(mockClient.head(tProbe, headers: anyNamed('headers'))).called(1);
+      verify(mockClient.get(tProbe, headers: anyNamed('headers'))).called(1);
 
       connectivityStream.add(const [ConnectivityResult.none]);
       await pumpEventQueue();
 
-      verifyNever(mockClient.head(tProbe, headers: anyNamed('headers')));
+      verifyNever(mockClient.get(tProbe, headers: anyNamed('headers')));
     });
 
     test('a retried auto-login replaces the listener instead of stacking one', () async {
@@ -388,7 +417,7 @@ void main() {
       await notifier.revalidationDone;
       await pumpEventQueue();
       // Consume the probes the two scheduling runs fired themselves
-      verify(mockClient.head(tProbe, headers: anyNamed('headers')));
+      verify(mockClient.get(tProbe, headers: anyNamed('headers')));
 
       connectivityStream.add(const [ConnectivityResult.wifi]);
       await pumpEventQueue();
@@ -396,7 +425,7 @@ void main() {
       await pumpEventQueue();
 
       // One reconnect, one probe
-      verify(mockClient.head(tProbe, headers: anyNamed('headers'))).called(1);
+      verify(mockClient.get(tProbe, headers: anyNamed('headers'))).called(1);
     });
   });
 
@@ -507,8 +536,8 @@ void main() {
   });
 
   group('never-synced session: server reachability', () {
-    test('Django HEAD throws SocketException → logged in offline', () async {
-      when(mockClient.head(tProbe, headers: anyNamed('headers'))).thenThrow(
+    test('Django GET throws SocketException → logged in offline', () async {
+      when(mockClient.get(tProbe, headers: anyNamed('headers'))).thenThrow(
         http.ClientException('SocketException: Connection refused'),
       );
 
@@ -524,9 +553,9 @@ void main() {
       verifyNever(mockClient.get(tPowerSyncToken, headers: anyNamed('headers')));
     });
 
-    test('Django HEAD returns 401 → loggedOut and saved user wiped', () async {
+    test('Django GET returns 401 → loggedOut and saved user wiped', () async {
       when(
-        mockClient.head(tProbe, headers: anyNamed('headers')),
+        mockClient.get(tProbe, headers: anyNamed('headers')),
       ).thenAnswer((_) async => Response('Unauthorized', 401));
 
       final container = makeContainer();
@@ -536,24 +565,44 @@ void main() {
       expect(await PreferenceHelper.asyncPref.containsKey(PREFS_ACCESS_TOKEN), false);
     });
 
-    test('Django HEAD returns 403 → loggedOut and saved user wiped', () async {
+    test('Django GET returns 403 with token_not_valid → loggedOut and saved user wiped', () async {
       // The API answers a rejected token with 403, not 401, because
       // SessionAuthentication runs before the JWT authenticator. Both have to
       // count as "token rejected", or a revoked session survives every start.
       when(
-        mockClient.head(tProbe, headers: anyNamed('headers')),
-      ).thenAnswer((_) async => Response('Forbidden', 403));
+        mockClient.get(tProbe, headers: anyNamed('headers')),
+      ).thenAnswer((_) async => Response(tokenNotValid, 403));
 
       final container = makeContainer();
       final state = await container.read(authProvider.future);
 
       expect(state.status, AuthStatus.loggedOut);
-      expect(await PreferenceHelper.asyncPref.containsKey(PREFS_USER), false);
+      expect(await PreferenceHelper.asyncPref.containsKey(PREFS_ACCESS_TOKEN), false);
+      // The body is what tells a rejection from a proxy's 403, so the probe
+      // has to ask for it
+      final headers =
+          verify(mockClient.get(tProbe, headers: captureAnyNamed('headers'))).captured.single
+              as Map<String, String>;
+      expect(headers[HttpHeaders.acceptHeader], 'application/json');
     });
 
-    test('Django HEAD returns 500 → stays logged in, session kept', () async {
+    test('Django GET returns 403 without the API body → stays logged in', () async {
+      // A WAF or proxy in front of the server answers 403 as well. That says
+      // nothing about the token, so it must not wipe the session.
       when(
-        mockClient.head(tProbe, headers: anyNamed('headers')),
+        mockClient.get(tProbe, headers: anyNamed('headers')),
+      ).thenAnswer((_) async => Response('<h1>Forbidden</h1>', 403));
+
+      final container = makeContainer();
+      final state = await container.read(authProvider.future);
+
+      expect(state.status, AuthStatus.loggedIn);
+      expect(await PreferenceHelper.asyncPref.containsKey(PREFS_ACCESS_TOKEN), true);
+    });
+
+    test('Django GET returns 500 → stays logged in, session kept', () async {
+      when(
+        mockClient.get(tProbe, headers: anyNamed('headers')),
       ).thenAnswer((_) async => Response('Server Error', 500));
 
       final container = makeContainer();
@@ -567,9 +616,9 @@ void main() {
       verifyNever(mockClient.get(tPowerSyncToken, headers: anyNamed('headers')));
     });
 
-    test('Django HEAD returns 503 → stays logged in, session kept', () async {
+    test('Django GET returns 503 → stays logged in, session kept', () async {
       when(
-        mockClient.head(tProbe, headers: anyNamed('headers')),
+        mockClient.get(tProbe, headers: anyNamed('headers')),
       ).thenAnswer((_) async => Response('Service Unavailable', 503));
 
       final container = makeContainer();
@@ -626,7 +675,7 @@ void main() {
       expect(state.status, AuthStatus.loggedIn);
       expect(state.credential!.accessToken, newAccess);
       final headers =
-          verify(mockClient.head(tProbe, headers: captureAnyNamed('headers'))).captured.single
+          verify(mockClient.get(tProbe, headers: captureAnyNamed('headers'))).captured.single
               as Map<String, String>;
       expect(headers[HttpHeaders.authorizationHeader], 'Bearer $newAccess');
       verify(mockSecureStorage.writeRefreshToken('new-refresh')).called(1);
@@ -641,15 +690,15 @@ void main() {
         mockClient.post(tHeadlessRefresh, headers: anyNamed('headers'), body: anyNamed('body')),
       ).thenThrow(http.ClientException('SocketException: Failed host lookup'));
       when(
-        mockClient.head(tProbe, headers: anyNamed('headers')),
-      ).thenAnswer((_) async => Response('Forbidden', 403));
+        mockClient.get(tProbe, headers: anyNamed('headers')),
+      ).thenAnswer((_) async => Response(tokenNotValid, 403));
 
       final container = makeContainer();
       final state = await container.read(authProvider.future);
 
       expect(state.status, AuthStatus.loggedIn);
       expect(state.credential!.accessToken, 'expired-access');
-      verifyNever(mockClient.head(tProbe, headers: anyNamed('headers')));
+      verifyNever(mockClient.get(tProbe, headers: anyNamed('headers')));
       expect(await PreferenceHelper.asyncPref.containsKey(PREFS_ACCESS_TOKEN), true);
     });
 
@@ -662,7 +711,7 @@ void main() {
       final state = await container.read(authProvider.future);
 
       expect(state.status, AuthStatus.loggedIn);
-      verifyNever(mockClient.head(tProbe, headers: anyNamed('headers')));
+      verifyNever(mockClient.get(tProbe, headers: anyNamed('headers')));
       expect(await PreferenceHelper.asyncPref.containsKey(PREFS_ACCESS_TOKEN), true);
     });
 
@@ -675,7 +724,7 @@ void main() {
       final state = await container.read(authProvider.future);
 
       expect(state.status, AuthStatus.loggedOut);
-      verifyNever(mockClient.head(tProbe, headers: anyNamed('headers')));
+      verifyNever(mockClient.get(tProbe, headers: anyNamed('headers')));
       expect(await PreferenceHelper.asyncPref.containsKey(PREFS_ACCESS_TOKEN), false);
     });
   });
@@ -855,7 +904,7 @@ void main() {
 
       final captured =
           verify(
-                mockClient.head(tProbe, headers: captureAnyNamed('headers')),
+                mockClient.get(tProbe, headers: captureAnyNamed('headers')),
               ).captured.single
               as Map<String, String>;
       expect(captured[HttpHeaders.authorizationHeader], 'Bearer $accessToken');
@@ -863,7 +912,7 @@ void main() {
 
     test('401 wipes the prefs bundle and the secure-storage refresh token', () async {
       when(
-        mockClient.head(tProbe, headers: anyNamed('headers')),
+        mockClient.get(tProbe, headers: anyNamed('headers')),
       ).thenAnswer((_) async => Response('Unauthorized', 401));
 
       final container = makeContainer();
@@ -885,7 +934,7 @@ void main() {
 
       expect(state.status, AuthStatus.loggedOut);
       expect(state.credential, isNull);
-      verifyNever(mockClient.head(tProbe, headers: anyNamed('headers')));
+      verifyNever(mockClient.get(tProbe, headers: anyNamed('headers')));
     });
 
     test('a leftover pre-JWT credential blob is deleted on startup', () async {
@@ -982,15 +1031,15 @@ void main() {
       ).thenThrow(http.ClientException('SocketException: Failed host lookup'));
       // What the server would answer the stale token with
       when(
-        mockClient.head(tProbe, headers: anyNamed('headers')),
-      ).thenAnswer((_) async => Response('Forbidden', 403));
+        mockClient.get(tProbe, headers: anyNamed('headers')),
+      ).thenAnswer((_) async => Response(tokenNotValid, 403));
 
       final container = makeContainer();
       await container.read(authProvider.future);
       await container.read(authProvider.notifier).revalidationDone;
 
       expect(container.read(authProvider).value?.status, AuthStatus.loggedIn);
-      verifyNever(mockClient.head(tProbe, headers: anyNamed('headers')));
+      verifyNever(mockClient.get(tProbe, headers: anyNamed('headers')));
     });
   });
 
@@ -1447,7 +1496,7 @@ void main() {
 
     test('revalidation rejection sets sessionExpired for the login screen', () async {
       when(
-        mockClient.head(tProbe, headers: anyNamed('headers')),
+        mockClient.get(tProbe, headers: anyNamed('headers')),
       ).thenAnswer((_) async => Response('Unauthorized', 401));
 
       final container = makeContainer();
