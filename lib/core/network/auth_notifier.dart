@@ -28,6 +28,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/error_dialogs.dart';
+import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/core/exceptions/mfa_required_exception.dart';
 import 'package:wger/core/http_overrides.dart';
 import 'package:wger/core/network/auth_credentials_storage.dart';
@@ -352,16 +353,31 @@ class AuthNotifier extends _$AuthNotifier {
   /// then run the full gating chain. Wipes the stored credentials on a
   /// definitive 4xx so the user is routed to login.
   Future<AuthState> _autoLoginWith(StoredAuth stored, PackageInfo appVersion) async {
+    var session = stored;
+    // The probe carries the credential itself and cannot refresh on a 403, so
+    // an access token past its lifetime is renewed first.
+    if (session.credential.needsRefresh(refreshLeeway)) {
+      final refresh = await _refreshBeforeProbe(session, appVersion);
+      if (refresh.rejected) {
+        return AuthState(applicationVersion: appVersion);
+      }
+      if (refresh.renewed == null) {
+        _logger.info('autologin: access token not renewed, continuing offline');
+        return _restoredSessionState(session, appVersion);
+      }
+      session = refresh.renewed!;
+    }
+
     final response = await _gating.probe(
-      credential: stored.credential,
-      serverUrl: stored.serverUrl,
+      credential: session.credential,
+      serverUrl: session.serverUrl,
       appVersion: appVersion,
     );
     // Server unreachable at startup. The user already has a saved session, so
     // let them straight in to keep working offline.
     if (response == null) {
       _logger.info('autologin: server unreachable, continuing offline');
-      return _restoredSessionState(stored, appVersion);
+      return _restoredSessionState(session, appVersion);
     }
 
     // The server actively rejected our token: wipe the stored credentials and
@@ -378,21 +394,21 @@ class AuthNotifier extends _$AuthNotifier {
       _logger.warning(
         'autologin: probe returned ${response.statusCode}, keeping saved session',
       );
-      return _restoredSessionState(stored, appVersion);
+      return _restoredSessionState(session, appVersion);
     }
 
-    final versionGate = await _gating.serverVersionGate(stored.serverUrl);
+    final versionGate = await _gating.serverVersionGate(session.serverUrl);
     final status = versionGate.tooOld
         ? AuthStatus.serverUpdateRequired
         : await _gating.resolve(
-            credential: stored.credential,
-            serverUrl: stored.serverUrl,
+            credential: session.credential,
+            serverUrl: session.serverUrl,
             appVersion: appVersion,
           );
     final newState = AuthState(
       status: status,
-      credential: stored.credential,
-      serverUrl: stored.serverUrl,
+      credential: session.credential,
+      serverUrl: session.serverUrl,
       serverVersion: versionGate.version,
       applicationVersion: appVersion,
     );
@@ -400,6 +416,65 @@ class AuthNotifier extends _$AuthNotifier {
       _logger.info('autologin successful');
     }
     return newState;
+  }
+
+  /// Exchanges the stored refresh token for a fresh bundle ahead of the
+  /// first-time probe. `renewed` carries the new session; it stays null when
+  /// the server could not be reached, answered a transient status or an
+  /// unreadable body. `rejected` marks a refused or missing refresh token,
+  /// with the credentials already wiped.
+  Future<({StoredAuth? renewed, bool rejected})> _refreshBeforeProbe(
+    StoredAuth stored,
+    PackageInfo appVersion,
+  ) async {
+    final refreshToken = await _readStoredRefreshToken();
+    if (refreshToken == null) {
+      _logger.warning('autologin: no usable refresh token, clearing credentials');
+      await _storage.clearCredentials();
+      return (renewed: null, rejected: true);
+    }
+
+    final FreshCredentials creds;
+    try {
+      creds = await _api
+          .exchangeRefreshToken(
+            refreshToken: refreshToken,
+            serverUrl: stored.serverUrl,
+            appVersion: appVersion,
+          )
+          .timeout(tokenRefreshTimeout);
+    } on WgerHttpException catch (e) {
+      if (_isRefreshRejection(e.statusCode ?? 0)) {
+        _logger.info('autologin failed, refresh token rejected: ${e.statusCode}');
+        await _storage.clearCredentials();
+        return (renewed: null, rejected: true);
+      }
+      _logger.warning('autologin: refresh returned ${e.statusCode}, keeping saved session');
+      return (renewed: null, rejected: false);
+    } on Exception catch (e, s) {
+      _logger.warning('autologin: refresh unreachable, keeping saved session', e, s);
+      return (renewed: null, rejected: false);
+    }
+
+    await _storage.updateJwt(credential: creds.credential, refreshToken: creds.refreshToken);
+    return (
+      renewed: StoredAuth(credential: creds.credential, serverUrl: stored.serverUrl),
+      rejected: false,
+    );
+  }
+
+  /// The persisted refresh token, or null when there is none or secure storage
+  /// cannot read it (e.g. an Android backup restored onto a new device leaves
+  /// an undecryptable blob behind). The failure is logged here, callers only
+  /// decide what to clear.
+  Future<String?> _readStoredRefreshToken() async {
+    try {
+      final token = await _storage.readRefreshToken();
+      return (token == null || token.isEmpty) ? null : token;
+    } on Exception catch (e, s) {
+      _logger.warning('secure storage read failed', e, s);
+      return null;
+    }
   }
 
   /// Decides how a stored session enters the app. A previously synced session
@@ -609,20 +684,11 @@ class AuthNotifier extends _$AuthNotifier {
       return;
     }
 
-    final String? refreshToken;
-    try {
-      refreshToken = await _storage.readRefreshToken();
-    } on Exception catch (e, s) {
-      // Secure storage can fail to decrypt the token, e.g. after an Android
-      // backup/restore onto a new device leaves the encrypted blob behind, etc.
-      _logger.warning('refreshAccessToken: secure storage read failed, clearing session', e, s);
+    final refreshToken = await _readStoredRefreshToken();
+    if (refreshToken == null) {
+      _logger.warning('refreshAccessToken: no usable refresh token, clearing session');
       await clearSessionOnly();
       showSessionExpiredSnackbar();
-      return;
-    }
-    if (refreshToken == null || refreshToken.isEmpty) {
-      _logger.warning('refreshAccessToken: no refresh token in secure storage, clearing session');
-      await clearSessionOnly();
       return;
     }
 

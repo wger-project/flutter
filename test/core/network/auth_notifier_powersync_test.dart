@@ -580,6 +580,106 @@ void main() {
     });
   });
 
+  group('never-synced session: expired access token', () {
+    // The probe carries the stored credential itself, so it cannot recover
+    // from a 403 the way AuthHttpClient does. An access token past its
+    // lifetime (a retry from the PowerSync-unreachable screen a while after
+    // the login) therefore has to be renewed before the probe runs.
+    String makeJwt(Map<String, dynamic> payload) {
+      String enc(Map<String, dynamic> m) =>
+          base64Url.encode(utf8.encode(jsonEncode(m))).replaceAll('=', '');
+      return '${enc({'alg': 'HS256', 'typ': 'JWT'})}.${enc(payload)}.signature';
+    }
+
+    late String newAccess;
+
+    setUp(() async {
+      await PreferenceHelper.asyncPref.setString(PREFS_ACCESS_TOKEN, 'expired-access');
+      await PreferenceHelper.asyncPref.setInt(
+        PREFS_ACCESS_EXPIRES_AT,
+        DateTime.now().subtract(const Duration(hours: 1)).millisecondsSinceEpoch,
+      );
+      when(mockSecureStorage.readRefreshToken()).thenAnswer((_) async => 'good-refresh');
+      newAccess = makeJwt({
+        'sub': '42',
+        'exp': DateTime.now().add(const Duration(hours: 1)).millisecondsSinceEpoch ~/ 1000,
+      });
+    });
+
+    test('refresh succeeds → probe runs with the new token, logged in', () async {
+      when(
+        mockClient.post(tHeadlessRefresh, headers: anyNamed('headers'), body: anyNamed('body')),
+      ).thenAnswer(
+        (_) async => Response(
+          jsonEncode({
+            'status': 200,
+            'data': {'access_token': newAccess, 'refresh_token': 'new-refresh'},
+            'meta': {'is_authenticated': true},
+          }),
+          200,
+        ),
+      );
+
+      final container = makeContainer();
+      final state = await container.read(authProvider.future);
+
+      expect(state.status, AuthStatus.loggedIn);
+      expect(state.credential!.accessToken, newAccess);
+      final headers =
+          verify(mockClient.head(tProbe, headers: captureAnyNamed('headers'))).captured.single
+              as Map<String, String>;
+      expect(headers[HttpHeaders.authorizationHeader], 'Bearer $newAccess');
+      verify(mockSecureStorage.writeRefreshToken('new-refresh')).called(1);
+      expect(await PreferenceHelper.asyncPref.getString(PREFS_ACCESS_TOKEN), newAccess);
+    });
+
+    test('refresh fails on the network → logged in offline, probe skipped', () async {
+      // Probing with the expired token could only earn a 403 and wipe the
+      // credentials over a network flap; the unreachable server keeps the
+      // session like it does when the probe itself cannot be sent.
+      when(
+        mockClient.post(tHeadlessRefresh, headers: anyNamed('headers'), body: anyNamed('body')),
+      ).thenThrow(http.ClientException('SocketException: Failed host lookup'));
+      when(
+        mockClient.head(tProbe, headers: anyNamed('headers')),
+      ).thenAnswer((_) async => Response('Forbidden', 403));
+
+      final container = makeContainer();
+      final state = await container.read(authProvider.future);
+
+      expect(state.status, AuthStatus.loggedIn);
+      expect(state.credential!.accessToken, 'expired-access');
+      verifyNever(mockClient.head(tProbe, headers: anyNamed('headers')));
+      expect(await PreferenceHelper.asyncPref.containsKey(PREFS_ACCESS_TOKEN), true);
+    });
+
+    test('refresh returns 503 → logged in offline, probe skipped', () async {
+      when(
+        mockClient.post(tHeadlessRefresh, headers: anyNamed('headers'), body: anyNamed('body')),
+      ).thenAnswer((_) async => Response('Service Unavailable', 503));
+
+      final container = makeContainer();
+      final state = await container.read(authProvider.future);
+
+      expect(state.status, AuthStatus.loggedIn);
+      verifyNever(mockClient.head(tProbe, headers: anyNamed('headers')));
+      expect(await PreferenceHelper.asyncPref.containsKey(PREFS_ACCESS_TOKEN), true);
+    });
+
+    test('refresh token rejected (400) → loggedOut and saved user wiped', () async {
+      when(
+        mockClient.post(tHeadlessRefresh, headers: anyNamed('headers'), body: anyNamed('body')),
+      ).thenAnswer((_) async => Response('{"status": 400}', 400));
+
+      final container = makeContainer();
+      final state = await container.read(authProvider.future);
+
+      expect(state.status, AuthStatus.loggedOut);
+      verifyNever(mockClient.head(tProbe, headers: anyNamed('headers')));
+      expect(await PreferenceHelper.asyncPref.containsKey(PREFS_ACCESS_TOKEN), false);
+    });
+  });
+
   group('never-synced session: version gates', () {
     test('server version too old → serverUpdateRequired', () async {
       // Never-synced path runs the full gating chain. A server below
@@ -634,7 +734,12 @@ void main() {
       // Seed both formats so we can assert each gets removed.
       final prefs = PreferenceHelper.asyncPref;
       await prefs.setString(PREFS_ACCESS_TOKEN, 'jwt-access');
-      await prefs.setInt(PREFS_ACCESS_EXPIRES_AT, 1700000000);
+      // A live token: an expired one would send the never-synced auto-login
+      // through a refresh first, which is not what this test is about
+      await prefs.setInt(
+        PREFS_ACCESS_EXPIRES_AT,
+        DateTime.now().add(const Duration(hours: 1)).millisecondsSinceEpoch,
+      );
       await prefs.setString(PREFS_SERVER_URL, serverUrl);
 
       final container = makeContainer();
