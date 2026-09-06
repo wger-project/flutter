@@ -21,7 +21,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wger/features/routines/providers/gym_state.dart';
 import 'package:wger/features/routines/providers/gym_state_notifier.dart';
-import 'package:wger/features/routines/widgets/gym_mode/elapsed_time.dart';
 import 'package:wger/features/routines/widgets/gym_mode/navigation.dart';
 
 void main() {
@@ -41,16 +40,13 @@ void main() {
     container.dispose();
   });
 
-  Future<void> pumpFooter(WidgetTester tester) async {
-    final controller = PageController();
-    addTearDown(controller.dispose);
-
+  Future<void> pumpHeader(WidgetTester tester) async {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: MaterialApp(
+        child: const MaterialApp(
           home: Scaffold(
-            body: NavigationFooter(controller),
+            body: NavigationHeader('Test'),
           ),
         ),
       ),
@@ -58,17 +54,17 @@ void main() {
   }
 
   testWidgets('Shows the elapsed workout timer by default', (tester) async {
-    await pumpFooter(tester);
+    await pumpHeader(tester);
 
-    expect(find.byType(ElapsedWorkoutTimer), findsOneWidget);
+    expect(find.byIcon(Icons.timer_outlined), findsOneWidget);
   });
 
   testWidgets('Hides the elapsed workout timer when disabled', (tester) async {
     final notifier = container.read(gymStateProvider.notifier);
     notifier.state = GymModeState(showWorkoutDuration: false);
 
-    await pumpFooter(tester);
+    await pumpHeader(tester);
 
-    expect(find.byType(ElapsedWorkoutTimer), findsNothing);
+    expect(find.byIcon(Icons.timer_outlined), findsNothing);
   });
 }

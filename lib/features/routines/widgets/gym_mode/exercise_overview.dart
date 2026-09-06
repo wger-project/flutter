@@ -24,13 +24,12 @@ import 'package:wger/features/routines/widgets/gym_mode/navigation.dart';
 
 class ExerciseOverview extends ConsumerWidget {
   final _logger = Logger('ExerciseOverview');
-  final PageController _controller;
 
   /// Identifies which slot page this widget renders, so it shows its own
   /// content instead of whatever the globally-current page happens to be.
   final String slotUuid;
 
-  ExerciseOverview(this._controller, this.slotUuid);
+  ExerciseOverview(this.slotUuid);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -42,13 +41,16 @@ class ExerciseOverview extends ConsumerWidget {
       );
       return Container();
     }
-    final exercise = page.setConfigData!.exercise;
+    final exercise = page.setConfigData?.exerciseOrNull;
+    if (exercise == null) {
+      _logger.info('Slot page $slotUuid has no hydrated exercise, showing empty container.');
+      return Container();
+    }
 
     return Column(
       children: [
         NavigationHeader(
           exercise.getTranslation(Localizations.localeOf(context).languageCode).name,
-          _controller,
         ),
         Expanded(
           child: SingleChildScrollView(
@@ -58,7 +60,6 @@ class ExerciseOverview extends ConsumerWidget {
             ),
           ),
         ),
-        NavigationFooter(_controller),
       ],
     );
   }

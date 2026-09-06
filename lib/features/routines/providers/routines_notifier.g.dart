@@ -58,7 +58,9 @@ final class RoutineRepetitionUnitProvider
           List<RepetitionUnit>,
           Stream<List<RepetitionUnit>>
         >
-    with $FutureModifier<List<RepetitionUnit>>, $StreamProvider<List<RepetitionUnit>> {
+    with
+        $FutureModifier<List<RepetitionUnit>>,
+        $StreamProvider<List<RepetitionUnit>> {
   RoutineRepetitionUnitProvider._()
     : super(
         from: null,
@@ -85,7 +87,8 @@ final class RoutineRepetitionUnitProvider
   }
 }
 
-String _$routineRepetitionUnitHash() => r'de9d2c5b6e2f4df761165d6899353b3fb2cee8c6';
+String _$routineRepetitionUnitHash() =>
+    r'de9d2c5b6e2f4df761165d6899353b3fb2cee8c6';
 
 @ProviderFor(RoutinesRiverpod)
 final routinesRiverpodProvider = RoutinesRiverpodProvider._();
@@ -111,7 +114,7 @@ final class RoutinesRiverpodProvider
   RoutinesRiverpod create() => RoutinesRiverpod();
 }
 
-String _$routinesRiverpodHash() => r'feae88eddcc72d83b3adf392c39770683a64d864';
+String _$routinesRiverpodHash() => r'c8c9ea4d360fb69c1e597d7ebc1977756187dffa';
 
 abstract class _$RoutinesRiverpod extends $StreamNotifier<RoutinesState> {
   Stream<RoutinesState> build();

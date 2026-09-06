@@ -17,12 +17,14 @@
  */
 
 import 'package:clock/clock.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:wger/core/uuid.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/routines/models/day_data.dart';
 import 'package:wger/features/routines/models/routine.dart';
 import 'package:wger/features/routines/models/set_config_data.dart';
+import 'package:wger/features/routines/models/slot_entry.dart';
 
 const DEFAULT_DURATION = Duration(hours: 5);
 
@@ -91,10 +93,16 @@ class PageEntry {
   List<Exercise> get exercises {
     final exerciseSet = <Exercise>{};
     for (final entry in slotPages) {
-      exerciseSet.add(entry.setConfigData!.exercise);
+      final exercise = entry.setConfigData?.exerciseOrNull;
+      if (exercise != null) {
+        exerciseSet.add(exercise);
+      }
     }
     return exerciseSet.toList();
   }
+
+  /// Whether this page groups several exercises, i.e. is a superset.
+  bool get isSuperset => exercises.length > 1;
 
   // Whether all sub-pages (e.g. log pages) are marked as done.
   bool get allLogsDone =>
@@ -121,12 +129,37 @@ class SlotPageEntry {
   /// The associated SetConfigData
   final SetConfigData? setConfigData;
 
+  /// What the user actually logged for this set, as opposed to the routine
+  /// target in [setConfigData]. These live here — in the keep-alive gym state —
+  /// rather than in the log page's widget State because the `PageView` disposes
+  /// off-screen pages: keeping them in the widget meant every logged weight was
+  /// silently replaced by the (often empty) target on the way back (FR-persist).
+  final num? loggedWeight;
+  final num? loggedReps;
+  final num? loggedRir;
+
+  /// The weight unit the set was logged in. Set rows stay pinned to it, so
+  /// flipping the kg/lb toggle never relabels an already-logged set.
+  final int? loggedWeightUnitId;
+
+  /// Id of the persisted `Log`, once written.
+  final String? logId;
+
+  /// Set type the user picked in-session, overriding [SetConfigData.type].
+  final SlotEntryType? typeOverride;
+
   SlotPageEntry({
     required this.type,
     required this.pageIndex,
     required this.setIndex,
     this.setConfigData,
     this.logDone = false,
+    this.loggedWeight,
+    this.loggedReps,
+    this.loggedRir,
+    this.loggedWeightUnitId,
+    this.logId,
+    this.typeOverride,
     String? uuid,
   }) : assert(
          type != SlotPageType.log || setConfigData != null,
@@ -134,6 +167,9 @@ class SlotPageEntry {
        ),
        uuid = uuid ?? uuidV4();
 
+  /// Pass [overwriteLogged] to take the `logged*` / [logId] arguments verbatim,
+  /// nulls included. Without it the usual `?? this.x` fallbacks apply, which
+  /// makes clearing a value — or logging a set with a blank weight — impossible.
   SlotPageEntry copyWith({
     String? uuid,
     SlotPageType? type,
@@ -142,6 +178,13 @@ class SlotPageEntry {
     int? pageIndex,
     SetConfigData? setConfigData,
     bool? logDone,
+    num? loggedWeight,
+    num? loggedReps,
+    num? loggedRir,
+    int? loggedWeightUnitId,
+    String? logId,
+    SlotEntryType? typeOverride,
+    bool overwriteLogged = false,
   }) {
     return SlotPageEntry(
       uuid: uuid ?? this.uuid,
@@ -150,6 +193,14 @@ class SlotPageEntry {
       pageIndex: pageIndex ?? this.pageIndex,
       setConfigData: setConfigData ?? this.setConfigData,
       logDone: logDone ?? this.logDone,
+      loggedWeight: overwriteLogged ? loggedWeight : (loggedWeight ?? this.loggedWeight),
+      loggedReps: overwriteLogged ? loggedReps : (loggedReps ?? this.loggedReps),
+      loggedRir: overwriteLogged ? loggedRir : (loggedRir ?? this.loggedRir),
+      loggedWeightUnitId: overwriteLogged
+          ? loggedWeightUnitId
+          : (loggedWeightUnitId ?? this.loggedWeightUnitId),
+      logId: overwriteLogged ? logId : (logId ?? this.logId),
+      typeOverride: typeOverride ?? this.typeOverride,
     );
   }
 
@@ -313,6 +364,45 @@ class GymModeState {
       if (slotPage.pageIndex == index) {
         return slotPage;
       }
+    }
+    return null;
+  }
+
+  /// Maps a model [pageIndex] to its index within the gym-mode `PageView`.
+  ///
+  /// The model assigns a [pageIndex] to every slot page (including
+  /// exercise-overview and rest-timer pages), but the `PageView` renders only
+  /// the start page, **one page per exercise** (set [PageEntry]), and the
+  /// session + summary pages. This translation keeps navigation (queue jumps,
+  /// auto-advance, finish) landing on the correct rendered page.
+  int renderIndexFor(int pageIndex) {
+    final setPages = pages.where((p) => p.type == PageType.set).toList();
+    final session = pages.firstWhereOrNull((p) => p.type == PageType.session);
+
+    for (var i = 0; i < setPages.length; i++) {
+      final start = setPages[i].pageIndex;
+      final end = (i + 1 < setPages.length)
+          ? setPages[i + 1].pageIndex
+          : (session?.pageIndex ?? (1 << 30));
+      if (pageIndex >= start && pageIndex < end) {
+        return i + 1; // index 0 is the start page
+      }
+    }
+
+    // Past the last exercise: the session page comes first, then the summary.
+    if (session != null && pageIndex > session.pageIndex) {
+      return setPages.length + 2; // summary
+    }
+    return setPages.length + 1; // session
+  }
+
+  /// The set [PageEntry] rendered at PageView index [renderIndex], or null if
+  /// that index is the start, session or summary page (which have no exercise
+  /// queue / header chrome). See [renderIndexFor] for the index mapping.
+  PageEntry? setPageForRenderIndex(int renderIndex) {
+    final setPages = pages.where((p) => p.type == PageType.set).toList();
+    if (renderIndex >= 1 && renderIndex <= setPages.length) {
+      return setPages[renderIndex - 1];
     }
     return null;
   }
