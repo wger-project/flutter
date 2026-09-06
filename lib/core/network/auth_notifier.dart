@@ -430,6 +430,10 @@ class AuthNotifier extends _$AuthNotifier {
   /// opposed to a transient error that must not invalidate the session.
   bool _isAuthRejection(int statusCode) => statusCode == 401 || statusCode == 403;
 
+  /// Same question for the refresh endpoint, which reports an invalid or
+  /// rotated-away refresh token as 400 (allauth's `ErrorResponse`).
+  bool _isRefreshRejection(int statusCode) => statusCode == 400 || _isAuthRejection(statusCode);
+
   /// Schedules a non-blocking revalidation of the restored session.
   ///
   /// The first run is deferred to a fresh event-loop task so [build] has
@@ -487,6 +491,12 @@ class AuthNotifier extends _$AuthNotifier {
         await refreshAccessToken();
         current = state.asData?.value;
         if (current == null || current.status != AuthStatus.loggedIn) {
+          return;
+        }
+        // A refresh that failed on the network keeps the stale token. Probing
+        // with it can only earn a 403 and a logout, so wait for the next run.
+        if (current.credential?.needsRefresh(refreshLeeway) ?? false) {
+          _logger.fine('revalidation: refresh did not deliver, skipping the probe');
           return;
         }
       }
@@ -573,12 +583,12 @@ class AuthNotifier extends _$AuthNotifier {
 
   /// Exchanges the persisted refresh token for a fresh access/refresh pair.
   ///
-  /// Single-flight: concurrent callers share one HTTP request. On any
-  /// failure (missing refresh token, missing serverUrl, network error,
-  /// non-200 response, malformed body) the session is cleared via
-  /// [clearSessionOnly] so the user can re-authenticate without losing
-  /// local data. Pure network errors keep the session intact so offline
-  /// use continues to work.
+  /// Single-flight: concurrent callers share one HTTP request. When the
+  /// server rejects the refresh token (400, 401, 403), or the stored bundle
+  /// is unusable (missing refresh token, missing serverUrl, malformed body),
+  /// the session is cleared via [clearSessionOnly] so the user can
+  /// re-authenticate without losing local data. Network errors and transient
+  /// statuses (5xx, 408, 429) keep the session so offline use continues.
   ///
   /// On success: `state.credential` is updated to the new JWT, the rotated
   /// refresh token (when present) is written to secure storage, and the
@@ -639,6 +649,15 @@ class AuthNotifier extends _$AuthNotifier {
       final bodySnippet = response.body.length > 200
           ? '${response.body.substring(0, 200)}...'
           : response.body;
+      // Only a rejection ends the session. allauth answers a dead refresh
+      // token with 400; 5xx, 408 or 429 say nothing about the token.
+      if (!_isRefreshRejection(response.statusCode)) {
+        _logger.warning(
+          'refreshAccessToken: status ${response.statusCode}, body: $bodySnippet, '
+          'keeping session',
+        );
+        return;
+      }
       _logger.warning(
         'refreshAccessToken: status ${response.statusCode}, body: $bodySnippet, clearing session',
       );

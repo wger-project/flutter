@@ -859,6 +859,34 @@ void main() {
         expect((state.credential as JwtCredential).accessToken, newAccess);
       },
     );
+
+    test('refresh fails on the network → probe skipped, session kept', () async {
+      // The refresh's offline carve-out keeps the expired token. Probing with
+      // it would only earn a 403 and a logout over a network flap, so the
+      // revalidation has to stop here and leave the session alone.
+      final prefs = PreferenceHelper.asyncPref;
+      await prefs.setString(PREFS_ACCESS_TOKEN, 'expired-access');
+      await prefs.setInt(
+        PREFS_ACCESS_EXPIRES_AT,
+        DateTime.now().subtract(const Duration(hours: 1)).millisecondsSinceEpoch,
+      );
+      await prefs.setBool(PREFS_HAS_EVER_SYNCED, true);
+      when(mockSecureStorage.readRefreshToken()).thenAnswer((_) async => 'good-refresh');
+      when(
+        mockClient.post(tRefresh, headers: anyNamed('headers'), body: anyNamed('body')),
+      ).thenThrow(http.ClientException('SocketException: Failed host lookup'));
+      // What the server would answer the stale token with
+      when(
+        mockClient.head(tProbe, headers: anyNamed('headers')),
+      ).thenAnswer((_) async => Response('Forbidden', 403));
+
+      final container = makeContainer();
+      await container.read(authProvider.future);
+      await container.read(authProvider.notifier).revalidationDone;
+
+      expect(container.read(authProvider).value?.status, AuthStatus.loggedIn);
+      verifyNever(mockClient.head(tProbe, headers: anyNamed('headers')));
+    });
   });
 
   group('refreshAccessToken', () {
@@ -1113,24 +1141,53 @@ void main() {
       },
     );
 
-    test('non-200 response → clears session, keeps DB', () async {
-      // Server reachable + non-200 means the refresh token is genuinely
-      // rejected (typical for a refresh token that expired server-side after
-      // a long offline period). We clear credentials + show a snackbar, but
-      // the local DB stays so the user can re-authenticate without losing
-      // queued writes.
-      await PreferenceHelper.asyncPref.setBool(PREFS_HAS_EVER_SYNCED, true);
-      when(mockSecureStorage.readRefreshToken()).thenAnswer((_) async => 'old-refresh');
-      when(
-        mockClient.post(tRefresh, headers: anyNamed('headers'), body: anyNamed('body')),
-      ).thenAnswer((_) async => Response('Unauthorized', 401));
+    test('rejected refresh token (400, 401, 403) → clears session, keeps DB', () async {
+      // The refresh token is genuinely dead (expired server-side after a long
+      // offline period, or rotated away). allauth's ErrorResponse is a 400.
+      // We clear credentials + show a snackbar, but the local DB stays so the
+      // user can re-authenticate without losing queued writes.
+      for (final status in [400, 401, 403]) {
+        await PreferenceHelper.asyncPref.setString(PREFS_ACCESS_TOKEN, accessToken);
+        await PreferenceHelper.asyncPref.setBool(PREFS_HAS_EVER_SYNCED, true);
+        when(mockSecureStorage.readRefreshToken()).thenAnswer((_) async => 'old-refresh');
+        when(
+          mockClient.post(tRefresh, headers: anyNamed('headers'), body: anyNamed('body')),
+        ).thenAnswer((_) async => Response('rejected', status));
 
-      final container = makeContainer();
-      await container.read(authProvider.future);
-      await container.read(authProvider.notifier).refreshAccessToken();
+        final container = makeContainer();
+        await container.read(authProvider.future);
+        await container.read(authProvider.notifier).refreshAccessToken();
 
-      expect(container.read(authProvider).value!.status, AuthStatus.loggedOut);
-      expect(await PreferenceHelper.asyncPref.getBool(PREFS_HAS_EVER_SYNCED), true);
+        expect(
+          container.read(authProvider).value!.status,
+          AuthStatus.loggedOut,
+          reason: 'status $status must end the session',
+        );
+        expect(await PreferenceHelper.asyncPref.getBool(PREFS_HAS_EVER_SYNCED), true);
+      }
+    });
+
+    test('transient status (5xx, 408, 429) → stays logged in', () async {
+      // A proxy answering 502 during a deploy or a restarting container says
+      // nothing about the refresh token. Like a network error, the session
+      // is kept and the next refresh tries again.
+      for (final status in [500, 502, 503, 408, 429]) {
+        when(mockSecureStorage.readRefreshToken()).thenAnswer((_) async => 'old-refresh');
+        when(
+          mockClient.post(tRefresh, headers: anyNamed('headers'), body: anyNamed('body')),
+        ).thenAnswer((_) async => Response('unavailable', status));
+
+        final container = makeContainer();
+        await container.read(authProvider.future);
+        await container.read(authProvider.notifier).refreshAccessToken();
+
+        expect(
+          container.read(authProvider).value!.status,
+          AuthStatus.loggedIn,
+          reason: 'status $status must keep the session',
+        );
+        expect(await PreferenceHelper.asyncPref.containsKey(PREFS_ACCESS_TOKEN), true);
+      }
     });
 
     test('rejected refresh completes even when the PowerSync disconnect hangs', () async {
