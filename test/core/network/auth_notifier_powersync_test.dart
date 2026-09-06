@@ -1064,6 +1064,41 @@ void main() {
       expect(headers['accept'], 'application/json');
     });
 
+    test('expiry follows the token lifetime on the local clock', () async {
+      // exp is server time. A device clock running behind would take a token
+      // for live that the server already refuses, and the pre-emptive refresh
+      // would never fire, so the lifetime (exp - iat) is anchored locally.
+      await seedHeadlessBundle();
+      when(mockSecureStorage.readRefreshToken()).thenAnswer((_) async => 'old-refresh');
+      // A server clock decades away from this device
+      const iat = 1000000000;
+      final newAccess = makeJwt({'sub': '42', 'iat': iat, 'exp': iat + 900});
+      when(
+        mockClient.post(tRefresh, headers: anyNamed('headers'), body: anyNamed('body')),
+      ).thenAnswer(
+        (_) async => Response(
+          jsonEncode({
+            'status': 200,
+            'data': {'access_token': newAccess, 'refresh_token': 'new-refresh'},
+            'meta': {'is_authenticated': true},
+          }),
+          200,
+        ),
+      );
+
+      final container = makeContainer();
+      await container.read(authProvider.future);
+      final before = DateTime.now().toUtc();
+      await container.read(authProvider.notifier).refreshAccessToken();
+
+      final cred = container.read(authProvider).value!.credential as JwtCredential;
+      expect(cred.expiresAt!.difference(before).inSeconds, closeTo(900, 10));
+      expect(
+        await PreferenceHelper.asyncPref.getInt(PREFS_ACCESS_EXPIRES_AT),
+        cred.expiresAt!.millisecondsSinceEpoch,
+      );
+    });
+
     test('a refresh completing after the session ended is discarded', () async {
       // The result belongs to the session that started the request: writing
       // it would replant the tokens into the cleared storage and republish

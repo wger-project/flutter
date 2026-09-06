@@ -745,7 +745,7 @@ class AuthNotifier extends _$AuthNotifier {
       final meta = body['meta'] as Map<String, dynamic>?;
       newAccess = (data?['access_token'] ?? meta?['access_token']) as String;
       newRefresh = (data?['refresh_token'] ?? meta?['refresh_token']) as String?;
-      newExp = jwtExp(decodeJwtPayload(newAccess));
+      newExp = jwtExpOnLocalClock(decodeJwtPayload(newAccess));
     } catch (e, s) {
       // Don't log the body: on the success-shaped path it holds the rotated
       // refresh token
