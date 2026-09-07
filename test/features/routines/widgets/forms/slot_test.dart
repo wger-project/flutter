@@ -22,11 +22,15 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/core/network/network_provider.dart';
+import 'package:wger/features/routines/models/base_config.dart';
 import 'package:wger/features/routines/models/slot.dart';
 import 'package:wger/features/routines/models/slot_entry.dart';
 import 'package:wger/features/routines/providers/routines_notifier.dart';
 import 'package:wger/features/routines/providers/routines_repository.dart';
 import 'package:wger/features/routines/widgets/forms/slot.dart';
+import 'package:wger/features/routines/widgets/forms/slot_entry.dart '
+    hide ReorderableSlotList, SlotDetailWidget;
+import 'package:wger/features/routines/widgets/slot.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 import '../../../../../test_data/routines.dart';
@@ -366,6 +370,141 @@ void main() {
 
       // Only one copy button for the whole group (on the last slot)
       expect(find.byIcon(Icons.content_copy), findsOne);
+    });
+  });
+
+  group('ProgressionRulesInfoBox', () {
+    SlotEntry entryWithRequirements(Map<String, dynamic>? requirements) {
+      final entry = SlotEntry.withData(
+        slotId: 1,
+        exercise: getTestRoutine().days[0].slots[0].entries[0].exerciseObj,
+      );
+      entry.weightConfigs = [
+        BaseConfig.firstIteration(80, 1),
+        BaseConfig(
+          id: null,
+          slotEntryId: 1,
+          iteration: 2,
+          value: 2.5,
+          operation: '+',
+          step: 'abs',
+          repeat: true,
+          requirements: requirements,
+        ),
+      ];
+      return entry;
+    }
+
+    Widget renderInfoBox(SlotEntry entry) {
+      return MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Scaffold(
+          body: ProgressionRulesInfoBox(entry.exerciseObj, entry: entry),
+        ),
+      );
+    }
+
+    testWidgets('shows the double-progression message for max_repetitions + all_sets', (
+      tester,
+    ) async {
+      final entry = entryWithRequirements({
+        'rules': ['max_repetitions'],
+        'all_sets': true,
+      });
+
+      await tester.pumpWidget(renderInfoBox(entry));
+      await tester.pumpAndSettle();
+
+      final i18n = AppLocalizations.of(tester.element(find.byType(ProgressionRulesInfoBox)));
+      expect(find.text(i18n.progressionRulesDoubleProgression), findsOneWidget);
+    });
+
+    testWidgets('shows the gated-on-max-reps message without all_sets', (tester) async {
+      final entry = entryWithRequirements({
+        'rules': ['max_repetitions'],
+      });
+
+      await tester.pumpWidget(renderInfoBox(entry));
+      await tester.pumpAndSettle();
+
+      final i18n = AppLocalizations.of(tester.element(find.byType(ProgressionRulesInfoBox)));
+      expect(find.text(i18n.progressionRulesGatedOnMaxReps), findsOneWidget);
+    });
+
+    testWidgets('shows the gated-on-reps message for the repetitions rule', (tester) async {
+      final entry = entryWithRequirements({
+        'rules': ['repetitions'],
+      });
+
+      await tester.pumpWidget(renderInfoBox(entry));
+      await tester.pumpAndSettle();
+
+      final i18n = AppLocalizations.of(tester.element(find.byType(ProgressionRulesInfoBox)));
+      expect(find.text(i18n.progressionRulesGatedOnReps), findsOneWidget);
+    });
+
+    testWidgets('falls back to the generic message for an unconditional repeat', (tester) async {
+      final entry = entryWithRequirements({'rules': <String>[]});
+
+      await tester.pumpWidget(renderInfoBox(entry));
+      await tester.pumpAndSettle();
+
+      final i18n = AppLocalizations.of(tester.element(find.byType(ProgressionRulesInfoBox)));
+      expect(find.text(i18n.progressionRules), findsOneWidget);
+    });
+
+    testWidgets('falls back to the generic message when entry is omitted', (
+      tester,
+    ) async {
+      final exercise = getTestRoutine().days[0].slots[0].entries[0].exerciseObj;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Scaffold(body: ProgressionRulesInfoBox(exercise)),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final i18n = AppLocalizations.of(tester.element(find.byType(ProgressionRulesInfoBox)));
+      expect(find.text(i18n.progressionRules), findsOneWidget);
+    });
+
+    testWidgets('SlotDetailWidget renders the info box instead of the edit form when gated', (
+      tester,
+    ) async {
+      final routine = getTestRoutine();
+      final gatedEntry = entryWithRequirements({
+        'rules': ['max_repetitions'],
+        'all_sets': true,
+      });
+      final slot = routine.days[0].slots[0];
+      slot.entries[0] = gatedEntry;
+
+      final container = ProviderContainer.test(
+        overrides: [
+          routinesRepositoryProvider.overrideWithValue(MockRoutinesRepository()),
+          networkStatusProvider.overrideWithValue(true),
+          ...routineFormAmbientOverrides(),
+        ],
+      );
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: Scaffold(body: SlotDetailWidget(slot, routine.id!)),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.byType(ProgressionRulesInfoBox), findsOneWidget);
+      expect(find.byType(SlotEntryForm), findsNothing);
     });
   });
 }
