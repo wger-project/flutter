@@ -103,7 +103,15 @@ class _ExerciseVideoWidgetState extends ConsumerState<ExerciseVideoWidget> {
               alignment: Alignment.bottomCenter,
               children: [
                 VideoPlayer(controller),
-                _ControlsOverlay(controller: controller),
+                // Rebuild the overlay whenever the controller notifies (it is a
+                // ValueNotifier). Reading controller.value.isPlaying does not
+                // subscribe to changes, so without this the play icon never
+                // disappears once playback starts.
+                ValueListenableBuilder<VideoPlayerValue>(
+                  valueListenable: controller,
+                  builder: (context, value, child) =>
+                      _ControlsOverlay(controller: controller),
+                ),
                 VideoProgressIndicator(controller, allowScrubbing: true),
               ],
             ),
