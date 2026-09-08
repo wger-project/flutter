@@ -399,6 +399,7 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
               }
 
               gymProvider.markSlotPageAsDone(page.uuid, isDone: true);
+              gymProvider.recordLoggedValues(log);
               showSnackbar(
                 context,
                 i18n.successfullySaved,

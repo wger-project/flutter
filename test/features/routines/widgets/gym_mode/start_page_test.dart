@@ -113,11 +113,19 @@ void main() {
     await tester.tap(durationSwitch);
     await tester.pump();
 
+    // Toggle sticky set values
+    final stickySwitch = find.byKey(const ValueKey('gym-mode-sticky-set-values'));
+    expect(stickySwitch, findsOneWidget);
+    await tester.ensureVisible(stickySwitch);
+    await tester.tap(stickySwitch);
+    await tester.pump();
+
     final notifier = container.read(gymStateProvider.notifier);
     expect(notifier.state.showExercisePages, isFalse);
     expect(notifier.state.showTimerPages, isFalse);
     expect(notifier.state.alertOnCountdownEnd, isTrue);
     expect(notifier.state.showWorkoutDuration, isFalse);
+    expect(notifier.state.stickySetValues, isTrue);
   });
 
   testWidgets('Dropdown, text field and refresh button update notifier state', (tester) async {
