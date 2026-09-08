@@ -24,6 +24,20 @@ import 'package:material_ui/material_ui.dart';
 /// Bump this value whenever you depend on API changes that are only available
 /// in a newer server release. The check is performed during login and
 /// auto-login and mirrors what the server does with MIN_APP_VERSION.
+///
+/// A pre-release is lower than its release, so the spelling decides the
+/// meaning:
+///
+///   '2.8.0-dev.3'  at least that point of the 2.8 development cycle
+///   '2.8.0'        the finished 2.8 or newer, no development server
+///   '2.8'          the same as '2.8.0'
+///
+/// While 2.8 is unreleased, only the first form is safe. wger runs master
+/// and reports as e.g. 2.8.0-dev.N, so '2.8' would lock the app out of it
+/// and out of every self hosted instance following latest, for the whole cycle.
+///
+/// Count with a dot: '2.8.0-dev.10' is above '2.8.0-dev.9', while
+/// '2.8.0-dev10' would sort below '2.8.0-dev9'.
 const MIN_SERVER_VERSION = '2.7';
 
 /// Size for the "smaller" icons, e.g. when they belong to less important items

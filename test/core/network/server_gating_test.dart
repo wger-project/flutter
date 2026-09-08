@@ -89,27 +89,31 @@ void main() {
       expect(serverUpdateRequired('$belowMin.0 (git-abc1234)'), true);
     });
 
-    test('alpha of the min version counts as that version, no update needed', () {
-      expect(serverUpdateRequired('$atMin.0a2'), false);
+    test('alpha of the min version is below it, update needed', () {
+      expect(serverUpdateRequired('$atMin.0a2'), true);
     });
 
-    test('dev release of the min version counts as that version, no update needed', () {
-      expect(serverUpdateRequired('$atMin.0.dev0'), false);
+    test('dev release of the min version is below it, update needed', () {
+      expect(serverUpdateRequired('$atMin.0.dev0'), true);
     });
 
-    test('release candidate of the min version counts as that version, no update needed', () {
-      expect(serverUpdateRequired('$atMin.0rc1'), false);
+    test('counted dev release of the min version is below it, update needed', () {
+      expect(serverUpdateRequired('$atMin.0-dev.3'), true);
     });
 
-    test('semver spelled pre-release of the min version, no update needed', () {
-      expect(serverUpdateRequired('$atMin.0-alpha2'), false);
+    test('release candidate of the min version is below it, update needed', () {
+      expect(serverUpdateRequired('$atMin.0rc1'), true);
     });
 
-    test('pre-release with git build metadata, no update needed', () {
-      expect(serverUpdateRequired('$atMin.0a2+git1234567'), false);
+    test('semver spelled pre-release of the min version, update needed', () {
+      expect(serverUpdateRequired('$atMin.0-alpha2'), true);
     });
 
-    test('post release of the min version, no update needed', () {
+    test('pre-release with git build metadata, update needed', () {
+      expect(serverUpdateRequired('$atMin.0a2+git1234567'), true);
+    });
+
+    test('post release of the min version is not below it, no update needed', () {
       expect(serverUpdateRequired('$atMin.0.post1'), false);
     });
 

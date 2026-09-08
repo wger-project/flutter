@@ -247,8 +247,14 @@ class ServerGating {
 /// equivalent so [Version] can parse it: '2.7.0a2' becomes '2.7.0-a2'.
 /// Without this a pre-release below the minimum fails to parse and gets
 /// waved through by the lenient fallback.
+///
+/// A post release carries everything its final release has, so that segment
+/// is removed rather than turned into a pre-release, which would sort it
+/// below the release it follows.
 String _toSemver(String rawVersion) {
-  final trimmed = rawVersion.replaceFirst(RegExp(r'\s.*$'), ''); // '2.7.0 (git-abc1234)'
+  final trimmed = rawVersion
+      .replaceFirst(RegExp(r'\s.*$'), '') // '2.7.0 (git-abc1234)'
+      .replaceFirst(RegExp(r'[.-]post\d*'), '');
 
   final match = RegExp(r'^(\d+(?:\.\d+)*)(.*)$').firstMatch(trimmed);
   if (match == null) {
@@ -261,8 +267,9 @@ String _toSemver(String rawVersion) {
 }
 
 /// Checks whether the connected server meets the minimum version required
-/// by this build of the app. A pre-release counts as its release, since the
-/// reference server runs master and reports 2.7.0a2 for the whole 2.7 cycle.
+/// by this build of the app. A pre-release is below its release, so a server
+/// in the middle of the 2.8 cycle does not satisfy a minimum of 2.8.0. See
+/// [MIN_SERVER_VERSION] for how to spell the constant.
 ///
 /// Returns false (lenient) when the version cannot be read or parsed, so
 /// users aren't locked out on unexpected server configurations.
@@ -286,8 +293,7 @@ bool serverUpdateRequired(String? rawVersion) {
     return false;
   }
   final required = Version.parse(MIN_SERVER_VERSION);
-  final currentRelease = Version(current.major, current.minor, current.patch);
-  final needUpdate = currentRelease < required;
+  final needUpdate = current < required;
   if (needUpdate) {
     logger.fine('Server update required: server $current < minimum $required');
   }
