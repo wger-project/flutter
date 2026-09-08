@@ -72,6 +72,16 @@ void main() {
     expect(slotEntry.hasProgressionRules, true);
   });
 
+  test('hasProgressionRules stays true after removing the duplicated branch', () {
+    // Regression test for the removed duplicate code: previously
+    // `maxWeightConfigs.length > 1` appeared twice in the OR chain.
+    final slotEntry = SlotEntry.empty();
+    slotEntry.maxWeightConfigs.add(BaseConfig.firstIteration(22, 3));
+    slotEntry.maxWeightConfigs.add(BaseConfig.firstIteration(1, 3));
+
+    expect(slotEntry.hasProgressionRules, true);
+  });
+
   test('a single-iteration entry has no progression rules', () {
     final slotEntry = SlotEntry.empty();
     slotEntry.maxWeightConfigs.add(BaseConfig.firstIteration(22, 3));

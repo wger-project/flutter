@@ -28,7 +28,7 @@ import 'package:wger/features/routines/models/slot_entry.dart';
 import 'package:wger/features/routines/providers/routines_notifier.dart';
 import 'package:wger/features/routines/providers/routines_repository.dart';
 import 'package:wger/features/routines/widgets/forms/slot.dart';
-import 'package:wger/features/routines/widgets/forms/slot_entry.dart '
+import 'package:wger/features/routines/widgets/forms/slot_entry.dart'
     hide ReorderableSlotList, SlotDetailWidget;
 import 'package:wger/features/routines/widgets/slot.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
