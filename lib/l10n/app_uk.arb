@@ -186,7 +186,7 @@
     },
     "weightUnit": "Одиниця ваги",
     "dayDescriptionHelp": "Опис того, що робиться в цей день (наприклад, «день підтягування») або які частини тіла тренуються (наприклад, «груди та плечі»)",
-    "workoutSession": "Сеанс тренування",
+    "workoutSession": "Тренувальна сесія",
     "@workoutSession": {
         "description": "A (logged) workout session"
     },
@@ -256,7 +256,7 @@
         "description": "Label for the button that adds a set (to a workout day)"
     },
     "addMeal": "Додати страву",
-    "mealLogged": "Страву записано в щоденник",
+    "mealLogged": "Прийом їжі записано в щоденник",
     "logMeal": "Запис прийому їжі в щоденник харчування",
     "addIngredient": "Додати інгредієнт",
     "logIngredient": "Занесіть інгредієнт до щоденника харчування",
@@ -442,7 +442,7 @@
         "description": "Snackbar message to show on copying data to a new log entry"
     },
     "appUpdateTitle": "Потрібне оновлення",
-    "appUpdateContent": "Ця версія застосунку несумісна з сервером, будь ласка, оновіть застосунок.",
+    "appUpdateContent": "Ця версія застосунку несумісна із сервером, будь ласка, оновіть застосунок.",
     "productFound": "Продукт знайдено",
     "@productFound": {
         "description": "Header label for dialog when product is found with barcode"
@@ -711,7 +711,7 @@
     },
     "ingredientLogged": "Інгредієнт зареєстровано в щоденнику",
     "selectMealToLog": "Виберіть страву, щоб записати в щоденник",
-    "aboutMastodonTitle": "Мастодонт",
+    "aboutMastodonTitle": "Mastodon",
     "settingsCacheTitle": "Кеш",
     "settingsCacheDeletedSnackbar": "Кеш успішно очищено",
     "themeMode": "Тема",
@@ -745,7 +745,7 @@
     "simpleMode": "Простий режим",
     "resultingRoutine": "Підсумкова програма тренувань",
     "simpleModeHelp": "Приховайте деякі розширені налаштування під час редагування вправ",
-    "progressionRules": "Ця вправа має правила прогресу, і її не можна редагувати в мобільному застосунку. Щоб відредагувати цю вправу, використовуйте вебдодаток.",
+    "progressionRules": "Ця вправа має правила прогресу, і її не можна редагувати в мобільному застосунку. Щоб відредагувати цю вправу, використовуйте вебзастосунок.",
     "min": "Мін",
     "max": "Макс",
     "newRoutine": "Нова програма тренувань",
@@ -771,12 +771,12 @@
     "copyToClipboard": "Копіювати в буфер обміну",
     "aboutWhySupportTitle": "Відкритий код та безкоштовний у використанні ❤️",
     "aboutJoinCommunityTitle": "Приєднуйтесь до спільноти",
-    "aboutDiscordTitle": "Дискорд",
+    "aboutDiscordTitle": "Discord",
     "aboutBugsListTitle": "Повідомити про проблему або запропонувати функцію",
     "aboutSourceListTitle": "Переглянути вихідний код",
     "aboutContributeTitle": "Зробити внесок",
     "aboutContributeText": "Ми вітаємо будь-які види внесків. Незалежно від того, чи ви розробник, перекладач, чи просто захоплений фітнесом, ми цінуємо будь-яку підтримку!",
-    "aboutTranslationListTitle": "Перекласти програму",
+    "aboutTranslationListTitle": "Перекласти застосунок",
     "others": "Інші",
     "apiToken": "Токен API",
     "useApiToken": "Використовувати токен API",
@@ -1016,15 +1016,15 @@
     "@mfaSubmit": {
         "description": "Submit button on the 2FA challenge screen"
     },
-    "mfaUnsupportedFactor": "Для вашого акаунта налаштовано другий фактор захисту, який цей застосунок ще не підтримує. Будь ласка, увійдіть через вебсайт.",
+    "mfaUnsupportedFactor": "Для вашого обліковий записа налаштовано другий фактор захисту, який цей застосунок ще не підтримує. Будь ласка, увійдіть через вебсайт.",
     "@mfaUnsupportedFactor": {
         "description": "Shown when the server reports only factor types the app cannot handle (e.g. webauthn)"
     },
-    "manageAccountOnWeb": "Керування акаунтом на сайті",
+    "manageAccountOnWeb": "Керування обліковий записом на сайті",
     "@manageAccountOnWeb": {
         "description": "Label on a button that opens the user's preferences page on the wger website"
     },
-    "manageAccountOnWebSubtitle": "Змінюйте пароль, налаштовуйте двофакторну автентифікацію, керуйте токенами API або видаляйте свій акаунт.",
+    "manageAccountOnWebSubtitle": "Змінюйте пароль, налаштовуйте двофакторну автентифікацію, керуйте токенами API або видаляйте свій обліковий запис.",
     "@manageAccountOnWebSubtitle": {
         "description": "Helper text below the 'Manage account on the web' button listing what is configurable there"
     },
@@ -1055,7 +1055,7 @@
     "signInWithToken": "Увійти за допомогою токена",
     "tokenSubtitle": "Згенеруйте його на вебсайті wger",
     "newToWger": "Уперше у wger?",
-    "alreadyHaveAccount": "Вже маєте акаунт?",
+    "alreadyHaveAccount": "Вже маєте обліковий запис?",
     "tokenLabel": "Токен",
     "webHandoffLinkLabel": "Інші способи входу",
     "webHandoffLinkSubtitle": "Вхід через соцмережі, Passkey, SSO",
@@ -1426,7 +1426,7 @@
     "editorList": "Список",
     "settingsImageCacheDescription": "Кеш зображень",
     "settingsDataTitle": "Конфіденційність",
-    "settingsKeepDataOnLogout": "Зберігати дані після виходу з акаунта",
+    "settingsKeepDataOnLogout": "Зберігати дані після виходу із облікового запису",
     "settingsKeepDataOnLogoutDescription": "Локальна база даних залишається на пристрої, доки не ввійде інший обліковий запис.",
     "settingsVerboseLogging": "Детальний журнал логів",
     "@settingsVerboseLogging": {
@@ -1701,7 +1701,7 @@
     "@health": {
         "description": "Section header for health-related settings"
     },
-    "importedEntry": "Цей запис синхронізовано з застосунку «Здоров'я», тому змінити його можна лише там",
+    "importedEntry": "Цей запис синхронізовано із застосунку «Здоров'я», тому змінити його можна лише там",
     "@importedEntry": {
         "description": "Tooltip on the badge of a measurement entry imported from Apple Health / Health Connect; such entries cannot be edited or deleted in the app"
     },
