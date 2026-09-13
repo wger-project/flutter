@@ -50,7 +50,7 @@
         "description": "Error message when the user enters an invalid username"
     },
     "username": "Ім'я користувача",
-    "customServerHint": "Введіть адресу власного сервера, інакше буде використовуватися за замовчуванням",
+    "customServerHint": "Введіть адресу власного сервера, інакше використовуватиметься стандартний",
     "@customServerHint": {
         "description": "Hint text for the form where the users can enter their own wger instance"
     },
@@ -256,8 +256,8 @@
         "description": "Label for the button that adds a set (to a workout day)"
     },
     "addMeal": "Додати страву",
-    "mealLogged": "Прийом їжі записано в щоденник",
-    "logMeal": "Запис прийому їжі в щоденник харчування",
+    "mealLogged": "Прийом їжі записано у щоденник",
+    "logMeal": "Запис прийому їжі у щоденник харчування",
     "addIngredient": "Додати інгредієнт",
     "logIngredient": "Занесіть інгредієнт до щоденника харчування",
     "searchIngredient": "Пошук інгредієнта",
@@ -534,7 +534,7 @@
     "add_exercise_image_license": "Зображення повинні бути сумісні з ліцензією CC BY SA. Якщо ви сумніваєтеся, завантажуйте лише фотографії, які ви зробили самі.",
     "translateExercise": "Перекладіть цю вправу зараз",
     "selectEntry": "Будь ласка, виберіть запис",
-    "enterMinCharacters": "Будь ласка, введіть принаймні {min} символи",
+    "enterMinCharacters": "Будь ласка, введіть принаймні {min} символів",
     "@enterMinCharacters": {
         "description": "Error message when the user hasn't entered the minimum amount characters in a form",
         "type": "text",
@@ -689,11 +689,11 @@
     "@indicatorAvg": {
         "description": "added for localization of Class Indicator's field text"
     },
-    "onlyLogging": "Слідкуйте лише за калоріями",
-    "onlyLoggingHelpText": "Поставте прапорець, якщо ви хочете лише реєструвати свої калорії та не хочете встановлювати детальний план харчування з певними стравами",
+    "onlyLogging": "Стежте лише за калоріями",
+    "onlyLoggingHelpText": "Позначте прапорець, якщо ви хочете лише реєструвати свої калорії та не хочете встановлювати детальний план прийому їжі з певними стравами",
     "goalEnergy": "Енергетична мета",
-    "goalProtein": "Білкова мета",
-    "goalCarbohydrates": "Мета вуглеводів",
+    "goalProtein": "Норма білків",
+    "goalCarbohydrates": "Норма вуглеводів",
     "goalFat": "Норма жирів",
     "today": "Сьогодні",
     "loggedToday": "Зареєстровано сьогодні",
@@ -710,7 +710,7 @@
         "description": "Message returned if no exercises match the searched string"
     },
     "ingredientLogged": "Інгредієнт зареєстровано в щоденнику",
-    "selectMealToLog": "Виберіть страву, щоб записати в щоденник",
+    "selectMealToLog": "Виберіть прийом їжі, щоб записати у щоденник",
     "aboutMastodonTitle": "Mastodon",
     "settingsCacheTitle": "Кеш",
     "settingsCacheDeletedSnackbar": "Кеш успішно очищено",
@@ -735,9 +735,9 @@
             }
         }
     },
-    "isRestDay": "Є День відпочинку",
-    "isRestDayHelp": "Будь ласка, зверніть увагу, що всі підходи та вправи будуть видалені, коли ви позначите день як вихідний.",
-    "routineDays": "Днів в програмі тренувань",
+    "isRestDay": "Є день відпочинку",
+    "isRestDayHelp": "Будь ласка, зверніть увагу, що всі підходи та вправи буде вилучено, коли ви позначите день як вихідний.",
+    "routineDays": "Днів у програмі тренувань",
     "fitInWeek": "Фіксований тижневий розклад",
     "fitInWeekHelp": "Якщо ввімкнено, дні повторюватимуться в тижневому циклі, інакше дні будуть йти послідовно незалежно від початку нового тижня.",
     "addSuperset": "Додати суперсет",
@@ -768,7 +768,7 @@
     "errorCouldNotConnectToServer": "Не вдалося підключитися до сервера",
     "errorInfoDescription2": "Ви можете продовжувати користуватися застосунком, але деякі функції можуть не працювати.",
     "errorInfoDescription": "Вибачте, але щось пішло не так. Ви можете допомогти нам виправити це, повідомивши про проблему на GitHub.",
-    "copyToClipboard": "Копіювати в буфер обміну",
+    "copyToClipboard": "Копіювати у буфер обміну",
     "aboutWhySupportTitle": "Відкритий код та безкоштовний у використанні ❤️",
     "aboutJoinCommunityTitle": "Приєднуйтесь до спільноти",
     "aboutDiscordTitle": "Discord",
@@ -800,7 +800,7 @@
     "@yourCurrentNutritionPlanHasNoMealsDefinedYet": {
         "description": "Message shown when a nutrition plan doesn't have any meals"
     },
-    "toAddMealsToThePlanGoToNutritionalPlanDetails": "Щоб додати страви до плану, перейдіть до деталей плану харчування",
+    "toAddMealsToThePlanGoToNutritionalPlanDetails": "Щоб додати страви до плану, перейдіть до деталей плану прийому їжі",
     "@toAddMealsToThePlanGoToNutritionalPlanDetails": {
         "description": "Message shown to guide users to the nutritional plan details page to add meals"
     },
@@ -911,12 +911,12 @@
     "slotEntryTypeJump": "Стрибок",
     "endWorkout": "Закінчити тренування",
     "impressionGood": "Добре",
-    "impressionNeutral": "Нейтральний",
+    "impressionNeutral": "Нейтрально",
     "impressionBad": "Погано",
     "gymModeShowExercises": "Показати сторінки огляду вправ",
     "gymModeShowTimer": "Показувати таймер між підходами",
     "gymModeTimerType": "Тип таймера",
-    "gymModeTimerTypeHelText": "Якщо сет має час паузи, завжди використовується зворотний відлік.",
+    "gymModeTimerTypeHelText": "Якщо підхід має час паузи, завжди використовується зворотний відлік.",
     "countdown": "Зворотний відлік",
     "stopwatch": "Секундомір",
     "gymModeDefaultCountdownTime": "Час зворотного відліку за замовчуванням, у секундах",
@@ -968,8 +968,8 @@
     "personalRecords": "Особисті рекорди",
     "noTrophies": "У вас ще немає трофеїв",
     "endBeforeStart": "Кінцеве значення не може передувати початку",
-    "minLengthRoutine": "Розпорядок має тривати принаймні {number} тижнів",
-    "maxLengthRoutine": "Процедура може тривати щонайбільше {number} тижнів",
+    "minLengthRoutine": "Програма має тривати принаймні {number} тижнів",
+    "maxLengthRoutine": "Програма тренувань щонайбільше {number} тижнів",
     "preview": "Попередній перегляд",
     "refreshToken": "Оновити токен",
     "invalidRefreshToken": "Будь ласка, введіть дійсний токен оновлення",
@@ -1016,11 +1016,11 @@
     "@mfaSubmit": {
         "description": "Submit button on the 2FA challenge screen"
     },
-    "mfaUnsupportedFactor": "Для вашого обліковий записа налаштовано другий фактор захисту, який цей застосунок ще не підтримує. Будь ласка, увійдіть через вебсайт.",
+    "mfaUnsupportedFactor": "Для вашого облікового запису налаштовано другий фактор захисту, який цей застосунок ще не підтримує. Будь ласка, увійдіть через вебсайт.",
     "@mfaUnsupportedFactor": {
         "description": "Shown when the server reports only factor types the app cannot handle (e.g. webauthn)"
     },
-    "manageAccountOnWeb": "Керування обліковий записом на сайті",
+    "manageAccountOnWeb": "Керування обліковим записом на сайті",
     "@manageAccountOnWeb": {
         "description": "Label on a button that opens the user's preferences page on the wger website"
     },
@@ -1426,7 +1426,7 @@
     "editorList": "Список",
     "settingsImageCacheDescription": "Кеш зображень",
     "settingsDataTitle": "Конфіденційність",
-    "settingsKeepDataOnLogout": "Зберігати дані після виходу із облікового запису",
+    "settingsKeepDataOnLogout": "Зберігати дані після виходу з облікового запису",
     "settingsKeepDataOnLogoutDescription": "Локальна база даних залишається на пристрої, доки не ввійде інший обліковий запис.",
     "settingsVerboseLogging": "Детальний журнал логів",
     "@settingsVerboseLogging": {
@@ -1520,7 +1520,7 @@
     "@syncStatusUploading": {
         "description": "Tooltip on the sync icon while local changes are being uploaded to the server"
     },
-    "syncStatusDownloading": "Завантаження з сервера",
+    "syncStatusDownloading": "Завантаження із сервера",
     "@syncStatusDownloading": {
         "description": "Tooltip on the sync icon while remote changes are being downloaded from the server"
     },
@@ -1552,7 +1552,7 @@
     "@syncStatusStalledNotStartedHint": {
         "description": "Hint shown in the sync status dialog when a connection was requested but the sync client never reported any state at all"
     },
-    "syncStatusStalledNotAppliedHint": "Дані надходять, але не можуть бути застосовані, тому нічого нового не з'являється. Повідомлення про це разом із скопійованими деталями допоможе нам це виправити.",
+    "syncStatusStalledNotAppliedHint": "Дані надходять, але їх неможливо застосувати, тому нічого нового не з'являється. Повідомлення про це разом із скопійованими деталями допоможе нам це виправити.",
     "@syncStatusStalledNotAppliedHint": {
         "description": "Hint shown in the sync status dialog when sync data keeps arriving but no checkpoint ever completes, so the downloaded data stays invisible"
     },
@@ -1735,7 +1735,7 @@
     "@calculationLocked": {
         "description": "Helper text under the disabled calculation picker when editing a category that already calculates"
     },
-    "calculationMissingHeight": "У вашому профілі не вказано зріст, тому значення поки що не можуть бути обчислені.",
+    "calculationMissingHeight": "У вашому профілі не вказано зріст, тому значення поки що неможливо обчислити.",
     "@calculationMissingHeight": {
         "description": "Warning shown when a calculation needs the height from the user profile but it is not set"
     },
