@@ -1399,5 +1399,81 @@
     "syncStatusNeverSynced": "Još nije sinkronizirano",
     "@syncStatusNeverSynced": {
         "description": "Shown in the sync status dialog instead of the last-sync timestamp when this device has never completed a synchronisation"
+    },
+    "reorderCategories": "Promijeni redoslijed kategorija",
+    "@reorderCategories": {
+        "description": "measurement categories reordering"
+    },
+    "metricCustom": "Prilagođeno",
+    "@metricCustom": {
+        "description": "Label for custom metric type"
+    },
+    "chartTypeAuto": "Automatski",
+    "@chartTypeAuto": {
+        "description": "Chart type option that leaves the chart to the metric type of the category"
+    },
+    "chartType": "Vrsta dijagrama",
+    "@chartType": {
+        "description": "Label of the chart type picker of a measurement category"
+    },
+    "chartTypeLine": "Linija",
+    "@chartTypeLine": {
+        "description": "Chart type option: a line through the measured values"
+    },
+    "chartTypeBar": "Stupci",
+    "@chartTypeBar": {
+        "description": "Chart type option: one bar per day"
+    },
+    "chartTypeDelta": "Promjena",
+    "@chartTypeDelta": {
+        "description": "Chart type option: one bar per week, showing how much the value changed"
+    },
+    "chartWeeklyChangeTitle": "{name}, promjena po tjednu",
+    "@chartWeeklyChangeTitle": {
+        "description": "Title of the chart showing the weekly change of 'name' (e.g. 'weight', 'body fat' etc.)",
+        "type": "text",
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "chartTrend": "Linija trenda",
+    "@chartTrend": {
+        "description": "Label of the setting for how closely the trend line follows the values"
+    },
+    "trendReactive": "Reaktivno",
+    "@trendReactive": {
+        "description": "Trend line option: follows the values closely"
+    },
+    "trendBalanced": "Uravnoteženo",
+    "@trendBalanced": {
+        "description": "Trend line option: the default, between reactive and sluggish"
+    },
+    "trendSluggish": "Izglađeno",
+    "@trendSluggish": {
+        "description": "Trend line option: ignores short-term swings"
+    },
+    "chartAverageWindow": "Prosjek za",
+    "@chartAverageWindow": {
+        "description": "Label of the setting for how many days the moving average covers"
+    },
+    "chartTypeDistribution": "Distribucija",
+    "@chartTypeDistribution": {
+        "description": "Chart type option: a histogram of how often each value occurred"
+    },
+    "chartDistributionTitle": "{name}, distribucija",
+    "@chartDistributionTitle": {
+        "description": "Title of the histogram showing how the values of 'name' (e.g. 'weight') are distributed",
+        "type": "text",
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "distributionMedian": "Medijan",
+    "@distributionMedian": {
+        "description": "Label of the median marker in the distribution histogram"
     }
 }
