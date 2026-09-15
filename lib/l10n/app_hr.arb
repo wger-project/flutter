@@ -278,7 +278,7 @@
     "@value": {
         "description": "The value of a measurement entry"
     },
-    "start": "Početak",
+    "start": "Počni",
     "@start": {
         "description": "Label on button to start the gym mode (i.e., an imperative)"
     },
@@ -1338,8 +1338,8 @@
     },
     "powerSyncUnreachableContent": "Tvoj je wger server dostupan, ali (zasebna) usluga koja obrađuje izvanmrežnu sinkronizaciju ne odgovara. Ako pokrećeš vlastiti hosting za wger, provjeri konfiguraciju i provjeri je li PowerSync usluga ispravno radi.",
     "endBeforeStart": "Vrijednost kraja ne može biti prije vrijednosti početka",
-    "minLengthRoutine": "Rutina mora trajati najmanje {number} tjedna",
-    "maxLengthRoutine": "Rutina mora trajati najviše {number} tjedna",
+    "minLengthRoutine": "Rutina mora trajati barem {number} tjedna",
+    "maxLengthRoutine": "Rutina smije trajati najviše {number} tjedna",
     "allowSelfSignedCertsTitle": "Dopusti samopotpisane certifikate",
     "allowSelfSignedCertsDetail": "Deaktivira provjeru valjanosti TLS certifikata. Aktiviraj ovo samo za server kojem vjeruješ.",
     "certsNotVerifiedTitle": "Provjera valjanosti certifikata je isključena",
@@ -1475,5 +1475,237 @@
     "distributionMedian": "Medijan",
     "@distributionMedian": {
         "description": "Label of the median marker in the distribution histogram"
+    },
+    "metricBodyFat": "Tjelesna masnoća",
+    "@metricBodyFat": {
+        "description": "Label for body fat percentage measurement"
+    },
+    "metricHeight": "Visina",
+    "@metricHeight": {
+        "description": "Label for height measurement"
+    },
+    "metricBloodPressure": "Krvni tlak",
+    "@metricBloodPressure": {
+        "description": "Label for blood pressure measurement"
+    },
+    "metricBloodPressureSystolic": "Sistolički",
+    "@metricBloodPressureSystolic": {
+        "description": "Label for the systolic component of a blood pressure reading"
+    },
+    "metricBloodPressureDiastolic": "Dijastolički",
+    "@metricBloodPressureDiastolic": {
+        "description": "Label for the diastolic component of a blood pressure reading"
+    },
+    "metricHeartRate": "Puls",
+    "@metricHeartRate": {
+        "description": "Label for heart rate measurement"
+    },
+    "metricRestingHeartRate": "Puls pri mirovanju",
+    "@metricRestingHeartRate": {
+        "description": "Label for resting heart rate measurement"
+    },
+    "metricBloodOxygen": "Kisik u krvi",
+    "@metricBloodOxygen": {
+        "description": "Label for blood oxygen saturation measurement"
+    },
+    "metricSteps": "Koraci",
+    "@metricSteps": {
+        "description": "Label for step count measurement"
+    },
+    "metricDistance": "Daljina",
+    "@metricDistance": {
+        "description": "Label for distance measurement"
+    },
+    "metricSleep": "Spavanje",
+    "@metricSleep": {
+        "description": "Label for sleep duration measurement"
+    },
+    "noDataAvailable": "Nema podataka",
+    "@noDataAvailable": {
+        "description": "Shown in place of a chart when the category has no entries in the selected range"
+    },
+    "metricSleepTotal": "Ukupno",
+    "@metricSleepTotal": {
+        "description": "Component of the 'Sleep' category, listed under that heading, so 'sleep' is not repeated. The total time asleep in a night, all sleep stages together"
+    },
+    "metricSleepLight": "Lagano",
+    "@metricSleepLight": {
+        "description": "Component of the 'Sleep' category, listed under that heading, so 'sleep' is not repeated. The light sleep stage, meaning shallow sleep, never 'light' as in brightness or weight"
+    },
+    "metricSleepDeep": "Duboko",
+    "@metricSleepDeep": {
+        "description": "Component of the 'Sleep' category, listed under that heading, so 'sleep' is not repeated. The deep sleep stage, also called slow-wave sleep"
+    },
+    "metricSleepRem": "REM",
+    "@metricSleepRem": {
+        "description": "Component of the 'Sleep' category, listed under that heading, so 'sleep' is not repeated. The REM (rapid eye movement) sleep stage, usually kept as the abbreviation"
+    },
+    "metricSleepAwake": "Budnost",
+    "@metricSleepAwake": {
+        "description": "Component of the 'Sleep' category, listed under that heading. The time spent awake during a night, not counted as sleep"
+    },
+    "partOfGroup": "Dio grupe",
+    "@partOfGroup": {
+        "description": "Dropdown label: makes a measurement category a component of a multi-value group (e.g. blood pressure)"
+    },
+    "noGroup": "Nijedna grupa",
+    "@noGroup": {
+        "description": "Dropdown option for a measurement category that is not part of any group"
+    },
+    "indicatorTrend": "trend",
+    "@indicatorTrend": {
+        "description": "Legend label for the smoothed trendline on measurement charts"
+    },
+    "distributionLatest": "Najnovija",
+    "@distributionLatest": {
+        "description": "Label of the marker for the most recent value in the distribution histogram"
+    },
+    "distributionEntryCount": "{count, plural, one{1 unos} few{{count} unosa} other{{count} unosa}}",
+    "@distributionEntryCount": {
+        "description": "How many measurements fall into the tapped histogram bin",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "distributionDayCount": "{count, plural, one{1 dan} few{{count} dana} other{{count} dana}}",
+    "@distributionDayCount": {
+        "description": "How many days fall into the tapped histogram bin, for metrics summed per day",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "relativeDaysAgo": "{count, plural, =0{danas} =1{jučer} few{prije {count} dana} other{prije {count} dana}}",
+    "@relativeDaysAgo": {
+        "description": "How long ago something was measured, for distances below a week",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "relativeWeeksAgo": "{count, plural, one{prije 1 tjedan} few{prije {count} tjedna} other{prije {count} tjedna}}",
+    "@relativeWeeksAgo": {
+        "description": "How long ago something was measured, for distances below a month",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "relativeMonthsAgo": "{count, plural, one{prije 1 mjesec} few{prije {count} mjeseca} other{prije {count} mjeseci}}",
+    "@relativeMonthsAgo": {
+        "description": "How long ago something was measured, for distances below a year",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "relativeYearsAgo": "{count, plural, one{prije 1 godine} few{prije {count} godine} other{prije {count} godina}}",
+    "@relativeYearsAgo": {
+        "description": "How long ago something was measured, for distances of a year and more",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "sparkAverage": "prosjek {value}",
+    "@sparkAverage": {
+        "description": "Chip on an overview tile: the average over the charted days, e.g. 'avg 7:05' for sleep",
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    },
+    "sparkTrendPerWeek": "{value}/tjedan",
+    "@sparkTrendPerWeek": {
+        "description": "Chip on an overview tile: how much the value changes per week, shown after a direction arrow",
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    },
+    "sparkTrendStable": "stabilno",
+    "@sparkTrendStable": {
+        "description": "Chip on an overview tile when the value barely changes, shown after a right arrow"
+    },
+    "customMeasurement": "Prilagođeno mjerenje",
+    "@customMeasurement": {
+        "description": "Option that creates a free-form measurement category with its own name and unit"
+    },
+    "metricLeanBodyMass": "Nemasna tjelesna masa",
+    "@metricLeanBodyMass": {
+        "description": "Label for lean body mass measurement"
+    },
+    "calculationHelpExercises": "Između {min} i {max} vježbi, odabrano je {count}.",
+    "@calculationHelpExercises": {
+        "description": "Helper text under the exercise picker of a calculated category. {count} is how many are picked so far",
+        "placeholders": {
+            "min": {
+                "type": "int"
+            },
+            "max": {
+                "type": "int"
+            },
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "healthSyncSuccess": "Uvezeno {count} mjerenja iz Zdravlja",
+    "@healthSyncSuccess": {
+        "description": "Snackbar message after successful health sync",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "chartRangeYears": "{count, plural, one{1 godina} few{{count} godine} other{{count} godina}}",
+    "@chartRangeYears": {
+        "description": "Chart time-range selector option covering a number of years",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "chartRangeMonths": "{count, plural, one{1 mjesec} few{{count} mjeseca} other{{count} mjeseci}}",
+    "@chartRangeMonths": {
+        "description": "Chart time-range selector option covering a number of months",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "chartRangeWeeks": "{count, plural, one{1 tjedan} few{{count} tjedna} other{{count} tjedna}}",
+    "@chartRangeWeeks": {
+        "description": "Chart time-range selector option covering a number of weeks",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "healthSyncStatus": "{count, plural, =0{Zadnja sinkronizacija: {time}, bez novih unosa} one{Zadnja sinkronizacija: {time}, 1 novi unos} few{Zadnja sinkronizacija: {time}, {count} nova unosa} other{Zadnja sinkronizacija: {time}, {count} novih unosa}}\n\n{count, plural, =0{Zadnja sinkronizacija: \n{time}, bez novih unosa} one{Zadnja sinkronizacija: \n{time}, 1 novi unos} few{Zadnja sinkronizacija: \n{time}, {count} nova unosa} other{Zadnja sinkronizacija: \n{time}, {count} novih unosa}}",
+    "@healthSyncStatus": {
+        "description": "Status line under the health sync toggle showing when the last sync ran and how many entries it imported",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            },
+            "time": {
+                "type": "String",
+                "example": "7/31/2026 14:32"
+            }
+        }
     }
 }
