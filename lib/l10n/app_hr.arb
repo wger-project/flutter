@@ -1695,7 +1695,7 @@
             }
         }
     },
-    "healthSyncStatus": "{count, plural, =0{Zadnja sinkronizacija: {time}, bez novih unosa} one{Zadnja sinkronizacija: {time}, 1 novi unos} few{Zadnja sinkronizacija: {time}, {count} nova unosa} other{Zadnja sinkronizacija: {time}, {count} novih unosa}}\n\n{count, plural, =0{Zadnja sinkronizacija: \n{time}, bez novih unosa} one{Zadnja sinkronizacija: \n{time}, 1 novi unos} few{Zadnja sinkronizacija: \n{time}, {count} nova unosa} other{Zadnja sinkronizacija: \n{time}, {count} novih unosa}}",
+    "healthSyncStatus": "{count, plural, =0{Zadnja sinkronizacija: {time}, bez novih unosa} one{Zadnja sinkronizacija: {time}, 1 novi unos} few{Zadnja sinkronizacija: {time}, {count} nova unosa} other{Zadnja sinkronizacija: {time}, {count} novih unosa}}",
     "@healthSyncStatus": {
         "description": "Status line under the health sync toggle showing when the last sync ran and how many entries it imported",
         "placeholders": {
@@ -1707,5 +1707,34 @@
                 "example": "7/31/2026 14:32"
             }
         }
+    },
+    "calculationValuesManual": "Ručno upisano",
+    "@calculationValuesManual": {
+        "description": "One of two options when creating a measurement category: the user types the values in themselves. The other option is 'Calculated'"
+    },
+    "health": "Zdravlje",
+    "@health": {
+        "description": "Section header for health-related settings"
+    },
+    "chartTypeHeatmap": "Toplinska karta",
+    "@chartTypeHeatmap": {
+        "description": "Chart type option: a calendar grid with one coloured cell per day"
+    },
+    "chartAverageWindowDays": "{days, plural, one{1 dan} few{{days} dana} other{{days} dana}}",
+    "@chartAverageWindowDays": {
+        "description": "One option of the average window setting, e.g. '7 days'",
+        "placeholders": {
+            "days": {
+                "type": "int"
+            }
+        }
+    },
+    "calculationBadge": "Izračunato",
+    "@calculationBadge": {
+        "description": "Badge marking a measurement category whose values the server computes, and the matching option when creating one. Keep it short, it sits next to a category title and opposite 'Entered by hand'"
+    },
+    "importedEntry": "Ovaj je unos sinkroniziran iz aplikacije o zdravlju te se može mijenjati isključivo ondje",
+    "@importedEntry": {
+        "description": "Tooltip on the badge of a measurement entry imported from Apple Health / Health Connect; such entries cannot be edited or deleted in the app"
     }
 }
