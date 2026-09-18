@@ -830,7 +830,7 @@
     "aboutSourceListTitle": "Prikaži izvorni kod",
     "aboutJoinCommunityTitle": "Pridruži se zajednici",
     "aboutDiscordTitle": "Discord",
-    "others": "Drugi",
+    "others": "Drugo",
     "resultingRoutine": "Rezultirajuća rutina",
     "restDay": "Dan odmora",
     "isRestDay": "Je dan odmora",
@@ -1736,5 +1736,85 @@
     "importedEntry": "Ovaj je unos sinkroniziran iz aplikacije o zdravlju te se može mijenjati isključivo ondje",
     "@importedEntry": {
         "description": "Tooltip on the badge of a measurement entry imported from Apple Health / Health Connect; such entries cannot be edited or deleted in the app"
+    },
+    "labelBottomNavBody": "Tijelo",
+    "@labelBottomNavBody": {
+        "description": "Label used in bottom navigation and as the title of the screen holding the body weight and the other measurements, use a short word"
+    },
+    "chartRangeAll": "Sve",
+    "@chartRangeAll": {
+        "description": "Label for the chart time-range selector option showing all data"
+    },
+    "aboutPrivacyPolicyTitle": "Uvjeti i politika privatnosti",
+    "@aboutPrivacyPolicyTitle": {
+        "description": "Menu entry on the about page that opens the terms of service and privacy policy"
+    },
+    "syncStatusStalledNotStartedHint": "Aplikacija je zatražila sinkronizaciju, ali klijent za sinkronizaciju se nikada nije pokrenuo. Obično pomaže ponovo pokrenuti aplikaciju.",
+    "@syncStatusStalledNotStartedHint": {
+        "description": "Hint shown in the sync status dialog when a connection was requested but the sync client never reported any state at all"
+    },
+    "syncStatusStalledNotAppliedHint": "Podaci stižu, ali se ne mogu primijeniti, stoga se ništa novo ne prikazuje. Prijavljivanje ovoga s kopiranim podacima nam pomaže to popraviti.",
+    "@syncStatusStalledNotAppliedHint": {
+        "description": "Hint shown in the sync status dialog when sync data keeps arriving but no checkpoint ever completes, so the downloaded data stays invisible"
+    },
+    "healthSync": "Sinkronizacija s platformom Zdravlje",
+    "@healthSync": {
+        "description": "Title for the health platform sync setting"
+    },
+    "healthSyncDescription": "Uvezi tjelesne mjere iz Apple Health ili Health Connect",
+    "@healthSyncDescription": {
+        "description": "Subtitle for the health platform sync setting"
+    },
+    "healthSyncPermissionDenied": "Pristup zdravstvenim podacima nije odobren",
+    "@healthSyncPermissionDenied": {
+        "description": "Snackbar shown when enabling health sync fails because the platform permissions were denied"
+    },
+    "healthSyncNoData": "Nisu pronađeni zdravstveni podaci. Provjeri u {platform} je li wger smije čitati tvoje podatke.",
+    "@healthSyncNoData": {
+        "description": "Snackbar shown when enabling health sync imported nothing, pointing at the platform's permission settings",
+        "placeholders": {
+            "platform": {
+                "type": "String",
+                "example": "Apple Health"
+            }
+        }
+    },
+    "healthSyncSyncing": "Sinkronizacija zdravstvenih podataka …",
+    "@healthSyncSyncing": {
+        "description": "Status line under the health sync toggle while a sync is running"
+    },
+    "healthSyncNow": "Sinkroniziraj sada",
+    "@healthSyncNow": {
+        "description": "Label of the manual health sync action in the settings"
+    },
+    "healthSyncPermissionMissing": "{platform} ne dijeli tvoje podatke",
+    "@healthSyncPermissionMissing": {
+        "description": "Status line under the health sync toggle when the platform refuses to hand over data",
+        "placeholders": {
+            "platform": {
+                "type": "String",
+                "example": "Apple Health"
+            }
+        }
+    },
+    "healthSyncGrantAccess": "Dodirni za ponovno odobrenje pristupa",
+    "@healthSyncGrantAccess": {
+        "description": "Action hint below the missing-permission status line"
+    },
+    "healthSyncFailed": "Zadnja sinkronizacija se nije mogla završiti",
+    "@healthSyncFailed": {
+        "description": "Status line under the health sync toggle after a failed sync"
+    },
+    "healthConnectInstall": "Instaliraj Health Connect",
+    "@healthConnectInstall": {
+        "description": "Action shown instead of the health sync toggle when Health Connect is missing on Android"
+    },
+    "healthConnectUpdate": "Aktualiziraj Health Connect",
+    "@healthConnectUpdate": {
+        "description": "Action shown instead of the health sync toggle when the installed Health Connect is too old"
+    },
+    "healthConnectRequired": "Uvoz tjelesnih mjera zahtijeva Health Connect",
+    "@healthConnectRequired": {
+        "description": "Explanation below the install/update Health Connect action"
     }
 }
