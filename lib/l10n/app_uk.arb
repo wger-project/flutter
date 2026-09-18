@@ -95,7 +95,7 @@
     "@muscles": {
         "description": "(main) muscles trained by an exercise"
     },
-    "musclesSecondary": "Вторинні м'язи",
+    "musclesSecondary": "Допоміжні м'язи",
     "@musclesSecondary": {
         "description": "secondary muscles trained by an exercise"
     },
@@ -103,11 +103,11 @@
     "@category": {
         "description": "Category for an exercise, ingredient, etc."
     },
-    "repetitions": "Повторень",
+    "repetitions": "Повторення",
     "@repetitions": {
         "description": "Repetitions for an exercise set"
     },
-    "reps": "Повтори",
+    "reps": "Повторення",
     "@reps": {
         "description": "Shorthand for repetitions, used when space constraints are tighter"
     },
@@ -185,7 +185,7 @@
         "description": "Label used in bottom navigation, use a short word"
     },
     "weightUnit": "Одиниця ваги",
-    "dayDescriptionHelp": "Опис того, що робиться в цей день (наприклад, «день підтягування») або які частини тіла тренуються (наприклад, «груди та плечі»)",
+    "dayDescriptionHelp": "Опис того, що робиться в цей день (наприклад, «день підтягування») або які частини тіла тренуються (наприклад, («груди та плечі»)",
     "workoutSession": "Тренувальна сесія",
     "@workoutSession": {
         "description": "A (logged) workout session"
@@ -194,7 +194,7 @@
     "@notes": {
         "description": "Personal notes, e.g. for a workout session"
     },
-    "measurementCategoriesHelpText": "Категорія вимірювання, така як \"біцепс\" або \"відсоток жиру\"",
+    "measurementCategoriesHelpText": "Категорія замірів (наприклад, 'біцепс' чи 'відсоток жиру'",
     "time": "Час",
     "@time": {
         "description": "The time of a meal or workout"
@@ -217,8 +217,8 @@
     },
     "fat": "Жири",
     "newNutritionalPlan": "Новий план харчування",
-    "sugars": "із них цукор",
-    "aboutDescription": "Дякуємо за використання wger! wger - це спільний проєкт з відкритим кодом, створений ентузіастами фітнесу з усього світу.",
+    "sugars": "з яких цукри",
+    "aboutDescription": "Дякуємо, що користуєтеся wger! wger — це спільний проєкт із відкритим кодом, створений фітнес-ентузіастами з усього світу.",
     "@aboutDescription": {
         "description": "Text in the about dialog"
     },
@@ -271,10 +271,10 @@
         "description": "Message shown when the user has no nutritional plans"
     },
     "anErrorOccurred": "Сталася помилка!",
-    "measurement": "Вимірювання",
+    "measurement": "Замір",
     "logHelpEntries": "Якщо на один день припадає більше одного запису з однаковою кількістю повторень, але різними вагами, то на графіку буде показано тільки запис з більшою вагою.",
     "logHelpEntriesUnits": "Зверніть увагу, що на графіку відображаються тільки записи з одиницями ваги (кг або lb) і повтореннями. Інші комбінації, такі як час або \"до відмови\", тут ігноруються.",
-    "measurements": "Вимірювання",
+    "measurements": "Заміри тіла",
     "@measurements": {
         "description": "Categories for the measurements such as biceps size, body fat, etc."
     },
@@ -293,7 +293,7 @@
     "@energyShort": {
         "description": "The first letter or short name of the word 'Energy', used in overviews"
     },
-    "macronutrients": "Макроелементи",
+    "macronutrients": "Макронутрієнти",
     "planned": "Заплановано",
     "@planned": {
         "description": "Header for the column of 'planned' nutritional values, i.e. what should be eaten"
@@ -340,7 +340,7 @@
     "saturatedFat": "Насичені жири",
     "fiber": "Клітковина",
     "sodium": "Натрій",
-    "amount": "Сума",
+    "amount": "Маса",
     "@amount": {
         "description": "The amount (e.g. in grams) of an ingredient in a meal"
     },
@@ -360,7 +360,7 @@
     "@loadingText": {
         "description": "Text to show when entries are being loaded in the background: Loading..."
     },
-    "confirmDelete": "Ви впевнені, що бажаєте видалити '{toDelete}'?",
+    "confirmDelete": "Видалити '{toDelete}'?",
     "@confirmDelete": {
         "description": "Confirmation text before the user deletes an object",
         "type": "text",
@@ -370,16 +370,16 @@
             }
         }
     },
-    "toggleDetails": "Перемкнути відомості",
+    "toggleDetails": "Детальніше",
     "@toggleDetails": {
         "description": "Switch to toggle detail / overview"
     },
-    "goToDetailPage": "Перейти до сторінки відомостей",
+    "goToDetailPage": "Перейти до деталей",
     "goToToday": "Перейти до сьогодні",
     "@goToToday": {
         "description": "Label on button to jump back to 'today' in the calendar widget"
     },
-    "enterCharacters": "Будь ласка, введіть від {min} до {max} символів",
+    "enterCharacters": "Введи від {min} до {max} символів",
     "@enterCharacters": {
         "description": "Error message when the user hasn't entered the correct number of characters in a form",
         "type": "text",
@@ -407,15 +407,15 @@
         "description": "Label shown on the slider where the user can toggle showing units and RiR",
         "type": "text"
     },
-    "enterValidNumber": "Будь ласка, введіть коректне число",
+    "enterValidNumber": "Введіть дійсне число",
     "@enterValidNumber": {
         "description": "Error message when the user has submitted an invalid number (e.g. '3,.,.,.')"
     },
-    "recentlyUsedIngredients": "Останні інгредієнти",
+    "recentlyUsedIngredients": "Нещодавно додані інгредієнти",
     "@recentlyUsedIngredients": {
         "description": "A message when a user adds a new ingredient to a meal."
     },
-    "selectImage": "Будь ласка, оберіть зображення",
+    "selectImage": "Оберіть зображення",
     "@selectImage": {
         "description": "Label and error message when the user hasn't selected an image to save"
     },
@@ -424,7 +424,7 @@
         "description": "Label for the popup with general app options"
     },
     "takePicture": "Зробити знімок",
-    "chooseFromLibrary": "Вибрати з бібліотеки світлин",
+    "chooseFromLibrary": "Вибрати із бібліотеки світлин",
     "gallery": "Галерея",
     "imageFormatNotSupported": "{imageFormat} не підтримується",
     "@imageFormatNotSupported": {
@@ -469,14 +469,14 @@
     "@close": {
         "description": "Translation for close"
     },
-    "rir": "RiR",
+    "rir": "RiR (повторення в запасі)",
     "@rir": {
         "description": "Shorthand for Repetitions In Reserve"
     },
     "miles": "Милі",
     "aboutPageTitle": "Про нас та підтримка",
     "noMeasurementEntries": "У вас немає записів вимірювання",
-    "moreMeasurementEntries": "Додати нове вимірювання",
+    "moreMeasurementEntries": "Додати новий замір",
     "@moreMeasurementEntries": {
         "description": "Message shown when the user wants to add new measurement"
     },
@@ -489,9 +489,9 @@
         }
     },
     "addExercise": "Додати вправу",
-    "none__bodyweight_exercise_": "Вправи з власною вагою тіла",
-    "abs": "Прес",
-    "baseData": "Основи англійської",
+    "none__bodyweight_exercise_": "Власна вага (без обладнання)",
+    "abs": "М'язи преса",
+    "baseData": "Базова інформація англійською",
     "@baseData": {
         "description": "The base data for an exercise such as category, trained muscles, etc."
     },
@@ -499,18 +499,18 @@
     "glutes": "Сідниці",
     "kilometers": "Кілометри",
     "seconds": "Секунди",
-    "bench": "Лавка",
+    "bench": "Лава",
     "barbell": "Штанга",
     "triceps": "Трицепс",
     "swiss_ball": "Фітбол",
     "lower_back": "Нижня частина спини",
     "shoulders": "Плечі",
-    "hamstrings": "Підколінні сухожилля",
+    "hamstrings": "Задня поверхня стегна",
     "chest": "Груди",
     "biceps": "Біцепс",
     "dumbbell": "Гантель",
-    "gym_mat": "Гімнастичний мат",
-    "incline_bench": "Похила лавка",
+    "gym_mat": "Килимок",
+    "incline_bench": "Похила лава",
     "lats": "Найширші м'язи спини",
     "legs": "Ноги",
     "back": "Спина",
@@ -521,7 +521,7 @@
     "calves": "Литкові м'язи",
     "pull_up_bar": "Перекладина",
     "until_failure": "До відмови",
-    "userProfile": "Твій профіль",
+    "userProfile": "Ваш профіль",
     "exerciseList": "Список вправ",
     "exercises": "Вправи",
     "@exercises": {
@@ -544,7 +544,7 @@
             }
         }
     },
-    "baseNameEnglish": "Всі вправи потребують базової назви англійською",
+    "baseNameEnglish": "Для всіх вправ потрібна базова назва англійською",
     "variations": "Варіації",
     "@variations": {
         "description": "Variations of one exercise (e.g. benchpress and benchpress narrow)"
@@ -568,7 +568,7 @@
     "next": "Наступний",
     "images": "Зображення",
     "language": "Мова",
-    "contributeExercise": "Внести вправу",
+    "contributeExercise": "Додати вправу",
     "translation": "Переклад",
     "cardio": "Кардіо",
     "contributeExerciseWarning": "Ви можете додавати нові вправи, якщо вашому обліковому запису більше ніж {days} днів і є підтвердження вашої електронної пошти",
@@ -589,7 +589,7 @@
     "searchNamesInEnglish": "Також шукайте імена англійською мовою",
     "textPromptTitle": "Готові почати?",
     "textPromptSubheading": "Натисніть кнопку дії, щоб почати",
-    "body_weight": "Вага тіла",
+    "body_weight": "Власна вага",
     "@body_weight": {
         "description": "Generated entry for translation for server strings"
     },
@@ -614,7 +614,7 @@
         "description": "Generated entry for translation for server strings"
     },
     "verify": "Підтвердити",
-    "max_reps": "Максимальна кількість повторень",
+    "max_reps": "Максимум повторень",
     "@max_reps": {
         "description": "Generated entry for translation for server strings"
     },
@@ -633,7 +633,7 @@
     },
     "useMetric": "Використовуйте метричні одиниці вимірювання маси тіла",
     "settingsTitle": "Налаштування",
-    "deficit": "Дефіцит калорій",
+    "deficit": "дефіцит",
     "@deficit": {
         "description": "Caloric deficit (either planned or unplanned)"
     },
@@ -668,20 +668,20 @@
             }
         }
     },
-    "log": "Журнал",
+    "log": "Записати",
     "@log": {
         "description": "Log a specific meal (imperative form)"
     },
     "settingsIngredientCacheDescription": "Кеш інгредієнтів",
-    "overallChangeWeight": "Загальна зміна",
+    "overallChangeWeight": "Загальна зміна ваги",
     "@overallChangeWeight": {
         "description": "Overall change in weight, added for localization"
     },
-    "goalTypeMeals": "Від їжі",
+    "goalTypeMeals": "З їжі",
     "@goalTypeMeals": {
         "description": "added for localization of Class GoalType's filed meals"
     },
-    "indicatorRaw": "сирий",
+    "indicatorRaw": "первинні дані",
     "@indicatorRaw": {
         "description": "added for localization of Class Indicator's field text"
     },
@@ -691,15 +691,15 @@
     },
     "onlyLogging": "Стежте лише за калоріями",
     "onlyLoggingHelpText": "Позначте прапорець, якщо ви хочете лише реєструвати свої калорії та не хочете встановлювати детальний план прийому їжі з певними стравами",
-    "goalEnergy": "Енергетична мета",
-    "goalProtein": "Норма білків",
+    "goalEnergy": "Норма калорій",
+    "goalProtein": "Норма білка",
     "goalCarbohydrates": "Норма вуглеводів",
     "goalFat": "Норма жирів",
     "today": "Сьогодні",
-    "loggedToday": "Зареєстровано сьогодні",
-    "aboutDonateTitle": "Зробіть пожертву",
-    "aboutDonateText": "Хоча проєкт є безкоштовним і завжди ним залишатиметься, запуск сервера - ні! Розвиток також вимагає значного часу і зусиль від волонтерів. Ваш внесок безпосередньо підтримує ці витрати, допомагаючи підтримувати надійність сервісу.",
-    "surplus": "надлишок",
+    "loggedToday": "Спожито сьогодні",
+    "aboutDonateTitle": "Підтримати проєкт",
+    "aboutDonateText": "Хоча проєкт є безкоштовним і завжди таким залишатиметься, утримання серверів потребує коштів! Розробка також вимагає чимало часу та зусиль від волонтерів. Ваш внесок напряму покриває ці витрати й допомагає забезпечувати надійну роботу сервісу.",
+    "surplus": "профіцит",
     "@surplus": {
         "description": "Caloric surplus (either planned or unplanned)"
     },
@@ -749,7 +749,7 @@
     "min": "Мін",
     "max": "Макс",
     "newRoutine": "Нова програма тренувань",
-    "needsLogsToAdvance": "Для просування потрібні журнали",
+    "needsLogsToAdvance": "Потрібні записи в журналі для переходу",
     "routines": "Програми тренувань",
     "exerciseNr": "Вправа {nr}",
     "@exerciseNr": {
@@ -770,12 +770,12 @@
     "errorInfoDescription": "Вибачте, але щось пішло не так. Ви можете допомогти нам виправити це, повідомивши про проблему на GitHub.",
     "copyToClipboard": "Копіювати у буфер обміну",
     "aboutWhySupportTitle": "Відкритий код та безкоштовний у використанні ❤️",
-    "aboutJoinCommunityTitle": "Приєднуйтесь до спільноти",
+    "aboutJoinCommunityTitle": "Долучитися до спільноти",
     "aboutDiscordTitle": "Discord",
-    "aboutBugsListTitle": "Повідомити про проблему або запропонувати функцію",
+    "aboutBugsListTitle": "Повідомити про проблему чи запропонувати функцію",
     "aboutSourceListTitle": "Переглянути вихідний код",
     "aboutContributeTitle": "Зробити внесок",
-    "aboutContributeText": "Ми вітаємо будь-які види внесків. Незалежно від того, чи ви розробник, перекладач, чи просто захоплений фітнесом, ми цінуємо будь-яку підтримку!",
+    "aboutContributeText": "Ми раді будь-якій допомозі. Незалежно від того, чи ви розробник, перекладач, чи просто захоплюєтеся фітнесом — кожен внесок важливий!",
     "aboutTranslationListTitle": "Перекласти застосунок",
     "others": "Інші",
     "apiToken": "Токен API",
@@ -811,7 +811,7 @@
     "@creationDate": {
         "description": "The Start date of a nutritional plan"
     },
-    "openEnded": "Відкритий",
+    "openEnded": "Безстроковий",
     "@openEnded": {
         "description": "When a nutrition plan has no pre-defined end date"
     },
@@ -850,7 +850,7 @@
     "@imageDetailsDerivativeSource": {
         "description": "Label for derivative source field"
     },
-    "imageDetailsDerivativeHelp": "Похідний твір базується на попередньому творі, але містить достатньо нового, творчого контенту, щоб мати право на власне авторське право.",
+    "imageDetailsDerivativeHelp": "Похідний твір базується на попередньому творі, але містить достатньо нового творчого вмісту, щоб мати власне авторське право.",
     "@imageDetailsDerivativeHelp": {
         "description": "Helper text explaining derivative works"
     },
@@ -893,20 +893,20 @@
             }
         }
     },
-    "dayTypeCustom": "Користувацька",
-    "dayTypeEnom": "Кожну хвилину за хвилиною",
+    "dayTypeCustom": "Довільна",
+    "dayTypeEnom": "Щохвилини (EMOM)",
     "dayTypeAmrap": "Якомога більше раундів",
     "dayTypeHiit": "Високоінтенсивне інтервальне тренування",
     "dayTypeTabata": "Табата",
-    "dayTypeEdt": "Тренування зі збільшенням щільності",
-    "dayTypeRft": "Раунди на час",
+    "dayTypeEdt": "Збільшення щільності тренувань",
+    "dayTypeRft": "Раундів на час",
     "dayTypeAfap": "Якомога швидше",
     "slotEntryTypeNormal": "Звичайний",
     "slotEntryTypeDropset": "Дропсет",
     "slotEntryTypeMyo": "Міо",
     "slotEntryTypePartial": "Часткове",
     "slotEntryTypeForced": "Примусово",
-    "slotEntryTypeTut": "Час під навантаженням",
+    "slotEntryTypeTut": "Час під напруженням (TUT)",
     "slotEntryTypeIso": "Ізометричне утримання",
     "slotEntryTypeJump": "Стрибок",
     "endWorkout": "Закінчити тренування",
@@ -916,13 +916,13 @@
     "gymModeShowExercises": "Показати сторінки огляду вправ",
     "gymModeShowTimer": "Показувати таймер між підходами",
     "gymModeTimerType": "Тип таймера",
-    "gymModeTimerTypeHelText": "Якщо підхід має час паузи, завжди використовується зворотний відлік.",
+    "gymModeTimerTypeHelText": "Якщо для підходу вказано час відпочинку, завжди запускається зворотний відлік.",
     "countdown": "Зворотний відлік",
     "stopwatch": "Секундомір",
     "gymModeDefaultCountdownTime": "Час зворотного відліку за замовчуванням, у секундах",
     "gymModeNotifyOnCountdownFinish": "Повідомити про закінчення зворотного відліку",
     "duration": "Тривалість",
-    "durationHoursMinutes": "{hours}г {minutes}хв",
+    "durationHoursMinutes": "{hours}год {minutes}хв",
     "@durationHoursMinutes": {
         "description": "A duration, in hours and minutes",
         "type": "text",
@@ -935,7 +935,7 @@
             }
         }
     },
-    "volume": "Обсяг",
+    "volume": "Тренувальний об'єм",
     "@volume": {
         "description": "The volume of a workout or set, i.e. weight x reps"
     },
@@ -1016,7 +1016,7 @@
     "@mfaSubmit": {
         "description": "Submit button on the 2FA challenge screen"
     },
-    "mfaUnsupportedFactor": "Для вашого облікового запису налаштовано другий фактор захисту, який цей застосунок ще не підтримує. Будь ласка, увійдіть через вебсайт.",
+    "mfaUnsupportedFactor": "Для вашого облікового запису налаштовано інший фактор захисту, який цей застосунок ще не підтримує. Будь ласка, увійдіть через вебсайт.",
     "@mfaUnsupportedFactor": {
         "description": "Shown when the server reports only factor types the app cannot handle (e.g. webauthn)"
     },
@@ -1244,7 +1244,7 @@
             }
         }
     },
-    "sparkTrendPerWeek": "{value}/тижд",
+    "sparkTrendPerWeek": "{value}/тиждень",
     "@sparkTrendPerWeek": {
         "description": "Chip on an overview tile: how much the value changes per week, shown after a direction arrow",
         "placeholders": {
@@ -1301,7 +1301,7 @@
     "@whatToTrack": {
         "description": "Title of the sheet that starts a new measurement category"
     },
-    "customMeasurement": "Власне вимірювання",
+    "customMeasurement": "Власний замір",
     "@customMeasurement": {
         "description": "Option that creates a free-form measurement category with its own name and unit"
     },
@@ -1329,7 +1329,7 @@
     "@metricHeight": {
         "description": "Label for height measurement"
     },
-    "metricBloodPressure": "Кров'яний тиск",
+    "metricBloodPressure": "Артеріальний тиск",
     "@metricBloodPressure": {
         "description": "Label for blood pressure measurement"
     },
@@ -1369,11 +1369,11 @@
     "@noDataAvailable": {
         "description": "Shown in place of a chart when the category has no entries in the selected range"
     },
-    "metricSleepTotal": "Загалом",
+    "metricSleepTotal": "Загальний час",
     "@metricSleepTotal": {
         "description": "Component of the 'Sleep' category, listed under that heading, so 'sleep' is not repeated. The total time asleep in a night, all sleep stages together"
     },
-    "metricSleepLight": "Поверхневий сон",
+    "metricSleepLight": "Поверхневий",
     "@metricSleepLight": {
         "description": "Component of the 'Sleep' category, listed under that heading, so 'sleep' is not repeated. The light sleep stage, meaning shallow sleep, never 'light' as in brightness or weight"
     },
@@ -1385,7 +1385,7 @@
     "@noGroup": {
         "description": "Dropdown option for a measurement category that is not part of any group"
     },
-    "dietaryInformation": "Поживна цінність",
+    "dietaryInformation": "Харчова цінність",
     "aboutViewDocsTitle": "Відкрити документацію",
     "aboutViewLicensesTitle": "Переглянути ліцензії",
     "aboutPrivacyPolicyTitle": "Умови та політика конфіденційності",
@@ -1428,11 +1428,11 @@
     "settingsDataTitle": "Конфіденційність",
     "settingsKeepDataOnLogout": "Зберігати дані після виходу з облікового запису",
     "settingsKeepDataOnLogoutDescription": "Локальна база даних залишається на пристрої, доки не ввійде інший обліковий запис.",
-    "settingsVerboseLogging": "Детальний журнал логів",
+    "settingsVerboseLogging": "Детальне журналювання",
     "@settingsVerboseLogging": {
         "description": "Title of the setting that makes the app write detailed diagnostic entries to the application log"
     },
-    "settingsVerboseLoggingDescription": "Корисно для звітування про стійкі або повторювані помилки.",
+    "settingsVerboseLoggingDescription": "Знадобиться під час надсилання звітів про повторювані проблеми.",
     "indicatorTrend": "тренд",
     "@indicatorTrend": {
         "description": "Legend label for the smoothed trendline on measurement charts"
@@ -1841,11 +1841,11 @@
             }
         }
     },
-    "metricSleepDeep": "Глибокий сон",
+    "metricSleepDeep": "Глибокий",
     "@metricSleepDeep": {
         "description": "Component of the 'Sleep' category, listed under that heading, so 'sleep' is not repeated. The deep sleep stage, also called slow-wave sleep"
     },
-    "metricSleepRem": "Швидкий сон",
+    "metricSleepRem": "Швидка фаза",
     "@metricSleepRem": {
         "description": "Component of the 'Sleep' category, listed under that heading, so 'sleep' is not repeated. The REM (rapid eye movement) sleep stage, usually kept as the abbreviation"
     },
@@ -1857,7 +1857,7 @@
     "@partOfGroup": {
         "description": "Dropdown label: makes a measurement category a component of a multi-value group (e.g. blood pressure)"
     },
-    "carbohydratesSugar": "із них цукри",
+    "carbohydratesSugar": "зокрема цукри",
     "@carbohydratesSugar": {
         "description": "Label for the carbohydrates sugar"
     },
