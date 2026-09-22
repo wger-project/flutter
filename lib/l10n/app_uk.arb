@@ -145,7 +145,7 @@
     "@gymMode": {
         "description": "Label when starting the gym mode"
     },
-    "plateCalculator": "Вагові диски",
+    "plateCalculator": "Калькулятор дисків",
     "@plateCalculator": {
         "description": "Label used for the plate calculator in the gym mode"
     },
@@ -677,7 +677,7 @@
     "@overallChangeWeight": {
         "description": "Overall change in weight, added for localization"
     },
-    "goalTypeMeals": "З їжі",
+    "goalTypeMeals": "З раціону",
     "@goalTypeMeals": {
         "description": "added for localization of Class GoalType's filed meals"
     },
