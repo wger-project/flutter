@@ -1,10 +1,10 @@
 {
     "userProfile": "ملفك الشخصي",
-    "login": "تسجيل الدخول",
+    "login": "سجّل الدخول",
     "@login": {
         "description": "Text for login button"
     },
-    "logout": "تسجيل الخروج",
+    "logout": "سجّل الخروج",
     "@logout": {
         "description": "Text for logout button"
     },
@@ -339,7 +339,7 @@
         "description": "Imperative. Label used in popup allowing the user to jump to a specific exercise while in the gym mode"
     },
     "difference": "الفرق",
-    "register": "التسجيل",
+    "register": "سجّل",
     "@register": {
         "description": "Text for registration button"
     },
