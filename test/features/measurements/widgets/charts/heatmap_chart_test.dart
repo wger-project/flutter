@@ -24,9 +24,10 @@ import 'package:wger/features/measurements/charts/data.dart';
 import 'package:wger/features/measurements/charts/series.dart';
 import 'package:wger/features/measurements/widgets/charts/heatmap_chart.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 
 Widget _wrap(Widget child) => MaterialApp(
-  localizationsDelegates: AppLocalizations.localizationsDelegates,
+  localizationsDelegates: appLocalizationsDelegates,
   supportedLocales: AppLocalizations.supportedLocales,
   home: Scaffold(
     body: SizedBox(width: 400, height: 300, child: child),

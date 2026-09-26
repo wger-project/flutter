@@ -28,6 +28,7 @@ import 'package:wger/features/account/providers/account_repository.dart';
 import 'package:wger/features/account/providers/user_profile_repository.dart';
 import 'package:wger/features/account/widgets/forms.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 
 import 'forms_test.mocks.dart';
 
@@ -60,7 +61,7 @@ void main() {
           networkStatusProvider.overrideWithValue(true),
         ],
         child: const MaterialApp(
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           home: Scaffold(
             body: SingleChildScrollView(child: UserProfileForm()),

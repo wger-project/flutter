@@ -23,6 +23,7 @@ import 'package:network_image_mock/network_image_mock.dart';
 import 'package:wger/features/trophies/providers/trophy_notifier.dart';
 import 'package:wger/features/trophies/widgets/trophies_overview.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 
 import '../../../../test_data/trophies.dart';
 
@@ -43,7 +44,7 @@ void main() {
           ],
           child: const MaterialApp(
             locale: Locale('en'),
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            localizationsDelegates: appLocalizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
             home: Scaffold(body: TrophiesOverview()),
           ),

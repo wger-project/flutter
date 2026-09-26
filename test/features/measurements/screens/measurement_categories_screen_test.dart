@@ -30,6 +30,7 @@ import 'package:wger/features/measurements/screens/measurement_categories_screen
 import 'package:wger/features/measurements/widgets/measurement_fab.dart';
 import 'package:wger/features/measurements/widgets/measurement_tile.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 
 import '../../../../test_data/measurements.dart';
 import '../../../helpers/measurement_chart_buckets.dart';
@@ -61,7 +62,7 @@ void main() {
       ],
       child: MaterialApp(
         locale: Locale(locale),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: const MeasurementCategoriesScreen(),
       ),

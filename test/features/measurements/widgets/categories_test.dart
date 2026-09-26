@@ -34,6 +34,7 @@ import 'package:wger/features/measurements/widgets/categories.dart';
 import 'package:wger/features/measurements/widgets/categories_card.dart';
 import 'package:wger/features/measurements/widgets/measurement_tile.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 
 import '../../../../test_data/body_weight.dart';
 import '../../../../test_data/measurements.dart';
@@ -64,7 +65,7 @@ Widget _wrap(
       measurementGroupBucketsProvider.overrideWith(groupBucketsFrom(categories, entries)),
     ],
     child: const MaterialApp(
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      localizationsDelegates: appLocalizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: Scaffold(body: CategoriesList()),
     ),

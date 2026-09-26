@@ -29,6 +29,7 @@ import 'package:wger/core/network/auth_notifier.dart';
 import 'package:wger/core/network/auth_state.dart';
 import 'package:wger/features/account/widgets/settings/certs_not_verified.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 
 import '../../../../helpers/fake_auth_notifier.dart';
 
@@ -57,7 +58,7 @@ void main() {
           ),
         ],
         child: const MaterialApp(
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           locale: Locale('en'),
           home: Scaffold(body: SettingsCertsNotVerified()),

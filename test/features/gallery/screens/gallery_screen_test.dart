@@ -26,6 +26,7 @@ import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/features/gallery/providers/gallery_repository.dart';
 import 'package:wger/features/gallery/screens/gallery_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 
 import '../../../../test_data/gallery.dart';
 import 'gallery_screen_test.mocks.dart';
@@ -49,7 +50,7 @@ void main() {
       ],
       child: MaterialApp(
         locale: Locale(locale),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: const GalleryScreen(),
       ),

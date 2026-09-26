@@ -36,6 +36,7 @@ import 'package:wger/database/powersync/powersync.dart'
     show pendingUploadCountProvider, syncStatus, syncWatchdogProvider;
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/l10n/generated/app_localizations_en.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 import 'package:wger/powersync/connector.dart'
     show NoPowerSyncEndpointException, RetryableUploadException;
 import 'package:wger/powersync/sync_watchdog.dart';
@@ -61,7 +62,7 @@ Widget _wrap(
       pendingUploadCountProvider.overrideWith((ref) => pendingUploads ?? const Stream.empty()),
     ],
     child: MaterialApp(
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      localizationsDelegates: appLocalizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       locale: const Locale('en'),
       home: Scaffold(body: child),

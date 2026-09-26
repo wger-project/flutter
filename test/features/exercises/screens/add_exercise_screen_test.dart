@@ -35,6 +35,7 @@ import 'package:wger/features/exercises/providers/exercises_notifier.dart';
 import 'package:wger/features/exercises/screens/add_exercise_screen.dart';
 import 'package:wger/features/exercises/widgets/add_exercise/steps/step_1_basics.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 
 import '../../../../test_data/exercises.dart';
 import '../../../helpers/fake_connectivity.dart';
@@ -94,7 +95,7 @@ void main() {
       ],
       child: MaterialApp(
         locale: Locale(locale),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: const AddExerciseScreen(),
       ),

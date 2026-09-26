@@ -109,8 +109,7 @@ class _ExerciseVideoWidgetState extends ConsumerState<ExerciseVideoWidget> {
                 // disappears once playback starts.
                 ValueListenableBuilder<VideoPlayerValue>(
                   valueListenable: controller,
-                  builder: (context, value, child) =>
-                      _ControlsOverlay(controller: controller),
+                  builder: (context, value, child) => _ControlsOverlay(controller: controller),
                 ),
                 VideoProgressIndicator(controller, allowScrubbing: true),
               ],

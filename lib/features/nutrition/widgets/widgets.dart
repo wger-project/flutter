@@ -28,6 +28,7 @@ import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/core/platform.dart';
 import 'package:wger/core/search_options.dart';
 import 'package:wger/core/widgets/core.dart';
+import 'package:wger/core/widgets/legacy_material_scope.dart';
 import 'package:wger/core/widgets/wger_image.dart';
 import 'package:wger/features/nutrition/models/ingredient.dart';
 import 'package:wger/features/nutrition/providers/ingredient_filters_notifier.dart';
@@ -43,17 +44,19 @@ class ScanReader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    body: ReaderWidget(
-      onScan: (result) {
-        // notes:
-        // 1. even if result.isValid, result.error is always non-null (and set to "")
-        // 2. i've never encountered scan errors to see when they occur, and
-        //    i wouldn't know what to do about them anyway, so we simply return
-        //    result.text in such case (which presumably will be null, or "")
-        // 3. when user cancels (swipe left / back button) this code is no longer
-        //    run and the caller receives null
-        Navigator.pop(context, result.text);
-      },
+    body: LegacyMaterialScope(
+      child: ReaderWidget(
+        onScan: (result) {
+          // notes:
+          // 1. even if result.isValid, result.error is always non-null (and set to "")
+          // 2. i've never encountered scan errors to see when they occur, and
+          //    i wouldn't know what to do about them anyway, so we simply return
+          //    result.text in such case (which presumably will be null, or "")
+          // 3. when user cancels (swipe left / back button) this code is no longer
+          //    run and the caller receives null
+          Navigator.pop(context, result.text);
+        },
+      ),
     ),
   );
 }

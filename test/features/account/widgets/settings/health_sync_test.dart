@@ -23,6 +23,7 @@ import 'package:wger/features/account/widgets/settings/health_sync.dart';
 import 'package:wger/features/health/providers/health_repository.dart';
 import 'package:wger/features/health/providers/health_sync.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 
 /// Reports the platform as available and returns canned results without
 /// touching the real health/preferences stack.
@@ -102,7 +103,7 @@ void main() {
       ],
       child: const MaterialApp(
         locale: Locale('en'),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(body: HealthSyncSettingsTile()),
       ),

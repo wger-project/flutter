@@ -22,6 +22,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:wger/core/form_validators.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/l10n/generated/app_localizations_en.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 
 void main() {
   final i18n = AppLocalizationsEn();
@@ -55,7 +56,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           locale: const Locale('en'),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           home: Scaffold(
             body: Form(

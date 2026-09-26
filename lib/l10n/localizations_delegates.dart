@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2020, 2020- wger Team
+ * Copyright (c) 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,20 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:drift/drift.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:wger/core/json.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 
-class TimeOfDayConverter extends TypeConverter<TimeOfDay, String> {
-  const TimeOfDayConverter();
-
-  @override
-  TimeOfDay fromSql(String fromDb) {
-    return stringToTimeNull(fromDb)!;
-  }
-
-  @override
-  String toSql(TimeOfDay value) {
-    return timeToString(value)!;
-  }
-}
+/// The app's strings plus the framework strings for material_ui widgets.
+///
+/// Use instead of `appLocalizationsDelegates`, whose generated
+/// list registers the SDK Material delegate that material_ui widgets can't see.
+const appLocalizationsDelegates = <LocalizationsDelegate<dynamic>>[
+  AppLocalizations.delegate,
+  ...GlobalMaterialLocalizations.delegates,
+];

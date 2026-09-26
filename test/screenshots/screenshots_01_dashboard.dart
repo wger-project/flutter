@@ -17,8 +17,8 @@
  */
 
 import 'package:drift/native.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/core/home_tabs_screen.dart';
@@ -39,6 +39,7 @@ import 'package:wger/features/routines/providers/routines_repository.dart';
 import 'package:wger/features/routines/providers/workout_session_repository.dart';
 import 'package:wger/features/trophies/providers/trophy_repository.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 import 'package:wger/theme/theme.dart';
 
 import '../../test_data/body_weight.dart';
@@ -156,7 +157,7 @@ Widget createDashboardScreen({Locale? locale}) {
       child: MaterialApp(
         locale: locale,
         debugShowCheckedModeBanner: false,
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         theme: wgerLightTheme,
         home: const HomeTabsScreen(),

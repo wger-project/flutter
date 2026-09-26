@@ -24,6 +24,7 @@ import 'package:wger/features/measurements/providers/measurement_repository.dart
 import 'package:wger/features/measurements/widgets/measurement_fab.dart';
 import 'package:wger/features/measurements/widgets/metric_picker.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 
 import '../../../helpers/measurement_repository_stubs.dart';
 import 'measurement_fab_test.mocks.dart';
@@ -35,7 +36,7 @@ Widget _wrap() {
   return ProviderScope(
     overrides: [measurementRepositoryProvider.overrideWithValue(mockRepo)],
     child: const MaterialApp(
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      localizationsDelegates: appLocalizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: Scaffold(floatingActionButton: MeasurementsFab()),
     ),

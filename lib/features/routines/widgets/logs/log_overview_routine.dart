@@ -17,10 +17,11 @@
  */
 
 import 'package:clock/clock.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:wger/core/consts.dart';
+import 'package:wger/core/widgets/legacy_material_scope.dart';
 import 'package:wger/features/account/providers/user_profile_notifier.dart';
 import 'package:wger/features/routines/models/routine.dart';
 import 'package:wger/features/routines/widgets/logs/day_logs_container.dart';
@@ -126,22 +127,24 @@ class _WorkoutLogCalendarState extends State<WorkoutLogCalendar> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        TableCalendar(
-          locale: Localizations.localeOf(context).languageCode,
-          firstDay: clock.now().subtract(const Duration(days: 1000)),
-          lastDay: clock.now(),
-          focusedDay: _focusedDay,
-          selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-          calendarFormat: CalendarFormat.month,
-          startingDayOfWeek: StartingDayOfWeek.monday,
-          calendarStyle: getWgerCalendarStyle(Theme.of(context)),
-          eventLoader: _getEventsForDay,
-          availableGestures: AvailableGestures.horizontalSwipe,
-          availableCalendarFormats: const {CalendarFormat.month: ''},
-          onDaySelected: _onDaySelected,
-          onPageChanged: (focusedDay) {
-            _focusedDay = focusedDay;
-          },
+        LegacyMaterialScope(
+          child: TableCalendar(
+            locale: Localizations.localeOf(context).languageCode,
+            firstDay: clock.now().subtract(const Duration(days: 1000)),
+            lastDay: clock.now(),
+            focusedDay: _focusedDay,
+            selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+            calendarFormat: CalendarFormat.month,
+            startingDayOfWeek: StartingDayOfWeek.monday,
+            calendarStyle: getWgerCalendarStyle(Theme.of(context)),
+            eventLoader: _getEventsForDay,
+            availableGestures: AvailableGestures.horizontalSwipe,
+            availableCalendarFormats: const {CalendarFormat.month: ''},
+            onDaySelected: _onDaySelected,
+            onPageChanged: (focusedDay) {
+              _focusedDay = focusedDay;
+            },
+          ),
         ),
         const SizedBox(height: 8.0),
         ExpansionTile(

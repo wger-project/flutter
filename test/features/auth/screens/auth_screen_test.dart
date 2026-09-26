@@ -36,6 +36,7 @@ import 'package:wger/core/shared_preferences.dart';
 import 'package:wger/features/auth/screens/auth_screen.dart';
 import 'package:wger/features/auth/screens/mfa_challenge_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 
 import '../../../helpers/fake_auth_environment.dart';
 import '../../../helpers/fake_connectivity.dart';
@@ -111,7 +112,7 @@ void main() {
         ...overrides,
       ],
       child: const MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         locale: Locale('en'),
         home: AuthScreen(),

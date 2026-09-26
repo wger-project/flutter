@@ -31,6 +31,7 @@ import 'package:wger/features/measurements/screens/measurement_entries_screen.da
 import 'package:wger/features/measurements/widgets/charts/spark_charts.dart';
 import 'package:wger/features/measurements/widgets/measurement_tile.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 
 import '../../../../test_data/measurements.dart';
 import '../../../helpers/measurement_chart_buckets.dart';
@@ -71,7 +72,7 @@ Widget _wrap(
       ),
     ],
     child: MaterialApp(
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      localizationsDelegates: appLocalizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       routes: {
         MeasurementEntriesScreen.routeName: (_) => const Text('entries-screen'),

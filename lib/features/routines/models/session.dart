@@ -18,8 +18,8 @@
 
 import 'package:clock/clock.dart';
 import 'package:drift/drift.dart' as drift;
-import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/core/date.dart';
 import 'package:wger/database/powersync/database.dart';
 import 'package:wger/features/exercises/models/exercise.dart';

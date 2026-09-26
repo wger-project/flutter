@@ -31,6 +31,7 @@ import 'package:wger/core/update_app_screen.dart';
 import 'package:wger/core/update_server_screen.dart';
 import 'package:wger/features/auth/screens/mfa_challenge_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 
 import '../../../helpers/fake_auth_environment.dart';
 import 'mfa_challenge_screen_test.mocks.dart';
@@ -63,7 +64,7 @@ void main() {
         secureTokenStorageProvider.overrideWithValue(mockSecureStorage),
       ],
       child: MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         locale: const Locale('en'),
         // Pop targets need a parent route to pop to; use a Builder so the

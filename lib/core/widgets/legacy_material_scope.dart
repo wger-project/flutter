@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2020, 2020- wger Team
+ * Copyright (c) 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,20 +16,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:drift/drift.dart';
+import 'package:flutter/material.dart' as legacy;
 import 'package:material_ui/material_ui.dart';
-import 'package:wger/core/json.dart';
 
-class TimeOfDayConverter extends TypeConverter<TimeOfDay, String> {
-  const TimeOfDayConverter();
+/// Makes widgets from packages still built on the SDK's Material library work
+/// under material_ui: they get a mapped theme and localizations, and with
+/// [ink] also the Material ancestor their InkWells and buttons require.
+class LegacyMaterialScope extends StatelessWidget {
+  const LegacyMaterialScope({super.key, required this.child, this.ink = true});
+
+  final Widget child;
+  final bool ink;
 
   @override
-  TimeOfDay fromSql(String fromDb) {
-    return stringToTimeNull(fromDb)!;
-  }
-
-  @override
-  String toSql(TimeOfDay value) {
-    return timeToString(value)!;
+  Widget build(BuildContext context) {
+    // ignore: deprecated_member_use -- no replacement until table_calendar, multi_select_flutter, flutter_zxing etc. migrate
+    return MaterialUiCompatibilityBridge(
+      child: ink ? legacy.Material(type: legacy.MaterialType.transparency, child: child) : child,
+    );
   }
 }

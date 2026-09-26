@@ -22,12 +22,13 @@ import 'package:material_ui/material_ui.dart';
 import 'package:wger/features/routines/models/log.dart';
 import 'package:wger/features/routines/widgets/charts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 
 void main() {
   Widget createChartScreen(Map<num, List<Log>> data) {
     return MaterialApp(
       locale: const Locale('en'),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      localizationsDelegates: appLocalizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: Scaffold(
         body: Center(

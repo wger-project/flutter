@@ -22,10 +22,11 @@ import 'package:material_ui/material_ui.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/core/widgets/error.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 
 Widget _wrap(Widget child) {
   return MaterialApp(
-    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    localizationsDelegates: appLocalizationsDelegates,
     supportedLocales: AppLocalizations.supportedLocales,
     locale: const Locale('en'),
     home: Scaffold(body: child),

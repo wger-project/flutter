@@ -28,6 +28,7 @@ import 'package:wger/database/powersync/powersync.dart'
     show pendingUploadCountProvider, syncStatus, syncWatchdogProvider;
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/l10n/generated/app_localizations_en.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 import 'package:wger/powersync/sync_watchdog.dart';
 
 import '../../helpers/sync_status.dart';
@@ -83,7 +84,7 @@ void main() {
           pendingUploadCountProvider.overrideWith((ref) => const Stream<int>.empty()),
         ],
         child: const MaterialApp(
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           locale: Locale('en'),
           home: Scaffold(appBar: MainAppBar('Test')),
@@ -155,7 +156,7 @@ void main() {
       UncontrolledProviderScope(
         container: container,
         child: const MaterialApp(
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           locale: Locale('en'),
           home: Scaffold(appBar: MainAppBar('Test')),

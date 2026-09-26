@@ -31,6 +31,7 @@ import 'package:wger/features/measurements/screens/measurement_entries_screen.da
 import 'package:wger/features/measurements/widgets/forms/category.dart';
 import 'package:wger/features/measurements/widgets/metric_picker.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 
 import '../../../helpers/measurement_repository_stubs.dart';
 import 'metric_picker_test.mocks.dart';
@@ -58,7 +59,7 @@ void main() {
         authCredentialsStorageProvider.overrideWithValue(mockCredentials),
       ],
       child: MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         routes: {
           FormScreen.routeName: (_) => const FormScreen(),
