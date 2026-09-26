@@ -139,6 +139,7 @@ void main() {
           uploadError: null,
           priorityStatusEntries: const [],
           streamSubscriptions: null,
+          lastAppliedCheckpoint: null,
         );
 
     test('skips only while the stream is up', () {

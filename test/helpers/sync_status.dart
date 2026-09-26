@@ -42,6 +42,7 @@ SyncStatus buildSyncStatus({
     uploadError: uploadError,
     priorityStatusEntries: const [],
     streamSubscriptions: null,
+    lastAppliedCheckpoint: null,
   );
 }
 

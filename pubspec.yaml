@@ -79,7 +79,7 @@ dependencies:
   stream_transform: ^2.1.2
   state_notifier: ^1.0.0
   connectivity_plus: ^7.3.1
-  powersync: ^2.3.3
+  powersync: ^2.4.0
   flutter_timezone: ^5.1.0
   timezone: ^0.11.1
 
