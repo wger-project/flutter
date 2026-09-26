@@ -203,7 +203,7 @@ class HeadlessAuthApi {
     return (
       credential: JwtCredential(
         accessToken: accessToken,
-        expiresAt: jwtExp(decodeJwtPayload(accessToken)),
+        expiresAt: jwtExpOnLocalClock(decodeJwtPayload(accessToken)),
       ),
       refreshToken: (meta?['refresh_token'] ?? data?['refresh_token']) as String?,
     );

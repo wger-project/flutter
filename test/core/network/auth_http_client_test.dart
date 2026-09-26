@@ -62,6 +62,13 @@ class _RecordingAuthNotifier extends AuthNotifier {
   }
 }
 
+/// What SimpleJWT answers with when the access token has expired.
+const tokenNotValid =
+    '{"detail":"Given token not valid for any token type",'
+    '"code":"token_not_valid",'
+    '"messages":[{"token_class":"AccessToken","token_type":"access",'
+    '"message":"Token is expired"}]}';
+
 @GenerateMocks([http.Client])
 void main() {
   // The provider's onSessionExpired shows a snackbar through
@@ -199,7 +206,7 @@ void main() {
     });
   });
 
-  group('401 retry', () {
+  group('refresh and retry on a refused credential', () {
     Future<http.StreamedResponse> stubTwoResponses(
       http.StreamedResponse first,
       http.StreamedResponse second,
@@ -344,18 +351,97 @@ void main() {
       expect(refreshCalls, 0);
     });
 
-    test('403 → no refresh, no retry, the response surfaces unchanged', () async {
-      // The API answers an auth failure with 403, not 401, because
-      // SessionAuthentication runs first. Only the refresh path logs the user
-      // out; a 403 here has to reach the caller as it is.
+    test('403 for an expired token → refresh + retry, like a 401', () async {
+      // The API answers an expired token with 403, not 401, because
+      // SessionAuthentication runs first. Without this the stale token is never
+      // renewed and every request keeps failing (issue #1350).
+      auth = AuthState(
+        credential: JwtCredential(
+          accessToken: 'expired-access',
+          // Already past, as it is when a refresh failed on the network and the
+          // offline carve-out kept the token
+          expiresAt: DateTime.now().toUtc().subtract(const Duration(minutes: 5)),
+        ),
+      );
+      // The pre-emptive refresh fails on the network and keeps the token (the
+      // carve-out); only the refresh after the 403 delivers
+      onRefresh = () async {
+        if (refreshCalls == 1) {
+          return;
+        }
+        auth = AuthState(
+          credential: JwtCredential(
+            accessToken: 'new-access',
+            expiresAt: DateTime.now().toUtc().add(const Duration(hours: 1)),
+          ),
+        );
+      };
+      var call = 0;
+      when(inner.send(any)).thenAnswer(
+        (_) async => ++call == 1
+            ? http.StreamedResponse(Stream.value(tokenNotValid.codeUnits), 403)
+            : http.StreamedResponse(Stream.value('OK'.codeUnits), 200),
+      );
+
+      final response = await buildClient().send(
+        http.Request('GET', Uri.parse('https://wger.example/api/v2/routine/')),
+      );
+
+      expect(response.statusCode, 200);
+      // Once pre-emptively for the expired token, once for the 403
+      expect(refreshCalls, 2);
+      final captured = verify(inner.send(captureAny)).captured;
+      expect(
+        (captured.first as http.BaseRequest).headers[HttpHeaders.authorizationHeader],
+        'Bearer expired-access',
+      );
+      expect(
+        (captured.last as http.BaseRequest).headers[HttpHeaders.authorizationHeader],
+        'Bearer new-access',
+      );
+    });
+
+    test('403 for an expired token that survives the refresh → session revoked', () async {
+      auth = AuthState(
+        credential: JwtCredential(
+          accessToken: 'old-access',
+          expiresAt: DateTime.now().toUtc().add(const Duration(hours: 1)),
+        ),
+      );
+      onRefresh = () async {
+        auth = AuthState(
+          credential: JwtCredential(
+            accessToken: 'new-access',
+            expiresAt: DateTime.now().toUtc().add(const Duration(hours: 1)),
+          ),
+        );
+      };
+      when(inner.send(any)).thenAnswer(
+        (_) async => http.StreamedResponse(Stream.value(tokenNotValid.codeUnits), 403),
+      );
+
+      final response = await buildClient().send(
+        http.Request('GET', Uri.parse('https://wger.example/api/v2/routine/')),
+      );
+
+      expect(response.statusCode, 401);
+      expect(refreshCalls, 1);
+      expect(sessionExpiredCalls, 1);
+    });
+
+    test('403 without the token_not_valid body → no refresh, response unchanged', () async {
+      // A permission denial, or the plain 403 of a request the server saw as
+      // anonymous. Refreshing would not help and logging the user out is wrong,
+      // so the body has to reach the caller untouched.
       auth = AuthState(
         credential: JwtCredential(
           accessToken: 'access',
           expiresAt: DateTime.now().toUtc().add(const Duration(hours: 1)),
         ),
       );
+      const body = '{"detail":"You do not have permission to perform this action."}';
       when(inner.send(any)).thenAnswer(
-        (_) async => http.StreamedResponse(Stream.value(<int>[]), 403),
+        (_) async => http.StreamedResponse(Stream.value(body.codeUnits), 403),
       );
 
       final response = await buildClient().send(
@@ -363,9 +449,32 @@ void main() {
       );
 
       expect(response.statusCode, 403);
+      expect(await response.stream.bytesToString(), body);
       expect(refreshCalls, 0);
       expect(sessionExpiredCalls, 0);
       verify(inner.send(any)).called(1);
+    });
+
+    test('403 with a non-JSON body → no refresh, response unchanged', () async {
+      // What a proxy in front of the server answers with, and what Django's
+      // own HttpResponseForbidden looks like
+      auth = AuthState(
+        credential: JwtCredential(
+          accessToken: 'access',
+          expiresAt: DateTime.now().toUtc().add(const Duration(hours: 1)),
+        ),
+      );
+      when(inner.send(any)).thenAnswer(
+        (_) async => http.StreamedResponse(Stream.value('<h1>Forbidden</h1>'.codeUnits), 403),
+      );
+
+      final response = await buildClient().send(
+        http.Request('GET', Uri.parse('https://wger.example/api/v2/routine/')),
+      );
+
+      expect(response.statusCode, 403);
+      expect(await response.stream.bytesToString(), '<h1>Forbidden</h1>');
+      expect(refreshCalls, 0);
     });
 
     test('MultipartRequest 401 → no retry (body not replayable)', () async {

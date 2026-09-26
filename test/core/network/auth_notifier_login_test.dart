@@ -624,6 +624,33 @@ void main() {
       expect(jsonDecode(captured)['refresh_token'], 'pasted-refresh-token');
     });
 
+    test('expiry follows the token lifetime on the local clock', () async {
+      // Same anchoring as on the background refresh: a server clock far from
+      // the device's must not leave the app with a token it never renews
+      const iat = 1000000000;
+      final newAccess = makeJwt({'iat': iat, 'exp': iat + 900});
+      when(
+        mockClient.post(tRefresh, headers: anyNamed('headers'), body: anyNamed('body')),
+      ).thenAnswer(
+        (_) async => Response(
+          jsonEncode({
+            'status': 200,
+            'data': {'access_token': newAccess, 'refresh_token': 'rotated-refresh'},
+            'meta': {'is_authenticated': true},
+          }),
+          200,
+        ),
+      );
+
+      final container = makeContainer();
+      await container.read(authProvider.future);
+      final before = DateTime.now().toUtc();
+      await container.read(authProvider.notifier).login('', '', serverUrl, 'pasted-refresh-token');
+
+      final cred = container.read(authProvider).value!.credential as JwtCredential;
+      expect(cred.expiresAt!.difference(before).inSeconds, closeTo(900, 10));
+    });
+
     test('server rejection surfaces as WgerHttpException', () async {
       when(
         mockClient.post(tRefresh, headers: anyNamed('headers'), body: anyNamed('body')),

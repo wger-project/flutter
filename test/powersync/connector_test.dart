@@ -542,6 +542,7 @@ void main() {
   group('processTransaction', () {
     late MockApiClient api;
     late DjangoConnector conn;
+    late List<LogRecord> records;
 
     // Mirrors PowerSync clearing the op from the local queue: set to true once
     // transaction.complete() runs.
@@ -551,7 +552,13 @@ void main() {
       api = MockApiClient();
       conn = DjangoConnector(baseUrl: 'http://example.invalid', apiClient: api);
       completed = false;
+      records = [];
+      final sub = Logger.root.onRecord.listen(records.add);
+      addTearDown(sub.cancel);
     });
+
+    Iterable<LogRecord> logLines(Level level, String needle) =>
+        records.where((r) => r.level == level && r.message.contains(needle));
 
     CrudTransaction txWithAll(List<CrudEntry> entries) => CrudTransaction(
       transactionId: 1,
@@ -665,6 +672,45 @@ void main() {
       expect(completed, isTrue);
     });
 
+    test('the same refusal is only surfaced once, however many rows it hits', () async {
+      // A category the backend refuses orphans every measurement pointing at
+      // it. One dialog per orphan is thousands of them, each one re-popping as
+      // the user dismisses the last, so the refusal is reported per reason.
+      // The warning and the dialog sit behind the same gate.
+      when(api.upsert(any)).thenAnswer(
+        (_) async => http.Response(
+          json.encode({'error': 'Forbidden', 'details': 'Measurement references an object'}),
+          200,
+        ),
+      );
+
+      for (final id in ['m1', 'm2', 'm3']) {
+        await conn.processTransaction(
+          txWith(CrudEntry(1, UpdateType.put, 'measurements_measurement', id, 1, {'value': 1})),
+        );
+      }
+
+      expect(logLines(Level.WARNING, 'Backend rejected'), hasLength(1));
+    });
+
+    test('a different refusal is surfaced on its own', () async {
+      when(api.upsert(any)).thenAnswer(
+        (_) async => http.Response(json.encode({'error': 'Forbidden'}), 200),
+      );
+      await conn.processTransaction(
+        txWith(CrudEntry(1, UpdateType.put, 'measurements_measurement', 'm1', 1, {'value': 1})),
+      );
+
+      when(api.upsert(any)).thenAnswer(
+        (_) async => http.Response(json.encode({'error': 'Validation failed'}), 200),
+      );
+      await conn.processTransaction(
+        txWith(CrudEntry(1, UpdateType.put, 'measurements_category', 'c1', 1, {'unit': ''})),
+      );
+
+      expect(logLines(Level.WARNING, 'Backend rejected'), hasLength(2));
+    });
+
     test('a retryable op leaves the whole transaction queued for a replay', () async {
       // The op ahead of it was already sent, so the replay re-sends it: this is
       // the at-least-once delivery the backend handlers have to be idempotent
@@ -715,10 +761,10 @@ void main() {
     });
 
     test('rethrows RetryableUploadException on transient/retryable statuses', () async {
-      // Server errors, gateway timeout, rate limiting and a non-recoverable 401
-      // are retried: throw so PowerSync keeps the transaction queued. Mirrors
-      // the ClientException test above.
-      for (final status in [500, 502, 503, 504, 408, 429, 401]) {
+      // Server errors, gateway timeout, rate limiting and a non-recoverable
+      // 401/403 are retried: throw so PowerSync keeps the transaction queued.
+      // Mirrors the ClientException test above.
+      for (final status in [500, 502, 503, 504, 408, 429, 401, 403]) {
         completed = false;
         when(api.upsert(any)).thenAnswer((_) async => http.Response('', status));
 
@@ -735,10 +781,10 @@ void main() {
 
     test('reports and completes on unexpected permanent client errors', () async {
       // Retrying these would not help, so the op is surfaced and discarded
-      // rather than blocking the queue. 403 is here, not in the retry set: the
-      // backend delivers ownership refusals as 200 + {error}, so a real 403 is
-      // a permanent refusal.
-      for (final status in [400, 403, 404, 409, 422]) {
+      // rather than blocking the queue. 403 is not here: the endpoint only
+      // answers 403 for an unauthenticated request, and dropping the op would
+      // lose the row over an expired token (issue #1350).
+      for (final status in [400, 404, 409, 422]) {
         completed = false;
         when(api.upsert(any)).thenAnswer((_) async => http.Response('', status));
 

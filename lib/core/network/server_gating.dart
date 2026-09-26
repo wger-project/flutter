@@ -72,21 +72,23 @@ class ServerGating {
     return (version: version, tooOld: serverUpdateRequired(version));
   }
 
-  /// HEAD probe against `/routine` to confirm the server is reachable
-  /// and accepts our credential. Returns null when the request couldn't
-  /// leave the device (offline, TLS handshake failure, etc.) so callers
-  /// can distinguish "we couldn't reach the server" from "the server said
-  /// no". Only the latter is grounds for logging the user out.
+  /// Probe against `/routine` to confirm the server is reachable and
+  /// accepts our credential. Returns null when the request couldn't leave
+  /// the device (offline, TLS handshake failure, etc.) so callers can
+  /// distinguish "we couldn't reach the server" from "the server said no".
+  /// Only the latter is grounds for logging the user out, and a 403 counts
+  /// only with the API's error body, so the probe is a GET (HEAD carries no
+  /// body) limited to one row.
   Future<http.Response?> probe({
     required JwtCredential credential,
     required String serverUrl,
     required PackageInfo appVersion,
   }) async {
     try {
-      return await _client.head(
-        makeUri(serverUrl, 'routine'),
+      return await _client.get(
+        makeUri(serverUrl, 'routine', query: {'limit': '1'}),
         headers: {
-          HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
+          HttpHeaders.acceptHeader: 'application/json',
           HttpHeaders.userAgentHeader: getAppNameHeader(appVersion),
           HttpHeaders.authorizationHeader: credential.authHeaderValue,
         },
@@ -241,8 +243,26 @@ class ServerGating {
   }
 }
 
+/// Rewrites a version as spelled by the Python backend into its semver
+/// equivalent so [Version] can parse it: '2.7.0a2' becomes '2.7.0-a2'.
+/// Without this a pre-release below the minimum fails to parse and gets
+/// waved through by the lenient fallback.
+String _toSemver(String rawVersion) {
+  final trimmed = rawVersion.replaceFirst(RegExp(r'\s.*$'), ''); // '2.7.0 (git-abc1234)'
+
+  final match = RegExp(r'^(\d+(?:\.\d+)*)(.*)$').firstMatch(trimmed);
+  if (match == null) {
+    return trimmed;
+  }
+
+  final release = match.group(1)!;
+  final suffix = match.group(2)!.replaceFirst(RegExp(r'^[.-]'), '');
+  return suffix.isEmpty ? release : '$release-$suffix';
+}
+
 /// Checks whether the connected server meets the minimum version required
-/// by this build of the app.
+/// by this build of the app. A pre-release counts as its release, since the
+/// reference server runs master and reports 2.7.0a2 for the whole 2.7 cycle.
 ///
 /// Returns false (lenient) when the version cannot be read or parsed, so
 /// users aren't locked out on unexpected server configurations.
@@ -253,11 +273,7 @@ bool serverUpdateRequired(String? rawVersion) {
     return false;
   }
 
-  // Strip common non-semver suffixes emitted by Python/Django backends,
-  // e.g. '2.5.0a2' → '2.5.0', '2.3.0 (git-abc1234)' → '2.3.0'.
-  final sanitized = rawVersion
-      .replaceFirst(RegExp(r'\s.*$'), '')
-      .replaceFirst(RegExp(r'[a-zA-Z].*$'), '');
+  final sanitized = _toSemver(rawVersion);
 
   final Version current;
   try {
@@ -270,7 +286,8 @@ bool serverUpdateRequired(String? rawVersion) {
     return false;
   }
   final required = Version.parse(MIN_SERVER_VERSION);
-  final needUpdate = current < required;
+  final currentRelease = Version(current.major, current.minor, current.patch);
+  final needUpdate = currentRelease < required;
   if (needUpdate) {
     logger.fine('Server update required: server $current < minimum $required');
   }

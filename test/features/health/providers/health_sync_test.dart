@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:health_bridge/health.dart';
@@ -226,6 +228,35 @@ void main() {
       final first = notifier.sync();
 
       expect(await notifier.sync(), 0);
+      await first;
+      verify(health.readableTypes(any)).called(1);
+    });
+
+    test('a run in flight blocks a second one even after the state was reset', () async {
+      // The guard cannot live on the state: disableSync() resets it, isSyncing
+      // included, while the run it belongs to is still reading. A second run
+      // then imports the same full history into the same categories.
+      final blocked = Completer<void>();
+      when(
+        health.read(
+          types: anyNamed('types'),
+          start: anyNamed('start'),
+          end: anyNamed('end'),
+          window: anyNamed('window'),
+          onBatch: anyNamed('onBatch'),
+          onWindow: anyNamed('onWindow'),
+        ),
+      ).thenAnswer((_) => blocked.future);
+      final notifier = createNotifier();
+      final first = notifier.sync();
+      await pumpEventQueue();
+
+      await notifier.disableSync();
+      await PreferenceHelper.instance.setHealthSyncEnabled(true);
+
+      expect(await notifier.sync(), 0);
+
+      blocked.complete();
       await first;
       verify(health.readableTypes(any)).called(1);
     });

@@ -35,8 +35,8 @@ import 'package:wger/powersync/api_client.dart';
 final logger = Logger('powersync-django');
 
 /// Thrown for an upload status that should be retried, not discarded such as
-/// HTTP status codes 5xx, 408, 429, or an unrecovered 401. Throwing leaves the
-/// transaction queued for PowerSync to retry. Carries table/op/status for
+/// HTTP status codes 5xx, 408, 429, or an unrecovered 401/403. Throwing leaves
+/// the transaction queued for PowerSync to retry. Carries table/op/status for
 /// logging and tests.
 class RetryableUploadException implements Exception {
   final String table;
@@ -95,14 +95,14 @@ class DjangoConnector extends PowerSyncBackendConnector {
   /// Client for the endpoint liveness probes in [fetchCredentials].
   final http.Client _probeClient;
 
-  /// IDs of CRUD operations that already triggered a user-facing
-  /// rejection dialog this session. Without this gate the same
-  /// permanent-failure op would re-pop the dialog on every sync tick
-  /// (PowerSync keeps re-driving `uploadData` until the transaction
-  /// is completed, and our `transaction.complete()` only fires once
-  /// the loop finishes, so we'd see the dialog at every iteration).
-  /// Resets on app restart.
-  final Set<String> _reportedFailedOps = {};
+  /// Refusals that already triggered a user-facing dialog this session, as
+  /// table, operation and the backend's answer.
+  ///
+  /// Keyed by the refusal rather than by the row it happened on: a category
+  /// the backend rejects orphans every measurement pointing at it, and one
+  /// dialog per orphan is thousands of them, each one re-popping as the user
+  /// dismisses the last. Resets on app restart.
+  final Set<String> _reportedRejections = {};
 
   /// Ceiling for one token fetch. On token expiry the SDK awaits the fetch
   /// inline in its sync loop, so a request that never answers would freeze
@@ -305,8 +305,8 @@ class DjangoConnector extends PowerSyncBackendConnector {
 
   /// Uploads every op in [transaction] and decides its fate: all accepted
   /// completes it; a permanent refusal is surfaced but still completes (so one
-  /// bad op can't block the queue); a transient status (5xx, 408, 429, 401) or
-  /// an unreachable backend throws, leaving it queued for PowerSync to retry.
+  /// bad op can't block the queue); a transient status (5xx, 408, 429, 401,
+  /// 403) or an unreachable backend throws, leaving it queued for retry.
   ///
   /// A retry re-sends the whole transaction (at-least-once), so backend handlers
   /// must be idempotent. Anything unexpected is rethrown as an
@@ -381,10 +381,10 @@ class DjangoConnector extends PowerSyncBackendConnector {
       return _isErrorBody(response) ? _UploadOutcome.reject : _UploadOutcome.ok;
     }
 
-    // Transient or retryable. 401 lands here because AuthHttpClient already
-    // tried to refresh; a 401 still reaching us means the session is gone, so
-    // queue the op for re-auth rather than dropping it.
-    if (status >= 500 || status == 408 || status == 429 || status == 401) {
+    // Transient or retryable. 401 and 403 only ever mean "not authenticated"
+    // here (a refused row comes as 200 + `{error}`), so the op waits for a
+    // working session instead of being dropped.
+    if (status >= 500 || status == 408 || status == 429 || status == 401 || status == 403) {
       return _UploadOutcome.retry;
     }
 
@@ -393,20 +393,22 @@ class DjangoConnector extends PowerSyncBackendConnector {
     return _UploadOutcome.reject;
   }
 
-  /// Surfaces a permanently refused op via the global error dialog, once per op
-  /// per session (a re-driven transaction would otherwise re-pop it each tick).
+  /// Surfaces a permanently refused op via the global error dialog, once per
+  /// refusal per session, see [_reportedRejections].
   void _reportRejection(CrudEntry op, http.Response response) {
-    if (!_reportedFailedOps.add(op.id)) {
-      // Already shown for this operation in the current session.
-      return;
-    }
-
     final exception = WgerHttpException(
       response,
       source: ExceptionSource.powersync,
       context: {'table': op.table, 'op': op.op.name},
     );
     final ctx = '${op.op.name} ${op.table}';
+
+    if (!_reportedRejections.add('$ctx|${response.body}')) {
+      // Below the exportable log level: the repeats say nothing the first line
+      // did not, and thousands of them would push everything else out of it
+      logger.fine('Backend rejected $ctx again: $exception');
+      return;
+    }
     // 200 + {error} is the expected contract (warning); other statuses are
     // unexpected (severe).
     if (response.statusCode == 200) {

@@ -21,7 +21,8 @@ import 'package:logging/logging.dart';
 import 'package:powersync/powersync.dart'
     show CredentialsException, PowerSyncProtocolException, SyncResponseException, SyncStatus;
 import 'package:wger/core/consts.dart';
-import 'package:wger/database/powersync/powersync.dart' show builtPowerSyncInstance;
+import 'package:wger/database/powersync/powersync.dart'
+    show builtPowerSyncInstance, connectedServerUrl;
 import 'package:wger/powersync/connector.dart'
     show NoPowerSyncEndpointException, RetryableUploadException;
 
@@ -208,7 +209,7 @@ Future<LocalSyncState?> collectLocalSyncState() async {
 /// Never throws: this runs on report paths where the app may already be in
 /// a broken state (e.g. the DB is closing down), and a missing sync section
 /// must not prevent the report itself.
-Future<String?> collectSyncDiagnostics({String? serverUrl}) async {
+Future<String?> collectSyncDiagnostics() async {
   final db = builtPowerSyncInstance;
   if (db == null) {
     return null;
@@ -218,7 +219,9 @@ Future<String?> collectSyncDiagnostics({String? serverUrl}) async {
     return formatSyncDiagnostics(
       db.currentStatus,
       pendingUploads: queue.count,
-      server: serverCategory(serverUrl),
+      // The server this sync actually runs against, rather than one the
+      // caller happens to know: the counters below describe that connection
+      server: serverCategory(connectedServerUrl),
       local: await collectLocalSyncState(),
     );
   } catch (e, s) {

@@ -31,7 +31,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: [0, 1, 2, 3]
+        shard: [0, 1, 2, 3, 4, 5]
     env:
       TZ: Europe/Berlin
     steps:
@@ -47,7 +47,7 @@ jobs:
       # part of the app code and just get in the way of the report
       - name: Test app
         run: |
-          flutter test --coverage --total-shards 4 --shard-index ${{ matrix.shard }}
+          flutter test --coverage --total-shards 6 --shard-index ${{ matrix.shard }}
           lcov --remove coverage/lcov.info 'lib/l10n/generated/*' 'lib/theme/*' -o coverage/lcov.info
 
       - name: Upload coverage to Coveralls

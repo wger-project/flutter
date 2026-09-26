@@ -370,7 +370,7 @@ packages:
     source: hosted
     version: "0.7.15"
   device_info_plus:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
       name: device_info_plus
       sha256: "0891702f96b2e465fe567b7ec448380e6b1c14f60af552a8536d9f583b6b8442"
@@ -389,10 +389,10 @@ packages:
     dependency: "direct main"
     description:
       name: drift
-      sha256: "3a3f1f6f905037d7426e4c445854139fd6a3d592135f7c96d7931682b73d16f4"
+      sha256: bab55d542d63765f6250ee3e2c62e11bfa1145d4ec2ffa05353c8fb4e10b52c1
       url: "https://pub.dev"
     source: hosted
-    version: "2.34.3"
+    version: "2.34.4"
   drift_dev:
     dependency: "direct dev"
     description:
@@ -755,8 +755,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "3d52dfef40534bf57d449c9be94eddba31852b34"
-      resolved-ref: "3d52dfef40534bf57d449c9be94eddba31852b34"
+      ref: "v2.0.0"
+      resolved-ref: c2494e985f04f2911eb6217efb69a58ee8a1cb14
       url: "https://github.com/ytsni/health_bridge.git"
     source: git
     version: "2.0.0"
@@ -1558,10 +1558,10 @@ packages:
     dependency: "direct main"
     description:
       name: stream_transform
-      sha256: ad47125e588cfd37a9a7f86c7d6356dde8dfe89d071d293f80ca9e9273a33871
+      sha256: a00e5f18bffc764f923e7dec1038527f7fe7a1791361a7117f0358193f13d53a
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.1"
+    version: "2.1.2"
   string_scanner:
     dependency: transitive
     description:
