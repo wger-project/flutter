@@ -16,9 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/core/consts.dart';
@@ -31,6 +31,7 @@ import 'package:wger/features/routines/widgets/forms/rir.dart';
 import 'package:wger/features/routines/widgets/forms/slot_entry.dart';
 import 'package:wger/features/routines/widgets/forms/weight.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 
 import '../../../../../test_data/routines.dart';
 import '../../../../helpers/fake_connectivity.dart';
@@ -71,7 +72,7 @@ void main() {
       ],
       child: MaterialApp(
         locale: Locale(locale),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: key,
         home: Scaffold(body: SlotEntryForm(entry ?? slotEntry, 1, simpleMode: simpleMode)),

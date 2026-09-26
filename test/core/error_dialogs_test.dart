@@ -16,9 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/core/error_dialogs.dart';
 import 'package:wger/core/errors.dart';
 import 'package:wger/core/keys.dart';
@@ -99,8 +98,7 @@ void main() {
     Widget app(Widget home) => MaterialApp(
       localizationsDelegates: const [
         AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
+        ...GlobalMaterialLocalizations.delegates,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
       home: home,
@@ -145,8 +143,7 @@ void main() {
           scaffoldMessengerKey: scaffoldMessengerKey,
           localizationsDelegates: const [
             AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
+            ...GlobalMaterialLocalizations.delegates,
           ],
           supportedLocales: AppLocalizations.supportedLocales,
           home: const Scaffold(body: _SnackbarDuringBuild()),

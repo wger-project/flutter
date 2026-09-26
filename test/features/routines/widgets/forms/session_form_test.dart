@@ -1,7 +1,6 @@
-// test/widgets/routines/forms/session_form_test.dart
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/core/widgets/datetime_input.dart';
@@ -9,6 +8,7 @@ import 'package:wger/features/routines/models/session.dart';
 import 'package:wger/features/routines/providers/workout_session_repository.dart';
 import 'package:wger/features/routines/widgets/forms/session.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 
 import 'session_form_test.mocks.dart';
 
@@ -32,7 +32,7 @@ void main() {
           workoutSessionRepositoryProvider.overrideWithValue(mockRepository),
         ],
         child: MaterialApp(
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           home: Scaffold(
             body: SessionForm(

@@ -16,9 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
@@ -29,6 +29,7 @@ import 'package:wger/core/network/auth_notifier.dart';
 import 'package:wger/core/network/auth_state.dart';
 import 'package:wger/features/account/widgets/settings/certs_not_verified.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 
 import '../../../../helpers/fake_auth_notifier.dart';
 
@@ -57,7 +58,7 @@ void main() {
           ),
         ],
         child: const MaterialApp(
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           locale: Locale('en'),
           home: Scaffold(body: SettingsCertsNotVerified()),

@@ -17,7 +17,7 @@
  */
 
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/features/routines/models/day.dart';
 import 'package:wger/features/routines/models/routine.dart';
 import 'package:wger/features/routines/widgets/forms/day.dart';

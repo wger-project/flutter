@@ -20,10 +20,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
+import 'package:material_ui/material_ui.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/core/network/network_provider.dart';
@@ -34,6 +34,7 @@ import 'package:wger/features/nutrition/providers/ingredient_repository.dart';
 import 'package:wger/features/nutrition/providers/nutrition_repository.dart';
 import 'package:wger/features/nutrition/screens/nutritional_plan_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 
 import '../../../../test_data/body_weight.dart';
 import '../../../../test_data/nutritional_plans.dart';
@@ -115,7 +116,7 @@ void main() {
       child: MaterialApp(
         key: GlobalKey(),
         locale: Locale(locale),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: key,
         home: TextButton(

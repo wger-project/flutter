@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Ignores mouse wheel and trackpad scrolls until the viewport has content
 /// dimensions. The framework reads them unguarded, so a scroll that lands on a

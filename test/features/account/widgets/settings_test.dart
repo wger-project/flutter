@@ -16,9 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -28,6 +28,7 @@ import 'package:wger/features/account/widgets/settings.dart';
 import 'package:wger/features/health/providers/health_repository.dart';
 import 'package:wger/features/health/providers/health_sync.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 import 'package:wger/theme/dynamic_color.dart';
 
 import 'settings_test.mocks.dart';
@@ -76,7 +77,7 @@ void main() {
       ],
       child: MaterialApp(
         locale: Locale(locale),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: const SettingsPage(),
       ),

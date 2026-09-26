@@ -8,7 +8,7 @@
  * (at your option) any later version.
  */
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/core/misc.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 

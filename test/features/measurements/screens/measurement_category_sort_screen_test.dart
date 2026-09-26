@@ -16,14 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
 import 'package:wger/features/measurements/screens/measurement_category_sort_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 
 import '../../../../test_data/body_weight.dart';
 import '../../../../test_data/measurements.dart';
@@ -52,7 +53,7 @@ void main() {
         measurementRepositoryProvider.overrideWithValue(mockRepo),
       ],
       child: const MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: MeasurementCategorySortScreen(),
       ),

@@ -16,9 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/core/widgets/dashboard/widgets/nothing_found.dart';
 import 'package:wger/core/widgets/dashboard/widgets/weight.dart';
 import 'package:wger/core/widgets/error.dart';
@@ -30,6 +30,7 @@ import 'package:wger/features/measurements/providers/body_weight_provider.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/measurements/widgets/categories_card.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 
 import '../../../../../test_data/body_weight.dart';
 import '../../../../helpers/measurement_chart_buckets.dart';
@@ -59,7 +60,7 @@ void main() {
       ],
       child: const MaterialApp(
         locale: Locale('en'),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
           body: SingleChildScrollView(child: DashboardWeightWidget()),

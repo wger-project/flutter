@@ -18,12 +18,12 @@
 
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:http/http.dart' as http;
+import 'package:material_ui/material_ui.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:network_image_mock/network_image_mock.dart';
@@ -41,6 +41,7 @@ import 'package:wger/features/nutrition/providers/nutrition_repository.dart';
 import 'package:wger/features/nutrition/screens/nutritional_plan_screen.dart';
 import 'package:wger/features/nutrition/widgets/forms.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 
 import '../../../../test_data/nutritional_plans.dart';
 import '../../../fixtures/fixture_reader.dart';
@@ -169,7 +170,7 @@ void main() {
       container: container,
       child: MaterialApp(
         locale: Locale(locale),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: key,
         home: Scaffold(
@@ -192,7 +193,7 @@ void main() {
       container: container,
       child: MaterialApp(
         locale: Locale(locale),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: key,
         home: Scaffold(

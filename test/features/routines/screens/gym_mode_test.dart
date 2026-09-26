@@ -19,10 +19,10 @@
 import 'dart:io';
 
 import 'package:clock/clock.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:flutter_riverpod/misc.dart' as riverpod;
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
@@ -53,6 +53,7 @@ import 'package:wger/features/routines/widgets/gym_mode/summary.dart';
 import 'package:wger/features/routines/widgets/gym_mode/timer.dart';
 import 'package:wger/features/trophies/providers/trophy_repository.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 
 import '../../../../test_data/exercises.dart';
 import '../../../../test_data/routines.dart';
@@ -144,7 +145,7 @@ void main() {
       ],
       child: MaterialApp(
         locale: Locale(locale),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: key,
         home: TextButton(

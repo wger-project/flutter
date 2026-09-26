@@ -17,9 +17,9 @@
  */
 
 import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/features/account/providers/user_profile_repository.dart';
@@ -28,6 +28,7 @@ import 'package:wger/features/measurements/widgets/charts/overall_change.dart';
 import 'package:wger/features/nutrition/models/nutritional_plan.dart';
 import 'package:wger/features/nutrition/widgets/plan_weight_chart.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 
 import '../../../../test_data/body_weight.dart';
 import '../../../../test_data/profile.dart';
@@ -61,7 +62,7 @@ void main() {
           userProfileRepositoryProvider.overrideWithValue(mockUserProfileRepo),
         ],
         child: MaterialApp(
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           home: Scaffold(body: SingleChildScrollView(child: PlanWeightChart(plan))),
         ),

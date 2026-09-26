@@ -16,15 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/features/routines/models/slot_entry.dart';
 import 'package:wger/features/routines/models/weight_unit.dart';
 import 'package:wger/features/routines/providers/routines_notifier.dart';
 import 'package:wger/features/routines/screens/routine_screen.dart';
 import 'package:wger/features/routines/widgets/forms/weight.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 
 void main() {
   WeightUnit? result;
@@ -56,7 +57,7 @@ void main() {
         routineWeightUnitProvider.overrideWithValue(const AsyncValue.data([unit1, unit2, unit3])),
       ],
       child: MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: key,
         home: Scaffold(body: WeightUnitInputWidget(unit1, onChanged: (value) => result = value)),

@@ -16,13 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
+import 'package:material_ui/material_ui.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/date.dart';
 import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/core/json.dart';
+import 'package:wger/core/widgets/legacy_material_scope.dart';
 import 'package:wger/core/widgets/progress_indicator.dart';
 import 'package:wger/features/account/providers/user_profile_notifier.dart';
 import 'package:wger/features/measurements/charts/data.dart';
@@ -241,26 +242,28 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
       context,
       Column(
         children: [
-          TableCalendar<Event>(
-            locale: Localizations.localeOf(context).languageCode,
-            firstDay: DateTime.now().subtract(const Duration(days: 1000)),
-            lastDay: DateTime.now().add(const Duration(days: 365)),
-            focusedDay: _focusedDay,
-            selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-            rangeStartDay: _rangeStart,
-            rangeEndDay: _rangeEnd,
-            calendarFormat: CalendarFormat.month,
-            availableGestures: AvailableGestures.horizontalSwipe,
-            availableCalendarFormats: const {CalendarFormat.month: ''},
-            rangeSelectionMode: _rangeSelectionMode,
-            eventLoader: (day) => _getEventsForDay(events, day),
-            startingDayOfWeek: StartingDayOfWeek.monday,
-            calendarStyle: getWgerCalendarStyle(Theme.of(context)),
-            onDaySelected: _onDaySelected,
-            onRangeSelected: _onRangeSelected,
-            onPageChanged: (focusedDay) {
-              _focusedDay = focusedDay;
-            },
+          LegacyMaterialScope(
+            child: TableCalendar<Event>(
+              locale: Localizations.localeOf(context).languageCode,
+              firstDay: DateTime.now().subtract(const Duration(days: 1000)),
+              lastDay: DateTime.now().add(const Duration(days: 365)),
+              focusedDay: _focusedDay,
+              selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+              rangeStartDay: _rangeStart,
+              rangeEndDay: _rangeEnd,
+              calendarFormat: CalendarFormat.month,
+              availableGestures: AvailableGestures.horizontalSwipe,
+              availableCalendarFormats: const {CalendarFormat.month: ''},
+              rangeSelectionMode: _rangeSelectionMode,
+              eventLoader: (day) => _getEventsForDay(events, day),
+              startingDayOfWeek: StartingDayOfWeek.monday,
+              calendarStyle: getWgerCalendarStyle(Theme.of(context)),
+              onDaySelected: _onDaySelected,
+              onRangeSelected: _onRangeSelected,
+              onPageChanged: (focusedDay) {
+                _focusedDay = focusedDay;
+              },
+            ),
           ),
           const SizedBox(height: 8.0),
           Column(

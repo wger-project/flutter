@@ -19,9 +19,9 @@
 import 'dart:async';
 import 'dart:io' show SocketException;
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:powersync/powersync.dart'
     show
         CredentialsException,
@@ -36,6 +36,7 @@ import 'package:wger/database/powersync/powersync.dart'
     show pendingUploadCountProvider, syncStatus, syncWatchdogProvider;
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/l10n/generated/app_localizations_en.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 import 'package:wger/powersync/connector.dart'
     show NoPowerSyncEndpointException, RetryableUploadException;
 import 'package:wger/powersync/sync_watchdog.dart';
@@ -61,7 +62,7 @@ Widget _wrap(
       pendingUploadCountProvider.overrideWith((ref) => pendingUploads ?? const Stream.empty()),
     ],
     child: MaterialApp(
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      localizationsDelegates: appLocalizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       locale: const Locale('en'),
       home: Scaffold(body: child),

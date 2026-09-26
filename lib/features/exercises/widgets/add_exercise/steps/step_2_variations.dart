@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/features/exercises/providers/add_exercise_notifier.dart';
 import 'package:wger/features/exercises/providers/exercises_notifier.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';

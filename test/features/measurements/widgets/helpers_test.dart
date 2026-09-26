@@ -17,8 +17,8 @@
  */
 
 import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/core/widgets/legend.dart';
 import 'package:wger/features/measurements/charts/data.dart';
 import 'package:wger/features/measurements/charts/series.dart';
@@ -32,12 +32,13 @@ import 'package:wger/features/measurements/widgets/charts/overall_change.dart';
 import 'package:wger/features/measurements/widgets/charts/stacked_bar_chart.dart';
 import 'package:wger/features/measurements/widgets/helpers.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 
 import '../../../../test_data/measurements.dart';
 import '../../../helpers/measurement_chart_buckets.dart';
 
 Widget _wrapChart(Widget chart) => MaterialApp(
-  localizationsDelegates: AppLocalizations.localizationsDelegates,
+  localizationsDelegates: appLocalizationsDelegates,
   supportedLocales: AppLocalizations.supportedLocales,
   home: Scaffold(
     body: SizedBox(width: 400, height: 300, child: chart),
@@ -51,7 +52,7 @@ Future<void> _pumpWidgetList(
 ) async {
   await tester.pumpWidget(
     MaterialApp(
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      localizationsDelegates: appLocalizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: Builder(
         builder: (ctx) => Scaffold(

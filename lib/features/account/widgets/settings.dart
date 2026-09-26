@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/features/account/widgets/settings/certs_not_verified.dart';
 import 'package:wger/features/account/widgets/settings/data_privacy.dart';

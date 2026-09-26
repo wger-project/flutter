@@ -17,15 +17,16 @@
  */
 
 import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/features/measurements/charts/range.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/measurement_entry.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/measurements/widgets/categories_card.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 
 import '../../../../test_data/measurements.dart';
 import '../../../helpers/measurement_chart_buckets.dart';
@@ -49,7 +50,7 @@ Widget _wrap(
   ],
   child: MaterialApp(
     locale: locale,
-    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    localizationsDelegates: appLocalizationsDelegates,
     supportedLocales: AppLocalizations.supportedLocales,
     home: Scaffold(body: child),
   ),

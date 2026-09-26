@@ -17,8 +17,8 @@
  */
 
 import 'package:drift/native.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/database/powersync/database.dart';
 import 'package:wger/features/exercises/providers/exercise_filter_state.dart';
 import 'package:wger/features/exercises/providers/exercise_filters_notifier.dart';
@@ -30,6 +30,7 @@ import 'package:wger/features/routines/screens/gym_mode.dart';
 import 'package:wger/features/routines/screens/routine_screen.dart';
 import 'package:wger/features/routines/widgets/gym_mode/summary.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 import 'package:wger/theme/theme.dart';
 
 import '../../test_data/screenshots/exercises.dart';
@@ -75,7 +76,7 @@ Widget createGymModeScreen({Locale? locale}) {
       child: MaterialApp(
         locale: locale,
         debugShowCheckedModeBanner: false,
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: key,
         theme: wgerLightTheme,
@@ -129,7 +130,7 @@ Widget createGymModeResultsScreen({Locale? locale}) {
     child: MaterialApp(
       locale: locale,
       debugShowCheckedModeBanner: false,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      localizationsDelegates: appLocalizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       navigatorKey: key,
       theme: wgerLightTheme,
