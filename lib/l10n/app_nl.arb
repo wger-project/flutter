@@ -345,7 +345,7 @@
     "errorInfoDescription": "Het spijt ons, maar er is iets misgegaan. Je kunt ons helpen dit op te lossen door het probleem te melden op GitHub.",
     "errorInfoDescription2": "Je kunt de app blijven gebruiken, maar sommige functies werken mogelijk niet.",
     "errorViewDetails": "Technische details",
-    "applicationLogs": "Applicatie logboek",
+    "applicationLogs": "App-logboek",
     "errorCouldNotConnectToServer": "Kon niet verbinden met de server",
     "copyToClipboard": "Kopieer naar klembord",
     "weight": "Gewicht",
@@ -541,7 +541,7 @@
         "description": "Switch to toggle detail / overview"
     },
     "goToDetailPage": "Naar detail­pagina",
-    "aboutWhySupportTitle": "Open Source & gratis te gebruiken ❤️",
+    "aboutWhySupportTitle": "Open source & gratis te gebruiken ❤️",
     "aboutDescription": "Bedankt voor het gebruiken van wger! wger is een collaboratief open source project, gemaakt door fitness fans van over de hele wereld.",
     "@aboutDescription": {
         "description": "Text in the about dialog"
@@ -551,7 +551,7 @@
     "aboutContributeTitle": "Bijdragen",
     "aboutContributeText": "Alle soorten bijdragen zijn welkom. Of je nu ontwikkelaar bent, vertaler of gewoon een fitnessliefhebber, elke vorm van steun wordt gewaardeerd!",
     "aboutBugsListTitle": "Meld een probleem of stel een functie voor",
-    "aboutTranslationListTitle": "Vertaal de applicatie",
+    "aboutTranslationListTitle": "Vertaal de app",
     "aboutSourceListTitle": "Bekijk broncode",
     "aboutJoinCommunityTitle": "Sluit je aan bij de community",
     "aboutMastodonTitle": "Mastodon",
@@ -795,7 +795,7 @@
     "settingsExerciseCacheDescription": "Oefenings­cache",
     "settingsIngredientCacheDescription": "Ingrediënten­cache",
     "settingsCacheDeletedSnackbar": "Cache succesvol geleegd",
-    "aboutPageTitle": "Over ons & Support",
+    "aboutPageTitle": "Over ons & onder­steuning",
     "contributeExerciseWarning": "Je kunt alleen oefeningen bijdragen als je account ouder is dan {days} dagen en je e-mailadres is geverifieerd",
     "@contributeExerciseWarning": {
         "description": "Number of days before which a person can add exercise",
