@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'measurement_category.dart';
@@ -9,37 +9,13 @@ part of 'measurement_category.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$MeasurementCategory {
 
-/// Client-generated UUID, is `null` only before the first persist
- String? get id; String get name; String get unit;/// Drives the health-platform mapping (and, later, default unit/aggregation/
-/// chart). [MetricType.custom] for plain user-created categories.
- MetricType get metricType;/// Chart the user picked for this category, [ChartType.auto] (the server's
-/// null) for the one derived from [metricType].
- ChartType get chartType;/// Taste-level chart settings, read through [chartSettings].
-///
-/// Null for a category that configured none, which is also what a row synced
-/// before the column existed reads. Keys this release does not know are
-/// kept: another client may have written them, and a write from here
-/// replaces the whole object.
- Map<String, dynamic>? get chartConfig;/// Multi-value groups (e.g. blood pressure): id of the parent category, one
-/// child per component. Max. one level of nesting; only leaf categories
-/// (no children) carry entries.
- String? get parentId;/// Position in the category list; for children, the position within the group
- int get order;/// Server-managed official category (max. one per metric type and user).
-/// The app never creates official categories itself.
- bool get isOfficial;/// What the server calculates the entries of this category from,
-/// [noDynamicType] for one the user fills themselves. Deliberately the raw
-/// string: a type added after this release still has to read as calculated,
-/// see [isCalculated].
- String get dynamicType;/// Configuration of the calculation, its keys depend on [dynamicType]. Null
-/// for a category the server does not calculate.
- Map<String, dynamic>? get dynamicParams;/// Child categories (components) of this group. Populated by the repository
-/// for display, never persisted directly.
- List<MeasurementCategory> get children;
+
 /// Create a copy of MeasurementCategory
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -50,16 +26,21 @@ $MeasurementCategoryCopyWith<MeasurementCategory> get copyWith => _$MeasurementC
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MeasurementCategory&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.unit, unit) || other.unit == unit)&&(identical(other.metricType, metricType) || other.metricType == metricType)&&(identical(other.chartType, chartType) || other.chartType == chartType)&&const DeepCollectionEquality().equals(other.chartConfig, chartConfig)&&(identical(other.parentId, parentId) || other.parentId == parentId)&&(identical(other.order, order) || other.order == order)&&(identical(other.isOfficial, isOfficial) || other.isOfficial == isOfficial)&&(identical(other.dynamicType, dynamicType) || other.dynamicType == dynamicType)&&const DeepCollectionEquality().equals(other.dynamicParams, dynamicParams)&&const DeepCollectionEquality().equals(other.children, children));
+  final _this = this as MeasurementCategory;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MeasurementCategory&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.unit, _this.unit) || other.unit == _this.unit)&&(identical(other.metricType, _this.metricType) || other.metricType == _this.metricType)&&(identical(other.chartType, _this.chartType) || other.chartType == _this.chartType)&&const DeepCollectionEquality().equals(other.chartConfig, _this.chartConfig)&&(identical(other.parentId, _this.parentId) || other.parentId == _this.parentId)&&(identical(other.order, _this.order) || other.order == _this.order)&&(identical(other.isOfficial, _this.isOfficial) || other.isOfficial == _this.isOfficial)&&(identical(other.dynamicType, _this.dynamicType) || other.dynamicType == _this.dynamicType)&&const DeepCollectionEquality().equals(other.dynamicParams, _this.dynamicParams)&&const DeepCollectionEquality().equals(other.children, _this.children));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,name,unit,metricType,chartType,const DeepCollectionEquality().hash(chartConfig),parentId,order,isOfficial,dynamicType,const DeepCollectionEquality().hash(dynamicParams),const DeepCollectionEquality().hash(children));
+int get hashCode {
+  final _this = this as MeasurementCategory;
+  return Object.hash(runtimeType,_this.id,_this.name,_this.unit,_this.metricType,_this.chartType,const DeepCollectionEquality().hash(_this.chartConfig),_this.parentId,_this.order,_this.isOfficial,_this.dynamicType,const DeepCollectionEquality().hash(_this.dynamicParams),const DeepCollectionEquality().hash(_this.children));
+}
 
 @override
 String toString() {
-  return 'MeasurementCategory(id: $id, name: $name, unit: $unit, metricType: $metricType, chartType: $chartType, chartConfig: $chartConfig, parentId: $parentId, order: $order, isOfficial: $isOfficial, dynamicType: $dynamicType, dynamicParams: $dynamicParams, children: $children)';
+  final _this = this as MeasurementCategory;
+  return 'MeasurementCategory(id: ${_this.id}, name: ${_this.name}, unit: ${_this.unit}, metricType: ${_this.metricType}, chartType: ${_this.chartType}, chartConfig: ${_this.chartConfig}, parentId: ${_this.parentId}, order: ${_this.order}, isOfficial: ${_this.isOfficial}, dynamicType: ${_this.dynamicType}, dynamicParams: ${_this.dynamicParams}, children: ${_this.children})';
 }
 
 

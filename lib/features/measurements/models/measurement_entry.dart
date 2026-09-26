@@ -34,36 +34,28 @@ const measurementSourceCalculated = 'calculated';
 @freezed
 class MeasurementEntry with _$MeasurementEntry {
   /// Client-generated UUID, is `null` only before the first persist
-  @override
   final String? id;
 
-  @override
   final String categoryId;
 
-  @override
   final DateTime date;
 
-  @override
   final num value;
 
-  @override
   final String notes;
 
   /// Origin of the reading; one of the server's `source` values
   /// (`user`, `google`, `apple`).
-  @override
   final String source;
 
   /// Platform record UUID, used to deduplicate re-imports. `null` for manual
   /// entries.
-  @override
   final String? externalId;
 
   /// Per-entry metadata (server JSONField). The `unit` key holds the unit
   /// [value] was entered in; without it the category unit applies. Raw values
   /// are meaningless without their unit, so display and calculations go
   /// through `valueIn` instead of reading [value] directly.
-  @override
   final Map<String, dynamic>? extraData;
 
   MeasurementEntry({

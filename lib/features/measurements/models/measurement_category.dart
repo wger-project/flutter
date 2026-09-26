@@ -530,23 +530,18 @@ class MeasurementCategory with _$MeasurementCategory {
   static const maxUnitChars = 30;
 
   /// Client-generated UUID, is `null` only before the first persist
-  @override
   final String? id;
 
-  @override
   final String name;
 
-  @override
   final String unit;
 
   /// Drives the health-platform mapping (and, later, default unit/aggregation/
   /// chart). [MetricType.custom] for plain user-created categories.
-  @override
   final MetricType metricType;
 
   /// Chart the user picked for this category, [ChartType.auto] (the server's
   /// null) for the one derived from [metricType].
-  @override
   final ChartType chartType;
 
   /// Taste-level chart settings, read through [chartSettings].
@@ -555,39 +550,32 @@ class MeasurementCategory with _$MeasurementCategory {
   /// before the column existed reads. Keys this release does not know are
   /// kept: another client may have written them, and a write from here
   /// replaces the whole object.
-  @override
   final Map<String, dynamic>? chartConfig;
 
   /// Multi-value groups (e.g. blood pressure): id of the parent category, one
   /// child per component. Max. one level of nesting; only leaf categories
   /// (no children) carry entries.
-  @override
   final String? parentId;
 
   /// Position in the category list; for children, the position within the group
-  @override
   final int order;
 
   /// Server-managed official category (max. one per metric type and user).
   /// The app never creates official categories itself.
-  @override
   final bool isOfficial;
 
   /// What the server calculates the entries of this category from,
   /// [noDynamicType] for one the user fills themselves. Deliberately the raw
   /// string: a type added after this release still has to read as calculated,
   /// see [isCalculated].
-  @override
   final String dynamicType;
 
   /// Configuration of the calculation, its keys depend on [dynamicType]. Null
   /// for a category the server does not calculate.
-  @override
   final Map<String, dynamic>? dynamicParams;
 
   /// Child categories (components) of this group. Populated by the repository
   /// for display, never persisted directly.
-  @override
   final List<MeasurementCategory> children;
 
   MeasurementCategory({

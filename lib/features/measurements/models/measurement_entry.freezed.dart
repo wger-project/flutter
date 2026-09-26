@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'measurement_entry.dart';
@@ -9,21 +9,13 @@ part of 'measurement_entry.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$MeasurementEntry {
 
-/// Client-generated UUID, is `null` only before the first persist
- String? get id; String get categoryId; DateTime get date; num get value; String get notes;/// Origin of the reading; one of the server's `source` values
-/// (`user`, `google`, `apple`).
- String get source;/// Platform record UUID, used to deduplicate re-imports. `null` for manual
-/// entries.
- String? get externalId;/// Per-entry metadata (server JSONField). The `unit` key holds the unit
-/// [value] was entered in; without it the category unit applies. Raw values
-/// are meaningless without their unit, so display and calculations go
-/// through `valueIn` instead of reading [value] directly.
- Map<String, dynamic>? get extraData;
+
 /// Create a copy of MeasurementEntry
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -34,16 +26,21 @@ $MeasurementEntryCopyWith<MeasurementEntry> get copyWith => _$MeasurementEntryCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MeasurementEntry&&(identical(other.id, id) || other.id == id)&&(identical(other.categoryId, categoryId) || other.categoryId == categoryId)&&(identical(other.date, date) || other.date == date)&&(identical(other.value, value) || other.value == value)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.source, source) || other.source == source)&&(identical(other.externalId, externalId) || other.externalId == externalId)&&const DeepCollectionEquality().equals(other.extraData, extraData));
+  final _this = this as MeasurementEntry;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MeasurementEntry&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.categoryId, _this.categoryId) || other.categoryId == _this.categoryId)&&(identical(other.date, _this.date) || other.date == _this.date)&&(identical(other.value, _this.value) || other.value == _this.value)&&(identical(other.notes, _this.notes) || other.notes == _this.notes)&&(identical(other.source, _this.source) || other.source == _this.source)&&(identical(other.externalId, _this.externalId) || other.externalId == _this.externalId)&&const DeepCollectionEquality().equals(other.extraData, _this.extraData));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,categoryId,date,value,notes,source,externalId,const DeepCollectionEquality().hash(extraData));
+int get hashCode {
+  final _this = this as MeasurementEntry;
+  return Object.hash(runtimeType,_this.id,_this.categoryId,_this.date,_this.value,_this.notes,_this.source,_this.externalId,const DeepCollectionEquality().hash(_this.extraData));
+}
 
 @override
 String toString() {
-  return 'MeasurementEntry(id: $id, categoryId: $categoryId, date: $date, value: $value, notes: $notes, source: $source, externalId: $externalId, extraData: $extraData)';
+  final _this = this as MeasurementEntry;
+  return 'MeasurementEntry(id: ${_this.id}, categoryId: ${_this.categoryId}, date: ${_this.date}, value: ${_this.value}, notes: ${_this.notes}, source: ${_this.source}, externalId: ${_this.externalId}, extraData: ${_this.extraData})';
 }
 
 
