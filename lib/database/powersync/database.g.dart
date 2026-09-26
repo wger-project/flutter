@@ -10799,7 +10799,7 @@ class $$LanguageTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$LanguageTableTable, Language>(table),
                   $$LanguageTableTableReferences(db, table, e),
                 ),
               )
@@ -11008,8 +11008,18 @@ class $$LicenseTableTableTableManager
                 url: url,
                 rowid: rowid,
               ),
-          withReferenceMapper: (p0) =>
-              p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$LicenseTableTable, License>(table),
+                  BaseReferences<_$DriftPowersyncDatabase, $LicenseTableTable, License>(
+                    db,
+                    table,
+                    e,
+                  ),
+                ),
+              )
+              .toList(),
           prefetchHooksCallback: null,
         ),
       );
@@ -11191,8 +11201,18 @@ class $$UserProfileTableTableTableManager
                 timeZone: timeZone,
                 rowid: rowid,
               ),
-          withReferenceMapper: (p0) =>
-              p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$UserProfileTableTable, UserProfile>(table),
+                  BaseReferences<_$DriftPowersyncDatabase, $UserProfileTableTable, UserProfile>(
+                    db,
+                    table,
+                    e,
+                  ),
+                ),
+              )
+              .toList(),
           prefetchHooksCallback: null,
         ),
       );
@@ -11417,7 +11437,9 @@ class $$ExerciseCategoryTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$ExerciseCategoryTableTable, ExerciseCategory>(
+                    table,
+                  ),
                   $$ExerciseCategoryTableTableReferences(db, table, e),
                 ),
               )
@@ -12173,7 +12195,7 @@ class $$ExerciseTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$ExerciseTableTable, ExerciseRow>(table),
                   $$ExerciseTableTableReferences(db, table, e),
                 ),
               )
@@ -12917,7 +12939,7 @@ class $$ExerciseTranslationTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$ExerciseTranslationTableTable, ExerciseTranslationRow>(table),
                   $$ExerciseTranslationTableTableReferences(db, table, e),
                 ),
               )
@@ -13290,7 +13312,7 @@ class $$ExerciseAliasTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$ExerciseAliasTableTable, Alias>(table),
                   $$ExerciseAliasTableTableReferences(db, table, e),
                 ),
               )
@@ -13597,7 +13619,7 @@ class $$ExerciseCommentTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$ExerciseCommentTableTable, Comment>(table),
                   $$ExerciseCommentTableTableReferences(db, table, e),
                 ),
               )
@@ -13965,7 +13987,7 @@ class $$MuscleTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$MuscleTableTable, Muscle>(table),
                   $$MuscleTableTableReferences(db, table, e),
                 ),
               )
@@ -14340,7 +14362,9 @@ class $$ExerciseMuscleM2NTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$ExerciseMuscleM2NTable, ExerciseMuscleM2NData>(
+                    table,
+                  ),
                   $$ExerciseMuscleM2NTableReferences(db, table, e),
                 ),
               )
@@ -14724,7 +14748,9 @@ class $$ExerciseSecondaryMuscleM2NTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$ExerciseSecondaryMuscleM2NTable, ExerciseSecondaryMuscleM2NData>(
+                    table,
+                  ),
                   $$ExerciseSecondaryMuscleM2NTableReferences(db, table, e),
                 ),
               )
@@ -14998,7 +15024,7 @@ class $$EquipmentTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$EquipmentTableTable, Equipment>(table),
                   $$EquipmentTableTableReferences(db, table, e),
                 ),
               )
@@ -15354,7 +15380,7 @@ class $$ExerciseEquipmentM2NTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$ExerciseEquipmentM2NTable, ExerciseEquipmentM2NData>(table),
                   $$ExerciseEquipmentM2NTableReferences(db, table, e),
                 ),
               )
@@ -15933,7 +15959,7 @@ class $$ExerciseImageTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$ExerciseImageTableTable, ExerciseImage>(table),
                   $$ExerciseImageTableTableReferences(db, table, e),
                 ),
               )
@@ -16534,7 +16560,7 @@ class $$ExerciseVideoTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$ExerciseVideoTableTable, Video>(table),
                   $$ExerciseVideoTableTableReferences(db, table, e),
                 ),
               )
@@ -17068,7 +17094,7 @@ class $$MeasurementCategoryTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$MeasurementCategoryTableTable, MeasurementCategory>(table),
                   $$MeasurementCategoryTableTableReferences(db, table, e),
                 ),
               )
@@ -17481,7 +17507,9 @@ class $$MeasurementEntryTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$MeasurementEntryTableTable, MeasurementEntry>(
+                    table,
+                  ),
                   $$MeasurementEntryTableTableReferences(db, table, e),
                 ),
               )
@@ -17799,8 +17827,18 @@ class $$RoutineTableTableTableManager
                 fitInWeek: fitInWeek,
                 rowid: rowid,
               ),
-          withReferenceMapper: (p0) =>
-              p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$RoutineTableTable, Routine>(table),
+                  BaseReferences<_$DriftPowersyncDatabase, $RoutineTableTable, Routine>(
+                    db,
+                    table,
+                    e,
+                  ),
+                ),
+              )
+              .toList(),
           prefetchHooksCallback: null,
         ),
       );
@@ -18204,8 +18242,18 @@ class $$WorkoutLogTableTableTableManager
                 date: date,
                 rowid: rowid,
               ),
-          withReferenceMapper: (p0) =>
-              p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$WorkoutLogTableTable, Log>(table),
+                  BaseReferences<_$DriftPowersyncDatabase, $WorkoutLogTableTable, Log>(
+                    db,
+                    table,
+                    e,
+                  ),
+                ),
+              )
+              .toList(),
           prefetchHooksCallback: null,
         ),
       );
@@ -18512,8 +18560,18 @@ class $$WorkoutSessionTableTableTableManager
                 timeEnd: timeEnd,
                 rowid: rowid,
               ),
-          withReferenceMapper: (p0) =>
-              p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$WorkoutSessionTableTable, WorkoutSession>(table),
+                  BaseReferences<
+                    _$DriftPowersyncDatabase,
+                    $WorkoutSessionTableTable,
+                    WorkoutSession
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
           prefetchHooksCallback: null,
         ),
       );
@@ -18665,8 +18723,20 @@ class $$RoutineRepetitionUnitTableTableTableManager
                 name: name,
                 rowid: rowid,
               ),
-          withReferenceMapper: (p0) =>
-              p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$RoutineRepetitionUnitTableTable, RepetitionUnit>(
+                    table,
+                  ),
+                  BaseReferences<
+                    _$DriftPowersyncDatabase,
+                    $RoutineRepetitionUnitTableTable,
+                    RepetitionUnit
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
           prefetchHooksCallback: null,
         ),
       );
@@ -18814,8 +18884,18 @@ class $$RoutineWeightUnitTableTableTableManager
                 name: name,
                 rowid: rowid,
               ),
-          withReferenceMapper: (p0) =>
-              p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$RoutineWeightUnitTableTable, WeightUnit>(table),
+                  BaseReferences<
+                    _$DriftPowersyncDatabase,
+                    $RoutineWeightUnitTableTable,
+                    WeightUnit
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
           prefetchHooksCallback: null,
         ),
       );
@@ -19309,7 +19389,9 @@ class $$NutritionalPlanTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$NutritionalPlanTableTable, NutritionalPlan>(
+                    table,
+                  ),
                   $$NutritionalPlanTableTableReferences(db, table, e),
                 ),
               )
@@ -20182,7 +20264,7 @@ class $$IngredientTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$IngredientTableTable, Ingredient>(table),
                   $$IngredientTableTableReferences(db, table, e),
                 ),
               )
@@ -20762,7 +20844,9 @@ class $$IngredientImageTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$IngredientImageTableTable, IngredientImage>(
+                    table,
+                  ),
                   $$IngredientImageTableTableReferences(db, table, e),
                 ),
               )
@@ -21095,7 +21179,7 @@ class $$IngredientWeightUnitTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$IngredientWeightUnitTableTable, IngredientWeightUnit>(table),
                   $$IngredientWeightUnitTableTableReferences(db, table, e),
                 ),
               )
@@ -21476,7 +21560,7 @@ class $$MealTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$MealTableTable, Meal>(table),
                   $$MealTableTableReferences(db, table, e),
                 ),
               )
@@ -21902,7 +21986,7 @@ class $$MealItemTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$MealItemTableTable, MealItem>(table),
                   $$MealItemTableTableReferences(db, table, e),
                 ),
               )
@@ -22363,7 +22447,7 @@ class $$LogItemTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$LogItemTableTable, LogItem>(table),
                   $$LogItemTableTableReferences(db, table, e),
                 ),
               )
@@ -22599,8 +22683,18 @@ class $$GalleryImageTableTableTableManager
                 description: description,
                 rowid: rowid,
               ),
-          withReferenceMapper: (p0) =>
-              p0.map((e) => (e.readTable(table), BaseReferences(db, table, e))).toList(),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$GalleryImageTableTable, GalleryImage>(table),
+                  BaseReferences<_$DriftPowersyncDatabase, $GalleryImageTableTable, GalleryImage>(
+                    db,
+                    table,
+                    e,
+                  ),
+                ),
+              )
+              .toList(),
           prefetchHooksCallback: null,
         ),
       );

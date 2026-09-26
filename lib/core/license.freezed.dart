@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'license.dart';
@@ -9,6 +9,7 @@ part of 'license.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $LicenseCopyWith<License> get copyWith => _$LicenseCopyWithImpl<License>(this as
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is License&&(identical(other.id, id) || other.id == id)&&(identical(other.shortName, shortName) || other.shortName == shortName)&&(identical(other.fullName, fullName) || other.fullName == fullName)&&(identical(other.url, url) || other.url == url));
+  final _this = this as License;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is License&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.shortName, _this.shortName) || other.shortName == _this.shortName)&&(identical(other.fullName, _this.fullName) || other.fullName == _this.fullName)&&(identical(other.url, _this.url) || other.url == _this.url));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,shortName,fullName,url);
+int get hashCode {
+  final _this = this as License;
+  return Object.hash(runtimeType,_this.id,_this.shortName,_this.fullName,_this.url);
+}
 
 @override
 String toString() {
-  return 'License(id: $id, shortName: $shortName, fullName: $fullName, url: $url)';
+  final _this = this as License;
+  return 'License(id: ${_this.id}, shortName: ${_this.shortName}, fullName: ${_this.fullName}, url: ${_this.url})';
 }
 
 
@@ -63,7 +69,7 @@ class _$LicenseCopyWithImpl<$Res>
 /// Create a copy of License
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? shortName = null,Object? fullName = null,Object? url = null,}) {
-  return _then(_self.copyWith(
+  return _then(License(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,shortName: null == shortName ? _self.shortName : shortName // ignore: cast_nullable_to_non_nullable
 as String,fullName: null == fullName ? _self.fullName : fullName // ignore: cast_nullable_to_non_nullable
@@ -227,16 +233,18 @@ _$LicenseCopyWith<_License> get copyWith => __$LicenseCopyWithImpl<_License>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _License&&(identical(other.id, id) || other.id == id)&&(identical(other.shortName, shortName) || other.shortName == shortName)&&(identical(other.fullName, fullName) || other.fullName == fullName)&&(identical(other.url, url) || other.url == url));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _License&&(identical(other.id, id) || other.id == id)&&(identical(other.shortName, shortName) || other.shortName == shortName)&&(identical(other.fullName, fullName) || other.fullName == fullName)&&(identical(other.url, url) || other.url == url));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,shortName,fullName,url);
+int get hashCode {
+    return Object.hash(runtimeType,id,shortName,fullName,url);
+}
 
 @override
 String toString() {
-  return 'License(id: $id, shortName: $shortName, fullName: $fullName, url: $url)';
+    return 'License(id: $id, shortName: $shortName, fullName: $fullName, url: $url)';
 }
 
 

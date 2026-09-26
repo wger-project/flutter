@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'session.dart';
@@ -9,13 +9,13 @@ part of 'session.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$WorkoutSession {
 
-/// Client-generated UUID, is `null` only before the first persist
- String? get id; int? get routineId; int? get dayId; WorkoutImpression get impression; String? get notes; DateTime get datetimeStart; DateTime? get datetimeEnd; List<Log> get logs;
+
 /// Create a copy of WorkoutSession
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -26,16 +26,21 @@ $WorkoutSessionCopyWith<WorkoutSession> get copyWith => _$WorkoutSessionCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WorkoutSession&&(identical(other.id, id) || other.id == id)&&(identical(other.routineId, routineId) || other.routineId == routineId)&&(identical(other.dayId, dayId) || other.dayId == dayId)&&(identical(other.impression, impression) || other.impression == impression)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.datetimeStart, datetimeStart) || other.datetimeStart == datetimeStart)&&(identical(other.datetimeEnd, datetimeEnd) || other.datetimeEnd == datetimeEnd)&&const DeepCollectionEquality().equals(other.logs, logs));
+  final _this = this as WorkoutSession;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WorkoutSession&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.routineId, _this.routineId) || other.routineId == _this.routineId)&&(identical(other.dayId, _this.dayId) || other.dayId == _this.dayId)&&(identical(other.impression, _this.impression) || other.impression == _this.impression)&&(identical(other.notes, _this.notes) || other.notes == _this.notes)&&(identical(other.datetimeStart, _this.datetimeStart) || other.datetimeStart == _this.datetimeStart)&&(identical(other.datetimeEnd, _this.datetimeEnd) || other.datetimeEnd == _this.datetimeEnd)&&const DeepCollectionEquality().equals(other.logs, _this.logs));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,routineId,dayId,impression,notes,datetimeStart,datetimeEnd,const DeepCollectionEquality().hash(logs));
+int get hashCode {
+  final _this = this as WorkoutSession;
+  return Object.hash(runtimeType,_this.id,_this.routineId,_this.dayId,_this.impression,_this.notes,_this.datetimeStart,_this.datetimeEnd,const DeepCollectionEquality().hash(_this.logs));
+}
 
 @override
 String toString() {
-  return 'WorkoutSession(id: $id, routineId: $routineId, dayId: $dayId, impression: $impression, notes: $notes, datetimeStart: $datetimeStart, datetimeEnd: $datetimeEnd, logs: $logs)';
+  final _this = this as WorkoutSession;
+  return 'WorkoutSession(id: ${_this.id}, routineId: ${_this.routineId}, dayId: ${_this.dayId}, impression: ${_this.impression}, notes: ${_this.notes}, datetimeStart: ${_this.datetimeStart}, datetimeEnd: ${_this.datetimeEnd}, logs: ${_this.logs})';
 }
 
 

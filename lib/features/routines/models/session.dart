@@ -67,21 +67,13 @@ class WorkoutSession with _$WorkoutSession {
   static const maxNotesChars = 1000;
 
   /// Client-generated UUID, is `null` only before the first persist
-  @override
   final String? id;
-  @override
   final int? routineId;
-  @override
   final int? dayId;
-  @override
   final WorkoutImpression impression;
-  @override
   final String? notes;
-  @override
   final DateTime datetimeStart;
-  @override
   final DateTime? datetimeEnd;
-  @override
   final List<Log> logs;
 
   WorkoutSession({
