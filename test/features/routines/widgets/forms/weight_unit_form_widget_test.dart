@@ -92,4 +92,30 @@ void main() {
     // assert
     expect(result, equals(unit2));
   });
+
+  testWidgets('prefills a fractional value in the active locale', (WidgetTester tester) async {
+    final formKey = GlobalKey<FormState>();
+    num? saved;
+    await tester.pumpWidget(
+      ProviderScope(
+        child: MaterialApp(
+          locale: const Locale('de'),
+          localizationsDelegates: appLocalizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Scaffold(
+            body: Form(
+              key: formKey,
+              child: WeightInputWidget(value: 52.5, onChanged: (value) => saved = value),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('52,5'), findsOneWidget);
+    expect(formKey.currentState!.validate(), isTrue);
+    formKey.currentState!.save();
+    expect(saved, 52.5);
+  });
 }

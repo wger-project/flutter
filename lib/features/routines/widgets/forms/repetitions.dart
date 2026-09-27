@@ -109,23 +109,26 @@ class _RepetitionInputWidgetState extends ConsumerState<RepetitionInputWidget> {
   final _logger = Logger('RepetitionInputWidget');
   late TextEditingController _controller;
   late NumberFormat _numberFormat;
+  bool _seeded = false;
 
   @override
   void initState() {
     super.initState();
     _controller = widget.controller ?? TextEditingController();
-    // _numberFormat is finalised in didChangeDependencies once the locale
-    // is available; the placeholder here keeps the field non-late-uninit.
-    _numberFormat = NumberFormat.decimalPattern();
-    if (widget.value != null) {
-      _controller.text = _numberFormat.format(widget.value);
-    }
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     _numberFormat = localizedNumberFormat(context);
+    // Seeded here and not in initState: the text must use the same locale
+    // the validator parses with, and that is only available from the context
+    if (!_seeded) {
+      _seeded = true;
+      if (widget.value != null) {
+        _controller.text = _numberFormat.format(widget.value);
+      }
+    }
   }
 
   @override
