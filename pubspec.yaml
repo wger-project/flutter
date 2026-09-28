@@ -82,7 +82,7 @@ dependencies:
   powersync: ^2.4.0
   flutter_timezone: ^5.1.0
   timezone: ^0.11.1
-  material_ui: ^1.1.0
+  material_ui: ^1.4.0
 
 dev_dependencies:
   flutter_test:
