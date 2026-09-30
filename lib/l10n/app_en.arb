@@ -1381,6 +1381,18 @@
   "simpleMode": "Simple mode",
   "simpleModeHelp": "Hide some of the more advanced settings when editing exercises",
   "progressionRules": "This exercise has progression rules and can't be edited on the mobile app. Please use the web application to edit this exercise.",
+  "progressionRulesDoubleProgression": "Double progression: weight increases once every set reaches the top of your rep range.",
+  "@progressionRulesDoubleProgression": {
+    "description": "Shown on a routine entry gated on 'max_repetitions' with the all_sets requirement."
+  },
+  "progressionRulesGatedOnMaxReps": "Weight increases once you reach the top of your rep range.",
+  "@progressionRulesGatedOnMaxReps": {
+    "description": "Shown on a routine entry gated on 'max_repetitions' without the all_sets requirement."
+  },
+  "progressionRulesGatedOnReps": "Weight increases once you hit your target reps.",
+  "@progressionRulesGatedOnReps": {
+    "description": "Shown on a routine entry gated on the base 'repetitions' rule."
+  },
   "cacheWarning": "Due to caching it might take some time till the changes are visible throughout the application.",
   "textPromptTitle": "Ready to start?",
   "textPromptSubheading": "Press the action button to begin",

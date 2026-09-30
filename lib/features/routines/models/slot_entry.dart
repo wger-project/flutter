@@ -235,7 +235,6 @@ class SlotEntry {
         maxRirConfigs.length > 1 ||
         restTimeConfigs.length > 1 ||
         maxRestTimeConfigs.length > 1 ||
-        maxWeightConfigs.length > 1 ||
         maxWeightConfigs.length > 1;
   }
 
