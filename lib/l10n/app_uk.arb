@@ -63,7 +63,7 @@
     "@labelBottomNavWorkout": {
         "description": "Label used in bottom navigation, use a short word"
     },
-    "labelWorkoutLogs": "Журнали тренувань",
+    "labelWorkoutLogs": "Записи тренувань",
     "@labelWorkoutLogs": {
         "description": "(Workout) logs"
     },
@@ -145,7 +145,7 @@
     "@gymMode": {
         "description": "Label when starting the gym mode"
     },
-    "plateCalculator": "Калькулятор дисків",
+    "plateCalculator": "Вагові диски",
     "@plateCalculator": {
         "description": "Label used for the plate calculator in the gym mode"
     },
@@ -185,8 +185,8 @@
         "description": "Label used in bottom navigation, use a short word"
     },
     "weightUnit": "Одиниця ваги",
-    "dayDescriptionHelp": "Опис того, що робиться в цей день (наприклад, «день підтягування») або які частини тіла тренуються (наприклад, («груди та плечі»)",
-    "workoutSession": "Тренувальна сесія",
+    "dayDescriptionHelp": "Опис тренування на цей день (наприклад, «день підтягування») або які частини тіла тренуються (наприклад, («груди та плечі»)",
+    "workoutSession": "Тренування",
     "@workoutSession": {
         "description": "A (logged) workout session"
     },
@@ -217,7 +217,7 @@
     },
     "fat": "Жири",
     "newNutritionalPlan": "Новий план харчування",
-    "sugars": "з яких цукри",
+    "sugars": "з них цукри",
     "aboutDescription": "Дякуємо, що користуєтеся wger! wger — це спільний проєкт із відкритим кодом, створений фітнес-ентузіастами з усього світу.",
     "@aboutDescription": {
         "description": "Text in the about dialog"
@@ -259,7 +259,7 @@
     "mealLogged": "Прийом їжі записано у щоденник",
     "logMeal": "Запис прийому їжі у щоденник харчування",
     "addIngredient": "Додати інгредієнт",
-    "logIngredient": "Занесіть інгредієнт до щоденника харчування",
+    "logIngredient": "Додати інгредієнт до щоденника харчування",
     "searchIngredient": "Пошук інгредієнта",
     "@searchIngredient": {
         "description": "Label on ingredient search form"
@@ -544,7 +544,7 @@
             }
         }
     },
-    "baseNameEnglish": "Для всіх вправ потрібна базова назва англійською",
+    "baseNameEnglish": "Кожна вправа повинна мати базову назву англійською мовою",
     "variations": "Варіації",
     "@variations": {
         "description": "Variations of one exercise (e.g. benchpress and benchpress narrow)"
@@ -563,7 +563,7 @@
     "verifiedEmailReason": "Вам потрібно підтвердити свою електронну пошту, щоб виконувати вправи",
     "alternativeNames": "Альтернативні назви",
     "oneNamePerLine": "Одна назва на рядок",
-    "whatVariationsExist": "Які варіації цієї вправи існують, якщо такі є?",
+    "whatVariationsExist": "Які є варіанти цієї вправи?",
     "previous": "Попередній",
     "next": "Наступний",
     "images": "Зображення",
@@ -571,7 +571,7 @@
     "contributeExercise": "Додати вправу",
     "translation": "Переклад",
     "cardio": "Кардіо",
-    "contributeExerciseWarning": "Ви можете додавати нові вправи, якщо вашому обліковому запису більше ніж {days} днів і є підтвердження вашої електронної пошти",
+    "contributeExerciseWarning": "Ви можете пропонувати вправи, лише якщо ваш обліковий запис створено понад {days} днів тому, а електронну пошту підтверджено",
     "@contributeExerciseWarning": {
         "description": "Number of days before which a person can add exercise",
         "placeholders": {
@@ -710,7 +710,7 @@
         "description": "Message returned if no exercises match the searched string"
     },
     "ingredientLogged": "Інгредієнт зареєстровано в щоденнику",
-    "selectMealToLog": "Виберіть прийом їжі, щоб записати у щоденник",
+    "selectMealToLog": "Виберіть страву, яку потрібно додати у щоденник харчування",
     "aboutMastodonTitle": "Mastodon",
     "settingsCacheTitle": "Кеш",
     "settingsCacheDeletedSnackbar": "Кеш успішно очищено",
@@ -735,7 +735,7 @@
             }
         }
     },
-    "isRestDay": "Є день відпочинку",
+    "isRestDay": "День відпочинку",
     "isRestDayHelp": "Будь ласка, зверніть увагу, що всі підходи та вправи буде вилучено, коли ви позначите день як вихідний.",
     "routineDays": "Днів у програмі тренувань",
     "fitInWeek": "Фіксований тижневий розклад",
@@ -743,13 +743,13 @@
     "addSuperset": "Додати суперсет",
     "setHasProgression": "Набір має прогресію",
     "simpleMode": "Простий режим",
-    "resultingRoutine": "Підсумкова програма тренувань",
-    "simpleModeHelp": "Приховайте деякі розширені налаштування під час редагування вправ",
-    "progressionRules": "Ця вправа має правила прогресу, і її не можна редагувати в мобільному застосунку. Щоб відредагувати цю вправу, використовуйте вебзастосунок.",
+    "resultingRoutine": "Готова програма",
+    "simpleModeHelp": "Приховувати частину додаткових налаштувань під час редагування вправ",
+    "progressionRules": "Ця вправа має прогресію навантажень, і її не можна редагувати в мобільному застосунку. Щоб відредагувати цю вправу, використовуйте вебзастосунок.",
     "min": "Мін",
     "max": "Макс",
-    "newRoutine": "Нова програма тренувань",
-    "needsLogsToAdvance": "Потрібні записи в журналі для переходу",
+    "newRoutine": "Нова програма",
+    "needsLogsToAdvance": "Потрібні записи",
     "routines": "Програми тренувань",
     "exerciseNr": "Вправа {nr}",
     "@exerciseNr": {
@@ -768,7 +768,7 @@
     "errorCouldNotConnectToServer": "Не вдалося підключитися до сервера",
     "errorInfoDescription2": "Ви можете продовжувати користуватися застосунком, але деякі функції можуть не працювати.",
     "errorInfoDescription": "Вибачте, але щось пішло не так. Ви можете допомогти нам виправити це, повідомивши про проблему на GitHub.",
-    "copyToClipboard": "Копіювати у буфер обміну",
+    "copyToClipboard": "Скопіювати до буфера обміну",
     "aboutWhySupportTitle": "Відкритий код та безкоштовний у використанні ❤️",
     "aboutJoinCommunityTitle": "Долучитися до спільноти",
     "aboutDiscordTitle": "Discord",
@@ -793,7 +793,7 @@
     "@resistance_band": {
         "description": "Generated entry for translation for server strings"
     },
-    "selectAvailablePlates": "Виберіть наявні вагові диски",
+    "selectAvailablePlates": "Оберіть диски",
     "barWeight": "Вага штанги",
     "useColors": "Використовуйте кольори",
     "yourCurrentNutritionPlanHasNoMealsDefinedYet": "У вашому поточному плані харчування не визначено жодного прийому їжі",
@@ -806,7 +806,7 @@
     },
     "endDate": "Дата завершення",
     "startDate": "Дата початку",
-    "applicationLogs": "Журнали програм",
+    "applicationLogs": "Журнали роботи застосунку",
     "creationDate": "Дата початку",
     "@creationDate": {
         "description": "The Start date of a nutritional plan"
@@ -850,7 +850,7 @@
     "@imageDetailsDerivativeSource": {
         "description": "Label for derivative source field"
     },
-    "imageDetailsDerivativeHelp": "Похідний твір базується на попередньому творі, але містить достатньо нового творчого вмісту, щоб мати власне авторське право.",
+    "imageDetailsDerivativeHelp": "Похідний твір створено на основі попереднього, але він містить достатньо нового творчого матеріалу, щоб вважатися самостійним об’єктом авторського права.",
     "@imageDetailsDerivativeHelp": {
         "description": "Helper text explaining derivative works"
     },
@@ -893,7 +893,7 @@
             }
         }
     },
-    "dayTypeCustom": "Довільна",
+    "dayTypeCustom": "Власний тип",
     "dayTypeEnom": "Щохвилини (EMOM)",
     "dayTypeAmrap": "Якомога більше раундів",
     "dayTypeHiit": "Високоінтенсивне інтервальне тренування",
@@ -955,7 +955,7 @@
     },
     "dashboardWidgets": "Віджети панелі інструментів",
     "trophies": "Трофеї",
-    "topSet": "Найкращий підхід: {value}",
+    "topSet": "Найважчий підхід: {value}",
     "@topSet": {
         "description": "Value is a representation of the set, like '10 x 80kg'",
         "type": "text",
@@ -971,7 +971,7 @@
     "minLengthRoutine": "Програма має тривати принаймні {number} тижнів",
     "maxLengthRoutine": "Програма тренувань щонайбільше {number} тижнів",
     "preview": "Попередній перегляд",
-    "refreshToken": "Оновити токен",
+    "refreshToken": "Токен оновлення",
     "invalidRefreshToken": "Будь ласка, введіть дійсний токен оновлення",
     "@invalidRefreshToken": {
         "description": "Error message when the user enters an invalid refresh token"
@@ -980,7 +980,7 @@
     "@refreshTokenValidChars": {
         "description": "Error message when the user pastes a string that does not match the JWT shape"
     },
-    "refreshTokenHelperText": "Згенеруйте токен оновлення JWT на вебсайті wger і вставте його сюди. Це корисно, якщо ваш сервер перебуває за проксі-сервером автентифікації або якщо ви хочете пропустити звичайну процедуру входу.",
+    "refreshTokenHelperText": "Створіть токен оновлення JWT на сайті wger і вставте його сюди. Це стане в пригоді, якщо ваш сервер працює за проксі-сервером автентифікації або ви хочете пропустити стандартний процес входу.",
     "@refreshTokenHelperText": {
         "description": "Helper text on the refresh-token paste field"
     },
@@ -1016,7 +1016,7 @@
     "@mfaSubmit": {
         "description": "Submit button on the 2FA challenge screen"
     },
-    "mfaUnsupportedFactor": "Для вашого облікового запису налаштовано інший фактор захисту, який цей застосунок ще не підтримує. Будь ласка, увійдіть через вебсайт.",
+    "mfaUnsupportedFactor": "Для вашого облікового запису ввімкнено двофакторну автентифікацію, яку цей застосунок поки що не підтримує. Увійдіть через сайт.",
     "@mfaUnsupportedFactor": {
         "description": "Shown when the server reports only factor types the app cannot handle (e.g. webauthn)"
     },
@@ -1053,7 +1053,7 @@
     },
     "authOptionPasswordTitle": "Ім'я користувача та пароль",
     "signInWithToken": "Увійти за допомогою токена",
-    "tokenSubtitle": "Згенеруйте його на вебсайті wger",
+    "tokenSubtitle": "Створіть його на сайті wger",
     "newToWger": "Уперше у wger?",
     "alreadyHaveAccount": "Вже маєте обліковий запис?",
     "tokenLabel": "Токен",
@@ -1428,7 +1428,7 @@
     "settingsDataTitle": "Конфіденційність",
     "settingsKeepDataOnLogout": "Зберігати дані після виходу з облікового запису",
     "settingsKeepDataOnLogoutDescription": "Локальна база даних залишається на пристрої, доки не ввійде інший обліковий запис.",
-    "settingsVerboseLogging": "Детальне журналювання",
+    "settingsVerboseLogging": "Докладне ведення записів",
     "@settingsVerboseLogging": {
         "description": "Title of the setting that makes the app write detailed diagnostic entries to the application log"
     },
@@ -1548,11 +1548,11 @@
     "@syncStatusStalledHint": {
         "description": "Hint shown in the sync status dialog when the app keeps connecting but never receives any sync data, which usually means something on the network is blocking the connection"
     },
-    "syncStatusStalledNotStartedHint": "Застосунок надіслав запит на синхронізацію, але клієнт синхронізації не запустився. Зазвичай допомагає перезапуск застосунку.",
+    "syncStatusStalledNotStartedHint": "Застосунок ініціював синхронізацію, але відповідний процес не запустився. Зазвичай проблему вирішує перезапуск застосунку.",
     "@syncStatusStalledNotStartedHint": {
         "description": "Hint shown in the sync status dialog when a connection was requested but the sync client never reported any state at all"
     },
-    "syncStatusStalledNotAppliedHint": "Дані надходять, але їх неможливо застосувати, тому нічого нового не з'являється. Повідомлення про це разом із скопійованими деталями допоможе нам це виправити.",
+    "syncStatusStalledNotAppliedHint": "Дані надходять, але застосувати їх не вдається, тому нові записи не з’являються. Надішліть повідомлення про проблему разом зі скопійованими відомостями — це допоможе нам її виправити.",
     "@syncStatusStalledNotAppliedHint": {
         "description": "Hint shown in the sync status dialog when sync data keeps arriving but no checkpoint ever completes, so the downloaded data stays invisible"
     },
