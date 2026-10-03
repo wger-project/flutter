@@ -1,6 +1,5 @@
 plugins {
     id "com.android.application"
-    id "kotlin-android"
     id "dev.flutter.flutter-gradle-plugin"
 }
 
@@ -27,13 +26,13 @@ android {
     compileSdkMinor = 0
     ndkVersion "28.2.13676358"
 
+    buildFeatures {
+        resValues = true
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
-    }
-
-    kotlinOptions {
-        jvmTarget = '11'
     }
 
 
@@ -69,6 +68,12 @@ android {
             applicationIdSuffix ".debug"
             resValue "string", "app_name", "wger - debug"
         }
+    }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11
     }
 }
 
