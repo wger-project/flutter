@@ -73,6 +73,12 @@ class LogPage extends ConsumerWidget {
       return Container();
     }
     final setConfigData = slotEntryPage.setConfigData!;
+    final exercise = setConfigData.exerciseOrNull;
+
+    if (exercise == null) {
+      _logger.info('Exercise for slot page $slotUuid not hydrated yet, showing empty container.');
+      return Container();
+    }
 
     // Past logs come straight from the local DB (not the gym-mode routine
     // snapshot) so a set logged during this workout shows up right away.
@@ -93,7 +99,7 @@ class LogPage extends ConsumerWidget {
     return Column(
       children: [
         NavigationHeader(
-          setConfigData.exercise.getTranslation(languageCode).name,
+          exercise.getTranslation(languageCode).name,
           _controller,
         ),
 
@@ -135,7 +141,7 @@ class LogPage extends ConsumerWidget {
             ),
           ),
         ),
-        if (setConfigData.exercise.showPlateCalculator) const LogsPlatesWidget(),
+        if (exercise.showPlateCalculator) const LogsPlatesWidget(),
         if (slotEntryPage.setConfigData!.comment.isNotEmpty)
           Text(slotEntryPage.setConfigData!.comment, textAlign: TextAlign.center),
         const SizedBox(height: 10),
@@ -143,7 +149,7 @@ class LogPage extends ConsumerWidget {
         // Overriding the log scope from here is handled in a follow-up, the
         // settings currently only live in the gym mode options.
         // _LogScopeControls(gymState: gymState),
-        Expanded(child: _buildPastLogs(pastLogs, setConfigData.exercise)),
+        Expanded(child: _buildPastLogs(pastLogs, exercise)),
 
         Padding(
           padding: const EdgeInsets.all(10),
