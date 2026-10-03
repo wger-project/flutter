@@ -37,6 +37,7 @@ const Map<String, String> languageNativeNames = {
   'id': 'Bahasa Indonesia',
   'it': 'Italiano',
   'ja': '日本語',
+  'km': 'ខ្មែរ',
   'ko': '한국어',
   'mk': 'Македонски',
   'nb': 'Norsk bokmål',
