@@ -128,15 +128,11 @@ class _GymModeState extends ConsumerState<GymMode> {
           out.add(LogPage(_controller, slotPage.uuid));
         }
 
-        // Timer. Use rest time from config data if available, otherwise use user settings
-        final rest = slotPage.setConfigData?.restTime;
         if (slotPage.type == SlotPageType.timer) {
+          final rest = gymState.restDurationFor(slotPage);
           out.add(
-            (rest != null || gymState.useCountdownBetweenSets)
-                ? TimerCountdownWidget(
-                    _controller,
-                    (rest ?? gymState.countdownDuration.inSeconds).toInt(),
-                  )
+            rest != null
+                ? TimerCountdownWidget(_controller, rest.inSeconds)
                 : TimerWidget(_controller),
           );
         }

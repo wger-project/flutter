@@ -176,6 +176,12 @@ class GymModeState {
   final DateTime workoutStart;
   final DateTime validUntil;
 
+  /// When the rest on the current timer page started, null on other pages
+  final DateTime? restStartedAt;
+
+  /// When the countdown on the current timer page ends, null if it counts up
+  final DateTime? restEndsAt;
+
   // User settings
   final bool showExercisePages;
   final bool showTimerPages;
@@ -195,6 +201,8 @@ class GymModeState {
     this.isInitialized = false,
     this.pages = const [],
     this.currentPage = 0,
+    this.restStartedAt,
+    this.restEndsAt,
 
     this.showExercisePages = true,
     this.showTimerPages = true,
@@ -231,6 +239,11 @@ class GymModeState {
     List<PageEntry>? pages,
     int? currentPage,
 
+    // Rest data. clearRest drops both rest fields before the passed ones apply
+    DateTime? restStartedAt,
+    DateTime? restEndsAt,
+    bool clearRest = false,
+
     // Routine data
     int? dayId,
     int? iteration,
@@ -253,6 +266,8 @@ class GymModeState {
       isInitialized: isInitialized ?? this.isInitialized,
       pages: pages ?? this.pages,
       currentPage: currentPage ?? this.currentPage,
+      restStartedAt: restStartedAt ?? (clearRest ? null : this.restStartedAt),
+      restEndsAt: restEndsAt ?? (clearRest ? null : this.restEndsAt),
 
       dayId: dayId ?? this.dayId,
       iteration: iteration ?? this.iteration,
@@ -275,6 +290,15 @@ class GymModeState {
 
   /// The start of the workout as a [TimeOfDay], e.g. for the session form
   TimeOfDay get startTime => TimeOfDay.fromDateTime(workoutStart);
+
+  /// Countdown length of a timer page, or null if the rest counts up
+  Duration? restDurationFor(SlotPageEntry slotPage) {
+    final restTime = slotPage.setConfigData?.restTime;
+    if (restTime != null) {
+      return Duration(seconds: restTime.toInt());
+    }
+    return useCountdownBetweenSets ? countdownDuration : null;
+  }
 
   int get totalPages {
     // Main pages (start, session, etc.)
@@ -339,6 +363,8 @@ class GymModeState {
   String toString() {
     return 'GymState('
         'currentPage: $currentPage, '
+        'restStartedAt: $restStartedAt, '
+        'restEndsAt: $restEndsAt, '
         'validUntil: $validUntil '
         'workoutStart: $workoutStart, '
         'showExercisePages: $showExercisePages, '

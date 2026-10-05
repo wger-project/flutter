@@ -290,6 +290,7 @@ class GymStateNotifier extends _$GymStateNotifier {
       routine: routine,
       iteration: iteration,
       currentPage: initialPage,
+      clearRest: shouldReset,
       // A fresh workout also restarts the elapsed timer
       workoutStart: shouldReset ? clock.now() : null,
     );
@@ -306,7 +307,9 @@ class GymStateNotifier extends _$GymStateNotifier {
   }
 
   void setCurrentPage(int page) {
+    final pageChanged = page != state.currentPage;
     state = state.copyWith(currentPage: page);
+    _updateRest(restart: pageChanged);
 
     // Ensure that there is a log entry for the current slot entry
     final slotEntryPage = state.getSlotEntryPageByIndex();
@@ -320,6 +323,27 @@ class GymStateNotifier extends _$GymStateNotifier {
       iteration: state.iteration,
     );
     ref.read(gymLogProvider.notifier).setLog(log);
+  }
+
+  /// Starts the rest when on a timer page, ends it everywhere else. A rest
+  /// that is already running on the current page keeps going unless [restart].
+  void _updateRest({required bool restart}) {
+    final slotPage = state.getSlotEntryPageByIndex();
+    if (slotPage?.type != SlotPageType.timer) {
+      state = state.copyWith(clearRest: true);
+      return;
+    }
+    if (!restart && state.restStartedAt != null) {
+      return;
+    }
+
+    final now = clock.now();
+    final duration = state.restDurationFor(slotPage!);
+    state = state.copyWith(
+      clearRest: true,
+      restStartedAt: now,
+      restEndsAt: duration == null ? null : now.add(duration),
+    );
   }
 
   void setShowExercisePages(bool value) {
@@ -493,6 +517,7 @@ class GymStateNotifier extends _$GymStateNotifier {
       isInitialized: false,
       pages: [],
       currentPage: 0,
+      clearRest: true,
 
       validUntil: clock.now().add(DEFAULT_DURATION),
       workoutStart: clock.now(),

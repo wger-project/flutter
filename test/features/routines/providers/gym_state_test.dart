@@ -508,6 +508,103 @@ void main() {
     });
   });
 
+  group('GymStateNotifier.setCurrentPage, rest', () {
+    final start = DateTime.utc(2024, 5, 1, 17, 30);
+    final later = DateTime.utc(2024, 5, 1, 17, 45);
+
+    Iterable<SlotPageEntry> slotPages() => notifier.state.pages.expand((p) => p.slotPages);
+
+    // The fixture's first slot has a rest time of 120 s, the second has none
+    int timerWithRestTime() => slotPages()
+        .firstWhere((p) => p.type == SlotPageType.timer && p.setConfigData!.restTime != null)
+        .pageIndex;
+    int timerWithoutRestTime() => slotPages()
+        .firstWhere((p) => p.type == SlotPageType.timer && p.setConfigData!.restTime == null)
+        .pageIndex;
+
+    void goTo(int page, {DateTime? at}) =>
+        withClock(Clock.fixed(at ?? start), () => notifier.setCurrentPage(page));
+
+    test('A timer page counts down from the rest time of its set', () {
+      notifier.state = notifier.state.copyWith(useCountdownBetweenSets: false);
+
+      goTo(timerWithRestTime());
+
+      expect(notifier.state.restStartedAt, start);
+      expect(notifier.state.restEndsAt, start.add(const Duration(seconds: 120)));
+    });
+
+    test('Without a rest time the countdown uses the user setting', () {
+      notifier.state = notifier.state.copyWith(
+        useCountdownBetweenSets: true,
+        countdownDuration: 90,
+      );
+
+      goTo(timerWithoutRestTime());
+
+      expect(notifier.state.restEndsAt, start.add(const Duration(seconds: 90)));
+    });
+
+    test('Without a rest time and the countdown setting off, the rest counts up', () {
+      notifier.state = notifier.state.copyWith(useCountdownBetweenSets: false);
+
+      goTo(timerWithoutRestTime());
+
+      expect(notifier.state.restStartedAt, start);
+      expect(notifier.state.restEndsAt, isNull);
+    });
+
+    test('Leaving the timer page clears the rest', () {
+      final timer = timerWithRestTime();
+      goTo(timer);
+
+      goTo(timer + 1);
+
+      expect(notifier.state.getSlotEntryPageByIndex()!.type, SlotPageType.log);
+      expect(notifier.state.restStartedAt, isNull);
+      expect(notifier.state.restEndsAt, isNull);
+    });
+
+    test('Setting the same timer page again keeps the running rest', () {
+      // gym_mode reports the restored page again when it is reopened
+      final timer = timerWithRestTime();
+      goTo(timer);
+
+      goTo(timer, at: later);
+
+      expect(notifier.state.restStartedAt, start);
+    });
+
+    test('Coming back to a timer page restarts the rest', () {
+      final timer = timerWithRestTime();
+      goTo(timer);
+      goTo(timer + 1);
+
+      goTo(timer, at: later);
+
+      expect(notifier.state.restStartedAt, later);
+      expect(notifier.state.restEndsAt, later.add(const Duration(seconds: 120)));
+    });
+
+    test('clear() ends the rest', () {
+      goTo(timerWithRestTime());
+
+      notifier.clear();
+
+      expect(notifier.state.restStartedAt, isNull);
+      expect(notifier.state.restEndsAt, isNull);
+    });
+
+    test('A reset in initData ends the rest', () {
+      goTo(timerWithRestTime());
+
+      notifier.initData(getTestRoutine(), 2, 1);
+
+      expect(notifier.state.restStartedAt, isNull);
+      expect(notifier.state.restEndsAt, isNull);
+    });
+  });
+
   group('GymStateNotifier.startWorkout', () {
     test('Resets the workout start time to now', () {
       // Arrange
@@ -623,6 +720,33 @@ void main() {
       final state = notifier.state.copyWith(logScopeWeeks: 8);
 
       expect(state.copyWith(clearLogScopeWeeks: true).logScopeWeeks, isNull);
+    });
+
+    test('Keeps the rest when it is not passed', () {
+      final state = notifier.state.copyWith(
+        restStartedAt: DateTime.utc(2024, 5, 1, 17, 30),
+        restEndsAt: DateTime.utc(2024, 5, 1, 17, 32),
+      );
+
+      final copy = state.copyWith(currentPage: 3);
+
+      expect(copy.restStartedAt, DateTime.utc(2024, 5, 1, 17, 30));
+      expect(copy.restEndsAt, DateTime.utc(2024, 5, 1, 17, 32));
+    });
+
+    test('clearRest drops both rest fields before applying the passed ones', () {
+      final state = notifier.state.copyWith(
+        restStartedAt: DateTime.utc(2024, 5, 1, 17, 30),
+        restEndsAt: DateTime.utc(2024, 5, 1, 17, 32),
+      );
+
+      final cleared = state.copyWith(clearRest: true);
+      expect(cleared.restStartedAt, isNull);
+      expect(cleared.restEndsAt, isNull);
+
+      final countUp = state.copyWith(clearRest: true, restStartedAt: DateTime.utc(2024, 5, 1, 18));
+      expect(countUp.restStartedAt, DateTime.utc(2024, 5, 1, 18));
+      expect(countUp.restEndsAt, isNull);
     });
   });
 }
