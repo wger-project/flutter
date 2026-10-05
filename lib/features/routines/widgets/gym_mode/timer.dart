@@ -134,7 +134,9 @@ class _TimerCountdownWidgetState extends ConsumerState<TimerCountdownWidget> {
     //  When countdown finishes, notify ONCE, and respect settings
     if (remainingSeconds == 0 && !_hasNotified) {
       if (gymState.alertOnCountdownEnd) {
-        HapticFeedback.mediumImpact();
+        // Strongest built-in haptic on both platforms (iOS: full vibration,
+        // Android: LONG_PRESS). heavyImpact maps to a weak tick on Android.
+        HapticFeedback.vibrate();
 
         // Not that this only works on desktop platforms
         SystemSound.play(SystemSoundType.alert);
