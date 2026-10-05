@@ -68,7 +68,7 @@ dependencies:
   path: ^1.9.1
   path_provider: ^2.1.6
   shared_preferences: ^2.5.5
-  table_calendar: ^3.2.0
+  table_calendar: ^3.3.0
   url_launcher: ^6.3.2
   version: ^3.0.2
   video_player: ^2.14.0

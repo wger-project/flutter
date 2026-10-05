@@ -1526,10 +1526,10 @@ packages:
     dependency: "direct main"
     description:
       name: table_calendar
-      sha256: f276347cad425ef837a41e8d9ad43f3ee7d59227aa4c36d7430607a5a18fa3b3
+      sha256: c46a7b6e853154bde099cc6b9d151268a721b16c24e6cacc5c9ee8dfe6a55243
       url: "https://pub.dev"
     source: hosted
-    version: "3.2.1"
+    version: "3.3.0"
   term_glyph:
     dependency: transitive
     description:
