@@ -113,6 +113,11 @@ dev_dependencies:
   # Script to read out unused translations
   #translations_cleaner: ^0.0.5
 
+dependency_overrides:
+  # html 0.15.7 removed matches(), which breaks flutter_html 3.0.0
+  # https://github.com/Sub6Resources/flutter_html/issues/1515
+  html: 0.15.6
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
