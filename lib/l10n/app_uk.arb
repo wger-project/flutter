@@ -1126,7 +1126,7 @@
     "@chartTypeLine": {
         "description": "Chart type option: a line through the measured values"
     },
-    "chartTypeBar": "Стовпчиками",
+    "chartTypeBar": "Стовпчиковий",
     "@chartTypeBar": {
         "description": "Chart type option: one bar per day"
     },
@@ -1134,7 +1134,7 @@
     "@chartTypeHeatmap": {
         "description": "Chart type option: a calendar grid with one coloured cell per day"
     },
-    "chartTypeDelta": "Графік змін",
+    "chartTypeDelta": "Зміна",
     "@chartTypeDelta": {
         "description": "Chart type option: one bar per week, showing how much the value changed"
     },
