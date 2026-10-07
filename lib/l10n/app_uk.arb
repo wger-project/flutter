@@ -45,7 +45,7 @@
     },
     "confirmPassword": "Підтвердьте пароль",
     "email": "Адреса електронної пошти",
-    "invalidUsername": "Будь ласка, введіть коректне ім'я користувача",
+    "invalidUsername": "Вкажіть правильне ім'я користувача",
     "@invalidUsername": {
         "description": "Error message when the user enters an invalid username"
     },
@@ -67,7 +67,7 @@
     "@labelWorkoutLogs": {
         "description": "(Workout) logs"
     },
-    "labelWorkoutPlan": "План тренування",
+    "labelWorkoutPlan": "Плани тренування",
     "@labelWorkoutPlan": {
         "description": "Title for screen workout plan"
     },
@@ -519,7 +519,7 @@
     "sz_bar": "W-подібний гриф",
     "kettlebell": "Гиря",
     "calves": "Литкові м'язи",
-    "pull_up_bar": "Перекладина",
+    "pull_up_bar": "Турнік",
     "until_failure": "До відмови",
     "userProfile": "Ваш профіль",
     "exerciseList": "Список вправ",
@@ -563,12 +563,12 @@
     "verifiedEmailReason": "Вам потрібно підтвердити свою електронну пошту, щоб виконувати вправи",
     "alternativeNames": "Альтернативні назви",
     "oneNamePerLine": "Одна назва на рядок",
-    "whatVariationsExist": "Які є варіанти цієї вправи?",
+    "whatVariationsExist": "Варіанти вправи",
     "previous": "Попередній",
     "next": "Наступний",
     "images": "Зображення",
     "language": "Мова",
-    "contributeExercise": "Додати вправу",
+    "contributeExercise": "Додати вправу спільноті",
     "translation": "Переклад",
     "cardio": "Кардіо",
     "contributeExerciseWarning": "Ви можете пропонувати вправи, лише якщо ваш обліковий запис створено понад {days} днів тому, а електронну пошту підтверджено",
@@ -618,11 +618,11 @@
     "@max_reps": {
         "description": "Generated entry for translation for server strings"
     },
-    "goalMacro": "Макроцілі",
+    "goalMacro": "Мета за БЖВ (Білки/Жири/Вуглеводи)",
     "@goalMacro": {
         "description": "The goal for macronutrients"
     },
-    "goalFiber": "Норма клітковини",
+    "goalFiber": "Рекомендований рівень клітковини",
     "goalTypeBasic": "Базовий",
     "@goalTypeBasic": {
         "description": "added for localization of Class GoalType's filed basic"
@@ -685,16 +685,16 @@
     "@indicatorRaw": {
         "description": "added for localization of Class Indicator's field text"
     },
-    "indicatorAvg": "середнє",
+    "indicatorAvg": "Середнє значення",
     "@indicatorAvg": {
         "description": "added for localization of Class Indicator's field text"
     },
     "onlyLogging": "Стежте лише за калоріями",
     "onlyLoggingHelpText": "Позначте прапорець, якщо ви хочете лише реєструвати свої калорії та не хочете встановлювати детальний план прийому їжі з певними стравами",
-    "goalEnergy": "Норма калорій",
-    "goalProtein": "Норма білка",
-    "goalCarbohydrates": "Норма вуглеводів",
-    "goalFat": "Норма жирів",
+    "goalEnergy": "Рекомендований рівень калорій",
+    "goalProtein": "Рекомендований рівень білка",
+    "goalCarbohydrates": "Рекомендований рівень вуглеводів",
+    "goalFat": "Рекомендований рівень жирів",
     "today": "Сьогодні",
     "loggedToday": "Спожито сьогодні",
     "aboutDonateTitle": "Підтримати проєкт",
@@ -720,7 +720,7 @@
     "systemMode": "Налаштування системи",
     "restDay": "День відпочинку",
     "noRoutines": "У вас немає програми тренувань",
-    "restTime": "Час відпочинку",
+    "restTime": "Таймер",
     "sets": "Підходи",
     "@sets": {
         "description": "The number of sets to be done for one exercise"
@@ -893,14 +893,14 @@
             }
         }
     },
-    "dayTypeCustom": "Власний тип",
+    "dayTypeCustom": "Власний формат тренування",
     "dayTypeEnom": "Щохвилини (EMOM)",
-    "dayTypeAmrap": "Якомога більше раундів",
+    "dayTypeAmrap": "Максимум раундів",
     "dayTypeHiit": "Високоінтенсивне інтервальне тренування",
     "dayTypeTabata": "Табата",
-    "dayTypeEdt": "Збільшення щільності тренувань",
-    "dayTypeRft": "Раундів на час",
-    "dayTypeAfap": "Якомога швидше",
+    "dayTypeEdt": "Тренування з поступовим збільшенням обсягу",
+    "dayTypeRft": "Раунди за ліміт часу",
+    "dayTypeAfap": "На максимальну швидкість",
     "slotEntryTypeNormal": "Звичайний",
     "slotEntryTypeDropset": "Дропсет",
     "slotEntryTypeMyo": "Міо",
@@ -935,7 +935,7 @@
             }
         }
     },
-    "volume": "Тренувальний об'єм",
+    "volume": "Обсяг тренування",
     "@volume": {
         "description": "The volume of a workout or set, i.e. weight x reps"
     },
@@ -1767,7 +1767,7 @@
     "@calculationNameOneRmTotal": {
         "description": "Name of a calculated category: the one-rep maxima of several exercises added up. It is also prefilled as the category name and stored, so keep it short"
     },
-    "calculationDescriptionBmi": "На основі ваги вашого тіла та зросту у профілі",
+    "calculationDescriptionBmi": "Розраховано на основі даних з профілю (вага/зріст)",
     "@calculationDescriptionBmi": {
         "description": "Explains where a calculated category takes its numbers from, shown under the calculation type picker"
     },
@@ -1789,7 +1789,7 @@
     "@calculationParamMaxReps": {
         "description": "Form field label: the highest number of repetitions a set may have to still count"
     },
-    "calculationParamWindowDays": "Період у днях",
+    "calculationParamWindowDays": "Інтервал часу в днях",
     "@calculationParamWindowDays": {
         "description": "Form field label: how many days back the calculation looks for a best set"
     },
@@ -1820,7 +1820,7 @@
             }
         }
     },
-    "calculationHelpWindowDays": "Від {min} до {max}. За який період часу враховується найкращий підхід.",
+    "calculationHelpWindowDays": "Від {min} до {max}. Візьметься до уваги найкращий підхід за цей період.",
     "@calculationHelpWindowDays": {
         "description": "Helper text under the 'Window in days' field, how many days back a best set still counts",
         "placeholders": {
