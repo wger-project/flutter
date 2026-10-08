@@ -16,10 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
+
 import 'package:clock/clock.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
@@ -30,26 +33,36 @@ import 'package:wger/features/account/providers/user_profile_repository.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/routines/models/day.dart';
 import 'package:wger/features/routines/models/day_data.dart';
+import 'package:wger/features/routines/models/log.dart';
 import 'package:wger/features/routines/models/routine.dart';
 import 'package:wger/features/routines/models/set_config_data.dart';
 import 'package:wger/features/routines/models/slot_data.dart';
+import 'package:wger/features/routines/providers/gym_log_notifier.dart';
 import 'package:wger/features/routines/providers/gym_state.dart';
 import 'package:wger/features/routines/providers/gym_state_notifier.dart';
 import 'package:wger/features/routines/providers/routines_notifier.dart';
+import 'package:wger/features/routines/providers/workout_logs_repository.dart';
 
 import '../../../../test_data/exercises.dart';
 import '../../../../test_data/routines.dart';
 import '../helpers/routine_form_test_overrides.dart';
+import 'gym_state_test.mocks.dart';
 
+@GenerateMocks([WorkoutLogRepository])
 void main() {
   late GymStateNotifier notifier;
   late ProviderContainer container;
+  late MockWorkoutLogRepository mockLogRepo;
 
   setUp(() {
     TestWidgetsFlutterBinding.ensureInitialized();
     SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
 
-    container = ProviderContainer.test();
+    mockLogRepo = MockWorkoutLogRepository();
+    when(mockLogRepo.addLocalDrift(any, dayId: anyNamed('dayId'))).thenAnswer((_) async {});
+    container = ProviderContainer.test(
+      overrides: [workoutLogRepositoryProvider.overrideWithValue(mockLogRepo)],
+    );
     notifier = container.read(gymStateProvider.notifier);
     notifier.state = notifier.state.copyWith(
       showExercisePages: true,
@@ -602,6 +615,195 @@ void main() {
 
       expect(notifier.state.restStartedAt, isNull);
       expect(notifier.state.restEndsAt, isNull);
+    });
+  });
+
+  group('GymStateNotifier logging and skipping', () {
+    final start = DateTime.utc(2024, 5, 1, 17, 30);
+
+    List<SlotPageEntry> slotPages() => notifier.state.pages.expand((p) => p.slotPages).toList();
+
+    // First slot of the fixture: overview, then log/timer pairs with 3x100kg
+    // and a rest time of 120 s
+    SlotPageEntry firstLog() => slotPages().firstWhere((p) => p.type == SlotPageType.log);
+    SlotPageEntry secondLog() => slotPages().where((p) => p.type == SlotPageType.log).elementAt(1);
+
+    Log capturedLog() =>
+        verify(mockLogRepo.addLocalDrift(captureAny, dayId: anyNamed('dayId'))).captured.single
+            as Log;
+
+    test('logCurrentSet saves the draft, marks the page done and starts the rest', () async {
+      final log = firstLog();
+      notifier.setCurrentPage(log.pageIndex);
+      container.read(gymLogProvider.notifier).setRepetitions(12);
+
+      await withClock(Clock.fixed(start), notifier.logCurrentSet);
+
+      final captured = verify(
+        mockLogRepo.addLocalDrift(captureAny, dayId: captureAnyNamed('dayId')),
+      ).captured;
+      expect((captured[0] as Log).repetitions, 12);
+      expect(captured[1], 1);
+      expect(notifier.state.getSlotPageByUUID(log.uuid)!.logDone, isTrue);
+      expect(notifier.state.currentPage, log.pageIndex + 1);
+      expect(notifier.state.restEndsAt, start.add(const Duration(seconds: 120)));
+    });
+
+    test('logCurrentSet keeps the page open when the write fails', () async {
+      final log = firstLog();
+      notifier.setCurrentPage(log.pageIndex);
+      when(mockLogRepo.addLocalDrift(any, dayId: anyNamed('dayId'))).thenThrow(Exception('db'));
+
+      await expectLater(notifier.logCurrentSet(), throwsException);
+
+      expect(notifier.state.getSlotPageByUUID(log.uuid)!.logDone, isFalse);
+      expect(notifier.state.currentPage, log.pageIndex);
+    });
+
+    test('logCurrentSet does not move on when the user left the page meanwhile', () async {
+      final write = Completer<void>();
+      when(
+        mockLogRepo.addLocalDrift(any, dayId: anyNamed('dayId')),
+      ).thenAnswer((_) => write.future);
+      notifier.setCurrentPage(firstLog().pageIndex);
+
+      final saving = notifier.logCurrentSet();
+      notifier.setCurrentPage(0);
+      write.complete();
+      await saving;
+
+      expect(notifier.state.currentPage, 0);
+    });
+
+    test('logPlannedSet from the rest before the set logs the planned values', () async {
+      final log = secondLog();
+      notifier.setCurrentPage(log.pageIndex - 1);
+
+      final logged = await withClock(
+        Clock.fixed(start),
+        () => notifier.logPlannedSet(log.uuid),
+      );
+
+      expect(logged, isTrue);
+      final saved = capturedLog();
+      expect(saved.repetitions, log.setConfigData!.repetitions);
+      expect(saved.weight, log.setConfigData!.weight);
+      expect(notifier.state.getSlotPageByUUID(log.uuid)!.logDone, isTrue);
+      expect(notifier.state.currentPage, log.pageIndex + 1);
+      expect(notifier.state.restStartedAt, start);
+    });
+
+    test('logPlannedSet on the set page itself logs the edited draft', () async {
+      final log = secondLog();
+      notifier.setCurrentPage(log.pageIndex);
+      container.read(gymLogProvider.notifier).setRepetitions(7);
+
+      expect(await notifier.logPlannedSet(log.uuid), isTrue);
+
+      expect(capturedLog().repetitions, 7);
+    });
+
+    test('logPlannedSet on the set page needs the draft', () async {
+      // A restored state points at the page before onPageChanged seeds the draft
+      final log = secondLog();
+      notifier.state = notifier.state.copyWith(currentPage: log.pageIndex);
+
+      expect(await notifier.logPlannedSet(log.uuid), isFalse);
+      verifyNever(mockLogRepo.addLocalDrift(any, dayId: anyNamed('dayId')));
+    });
+
+    test('logPlannedSet ignores a second action while the first one is saving', () async {
+      final write = Completer<void>();
+      when(
+        mockLogRepo.addLocalDrift(any, dayId: anyNamed('dayId')),
+      ).thenAnswer((_) => write.future);
+      final log = secondLog();
+      notifier.setCurrentPage(log.pageIndex - 1);
+
+      final first = notifier.logPlannedSet(log.uuid);
+      final second = await notifier.logPlannedSet(log.uuid);
+      write.complete();
+
+      expect(second, isFalse);
+      expect(await first, isTrue);
+      verify(mockLogRepo.addLocalDrift(any, dayId: anyNamed('dayId'))).called(1);
+    });
+
+    test('logPlannedSet ignores stale actions', () async {
+      final log = secondLog();
+      notifier.setCurrentPage(log.pageIndex - 1);
+      final timerUuid = notifier.state.getSlotEntryPageByIndex()!.uuid;
+
+      expect(await notifier.logPlannedSet('unknown'), isFalse, reason: 'unknown page');
+      expect(await notifier.logPlannedSet(timerUuid), isFalse, reason: 'not a log page');
+      expect(await notifier.logPlannedSet(firstLog().uuid), isFalse, reason: 'not the next set');
+
+      notifier.markSlotPageAsDone(log.uuid, isDone: true);
+      expect(await notifier.logPlannedSet(log.uuid), isFalse, reason: 'already logged');
+
+      verifyNever(mockLogRepo.addLocalDrift(any, dayId: anyNamed('dayId')));
+      expect(notifier.state.currentPage, log.pageIndex - 1);
+    });
+
+    test('logPlannedSet only starts from a rest, not from the exercise overview', () async {
+      final log = firstLog();
+      notifier.setCurrentPage(log.pageIndex - 1);
+      expect(notifier.state.getSlotEntryPageByIndex()!.type, SlotPageType.exerciseOverview);
+
+      expect(await notifier.logPlannedSet(log.uuid), isFalse);
+      verifyNever(mockLogRepo.addLocalDrift(any, dayId: anyNamed('dayId')));
+    });
+
+    test('logPlannedSet leaves a set without planned values to the app', () async {
+      final config = SetConfigData(
+        exerciseId: 1,
+        exercise: getTestExercises().first,
+        slotEntryId: 1,
+        nrOfSets: 1,
+        repetitions: null,
+        weight: null,
+        restTime: 60,
+        textRepr: '',
+      );
+      final routine = getTestRoutine()
+        ..dayDataGym = [
+          DayData(
+            iteration: 1,
+            date: DateTime(2024, 11, 1),
+            day: Day(id: 1, routineId: 1, name: 'Open sets'),
+            slots: [
+              SlotData(isSuperset: false, exerciseIds: [1], setConfigs: [config, config]),
+            ],
+          ),
+        ];
+      notifier.state = notifier.state.copyWith(routine: routine);
+      notifier.calculatePages();
+      final log = secondLog();
+      notifier.setCurrentPage(log.pageIndex - 1);
+
+      expect(await notifier.logPlannedSet(log.uuid), isFalse);
+
+      verifyNever(mockLogRepo.addLocalDrift(any, dayId: anyNamed('dayId')));
+      expect(notifier.state.currentPage, log.pageIndex - 1, reason: 'stays on the rest');
+    });
+
+    test('skipRest moves from the timer page to the next set', () {
+      final log = secondLog();
+      notifier.setCurrentPage(log.pageIndex - 1);
+
+      notifier.skipRest();
+
+      expect(notifier.state.currentPage, log.pageIndex);
+      expect(notifier.state.restStartedAt, isNull);
+    });
+
+    test('skipRest does nothing outside a rest', () {
+      final log = firstLog();
+      notifier.setCurrentPage(log.pageIndex);
+
+      notifier.skipRest();
+
+      expect(notifier.state.currentPage, log.pageIndex);
     });
   });
 

@@ -31,6 +31,8 @@ import 'package:wger/features/routines/models/weight_unit.dart';
 import 'package:wger/features/routines/providers/gym_log_notifier.dart';
 import 'package:wger/features/routines/providers/gym_state.dart';
 import 'package:wger/features/routines/providers/routines_notifier.dart';
+import 'package:wger/features/routines/providers/workout_logs_notifier.dart';
+import 'package:wger/features/routines/validators.dart';
 
 part 'gym_state_notifier.g.dart';
 
@@ -317,12 +319,76 @@ class GymStateNotifier extends _$GymStateNotifier {
       return;
     }
 
-    final log = Log.fromSetConfigData(
-      slotEntryPage.setConfigData!,
-      routineId: state.routine.id,
-      iteration: state.iteration,
-    );
-    ref.read(gymLogProvider.notifier).setLog(log);
+    ref.read(gymLogProvider.notifier).setLog(_draftFor(slotEntryPage));
+  }
+
+  /// The log draft a slot page starts with, prefilled with the planned values
+  Log _draftFor(SlotPageEntry slotPage) => Log.fromSetConfigData(
+    slotPage.setConfigData!,
+    routineId: state.routine.id,
+    iteration: state.iteration,
+  );
+
+  /// Ends the rest of the current timer page and moves on. No-op on other pages.
+  void skipRest() {
+    if (state.getSlotEntryPageByIndex()?.type != SlotPageType.timer) {
+      return;
+    }
+    setCurrentPage(state.currentPage + 1);
+  }
+
+  /// Saves the log draft of the current log page, marks the page as done and
+  /// moves on to the next page. A failed write propagates to the caller.
+  Future<void> logCurrentSet() async {
+    final slotPage = state.getSlotEntryPageByIndex();
+    final log = ref.read(gymLogProvider);
+    if (slotPage == null || slotPage.type != SlotPageType.log || log == null) {
+      _logger.warning('logCurrentSet called without a log draft on a log page');
+      return;
+    }
+
+    // Done before the write, so a repeated logPlannedSet is rejected meanwhile
+    markSlotPageAsDone(slotPage.uuid, isDone: true);
+    try {
+      await ref.read(workoutLogProvider).addEntry(log, dayId: state.dayId);
+    } catch (_) {
+      markSlotPageAsDone(slotPage.uuid, isDone: false);
+      rethrow;
+    }
+
+    // The user may have moved on or left gym mode during the write
+    if (state.currentPage == slotPage.pageIndex) {
+      setCurrentPage(slotPage.pageIndex + 1);
+    }
+  }
+
+  /// Logs the set of the log page [slotPageUuid] without the UI, e.g. from a
+  /// notification. From the rest right before it the planned values are logged,
+  /// on the page itself the current draft. False if stale, done or incomplete.
+  Future<bool> logPlannedSet(String slotPageUuid) async {
+    final target = state.getSlotPageByUUID(slotPageUuid);
+    if (target == null || target.type != SlotPageType.log || target.logDone) {
+      return false;
+    }
+
+    final onTarget = state.currentPage == target.pageIndex;
+    final onRestBefore =
+        state.currentPage == target.pageIndex - 1 &&
+        state.getSlotEntryPageByIndex()?.type == SlotPageType.timer;
+    if (!onTarget && !onRestBefore) {
+      return false;
+    }
+
+    final log = onTarget ? ref.read(gymLogProvider) : _draftFor(target);
+    if (log == null || !isWorkoutLogComplete(repetitions: log.repetitions, weight: log.weight)) {
+      return false;
+    }
+
+    if (onRestBefore) {
+      setCurrentPage(target.pageIndex);
+    }
+    await logCurrentSet();
+    return true;
   }
 
   /// Starts the rest when on a timer page, ends it everywhere else. A rest

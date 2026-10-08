@@ -19,15 +19,18 @@
 import 'package:wger/features/routines/models/session.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
-/// Cross-field validation for a workout log entry, mirroring the
-/// reachable part of the backend `WorkoutLog.clean()` rule: at least
-/// one of [repetitions] or [weight] must be set.
+/// Whether a workout log entry passes the reachable part of the backend
+/// `WorkoutLog.clean()` rule: at least one of [repetitions] or [weight] is set.
+bool isWorkoutLogComplete({required num? repetitions, required num? weight}) =>
+    repetitions != null || weight != null;
+
+/// Cross-field validation for a workout log entry, see [isWorkoutLogComplete]
 String? validateWorkoutLogCrossField({
   required num? repetitions,
   required num? weight,
   required AppLocalizations i18n,
 }) {
-  if (repetitions == null && weight == null) {
+  if (!isWorkoutLogComplete(repetitions: repetitions, weight: weight)) {
     return i18n.weightOrRepsRequired;
   }
   return null;

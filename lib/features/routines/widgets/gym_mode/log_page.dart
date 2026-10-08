@@ -301,7 +301,6 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
   @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
-    final logProvider = ref.read(workoutLogProvider);
     final log = ref.watch(gymLogProvider);
 
     // The log is populated when the page becomes current: the PageView can lay
@@ -387,18 +386,13 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
                 return;
               }
 
-              final gymState = ref.read(gymStateProvider);
-              final gymProvider = ref.read(gymStateProvider.notifier);
-              final page = gymState.getSlotEntryPageByIndex()!;
-
               // A failed write is intentionally left to propagate to the global
               // error handler; the success path below is then skipped.
-              await logProvider.addEntry(log, dayId: gymState.dayId);
+              await ref.read(gymStateProvider.notifier).logCurrentSet();
               if (!context.mounted) {
                 return;
               }
 
-              gymProvider.markSlotPageAsDone(page.uuid, isDone: true);
               showSnackbar(
                 context,
                 i18n.successfullySaved,
