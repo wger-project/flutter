@@ -23,6 +23,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:wger/core/build_safety.dart';
+import 'package:wger/core/consts.dart';
 import 'package:wger/core/errors.dart';
 import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/core/widgets/error.dart';
@@ -132,8 +133,8 @@ class _GymModeState extends ConsumerState<GymMode> {
           final rest = gymState.restDurationFor(slotPage);
           out.add(
             rest != null
-                ? TimerCountdownWidget(_controller, rest.inSeconds)
-                : TimerWidget(_controller),
+                ? TimerCountdownWidget(_controller, slotPage.uuid)
+                : TimerWidget(_controller, slotPage.uuid),
           );
         }
       }
@@ -146,8 +147,35 @@ class _GymModeState extends ConsumerState<GymMode> {
     return out;
   }
 
+  /// Shows [page] when the state moved without the PageView, e.g. after a
+  /// notification action or a logged set
+  void _followCurrentPage(int page) {
+    final shown = _controller.hasClients ? _controller.page?.round() : null;
+    if (shown == null || shown == page) {
+      return;
+    }
+
+    final resumed = WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed;
+    if (resumed && (page - shown).abs() == 1) {
+      _controller.animateToPage(
+        page,
+        duration: DEFAULT_ANIMATION_DURATION,
+        curve: DEFAULT_ANIMATION_CURVE,
+      );
+    } else {
+      _controller.jumpToPage(page);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    ref.listen(gymStateProvider.select((s) => s.currentPage), (_, page) {
+      // clear() also resets the page, but the summary has to stay visible
+      if (ref.read(gymStateProvider).isInitialized) {
+        _followCurrentPage(page);
+      }
+    });
+
     return FutureBuilder<int>(
       future: _initData,
       builder: (context, snapshot) {

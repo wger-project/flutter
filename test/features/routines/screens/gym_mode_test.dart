@@ -506,6 +506,74 @@ void main() {
     });
   });
 
+  /// Opens gym mode and walks to the first log page (start, overview, log)
+  Future<riverpod.ProviderContainer> openOnFirstLogPage(WidgetTester tester) async {
+    await tester.pumpWidget(renderGymMode());
+    await tester.pumpAndSettle();
+    await tester.tap(find.byType(TextButton));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byIcon(Icons.chevron_right));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byIcon(Icons.chevron_right));
+    await tester.pumpAndSettle();
+    expect(find.byType(LogPage), findsOneWidget);
+
+    return riverpod.ProviderScope.containerOf(tester.element(find.byType(PageView)));
+  }
+
+  testWidgets(
+    'the PageView follows page changes made in the gym state',
+    (WidgetTester tester) async {
+      await withClock(Clock.fixed(DateTime(2025, 3, 29, 14, 33)), () async {
+        final container = await openOnFirstLogPage(tester);
+        final notifier = container.read(gymStateProvider.notifier);
+        PageController controller() => tester.widget<PageView>(find.byType(PageView)).controller!;
+
+        // One page, e.g. skipping the rest from a notification
+        await tester.tap(find.byIcon(Icons.chevron_right));
+        await tester.pumpAndSettle();
+        expect(find.byType(TimerCountdownWidget), findsOneWidget);
+        notifier.skipRest();
+        await tester.pumpAndSettle();
+        expect(find.byType(LogPage), findsOneWidget);
+        expect(controller().page, notifier.state.currentPage);
+
+        // Several pages at once
+        final sessionPage = notifier.state.pages.firstWhere((p) => p.type == PageType.session);
+        notifier.setCurrentPage(sessionPage.pageIndex);
+        await tester.pumpAndSettle();
+        expect(find.byType(SessionPage), findsOneWidget);
+        expect(controller().page, sessionPage.pageIndex);
+      });
+    },
+    semanticsEnabled: false,
+  );
+
+  testWidgets(
+    'saving a set moves on to the pause exactly once',
+    (WidgetTester tester) async {
+      // The gym state advances and the PageView follows it, the save button
+      // must not add a page change of its own
+      when(mockLogRepo.addLocalDrift(any, dayId: anyNamed('dayId'))).thenAnswer((_) async {});
+
+      await withClock(Clock.fixed(DateTime(2025, 3, 29, 14, 33)), () async {
+        final container = await openOnFirstLogPage(tester);
+        final logPage = container.read(gymStateProvider).currentPage;
+
+        await tester.tap(find.byKey(const ValueKey('save-log-button')));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(TimerCountdownWidget), findsOneWidget);
+        expect(container.read(gymStateProvider).currentPage, logPage + 1);
+        expect(
+          tester.widget<PageView>(find.byType(PageView)).controller!.page,
+          logPage + 1,
+        );
+      });
+    },
+    semanticsEnabled: false,
+  );
+
   testWidgets(
     'resuming an interrupted session reopens the page it was left on',
     (WidgetTester tester) async {

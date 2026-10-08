@@ -19,7 +19,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:wger/core/consts.dart';
 import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/core/snackbar.dart';
 import 'package:wger/core/widgets/core.dart';
@@ -387,7 +386,8 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
               }
 
               // A failed write is intentionally left to propagate to the global
-              // error handler; the success path below is then skipped.
+              // error handler; the success path below is then skipped. The
+              // PageView follows the page change from the gym state.
               await ref.read(gymStateProvider.notifier).logCurrentSet();
               if (!context.mounted) {
                 return;
@@ -398,10 +398,6 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
                 i18n.successfullySaved,
                 center: true,
                 duration: const Duration(seconds: 2),
-              );
-              widget.controller.nextPage(
-                duration: DEFAULT_ANIMATION_DURATION,
-                curve: DEFAULT_ANIMATION_CURVE,
               );
             },
             child: Text(i18n.save),

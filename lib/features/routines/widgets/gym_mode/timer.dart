@@ -16,7 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import 'dart:async';
+import 'dart:math';
 
+import 'package:clock/clock.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -25,24 +27,26 @@ import 'package:wger/features/routines/providers/gym_state_notifier.dart';
 import 'package:wger/features/routines/widgets/gym_mode/navigation.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
-class TimerWidget extends StatefulWidget {
+/// Rest that counts up, from the rest start in the gym state
+class TimerWidget extends ConsumerStatefulWidget {
   final PageController _controller;
 
-  const TimerWidget(this._controller);
+  /// The timer page this widget renders
+  final String slotUuid;
+
+  const TimerWidget(this._controller, this.slotUuid);
 
   @override
   _TimerWidgetState createState() => _TimerWidgetState();
 }
 
-class _TimerWidgetState extends State<TimerWidget> {
-  late DateTime _startTime;
+class _TimerWidgetState extends ConsumerState<TimerWidget> {
   final _maxSeconds = 600;
   late Timer _uiTimer;
 
   @override
   void initState() {
     super.initState();
-    _startTime = DateTime.now();
 
     _uiTimer = Timer.periodic(const Duration(seconds: 1), (_) {
       // ignore: no-empty-block, avoid-empty-setstate
@@ -60,7 +64,15 @@ class _TimerWidgetState extends State<TimerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final elapsed = DateTime.now().difference(_startTime).inSeconds;
+    final gymState = ref.watch(gymStateProvider);
+    final slotPage = gymState.getSlotPageByUUID(widget.slotUuid);
+    if (slotPage == null) {
+      return Container();
+    }
+
+    // The rest only runs while this is the current page
+    final startedAt = gymState.currentPage == slotPage.pageIndex ? gymState.restStartedAt : null;
+    final elapsed = startedAt == null ? 0 : clock.now().difference(startedAt).inSeconds;
     final displaySeconds = elapsed > _maxSeconds ? _maxSeconds : elapsed;
     final displayTime = DateTime(2000, 1, 1, 0, 0, 0).add(Duration(seconds: displaySeconds));
 
@@ -86,29 +98,28 @@ class _TimerWidgetState extends State<TimerWidget> {
   }
 }
 
+/// Rest that counts down to the rest end in the gym state
 class TimerCountdownWidget extends ConsumerStatefulWidget {
   final PageController _controller;
-  final int _seconds;
 
-  const TimerCountdownWidget(
-    this._controller,
-    this._seconds,
-  );
+  /// The timer page this widget renders
+  final String slotUuid;
+
+  const TimerCountdownWidget(this._controller, this.slotUuid);
 
   @override
   _TimerCountdownWidgetState createState() => _TimerCountdownWidgetState();
 }
 
 class _TimerCountdownWidgetState extends ConsumerState<TimerCountdownWidget> {
-  late DateTime _endTime;
   late Timer _uiTimer;
 
-  bool _hasNotified = false;
+  /// The rest end the alert was played for, so each rest alerts once
+  DateTime? _alertedFor;
 
   @override
   void initState() {
     super.initState();
-    _endTime = DateTime.now().add(Duration(seconds: widget._seconds));
 
     _uiTimer = Timer.periodic(const Duration(seconds: 1), (_) {
       // ignore: no-empty-block, avoid-empty-setstate
@@ -126,13 +137,23 @@ class _TimerCountdownWidgetState extends ConsumerState<TimerCountdownWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final remaining = _endTime.difference(DateTime.now());
-    final remainingSeconds = remaining.inSeconds <= 0 ? 0 : remaining.inSeconds;
-    final displayTime = DateTime(2000, 1, 1, 0, 0, 0).add(Duration(seconds: remainingSeconds));
     final gymState = ref.watch(gymStateProvider);
+    final slotPage = gymState.getSlotPageByUUID(widget.slotUuid);
+    if (slotPage == null) {
+      return Container();
+    }
 
-    //  When countdown finishes, notify ONCE, and respect settings
-    if (remainingSeconds == 0 && !_hasNotified) {
+    // The rest only runs while this is the current page, the neighbours show
+    // their full length
+    final endsAt = gymState.currentPage == slotPage.pageIndex ? gymState.restEndsAt : null;
+    final remaining = endsAt == null
+        ? gymState.restDurationFor(slotPage)!
+        : endsAt.difference(clock.now());
+    final remainingSeconds = max(0, remaining.inSeconds);
+    final displayTime = DateTime(2000, 1, 1, 0, 0, 0).add(Duration(seconds: remainingSeconds));
+
+    if (endsAt != null && remainingSeconds == 0 && _alertedFor != endsAt) {
+      _alertedFor = endsAt;
       if (gymState.alertOnCountdownEnd) {
         // Strongest built-in haptic on both platforms (iOS: full vibration,
         // Android: LONG_PRESS). heavyImpact maps to a weak tick on Android.
@@ -141,9 +162,6 @@ class _TimerCountdownWidgetState extends ConsumerState<TimerCountdownWidget> {
         // Not that this only works on desktop platforms
         SystemSound.play(SystemSoundType.alert);
       }
-      setState(() {
-        _hasNotified = true;
-      });
     }
 
     return Column(
