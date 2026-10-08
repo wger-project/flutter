@@ -69,8 +69,11 @@ class _ElapsedWorkoutTimerState extends ConsumerState<ElapsedWorkoutTimer> {
 
   @override
   Widget build(BuildContext context) {
-    final workoutStart = ref.watch(gymStateProvider).workoutStart;
-    final elapsed = _now.difference(workoutStart);
+    final gymState = ref.watch(gymStateProvider);
+    if (!gymState.showWorkoutDuration) {
+      return const SizedBox.shrink();
+    }
+    final elapsed = _now.difference(gymState.workoutStart);
     final style = Theme.of(context).textTheme.bodySmall;
 
     return Row(
