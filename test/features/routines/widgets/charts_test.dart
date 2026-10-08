@@ -62,6 +62,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(LineChart), findsOneWidget);
+    final lines = tester.widget<LineChart>(find.byType(LineChart)).data.lineBarsData;
+    expect(lines.every((l) => l.preventCurveOverShooting), isTrue);
   });
 
   testWidgets('does not crash without any logs', (WidgetTester tester) async {
