@@ -50,7 +50,7 @@
         "description": "Error message when the user enters an invalid username"
     },
     "username": "Ім'я користувача",
-    "customServerHint": "Введіть адресу власного сервера, інакше використовуватиметься стандартний",
+    "customServerHint": "Введіть адресу власного сервера, інакше буде використовуватись стандартний",
     "@customServerHint": {
         "description": "Hint text for the form where the users can enter their own wger instance"
     },
@@ -135,7 +135,7 @@
     "@comment": {
         "description": "Comment, additional information"
     },
-    "impression": "Враження",
+    "impression": "Загальне враження",
     "@impression": {
         "description": "General impression (e.g. for a workout session) such as good, bad, etc."
     },
@@ -185,7 +185,7 @@
         "description": "Label used in bottom navigation, use a short word"
     },
     "weightUnit": "Одиниця ваги",
-    "dayDescriptionHelp": "Опис тренування на цей день (наприклад, «день підтягування») або які частини тіла тренуються (наприклад, («груди та плечі»)",
+    "dayDescriptionHelp": "Опис тренування на цей день (наприклад, «день підтягування») або які групи м'язів працюють (наприклад, («груди та плечі»)",
     "workoutSession": "Тренування",
     "@workoutSession": {
         "description": "A (logged) workout session"
@@ -272,13 +272,13 @@
     },
     "anErrorOccurred": "Сталася помилка!",
     "measurement": "Замір",
-    "logHelpEntries": "Якщо на один день припадає більше одного запису з однаковою кількістю повторень, але різними вагами, то на графіку буде показано тільки запис з більшою вагою.",
+    "logHelpEntries": "Якщо за один день зроблено кілька записів з однаковою кількістю повторень, але різними вагами, то на графіку відобразиться лише найбільший показник.",
     "logHelpEntriesUnits": "Зверніть увагу, що на графіку відображаються тільки записи з одиницями ваги (кг або lb) і повтореннями. Інші комбінації, такі як час або \"до відмови\", тут ігноруються.",
     "measurements": "Заміри тіла",
     "@measurements": {
         "description": "Categories for the measurements such as biceps size, body fat, etc."
     },
-    "measurementEntriesHelpText": "Одиниця вимірювання, яка використовується для вимірювання категорії, як от \"см\" або \"%\"",
+    "measurementEntriesHelpText": "Одиниця вимірювання категорії (наприклад, «см» або «%»)",
     "start": "Старт",
     "@start": {
         "description": "Label on button to start the gym mode (i.e., an imperative)"
@@ -501,7 +501,7 @@
     "seconds": "Секунди",
     "bench": "Лава",
     "barbell": "Штанга",
-    "triceps": "Трицепс",
+    "triceps": "Трицепси",
     "swiss_ball": "Фітбол",
     "lower_back": "Нижня частина спини",
     "shoulders": "Плечі",
@@ -514,7 +514,7 @@
     "lats": "Найширші м'язи спини",
     "legs": "Ноги",
     "back": "Спина",
-    "quads": "Квадрицепс",
+    "quads": "Квадрицепси",
     "arms": "Руки",
     "sz_bar": "W-подібний гриф",
     "kettlebell": "Гиря",
@@ -681,7 +681,7 @@
     "@goalTypeMeals": {
         "description": "added for localization of Class GoalType's filed meals"
     },
-    "indicatorRaw": "первинні дані",
+    "indicatorRaw": "Вихідні дані",
     "@indicatorRaw": {
         "description": "added for localization of Class Indicator's field text"
     },
@@ -720,7 +720,7 @@
     "systemMode": "Налаштування системи",
     "restDay": "День відпочинку",
     "noRoutines": "У вас немає програми тренувань",
-    "restTime": "Таймер",
+    "restTime": "Відпочинок",
     "sets": "Підходи",
     "@sets": {
         "description": "The number of sets to be done for one exercise"
@@ -793,9 +793,9 @@
     "@resistance_band": {
         "description": "Generated entry for translation for server strings"
     },
-    "selectAvailablePlates": "Оберіть диски",
+    "selectAvailablePlates": "Оберіть вагові диски",
     "barWeight": "Вага штанги",
-    "useColors": "Використовуйте кольори",
+    "useColors": "Використовувати кольори",
     "yourCurrentNutritionPlanHasNoMealsDefinedYet": "У вашому поточному плані харчування не визначено жодного прийому їжі",
     "@yourCurrentNutritionPlanHasNoMealsDefinedYet": {
         "description": "Message shown when a nutrition plan doesn't have any meals"
@@ -898,22 +898,22 @@
     "dayTypeAmrap": "Максимум раундів",
     "dayTypeHiit": "Високоінтенсивне інтервальне тренування",
     "dayTypeTabata": "Табата",
-    "dayTypeEdt": "Тренування з поступовим збільшенням обсягу",
+    "dayTypeEdt": "Тренування з поступовим нарощуванням обсягу",
     "dayTypeRft": "Раунди за ліміт часу",
     "dayTypeAfap": "На максимальну швидкість",
     "slotEntryTypeNormal": "Звичайний",
     "slotEntryTypeDropset": "Дропсет",
     "slotEntryTypeMyo": "Міо",
     "slotEntryTypePartial": "Часткове",
-    "slotEntryTypeForced": "Примусово",
-    "slotEntryTypeTut": "Час під напруженням (TUT)",
+    "slotEntryTypeForced": "Примусовий",
+    "slotEntryTypeTut": "Час під напругою (TUT)",
     "slotEntryTypeIso": "Ізометричне утримання",
     "slotEntryTypeJump": "Стрибок",
     "endWorkout": "Закінчити тренування",
     "impressionGood": "Добре",
     "impressionNeutral": "Нейтрально",
     "impressionBad": "Погано",
-    "gymModeShowExercises": "Показати сторінки огляду вправ",
+    "gymModeShowExercises": "Перегляд вправ",
     "gymModeShowTimer": "Показувати таймер між підходами",
     "gymModeTimerType": "Тип таймера",
     "gymModeTimerTypeHelText": "Якщо для підходу вказано час відпочинку, завжди запускається зворотний відлік.",
@@ -1110,7 +1110,7 @@
     "@otherLogs": {
         "description": "Other unassigned logs. Label for the pseudo-meal section that groups all nutritional diary entries not assigned to a specific meal"
     },
-    "chartRangeAll": "Весь час",
+    "chartRangeAll": "Весь період",
     "@chartRangeAll": {
         "description": "Label for the chart time-range selector option showing all data"
     },
@@ -1349,7 +1349,7 @@
     "@metricRestingHeartRate": {
         "description": "Label for resting heart rate measurement"
     },
-    "metricBloodOxygen": "Рівень кисню в крові",
+    "metricBloodOxygen": "Насичення крові киснем",
     "@metricBloodOxygen": {
         "description": "Label for blood oxygen saturation measurement"
     },
@@ -1373,7 +1373,7 @@
     "@metricSleepTotal": {
         "description": "Component of the 'Sleep' category, listed under that heading, so 'sleep' is not repeated. The total time asleep in a night, all sleep stages together"
     },
-    "metricSleepLight": "Поверхневий",
+    "metricSleepLight": "Поверхневий сон",
     "@metricSleepLight": {
         "description": "Component of the 'Sleep' category, listed under that heading, so 'sleep' is not repeated. The light sleep stage, meaning shallow sleep, never 'light' as in brightness or weight"
     },
@@ -1624,7 +1624,7 @@
             }
         }
     },
-    "healthSync": "Синхронізація зі «Здоров'ям»",
+    "healthSync": "Синхронізація зі «Health»",
     "@healthSync": {
         "description": "Title for the health platform sync setting"
     },
@@ -1767,7 +1767,7 @@
     "@calculationNameOneRmTotal": {
         "description": "Name of a calculated category: the one-rep maxima of several exercises added up. It is also prefilled as the category name and stored, so keep it short"
     },
-    "calculationDescriptionBmi": "Розраховано на основі даних з профілю (вага/зріст)",
+    "calculationDescriptionBmi": "Розраховано на основі маси тіла та зросту з профілю",
     "@calculationDescriptionBmi": {
         "description": "Explains where a calculated category takes its numbers from, shown under the calculation type picker"
     },
@@ -1841,11 +1841,11 @@
             }
         }
     },
-    "metricSleepDeep": "Глибокий",
+    "metricSleepDeep": "Глибокий сон",
     "@metricSleepDeep": {
         "description": "Component of the 'Sleep' category, listed under that heading, so 'sleep' is not repeated. The deep sleep stage, also called slow-wave sleep"
     },
-    "metricSleepRem": "Швидка фаза",
+    "metricSleepRem": "Швидка фаза сну (REM)",
     "@metricSleepRem": {
         "description": "Component of the 'Sleep' category, listed under that heading, so 'sleep' is not repeated. The REM (rapid eye movement) sleep stage, usually kept as the abbreviation"
     },
