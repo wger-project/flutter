@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
@@ -166,6 +167,24 @@ class _GymModeOptionsState extends ConsumerState<GymModeOptions> {
                             ? (value) => gymNotifier.setAlertOnCountdownEnd(value)
                             : null,
                       ),
+                      SwitchListTile(
+                        key: const ValueKey('gym-mode-rest-alarm'),
+                        title: Text(i18n.gymModeRestAlarm),
+                        subtitle: Text(i18n.gymModeRestAlarmHelp),
+                        value: gymState.restAlarmEnabled,
+                        onChanged: gymState.showTimerPages
+                            ? (value) => gymNotifier.setRestAlarmEnabled(value)
+                            : null,
+                      ),
+                      // The ongoing notification only exists on Android
+                      if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android)
+                        SwitchListTile(
+                          key: const ValueKey('gym-mode-workout-notification'),
+                          title: Text(i18n.gymModeWorkoutNotification),
+                          subtitle: Text(i18n.gymModeWorkoutNotificationHelp),
+                          value: gymState.showWorkoutNotification,
+                          onChanged: (value) => gymNotifier.setShowWorkoutNotification(value),
+                        ),
 
                       const Divider(),
                       ListTile(

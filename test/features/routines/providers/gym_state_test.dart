@@ -521,6 +521,42 @@ void main() {
     });
   });
 
+  group('GymStateNotifier notification settings', () {
+    // PreferenceHelper keeps the store of the first test, start from empty
+    setUp(() => PreferenceHelper.asyncPref.clear());
+
+    test('Both are on without stored preferences', () async {
+      await notifier.loadPrefs();
+
+      expect(notifier.state.restAlarmEnabled, isTrue);
+      expect(notifier.state.showWorkoutNotification, isTrue);
+    });
+
+    test('Stored values are loaded', () async {
+      await PreferenceHelper.asyncPref.setBool(PREFS_REST_ALARM, false);
+      await PreferenceHelper.asyncPref.setBool(PREFS_WORKOUT_NOTIFICATION, false);
+
+      await notifier.loadPrefs();
+
+      expect(notifier.state.restAlarmEnabled, isFalse);
+      expect(notifier.state.showWorkoutNotification, isFalse);
+    });
+
+    test('The setters change only their own flag and persist it', () async {
+      notifier.setRestAlarmEnabled(false);
+      await pumpEventQueue();
+      expect(notifier.state.restAlarmEnabled, isFalse);
+      expect(notifier.state.showWorkoutNotification, isTrue);
+      expect(await PreferenceHelper.asyncPref.getBool(PREFS_REST_ALARM), false);
+
+      notifier.setShowWorkoutNotification(false);
+      await pumpEventQueue();
+      expect(notifier.state.restAlarmEnabled, isFalse);
+      expect(notifier.state.showWorkoutNotification, isFalse);
+      expect(await PreferenceHelper.asyncPref.getBool(PREFS_WORKOUT_NOTIFICATION), false);
+    });
+  });
+
   group('GymStateNotifier.setCurrentPage, rest', () {
     final start = DateTime.utc(2024, 5, 1, 17, 30);
     final later = DateTime.utc(2024, 5, 1, 17, 45);

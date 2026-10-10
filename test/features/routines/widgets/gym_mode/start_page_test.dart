@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
@@ -96,21 +97,35 @@ void main() {
     await tester.tap(notifySwitch);
     await tester.pump();
 
+    // The rest alarm is only enabled while timer pages are shown
+    final restAlarmSwitch = find.byKey(const ValueKey('gym-mode-rest-alarm'));
+    await tester.ensureVisible(restAlarmSwitch);
+    await tester.tap(restAlarmSwitch);
+    await tester.pump();
+
+    final workoutNotificationSwitch = find.byKey(const ValueKey('gym-mode-workout-notification'));
+    await tester.ensureVisible(workoutNotificationSwitch);
+    await tester.tap(workoutNotificationSwitch);
+    await tester.pump();
+
     // Now toggle show exercises
     final showExercisesSwitch = find.byKey(const ValueKey('gym-mode-option-show-exercises'));
     expect(showExercisesSwitch, findsOneWidget);
+    await tester.ensureVisible(showExercisesSwitch);
     await tester.tap(showExercisesSwitch);
     await tester.pump();
 
     // Toggle show timer (this will disable notify switch)
     final showTimerSwitch = find.byKey(const ValueKey('gym-mode-option-show-timer'));
     expect(showTimerSwitch, findsOneWidget);
+    await tester.ensureVisible(showTimerSwitch);
     await tester.tap(showTimerSwitch);
     await tester.pump();
 
     // Toggle show workout duration
     final durationSwitch = find.byKey(const ValueKey('gym-mode-option-show-workout-duration'));
     expect(durationSwitch, findsOneWidget);
+    await tester.ensureVisible(durationSwitch);
     await tester.tap(durationSwitch);
     await tester.pump();
 
@@ -119,6 +134,21 @@ void main() {
     expect(notifier.state.showTimerPages, isFalse);
     expect(notifier.state.alertOnCountdownEnd, isTrue);
     expect(notifier.state.showWorkoutDuration, isFalse);
+    expect(notifier.state.restAlarmEnabled, isFalse);
+    expect(notifier.state.showWorkoutNotification, isFalse);
+  });
+
+  testWidgets('The workout notification switch only shows on Android', (tester) async {
+    debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+    addTearDown(() => debugDefaultTargetPlatformOverride = null);
+
+    await pumpGymModeOptions(tester);
+    await tester.tap(find.byKey(const ValueKey('gym-mode-options-tile')));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const ValueKey('gym-mode-rest-alarm')), findsOneWidget);
+    expect(find.byKey(const ValueKey('gym-mode-workout-notification')), findsNothing);
+    debugDefaultTargetPlatformOverride = null;
   });
 
   testWidgets('Dropdown, text field and refresh button update notifier state', (tester) async {

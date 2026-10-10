@@ -376,6 +376,10 @@
   "stopwatch": "Stopwatch",
   "gymModeDefaultCountdownTime": "Default countdown time, in seconds",
   "gymModeNotifyOnCountdownFinish": "Notify on countdown end",
+  "gymModeRestAlarm": "Rest alarm",
+  "gymModeRestAlarmHelp": "System notification when the rest is over, also with the screen locked",
+  "gymModeWorkoutNotification": "Workout notification",
+  "gymModeWorkoutNotificationHelp": "Shows the rest and the next set, with buttons to log it or skip the rest",
   "duration": "Duration",
   "durationHoursMinutes": "{hours}h {minutes}m",
   "@durationHoursMinutes": {

@@ -93,6 +93,16 @@ class GymStateNotifier extends _$GymStateNotifier {
       state = state.copyWith(showWorkoutDuration: showWorkoutDuration);
     }
 
+    final restAlarm = await prefs.getBool(PREFS_REST_ALARM);
+    if (restAlarm != null && restAlarm != state.restAlarmEnabled) {
+      state = state.copyWith(restAlarmEnabled: restAlarm);
+    }
+
+    final workoutNotification = await prefs.getBool(PREFS_WORKOUT_NOTIFICATION);
+    if (workoutNotification != null && workoutNotification != state.showWorkoutNotification) {
+      state = state.copyWith(showWorkoutNotification: workoutNotification);
+    }
+
     _logger.finer(
       'Loaded saved preferences: '
       'showExercise=$showExercise '
@@ -102,7 +112,9 @@ class GymStateNotifier extends _$GymStateNotifier {
       'defaultCountdownDurationSeconds=$defaultCountdownDurationSeconds'
       'logScopeWeeks=$logScopeWeeks '
       'showDistinctLogs=$showDistinctLogs '
-      'showWorkoutDuration=$showWorkoutDuration ',
+      'showWorkoutDuration=$showWorkoutDuration '
+      'restAlarm=$restAlarm '
+      'workoutNotification=$workoutNotification ',
     );
   }
 
@@ -123,6 +135,8 @@ class GymStateNotifier extends _$GymStateNotifier {
     }
     await prefs.setBool(PREFS_SHOW_DISTINCT_LOGS, state.showDistinctLogs);
     await prefs.setBool(PREFS_SHOW_WORKOUT_DURATION, state.showWorkoutDuration);
+    await prefs.setBool(PREFS_REST_ALARM, state.restAlarmEnabled);
+    await prefs.setBool(PREFS_WORKOUT_NOTIFICATION, state.showWorkoutNotification);
 
     _logger.finer(
       'Saved preferences: '
@@ -133,7 +147,9 @@ class GymStateNotifier extends _$GymStateNotifier {
       'defaultCountdownDuration=${state.countdownDuration.inSeconds}'
       'logScopeWeeks=${state.logScopeWeeks} '
       'showDistinctLogs=${state.showDistinctLogs} '
-      'showWorkoutDuration=${state.showWorkoutDuration} ',
+      'showWorkoutDuration=${state.showWorkoutDuration} '
+      'restAlarm=${state.restAlarmEnabled} '
+      'workoutNotification=${state.showWorkoutNotification} ',
     );
   }
 
@@ -452,6 +468,16 @@ class GymStateNotifier extends _$GymStateNotifier {
 
   void setShowWorkoutDuration(bool value) {
     state = state.copyWith(showWorkoutDuration: value);
+    _savePrefs();
+  }
+
+  void setRestAlarmEnabled(bool value) {
+    state = state.copyWith(restAlarmEnabled: value);
+    _savePrefs();
+  }
+
+  void setShowWorkoutNotification(bool value) {
+    state = state.copyWith(showWorkoutNotification: value);
     _savePrefs();
   }
 
