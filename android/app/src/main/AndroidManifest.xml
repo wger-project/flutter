@@ -110,6 +110,15 @@
             </intent-filter>
         </activity-alias>
 
+        <!-- flutter_local_notifications: notification actions and scheduled
+             notifications. No boot receiver, a rest alarm across a reboot is moot -->
+        <receiver
+            android:exported="false"
+            android:name="com.dexterous.flutterlocalnotifications.ActionBroadcastReceiver" />
+        <receiver
+            android:exported="false"
+            android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver" />
+
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

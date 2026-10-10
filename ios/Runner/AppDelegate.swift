@@ -1,5 +1,6 @@
 import Flutter
 import UIKit
+import flutter_local_notifications
 
 private final class StorageExclusionPlugin: NSObject, FlutterPlugin {
   static let pluginName = "StorageExclusionPlugin"
@@ -55,10 +56,39 @@ private final class StorageExclusionPlugin: NSObject, FlutterPlugin {
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
+    // Lets notifications show in the foreground and delivers action responses
+    UNUserNotificationCenter.current().delegate = self as UNUserNotificationCenterDelegate
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 
+  // A notification action is handled by the main isolate, but the plugin
+  // completes the response right away and iOS suspends the app again.
+  // Keep it running briefly so the action is processed now.
+  override func userNotificationCenter(
+    _ center: UNUserNotificationCenter,
+    didReceive response: UNNotificationResponse,
+    withCompletionHandler completionHandler: @escaping () -> Void
+  ) {
+    var task: UIBackgroundTaskIdentifier = .invalid
+    task = UIApplication.shared.beginBackgroundTask {
+      UIApplication.shared.endBackgroundTask(task)
+      task = .invalid
+    }
+    DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
+      if task != .invalid {
+        UIApplication.shared.endBackgroundTask(task)
+        task = .invalid
+      }
+    }
+    super.userNotificationCenter(
+      center, didReceive: response, withCompletionHandler: completionHandler)
+  }
+
   func didInitializeImplicitFlutterEngine(_ engineBridge: FlutterImplicitEngineBridge) {
+    // Notification actions run in a separate engine, which needs the plugins too
+    FlutterLocalNotificationsPlugin.setPluginRegistrantCallback { registry in
+      GeneratedPluginRegistrant.register(with: registry)
+    }
     GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
     guard
       let registrar = engineBridge.pluginRegistry.registrar(
