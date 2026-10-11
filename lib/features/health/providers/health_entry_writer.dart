@@ -24,6 +24,7 @@ import 'package:wger/features/health/models/daily_windows.dart';
 import 'package:wger/features/health/models/health_metric.dart';
 import 'package:wger/features/health/models/health_reading.dart';
 import 'package:wger/features/health/providers/health_importer.dart';
+import 'package:wger/features/health/providers/health_repository.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/measurement_entry.dart';
 import 'package:wger/features/measurements/models/unit_conversion.dart';
@@ -38,9 +39,12 @@ final _uuidPattern = RegExp(r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[
 /// two counters a run reports at the end. Created per run, since both are
 /// about that run.
 class HealthEntryWriter {
-  HealthEntryWriter(this._measurements, this._source);
+  HealthEntryWriter(this._measurements, this._source, this._health);
 
   final MeasurementRepository _measurements;
+
+  /// Used for the platform's own daily totals, see [_writeDailyAggregate]
+  final HealthRepository _health;
 
   /// The measurement `source` of this platform (`apple`, `google`)
   final String _source;
@@ -167,11 +171,21 @@ class HealthEntryWriter {
   ) async {
     final category = target.category;
     final values = samples.map((r) => metric.toCategoryValue(r.value)).toList();
-    final aggregate = switch (metric.dailyAggregation!) {
+    var aggregate = switch (metric.dailyAggregation!) {
       DailyAggregation.average => values.average,
       DailyAggregation.sum => values.sum,
       DailyAggregation.mergedDuration => mergedDurationMinutes(samples),
     };
+    // Cumulative metrics: take the platform's deduplicated day total instead
+    // of the raw sum, which double counts overlapping records. Falls back to
+    // the raw sum when the platform total is unavailable.
+    final type = metric.dataType;
+    if (metric.dailyAggregation == DailyAggregation.sum && type != null) {
+      final total = await _health.platformTotal(type, day, dayEnd(day, metric));
+      if (total != null) {
+        aggregate = metric.toCategoryValue(total);
+      }
+    }
     // Round like the raw import: the server stores Decimal with 2 places
     final value = (aggregate * 100).roundToDouble() / 100;
     final extraData = <String, dynamic>{

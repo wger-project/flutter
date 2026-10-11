@@ -189,6 +189,44 @@ class HealthRepository {
     return true;
   }
 
+  /// The total of a cumulative [type] (steps, distance, active energy)
+  /// between [start] and [end] as Health Connect itself reports it.
+  ///
+  /// Health Connect resolves overlapping records from several apps by the
+  /// user's data source priority, and drops an app's second copy of the same
+  /// interval (e.g. a watch writing both its interval buckets and a workout
+  /// record). Adding up the raw records instead counts those twice. The value
+  /// is in the platform's raw unit (count, meters, kcal), like a raw read.
+  ///
+  /// Null on iOS, on failure, or when the platform returned nothing, so the
+  /// caller can fall back to the raw sum.
+  Future<double?> platformTotal(HealthDataType type, DateTime start, DateTime end) async {
+    if (kIsWeb || !Platform.isAndroid || !end.isAfter(start)) {
+      return null;
+    }
+    try {
+      final points = await _health.getHealthIntervalDataFromTypes(
+        startDate: start,
+        endDate: end,
+        types: [type],
+        // One bucket covering the whole range
+        interval: end.difference(start).inSeconds,
+      );
+      final values = [
+        for (final point in points)
+          if (point.value is NumericHealthValue)
+            (point.value as NumericHealthValue).numericValue.toDouble(),
+      ];
+      if (values.isEmpty) {
+        return null;
+      }
+      return values.fold<double>(0, (a, b) => a + b);
+    } catch (e) {
+      _logger.warning('Aggregate read of ${type.name} failed, using the raw sum: $e');
+      return null;
+    }
+  }
+
   /// Reads all [types] between [start] and [end] in windows of [window],
   /// handing each window's readings to [onBatch] as soon as it returned:
   /// the peak memory stays at one window (see [HealthMetric.readWindow];

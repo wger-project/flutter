@@ -159,7 +159,7 @@ class HealthImporter {
         return (imported: 0, issue: HealthSyncIssue.failed, completed: false);
       }
 
-      _writer = HealthEntryWriter(_measurements, _health.sourceName);
+      _writer = HealthEntryWriter(_measurements, _health.sourceName, _health);
       final run = await _prepare(metrics, readable, userId);
       _reportProgress(run);
       for (final metric in metrics) {
