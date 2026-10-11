@@ -95,6 +95,8 @@ void main() {
       (invocation) async => (invocation.positionalArguments.first as List<HealthDataType>).toSet(),
     );
     when(health.sourceName).thenReturn('apple');
+    // No platform total by default: summed metrics fall back to their raw sum
+    when(health.platformTotal(any, any, any)).thenAnswer((_) async => null);
     when(measurements.addLocalDrift(any)).thenAnswer((_) async {});
     when(measurements.updateLocalDrift(any)).thenAnswer((_) async {});
     when(measurements.addLocalDriftCategory(any)).thenAnswer((_) async {});
@@ -854,6 +856,71 @@ void main() {
         await watermarkOf(MetricType.heartRate),
         DateTime(2026, 1, 2, 9).toIso8601String(),
       );
+    });
+
+    test('takes a summed day total from the platform, not the raw sum', () async {
+      // A watch writes a workout's steps twice, once in its interval buckets
+      // and once as a record of its own. Health Connect counts the overlap
+      // once; adding up the raw records counts it twice.
+      when(health.platformTotal(HealthDataType.STEPS, any, any)).thenAnswer((_) async => 7873);
+      stubReadings([
+        HealthReading(
+          type: HealthDataType.STEPS,
+          value: 3866,
+          date: DateTime(2026, 10, 4, 11),
+          dateTo: DateTime(2026, 10, 4, 11, 30),
+          externalId: _idS1,
+        ),
+        HealthReading(
+          type: HealthDataType.STEPS,
+          value: 4007,
+          date: DateTime(2026, 10, 4, 11, 30),
+          dateTo: DateTime(2026, 10, 4, 12),
+          externalId: _idS2,
+        ),
+        HealthReading(
+          type: HealthDataType.STEPS,
+          value: 7813,
+          date: DateTime(2026, 10, 4, 11, 8),
+          dateTo: DateTime(2026, 10, 4, 11, 55),
+          externalId: _idS3,
+        ),
+      ]);
+
+      await runImport();
+
+      final entry =
+          verify(measurements.addLocalDrift(captureAny)).captured.single as MeasurementEntry;
+      expect(entry.date, DateTime(2026, 10, 4));
+      expect(entry.value, 7873); // not 15686
+      verify(
+        health.platformTotal(HealthDataType.STEPS, DateTime(2026, 10, 4), DateTime(2026, 10, 5)),
+      ).called(1);
+    });
+
+    test('falls back to the raw sum when the platform has no total', () async {
+      stubReadings([
+        HealthReading(
+          type: HealthDataType.STEPS,
+          value: 3866,
+          date: DateTime(2026, 10, 4, 11),
+          dateTo: DateTime(2026, 10, 4, 11, 30),
+          externalId: _idS1,
+        ),
+        HealthReading(
+          type: HealthDataType.STEPS,
+          value: 133,
+          date: DateTime(2026, 10, 4, 10, 30),
+          dateTo: DateTime(2026, 10, 4, 11),
+          externalId: _idS2,
+        ),
+      ]);
+
+      await runImport();
+
+      final entry =
+          verify(measurements.addLocalDrift(captureAny)).captured.single as MeasurementEntry;
+      expect(entry.value, 3999);
     });
 
     test('aggregates a day split across two read windows once', () async {
