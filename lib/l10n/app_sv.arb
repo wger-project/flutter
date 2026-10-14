@@ -1,1 +1,16 @@
-{}
+{
+    "off": "Av",
+    "@off": {
+        "description": "Generic label for the option that switches something off, e.g. a filter or a line of a chart"
+    },
+    "edit": "Redigera",
+    "preview": "Förhandsgranskning",
+    "total": "Totalt",
+    "@total": {
+        "description": "Label used for total sums of e.g. calories or similar"
+    },
+    "overview": "Översikt",
+    "min": "Min",
+    "max": "Max",
+    "calendar": "Kalender"
+}
