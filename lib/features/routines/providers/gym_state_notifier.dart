@@ -91,6 +91,11 @@ class GymStateNotifier extends _$GymStateNotifier {
       state = state.copyWith(showWorkoutDuration: showWorkoutDuration);
     }
 
+    final stickySetValues = await prefs.getBool(PREFS_STICKY_SET_VALUES);
+    if (stickySetValues != null && stickySetValues != state.stickySetValues) {
+      state = state.copyWith(stickySetValues: stickySetValues);
+    }
+
     _logger.finer(
       'Loaded saved preferences: '
       'showExercise=$showExercise '
@@ -121,6 +126,7 @@ class GymStateNotifier extends _$GymStateNotifier {
     }
     await prefs.setBool(PREFS_SHOW_DISTINCT_LOGS, state.showDistinctLogs);
     await prefs.setBool(PREFS_SHOW_WORKOUT_DURATION, state.showWorkoutDuration);
+    await prefs.setBool(PREFS_STICKY_SET_VALUES, state.stickySetValues);
 
     _logger.finer(
       'Saved preferences: '
@@ -319,6 +325,25 @@ class GymStateNotifier extends _$GymStateNotifier {
       routineId: state.routine.id,
       iteration: state.iteration,
     );
+
+    // Pre-fill with the values last logged for this exercise during this
+    // workout (e.g. when dialing in the weight over the first sets), if
+    // enabled. This intentionally only copies the values: the id, session,
+    // slot entry and targets stay those of a fresh template.
+    final lastValues = state.stickySetValues
+        ? state.lastLoggedValues[slotEntryPage.setConfigData!.exerciseId]
+        : null;
+    if (lastValues != null) {
+      log
+        ..repetitions = lastValues.repetitions
+        ..repetitionsUnitId = lastValues.repetitionsUnitId
+        ..repetitionsUnitObj = lastValues.repetitionsUnitObj
+        ..weight = lastValues.weight
+        ..weightUnitId = lastValues.weightUnitId
+        ..weightUnitObj = lastValues.weightUnitObj
+        ..rir = lastValues.rir;
+    }
+
     ref.read(gymLogProvider.notifier).setLog(log);
   }
 
@@ -363,6 +388,20 @@ class GymStateNotifier extends _$GymStateNotifier {
   void setShowWorkoutDuration(bool value) {
     state = state.copyWith(showWorkoutDuration: value);
     _savePrefs();
+  }
+
+  void setStickySetValues(bool value) {
+    state = state.copyWith(stickySetValues: value);
+    _savePrefs();
+  }
+
+  /// Remembers the values logged for the log's exercise so that the next
+  /// set of the exercise can be pre-filled with them, see
+  /// [GymModeState.stickySetValues].
+  void recordLoggedValues(Log log) {
+    final updated = Map<int, Log>.of(state.lastLoggedValues);
+    updated[log.exerciseId] = log;
+    state = state.copyWith(lastLoggedValues: updated);
   }
 
   void markSlotPageAsDone(String uuid, {required bool isDone}) {
@@ -493,6 +532,7 @@ class GymStateNotifier extends _$GymStateNotifier {
       isInitialized: false,
       pages: [],
       currentPage: 0,
+      lastLoggedValues: const {},
 
       validUntil: clock.now().add(DEFAULT_DURATION),
       workoutStart: clock.now(),
