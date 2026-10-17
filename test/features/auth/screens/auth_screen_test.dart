@@ -162,7 +162,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Assert
-      expect(find.text('wger'), findsOneWidget);
+      expect(find.text('CT da Vila'), findsOneWidget);
 
       expect(find.textContaining('New to wger?'), findsOneWidget);
       expect(find.textContaining('Already have an account?'), findsNothing);

@@ -78,7 +78,7 @@ class AboutPage extends ConsumerWidget {
                   Image.asset(
                     'assets/images/logo.png',
                     width: 60,
-                    semanticLabel: 'wger logo',
+                    semanticLabel: 'CT da Vila logo',
                   ),
                   const SizedBox(width: 20),
                   Column(
@@ -86,12 +86,14 @@ class AboutPage extends ConsumerWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Text(
-                        'wger',
+                        'CT da Vila',
                         style: TextStyle(
                           fontSize: 23,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
+                      // Required credit: this app is a fork of wger (AGPL)
+                      const Text('Baseado no app open source wger'),
                       Text(
                         'App: ${authState?.applicationVersion?.version ?? 'N/A'}\n'
                         'Server: ${authState?.serverVersion ?? 'N/A'}',
@@ -238,7 +240,7 @@ class AboutPage extends ConsumerWidget {
                 onTap: () {
                   showLicensePage(
                     context: context,
-                    applicationName: 'wger',
+                    applicationName: 'CT da Vila (baseado no wger)',
                     applicationVersion:
                         'App: ${authState?.applicationVersion?.version ?? 'N/A'} / '
                         'Server: ${authState?.serverVersion ?? 'N/A'}',

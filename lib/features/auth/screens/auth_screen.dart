@@ -18,6 +18,7 @@
 
 import 'package:material_ui/material_ui.dart';
 import 'package:wger/features/auth/widgets/auth_card.dart';
+import 'package:wger/theme/theme.dart';
 
 class AuthScreen extends StatelessWidget {
   const AuthScreen();
@@ -28,11 +29,9 @@ class AuthScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.sizeOf(context);
     final scheme = Theme.of(context).colorScheme;
-    // The banner carries the white logo, so it has to stay dark in both modes.
-    // primary is the dark tone in light mode, primaryContainer in dark mode.
-    final isDark = scheme.brightness == Brightness.dark;
-    final bannerColor = isDark ? scheme.primaryContainer : scheme.primary;
-    final onBannerColor = isDark ? scheme.onPrimaryContainer : scheme.onPrimary;
+    // The banner matches the gym's black and yellow logo in both modes
+    const bannerColor = ctBlack;
+    const onBannerColor = ctYellow;
 
     return Scaffold(
       backgroundColor: scheme.surface,
@@ -58,8 +57,8 @@ class AuthScreen extends StatelessWidget {
                   SizedBox(height: 0.15 * deviceSize.height),
                   const Image(
                     image: AssetImage('assets/images/logo-white.png'),
-                    width: 85,
-                    height: 85,
+                    width: 130,
+                    height: 130,
                   ),
                   Container(
                     margin: const EdgeInsets.only(bottom: 20.0),
@@ -68,9 +67,9 @@ class AuthScreen extends StatelessWidget {
                       horizontal: 94.0,
                     ),
                     child: Text(
-                      'wger',
+                      'CT da Vila',
                       style: TextStyle(
-                        color: onBannerColor.withValues(alpha: 0.7),
+                        color: onBannerColor,
                         fontSize: 30,
                         fontWeight: FontWeight.bold,
                       ),
