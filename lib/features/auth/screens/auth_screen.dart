@@ -66,7 +66,7 @@ class AuthScreen extends StatelessWidget {
                       vertical: 8.0,
                       horizontal: 94.0,
                     ),
-                    child: Text(
+                    child: const Text(
                       'CT da Vila',
                       style: TextStyle(
                         color: onBannerColor,
