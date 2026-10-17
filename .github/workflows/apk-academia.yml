@@ -1,0 +1,67 @@
+name: APK da academia
+
+# Builds an installable APK for sideloading (no Play Store needed).
+# - Pull requests: the APK is attached to the run as an artifact
+# - Pushes to master: the APK is also published on the "teste" release, so
+#   there is a fixed download link to send to the students
+#
+# Signing: if the ANDROID_KEYSTORE_BASE64, ANDROID_KEYSTORE_PASSWORD,
+# ANDROID_KEY_ALIAS and ANDROID_KEY_PASSWORD secrets exist, the APK is signed
+# with that key (needed so students can install updates over the old version).
+# Without them it falls back to a throwaway debug key.
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Common flutter setup
+        uses: ./.github/actions/flutter-common
+
+      - name: Write signing config
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          if [ -z "$ANDROID_KEYSTORE_BASE64" ]; then
+            echo "::warning::No signing key configured, using the debug key"
+            exit 0
+          fi
+          cd fastlane/metadata/envfiles
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > keys.jks
+          {
+            echo "storeFile=$PWD/keys.jks"
+            echo "storePassword=$ANDROID_KEYSTORE_PASSWORD"
+            echo "keyAlias=$ANDROID_KEY_ALIAS"
+            echo "keyPassword=$ANDROID_KEY_PASSWORD"
+          } > key.properties
+
+      - name: Build APK
+        run: flutter build apk --release --build-number=${{ github.run_number }}
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: apk-academia
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+      - name: Publish on the "teste" release
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cp build/app/outputs/flutter-apk/app-release.apk gym-app.apk
+          gh release view teste >/dev/null 2>&1 || \
+            gh release create teste --prerelease --title "Versão de teste" \
+              --notes "APK de teste para instalar direto no Android."
+          gh release upload teste gym-app.apk --clobber

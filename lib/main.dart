@@ -260,7 +260,7 @@ class MainApp extends ConsumerWidget {
           ),
           data: (authState) {
             return MaterialApp(
-              title: 'wger',
+              title: 'Gym App',
               navigatorKey: navigatorKey,
               scaffoldMessengerKey: scaffoldMessengerKey,
               scrollBehavior: const WgerScrollBehavior(),

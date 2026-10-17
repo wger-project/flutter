@@ -1,6 +1,6 @@
 {
-    "name": "wger",
-    "short_name": "wger",
+    "name": "Gym App",
+    "short_name": "Gym App",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#ffffff",
