@@ -24,10 +24,14 @@ import 'package:table_calendar/table_calendar.dart';
 // * https://pub.dev/packages/flex_color_scheme
 // * https://rydmike.com/flexseedscheme/demo-v1/#/
 
-const Color wgerPrimaryColor = Color(0xff2a4c7d);
+// CT da Vila brand colors, taken from the gym's logo
+const Color ctYellow = Color(0xffFFDB58);
+const Color ctBlack = Color(0xff000000);
+
+const Color wgerPrimaryColor = ctYellow;
 const Color wgerPrimaryButtonColor = Color(0xff266dd3);
 const Color wgerPrimaryColorLight = Color(0xff94B2DB);
-const Color wgerSecondaryColor = Color(0xffe63946);
+const Color wgerSecondaryColor = Color(0xff2b2b2b);
 const Color wgerSecondaryColorLight = Color(0xffF6B4BA);
 const Color wgerTertiaryColor = Color(0xFF6CA450);
 
@@ -47,10 +51,8 @@ const List<FontVariation> displayFontHeavyWeight = [FontVariation('wght', 800)];
 
 // Make a light ColorScheme from the seeds.
 final ColorScheme schemeLight = SeedColorScheme.fromSeeds(
-  primary: wgerPrimaryColor,
   primaryKey: wgerPrimaryColor,
   secondaryKey: wgerSecondaryColor,
-  secondary: wgerSecondaryColor,
   tertiaryKey: wgerTertiaryColor,
   brightness: Brightness.light,
   tones: FlexTones.vivid(Brightness.light),
@@ -61,7 +63,6 @@ final ColorScheme schemeDark = SeedColorScheme.fromSeeds(
   // primary: wgerPrimaryColor,
   primaryKey: wgerPrimaryColor,
   secondaryKey: wgerSecondaryColor,
-  secondary: wgerSecondaryColor,
   brightness: Brightness.dark,
   tones: FlexTones.vivid(Brightness.dark),
 );
