@@ -47,21 +47,24 @@ jobs:
             echo "keyPassword=$ANDROID_KEY_PASSWORD"
           } > key.properties
 
+      # One APK per CPU type keeps the download small (the universal one is ~100 MB)
       - name: Build APK
-        run: flutter build apk --release --build-number=${{ github.run_number }}
+        run: flutter build apk --release --split-per-abi --build-number=${{ github.run_number }}
 
       - uses: actions/upload-artifact@v7
         with:
           name: apk-academia
-          path: build/app/outputs/flutter-apk/app-release.apk
+          path: build/app/outputs/flutter-apk/app-*-release.apk
 
       - name: Publish on the "teste" release
         if: github.event_name == 'push'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          cp build/app/outputs/flutter-apk/app-release.apk gym-app.apk
+          # Almost every current phone is arm64; the 32-bit one is for old phones
+          cp build/app/outputs/flutter-apk/app-arm64-v8a-release.apk gym-app.apk
+          cp build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk gym-app-celular-antigo.apk
           gh release view teste >/dev/null 2>&1 || \
             gh release create teste --prerelease --title "Versão de teste" \
               --notes "APK de teste para instalar direto no Android."
-          gh release upload teste gym-app.apk --clobber
+          gh release upload teste gym-app.apk gym-app-celular-antigo.apk --clobber
