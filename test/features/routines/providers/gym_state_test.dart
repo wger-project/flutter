@@ -522,9 +522,6 @@ void main() {
   });
 
   group('GymStateNotifier notification settings', () {
-    // PreferenceHelper keeps the store of the first test, start from empty
-    setUp(() => PreferenceHelper.asyncPref.clear());
-
     test('Both are on without stored preferences', () async {
       await notifier.loadPrefs();
 

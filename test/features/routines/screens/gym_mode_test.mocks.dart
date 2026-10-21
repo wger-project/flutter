@@ -3,6 +3,7 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+
 import 'dart:async' as _i10;
 
 import 'package:mockito/mockito.dart' as _i1;
@@ -27,6 +28,8 @@ import 'package:wger/features/routines/models/session.dart' as _i2;
 import 'package:wger/features/routines/models/slot.dart' as _i5;
 import 'package:wger/features/routines/models/slot_entry.dart' as _i6;
 import 'package:wger/features/routines/models/weight_unit.dart' as _i20;
+import 'package:wger/features/routines/notifications/workout_notification_content.dart' as _i32;
+import 'package:wger/features/routines/notifications/workout_notification_service.dart' as _i31;
 import 'package:wger/features/routines/providers/routines_repository.dart' as _i19;
 import 'package:wger/features/routines/providers/workout_logs_repository.dart' as _i27;
 import 'package:wger/features/routines/providers/workout_session_repository.dart' as _i9;
@@ -609,6 +612,67 @@ class MockUserProfileRepository extends _i1.Mock implements _i29.UserProfileRepo
   _i10.Future<void> editLocalDrift(_i30.UserProfile? profile) =>
       (super.noSuchMethod(
             Invocation.method(#editLocalDrift, [profile]),
+            returnValue: _i10.Future<void>.value(),
+            returnValueForMissingStub: _i10.Future<void>.value(),
+          )
+          as _i10.Future<void>);
+}
+
+/// A class which mocks [WorkoutNotificationService].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockWorkoutNotificationService extends _i1.Mock implements _i31.WorkoutNotificationService {
+  MockWorkoutNotificationService() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  bool get supportsControls =>
+      (super.noSuchMethod(
+            Invocation.getter(#supportsControls),
+            returnValue: false,
+          )
+          as bool);
+
+  @override
+  _i10.Future<void> requestPermissions(
+    _i32.WorkoutNotificationLabels? labels,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#requestPermissions, [labels]),
+            returnValue: _i10.Future<void>.value(),
+            returnValueForMissingStub: _i10.Future<void>.value(),
+          )
+          as _i10.Future<void>);
+
+  @override
+  _i10.Future<void> scheduleRestAlarm(
+    _i32.RestAlarm? alarm,
+    _i32.WorkoutNotificationLabels? labels,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#scheduleRestAlarm, [alarm, labels]),
+            returnValue: _i10.Future<void>.value(),
+            returnValueForMissingStub: _i10.Future<void>.value(),
+          )
+          as _i10.Future<void>);
+
+  @override
+  _i10.Future<void> showControls(
+    _i32.WorkoutControls? controls,
+    _i32.WorkoutNotificationLabels? labels,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#showControls, [controls, labels]),
+            returnValue: _i10.Future<void>.value(),
+            returnValueForMissingStub: _i10.Future<void>.value(),
+          )
+          as _i10.Future<void>);
+
+  @override
+  _i10.Future<void> cancelAll() =>
+      (super.noSuchMethod(
+            Invocation.method(#cancelAll, []),
             returnValue: _i10.Future<void>.value(),
             returnValueForMissingStub: _i10.Future<void>.value(),
           )

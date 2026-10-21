@@ -27,9 +27,8 @@ import 'package:wger/core/shared_preferences.dart';
 /// its eager `build()`. Any screen test that transitively subscribes
 /// to `authProvider` (most do, via `wgerBaseProvider`) must call this.
 ///
-/// Call from the top of `main()` so the [SharedPreferencesAsyncPlatform]
-/// instance is installed before [PreferenceHelper]'s static-final
-/// singleton initialises on first read.
+/// Call from the top of `main()`: it registers a `setUp` that empties the
+/// [SharedPreferencesAsyncPlatform] store before every test.
 void installFakeAuthEnvironment() {
   SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
 

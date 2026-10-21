@@ -28,10 +28,14 @@ import 'package:wger/core/errors.dart';
 import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/core/widgets/error.dart';
 import 'package:wger/core/widgets/progress_indicator.dart';
+import 'package:wger/features/routines/notifications/workout_notification_content.dart';
+import 'package:wger/features/routines/notifications/workout_notification_controller.dart';
+import 'package:wger/features/routines/notifications/workout_notification_service.dart';
 import 'package:wger/features/routines/providers/gym_state.dart';
 import 'package:wger/features/routines/providers/gym_state_notifier.dart';
 import 'package:wger/features/routines/providers/routines_notifier.dart';
 import 'package:wger/features/routines/screens/gym_mode.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 
 import 'exercise_overview.dart';
 import 'log_page.dart';
@@ -54,17 +58,22 @@ class _GymModeState extends ConsumerState<GymMode> {
   late Future<int> _initData;
   bool _initialPageJumped = false;
   late final PageController _controller;
+  late final GymModeVisibleNotifier _visibility;
 
   @override
   void initState() {
     super.initState();
     _controller = PageController(initialPage: 0);
+    _visibility = ref.read(gymModeVisibleProvider.notifier);
     _initData = _loadGymState();
   }
 
   @override
   void dispose() {
     _controller.dispose();
+    // Providers can't change while the tree is being finalized
+    final visibility = _visibility;
+    scheduleMicrotask(() => visibility.set(false));
     super.dispose();
   }
 
@@ -75,6 +84,7 @@ class _GymModeState extends ConsumerState<GymMode> {
     // gym-state mutations with no await in between, and modifying a provider
     // during a life-cycle is not allowed.
     await yieldPastBuild();
+    _visibility.set(true);
 
     final notifier = ref.read(routinesRiverpodProvider.notifier);
     final routineId = widget._args.routineId;
@@ -107,8 +117,22 @@ class _GymModeState extends ConsumerState<GymMode> {
     );
     await gymViewModel.loadPrefs();
     gymViewModel.calculatePages();
+    _requestNotificationPermissions();
 
     return initialPage;
+  }
+
+  /// Asked here rather than at app start, and only if a notification is wanted
+  void _requestNotificationPermissions() {
+    final gymState = ref.read(gymStateProvider);
+    final service = ref.read(workoutNotificationServiceProvider);
+    final wanted =
+        gymState.restAlarmEnabled || (service.supportsControls && gymState.showWorkoutNotification);
+    if (wanted && mounted) {
+      unawaited(
+        service.requestPermissions(WorkoutNotificationLabels.of(AppLocalizations.of(context))),
+      );
+    }
   }
 
   List<Widget> _getContent(GymModeState state) {

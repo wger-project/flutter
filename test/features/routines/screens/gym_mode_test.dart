@@ -36,6 +36,8 @@ import 'package:wger/features/exercises/providers/exercises_notifier.dart';
 import 'package:wger/features/routines/models/repetition_unit.dart';
 import 'package:wger/features/routines/models/session.dart';
 import 'package:wger/features/routines/models/weight_unit.dart';
+import 'package:wger/features/routines/notifications/workout_notification_controller.dart';
+import 'package:wger/features/routines/notifications/workout_notification_service.dart';
 import 'package:wger/features/routines/providers/gym_state.dart';
 import 'package:wger/features/routines/providers/gym_state_notifier.dart';
 import 'package:wger/features/routines/providers/routines_notifier.dart';
@@ -67,6 +69,7 @@ import 'gym_mode_test.mocks.dart';
   TrophyRepository,
   WorkoutLogRepository,
   UserProfileRepository,
+  WorkoutNotificationService,
 ])
 void main() {
   installFakeConnectivity();
@@ -81,9 +84,13 @@ void main() {
   final mockRoutinesRepo = MockRoutinesRepository();
   final mockLogRepo = MockWorkoutLogRepository();
   final mockUserProfileRepo = MockUserProfileRepository();
+  late MockWorkoutNotificationService mockNotificationService;
 
   setUp(() {
     SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+    mockNotificationService = MockWorkoutNotificationService();
+    when(mockNotificationService.supportsControls).thenReturn(true);
+    when(mockNotificationService.requestPermissions(any)).thenAnswer((_) async {});
     when(mockUserProfileRepo.watchDrift()).thenAnswer((_) => Stream.value(null));
     when(mockSessionRepo.watchAllDrift()).thenAnswer(
       (_) => Stream<List<WorkoutSession>>.multi((controller) {
@@ -132,6 +139,7 @@ void main() {
         workoutSessionRepositoryProvider.overrideWithValue(mockSessionRepo),
         workoutLogRepositoryProvider.overrideWithValue(mockLogRepo),
         userProfileRepositoryProvider.overrideWithValue(mockUserProfileRepo),
+        workoutNotificationServiceProvider.overrideWithValue(mockNotificationService),
         ...extraOverrides,
         // The repetition + weight unit catalogues are tiny direct-Drift
         // stream providers, overriding them inline is the established
@@ -569,6 +577,51 @@ void main() {
           tester.widget<PageView>(find.byType(PageView)).controller!.page,
           logPage + 1,
         );
+      });
+    },
+    semanticsEnabled: false,
+  );
+
+  testWidgets(
+    'opening gym mode asks for the notification permission and hides the notifications',
+    (WidgetTester tester) async {
+      await withClock(Clock.fixed(DateTime(2025, 3, 29, 14, 33)), () async {
+        await tester.pumpWidget(renderGymMode());
+        await tester.pumpAndSettle();
+        await tester.tap(find.byType(TextButton));
+        await tester.pumpAndSettle();
+        final container = riverpod.ProviderScope.containerOf(
+          tester.element(find.byType(StartPage)),
+        );
+
+        verify(mockNotificationService.requestPermissions(any)).called(1);
+        expect(container.read(gymModeVisibleProvider), isTrue);
+
+        key.currentState!.pop();
+        await tester.pumpAndSettle();
+        expect(container.read(gymModeVisibleProvider), isFalse);
+      });
+    },
+    semanticsEnabled: false,
+  );
+
+  testWidgets(
+    'no permission request with both notification settings off',
+    (WidgetTester tester) async {
+      await PreferenceHelper.asyncPref.setBool(PREFS_REST_ALARM, false);
+      await PreferenceHelper.asyncPref.setBool(PREFS_WORKOUT_NOTIFICATION, false);
+      addTearDown(() async {
+        await PreferenceHelper.asyncPref.remove(PREFS_REST_ALARM);
+        await PreferenceHelper.asyncPref.remove(PREFS_WORKOUT_NOTIFICATION);
+      });
+
+      await withClock(Clock.fixed(DateTime(2025, 3, 29, 14, 33)), () async {
+        await tester.pumpWidget(renderGymMode());
+        await tester.pumpAndSettle();
+        await tester.tap(find.byType(TextButton));
+        await tester.pumpAndSettle();
+
+        verifyNever(mockNotificationService.requestPermissions(any));
       });
     },
     semanticsEnabled: false,

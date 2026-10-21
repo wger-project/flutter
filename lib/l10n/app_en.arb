@@ -380,6 +380,37 @@
   "gymModeRestAlarmHelp": "System notification when the rest is over, also with the screen locked",
   "gymModeWorkoutNotification": "Workout notification",
   "gymModeWorkoutNotificationHelp": "Shows the rest and the next set, with buttons to log it or skip the rest",
+  "workoutNotificationRestOver": "Rest is over",
+  "workoutNotificationNext": "Next: {set}",
+  "@workoutNotificationNext": {
+    "description": "Notification text with the next planned set, e.g. 'Next: Bench press 3 × 100 kg'",
+    "placeholders": {
+      "set": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutNotificationSetOf": "Set {current} of {total}",
+  "@workoutNotificationSetOf": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutNotificationInProgress": "Workout in progress",
+  "workoutNotificationLogSet": "Log set",
+  "@workoutNotificationLogSet": {
+    "description": "Notification button that logs the next set with its planned values"
+  },
+  "workoutNotificationSkipRest": "Skip rest",
+  "workoutNotificationChannel": "Workout",
+  "@workoutNotificationChannel": {
+    "description": "Name of the Android notification channel for the ongoing workout notification"
+  },
   "duration": "Duration",
   "durationHoursMinutes": "{hours}h {minutes}m",
   "@durationHoursMinutes": {
