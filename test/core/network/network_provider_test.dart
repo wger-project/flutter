@@ -645,6 +645,21 @@ void main() {
 
     expect(probeCount, greaterThan(afterInit));
   });
+  group('default reachability check', () {
+    final probeUri = Uri.parse('https://wger.example/api/v2/version/');
+
+    test('a raw OSError from the socket counts as unreachable', () async {
+      // iOS fails setting TCP_NODELAY on an already reset connection, which
+      // dart:io throws as OSError instead of SocketException (flutter#1397)
+      final result = await http.runWithClient(
+        () => originalReachability(probeUri, null, const Duration(seconds: 1)),
+        () => MockClient((_) => throw const OSError('Invalid argument', 22)),
+      );
+
+      expect(result.reachable, isFalse);
+    });
+  });
+
   group('ReachabilityReportingClient', () {
     late _RecordingNetworkStatus status;
 
