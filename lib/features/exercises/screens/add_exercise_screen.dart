@@ -28,6 +28,7 @@ import 'package:wger/core/widgets/app_bar.dart';
 import 'package:wger/core/widgets/progress_indicator.dart';
 import 'package:wger/features/account/providers/account_notifier.dart';
 import 'package:wger/features/account/widgets/forms.dart';
+import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/exercises/providers/add_exercise_notifier.dart';
 import 'package:wger/features/exercises/providers/exercises_notifier.dart';
 import 'package:wger/features/exercises/screens/exercise_screen.dart';
@@ -43,6 +44,7 @@ class AddExerciseScreen extends ConsumerWidget {
   const AddExerciseScreen({super.key});
 
   static const routeName = '/exercises/add';
+  static const routeNameEdit = '/exercises/edit';
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -56,6 +58,7 @@ class AddExerciseScreen extends ConsumerWidget {
           child: Padding(
             padding: const EdgeInsets.all(24),
             child: Column(
+              mainAxisAlignment: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Icon(Icons.cloud_off, size: 48),
@@ -75,16 +78,22 @@ class AddExerciseScreen extends ConsumerWidget {
     if (account == null) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
-    return account.isTrustworthy ? const AddExerciseStepper() : const EmailNotVerified();
+    final exerciseToEdit = ModalRoute.of(context)?.settings.arguments as Exercise?;
+    return account.isTrustworthy
+        ? AddExerciseStepper(exerciseToEdit: exerciseToEdit)
+        : const EmailNotVerified();
   }
 }
 
 class AddExerciseStepper extends ConsumerStatefulWidget {
-  const AddExerciseStepper({super.key});
+  const AddExerciseStepper({super.key, this.exerciseToEdit});
 
   static const STEPS_IN_FORM = 6;
   static const DESCRIPTION_STEP_INDEX = 2;
   static const TRANSLATION_STEP_INDEX = 3;
+
+  /// When non-null, the stepper is in edit mode for this exercise.
+  final Exercise? exerciseToEdit;
 
   @override
   _AddExerciseStepperState createState() => _AddExerciseStepperState();
@@ -98,6 +107,8 @@ class _AddExerciseStepperState extends ConsumerState<AddExerciseStepper> {
   String? _languageError;
   Widget errorWidget = const SizedBox.shrink();
 
+  bool get _isEditing => widget.exerciseToEdit != null;
+
   final List<GlobalKey<FormState>> _keys = [
     GlobalKey<FormState>(),
     GlobalKey<FormState>(),
@@ -105,7 +116,20 @@ class _AddExerciseStepperState extends ConsumerState<AddExerciseStepper> {
     GlobalKey<FormState>(),
     GlobalKey<FormState>(),
     GlobalKey<FormState>(),
+    GlobalKey<FormState>(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    if (_isEditing) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          ref.read(addExerciseProvider.notifier).initFromExercise(widget.exerciseToEdit!);
+        }
+      });
+    }
+  }
 
   Widget _controlsBuilder(BuildContext context, ControlsDetails details) {
     return Column(
@@ -139,13 +163,18 @@ class _AddExerciseStepperState extends ConsumerState<AddExerciseStepper> {
                           errorWidget = const SizedBox.shrink();
                         });
                         final addExerciseNotifier = ref.read(addExerciseProvider.notifier);
-                        // postExerciseToServer() clears the form, so capture the
+                        // postExerciseToServer() / updateExerciseToServer() clears the form, so capture the
                         // name now for the success dialog's fallback.
                         final submittedName = ref.read(addExerciseProvider).exerciseNameEn ?? '';
 
                         int? exerciseId;
                         try {
-                          exerciseId = await addExerciseNotifier.postExerciseToServer();
+                          if (_isEditing) {
+                            exerciseId = await addExerciseNotifier
+                                .updateExerciseToServer(widget.exerciseToEdit!.id);
+                          } else {
+                            exerciseId = await addExerciseNotifier.postExerciseToServer();
+                          }
                         } on WgerHttpException catch (error) {
                           if (context.mounted) {
                             setState(() {
@@ -161,6 +190,13 @@ class _AddExerciseStepperState extends ConsumerState<AddExerciseStepper> {
                         }
 
                         if (exerciseId == null || !context.mounted) {
+                          return;
+                        }
+
+                        if (_isEditing) {
+                          if (context.mounted) {
+                            Navigator.of(context).pop();
+                          }
                           return;
                         }
 
@@ -223,7 +259,11 @@ class _AddExerciseStepperState extends ConsumerState<AddExerciseStepper> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: EmptyAppBar(AppLocalizations.of(context).contributeExercise),
+      appBar: EmptyAppBar(
+        _isEditing
+            ? AppLocalizations.of(context).edit
+            : AppLocalizations.of(context).contributeExercise,
+      ),
       body: WidescreenWrapper(
         child: Stepper(
           controlsBuilder: _controlsBuilder,
