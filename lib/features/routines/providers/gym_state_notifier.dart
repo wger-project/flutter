@@ -173,6 +173,13 @@ class GymStateNotifier extends _$GymStateNotifier {
       }
 
       for (final config in slotData.setConfigs) {
+        if (config.exerciseOrNull == null) {
+          _logger.warning(
+            'Exercise ${config.exerciseId} not hydrated for slot entry '
+            '${config.slotEntryId}, skipping page.',
+          );
+          continue;
+        }
         // Log page
         slotEntries.add(
           SlotPageEntry(

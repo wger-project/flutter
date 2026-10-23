@@ -248,10 +248,12 @@ class StartPage extends ConsumerWidget {
                     ),
                   ),
                 ),
+
               ...dayDataDisplay.slots
                   .expand((slot) => slot.setConfigs)
+                  .where((entry) => entry.exerciseOrNull != null)
                   .fold<Map<Exercise, List<String>>>({}, (acc, entry) {
-                    acc.putIfAbsent(entry.exercise, () => []).add(entry.textReprWithType);
+                    acc.putIfAbsent(entry.exerciseOrNull!, () => []).add(entry.textReprWithType);
                     return acc;
                   })
                   .entries

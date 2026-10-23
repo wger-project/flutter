@@ -42,7 +42,12 @@ class ExerciseOverview extends ConsumerWidget {
       );
       return Container();
     }
-    final exercise = page.setConfigData!.exercise;
+    final exercise = page.setConfigData!.exerciseOrNull;
+
+    if (exercise == null) {
+      _logger.info('Exercise for slot page $slotUuid not hydrated yet, showing empty container.');
+      return Container();
+    }
 
     return Column(
       children: [
