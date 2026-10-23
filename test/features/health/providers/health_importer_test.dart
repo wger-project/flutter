@@ -978,6 +978,18 @@ void main() {
       verify(health.platformTotal(HealthDataType.STEPS, any, any)).called(1);
     });
 
+    test('falls back to the raw sum when the platform total is 0', () async {
+      when(health.hasPlatformTotals).thenReturn(true);
+      when(health.platformTotal(HealthDataType.STEPS, any, any)).thenAnswer((_) async => 0);
+      stubReadings(overlappingSteps);
+
+      await runImport();
+
+      final entry =
+          verify(measurements.addLocalDrift(captureAny)).captured.single as MeasurementEntry;
+      expect(entry.value, 4999);
+    });
+
     test('keeps the raw sum where the platform has no totals', () async {
       stubReadings(overlappingSteps);
 

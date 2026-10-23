@@ -39,7 +39,7 @@ final _uuidPattern = RegExp(r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[
 /// counters a run reports at the end. Created per run, since both are
 /// about that run.
 class HealthEntryWriter {
-  HealthEntryWriter(this._measurements, this._source, this._health);
+  HealthEntryWriter(this._measurements, this._health) : _source = _health.sourceName;
 
   final MeasurementRepository _measurements;
 
@@ -190,7 +190,9 @@ class HealthEntryWriter {
         _health.hasPlatformTotals &&
         hasOverlap(samples)) {
       final total = await _health.platformTotal(type, day, dayEnd(day, metric));
-      if (total != null) {
+      // Health Connect reports a day without data from its priority list as
+      // 0, which would wipe a day that has records
+      if (total != null && total > 0) {
         aggregate = metric.toCategoryValue(total);
         platformTotal = true;
       } else {

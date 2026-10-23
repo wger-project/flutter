@@ -202,7 +202,8 @@ class HealthRepository {
   /// is in the platform's raw unit (count, meters, kcal), like a raw read.
   ///
   /// Null on iOS, on failure, or when the platform returned nothing, so the
-  /// caller can fall back to the raw sum.
+  /// caller can fall back to the raw sum. A range without data from the
+  /// user's priority list comes back as 0, not null.
   Future<double?> platformTotal(HealthDataType type, DateTime start, DateTime end) async {
     if (!hasPlatformTotals || !end.isAfter(start)) {
       return null;

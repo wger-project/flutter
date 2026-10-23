@@ -255,9 +255,9 @@ const List<HealthMetric> healthMetrics = [
   ),
   // The three cumulative types below are counters, not measurements: a single
   // record covers a few minutes and means nothing on its own, so only the
-  // day's total is stored. Both platforms can aggregate them themselves, which
-  // would replace the raw read with one row per day; until the importer has
-  // that path, they are read raw in small windows and summed here.
+  // day's total is stored. They are read raw in small windows and summed; a
+  // day whose records overlap takes Health Connect's deduplicated total
+  // instead, see HealthEntryWriter.
   HealthMetric(
     metricType: MetricType.steps,
     dataType: HealthDataType.STEPS,
