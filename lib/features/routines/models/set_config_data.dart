@@ -31,8 +31,25 @@ class SetConfigData {
   @JsonKey(required: true, name: 'exercise')
   late int exerciseId;
 
+  /// The hydrated exercise. Only set once `hydrateSetConfigs` has found it, so
+  /// it stays null for configs whose exercise is missing locally. Read it
+  /// through [exerciseOrNull] anywhere a missing exercise must not take the
+  /// whole screen down — an unguarded [exercise] read throws and Flutter
+  /// replaces the surrounding widget with a blank ErrorWidget.
+  Exercise? _exercise;
+
   @JsonKey(includeFromJson: false, includeToJson: false)
-  late Exercise exercise;
+  Exercise get exercise {
+    if (_exercise == null) {
+      throw StateError('SetConfigData has no hydrated exercise (exercise ID $exerciseId)');
+    }
+    return _exercise!;
+  }
+
+  set exercise(Exercise value) => _exercise = value;
+
+  /// Like [exercise] but returns null instead of throwing
+  Exercise? get exerciseOrNull => _exercise;
 
   @JsonKey(required: true, name: 'slot_entry_id')
   late int slotEntryId;
@@ -181,7 +198,7 @@ class SetConfigData {
       restTime: restTime ?? this.restTime,
       maxRestTime: maxRestTime ?? this.maxRestTime,
       comment: comment ?? this.comment,
-      exercise: exercise ?? this.exercise,
+      exercise: exercise ?? _exercise,
       weightUnit: weightUnit ?? this.weightUnit,
       repetitionsUnit: repetitionsUnit ?? this.repetitionsUnit,
     );

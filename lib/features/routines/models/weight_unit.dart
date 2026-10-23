@@ -17,6 +17,35 @@
  */
 
 import 'package:flutter/foundation.dart';
+import 'package:wger/core/consts.dart';
+
+const _KG_PER_LB = 0.45359237;
+
+/// Converts [value] between [WEIGHT_UNIT_KG] and [WEIGHT_UNIT_LB].
+///
+/// Anything else (the server also knows custom units such as plates) is
+/// returned untouched — there is no sensible factor for those.
+///
+/// The result is snapped to [rounding] when given (the routine's
+/// `weightRounding`), otherwise to the nearest half unit, so switching units
+/// mid-session yields a number that exists on a rack rather than 176.3696.
+num convertWeight(num value, {required int from, required int to, num? rounding}) {
+  if (from == to) {
+    return value;
+  }
+
+  final num converted;
+  if (from == WEIGHT_UNIT_KG && to == WEIGHT_UNIT_LB) {
+    converted = value / _KG_PER_LB;
+  } else if (from == WEIGHT_UNIT_LB && to == WEIGHT_UNIT_KG) {
+    converted = value * _KG_PER_LB;
+  } else {
+    return value;
+  }
+
+  final step = (rounding == null || rounding <= 0) ? 0.5 : rounding;
+  return (converted / step).round() * step;
+}
 
 @immutable
 class WeightUnit {
