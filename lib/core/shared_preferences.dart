@@ -142,6 +142,7 @@ class PreferenceHelper {
   static const _healthSyncReadableTypesKey = 'healthSyncReadableTypes';
   static const _healthSyncEmptyMetricsKey = 'healthSyncEmptyMetrics';
   static const _healthSyncLastRunKey = 'healthSyncLastRun';
+  static const _healthSyncDailySumsRereadKey = 'healthSyncDailySumsReread';
 
   Future<void> setHealthSyncEnabled(bool value) async {
     await PreferenceHelper.asyncPref.setBool(_healthSyncEnabledKey, value);
@@ -211,11 +212,23 @@ class PreferenceHelper {
     return stored == null ? null : DateTime.tryParse(stored);
   }
 
+  /// Whether the summed metrics' history was read again for the platform
+  /// totals, which corrects the days imported while they were raw sums.
+  Future<void> setHealthSyncDailySumsReread(bool value) async {
+    await PreferenceHelper.asyncPref.setBool(_healthSyncDailySumsRereadKey, value);
+  }
+
+  Future<bool> getHealthSyncDailySumsReread() async {
+    final value = await PreferenceHelper.asyncPref.getBool(_healthSyncDailySumsRereadKey);
+    return value ?? false;
+  }
+
   Future<void> clearHealthSyncPreferences() async {
     await PreferenceHelper.asyncPref.remove(_healthSyncEnabledKey);
     await PreferenceHelper.asyncPref.remove(_healthSyncWatermarksKey);
     await PreferenceHelper.asyncPref.remove(_healthSyncReadableTypesKey);
     await PreferenceHelper.asyncPref.remove(_healthSyncEmptyMetricsKey);
     await PreferenceHelper.asyncPref.remove(_healthSyncLastRunKey);
+    await PreferenceHelper.asyncPref.remove(_healthSyncDailySumsRereadKey);
   }
 }

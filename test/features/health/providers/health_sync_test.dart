@@ -68,6 +68,7 @@ void main() {
       (invocation) async => (invocation.positionalArguments.first as List<HealthDataType>).toSet(),
     );
     when(health.sourceName).thenReturn('apple');
+    when(health.hasPlatformTotals).thenReturn(false);
     when(measurements.addLocalDrift(any)).thenAnswer((_) async {});
     when(measurements.updateLocalDrift(any)).thenAnswer((_) async {});
     when(measurements.addLocalDriftCategory(any)).thenAnswer((_) async {});

@@ -66,6 +66,16 @@ double mergedDurationMinutes(Iterable<HealthReading> samples) {
   return total.inMicroseconds / Duration.microsecondsPerMinute;
 }
 
+/// Whether any two of [samples] cover the same time. Back-to-back intervals
+/// don't count, and a sample without an end covers no time.
+bool hasOverlap(Iterable<HealthReading> samples) {
+  final intervals = samples.where((r) => r.dateTo != null).toList()
+    ..sort((a, b) => a.date.compareTo(b.date));
+
+  // Sorted by start, any overlap shows between neighbours
+  return intervals.indexed.skip(1).any((e) => e.$2.date.isBefore(intervals[e.$1 - 1].dateTo!));
+}
+
 /// Where the read window starts for [metric].
 ///
 /// A daily aggregate is recomputed from what the window returns, so a start
