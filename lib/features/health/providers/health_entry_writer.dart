@@ -36,7 +36,7 @@ final _uuidPattern = RegExp(r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[
 /// or one per day for the metrics that aggregate.
 ///
 /// Owns the categories they are written into (see [resolveTargets]) and the
-/// two counters a run reports at the end. Created per run, since both are
+/// counters a run reports at the end. Created per run, since both are
 /// about that run.
 class HealthEntryWriter {
   HealthEntryWriter(this._measurements, this._source, this._health);
@@ -59,6 +59,10 @@ class HealthEntryWriter {
   /// Readings dropped during this run because their value is outside what its
   /// metric type allows, see [_isInRange].
   var outOfRangeCount = 0;
+
+  /// Days during this run whose records overlap but got no platform total,
+  /// so their raw sum (which double counts) was stored instead.
+  var rawSumFallbackCount = 0;
 
   /// Imports [metricReadings] into [target]'s category, deduplicating against
   /// the entries already present via their externalId. Returns the number of
@@ -176,14 +180,21 @@ class HealthEntryWriter {
       DailyAggregation.sum => values.sum,
       DailyAggregation.mergedDuration => mergedDurationMinutes(samples),
     };
-    // Cumulative metrics: take the platform's deduplicated day total instead
-    // of the raw sum, which double counts overlapping records. Falls back to
-    // the raw sum when the platform total is unavailable.
+    // Overlapping records of a cumulative metric are double counted by the raw
+    // sum, so take the platform's deduplicated total. Asked only then: one call
+    // per day of history would run into Health Connect's read quota
     final type = metric.dataType;
-    if (metric.dailyAggregation == DailyAggregation.sum && type != null) {
+    var platformTotal = false;
+    if (metric.dailyAggregation == DailyAggregation.sum &&
+        type != null &&
+        _health.hasPlatformTotals &&
+        hasOverlap(samples)) {
       final total = await _health.platformTotal(type, day, dayEnd(day, metric));
       if (total != null) {
         aggregate = metric.toCategoryValue(total);
+        platformTotal = true;
+      } else {
+        rawSumFallbackCount++;
       }
     }
     // Round like the raw import: the server stores Decimal with 2 places
@@ -194,6 +205,7 @@ class HealthEntryWriter {
         'max': values.max,
       },
       'sample_count': values.length,
+      if (platformTotal) 'aggregated_by': 'platform',
       // The types actually seen, not the metric's own: a component can roll
       // several of them up (total sleep)
       'record_type': (samples.map((r) => r.type.name).toSet().toList()..sort()).join(','),

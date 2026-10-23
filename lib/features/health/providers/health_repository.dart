@@ -189,6 +189,9 @@ class HealthRepository {
     return true;
   }
 
+  /// Whether [platformTotal] can answer here at all: Health Connect only.
+  bool get hasPlatformTotals => !kIsWeb && Platform.isAndroid;
+
   /// The total of a cumulative [type] (steps, distance, active energy)
   /// between [start] and [end] as Health Connect itself reports it.
   ///
@@ -201,7 +204,7 @@ class HealthRepository {
   /// Null on iOS, on failure, or when the platform returned nothing, so the
   /// caller can fall back to the raw sum.
   Future<double?> platformTotal(HealthDataType type, DateTime start, DateTime end) async {
-    if (kIsWeb || !Platform.isAndroid || !end.isAfter(start)) {
+    if (!hasPlatformTotals || !end.isAfter(start)) {
       return null;
     }
     try {

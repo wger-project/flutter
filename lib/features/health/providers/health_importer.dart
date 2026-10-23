@@ -189,12 +189,14 @@ class HealthImporter {
     String userId,
   ) async {
     final categories = await _measurements.getCategoriesOnce();
+    final watermarks = await _readWatermarks();
+    await _rereadDailySumsOnce(watermarks);
 
     final run = _SyncRun(
       userId: userId,
       categories: categories,
       endTime: DateTime.now(),
-      watermarks: await _readWatermarks(),
+      watermarks: watermarks,
       // Metrics the platform has nothing for never get a category, so counting
       // them as missing would ask for the full window on every sync
       knownEmpty: {...?await _prefs.getHealthSyncEmptyMetrics()},
@@ -327,6 +329,12 @@ class HealthImporter {
     if (_writer.outOfRangeCount > 0) {
       _logger.warning('Dropped ${_writer.outOfRangeCount} readings outside their metric limits');
     }
+    if (_writer.rawSumFallbackCount > 0) {
+      _logger.warning(
+        'No platform total for ${_writer.rawSumFallbackCount} days with overlapping records, '
+        'stored their raw sum',
+      );
+    }
   }
 
   /// The result of a run that gave up before the metrics ran.
@@ -353,6 +361,25 @@ class HealthImporter {
   Future<Map<String, DateTime>> _readWatermarks() async {
     final stored = await _prefs.getHealthSyncWatermarks();
     return {for (final e in stored.entries) e.key: DateTime.parse(e.value)};
+  }
+
+  /// Drops the summed metrics' watermarks once where platform totals exist,
+  /// so their full history is read again and the days stored as double
+  /// counting raw sums are corrected.
+  Future<void> _rereadDailySumsOnce(Map<String, DateTime> watermarks) async {
+    if (!_health.hasPlatformTotals || await _prefs.getHealthSyncDailySumsReread()) {
+      return;
+    }
+    final summed = {
+      for (final m in healthMetrics)
+        if (m.dailyAggregation == DailyAggregation.sum) m.metricType.name,
+    };
+    if (watermarks.keys.any(summed.contains)) {
+      _logger.info('Reading the history of ${summed.join(', ')} again for the platform totals');
+      watermarks.removeWhere((name, _) => summed.contains(name));
+      await _writeWatermarks(watermarks);
+    }
+    await _prefs.setHealthSyncDailySumsReread(true);
   }
 
   Future<void> _writeWatermarks(Map<String, DateTime> watermarks) async {

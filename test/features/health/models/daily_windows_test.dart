@@ -95,6 +95,40 @@ void main() {
     });
   });
 
+  group('hasOverlap', () {
+    test('back-to-back records do not overlap', () {
+      expect(
+        hasOverlap([
+          _asleep(DateTime(2026, 5, 5, 11, 30), DateTime(2026, 5, 5, 12)),
+          _asleep(DateTime(2026, 5, 5, 11), DateTime(2026, 5, 5, 11, 30)),
+        ]),
+        isFalse,
+      );
+    });
+
+    test('a record inside a longer one overlaps, whatever the order', () {
+      // The workout record lies within the watch's own buckets
+      expect(
+        hasOverlap([
+          _asleep(DateTime(2026, 5, 5, 11), DateTime(2026, 5, 5, 12)),
+          _asleep(DateTime(2026, 5, 5, 12), DateTime(2026, 5, 5, 13)),
+          _asleep(DateTime(2026, 5, 5, 10), DateTime(2026, 5, 5, 14)),
+        ]),
+        isTrue,
+      );
+    });
+
+    test('a record without an end covers no time', () {
+      expect(
+        hasOverlap([
+          _asleep(DateTime(2026, 5, 5, 11), DateTime(2026, 5, 5, 12)),
+          HealthReading(type: HealthDataType.STEPS, value: 10, date: DateTime(2026, 5, 5, 11, 30)),
+        ]),
+        isFalse,
+      );
+    });
+  });
+
   group('dayOf', () {
     test('a metric without a rollover counts the plain calendar day', () {
       expect(dayOf(DateTime(2026, 5, 4, 23, 30), steps), DateTime(2026, 5, 4));

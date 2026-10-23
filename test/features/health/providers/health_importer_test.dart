@@ -95,7 +95,8 @@ void main() {
       (invocation) async => (invocation.positionalArguments.first as List<HealthDataType>).toSet(),
     );
     when(health.sourceName).thenReturn('apple');
-    // No platform total by default: summed metrics fall back to their raw sum
+    // iOS by default: summed metrics stay raw sums
+    when(health.hasPlatformTotals).thenReturn(false);
     when(health.platformTotal(any, any, any)).thenAnswer((_) async => null);
     when(measurements.addLocalDrift(any)).thenAnswer((_) async {});
     when(measurements.updateLocalDrift(any)).thenAnswer((_) async {});
@@ -395,6 +396,30 @@ void main() {
       await runImport();
 
       expect(capturedReadStart(), DateTime(2026, 5, 2, 12));
+    });
+
+    test('reads the history of the summed metrics once more for the platform totals', () async {
+      // Their days imported before held the double counted raw sum
+      await seedWatermarks('2026-06-01T12:00:00.000');
+      await PreferenceHelper.instance.setHealthSyncReadableTypes([
+        for (final metric in healthMetrics)
+          for (final type in metric.dataTypes) type.name,
+      ]);
+      when(measurements.getCategoriesOnce()).thenAnswer((_) async => categoriesForEveryMetric());
+      when(health.hasPlatformTotals).thenReturn(true);
+      stubReadings([]);
+
+      await runImport();
+
+      final starts = capturedReadStarts();
+      expect(starts[HealthDataType.STEPS], DateTime(2020));
+      expect(starts[HealthDataType.DISTANCE_DELTA], DateTime(2020));
+      expect(starts[HealthDataType.ACTIVE_ENERGY_BURNED], DateTime(2020));
+      expect(starts[HealthDataType.WEIGHT], DateTime(2026, 5, 2, 12));
+
+      await runImport();
+
+      expect(capturedReadStarts()[HealthDataType.STEPS]!.isAfter(DateTime(2020)), isTrue);
     });
 
     test('a read the platform refuses for authorization is a permission issue', () async {
@@ -862,6 +887,7 @@ void main() {
       // A watch writes a workout's steps twice, once in its interval buckets
       // and once as a record of its own. Health Connect counts the overlap
       // once; adding up the raw records counts it twice.
+      when(health.hasPlatformTotals).thenReturn(true);
       when(health.platformTotal(HealthDataType.STEPS, any, any)).thenAnswer((_) async => 7873);
       stubReadings([
         HealthReading(
@@ -893,34 +919,97 @@ void main() {
           verify(measurements.addLocalDrift(captureAny)).captured.single as MeasurementEntry;
       expect(entry.date, DateTime(2026, 10, 4));
       expect(entry.value, 7873); // not 15686
+      expect(entry.extraData!['aggregated_by'], 'platform');
       verify(
         health.platformTotal(HealthDataType.STEPS, DateTime(2026, 10, 4), DateTime(2026, 10, 5)),
       ).called(1);
     });
 
-    test('falls back to the raw sum when the platform has no total', () async {
-      stubReadings([
-        HealthReading(
-          type: HealthDataType.STEPS,
-          value: 3866,
-          date: DateTime(2026, 10, 4, 11),
-          dateTo: DateTime(2026, 10, 4, 11, 30),
-          externalId: _idS1,
-        ),
-        HealthReading(
-          type: HealthDataType.STEPS,
-          value: 133,
-          date: DateTime(2026, 10, 4, 10, 30),
-          dateTo: DateTime(2026, 10, 4, 11),
-          externalId: _idS2,
-        ),
-      ]);
+    // Back to back, like a watch's interval buckets
+    final adjacentSteps = [
+      HealthReading(
+        type: HealthDataType.STEPS,
+        value: 3866,
+        date: DateTime(2026, 10, 4, 11),
+        dateTo: DateTime(2026, 10, 4, 11, 30),
+        externalId: _idS1,
+      ),
+      HealthReading(
+        type: HealthDataType.STEPS,
+        value: 133,
+        date: DateTime(2026, 10, 4, 10, 30),
+        dateTo: DateTime(2026, 10, 4, 11),
+        externalId: _idS2,
+      ),
+    ];
+    final overlappingSteps = [
+      ...adjacentSteps,
+      HealthReading(
+        type: HealthDataType.STEPS,
+        value: 1000,
+        date: DateTime(2026, 10, 4, 10, 45),
+        dateTo: DateTime(2026, 10, 4, 11, 15),
+        externalId: _idS3,
+      ),
+    ];
+
+    test('sums records that do not overlap without asking the platform', () async {
+      when(health.hasPlatformTotals).thenReturn(true);
+      stubReadings(adjacentSteps);
 
       await runImport();
 
       final entry =
           verify(measurements.addLocalDrift(captureAny)).captured.single as MeasurementEntry;
       expect(entry.value, 3999);
+      verifyNever(health.platformTotal(any, any, any));
+    });
+
+    test('falls back to the raw sum when the platform has no total', () async {
+      when(health.hasPlatformTotals).thenReturn(true);
+      stubReadings(overlappingSteps);
+
+      await runImport();
+
+      final entry =
+          verify(measurements.addLocalDrift(captureAny)).captured.single as MeasurementEntry;
+      expect(entry.value, 4999);
+      expect(entry.extraData, isNot(contains('aggregated_by')));
+      verify(health.platformTotal(HealthDataType.STEPS, any, any)).called(1);
+    });
+
+    test('keeps the raw sum where the platform has no totals', () async {
+      stubReadings(overlappingSteps);
+
+      await runImport();
+
+      final entry =
+          verify(measurements.addLocalDrift(captureAny)).captured.single as MeasurementEntry;
+      expect(entry.value, 4999);
+      verifyNever(health.platformTotal(any, any, any));
+    });
+
+    test('converts a platform total into the category unit', () async {
+      when(health.hasPlatformTotals).thenReturn(true);
+      when(
+        health.platformTotal(HealthDataType.DISTANCE_DELTA, any, any),
+      ).thenAnswer((_) async => 6800);
+      stubReadings([
+        for (final r in overlappingSteps)
+          HealthReading(
+            type: HealthDataType.DISTANCE_DELTA,
+            value: r.value,
+            date: r.date,
+            dateTo: r.dateTo,
+            externalId: r.externalId,
+          ),
+      ]);
+
+      await runImport();
+
+      final entry =
+          verify(measurements.addLocalDrift(captureAny)).captured.single as MeasurementEntry;
+      expect(entry.value, 6.8);
     });
 
     test('aggregates a day split across two read windows once', () async {
