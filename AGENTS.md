@@ -8,6 +8,63 @@ Flutter (SDK 3.10+) with flutter_riverpod v3, drift, freezed + json_serializable
 - `flutter test` — or scope: `flutter test test/<feature>_test.dart`
 - After touching anything with `@freezed` / `@JsonSerializable` / drift annotations: `dart run build_runner build --delete-conflicting-outputs`, then `dart format .`. A rebuild always rewrites the riverpod debug hashes in `app_settings_notifier.g.dart`, `auth_notifier.g.dart`, `powersync.g.dart` and `health_sync.g.dart`; revert those unless you touched their source.
 
+## Layout
+
+```
+lib/
+├── features/<feature>/   feature domains, named after the Django app in wger/server/wger/<app>/ (same names as wger-react)
+├── core/                 cross-cutting infrastructure and the app shell
+│   ├── network/            wger_base, base_provider, the whole session/token layer (auth_notifier, auth_http_client, ...)
+│   ├── widgets/            generic widgets (DecimalInputWidget, FormSubmitButton, ConfirmDeleteDialog, ...)
+│   ├── widgets/dashboard/  dashboard cards, composes every feature (dashboard is not a feature)
+│   ├── formatting/, exceptions/
+│   └── *.dart              helpers (date, validators, snackbar, ...) and shell screens (home_tabs, splash, update_*)
+├── database/             the single Drift AppDatabase, can't be split per feature
+│   ├── powersync/tables/   one file per domain, row classes via @UseRowClass
+│   └── converters/         UtcDateTimeConverter, DateOnlyTextConverter, ...
+├── powersync/            sync schema, upload connector, diagnostics
+├── l10n/                 app_*.arb + generated/, see lib/l10n/README.md
+├── theme/
+└── main.dart
+```
+
+Features: `exercises`, `routines` (Django `manager`, includes gym mode and logs), `nutrition`, `measurements` (also body
+weight), `gallery`, `trophies`, `account` (user profile and settings, Django `core`), `auth` (login/MFA UI only, the
+session layer is in `core/network/`), `health` (platform health sync, no Django app). Each feature uses this skeleton,
+leaving out what it doesn't need and never inventing other top-level names:
+
+```
+features/<feature>/
+├── models/      @freezed entities, filters, enums
+├── providers/   notifiers AND repositories (<name>_repository.dart, <name>_notifier.dart)
+├── screens/     full screens (<name>_screen.dart)
+├── widgets/     UI fragments, forms under widgets/forms/ or widgets/<area>/
+└── <name>.dart  feature-wide helpers (validators.dart, gym_mode.dart), no helpers/ folder
+```
+
+- **`core/` or feature?** Only promote to `core/` when two unrelated features use it. When in doubt, keep it in the
+  feature. Don't add new `core/` → `features/` imports; the existing ones are the shell (dashboard, home tabs, app bar)
+  and the logout wiring in `auth_notifier`.
+- **Drift tables** go into `database/powersync/tables/<domain>.dart`, not into the feature; the model in `models/`
+  provides the `fromDb` constructor.
+- **Codegen output** (`*.g.dart`, `*.freezed.dart`) sits next to its source and is committed.
+- **Imports:** `package:wger/...` in new code; the few relative imports are leftovers, don't copy them.
+- **Naming:** snake_case files and folders, plural feature names.
+
+```
+test/
+├── features/<feature>/..., core/, database/, powersync/   mirror lib/ one file per source file (<name>_test.dart)
+├── helpers/              in_memory_drift, fake_auth_notifier, fake_auth_environment, ...
+├── fixtures/             raw JSON API responses (fixture_reader.dart)
+└── screenshots/          store screenshot scene builders
+test_data/                shared Dart fixtures (getTestRoutine(), ...), structural variants stay in the test
+integration_test/         screenshot driver
+```
+
+- **Test file = source file + `_test`, same path:** `lib/features/measurements/widgets/forms/entry.dart` is tested in
+  `test/features/measurements/widgets/forms/entry_test.dart`. One test file per source file, no merged or split files.
+- `*.mocks.dart` are generated per test file by mockito (`@GenerateMocks`) and live next to it.
+
 ## Stack-specific rules
 
 - **Riverpod:**
