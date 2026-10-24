@@ -812,6 +812,7 @@
     },
     "author": "Autoren",
     "authorHint": "Name des Autors eingeben",
+    "authorHelpText": "Wird als Autor der Übung angezeigt (CC BY-SA 4.0). Ändere es nur, wenn du nicht der Autor bist.",
     "@authorHint": {
         "description": "Hint text for author field"
     },
