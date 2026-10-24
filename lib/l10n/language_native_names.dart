@@ -51,6 +51,7 @@ const Map<String, String> languageNativeNames = {
   'sk': 'Slovenčina',
   'sl': 'Slovenščina',
   'sn': 'chiShona',
+  'sv': 'Svenska',
   'ta': 'தமிழ்',
   'th': 'ไทย',
   'tr': 'Türkçe',
