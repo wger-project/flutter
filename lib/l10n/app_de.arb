@@ -1177,5 +1177,7 @@
     "calculationHelpExercises": "Zwischen {min} und {max} Übungen, {count} ausgewählt.",
     "calculationHelpMaxReps": "{min} bis {max}. Sätze darüber werden ignoriert.",
     "calculationHelpWindowDays": "{min} bis {max}. Wie weit zurück ein bester Satz zählt.",
-    "useDynamicColor": "Dynamische Farben verwenden"
+    "useDynamicColor": "Dynamische Farben verwenden",
+    "gymModeStickySetValues": "Werte des letzten Satzes übernehmen",
+    "gymModeStickySetValuesHelp": "Den nächsten Satz einer Übung mit den Werten vorbelegen, die du in diesem Training zuletzt dafür eingetragen hast"
 }

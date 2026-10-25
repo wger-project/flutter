@@ -411,7 +411,7 @@
   "@gymModeStickySetValues": {
     "description": "Label for a gym mode setting: when enabled, the next set of an exercise is pre-filled with the values last logged instead of the planned ones"
   },
-  "gymModeStickySetValuesHelp": "Pre-fill the next set of an exercise with the values (weight, repetitions, RiR) you last logged for it during this workout",
+  "gymModeStickySetValuesHelp": "Pre-fill the next set of an exercise with the values you last logged for it during this workout",
   "@gymModeStickySetValuesHelp": {
     "description": "Help text for the sticky set values setting in the gym mode"
   },
