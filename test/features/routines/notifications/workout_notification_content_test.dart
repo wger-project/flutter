@@ -92,11 +92,11 @@ void main() {
       expect(target.alarm!.at, endsAt);
       expect(target.alarm!.title, 'Bench press');
       expect(target.alarm!.subtitle, 'Rest is over');
-      expect(target.alarm!.body, 'Set 2 of 3 · 3x100kg');
+      expect(target.alarm!.body, 'Set 2 of 3 · 3 × 100 kg');
       expect(target.alarm!.canLogSet, isTrue);
       expect(target.alarm!.payload.logSlotUuid, logs()[1].uuid);
       expect(target.controls!.title, 'Pause');
-      expect(target.controls!.body, 'Next: Bench press 3x100kg');
+      expect(target.controls!.body, 'Next: Bench press 3 × 100 kg');
       expect(target.controls!.chronometerAt, endsAt);
       expect(target.controls!.chronometerCountsDown, isTrue);
       expect(target.controls!.canSkipRest, isTrue);
@@ -125,7 +125,7 @@ void main() {
       expect(target.alarm, isNull);
       expect(target.controls!.title, 'Bench press');
       expect(target.controls!.subtitle, 'Rest is over');
-      expect(target.controls!.body, 'Set 2 of 3 · 3x100kg');
+      expect(target.controls!.body, 'Set 2 of 3 · 3 × 100 kg');
       expect(target.controls!.chronometerAt, isNull);
       expect(target.controls!.canLogSet, isTrue);
       expect(target.controls!.canSkipRest, isFalse);
@@ -150,7 +150,7 @@ void main() {
       final target = build();
 
       expect(target.alarm!.title, 'Rest is over');
-      expect(target.alarm!.body, 'Next: Side raises 12x10kg');
+      expect(target.alarm!.body, 'Next: Side raises 12 × 10 kg');
       expect(target.alarm!.canLogSet, isFalse);
       expect(target.controls!.canLogSet, isFalse);
     });
@@ -181,10 +181,27 @@ void main() {
       final controls = build().controls!;
 
       expect(controls.title, 'Bench press');
-      expect(controls.body, 'Set 2 of 3 · 3x100kg');
+      expect(controls.body, 'Set 2 of 3 · 3 × 100 kg');
       expect(controls.canLogSet, isTrue);
       expect(controls.canSkipRest, isFalse);
       expect(controls.payload.logSlotUuid, logs()[1].uuid);
+    });
+
+    test('The set shows the planned values without RiR and rest', () {
+      final config = logs()[1].setConfigData!
+        ..textRepr = '8-12 × 100-110 kg @ 1.5 RiR 120s rest'
+        ..maxRepetitions = 12
+        ..repetitions = 8
+        ..maxWeight = 110;
+      onPage(logs()[1]);
+      expect(build().controls!.body, 'Set 2 of 3 · 8-12 × 100-110 kg');
+
+      config.weight = null;
+      expect(build().controls!.body, 'Set 2 of 3 · 8-12 Reps');
+
+      // Other units keep the server text, it has their translated name
+      config.repetitionsUnitId = testRepetitionUnit2.id;
+      expect(build().controls!.body, 'Set 2 of 3 · 8-12 × 100-110 kg @ 1.5 RiR 120s rest');
     });
 
     test('A logged set cannot be logged again', () {
@@ -255,14 +272,19 @@ void main() {
         logOf(repetitions: planned.repetitions!, weight: planned.weight),
         logOf(repetitions: 9, weight: 60),
         logOf(repetitions: 8, weight: 62.5, rir: 2),
+        logOf(repetitions: 8, weight: 62.5, rir: 3),
         logOf(repetitions: 12),
         logOf(repetitions: 6, weight: 70),
       ];
 
       final choices = quickLogChoices(planned, recent);
 
-      expect(choices.keys, ['9 × 60 kg', '8 × 62.5 kg (2 RiR)', '12']);
-      expect(choices['9 × 60 kg'], same(recent[0]));
+      expect(choices.keys, ['9 × 60 kg', '8 × 62.5 kg', '12']);
+      expect(choices['8 × 62.5 kg']!.repetitions, 8);
+      expect(choices['8 × 62.5 kg']!.weight, 62.5);
+      // The label shows no RiR, so the planned one is logged
+      expect(choices['8 × 62.5 kg']!.rir, planned.rir);
+      expect(choices['12']!.rir, planned.rir);
     });
 
     test('Skips other exercises and units the label cannot name', () {
