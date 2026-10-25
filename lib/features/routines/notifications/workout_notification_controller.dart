@@ -127,6 +127,16 @@ class WorkoutNotificationController {
   /// Carries out a notification action. Stale actions only refresh the
   /// notification, without a running session the user is sent to the app.
   Future<void> handleAction(String? actionId, String? encodedPayload) async {
+    try {
+      await _handleAction(actionId, encodedPayload);
+    } finally {
+      // Lets iOS suspend the app again once the notification is up to date
+      await _queue;
+      await _service.actionHandled();
+    }
+  }
+
+  Future<void> _handleAction(String? actionId, String? encodedPayload) async {
     final state = _ref.read(gymStateProvider);
     if (!state.isInitialized) {
       // E.g. iOS started the app in the background just for this action

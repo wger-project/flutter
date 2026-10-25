@@ -19,6 +19,7 @@
 import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -84,6 +85,9 @@ abstract class WorkoutNotificationService {
 
   /// Removes the shown notification and a pending rest alarm
   Future<void> cancelAll();
+
+  /// Lets the platform suspend the app again after an action
+  Future<void> actionHandled();
 }
 
 /// For platforms without workout notifications
@@ -117,6 +121,9 @@ class NoopWorkoutNotificationService implements WorkoutNotificationService {
 
   @override
   Future<void> cancelAll() async {}
+
+  @override
+  Future<void> actionHandled() async {}
 }
 
 /// Android and iOS, via flutter_local_notifications
@@ -125,6 +132,7 @@ class LocalWorkoutNotificationService implements WorkoutNotificationService {
   static const _controlsChannelId = 'workout_controls';
   static const _alarmChannelId = 'rest_alarm';
   static const _restEndCategory = 'workout_rest_end';
+  static const _actionTasksChannel = MethodChannel('de.wger.flutter/notification_actions');
 
   final _logger = Logger('LocalWorkoutNotificationService');
   final _plugin = FlutterLocalNotificationsPlugin();
@@ -226,6 +234,7 @@ class LocalWorkoutNotificationService implements WorkoutNotificationService {
           ],
         ),
         iOS: DarwinNotificationDetails(
+          presentSound: true,
           categoryIdentifier: alarm.canLogSet ? _restEndCategory : null,
         ),
       ),
@@ -294,6 +303,19 @@ class LocalWorkoutNotificationService implements WorkoutNotificationService {
     // notifications left behind by an earlier process
     await _initialized;
     await _plugin.cancel(id: _notificationId);
+  }
+
+  @override
+  Future<void> actionHandled() async {
+    // Only iOS holds the app awake for an action, see AppDelegate.swift
+    if (defaultTargetPlatform != TargetPlatform.iOS) {
+      return;
+    }
+    try {
+      await _actionTasksChannel.invokeMethod<void>('actionHandled');
+    } on PlatformException catch (e) {
+      _logger.warning('Could not end the background task: $e');
+    }
   }
 }
 

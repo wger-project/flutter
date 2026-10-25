@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -45,6 +46,37 @@ void main() {
   );
 
   setUpAll(tzdata.initializeTimeZones);
+
+  group('actionHandled', () {
+    const tasksChannel = MethodChannel('de.wger.flutter/notification_actions');
+    late List<String> taskCalls;
+
+    setUp(() {
+      taskCalls = [];
+      binding.defaultBinaryMessenger.setMockMethodCallHandler(tasksChannel, (call) async {
+        taskCalls.add(call.method);
+        return null;
+      });
+      addTearDown(
+        () => binding.defaultBinaryMessenger.setMockMethodCallHandler(tasksChannel, null),
+      );
+    });
+
+    test('Ends the background task on iOS', () async {
+      debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+      addTearDown(() => debugDefaultTargetPlatformOverride = null);
+
+      await LocalWorkoutNotificationService().actionHandled();
+
+      expect(taskCalls, ['actionHandled']);
+    });
+
+    test('Does nothing on Android, which keeps no task', () async {
+      await LocalWorkoutNotificationService().actionHandled();
+
+      expect(taskCalls, isEmpty);
+    });
+  });
 
   setUp(() {
     // The Android side of the plugin, talking to a fake platform channel

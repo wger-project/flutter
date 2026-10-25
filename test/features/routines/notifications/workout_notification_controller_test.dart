@@ -56,6 +56,7 @@ void main() {
     when(service.scheduleRestAlarm(any, any)).thenAnswer((_) async {});
     when(service.showControls(any, any)).thenAnswer((_) async {});
     when(service.showNotLogged(any)).thenAnswer((_) async {});
+    when(service.actionHandled()).thenAnswer((_) async {});
     when(service.initialize(any, onTap: anyNamed('onTap'))).thenAnswer((_) async {});
     logRepo = MockWorkoutLogRepository();
     when(logRepo.addLocalDrift(any, dayId: anyNamed('dayId'))).thenAnswer((_) async {});
@@ -232,6 +233,8 @@ void main() {
 
       verify(logRepo.addLocalDrift(any, dayId: anyNamed('dayId'))).called(1);
       expect(gymState.state.currentPage, rest + 2);
+      // Only once the notification shows the new rest may iOS suspend the app
+      verifyInOrder([service.showControls(any, any), service.actionHandled()]);
       final alarms = verify(service.scheduleRestAlarm(captureAny, any)).captured;
       expect((alarms.last as RestAlarm).payload.restSlotUuid, slotPage(rest + 2).uuid);
     });
@@ -284,7 +287,7 @@ void main() {
           .handleAction(WORKOUT_NOTIFICATION_ACTION_LOG_SET, null);
       await settle();
 
-      verify(service.showNotLogged(any)).called(1);
+      verifyInOrder([service.showNotLogged(any), service.actionHandled()]);
       verifyNever(logRepo.addLocalDrift(any, dayId: anyNamed('dayId')));
     });
   });

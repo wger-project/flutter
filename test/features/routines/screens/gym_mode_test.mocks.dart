@@ -715,4 +715,13 @@ class MockWorkoutNotificationService extends _i1.Mock implements _i31.WorkoutNot
             returnValueForMissingStub: _i10.Future<void>.value(),
           )
           as _i10.Future<void>);
+
+  @override
+  _i10.Future<void> actionHandled() =>
+      (super.noSuchMethod(
+            Invocation.method(#actionHandled, []),
+            returnValue: _i10.Future<void>.value(),
+            returnValueForMissingStub: _i10.Future<void>.value(),
+          )
+          as _i10.Future<void>);
 }

@@ -50,6 +50,47 @@ private final class StorageExclusionPlugin: NSObject, FlutterPlugin {
   }
 }
 
+/// Keeps the app running while the main isolate handles a notification
+/// action, until Dart reports it as handled
+private final class NotificationActionTasks: NSObject, FlutterPlugin {
+  static let pluginName = "NotificationActionTasks"
+  private static let channelName = "de.wger.flutter/notification_actions"
+  /// Upper bound if Dart never reports back, e.g. without a running workout
+  private static let timeout: TimeInterval = 20
+  private static var tasks: [UIBackgroundTaskIdentifier] = []
+
+  static func register(with registrar: FlutterPluginRegistrar) {
+    let channel = FlutterMethodChannel(name: channelName, binaryMessenger: registrar.messenger())
+    registrar.addMethodCallDelegate(NotificationActionTasks(), channel: channel)
+  }
+
+  static func begin() {
+    var task: UIBackgroundTaskIdentifier = .invalid
+    task = UIApplication.shared.beginBackgroundTask { end(task) }
+    tasks.append(task)
+    DispatchQueue.main.asyncAfter(deadline: .now() + timeout) { end(task) }
+  }
+
+  private static func end(_ task: UIBackgroundTaskIdentifier) {
+    guard let index = tasks.firstIndex(of: task) else {
+      return
+    }
+    tasks.remove(at: index)
+    UIApplication.shared.endBackgroundTask(task)
+  }
+
+  func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+    guard call.method == "actionHandled" else {
+      result(FlutterMethodNotImplemented)
+      return
+    }
+    for task in Self.tasks {
+      Self.end(task)
+    }
+    result(nil)
+  }
+}
+
 @main
 @objc class AppDelegate: FlutterAppDelegate, FlutterImplicitEngineDelegate {
   override func application(
@@ -62,24 +103,13 @@ private final class StorageExclusionPlugin: NSObject, FlutterPlugin {
   }
 
   // A notification action is handled by the main isolate, but the plugin
-  // completes the response right away and iOS suspends the app again.
-  // Keep it running briefly so the action is processed now.
+  // completes the response right away and iOS suspends the app again
   override func userNotificationCenter(
     _ center: UNUserNotificationCenter,
     didReceive response: UNNotificationResponse,
     withCompletionHandler completionHandler: @escaping () -> Void
   ) {
-    var task: UIBackgroundTaskIdentifier = .invalid
-    task = UIApplication.shared.beginBackgroundTask {
-      UIApplication.shared.endBackgroundTask(task)
-      task = .invalid
-    }
-    DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
-      if task != .invalid {
-        UIApplication.shared.endBackgroundTask(task)
-        task = .invalid
-      }
-    }
+    NotificationActionTasks.begin()
     super.userNotificationCenter(
       center, didReceive: response, withCompletionHandler: completionHandler)
   }
@@ -90,6 +120,13 @@ private final class StorageExclusionPlugin: NSObject, FlutterPlugin {
       GeneratedPluginRegistrant.register(with: registry)
     }
     GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
+    if let registrar = engineBridge.pluginRegistry.registrar(
+      forPlugin: NotificationActionTasks.pluginName
+    ) {
+      NotificationActionTasks.register(with: registrar)
+    } else {
+      NSLog("NotificationActionTasks registrar unavailable")
+    }
     guard
       let registrar = engineBridge.pluginRegistry.registrar(
         forPlugin: StorageExclusionPlugin.pluginName
