@@ -316,11 +316,12 @@ void main() {
           verify(logRepo.addLocalDrift(captureAny, dayId: anyNamed('dayId'))).captured.single
               as Log;
 
-      test('The notification offers earlier logs of the next set', () async {
+      test('The rest end offers earlier logs of the next set', () async {
         await startRest();
 
-        final controls = verify(service.showControls(captureAny, any)).captured;
-        expect((controls.last as WorkoutControls).quickLogs, ['9 × 60 kg']);
+        // The rest end shows them, the running rest not
+        final alarms = verify(service.scheduleRestAlarm(captureAny, any)).captured;
+        expect((alarms.last as RestAlarm).quickLogs, ['9 × 60 kg']);
       });
 
       test('Also when the log page already loaded the earlier logs', () async {
@@ -341,8 +342,9 @@ void main() {
 
         await startRest();
 
-        final controls = verify(service.showControls(captureAny, any)).captured;
-        expect((controls.last as WorkoutControls).quickLogs, ['9 × 60 kg']);
+        // The rest end shows them, the running rest not
+        final alarms = verify(service.scheduleRestAlarm(captureAny, any)).captured;
+        expect((alarms.last as RestAlarm).quickLogs, ['9 × 60 kg']);
       });
 
       test('A picked quick log arrives through the port and logs its values', () async {

@@ -99,6 +99,9 @@ class WorkoutControls extends Equatable {
   final String title;
   final String body;
 
+  /// Shown next to the app name, e.g. that the rest is over
+  final String? subtitle;
+
   /// Reference time of the chronometer, none if null
   final DateTime? chronometerAt;
   final bool chronometerCountsDown;
@@ -118,6 +121,7 @@ class WorkoutControls extends Equatable {
     required this.title,
     required this.body,
     required this.payload,
+    this.subtitle,
     this.chronometerAt,
     this.chronometerCountsDown = false,
     this.canLogSet = false,
@@ -131,6 +135,7 @@ class WorkoutControls extends Equatable {
   List<Object?> get props => [
     title,
     body,
+    subtitle,
     chronometerAt,
     chronometerCountsDown,
     canLogSet,
@@ -147,6 +152,7 @@ class RestAlarm extends Equatable {
   final DateTime at;
   final String title;
   final String body;
+  final String? subtitle;
   final bool canLogSet;
   final bool canExtendRest;
   final WorkoutNotificationPayload payload;
@@ -160,6 +166,7 @@ class RestAlarm extends Equatable {
     required this.title,
     required this.body,
     required this.payload,
+    this.subtitle,
     this.canLogSet = false,
     this.canExtendRest = false,
     this.quickLogs = const [],
@@ -171,6 +178,7 @@ class RestAlarm extends Equatable {
     at,
     title,
     body,
+    subtitle,
     canLogSet,
     canExtendRest,
     payload,
@@ -303,13 +311,33 @@ WorkoutNotificationTarget buildWorkoutNotification(
     return '${config.exercise.getTranslation(languageCode).name} ${config.textRepr}';
   }
 
-  bool plannedComplete(SlotPageEntry page) => isWorkoutLogComplete(
-    repetitions: page.setConfigData!.repetitions,
-    weight: page.setConfigData!.weight,
-  );
+  String exerciseName(SlotPageEntry page) =>
+      page.setConfigData!.exercise.getTranslation(languageCode).name;
+
+  /// "Set 2 of 3 · 10 × 60 kg", counted within the exercise
+  String setOf(SlotPageEntry page) {
+    final sameExercise = state
+        .getPageByIndex(page.pageIndex)!
+        .slotPages
+        .where(
+          (p) =>
+              p.type == SlotPageType.log &&
+              p.setConfigData!.exerciseId == page.setConfigData!.exerciseId,
+        )
+        .toList();
+    return '${i18n.workoutNotificationSetOf(sameExercise.indexOf(page) + 1, sameExercise.length)}'
+        ' · ${page.setConfigData!.textRepr}';
+  }
+
+  bool canLog(SlotPageEntry page) =>
+      !page.logDone &&
+      isWorkoutLogComplete(
+        repetitions: page.setConfigData!.repetitions,
+        weight: page.setConfigData!.weight,
+      );
 
   List<String> quickLogs(SlotPageEntry page) =>
-      quickLogChoices(page.setConfigData!, recentLogs).keys.toList();
+      canLog(page) ? quickLogChoices(page.setConfigData!, recentLogs).keys.toList() : const [];
 
   Uri? image(SlotPageEntry? page) =>
       page == null ? null : mediaUrl?.call(page.setConfigData!.exercise.getMainImage?.image);
@@ -325,51 +353,60 @@ WorkoutNotificationTarget buildWorkoutNotification(
       );
 
   if (current?.type == SlotPageType.timer) {
-    final next = slotPages.firstWhereOrNull(
+    final following = slotPages.firstWhereOrNull(
       (p) => p.type == SlotPageType.log && p.pageIndex > current!.pageIndex,
     );
-    final body = next == null ? '' : i18n.workoutNotificationNext(setText(next));
-    // "Log set" only works from the rest right before the set
-    final canLogSet =
-        next != null &&
-        next.pageIndex == current!.pageIndex + 1 &&
-        !next.logDone &&
-        plannedComplete(next);
-    final actionPayload = payload(logSlotUuid: next?.uuid, restSlotUuid: current!.uuid);
-    final nextQuickLogs = canLogSet ? quickLogs(next) : const <String>[];
-    final nextImage = image(next);
+    // The set right after the rest, the one the rest end is about
+    final next = following?.pageIndex == current!.pageIndex + 1 ? following : null;
+    final actionPayload = payload(logSlotUuid: next?.uuid, restSlotUuid: current.uuid);
 
+    final nextText = following == null ? '' : i18n.workoutNotificationNext(setText(following));
     final endsAt = state.restEndsAt;
     final restRunning = endsAt != null && endsAt.isAfter(now);
 
+    // Once the rest is over the notification shows the set, like the page
+    // after the rest. Logging during the rest is left to the set itself.
     final alarm = state.alertOnCountdownEnd && restRunning
         ? RestAlarm(
             at: endsAt,
-            title: i18n.workoutNotificationRestOver,
-            body: body,
-            canLogSet: canLogSet,
-            // Starts another short countdown once the rest is over
+            title: next == null ? i18n.workoutNotificationRestOver : exerciseName(next),
+            body: next == null ? nextText : setOf(next),
+            subtitle: next == null ? null : i18n.workoutNotificationRestOver,
+            canLogSet: next != null && canLog(next),
+            // Starts another short countdown
             canExtendRest: true,
             payload: actionPayload,
-            quickLogs: nextQuickLogs,
-            image: nextImage,
+            quickLogs: next == null ? const [] : quickLogs(next),
+            image: image(next ?? following),
           )
         : null;
 
-    final controls = withControls
-        ? WorkoutControls(
-            title: endsAt != null && !restRunning ? i18n.workoutNotificationRestOver : i18n.pause,
-            body: body,
-            chronometerAt: endsAt == null ? state.restStartedAt : (restRunning ? endsAt : null),
-            chronometerCountsDown: restRunning,
-            canLogSet: canLogSet,
-            canSkipRest: true,
-            canExtendRest: endsAt != null,
-            payload: actionPayload,
-            quickLogs: nextQuickLogs,
-            image: nextImage,
-          )
-        : null;
+    final WorkoutControls? controls;
+    if (!withControls) {
+      controls = null;
+    } else if (endsAt != null && !restRunning && next != null) {
+      controls = WorkoutControls(
+        title: exerciseName(next),
+        body: setOf(next),
+        subtitle: i18n.workoutNotificationRestOver,
+        canLogSet: canLog(next),
+        canExtendRest: true,
+        payload: actionPayload,
+        quickLogs: quickLogs(next),
+        image: image(next),
+      );
+    } else {
+      controls = WorkoutControls(
+        title: endsAt != null && !restRunning ? i18n.workoutNotificationRestOver : i18n.pause,
+        body: nextText,
+        chronometerAt: endsAt == null ? state.restStartedAt : (restRunning ? endsAt : null),
+        chronometerCountsDown: restRunning,
+        canSkipRest: true,
+        canExtendRest: endsAt != null,
+        payload: actionPayload,
+        image: image(following),
+      );
+    }
 
     return WorkoutNotificationTarget(controls: controls, alarm: alarm);
   }
@@ -379,26 +416,13 @@ WorkoutNotificationTarget buildWorkoutNotification(
   }
 
   if (current?.type == SlotPageType.log) {
-    final page = state.getPageByIndex(current!.pageIndex)!;
-    final sameExercise = page.slotPages
-        .where(
-          (p) =>
-              p.type == SlotPageType.log &&
-              p.setConfigData!.exerciseId == current.setConfigData!.exerciseId,
-        )
-        .toList();
-    final config = current.setConfigData!;
-    final canLogSet = !current.logDone && plannedComplete(current);
-
     return WorkoutNotificationTarget(
       controls: WorkoutControls(
-        title: config.exercise.getTranslation(languageCode).name,
-        body:
-            '${i18n.workoutNotificationSetOf(sameExercise.indexOf(current) + 1, sameExercise.length)}'
-            ' · ${config.textRepr}',
-        canLogSet: canLogSet,
+        title: exerciseName(current!),
+        body: setOf(current),
+        canLogSet: canLog(current),
         payload: payload(logSlotUuid: current.uuid),
-        quickLogs: canLogSet ? quickLogs(current) : const [],
+        quickLogs: quickLogs(current),
         image: image(current),
       ),
     );

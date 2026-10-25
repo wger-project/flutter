@@ -405,12 +405,15 @@
   "workoutNotificationInProgress": "Workout in progress",
   "workoutNotificationLogSet": "Log planned set",
   "@workoutNotificationLogSet": {
-    "description": "Notification button that logs the next set with its planned values"
+    "description": "Notification button that logs the next set with its planned values. Shown next to up to two other buttons in a single row, so keep it very short; translate the meaning, not word for word"
   },
-  "workoutNotificationSkipRest": "Skip rest",
+  "workoutNotificationSkipRest": "Skip",
+  "@workoutNotificationSkipRest": {
+    "description": "Notification button that ends the running rest. Shown next to up to two other buttons in a single row, so keep it very short; translate the meaning, not word for word"
+  },
   "workoutNotificationExtendRest": "+{seconds} s",
   "@workoutNotificationExtendRest": {
-    "description": "Notification button that makes the running rest longer",
+    "description": "Notification button that makes the running rest longer. Shown next to up to two other buttons in a single row, so keep it very short; translate the meaning, not word for word",
     "placeholders": {
       "seconds": {
         "type": "int"

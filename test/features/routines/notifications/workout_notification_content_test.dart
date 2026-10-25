@@ -88,11 +88,15 @@ void main() {
 
       final target = build();
 
+      // The alarm already shows the set, like the page after the rest
       expect(target.alarm!.at, endsAt);
-      expect(target.alarm!.title, 'Rest is over');
-      expect(target.alarm!.body, 'Next: Bench press 3x100kg');
+      expect(target.alarm!.title, 'Bench press');
+      expect(target.alarm!.subtitle, 'Rest is over');
+      expect(target.alarm!.body, 'Set 2 of 3 · 3x100kg');
       expect(target.alarm!.canLogSet, isTrue);
       expect(target.alarm!.payload.logSlotUuid, logs()[1].uuid);
+      expect(target.controls!.title, 'Pause');
+      expect(target.controls!.body, 'Next: Bench press 3x100kg');
       expect(target.controls!.chronometerAt, endsAt);
       expect(target.controls!.chronometerCountsDown, isTrue);
       expect(target.controls!.canSkipRest, isTrue);
@@ -119,8 +123,12 @@ void main() {
       final target = build();
 
       expect(target.alarm, isNull);
-      expect(target.controls!.title, 'Rest is over');
+      expect(target.controls!.title, 'Bench press');
+      expect(target.controls!.subtitle, 'Rest is over');
+      expect(target.controls!.body, 'Set 2 of 3 · 3x100kg');
       expect(target.controls!.chronometerAt, isNull);
+      expect(target.controls!.canLogSet, isTrue);
+      expect(target.controls!.canSkipRest, isFalse);
     });
 
     test('A rest that counts up shows the time since its start', () {
@@ -141,6 +149,7 @@ void main() {
 
       final target = build();
 
+      expect(target.alarm!.title, 'Rest is over');
       expect(target.alarm!.body, 'Next: Side raises 12x10kg');
       expect(target.alarm!.canLogSet, isFalse);
       expect(target.controls!.canLogSet, isFalse);
@@ -267,14 +276,22 @@ void main() {
       expect(choices, isEmpty);
     });
 
-    test('The rest before a set and the set page offer them with "log set"', () {
+    test('The rest end and the set page offer them with "log set", the rest not', () {
       final recent = [logOf(repetitions: 9, weight: 60)];
       final endsAt = now.add(const Duration(seconds: 90));
       onPage(timers().first, restStartedAt: now, restEndsAt: endsAt);
 
       var target = build(recentLogs: recent);
-      expect(target.controls!.quickLogs, ['9 × 60 kg']);
+      expect(target.controls!.quickLogs, isEmpty);
+      expect(target.controls!.canLogSet, isFalse);
       expect(target.alarm!.quickLogs, ['9 × 60 kg']);
+
+      onPage(
+        timers().first,
+        restStartedAt: now,
+        restEndsAt: now.subtract(const Duration(seconds: 1)),
+      );
+      expect(build(recentLogs: recent).controls!.quickLogs, ['9 × 60 kg']);
 
       onPage(logs()[1]);
       target = build(recentLogs: recent);

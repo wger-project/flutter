@@ -214,6 +214,7 @@ class LocalWorkoutNotificationService implements WorkoutNotificationService {
           priority: Priority.high,
           category: AndroidNotificationCategory.alarm,
           visibility: NotificationVisibility.public,
+          subText: alarm.subtitle,
           largeIcon: await _cachedImage(alarm.image),
           actions: [
             if (alarm.canExtendRest)
@@ -222,6 +223,7 @@ class LocalWorkoutNotificationService implements WorkoutNotificationService {
           ],
         ),
         iOS: DarwinNotificationDetails(
+          subtitle: alarm.subtitle,
           presentSound: true,
           categoryIdentifier: alarm.canLogSet ? _restEndCategory : null,
         ),
@@ -251,6 +253,7 @@ class LocalWorkoutNotificationService implements WorkoutNotificationService {
           enableVibration: false,
           category: AndroidNotificationCategory.workout,
           visibility: NotificationVisibility.public,
+          subText: controls.subtitle,
           showWhen: chronometerAt != null,
           when: chronometerAt?.millisecondsSinceEpoch,
           usesChronometer: chronometerAt != null,

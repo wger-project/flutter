@@ -172,6 +172,21 @@ void main() {
     ]);
   });
 
+  test('The alarm says next to the app name that the rest is over', () async {
+    await LocalWorkoutNotificationService().scheduleRestAlarm(
+      RestAlarm(
+        at: DateTime.now().add(const Duration(minutes: 2)),
+        title: 'Bench press',
+        body: 'Set 2 of 3 · 3x100kg',
+        subtitle: 'Rest is over',
+        payload: payload,
+      ),
+      labels,
+    );
+
+    expect(scheduled()['subText'], 'Rest is over');
+  });
+
   group('Log set', () {
     List<Object?> inputsOfLogSet(Map<Object?, Object?> details) =>
         ((details['actions'] as List).cast<Map<Object?, Object?>>().singleWhere(
