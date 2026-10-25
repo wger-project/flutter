@@ -185,6 +185,7 @@ class LogsPlatesWidget extends ConsumerWidget {
     final plateWeightsState = ref.watch(plateCalculatorProvider);
 
     return Container(
+      width: double.infinity,
       color: Theme.of(context).colorScheme.onInverseSurface,
       child: Column(
         children: [
