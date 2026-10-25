@@ -390,6 +390,54 @@ void main() {
       verifyNever(mockWorkoutLogRepo.addLocalDrift(any, dayId: anyNamed('dayId')));
     });
 
+    testWidgets('a logged page is shown for editing and "add set" logs another row', (
+      tester,
+    ) async {
+      var count = 0;
+      when(
+        mockWorkoutLogRepo.addLocalDrift(any, dayId: anyNamed('dayId')),
+      ).thenAnswer((invocation) async {
+        (invocation.positionalArguments[0] as Log).id = 'log-${++count}';
+      });
+      seedLogPage(testdata.getTestRoutine());
+      await pumpLogPage(tester);
+      expect(find.text('New entry'), findsOneWidget);
+      expect(find.byKey(const ValueKey('add-set-button')), findsNothing);
+
+      await tester.tap(find.byKey(const ValueKey('save-log-button')));
+      await tester.pumpAndSettle();
+
+      // Going back shows the saved set for editing
+      final gymNotifier = container.read(gymStateProvider.notifier);
+      gymNotifier.setCurrentPage(3);
+      gymNotifier.setCurrentPage(2);
+      await tester.pumpAndSettle();
+      expect(find.text('Edit'), findsOneWidget);
+      expect(find.text('New entry'), findsNothing);
+
+      // "Add set" switches to a fresh entry
+      await tester.tap(find.byKey(const ValueKey('add-set-button')));
+      await tester.pumpAndSettle();
+      expect(find.text('New entry'), findsOneWidget);
+      expect(find.byKey(const ValueKey('add-set-button')), findsNothing);
+
+      await tester.enterText(find.byType(TextFormField).at(0), '10');
+      await tester.pump();
+      await tester.tap(find.byKey(const ValueKey('save-log-button')));
+      await tester.pumpAndSettle();
+
+      // A second row, the first one is left alone
+      final added = verify(
+        mockWorkoutLogRepo.addLocalDrift(captureAny, dayId: anyNamed('dayId')),
+      ).captured;
+      expect(added, hasLength(2));
+      expect((added[1] as Log).id, 'log-2');
+      expect((added[1] as Log).repetitions, 10);
+      verifyNever(mockWorkoutLogRepo.updateLocalDrift(any));
+      final page = container.read(gymStateProvider).getSlotEntryPageByIndex(2)!;
+      expect(page.loggedEntry!.id, 'log-2');
+    });
+
     testWidgets('an unsaved edit on a logged page does not change the saved entry', (
       tester,
     ) async {

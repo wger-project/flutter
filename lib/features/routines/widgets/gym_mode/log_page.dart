@@ -303,13 +303,16 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
       return const SizedBox.shrink();
     }
 
+    // A log with an id was already saved, saving it again updates the row
+    final isNewEntry = log.id == null;
+
     return Form(
       key: _form,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            i18n.newEntry,
+            isNewEntry ? i18n.newEntry : i18n.edit,
             style: Theme.of(context).textTheme.titleLarge,
             textAlign: TextAlign.center,
           ),
@@ -361,62 +364,76 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
               log.rir = value == '' ? null : num.parse(value);
             },
           ),
-          FilledButton(
-            key: const ValueKey('save-log-button'),
-            onPressed: () async {
-              final isValid = _form.currentState!.validate();
-              if (!isValid) {
-                return;
-              }
-              _form.currentState!.save();
+          // Side by side to save the height, wrapped only if they don't fit
+          Wrap(
+            alignment: WrapAlignment.center,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 8,
+            children: [
+              if (!isNewEntry)
+                TextButton.icon(
+                  key: const ValueKey('add-set-button'),
+                  onPressed: () => ref.read(gymStateProvider.notifier).startNewEntry(),
+                  label: Text(i18n.addSet),
+                ),
+              FilledButton(
+                key: const ValueKey('save-log-button'),
+                onPressed: () async {
+                  final isValid = _form.currentState!.validate();
+                  if (!isValid) {
+                    return;
+                  }
+                  _form.currentState!.save();
 
-              final error = validateWorkoutLogCrossField(
-                repetitions: log.repetitions,
-                weight: log.weight,
-                i18n: i18n,
-              );
-              if (error != null) {
-                showSnackbar(context, error);
-                return;
-              }
+                  final error = validateWorkoutLogCrossField(
+                    repetitions: log.repetitions,
+                    weight: log.weight,
+                    i18n: i18n,
+                  );
+                  if (error != null) {
+                    showSnackbar(context, error);
+                    return;
+                  }
 
-              final gymState = ref.read(gymStateProvider);
-              final gymProvider = ref.read(gymStateProvider.notifier);
-              final page = gymState.getSlotEntryPageByIndex()!;
+                  final gymState = ref.read(gymStateProvider);
+                  final gymProvider = ref.read(gymStateProvider.notifier);
+                  final page = gymState.getSlotEntryPageByIndex()!;
 
-              // A failed write is intentionally left to propagate to the global
-              // error handler; the success path below is then skipped.
-              //
-              // Re-saving a page that was already logged in this workout
-              // updates the existing row instead of inserting a duplicate.
-              if (page.loggedEntry == null) {
-                await logProvider.addEntry(log, dayId: gymState.dayId);
-              } else {
-                await logProvider.updateEntry(log);
-              }
-              if (!context.mounted) {
-                return;
-              }
+                  // A failed write is intentionally left to propagate to the global
+                  // error handler; the success path below is then skipped.
+                  //
+                  // Re-saving a page that was already logged in this workout
+                  // updates the existing row instead of inserting a duplicate.
+                  if (isNewEntry) {
+                    await logProvider.addEntry(log, dayId: gymState.dayId);
+                  } else {
+                    await logProvider.updateEntry(log);
+                  }
+                  if (!context.mounted) {
+                    return;
+                  }
 
-              gymProvider.markSlotPageAsDone(page.uuid, isDone: true, log: log);
+                  gymProvider.markSlotPageAsDone(page.uuid, isDone: true, log: log);
 
-              // Correcting an earlier set must not replace a later set's values
-              final lastLogged = gymState.lastLoggedValues[log.exerciseId];
-              if (page.loggedEntry == null || lastLogged?.id == log.id) {
-                gymProvider.recordLoggedValues(log);
-              }
-              showSnackbar(
-                context,
-                i18n.successfullySaved,
-                center: true,
-                duration: const Duration(seconds: 2),
-              );
-              widget.controller.nextPage(
-                duration: DEFAULT_ANIMATION_DURATION,
-                curve: DEFAULT_ANIMATION_CURVE,
-              );
-            },
-            child: Text(i18n.save),
+                  // Correcting an earlier set must not replace a later set's values
+                  final lastLogged = gymState.lastLoggedValues[log.exerciseId];
+                  if (isNewEntry || lastLogged?.id == log.id) {
+                    gymProvider.recordLoggedValues(log);
+                  }
+                  showSnackbar(
+                    context,
+                    i18n.successfullySaved,
+                    center: true,
+                    duration: const Duration(seconds: 2),
+                  );
+                  widget.controller.nextPage(
+                    duration: DEFAULT_ANIMATION_DURATION,
+                    curve: DEFAULT_ANIMATION_CURVE,
+                  );
+                },
+                child: Text(i18n.save),
+              ),
+            ],
           ),
         ],
       ),

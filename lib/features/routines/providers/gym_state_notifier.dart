@@ -316,18 +316,24 @@ class GymStateNotifier extends _$GymStateNotifier {
   void setCurrentPage(int page) {
     state = state.copyWith(currentPage: page);
 
-    // Ensure that there is a log entry for the current slot entry
-    final slotEntryPage = state.getSlotEntryPageByIndex();
-    if (slotEntryPage == null || slotEntryPage.setConfigData == null) {
-      return;
-    }
-
     // Re-visiting a page that was already logged in this workout: seed the
     // form with the saved entry (keeping its id and session) so saving
     // updates the row instead of inserting a duplicate.
-    final loggedEntry = slotEntryPage.loggedEntry;
+    final loggedEntry = state.getSlotEntryPageByIndex()?.loggedEntry;
     if (loggedEntry != null) {
       ref.read(gymLogProvider.notifier).editLog(loggedEntry);
+      return;
+    }
+
+    startNewEntry();
+  }
+
+  /// Seeds the log form of the current page with a fresh entry, also to log
+  /// another set on a page that was already logged.
+  void startNewEntry() {
+    // Ensure that there is a log entry for the current slot entry
+    final slotEntryPage = state.getSlotEntryPageByIndex();
+    if (slotEntryPage == null || slotEntryPage.setConfigData == null) {
       return;
     }
 
@@ -451,7 +457,8 @@ class GymStateNotifier extends _$GymStateNotifier {
   /// the saved values and saving updates the row instead of inserting a
   /// duplicate.
   ///
-  /// The first save also (re)starts the rest timer that follows the set.
+  /// Saving a new entry, unlike correcting one, also (re)starts the rest timer
+  /// that follows the set.
   void markSlotPageAsDone(String uuid, {required bool isDone, Log? log}) {
     final slotPage = state.getSlotPageByUUID(uuid);
     if (slotPage == null) {
@@ -465,7 +472,8 @@ class GymStateNotifier extends _$GymStateNotifier {
 
     // Scrolling past the timer (e.g. "jump to") already started it
     final timerPage = state.getSlotEntryPageByIndex(slotPage.pageIndex + 1);
-    if (slotPage.loggedEntry == null && timerPage?.type == SlotPageType.timer) {
+    final isNewEntry = slotPage.loggedEntry?.id != log?.id;
+    if (isNewEntry && timerPage?.type == SlotPageType.timer) {
       _updateSlotPage(timerPage!.uuid, timerPage.copyWith(timerStartedAt: clock.now()));
     }
   }

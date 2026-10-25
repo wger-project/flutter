@@ -135,6 +135,28 @@ void main() {
     });
   });
 
+  group('GymStateNotifier.startNewEntry', () {
+    test('Seeds a fresh entry on a page that was already logged', () {
+      // Arrange
+      final slotPage = notifier.state.pages[1].slotPages[1];
+      final log = Log.fromSetConfigData(slotPage.setConfigData!, routineId: 1, iteration: 1)
+        ..id = 'log-1'
+        ..repetitions = 99;
+      notifier.markSlotPageAsDone(slotPage.uuid, isDone: true, log: log);
+      notifier.setCurrentPage(slotPage.pageIndex);
+      expect(container.read(gymLogProvider)!.id, 'log-1');
+
+      // Act
+      notifier.startNewEntry();
+
+      // Assert: the planned values, without an id so saving inserts a row
+      final gymLog = container.read(gymLogProvider)!;
+      expect(gymLog.id, isNull);
+      expect(gymLog.repetitions, slotPage.setConfigData!.repetitions);
+      expect(notifier.state.getSlotPageByUUID(slotPage.uuid)!.loggedEntry!.id, 'log-1');
+    });
+  });
+
   group('GymStateNotifier.startTimerIfNeeded', () {
     test('Sets the start time only once', () {
       // Arrange
@@ -164,7 +186,7 @@ void main() {
       );
     });
 
-    test('Saving a set restarts the following timer, editing it does not', () {
+    test('Saving a new set restarts the following timer, correcting it does not', () {
       // Arrange: the timer was started by scrolling past it
       final logPage = notifier.state.pages[1].slotPages[1];
       final timerPage = notifier.state.pages[1].slotPages[2];
@@ -173,7 +195,9 @@ void main() {
       withClock(Clock.fixed(DateTime(2024, 5, 2, 12)), () {
         notifier.startTimerIfNeeded(timerPage.uuid);
       });
-      final log = Log.fromSetConfigData(logPage.setConfigData!, routineId: 1, iteration: 1);
+      // The id is minted by the insert
+      final log = Log.fromSetConfigData(logPage.setConfigData!, routineId: 1, iteration: 1)
+        ..id = 'log-1';
 
       // Act: the set is saved
       withClock(Clock.fixed(DateTime(2024, 5, 2, 12, 10)), () {
@@ -195,6 +219,18 @@ void main() {
       expect(
         notifier.state.getSlotPageByUUID(timerPage.uuid)!.timerStartedAt,
         DateTime(2024, 5, 2, 12, 10),
+      );
+
+      // Act: another set is logged on the same page ("add set")
+      final extraLog = log.copyWith(id: 'log-2');
+      withClock(Clock.fixed(DateTime(2024, 5, 2, 12, 15)), () {
+        notifier.markSlotPageAsDone(logPage.uuid, isDone: true, log: extraLog);
+      });
+
+      // Assert
+      expect(
+        notifier.state.getSlotPageByUUID(timerPage.uuid)!.timerStartedAt,
+        DateTime(2024, 5, 2, 12, 15),
       );
     });
   });
