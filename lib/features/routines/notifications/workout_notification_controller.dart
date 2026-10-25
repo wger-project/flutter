@@ -115,12 +115,18 @@ class WorkoutNotificationController {
     _shown = target;
 
     // Alarm and controls share one notification, so every change starts over
-    await _service.cancelAll();
-    if (target.alarm != null) {
-      await _service.scheduleRestAlarm(target.alarm!, labels);
-    }
-    if (target.controls != null) {
-      await _service.showControls(target.controls!, labels);
+    try {
+      await _service.cancelAll();
+      if (target.alarm != null) {
+        await _service.scheduleRestAlarm(target.alarm!, labels);
+      }
+      if (target.controls != null) {
+        await _service.showControls(target.controls!, labels);
+      }
+    } catch (_) {
+      // Unknown what the platform shows now, the next update tries again
+      _shown = null;
+      rethrow;
     }
   }
 

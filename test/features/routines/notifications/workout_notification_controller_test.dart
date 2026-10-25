@@ -128,6 +128,22 @@ void main() {
     verifyNever(service.showControls(any, any));
   });
 
+  test('A failed platform call is retried on the next update', () async {
+    // E.g. the rest ended between building and scheduling the alarm
+    when(service.scheduleRestAlarm(any, any)).thenThrow(ArgumentError('in the past'));
+    await startRest();
+
+    when(service.scheduleRestAlarm(any, any)).thenAnswer((_) async {});
+    clearInteractions(service);
+    await withClock(Clock.fixed(now), () async {
+      gymState.setShowDistinctLogs(false);
+      await settle();
+    });
+
+    verify(service.scheduleRestAlarm(any, any)).called(1);
+    verify(service.showControls(any, any)).called(1);
+  });
+
   test('Nothing while gym mode is on screen, back when the app goes to the background', () async {
     await startRest();
     clearInteractions(service);
