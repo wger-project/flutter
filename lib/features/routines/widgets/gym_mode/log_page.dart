@@ -389,14 +389,9 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
               //
               // Re-saving a page that was already logged in this workout
               // updates the existing row instead of inserting a duplicate.
-              // The id/session can be missing on the form log, e.g. after
-              // copying values from a past log, so restore them first.
-              final existingEntry = page.loggedEntry;
-              if (existingEntry == null) {
+              if (page.loggedEntry == null) {
                 await logProvider.addEntry(log, dayId: gymState.dayId);
               } else {
-                log.id = existingEntry.id;
-                log.sessionId = existingEntry.sessionId;
                 await logProvider.updateEntry(log);
               }
               if (!context.mounted) {
