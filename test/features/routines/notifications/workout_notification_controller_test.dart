@@ -21,19 +21,16 @@ import 'dart:ui';
 import 'package:clock/clock.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
-import 'package:wger/core/keys.dart';
 import 'package:wger/features/routines/notifications/workout_notification_content.dart';
 import 'package:wger/features/routines/notifications/workout_notification_controller.dart';
 import 'package:wger/features/routines/notifications/workout_notification_service.dart';
 import 'package:wger/features/routines/providers/gym_state.dart';
 import 'package:wger/features/routines/providers/gym_state_notifier.dart';
 import 'package:wger/features/routines/providers/workout_logs_repository.dart';
-import 'package:wger/features/routines/screens/gym_mode.dart';
 
 import '../../../../test_data/routines.dart';
 import 'workout_notification_controller_test.mocks.dart';
@@ -57,7 +54,7 @@ void main() {
     when(service.showControls(any, any)).thenAnswer((_) async {});
     when(service.showNotLogged(any)).thenAnswer((_) async {});
     when(service.actionHandled()).thenAnswer((_) async {});
-    when(service.initialize(any, onTap: anyNamed('onTap'))).thenAnswer((_) async {});
+    when(service.initialize(any)).thenAnswer((_) async {});
     logRepo = MockWorkoutLogRepository();
     when(logRepo.addLocalDrift(any, dayId: anyNamed('dayId'))).thenAnswer((_) async {});
 
@@ -79,10 +76,22 @@ void main() {
     gymState.initData(routine, routine.days.first.id!, 1);
   }
 
-  /// Moves to the first rest of the fixture (120 s), initializing if needed
+  /// The listener only accepts single steps between lifecycle states
+  void stepLifecycle(List<AppLifecycleState> states) =>
+      states.forEach(binding.handleAppLifecycleStateChanged);
+
+  void toBackground() => stepLifecycle([AppLifecycleState.inactive, AppLifecycleState.hidden]);
+
+  void toForeground() => stepLifecycle([AppLifecycleState.inactive, AppLifecycleState.resumed]);
+
+  /// Gym mode open in the background, on the first rest of the fixture (120 s)
   Future<void> startRest() async {
     if (!gymState.state.isInitialized) {
       initGymMode();
+    }
+    container.read(gymModeVisibleProvider.notifier).set(true);
+    if (binding.lifecycleState == AppLifecycleState.resumed) {
+      toBackground();
     }
     final timer = gymState.state.pages
         .expand((p) => p.slotPages)
@@ -94,7 +103,7 @@ void main() {
     });
   }
 
-  test('A rest away from gym mode schedules the alarm and shows the controls', () async {
+  test('A rest in the background schedules the alarm and shows the controls', () async {
     await startRest();
 
     verifyInOrder([
@@ -123,19 +132,32 @@ void main() {
     await startRest();
     clearInteractions(service);
 
-    container.read(gymModeVisibleProvider.notifier).set(true);
+    toForeground();
     await settle();
     verify(service.cancelAll()).called(1);
     verifyNever(service.scheduleRestAlarm(any, any));
     verifyNever(service.showControls(any, any));
 
     await withClock(Clock.fixed(now), () async {
-      binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
-      binding.handleAppLifecycleStateChanged(AppLifecycleState.hidden);
+      toBackground();
       await settle();
     });
     verify(service.scheduleRestAlarm(any, any)).called(1);
     verify(service.showControls(any, any)).called(1);
+  });
+
+  test('Leaving gym mode removes everything, the session stays resumable', () async {
+    await startRest();
+    clearInteractions(service);
+
+    // X or back closes the screen, also with the app on its way to the background
+    container.read(gymModeVisibleProvider.notifier).set(false);
+    await settle();
+
+    verify(service.cancelAll()).called(1);
+    verifyNever(service.scheduleRestAlarm(any, any));
+    verifyNever(service.showControls(any, any));
+    expect(gymState.state.isInitialized, isTrue);
   });
 
   test('Ending gym mode removes everything', () async {
@@ -179,8 +201,8 @@ void main() {
   });
 
   group('Startup', () {
-    test('Initializes the service with the tap handler', () {
-      verify(service.initialize(any, onTap: argThat(isNotNull, named: 'onTap'))).called(1);
+    test('Initializes the service at startup', () {
+      verify(service.initialize(any)).called(1);
     });
 
     test('Leftovers of an earlier run are removed when the app comes to the front', () async {
@@ -289,58 +311,6 @@ void main() {
 
       verifyInOrder([service.showNotLogged(any), service.actionHandled()]);
       verifyNever(logRepo.addLocalDrift(any, dayId: anyNamed('dayId')));
-    });
-  });
-
-  group('Tap on the notification', () {
-    Future<void> pumpApp(WidgetTester tester) async {
-      await tester.pumpWidget(
-        UncontrolledProviderScope(
-          container: container,
-          child: MaterialApp(
-            navigatorKey: navigatorKey,
-            home: const Text('home'),
-            routes: {GymModeScreen.routeName: (_) => const Text('gym mode')},
-          ),
-        ),
-      );
-    }
-
-    String currentPayload() => WorkoutNotificationPayload(
-      routineId: gymState.state.routine.id!,
-      dayId: gymState.state.dayId,
-      iteration: gymState.state.iteration,
-      workoutStart: gymState.state.workoutStart,
-    ).encode();
-
-    testWidgets('Opens the running gym mode', (tester) async {
-      initGymMode();
-      await pumpApp(tester);
-
-      container.read(workoutNotificationControllerProvider).handleTap(currentPayload());
-      await tester.pumpAndSettle();
-
-      expect(find.text('gym mode'), findsOneWidget);
-    });
-
-    testWidgets('Stays put for another session or with gym mode on screen', (tester) async {
-      initGymMode();
-      await pumpApp(tester);
-      final controller = container.read(workoutNotificationControllerProvider);
-
-      controller.handleTap(
-        WorkoutNotificationPayload(
-          routineId: gymState.state.routine.id!,
-          dayId: gymState.state.dayId,
-          iteration: gymState.state.iteration,
-          workoutStart: DateTime.utc(2020),
-        ).encode(),
-      );
-      container.read(gymModeVisibleProvider.notifier).set(true);
-      controller.handleTap(currentPayload());
-      await tester.pumpAndSettle();
-
-      expect(find.text('gym mode'), findsNothing);
     });
   });
 }

@@ -25,11 +25,9 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/core/app_settings_notifier.dart';
-import 'package:wger/core/keys.dart';
 import 'package:wger/features/routines/notifications/workout_notification_content.dart';
 import 'package:wger/features/routines/notifications/workout_notification_service.dart';
 import 'package:wger/features/routines/providers/gym_state_notifier.dart';
-import 'package:wger/features/routines/screens/gym_mode.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 /// Whether the gym mode screen is mounted
@@ -88,7 +86,9 @@ class WorkoutNotificationController {
     final locale = _locale;
     final i18n = lookupAppLocalizations(locale);
 
-    final target = inForeground && _ref.read(gymModeVisibleProvider)
+    // Only while gym mode is open in the background: on screen it shows the
+    // rest itself, and leaving it (X, back) ends the notifications
+    final target = inForeground || !_ref.read(gymModeVisibleProvider)
         ? WorkoutNotificationTarget.none
         : buildWorkoutNotification(
             state,
@@ -167,20 +167,6 @@ class WorkoutNotificationController {
     // The platform removes the notification on an action
     refresh();
   }
-
-  /// Opens the running gym mode when the notification itself is tapped
-  void handleTap(String? encodedPayload) {
-    final payload = WorkoutNotificationPayload.decode(encodedPayload);
-    if (payload == null ||
-        !payload.matches(_ref.read(gymStateProvider)) ||
-        _ref.read(gymModeVisibleProvider)) {
-      return;
-    }
-    navigatorKey.currentState?.pushNamed(
-      GymModeScreen.routeName,
-      arguments: GymModeArguments(payload.routineId, payload.dayId, payload.iteration),
-    );
-  }
 }
 
 const _backgroundStates = {
@@ -193,7 +179,7 @@ const _backgroundStates = {
 final workoutNotificationControllerProvider = Provider<WorkoutNotificationController>((ref) {
   final service = ref.read(workoutNotificationServiceProvider);
   final controller = WorkoutNotificationController(ref, service);
-  unawaited(service.initialize(controller.labels, onTap: controller.handleTap));
+  unawaited(service.initialize(controller.labels));
 
   // Actions arrive from the background isolate
   final port = ReceivePort();

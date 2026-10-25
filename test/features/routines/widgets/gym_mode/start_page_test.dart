@@ -283,6 +283,26 @@ void main() {
       expect(hint, findsNothing, reason: 'rechecked after returning from the setting');
     });
 
+    testWidgets('Rechecked when the app comes back from the system settings', (tester) async {
+      when(notificationService.canScheduleExactAlarms()).thenAnswer((_) async => false);
+      await openOptions(tester);
+      expect(hint, findsOneWidget);
+
+      // Granted outside the app, e.g. in the system settings
+      when(notificationService.canScheduleExactAlarms()).thenAnswer((_) async => true);
+      [
+        AppLifecycleState.inactive,
+        AppLifecycleState.hidden,
+        AppLifecycleState.paused,
+        AppLifecycleState.hidden,
+        AppLifecycleState.inactive,
+        AppLifecycleState.resumed,
+      ].forEach(tester.binding.handleAppLifecycleStateChanged);
+      await tester.pumpAndSettle();
+
+      expect(hint, findsNothing);
+    });
+
     testWidgets('Not shown with the permission or with the rest alarm off', (tester) async {
       await openOptions(tester);
       expect(hint, findsNothing);

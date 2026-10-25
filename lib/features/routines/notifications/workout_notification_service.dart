@@ -34,9 +34,6 @@ const WORKOUT_NOTIFICATION_ACTION_SKIP_REST = 'skip_rest';
 /// The main isolate receives notification actions on this port
 const WORKOUT_NOTIFICATION_PORT = 'wger_workout_actions';
 
-/// Called with the payload when the user taps the notification itself
-typedef WorkoutNotificationTapHandler = void Function(String? payload);
-
 /// Runs in a separate isolate without the gym state, so it only forwards the
 /// action. Without a running app nothing is logged, the user is sent there.
 @pragma('vm:entry-point')
@@ -65,8 +62,8 @@ abstract class WorkoutNotificationService {
   /// Whether the platform has the ongoing controls notification
   bool get supportsControls;
 
-  /// Registers the actions and [onTap], before anything else is shown
-  Future<void> initialize(WorkoutNotificationLabels labels, {WorkoutNotificationTapHandler? onTap});
+  /// Registers the actions, before anything else is shown
+  Future<void> initialize(WorkoutNotificationLabels labels);
 
   Future<void> requestPermissions(WorkoutNotificationLabels labels);
 
@@ -96,10 +93,7 @@ class NoopWorkoutNotificationService implements WorkoutNotificationService {
   bool get supportsControls => false;
 
   @override
-  Future<void> initialize(
-    WorkoutNotificationLabels labels, {
-    WorkoutNotificationTapHandler? onTap,
-  }) async {}
+  Future<void> initialize(WorkoutNotificationLabels labels) async {}
 
   @override
   Future<void> requestPermissions(WorkoutNotificationLabels labels) async {}
@@ -142,10 +136,7 @@ class LocalWorkoutNotificationService implements WorkoutNotificationService {
   bool get supportsControls => defaultTargetPlatform == TargetPlatform.android;
 
   @override
-  Future<void> initialize(
-    WorkoutNotificationLabels labels, {
-    WorkoutNotificationTapHandler? onTap,
-  }) {
+  Future<void> initialize(WorkoutNotificationLabels labels) {
     // The iOS action labels are registered once, with the first labels seen
     return _initialized ??= _plugin
         .initialize(
@@ -168,13 +159,6 @@ class LocalWorkoutNotificationService implements WorkoutNotificationService {
               ],
             ),
           ),
-          onDidReceiveNotificationResponse: (response) {
-            // Actions go to the background handler, this is a tap on the body
-            if (response.notificationResponseType ==
-                NotificationResponseType.selectedNotification) {
-              onTap?.call(response.payload);
-            }
-          },
           onDidReceiveBackgroundNotificationResponse: workoutNotificationBackgroundHandler,
         )
         .then((_) {});
@@ -319,10 +303,13 @@ class LocalWorkoutNotificationService implements WorkoutNotificationService {
   }
 }
 
-/// Whether rest alarms fire on time, rechecked whenever it is shown again
-final exactAlarmsAllowedProvider = FutureProvider.autoDispose<bool>(
-  (ref) => ref.read(workoutNotificationServiceProvider).canScheduleExactAlarms(),
-);
+/// Whether rest alarms fire on time. Rechecked when the app comes back to the
+/// front, the user may have granted it in the system settings meanwhile.
+final exactAlarmsAllowedProvider = FutureProvider.autoDispose<bool>((ref) {
+  final lifecycle = AppLifecycleListener(onResume: ref.invalidateSelf);
+  ref.onDispose(lifecycle.dispose);
+  return ref.read(workoutNotificationServiceProvider).canScheduleExactAlarms();
+});
 
 final workoutNotificationServiceProvider = Provider<WorkoutNotificationService>((ref) {
   if (!kIsWeb &&

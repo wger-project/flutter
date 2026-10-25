@@ -45,12 +45,9 @@ class MockWorkoutNotificationService extends _i1.Mock implements _i2.WorkoutNoti
           as bool);
 
   @override
-  _i3.Future<void> initialize(
-    _i4.WorkoutNotificationLabels? labels, {
-    _i2.WorkoutNotificationTapHandler? onTap,
-  }) =>
+  _i3.Future<void> initialize(_i4.WorkoutNotificationLabels? labels) =>
       (super.noSuchMethod(
-            Invocation.method(#initialize, [labels], {#onTap: onTap}),
+            Invocation.method(#initialize, [labels]),
             returnValue: _i3.Future<void>.value(),
             returnValueForMissingStub: _i3.Future<void>.value(),
           )
