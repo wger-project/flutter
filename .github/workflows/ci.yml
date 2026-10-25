@@ -36,6 +36,8 @@ jobs:
       TZ: Europe/Berlin
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       - name: Common flutter setup
         uses: ./.github/actions/flutter-common
