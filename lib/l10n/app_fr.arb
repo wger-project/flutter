@@ -1189,7 +1189,7 @@
     "gymModeAlertOnRestEnd": "Alerte en fin de repos",
     "gymModeAlertOnRestEndHelp": "Vibre en mode entraînement ou envoie une notification lorsque l'application est en arrière-plan",
     "gymModeWorkoutNotification": "Notification d'entraînement",
-    "gymModeWorkoutNotificationHelp": "Lorsque l'application est en arrière-plan : compte à rebours du repos et série suivante, avec des boutons pour enregistrer ou passer",
+    "gymModeWorkoutNotificationHelp": "Permet d'accéder à l'entraînement en cours et de le contrôler via une notification permanente",
     "gymModeExactAlarmMissing": "Sans l'autorisation des alarmes exactes, l'alarme de repos peut avoir quelques minutes de retard",
     "gymModeExactAlarmAllow": "Autoriser",
     "workoutNotificationRestOver": "Fin du repos",

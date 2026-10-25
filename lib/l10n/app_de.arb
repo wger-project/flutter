@@ -1180,7 +1180,7 @@
     "gymModeAlertOnRestEnd": "Am Pausenende benachrichtigen",
     "gymModeAlertOnRestEndHelp": "Vibriert im Studiomodus oder schickt eine Benachrichtigung, wenn die App im Hintergrund ist",
     "gymModeWorkoutNotification": "Trainings-Benachrichtigung",
-    "gymModeWorkoutNotificationHelp": "Solange die App im Hintergrund ist: Pausen-Countdown und nächster Satz, mit Buttons zum Eintragen oder Überspringen",
+    "gymModeWorkoutNotificationHelp": "Ermöglicht den Zugriff auf das laufende Training und dessen Steuerung über eine dauerhafte Benachrichtigung",
     "gymModeExactAlarmMissing": "Ohne die Berechtigung für exakte Wecker kann der Pausenalarm ein paar Minuten zu spät kommen",
     "gymModeExactAlarmAllow": "Erlauben",
     "workoutNotificationRestOver": "Pause vorbei",

@@ -1197,7 +1197,7 @@
     "gymModeAlertOnRestEnd": "Avisar al terminar el descanso",
     "gymModeAlertOnRestEndHelp": "Vibra en el modo gimnasio o envía una notificación cuando la app está en segundo plano",
     "gymModeWorkoutNotification": "Notificación de entrenamiento",
-    "gymModeWorkoutNotificationHelp": "Mientras la app está en segundo plano: cuenta regresiva del descanso y la siguiente serie, con botones para registrar u omitir",
+    "gymModeWorkoutNotificationHelp": "Permite acceder al entrenamiento en curso y controlarlo mediante una notificación permanente",
     "gymModeExactAlarmMissing": "Sin el permiso de alarmas exactas, la alarma de descanso puede llegar unos minutos tarde",
     "gymModeExactAlarmAllow": "Permitir",
     "workoutNotificationRestOver": "Descanso terminado",

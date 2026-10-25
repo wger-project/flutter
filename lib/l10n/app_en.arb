@@ -380,7 +380,7 @@
   "gymModeWorkoutNotification": "Workout notification",
   "gymModeExactAlarmMissing": "Without the exact alarm permission, the rest alarm can be a few minutes late",
   "gymModeExactAlarmAllow": "Allow",
-  "gymModeWorkoutNotificationHelp": "While the app is in the background: rest countdown and next set, with buttons to log or skip",
+  "gymModeWorkoutNotificationHelp": "Allows accessing and controlling the current workout via a persistent notification",
   "workoutNotificationRestOver": "Rest is over",
   "workoutNotificationNext": "Next: {set}",
   "@workoutNotificationNext": {
