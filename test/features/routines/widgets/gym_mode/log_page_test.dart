@@ -288,6 +288,70 @@ void main() {
       expect(repField.controller.text, '12');
     });
 
+    group('sticky values when correcting a logged set', () {
+      Future<void> logSet(WidgetTester tester, int page, {String? reps, String? weight}) async {
+        container.read(gymStateProvider.notifier).setCurrentPage(page);
+        await tester.pumpWidget(const SizedBox());
+        await pumpLogPage(tester);
+        final fields = find.byType(TextFormField);
+        if (reps != null) {
+          await tester.enterText(fields.at(0), reps);
+        }
+        if (weight != null) {
+          await tester.enterText(fields.at(1), weight);
+        }
+        await tester.pump();
+        await tester.tap(find.byKey(const ValueKey('save-log-button')));
+        await tester.pumpAndSettle();
+      }
+
+      setUp(() {
+        // Distinct ids, so the saved sets can be told apart
+        var count = 0;
+        when(
+          mockWorkoutLogRepo.addLocalDrift(any, dayId: anyNamed('dayId')),
+        ).thenAnswer((invocation) async {
+          (invocation.positionalArguments[0] as Log).id = 'log-${++count}';
+        });
+      });
+
+      testWidgets('correcting an earlier set keeps the values of a later one', (tester) async {
+        seedLogPage(testdata.getTestRoutine());
+        container.read(gymStateProvider.notifier).setStickySetValues(true);
+
+        // Sets 1 and 2 of the same exercise (pages 2 and 4)
+        await logSet(tester, 2, reps: '12', weight: '34');
+        await logSet(tester, 4, reps: '14', weight: '40');
+
+        // Correct set 1
+        await logSet(tester, 2, reps: '13');
+        verify(mockWorkoutLogRepo.updateLocalDrift(any)).called(1);
+
+        // Set 3 is pre-filled with the values of set 2
+        container.read(gymStateProvider.notifier).setCurrentPage(6);
+        final gymLog = container.read(gymLogProvider)!;
+        expect(gymLog.repetitions, 14);
+        expect(gymLog.weight, 40);
+      });
+
+      testWidgets('correcting the latest set updates the values', (tester) async {
+        seedLogPage(testdata.getTestRoutine());
+        container.read(gymStateProvider.notifier).setStickySetValues(true);
+
+        await logSet(tester, 2, reps: '12', weight: '34');
+
+        // Correct the weight of the same set
+        await logSet(tester, 2, weight: '36');
+        verify(mockWorkoutLogRepo.updateLocalDrift(any)).called(1);
+
+        // Set 2 is pre-filled with the corrected values
+        container.read(gymStateProvider.notifier).setCurrentPage(4);
+        final gymLog = container.read(gymLogProvider)!;
+        expect(gymLog.repetitions, 12);
+        expect(gymLog.weight, 36);
+      });
+    });
+
     testWidgets('re-visiting a logged page restores the saved values and saving updates the row', (
       tester,
     ) async {
