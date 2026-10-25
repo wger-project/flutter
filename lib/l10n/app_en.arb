@@ -1300,6 +1300,10 @@
   "@authorHint": {
     "description": "Hint text for author field"
   },
+  "authorHelpText": "Shown as author of the exercise (CC BY-SA 4.0). Only change it if you are not the author.",
+  "@authorHelpText": {
+    "description": "Helper text below the author field when contributing an exercise"
+  },
   "imageDetailsAuthorLink": "Link to author website or profile",
   "@imageDetailsAuthorLink": {
     "description": "Label for author link field"

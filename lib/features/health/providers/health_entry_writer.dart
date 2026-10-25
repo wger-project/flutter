@@ -24,6 +24,7 @@ import 'package:wger/features/health/models/daily_windows.dart';
 import 'package:wger/features/health/models/health_metric.dart';
 import 'package:wger/features/health/models/health_reading.dart';
 import 'package:wger/features/health/providers/health_importer.dart';
+import 'package:wger/features/health/providers/health_repository.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/measurement_entry.dart';
 import 'package:wger/features/measurements/models/unit_conversion.dart';
@@ -35,12 +36,15 @@ final _uuidPattern = RegExp(r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[
 /// or one per day for the metrics that aggregate.
 ///
 /// Owns the categories they are written into (see [resolveTargets]) and the
-/// two counters a run reports at the end. Created per run, since both are
+/// counters a run reports at the end. Created per run, since both are
 /// about that run.
 class HealthEntryWriter {
-  HealthEntryWriter(this._measurements, this._source);
+  HealthEntryWriter(this._measurements, this._health) : _source = _health.sourceName;
 
   final MeasurementRepository _measurements;
+
+  /// Used for the platform's own daily totals, see [_writeDailyAggregate]
+  final HealthRepository _health;
 
   /// The measurement `source` of this platform (`apple`, `google`)
   final String _source;
@@ -55,6 +59,10 @@ class HealthEntryWriter {
   /// Readings dropped during this run because their value is outside what its
   /// metric type allows, see [_isInRange].
   var outOfRangeCount = 0;
+
+  /// Days during this run whose records overlap but got no platform total,
+  /// so their raw sum (which double counts) was stored instead.
+  var rawSumFallbackCount = 0;
 
   /// Imports [metricReadings] into [target]'s category, deduplicating against
   /// the entries already present via their externalId. Returns the number of
@@ -167,11 +175,30 @@ class HealthEntryWriter {
   ) async {
     final category = target.category;
     final values = samples.map((r) => metric.toCategoryValue(r.value)).toList();
-    final aggregate = switch (metric.dailyAggregation!) {
+    var aggregate = switch (metric.dailyAggregation!) {
       DailyAggregation.average => values.average,
       DailyAggregation.sum => values.sum,
       DailyAggregation.mergedDuration => mergedDurationMinutes(samples),
     };
+    // Overlapping records of a cumulative metric are double counted by the raw
+    // sum, so take the platform's deduplicated total. Asked only then: one call
+    // per day of history would run into Health Connect's read quota
+    final type = metric.dataType;
+    var platformTotal = false;
+    if (metric.dailyAggregation == DailyAggregation.sum &&
+        type != null &&
+        _health.hasPlatformTotals &&
+        hasOverlap(samples)) {
+      final total = await _health.platformTotal(type, day, dayEnd(day, metric));
+      // Health Connect reports a day without data from its priority list as
+      // 0, which would wipe a day that has records
+      if (total != null && total > 0) {
+        aggregate = metric.toCategoryValue(total);
+        platformTotal = true;
+      } else {
+        rawSumFallbackCount++;
+      }
+    }
     // Round like the raw import: the server stores Decimal with 2 places
     final value = (aggregate * 100).roundToDouble() / 100;
     final extraData = <String, dynamic>{
@@ -180,6 +207,7 @@ class HealthEntryWriter {
         'max': values.max,
       },
       'sample_count': values.length,
+      if (platformTotal) 'aggregated_by': 'platform',
       // The types actually seen, not the metric's own: a component can roll
       // several of them up (total sleep)
       'record_type': (samples.map((r) => r.type.name).toSet().toList()..sort()).join(','),

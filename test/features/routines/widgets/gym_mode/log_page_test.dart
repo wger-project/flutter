@@ -32,6 +32,7 @@ import 'package:wger/features/routines/models/log.dart';
 import 'package:wger/features/routines/models/routine.dart';
 import 'package:wger/features/routines/models/set_config_data.dart';
 import 'package:wger/features/routines/models/slot_data.dart';
+import 'package:wger/features/routines/providers/gym_log_notifier.dart';
 import 'package:wger/features/routines/providers/gym_state.dart';
 import 'package:wger/features/routines/providers/gym_state_notifier.dart';
 import 'package:wger/features/routines/providers/workout_logs_repository.dart';
@@ -196,6 +197,8 @@ void main() {
       // `contains` would also pass on the prefilled weight of 100
       expect(repText, '10');
       expect(weightText, '10');
+      // The fixture's past logs come from other iterations, the copy must not take theirs
+      expect(container.read(gymLogProvider)!.iteration, 1);
       expect(find.byType(SnackBar), findsOneWidget);
     });
 

@@ -65,6 +65,8 @@ ErrorSeverity classifyError(Object? error) {
 bool isNetworkError(Object e) {
   return e is http.ClientException ||
       e is SocketException ||
+      // Raw from socket options, e.g. TCP_NODELAY on a reset connection on iOS
+      e is OSError ||
       e is HandshakeException ||
       e is TimeoutException;
 }

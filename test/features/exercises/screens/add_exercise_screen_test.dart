@@ -152,6 +152,16 @@ void main() {
   // --------------------------------------------------------------------------
 
   group('Form Field Validation Tests', () {
+    testWidgets('Author field is prefilled with the username and explains it', (tester) async {
+      setTrustworthy(true);
+      await tester.pumpWidget(createExerciseScreen());
+      await tester.pumpAndSettle();
+
+      final authorField = fieldOf(Step1Basics, 2);
+      expect(find.descendant(of: authorField, matching: find.text('test')), findsOneWidget);
+      expect(find.text(l10nOf(tester).authorHelpText), findsOneWidget);
+    });
+
     testWidgets('Exercise name field is required and displays validation error', (tester) async {
       setTrustworthy(true);
       await tester.pumpWidget(createExerciseScreen());
