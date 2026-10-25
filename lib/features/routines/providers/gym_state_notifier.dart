@@ -298,6 +298,8 @@ class GymStateNotifier extends _$GymStateNotifier {
       currentPage: initialPage,
       // A fresh workout also restarts the elapsed timer
       workoutStart: shouldReset ? clock.now() : null,
+      // An abandoned workout never reaches clear(), so forget its values here
+      lastLoggedValues: shouldReset ? const {} : null,
     );
 
     // Calculate the pages.
@@ -325,26 +327,16 @@ class GymStateNotifier extends _$GymStateNotifier {
       routineId: state.routine.id,
       iteration: state.iteration,
     );
+    final logNotifier = ref.read(gymLogProvider.notifier)..setLog(log);
 
     // Pre-fill with the values last logged for this exercise during this
-    // workout (e.g. when dialing in the weight over the first sets), if
-    // enabled. This intentionally only copies the values: the id, session,
-    // slot entry and targets stay those of a fresh template.
+    // workout (e.g. when dialing in the weight over the first sets), if enabled
     final lastValues = state.stickySetValues
         ? state.lastLoggedValues[slotEntryPage.setConfigData!.exerciseId]
         : null;
     if (lastValues != null) {
-      log
-        ..repetitions = lastValues.repetitions
-        ..repetitionsUnitId = lastValues.repetitionsUnitId
-        ..repetitionsUnitObj = lastValues.repetitionsUnitObj
-        ..weight = lastValues.weight
-        ..weightUnitId = lastValues.weightUnitId
-        ..weightUnitObj = lastValues.weightUnitObj
-        ..rir = lastValues.rir;
+      logNotifier.copyValuesFrom(lastValues);
     }
-
-    ref.read(gymLogProvider.notifier).setLog(log);
   }
 
   void setShowExercisePages(bool value) {

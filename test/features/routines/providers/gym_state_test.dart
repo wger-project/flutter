@@ -582,6 +582,48 @@ void main() {
       expect(gymLog.weight, 10);
     });
 
+    test('A new workout forgets the values of an abandoned one', () async {
+      // Arrange: the summary page (and clear()) is never reached
+      notifier.setStickySetValues(true);
+      await pumpEventQueue();
+      notifier.state = notifier.state.copyWith(
+        isInitialized: true,
+        dayId: 1,
+        validUntil: DateTime(2024, 5, 1, 10, 0),
+      );
+      notifier.recordLoggedValues(buildLoggedValues());
+
+      // Act
+      withClock(
+        Clock.fixed(DateTime(2024, 5, 2, 18, 0)),
+        () => notifier.initData(getTestRoutine(), 1, 1),
+      );
+      notifier.setCurrentPage(2);
+
+      // Assert: the values of the set configuration
+      expect(notifier.state.lastLoggedValues, isEmpty);
+      final gymLog = container.read(gymLogProvider)!;
+      expect(gymLog.repetitions, 3);
+      expect(gymLog.weight, 100);
+    });
+
+    test('Resuming the same workout keeps the logged values', () async {
+      // Arrange
+      notifier.setStickySetValues(true);
+      await pumpEventQueue();
+      notifier.state = notifier.state.copyWith(isInitialized: true, dayId: 1);
+      notifier.recordLoggedValues(buildLoggedValues());
+
+      // Act
+      notifier.initData(getTestRoutine(), 1, 1);
+      notifier.setCurrentPage(4);
+
+      // Assert
+      final gymLog = container.read(gymLogProvider)!;
+      expect(gymLog.repetitions, 7);
+      expect(gymLog.weight, 42.5);
+    });
+
     test('Clearing the state forgets the logged values', () {
       // Arrange
       notifier.recordLoggedValues(buildLoggedValues());
