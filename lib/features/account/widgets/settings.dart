@@ -16,10 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/features/account/widgets/settings/certs_not_verified.dart';
 import 'package:wger/features/account/widgets/settings/data_privacy.dart';
+import 'package:wger/features/account/widgets/settings/health_sync.dart';
 import 'package:wger/features/account/widgets/settings/image_cache.dart';
 import 'package:wger/features/account/widgets/settings/language.dart';
 import 'package:wger/features/account/widgets/settings/theme.dart';
@@ -58,9 +59,10 @@ class SettingsPage extends StatelessWidget {
               ),
             ),
             const SettingsDataPrivacy(),
+            const HealthSyncSettingsTile(),
             ListTile(title: Text(i18n.others, style: Theme.of(context).textTheme.headlineSmall)),
-            const SettingsTheme(),
             const SettingsLanguage(),
+            const SettingsTheme(),
             ListTile(
               title: Text(i18n.selectAvailablePlates),
               onTap: () {

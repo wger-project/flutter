@@ -18,24 +18,25 @@
 
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:url_launcher_platform_interface/url_launcher_platform_interface.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/http_overrides.dart';
-import 'package:wger/core/network/auth_notifier.dart';
 import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/core/network/secure_token_storage.dart';
 import 'package:wger/core/shared_preferences.dart';
 import 'package:wger/features/auth/screens/auth_screen.dart';
 import 'package:wger/features/auth/screens/mfa_challenge_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 
 import '../../../helpers/fake_auth_environment.dart';
 import '../../../helpers/fake_connectivity.dart';
@@ -54,10 +55,17 @@ class _FakeUrlLauncher extends Fake with MockPlatformInterfaceMixin implements U
   }
 }
 
+/// A [NetworkStatus] that is offline without going through any probe.
+class _OfflineNetworkStatus extends NetworkStatus {
+  @override
+  bool build() => false;
+}
+
 @GenerateMocks([http.Client, SecureTokenStorage])
 void main() {
-  // The auth screen watches networkStatusProvider to gate the action button.
-  // Stub connectivity so that probe is deterministic.
+  // The screen itself no longer gates on the network status, but the auth
+  // flow still reaches networkStatusProvider, so keep the connectivity
+  // platform stubbed instead of relying on the notifier never being built.
   installFakeConnectivity();
   // Installs the prefs/PackageInfo fakes and clears the store between tests,
   // so values a test writes (e.g. PREFS_LAST_SERVER) don't leak into the next.
@@ -96,14 +104,15 @@ void main() {
     },
   };
 
-  Widget getWidget() {
+  Widget getWidget({List<Override> overrides = const []}) {
     return ProviderScope(
       overrides: [
         authHttpClientProvider.overrideWithValue(mockClient),
         secureTokenStorageProvider.overrideWithValue(mockSecureStorage),
+        ...overrides,
       ],
       child: const MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         locale: Locale('en'),
         home: AuthScreen(),
@@ -330,15 +339,30 @@ void main() {
       );
     });
 
-    testWidgets('Login button is disabled when offline', (WidgetTester tester) async {
-      // Arrange: no connectivity.
-      reachabilityCheck = (_, _, _) async => (reachable: false, reason: 'test');
-      await tester.pumpWidget(getWidget());
+    testWidgets('Login stays possible while the status says offline', (WidgetTester tester) async {
+      // A wrong offline status must not lock the user out of the app: the
+      // login attempt itself is the better probe.
+      await tester.binding.setSurfaceSize(const Size(1080, 1920));
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.reset);
+      when(
+        mockClient.post(tHeadlessLogin, headers: anyNamed('headers'), body: anyNamed('body')),
+      ).thenThrow(http.ClientException('SocketException: Connection refused'));
+      await tester.pumpWidget(
+        getWidget(overrides: [networkStatusProvider.overrideWith(_OfflineNetworkStatus.new)]),
+      );
       await tester.pumpAndSettle();
 
-      // Assert: the action button cannot be tapped.
       final button = tester.widget<ElevatedButton>(find.byKey(const Key('actionButton')));
-      expect(button.onPressed, isNull);
+      expect(button.onPressed, isNotNull);
+
+      // And a genuinely unreachable server says so instead of staying silent.
+      await tester.enterText(find.byKey(const Key('inputUsername')), 'testuser');
+      await tester.enterText(find.byKey(const Key('inputPassword')), '123456789');
+      await tester.tap(find.byKey(const Key('actionButton')));
+      await tester.pumpAndSettle();
+
+      expect(find.text("Couldn't connect to server"), findsOneWidget);
     });
 
     testWidgets('Login - with refresh token - happy path', (WidgetTester tester) async {

@@ -18,11 +18,13 @@
 
 import 'dart:convert';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/core/network/base_provider.dart';
+import 'package:wger/core/network/wger_base.dart';
 import 'package:wger/database/powersync/database.dart';
 import 'package:wger/features/routines/models/base_config.dart';
 import 'package:wger/features/routines/models/day.dart';
@@ -534,6 +536,30 @@ void main() {
       expect(result.dayDataCurrentIterationGym.length, 8);
       expect(result.dayData.length, 32);
       expect(result.dayDataGym.length, 32);
+    });
+  });
+
+  group('routinesRepositoryProvider', () {
+    test('a rebuild of the base provider does not invalidate the repository', () async {
+      // Regression: with a watch on the base provider, flushing the dirty auth
+      // chain during a widget build invalidated the repository and scheduled a
+      // provider refresh mid-build, which crashes.
+      final container = ProviderContainer.test(
+        overrides: [
+          driftPowerSyncDatabase.overrideWithValue(db),
+          wgerBaseProvider.overrideWith((ref) => MockWgerBaseProvider()),
+        ],
+      );
+      var rebuilds = 0;
+      container.listen(routinesRepositoryProvider, (_, _) => rebuilds++);
+      container.read(routinesRepositoryProvider);
+
+      // Act
+      container.invalidate(wgerBaseProvider);
+      await container.pump();
+
+      // Assert
+      expect(rebuilds, 0);
     });
   });
 }

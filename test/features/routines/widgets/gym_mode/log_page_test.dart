@@ -18,9 +18,9 @@
 
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
@@ -38,6 +38,7 @@ import 'package:wger/features/routines/providers/gym_state_notifier.dart';
 import 'package:wger/features/routines/providers/workout_logs_repository.dart';
 import 'package:wger/features/routines/widgets/gym_mode/log_page.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 
 import '../../../../../test_data/exercises.dart';
 import '../../../../../test_data/routines.dart' as testdata;
@@ -110,7 +111,7 @@ void main() {
           container: container,
           child: MaterialApp(
             locale: const Locale('en'),
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            localizationsDelegates: appLocalizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
             home: Scaffold(
               // A PageView gives LogPage's PageController something to attach to.
@@ -196,6 +197,8 @@ void main() {
       // `contains` would also pass on the prefilled weight of 100
       expect(repText, '10');
       expect(weightText, '10');
+      // The fixture's past logs come from other iterations, the copy must not take theirs
+      expect(container.read(gymLogProvider)!.iteration, 1);
       expect(find.byType(SnackBar), findsOneWidget);
     });
 
@@ -236,13 +239,19 @@ void main() {
       await tester.tap(find.byKey(const ValueKey('save-log-button')));
       await tester.pumpAndSettle();
 
-      final saved = verify(mockWorkoutLogRepo.addLocalDrift(captureAny)).captured.single as Log;
       final gymState = container.read(gymStateProvider);
+      final captured = verify(
+        mockWorkoutLogRepo.addLocalDrift(captureAny, dayId: captureAnyNamed('dayId')),
+      ).captured;
+      final saved = captured[0] as Log;
       expect(saved.repetitions, 12);
       expect(saved.weight, 34);
       expect(saved.slotEntryId, gymState.getSlotEntryPageByIndex()!.setConfigData!.slotEntryId);
       expect(saved.routineId, gymState.routine.id);
       expect(saved.iteration, gymState.iteration);
+      // The lazy session needs the day, otherwise days that need logs to
+      // advance can't see it (issue wger#2460)
+      expect(captured[1], gymState.dayId);
     });
 
     testWidgets('carries the logged values over to the next set when sticky values are enabled', (

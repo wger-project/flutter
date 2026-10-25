@@ -89,6 +89,46 @@ void main() {
       expect(serverUpdateRequired('$belowMin.0 (git-abc1234)'), true);
     });
 
+    test('alpha of the min version is below it, update needed', () {
+      expect(serverUpdateRequired('$atMin.0a2'), true);
+    });
+
+    test('dev release of the min version is below it, update needed', () {
+      expect(serverUpdateRequired('$atMin.0.dev0'), true);
+    });
+
+    test('counted dev release of the min version is below it, update needed', () {
+      expect(serverUpdateRequired('$atMin.0-dev.3'), true);
+    });
+
+    test('release candidate of the min version is below it, update needed', () {
+      expect(serverUpdateRequired('$atMin.0rc1'), true);
+    });
+
+    test('semver spelled pre-release of the min version, update needed', () {
+      expect(serverUpdateRequired('$atMin.0-alpha2'), true);
+    });
+
+    test('pre-release with git build metadata, update needed', () {
+      expect(serverUpdateRequired('$atMin.0a2+git1234567'), true);
+    });
+
+    test('post release of the min version is not below it, no update needed', () {
+      expect(serverUpdateRequired('$atMin.0.post1'), false);
+    });
+
+    test('pre-release above the min version, no update needed', () {
+      expect(serverUpdateRequired('$aboveMin-alpha1'), false);
+    });
+
+    test('semver spelled pre-release below the min version, update needed', () {
+      expect(serverUpdateRequired('$belowMin.0-alpha2'), true);
+    });
+
+    test('dev release below the min version, update needed', () {
+      expect(serverUpdateRequired('$belowMin.0.dev0'), true);
+    });
+
     test('completely unparseable server version, returns false (lenient)', () {
       expect(serverUpdateRequired('unknown'), false);
     });
@@ -140,7 +180,7 @@ void main() {
 
   group('isPowerSyncReachable', () {
     const serverUrl = 'https://wger.example.com';
-    const credential = AuthCredential.legacy('abc123');
+    const credential = JwtCredential(accessToken: 'abc123');
 
     /// Gating whose token endpoint answers [tokenBody] and whose liveness
     /// probes answer 200 only for [liveUrl]. Every requested URL is

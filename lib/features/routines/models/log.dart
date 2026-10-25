@@ -17,7 +17,7 @@
  */
 
 import 'package:drift/drift.dart' as drift;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/i18n.dart';
 import 'package:wger/core/misc.dart';

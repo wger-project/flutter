@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'session.dart';
@@ -9,13 +9,13 @@ part of 'session.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$WorkoutSession {
 
-/// Client-generated UUID, is `null` only before the first persist
- String? get id; int? get routineId; int? get dayId; DateTime get date; WorkoutImpression get impression; String? get notes; TimeOfDay? get timeStart; TimeOfDay? get timeEnd; List<Log> get logs;
+
 /// Create a copy of WorkoutSession
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -26,16 +26,21 @@ $WorkoutSessionCopyWith<WorkoutSession> get copyWith => _$WorkoutSessionCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WorkoutSession&&(identical(other.id, id) || other.id == id)&&(identical(other.routineId, routineId) || other.routineId == routineId)&&(identical(other.dayId, dayId) || other.dayId == dayId)&&(identical(other.date, date) || other.date == date)&&(identical(other.impression, impression) || other.impression == impression)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.timeStart, timeStart) || other.timeStart == timeStart)&&(identical(other.timeEnd, timeEnd) || other.timeEnd == timeEnd)&&const DeepCollectionEquality().equals(other.logs, logs));
+  final _this = this as WorkoutSession;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WorkoutSession&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.routineId, _this.routineId) || other.routineId == _this.routineId)&&(identical(other.dayId, _this.dayId) || other.dayId == _this.dayId)&&(identical(other.impression, _this.impression) || other.impression == _this.impression)&&(identical(other.notes, _this.notes) || other.notes == _this.notes)&&(identical(other.datetimeStart, _this.datetimeStart) || other.datetimeStart == _this.datetimeStart)&&(identical(other.datetimeEnd, _this.datetimeEnd) || other.datetimeEnd == _this.datetimeEnd)&&const DeepCollectionEquality().equals(other.logs, _this.logs));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,routineId,dayId,date,impression,notes,timeStart,timeEnd,const DeepCollectionEquality().hash(logs));
+int get hashCode {
+  final _this = this as WorkoutSession;
+  return Object.hash(runtimeType,_this.id,_this.routineId,_this.dayId,_this.impression,_this.notes,_this.datetimeStart,_this.datetimeEnd,const DeepCollectionEquality().hash(_this.logs));
+}
 
 @override
 String toString() {
-  return 'WorkoutSession(id: $id, routineId: $routineId, dayId: $dayId, date: $date, impression: $impression, notes: $notes, timeStart: $timeStart, timeEnd: $timeEnd, logs: $logs)';
+  final _this = this as WorkoutSession;
+  return 'WorkoutSession(id: ${_this.id}, routineId: ${_this.routineId}, dayId: ${_this.dayId}, impression: ${_this.impression}, notes: ${_this.notes}, datetimeStart: ${_this.datetimeStart}, datetimeEnd: ${_this.datetimeEnd}, logs: ${_this.logs})';
 }
 
 
@@ -46,7 +51,7 @@ abstract mixin class $WorkoutSessionCopyWith<$Res>  {
   factory $WorkoutSessionCopyWith(WorkoutSession value, $Res Function(WorkoutSession) _then) = _$WorkoutSessionCopyWithImpl;
 @useResult
 $Res call({
- String? id, int? dayId, int? routineId, DateTime date, WorkoutImpression impression, String? notes, TimeOfDay? timeStart, TimeOfDay? timeEnd, List<Log> logs
+ String? id, int? dayId, int? routineId, DateTime datetimeStart, DateTime? datetimeEnd, WorkoutImpression impression, String? notes, List<Log> logs
 });
 
 
@@ -63,17 +68,16 @@ class _$WorkoutSessionCopyWithImpl<$Res>
 
 /// Create a copy of WorkoutSession
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? dayId = freezed,Object? routineId = freezed,Object? date = null,Object? impression = null,Object? notes = freezed,Object? timeStart = freezed,Object? timeEnd = freezed,Object? logs = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? dayId = freezed,Object? routineId = freezed,Object? datetimeStart = null,Object? datetimeEnd = freezed,Object? impression = null,Object? notes = freezed,Object? logs = null,}) {
   return _then(WorkoutSession(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String?,dayId: freezed == dayId ? _self.dayId : dayId // ignore: cast_nullable_to_non_nullable
 as int?,routineId: freezed == routineId ? _self.routineId : routineId // ignore: cast_nullable_to_non_nullable
-as int?,date: null == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
-as DateTime,impression: null == impression ? _self.impression : impression // ignore: cast_nullable_to_non_nullable
+as int?,datetimeStart: null == datetimeStart ? _self.datetimeStart : datetimeStart // ignore: cast_nullable_to_non_nullable
+as DateTime,datetimeEnd: freezed == datetimeEnd ? _self.datetimeEnd : datetimeEnd // ignore: cast_nullable_to_non_nullable
+as DateTime?,impression: null == impression ? _self.impression : impression // ignore: cast_nullable_to_non_nullable
 as WorkoutImpression,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
-as String?,timeStart: freezed == timeStart ? _self.timeStart : timeStart // ignore: cast_nullable_to_non_nullable
-as TimeOfDay?,timeEnd: freezed == timeEnd ? _self.timeEnd : timeEnd // ignore: cast_nullable_to_non_nullable
-as TimeOfDay?,logs: null == logs ? _self.logs : logs // ignore: cast_nullable_to_non_nullable
+as String?,logs: null == logs ? _self.logs : logs // ignore: cast_nullable_to_non_nullable
 as List<Log>,
   ));
 }

@@ -17,9 +17,31 @@
  */
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:timezone/data/latest.dart' as tzdata;
 import 'package:wger/core/date.dart';
 
 void main() {
+  group('dayIn', () {
+    setUpAll(tzdata.initializeTimeZones);
+
+    test('cuts the day in the given zone', () {
+      // Auckland (UTC+12 in August) is already past midnight at this instant
+      expect(dayIn(DateTime.utc(2026, 8, 10, 12, 30), 'Pacific/Auckland'), DateTime(2026, 8, 11));
+      expect(dayIn(DateTime.utc(2026, 8, 10, 11, 30), 'Pacific/Auckland'), DateTime(2026, 8, 10));
+    });
+
+    test('an unreported zone falls back to the device day', () {
+      final instant = DateTime(2026, 8, 10, 23, 30);
+
+      expect(dayIn(instant, null), DateTime(2026, 8, 10));
+      expect(dayIn(instant, ''), DateTime(2026, 8, 10));
+    });
+
+    test('an unknown zone name falls back to the device day', () {
+      expect(dayIn(DateTime(2026, 8, 10, 23, 30), 'Mars/Olympus_Mons'), DateTime(2026, 8, 10));
+    });
+  });
+
   group('daysInRange', () {
     test('covers both ends of the range', () {
       final days = daysInRange(DateTime(2026, 5, 4), DateTime(2026, 5, 7));

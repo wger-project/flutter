@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/core/app_settings_notifier.dart';
 import 'package:wger/core/material.dart';
 import 'package:wger/core/widgets/app_bar.dart';
@@ -57,7 +57,7 @@ class DashboardScreen extends ConsumerWidget {
     final isMobile = width < MATERIAL_XS_BREAKPOINT;
     final visibleWidgets = ref.watch(
       appSettingsProvider.select(
-        (s) => s.value?.dashboardItems.visibleWidgets ?? const <DashboardWidget>[],
+        (s) => (s.value?.dashboardItems ?? defaultDashboardItems).visibleWidgets,
       ),
     );
 

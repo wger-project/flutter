@@ -18,6 +18,7 @@
 
 import 'dart:async';
 
+import 'package:drift/drift.dart' show Value;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wger/database/powersync/database.dart';
 import 'package:wger/features/account/models/user_profile.dart';
@@ -38,10 +39,16 @@ void main() {
     await db.close();
   });
 
-  Future<void> seed({int id = 1, String weightUnit = 'kg'}) async {
+  Future<void> seed({int id = 1, String weightUnit = 'kg', int? height}) async {
     await db
         .into(db.userProfileTable)
-        .insert(UserProfileTableCompanion.insert(id: id, weightUnitStr: weightUnit));
+        .insert(
+          UserProfileTableCompanion.insert(
+            id: id,
+            weightUnitStr: weightUnit,
+            height: Value(height),
+          ),
+        );
   }
 
   group('watchDrift', () {
@@ -57,6 +64,19 @@ void main() {
       expect(profile, isNotNull);
       expect(profile!.id, 1);
       expect(profile.weightUnitStr, 'lb');
+    });
+
+    test('reads the height the calculated categories divide by', () async {
+      await seed(height: 182);
+
+      expect((await repo.watchDrift().first)!.height, 182);
+    });
+
+    test('reads null for a profile that has no height', () async {
+      // Also what a row synced before the column existed reads
+      await seed();
+
+      expect((await repo.watchDrift().first)!.height, isNull);
     });
 
     test('re-emits after the row changes', () async {
@@ -83,6 +103,38 @@ void main() {
 
       final row = await db.select(db.userProfileTable).getSingle();
       expect(row.weightUnitStr, 'lb');
+    });
+
+    test('writes the height the profile form edited', () async {
+      await seed(height: 182);
+
+      await repo.editLocalDrift(UserProfile(id: 1, weightUnitStr: 'kg', height: 178));
+
+      final row = await db.select(db.userProfileTable).getSingle();
+      expect(row.height, 178);
+    });
+
+    test('leaves the reported timezone alone', () async {
+      // The column belongs to TimezoneSync; the server rejects it as null,
+      // taking the rest of the profile write down with it
+      await seed();
+      await repo.updateTimeZoneDrift(1, 'Pacific/Auckland');
+
+      await repo.editLocalDrift(UserProfile(id: 1, weightUnitStr: 'lb'));
+
+      final row = await db.select(db.userProfileTable).getSingle();
+      expect(row.timeZone, 'Pacific/Auckland');
+    });
+
+    test('clears the height when the profile has none', () async {
+      // The server allows a profile without one, so an emptied field has to
+      // reach the column as NULL rather than leaving the old value standing
+      await seed(height: 182);
+
+      await repo.editLocalDrift(UserProfile(id: 1, weightUnitStr: 'kg'));
+
+      final row = await db.select(db.userProfileTable).getSingle();
+      expect(row.height, isNull);
     });
   });
 }

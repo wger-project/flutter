@@ -19,19 +19,21 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/network/auth_notifier.dart';
+import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/core/network/secure_token_storage.dart';
 import 'package:wger/core/powersync_unreachable_screen.dart';
 import 'package:wger/core/shared_preferences.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 
 import '../helpers/fake_auth_environment.dart';
 import 'recovery_screens_test.mocks.dart';
@@ -47,15 +49,14 @@ void main() {
   late MockSecureTokenStorage mockSecureStorage;
 
   const serverUrl = 'https://wger.example';
-  const token = 'token-12345';
+  const accessToken = 'access-token-12345';
   const powerSyncUrl = 'https://ps.example/';
 
-  final tProbe = Uri.parse('$serverUrl/api/v2/routine/');
+  final tProbe = Uri.parse('$serverUrl/api/v2/routine/?limit=1');
   final tVersion = Uri.parse('$serverUrl/api/v2/version/');
   final tMinAppVersion = Uri.parse('$serverUrl/api/v2/min-app-version/');
   final tPowerSyncToken = Uri.parse('$serverUrl/api/v2/powersync-token');
   final tLiveness = Uri.parse('${powerSyncUrl}probes/liveness');
-  final tIssueRefresh = Uri.parse('$serverUrl/api/v2/issue-refresh-token');
 
   Widget wrap(Widget child) {
     return ProviderScope(
@@ -64,7 +65,7 @@ void main() {
         secureTokenStorageProvider.overrideWithValue(mockSecureStorage),
       ],
       child: MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         locale: const Locale('en'),
         // logout buttons in the recovery screens navigate to '/' after
@@ -100,15 +101,17 @@ void main() {
     final prefs = PreferenceHelper.asyncPref;
 
     // Saved login → autoLogin runs the full probe path.
-    await prefs.setString(
-      PREFS_USER,
-      json.encode({'token': token, 'serverUrl': serverUrl}),
+    await prefs.setString(PREFS_ACCESS_TOKEN, accessToken);
+    await prefs.setInt(
+      PREFS_ACCESS_EXPIRES_AT,
+      DateTime.now().add(const Duration(hours: 1)).millisecondsSinceEpoch,
     );
+    await prefs.setString(PREFS_SERVER_URL, serverUrl);
 
     // Default happy-path mocks. Test groups override one of these to
     // steer the auth notifier into the targeted recovery state.
     when(
-      mockClient.head(tProbe, headers: anyNamed('headers')),
+      mockClient.get(tProbe, headers: anyNamed('headers')),
     ).thenAnswer((_) async => Response('', 200));
     when(mockClient.get(tVersion)).thenAnswer((_) async => Response('"99.99.99"', 200));
     when(mockClient.get(tMinAppVersion)).thenAnswer((_) async => Response('"0.0.1"', 200));
@@ -121,14 +124,6 @@ void main() {
       ),
     );
     when(mockClient.get(tLiveness)).thenAnswer((_) async => Response('OK', 200));
-
-    // Legacy → JWT auto-migration runs on every auto-login. These tests
-    // intentionally drive the *legacy* recovery flow, so stub the
-    // migration to a clean "offline" failure: the helper short-circuits
-    // and the rest of the auto-login proceeds against the DRF token.
-    when(
-      mockClient.post(tIssueRefresh, headers: anyNamed('headers')),
-    ).thenThrow(http.ClientException('SocketException: stub default'));
   });
 
   group('PowerSyncUnreachableScreen', () {
@@ -165,14 +160,14 @@ void main() {
       verify(mockClient.get(tLiveness)).called(1);
     });
 
-    testWidgets('"Log out" wipes saved user and navigates to "/"', (tester) async {
+    testWidgets('"Log out" wipes saved credentials and navigates to "/"', (tester) async {
       await tester.pumpWidget(wrap(const PowerSyncUnreachableScreen()));
       await tester.pumpAndSettle();
 
       await tester.tap(find.text('Log out'));
       await tester.pumpAndSettle();
 
-      expect(await PreferenceHelper.asyncPref.containsKey(PREFS_USER), false);
+      expect(await PreferenceHelper.asyncPref.containsKey(PREFS_ACCESS_TOKEN), false);
       expect(find.text('AUTH_SCREEN_STUB'), findsOneWidget);
     });
   });

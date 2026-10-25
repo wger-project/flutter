@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/features/nutrition/models/nutritional_goals.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 

@@ -22,10 +22,21 @@ import 'package:wger/database/powersync/database.dart';
 
 /// The user's editable profile preferences.
 class UserProfile {
+  /// The range the server's validators allow for [height], in cm. A value
+  /// outside them comes back as a 400, so the form refuses it first.
+  static const minHeightCm = 140;
+  static const maxHeightCm = 230;
+
   final int id;
   String weightUnitStr;
 
-  UserProfile({required this.id, required this.weightUnitStr});
+  /// Body height in cm, null for a profile that has none
+  final int? height;
+
+  /// IANA timezone name. Empty or null means no client has reported one.
+  final String? timeZone;
+
+  UserProfile({required this.id, required this.weightUnitStr, this.height, this.timeZone});
 
   bool get isMetric => weightUnitStr == 'kg';
 
@@ -33,10 +44,14 @@ class UserProfile {
   int get defaultWeightUnitId => isMetric ? WEIGHT_UNIT_KG : WEIGHT_UNIT_LB;
 
   /// Drift companion for local UPDATE writes routed through PowerSync.
+  ///
+  /// Only the columns the profile form edits: the timezone column belongs to
+  /// TimezoneSync, and a full write would clear what another client reported.
   UserProfileTableCompanion toCompanion() {
     return UserProfileTableCompanion(
       id: drift.Value(id),
       weightUnitStr: drift.Value(weightUnitStr),
+      height: drift.Value(height),
     );
   }
 }

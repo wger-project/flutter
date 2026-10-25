@@ -27,9 +27,10 @@ import 'package:version/version.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/errors.dart';
 import 'package:wger/core/helpers.dart';
+import 'package:wger/core/network/api_headers.dart';
 import 'package:wger/core/network/auth_credentials_storage.dart';
-import 'package:wger/core/network/auth_notifier.dart';
 import 'package:wger/core/network/auth_state.dart';
+import 'package:wger/core/network/network_provider.dart';
 
 /// `/api/v2/` endpoints used by the gating chain.
 const _MIN_APP_VERSION_PATH = 'min-app-version';
@@ -49,7 +50,7 @@ class ServerGating {
   /// separately via [serverVersionGate], so callers check the version once and
   /// pass it into the auth state themselves.
   Future<AuthStatus> resolve({
-    required AuthCredential credential,
+    required JwtCredential credential,
     required String serverUrl,
     required PackageInfo appVersion,
   }) async {
@@ -71,21 +72,23 @@ class ServerGating {
     return (version: version, tooOld: serverUpdateRequired(version));
   }
 
-  /// HEAD probe against `/routine` to confirm the server is reachable
-  /// and accepts our credential. Returns null when the request couldn't
-  /// leave the device (offline, TLS handshake failure, etc.) so callers
-  /// can distinguish "we couldn't reach the server" from "the server said
-  /// no". Only the latter is grounds for logging the user out.
+  /// Probe against `/routine` to confirm the server is reachable and
+  /// accepts our credential. Returns null when the request couldn't leave
+  /// the device (offline, TLS handshake failure, etc.) so callers can
+  /// distinguish "we couldn't reach the server" from "the server said no".
+  /// Only the latter is grounds for logging the user out, and a 403 counts
+  /// only with the API's error body, so the probe is a GET (HEAD carries no
+  /// body) limited to one row.
   Future<http.Response?> probe({
-    required AuthCredential credential,
+    required JwtCredential credential,
     required String serverUrl,
     required PackageInfo appVersion,
   }) async {
     try {
-      return await _client.head(
-        makeUri(serverUrl, 'routine'),
+      return await _client.get(
+        makeUri(serverUrl, 'routine', query: {'limit': '1'}),
         headers: {
-          HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8',
+          HttpHeaders.acceptHeader: 'application/json',
           HttpHeaders.userAgentHeader: getAppNameHeader(appVersion),
           HttpHeaders.authorizationHeader: credential.authHeaderValue,
         },
@@ -106,7 +109,7 @@ class ServerGating {
   /// completed conclusively, so the caller defaults to permissive).
   Future<bool> serverConfigSane({
     required String serverUrl,
-    required AuthCredential credential,
+    required JwtCredential credential,
   }) async {
     try {
       final baseUri = Uri.parse(serverUrl);
@@ -143,7 +146,7 @@ class ServerGating {
   /// success the flag is set so future starts skip the probe.
   Future<bool> isPowerSyncReachable({
     required String serverUrl,
-    required AuthCredential credential,
+    required JwtCredential credential,
   }) async {
     if (await _storage.hasEverSynced()) {
       return true;
@@ -240,8 +243,33 @@ class ServerGating {
   }
 }
 
+/// Rewrites a version as spelled by the Python backend into its semver
+/// equivalent so [Version] can parse it: '2.7.0a2' becomes '2.7.0-a2'.
+/// Without this a pre-release below the minimum fails to parse and gets
+/// waved through by the lenient fallback.
+///
+/// A post release carries everything its final release has, so that segment
+/// is removed rather than turned into a pre-release, which would sort it
+/// below the release it follows.
+String _toSemver(String rawVersion) {
+  final trimmed = rawVersion
+      .replaceFirst(RegExp(r'\s.*$'), '') // '2.7.0 (git-abc1234)'
+      .replaceFirst(RegExp(r'[.-]post\d*'), '');
+
+  final match = RegExp(r'^(\d+(?:\.\d+)*)(.*)$').firstMatch(trimmed);
+  if (match == null) {
+    return trimmed;
+  }
+
+  final release = match.group(1)!;
+  final suffix = match.group(2)!.replaceFirst(RegExp(r'^[.-]'), '');
+  return suffix.isEmpty ? release : '$release-$suffix';
+}
+
 /// Checks whether the connected server meets the minimum version required
-/// by this build of the app.
+/// by this build of the app. A pre-release is below its release, so a server
+/// in the middle of the 2.8 cycle does not satisfy a minimum of 2.8.0. See
+/// [MIN_SERVER_VERSION] for how to spell the constant.
 ///
 /// Returns false (lenient) when the version cannot be read or parsed, so
 /// users aren't locked out on unexpected server configurations.
@@ -252,11 +280,7 @@ bool serverUpdateRequired(String? rawVersion) {
     return false;
   }
 
-  // Strip common non-semver suffixes emitted by Python/Django backends,
-  // e.g. '2.5.0a2' → '2.5.0', '2.3.0 (git-abc1234)' → '2.3.0'.
-  final sanitized = rawVersion
-      .replaceFirst(RegExp(r'\s.*$'), '')
-      .replaceFirst(RegExp(r'[a-zA-Z].*$'), '');
+  final sanitized = _toSemver(rawVersion);
 
   final Version current;
   try {

@@ -17,8 +17,8 @@
  */
 
 import 'package:flex_color_scheme/flex_color_scheme.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/core/colors.dart';
 import 'package:wger/theme/theme.dart';
 
@@ -75,6 +75,7 @@ void main() {
 
     test('keeps the dark palette light enough for a dark surface', () {
       // The old fixed palette was tuned for light backgrounds only.
+
       expect(chartColorPalette(6, dark).every((c) => toneOf(c) >= 55), isTrue);
     });
   });

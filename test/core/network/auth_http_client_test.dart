@@ -26,6 +26,8 @@ import 'package:mockito/mockito.dart';
 import 'package:wger/core/network/auth_http_client.dart';
 import 'package:wger/core/network/auth_notifier.dart';
 import 'package:wger/core/network/auth_state.dart';
+import 'package:wger/core/network/network_provider.dart'
+    show ReachabilityReportingClient, authHttpClientProvider;
 
 import 'auth_http_client_test.mocks.dart';
 
@@ -59,6 +61,13 @@ class _RecordingAuthNotifier extends AuthNotifier {
     state = const AsyncData(AuthState());
   }
 }
+
+/// What SimpleJWT answers with when the access token has expired.
+const tokenNotValid =
+    '{"detail":"Given token not valid for any token type",'
+    '"code":"token_not_valid",'
+    '"messages":[{"token_class":"AccessToken","token_type":"access",'
+    '"message":"Token is expired"}]}';
 
 @GenerateMocks([http.Client])
 void main() {
@@ -129,17 +138,6 @@ void main() {
       expect(refreshCalls, 0);
     });
 
-    test('legacy credential → Authorization: Token <key>', () async {
-      auth = const AuthState(credential: LegacyCredential('legacy-key'));
-
-      final headers = await sendAndCapture(
-        http.Request('GET', Uri.parse('https://wger.example/api/v2/routine/')),
-      );
-
-      expect(headers[HttpHeaders.authorizationHeader], 'Token legacy-key');
-      expect(refreshCalls, 0);
-    });
-
     test('no auth state → no Authorization header set', () async {
       auth = null;
       final headers = await sendAndCapture(
@@ -197,16 +195,6 @@ void main() {
       expect(refreshCalls, 0);
     });
 
-    test('does not fire for the legacy permanent token', () async {
-      auth = const AuthState(credential: LegacyCredential('legacy-key'));
-
-      await sendAndCapture(
-        http.Request('GET', Uri.parse('https://wger.example/api/v2/routine/')),
-      );
-
-      expect(refreshCalls, 0);
-    });
-
     test('does not fire when accessExpiresAt is null', () async {
       auth = const AuthState(credential: JwtCredential(accessToken: 'opaque-jwt'));
 
@@ -218,7 +206,7 @@ void main() {
     });
   });
 
-  group('401 retry', () {
+  group('refresh and retry on a refused credential', () {
     Future<http.StreamedResponse> stubTwoResponses(
       http.StreamedResponse first,
       http.StreamedResponse second,
@@ -323,8 +311,34 @@ void main() {
       verify(inner.send(any)).called(1); // No retry attempted.
     });
 
-    test('legacy 401 → no retry, original 401 surfaces', () async {
-      auth = const AuthState(credential: LegacyCredential('legacy-key'));
+    test('refresh that leaves the credential untouched → 401 through, no logout', () async {
+      // What _runRefresh does on a network error: it keeps the session so
+      // local data stays accessible. A retry with the very same token can
+      // only 401 again, which must not count as a revoked session
+      auth = AuthState(
+        credential: JwtCredential(
+          accessToken: 'old-access',
+          expiresAt: DateTime.now().toUtc().add(const Duration(hours: 1)),
+        ),
+      );
+      // The default onRefresh is a no-op, like a refresh that failed on the
+      // network and returned without touching the credential
+      when(inner.send(any)).thenAnswer(
+        (_) async => http.StreamedResponse(Stream.value(<int>[]), 401),
+      );
+
+      final response = await buildClient().send(
+        http.Request('GET', Uri.parse('https://wger.example/api/v2/routine/')),
+      );
+
+      expect(response.statusCode, 401);
+      expect(refreshCalls, 1);
+      expect(sessionExpiredCalls, 0);
+      verify(inner.send(any)).called(1); // No retry with the same token.
+    });
+
+    test('401 without a credential → no retry, original 401 surfaces', () async {
+      auth = const AuthState();
       when(inner.send(any)).thenAnswer(
         (_) async => http.StreamedResponse(Stream.value(<int>[]), 401),
       );
@@ -337,18 +351,97 @@ void main() {
       expect(refreshCalls, 0);
     });
 
-    test('403 → no refresh, no retry, the response surfaces unchanged', () async {
-      // The API answers an auth failure with 403, not 401, because
-      // SessionAuthentication runs first. Only the refresh path logs the user
-      // out; a 403 here has to reach the caller as it is.
+    test('403 for an expired token → refresh + retry, like a 401', () async {
+      // The API answers an expired token with 403, not 401, because
+      // SessionAuthentication runs first. Without this the stale token is never
+      // renewed and every request keeps failing (issue #1350).
+      auth = AuthState(
+        credential: JwtCredential(
+          accessToken: 'expired-access',
+          // Already past, as it is when a refresh failed on the network and the
+          // offline carve-out kept the token
+          expiresAt: DateTime.now().toUtc().subtract(const Duration(minutes: 5)),
+        ),
+      );
+      // The pre-emptive refresh fails on the network and keeps the token (the
+      // carve-out); only the refresh after the 403 delivers
+      onRefresh = () async {
+        if (refreshCalls == 1) {
+          return;
+        }
+        auth = AuthState(
+          credential: JwtCredential(
+            accessToken: 'new-access',
+            expiresAt: DateTime.now().toUtc().add(const Duration(hours: 1)),
+          ),
+        );
+      };
+      var call = 0;
+      when(inner.send(any)).thenAnswer(
+        (_) async => ++call == 1
+            ? http.StreamedResponse(Stream.value(tokenNotValid.codeUnits), 403)
+            : http.StreamedResponse(Stream.value('OK'.codeUnits), 200),
+      );
+
+      final response = await buildClient().send(
+        http.Request('GET', Uri.parse('https://wger.example/api/v2/routine/')),
+      );
+
+      expect(response.statusCode, 200);
+      // Once pre-emptively for the expired token, once for the 403
+      expect(refreshCalls, 2);
+      final captured = verify(inner.send(captureAny)).captured;
+      expect(
+        (captured.first as http.BaseRequest).headers[HttpHeaders.authorizationHeader],
+        'Bearer expired-access',
+      );
+      expect(
+        (captured.last as http.BaseRequest).headers[HttpHeaders.authorizationHeader],
+        'Bearer new-access',
+      );
+    });
+
+    test('403 for an expired token that survives the refresh → session revoked', () async {
+      auth = AuthState(
+        credential: JwtCredential(
+          accessToken: 'old-access',
+          expiresAt: DateTime.now().toUtc().add(const Duration(hours: 1)),
+        ),
+      );
+      onRefresh = () async {
+        auth = AuthState(
+          credential: JwtCredential(
+            accessToken: 'new-access',
+            expiresAt: DateTime.now().toUtc().add(const Duration(hours: 1)),
+          ),
+        );
+      };
+      when(inner.send(any)).thenAnswer(
+        (_) async => http.StreamedResponse(Stream.value(tokenNotValid.codeUnits), 403),
+      );
+
+      final response = await buildClient().send(
+        http.Request('GET', Uri.parse('https://wger.example/api/v2/routine/')),
+      );
+
+      expect(response.statusCode, 401);
+      expect(refreshCalls, 1);
+      expect(sessionExpiredCalls, 1);
+    });
+
+    test('403 without the token_not_valid body → no refresh, response unchanged', () async {
+      // A permission denial, or the plain 403 of a request the server saw as
+      // anonymous. Refreshing would not help and logging the user out is wrong,
+      // so the body has to reach the caller untouched.
       auth = AuthState(
         credential: JwtCredential(
           accessToken: 'access',
           expiresAt: DateTime.now().toUtc().add(const Duration(hours: 1)),
         ),
       );
+      const body = '{"detail":"You do not have permission to perform this action."}';
       when(inner.send(any)).thenAnswer(
-        (_) async => http.StreamedResponse(Stream.value(<int>[]), 403),
+        (_) async => http.StreamedResponse(Stream.value(body.codeUnits), 403),
       );
 
       final response = await buildClient().send(
@@ -356,9 +449,32 @@ void main() {
       );
 
       expect(response.statusCode, 403);
+      expect(await response.stream.bytesToString(), body);
       expect(refreshCalls, 0);
       expect(sessionExpiredCalls, 0);
       verify(inner.send(any)).called(1);
+    });
+
+    test('403 with a non-JSON body → no refresh, response unchanged', () async {
+      // What a proxy in front of the server answers with, and what Django's
+      // own HttpResponseForbidden looks like
+      auth = AuthState(
+        credential: JwtCredential(
+          accessToken: 'access',
+          expiresAt: DateTime.now().toUtc().add(const Duration(hours: 1)),
+        ),
+      );
+      when(inner.send(any)).thenAnswer(
+        (_) async => http.StreamedResponse(Stream.value('<h1>Forbidden</h1>'.codeUnits), 403),
+      );
+
+      final response = await buildClient().send(
+        http.Request('GET', Uri.parse('https://wger.example/api/v2/routine/')),
+      );
+
+      expect(response.statusCode, 403);
+      expect(await response.stream.bytesToString(), '<h1>Forbidden</h1>');
+      expect(refreshCalls, 0);
     });
 
     test('MultipartRequest 401 → no retry (body not replayable)', () async {
@@ -390,6 +506,13 @@ void main() {
     // AuthHttpClient have to reach the notifier, or every request goes out
     // unauthenticated and an expired session is never noticed.
     late _RecordingAuthNotifier notifier;
+
+    test('the raw client is wrapped for reachability reporting', () {
+      // Wrapping sits at the bottom of the stack, so login and refresh
+      // traffic through the raw client feeds the network status as well.
+      final container = ProviderContainer.test();
+      expect(container.read(authHttpClientProvider), isA<ReachabilityReportingClient>());
+    });
 
     JwtCredential jwt(String token) => JwtCredential(
       accessToken: token,
@@ -459,6 +582,25 @@ void main() {
 
       expect(response.statusCode, 401);
       expect(notifier.clearSessionCalls, 1);
+    });
+
+    test('a 401 whose refresh does not deliver keeps the session', () async {
+      final client = buildFromProvider(AuthState(credential: jwt('stale')));
+      await pumpEventQueue();
+      // refreshResult stays null: the notifier hit a network error on the
+      // refresh endpoint and kept the session for offline use
+      when(inner.send(any)).thenAnswer(
+        (_) async => http.StreamedResponse(Stream.value(<int>[]), 401),
+      );
+
+      final response = await client.send(
+        http.Request('GET', Uri.parse('https://wger.example/api/v2/routine/')),
+      );
+
+      expect(response.statusCode, 401);
+      expect(notifier.refreshCalls, 1);
+      expect(notifier.clearSessionCalls, 0);
+      verify(inner.send(any)).called(1);
     });
   });
 }

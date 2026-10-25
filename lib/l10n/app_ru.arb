@@ -399,10 +399,6 @@
         "description": "Label for the popup with general app options"
     },
     "sameRepetitions": "Если количество повторений и вес не меняются от подхода к подходу, достаточно указать данные один раз. Например, для 4 подходов введите 10 повторений, и это автоматически преобразуется в '4 x 10'.",
-    "newSet": "Новый подход (сет)",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
-    },
     "dataCopied": "Данные копируются в новую запись",
     "@dataCopied": {
         "description": "Snackbar message to show on copying data to a new log entry"
@@ -797,39 +793,6 @@
     "noIngredientsDefined": "Ингредиенты пока не определены",
     "ingredientLogged": "Ингредиент занесен в дневник",
     "selectMealToLog": "Выберите прием пищи для записи в дневник",
-    "chartAllTimeTitle": "{name} за все время",
-    "@chartAllTimeTitle": {
-        "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chart30DaysTitle": "{name} последние 30 дней",
-    "@chart30DaysTitle": {
-        "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chartDuringPlanTitle": "{chartName} во время плана питания {planName}",
-    "@chartDuringPlanTitle": {
-        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-        "type": "text",
-        "placeholders": {
-            "chartName": {
-                "type": "String"
-            },
-            "planName": {
-                "type": "String"
-            }
-        }
-    },
     "settingsIngredientCacheDescription": "Кэш ингредиентов",
     "isRestDayHelp": "Пожалуйста, имейте в виду, что если вы отметите этот день как день отдыха, все подходы и упражнения будут удалены.",
     "routines": "Тренировки",

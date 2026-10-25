@@ -18,28 +18,26 @@
 
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:flutter/widgets.dart' show AppLifecycleListener;
-import 'package:flutter_riverpod/flutter_riverpod.dart' show Provider;
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/error_dialogs.dart';
-import 'package:wger/core/errors.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/core/exceptions/mfa_required_exception.dart';
-import 'package:wger/core/helpers.dart';
 import 'package:wger/core/http_overrides.dart';
 import 'package:wger/core/network/auth_credentials_storage.dart';
 import 'package:wger/core/network/auth_http_client.dart';
 import 'package:wger/core/network/auth_state.dart';
+import 'package:wger/core/network/headless_auth_api.dart';
 import 'package:wger/core/network/jwt.dart';
 import 'package:wger/core/network/network_provider.dart';
+import 'package:wger/core/network/powersync_session.dart';
 import 'package:wger/core/network/server_gating.dart';
 import 'package:wger/core/shared_preferences.dart';
 import 'package:wger/database/powersync/powersync.dart';
@@ -52,31 +50,18 @@ import 'package:wger/features/trophies/providers/trophy_notifier.dart';
 
 part 'auth_notifier.g.dart';
 
-/// `allauth.headless` `app` client endpoints, relative to the
-/// `/allauth/app/v1/` base.
-const HEADLESS_TOKENS_REFRESH_PATH = 'tokens/refresh';
-const HEADLESS_AUTH_LOGIN_PATH = 'auth/login';
-const HEADLESS_AUTH_SIGNUP_PATH = 'auth/signup';
-const HEADLESS_AUTH_MFA_AUTHENTICATE_PATH = 'auth/2fa/authenticate';
-
-/// `/api/v2/<this>` endpoint that mints a headless-JWT refresh token for the
-/// authenticated user. Used by the one-shot legacy-DRF → JWT migration on
-/// app start.
-const ISSUE_REFRESH_TOKEN_PATH = 'issue-refresh-token';
-
-/// Header that carries the short-lived `session_token` returned by
-/// `auth/login` when a follow-up step (currently only 2FA) is still pending.
-const HEADLESS_SESSION_TOKEN_HEADER = 'X-Session-Token';
-
-/// HTTP client used by the auth notifier. Override in tests.
-final authHttpClientProvider = Provider<http.Client>((ref) => http.Client());
+/// Ceiling for the refresh POST. Callers are deduplicated onto one in-flight
+/// refresh, so a request that never answers would block them all, PowerSync's
+/// credential fetch included.
+const tokenRefreshTimeout = Duration(seconds: 15);
 
 @Riverpod(keepAlive: true)
 class AuthNotifier extends _$AuthNotifier {
   final _logger = Logger('AuthNotifier');
-  late http.Client _client;
+  late HeadlessAuthApi _api;
   late AuthCredentialsStorage _storage;
   late ServerGating _gating;
+  late PowerSyncSession _powerSync;
 
   /// Holds the in-flight refresh future so concurrent callers share a single
   /// network roundtrip. Cleared in `whenComplete` so the next refresh starts
@@ -88,6 +73,11 @@ class AuthNotifier extends _$AuthNotifier {
   @visibleForTesting
   Future<void>? revalidationDone;
 
+  /// Listeners armed by [_scheduleRevalidation], replaced on re-arm: the
+  /// provider is keepAlive, so stacked ones would live for good.
+  StreamSubscription<List<ConnectivityResult>>? _connectivitySub;
+  AppLifecycleListener? _lifecycleListener;
+
   /// Number of times the user-switch DB wipe has fired since the notifier
   /// was built. Exposed so tests can assert the user-mismatch path ran
   /// without having to instrument PowerSync or the filesystem.
@@ -96,9 +86,14 @@ class AuthNotifier extends _$AuthNotifier {
 
   @override
   Future<AuthState> build() async {
-    _client = ref.read(authHttpClientProvider);
+    _api = ref.read(headlessAuthApiProvider);
     _storage = ref.read(authCredentialsStorageProvider);
     _gating = ref.read(serverGatingProvider);
+    _powerSync = ref.read(powerSyncSessionProvider);
+    ref.onDispose(() {
+      _connectivitySub?.cancel();
+      _lifecycleListener?.dispose();
+    });
     return _tryAutoLogin();
   }
 
@@ -117,17 +112,14 @@ class AuthNotifier extends _$AuthNotifier {
     if (version.tooOld) {
       return LoginActions.update;
     }
-    final body = <String, String>{'username': username, 'password': password};
-    if (email.isNotEmpty) {
-      body['email'] = email;
-    }
-
-    final response = await _client.post(
-      makeHeadlessUri(serverUrl, HEADLESS_AUTH_SIGNUP_PATH),
-      headers: jsonApiHeaders(appVersion, {HttpHeaders.acceptLanguageHeader: locale}),
-      body: json.encode(body),
+    final creds = await _api.signup(
+      username: username,
+      password: password,
+      email: email,
+      serverUrl: serverUrl,
+      appVersion: appVersion,
+      locale: locale,
     );
-    final creds = _consumeHeadlessAuthResponse(response);
     return _completeLogin(creds, serverUrl, appVersion, serverVersion: version.version);
   }
 
@@ -183,12 +175,12 @@ class AuthNotifier extends _$AuthNotifier {
     if (version.tooOld) {
       return LoginActions.update;
     }
-    final response = await _client.post(
-      makeHeadlessUri(serverUrl, HEADLESS_AUTH_MFA_AUTHENTICATE_PATH),
-      headers: jsonApiHeaders(appVersion, {HEADLESS_SESSION_TOKEN_HEADER: sessionToken}),
-      body: json.encode({'code': code}),
+    final creds = await _api.authenticateMfa(
+      sessionToken: sessionToken,
+      code: code,
+      serverUrl: serverUrl,
+      appVersion: appVersion,
     );
-    final creds = _consumeHeadlessAuthResponse(response);
     return _completeLogin(creds, serverUrl, appVersion, serverVersion: version.version);
   }
 
@@ -220,103 +212,29 @@ class AuthNotifier extends _$AuthNotifier {
     return gate;
   }
 
-  Future<_FreshCredentials> _obtainCredentials(
+  /// The credentials a login attempt yields: the pasted refresh token when
+  /// there is one (rotation invalidates it as part of the exchange), else
+  /// username and password.
+  Future<FreshCredentials> _obtainCredentials(
     String username,
     String password,
     String serverUrl,
     String? pastedRefreshToken,
     PackageInfo appVersion,
-  ) async {
+  ) {
     if (pastedRefreshToken != null && pastedRefreshToken.isNotEmpty) {
-      return _exchangePastedRefreshToken(pastedRefreshToken, serverUrl, appVersion);
+      return _api.exchangeRefreshToken(
+        refreshToken: pastedRefreshToken,
+        serverUrl: serverUrl,
+        appVersion: appVersion,
+      );
     }
 
-    final response = await _client.post(
-      makeHeadlessUri(serverUrl, HEADLESS_AUTH_LOGIN_PATH),
-      headers: jsonApiHeaders(appVersion),
-      body: json.encode({'username': username, 'password': password}),
-    );
-    return _consumeHeadlessAuthResponse(response);
-  }
-
-  /// Exchanges a manually-pasted refresh token for a fresh access + refresh
-  /// bundle. Rotation is on by default server-side, so the pasted token is
-  /// invalidated as part of this call and the new refresh token is what
-  /// ends up persisted in secure storage. Throws [WgerHttpException] when
-  /// the server rejects the pasted token.
-  Future<_FreshCredentials> _exchangePastedRefreshToken(
-    String refreshToken,
-    String serverUrl,
-    PackageInfo appVersion,
-  ) async {
-    final response = await _client.post(
-      makeHeadlessUri(serverUrl, HEADLESS_TOKENS_REFRESH_PATH),
-      headers: jsonApiHeaders(appVersion),
-      body: json.encode({'refresh_token': refreshToken}),
-    );
-    return _consumeHeadlessAuthResponse(response);
-  }
-
-  /// Parses the standard `allauth.headless` auth response envelope.
-  ///
-  /// Returns a populated [_FreshCredentials] on 200 (tokens carried in
-  /// `meta`).
-  ///
-  /// Throws:
-  /// - [MfaRequiredException] on a 401 that carries `meta.session_token`,
-  ///   signalling that the user must complete a second factor before tokens
-  ///   are issued.
-  /// - [WgerHttpException] for any other status, or for malformed / partial
-  ///   bodies on otherwise-successful responses.
-  _FreshCredentials _consumeHeadlessAuthResponse(http.Response response) {
-    final Map<String, dynamic> body;
-    try {
-      body = json.decode(response.body) as Map<String, dynamic>;
-    } catch (_) {
-      throw WgerHttpException(response);
-    }
-
-    if (response.statusCode == 401) {
-      final meta = body['meta'] as Map<String, dynamic>?;
-      final sessionToken = meta?['session_token'] as String?;
-      if (sessionToken != null && sessionToken.isNotEmpty) {
-        final flows = (body['data'] as Map<String, dynamic>?)?['flows'] as List<dynamic>?;
-        final factors =
-            flows
-                ?.whereType<Map<String, dynamic>>()
-                .where(
-                  (f) => f['id'] == 'mfa_authenticate' && (f['is_pending'] as bool? ?? false),
-                )
-                .expand((f) => (f['types'] as List<dynamic>?)?.cast<String>() ?? const <String>[])
-                .toList() ??
-            const <String>[];
-        throw MfaRequiredException(sessionToken: sessionToken, availableFactors: factors);
-      }
-      throw WgerHttpException(response);
-    }
-
-    if (response.statusCode != 200) {
-      throw WgerHttpException(response);
-    }
-
-    // auth/login and auth/signup return the tokens under `meta`, while
-    // tokens/refresh returns them under `data` (see allauth.headless source:
-    // base/response.py vs tokens/response.py). Read both so this parser
-    // works for either response shape.
-    final meta = body['meta'] as Map<String, dynamic>?;
-    final data = body['data'] as Map<String, dynamic>?;
-    final accessToken = (meta?['access_token'] ?? data?['access_token']) as String?;
-    if (accessToken == null || accessToken.isEmpty) {
-      // 200 without tokens, likely a still-pending flow we don't know how
-      // to drive. Surface as an HTTP error so the caller renders something.
-      throw WgerHttpException(response);
-    }
-    return (
-      credential: JwtCredential(
-        accessToken: accessToken,
-        expiresAt: jwtExp(decodeJwtPayload(accessToken)),
-      ),
-      refreshToken: (meta?['refresh_token'] ?? data?['refresh_token']) as String?,
+    return _api.login(
+      username: username,
+      password: password,
+      serverUrl: serverUrl,
+      appVersion: appVersion,
     );
   }
 
@@ -330,7 +248,7 @@ class AuthNotifier extends _$AuthNotifier {
   /// be uploaded under the new user's credentials, which is both a leak
   /// and would corrupt data ownership server-side.
   Future<LoginActions> _completeLogin(
-    _FreshCredentials creds,
+    FreshCredentials creds,
     String serverUrl,
     PackageInfo appVersion, {
     String? serverVersion,
@@ -388,7 +306,11 @@ class AuthNotifier extends _$AuthNotifier {
     state = AsyncData(newState);
 
     if (newState.status == AuthStatus.loggedIn) {
-      await _reconnectPowerSyncIfBuilt(serverUrl);
+      _powerSync.reconnect(
+        serverUrl,
+        ref.read(authenticatedHttpClientProvider),
+        ref.read(syncWatchdogProvider),
+      );
       _invalidatePostLoginProviders();
     }
 
@@ -417,12 +339,7 @@ class AuthNotifier extends _$AuthNotifier {
   }
 
   Future<AuthState> _tryAutoLogin() async {
-    // One-shot migration: if a legacy DRF token is still on disk, swap it
-    // for a JWT bundle now so the rest of the auto-login can take the
-    // JWT happy path. On any failure the legacy blob is left alone and the
-    // user falls back to the still-supported legacy code path; the next
-    // start will try again.
-    await _maybeMigrateLegacyToJwt();
+    await _storage.clearLegacyDrfToken();
     final stored = await _storage.load();
     if (stored == null) {
       _logger.info('autologin failed, no saved session');
@@ -432,130 +349,42 @@ class AuthNotifier extends _$AuthNotifier {
     return _resolveStoredSession(stored, appVersion);
   }
 
-  /// Exchanges a legacy DRF API token for a headless-JWT bundle and
-  /// persists the result. No-op when no legacy blob is present.
-  ///
-  /// Sequence:
-  /// 1. POST to [ISSUE_REFRESH_TOKEN_PATH] authenticated with the legacy
-  ///    `Token <key>` header. The server mints a long-lived refresh token
-  ///    backed by a fresh Django session.
-  /// 2. Exchange that refresh token at the standard headless
-  ///    `tokens/refresh` endpoint for the full access bundle (reuses
-  ///    [_exchangePastedRefreshToken]).
-  /// 3. Persist the bundle. [AuthCredentialsStorage.saveJwt] wipes the
-  ///    legacy `PREFS_USER` blob as a side effect, so the next load sees
-  ///    the JWT path.
-  ///
-  /// Failure handling — all branches log and return without touching
-  /// state, so a re-attempt happens on the next app start:
-  /// - Network error: keep the DRF token, the user continues working
-  ///   against the legacy code path until connectivity returns.
-  /// - 401 / 403: the DRF token has been revoked server-side. Wipe the
-  ///   legacy blob so the user is routed to login (they have no usable
-  ///   credential left).
-  /// - 5xx / malformed body / refresh exchange failure: keep the legacy
-  ///   blob and retry on the next start. The server-side session row
-  ///   minted in step 1 stays orphaned but is harmless.
-  Future<void> _maybeMigrateLegacyToJwt() async {
-    final stored = await _storage.load();
-    if (stored == null || stored.credential is! LegacyCredential) {
-      return;
-    }
-    final legacyCred = stored.credential as LegacyCredential;
-    final serverUrl = stored.serverUrl;
-    final appVersion = await PackageInfo.fromPlatform();
-
-    _logger.info('Legacy DRF token present, attempting JWT migration');
-
-    final http.Response response;
-    try {
-      response = await _client.post(
-        makeUri(serverUrl, ISSUE_REFRESH_TOKEN_PATH, trailingSlash: false),
-        headers: jsonApiHeaders(appVersion, {
-          HttpHeaders.authorizationHeader: legacyCred.authHeaderValue,
-        }),
-      );
-    } on Exception catch (e, s) {
-      if (isNetworkError(e)) {
-        _logger.info('Legacy migration: server unreachable, keeping DRF token');
-        return;
-      }
-      _logger.warning('Legacy migration: exchange POST threw', e, s);
-      return;
-    }
-
-    if (_isAuthRejection(response.statusCode)) {
-      _logger.warning(
-        'Legacy migration: DRF token rejected (${response.statusCode}), wiping legacy blob',
-      );
-      await _storage.clearLegacy();
-      return;
-    }
-    if (response.statusCode != 200) {
-      _logger.warning(
-        'Legacy migration: unexpected status ${response.statusCode}, will retry next start',
-      );
-      return;
-    }
-
-    final String refreshToken;
-    try {
-      final body = json.decode(response.body) as Map<String, dynamic>;
-      refreshToken = body['refresh_token'] as String;
-    } catch (e, s) {
-      _logger.warning('Legacy migration: malformed response body', e, s);
-      return;
-    }
-    if (refreshToken.isEmpty) {
-      _logger.warning('Legacy migration: empty refresh_token in response');
-      return;
-    }
-
-    final _FreshCredentials freshCreds;
-    try {
-      freshCreds = await _exchangePastedRefreshToken(refreshToken, serverUrl, appVersion);
-    } on Exception catch (e, s) {
-      _logger.warning('Legacy migration: refresh token exchange failed', e, s);
-      return;
-    }
-
-    await _storage.saveJwt(
-      credential: freshCreds.credential,
-      refreshToken: freshCreds.refreshToken,
-      serverUrl: serverUrl,
-    );
-    // Claim DB ownership for the migrated user: this path logs in without
-    // going through _completeLogin, so otherwise the marker would stay null
-    // and a later different-user login wouldn't wipe.
-    final migratedUserId = freshCreds.credential.userId;
-    if (migratedUserId != null) {
-      await _storage.setDbOwnerUserId(migratedUserId);
-    }
-    _logger.info('Legacy migration: successful, DRF token replaced with JWT');
-  }
-
-  /// Common path for both the headless-JWT and the legacy auto-login flows:
-  /// probe the server, then run the full gating chain. Wipes the matching
-  /// stored credentials on a definitive 4xx so the user is routed to login.
+  /// Auto-login path for a session that has never synced: probe the server,
+  /// then run the full gating chain. Wipes the stored credentials on a
+  /// definitive 4xx so the user is routed to login.
   Future<AuthState> _autoLoginWith(StoredAuth stored, PackageInfo appVersion) async {
+    var session = stored;
+    // The probe carries the credential itself and cannot refresh on a 403, so
+    // an access token past its lifetime is renewed first.
+    if (session.credential.needsRefresh(refreshLeeway)) {
+      final refresh = await _refreshBeforeProbe(session, appVersion);
+      if (refresh.rejected) {
+        return AuthState(applicationVersion: appVersion);
+      }
+      if (refresh.renewed == null) {
+        _logger.info('autologin: access token not renewed, continuing offline');
+        return _restoredSessionState(session, appVersion);
+      }
+      session = refresh.renewed!;
+    }
+
     final response = await _gating.probe(
-      credential: stored.credential,
-      serverUrl: stored.serverUrl,
+      credential: session.credential,
+      serverUrl: session.serverUrl,
       appVersion: appVersion,
     );
     // Server unreachable at startup. The user already has a saved session, so
     // let them straight in to keep working offline.
     if (response == null) {
       _logger.info('autologin: server unreachable, continuing offline');
-      return _restoredSessionState(stored, appVersion);
+      return _restoredSessionState(session, appVersion);
     }
 
-    // The server actively rejected our token: wipe the matching credential
-    // bundle and route to login. Only 401/403 count, a transient 5xx must not
-    // log the user out.
-    if (_isAuthRejection(response.statusCode)) {
+    // The server actively rejected our token: wipe the stored credentials and
+    // route to login. A transient 5xx must not log the user out.
+    if (_isAuthRejection(response)) {
       _logger.info('autologin failed, token rejected: ${response.statusCode}');
-      await _clearStoredCredential(stored.credential);
+      await _storage.clearCredentials();
       return AuthState(applicationVersion: appVersion);
     }
 
@@ -564,21 +393,21 @@ class AuthNotifier extends _$AuthNotifier {
       _logger.warning(
         'autologin: probe returned ${response.statusCode}, keeping saved session',
       );
-      return _restoredSessionState(stored, appVersion);
+      return _restoredSessionState(session, appVersion);
     }
 
-    final versionGate = await _gating.serverVersionGate(stored.serverUrl);
+    final versionGate = await _gating.serverVersionGate(session.serverUrl);
     final status = versionGate.tooOld
         ? AuthStatus.serverUpdateRequired
         : await _gating.resolve(
-            credential: stored.credential,
-            serverUrl: stored.serverUrl,
+            credential: session.credential,
+            serverUrl: session.serverUrl,
             appVersion: appVersion,
           );
     final newState = AuthState(
       status: status,
-      credential: stored.credential,
-      serverUrl: stored.serverUrl,
+      credential: session.credential,
+      serverUrl: session.serverUrl,
       serverVersion: versionGate.version,
       applicationVersion: appVersion,
     );
@@ -586,6 +415,65 @@ class AuthNotifier extends _$AuthNotifier {
       _logger.info('autologin successful');
     }
     return newState;
+  }
+
+  /// Exchanges the stored refresh token for a fresh bundle ahead of the
+  /// first-time probe. `renewed` carries the new session; it stays null when
+  /// the server could not be reached, answered a transient status or an
+  /// unreadable body. `rejected` marks a refused or missing refresh token,
+  /// with the credentials already wiped.
+  Future<({StoredAuth? renewed, bool rejected})> _refreshBeforeProbe(
+    StoredAuth stored,
+    PackageInfo appVersion,
+  ) async {
+    final refreshToken = await _readStoredRefreshToken();
+    if (refreshToken == null) {
+      _logger.warning('autologin: no usable refresh token, clearing credentials');
+      await _storage.clearCredentials();
+      return (renewed: null, rejected: true);
+    }
+
+    final FreshCredentials creds;
+    try {
+      creds = await _api
+          .exchangeRefreshToken(
+            refreshToken: refreshToken,
+            serverUrl: stored.serverUrl,
+            appVersion: appVersion,
+          )
+          .timeout(tokenRefreshTimeout);
+    } on WgerHttpException catch (e) {
+      if (_isRefreshRejection(e.statusCode ?? 0)) {
+        _logger.info('autologin failed, refresh token rejected: ${e.statusCode}');
+        await _storage.clearCredentials();
+        return (renewed: null, rejected: true);
+      }
+      _logger.warning('autologin: refresh returned ${e.statusCode}, keeping saved session');
+      return (renewed: null, rejected: false);
+    } on Exception catch (e, s) {
+      _logger.warning('autologin: refresh unreachable, keeping saved session', e, s);
+      return (renewed: null, rejected: false);
+    }
+
+    await _storage.updateJwt(credential: creds.credential, refreshToken: creds.refreshToken);
+    return (
+      renewed: StoredAuth(credential: creds.credential, serverUrl: stored.serverUrl),
+      rejected: false,
+    );
+  }
+
+  /// The persisted refresh token, or null when there is none or secure storage
+  /// cannot read it (e.g. an Android backup restored onto a new device leaves
+  /// an undecryptable blob behind). The failure is logged here, callers only
+  /// decide what to clear.
+  Future<String?> _readStoredRefreshToken() async {
+    try {
+      final token = await _storage.readRefreshToken();
+      return (token == null || token.isEmpty) ? null : token;
+    } on Exception catch (e, s) {
+      _logger.warning('secure storage read failed', e, s);
+      return null;
+    }
   }
 
   /// Decides how a stored session enters the app. A previously synced session
@@ -602,8 +490,7 @@ class AuthNotifier extends _$AuthNotifier {
     return _restoredSessionState(stored, appVersion);
   }
 
-  /// Builds a logged-in [AuthState] for a stored session. Polymorphism in
-  /// [AuthCredential] keeps this branch-free across credential variants.
+  /// Builds a logged-in [AuthState] for a stored session.
   AuthState _restoredSessionState(StoredAuth stored, PackageInfo appVersion) {
     return AuthState(
       status: AuthStatus.loggedIn,
@@ -613,18 +500,18 @@ class AuthNotifier extends _$AuthNotifier {
     );
   }
 
-  /// Whether [statusCode] means the server actively rejected our token, as
-  /// opposed to a transient error that must not invalidate the session.
-  bool _isAuthRejection(int statusCode) => statusCode == 401 || statusCode == 403;
+  /// Whether the probe [response] means the server actively rejected our
+  /// token, as opposed to a transient error that must not invalidate the
+  /// session. A 403 counts only with the API's `token_not_valid` body, like
+  /// in [AuthHttpClient]: a proxy or bot filter answers 403 too.
+  bool _isAuthRejection(http.Response response) =>
+      response.statusCode == 401 ||
+      (response.statusCode == 403 && isTokenNotValidBody(response.body));
 
-  /// Clears only the storage rows that back the given credential. Used on a
-  /// definitive auth-rejection by the server so the next start routes the
-  /// user to the login screen without touching the *other* credential
-  /// shape (which a parallel user on the same device might still rely on).
-  Future<void> _clearStoredCredential(AuthCredential credential) => switch (credential) {
-    LegacyCredential() => _storage.clearLegacy(),
-    JwtCredential() => _storage.clearJwt(),
-  };
+  /// Same question for the refresh endpoint, which reports an invalid or
+  /// rotated-away refresh token as 400 (allauth's `ErrorResponse`).
+  bool _isRefreshRejection(int statusCode) =>
+      statusCode == 400 || statusCode == 401 || statusCode == 403;
 
   /// Schedules a non-blocking revalidation of the restored session.
   ///
@@ -638,20 +525,21 @@ class AuthNotifier extends _$AuthNotifier {
   void _scheduleRevalidation() {
     revalidationDone = Future(_revalidate);
 
-    final sub = Connectivity().onConnectivityChanged.listen((results) {
+    _connectivitySub?.cancel();
+    _connectivitySub = Connectivity().onConnectivityChanged.listen((results) {
       final online = results.any((r) => r != ConnectivityResult.none);
       if (online) {
         revalidationDone = _revalidate();
       }
     });
-    ref.onDispose(sub.cancel);
 
     // A warm resume must also revalidate: the process can stay alive in the
     // background for days, so the tokens may have expired without any cold
     // start noticing. The app is offline-first, so without this a dead
     // session would only surface once some server-backed action happens to
     // run. Gated on needsRefresh so quick app switches stay request-free.
-    final lifecycleListener = AppLifecycleListener(
+    _lifecycleListener?.dispose();
+    _lifecycleListener = AppLifecycleListener(
       onResume: () {
         final credential = state.asData?.value.credential;
         if (credential?.needsRefresh(refreshLeeway) ?? false) {
@@ -660,7 +548,6 @@ class AuthNotifier extends _$AuthNotifier {
         }
       },
     );
-    ref.onDispose(lifecycleListener.dispose);
   }
 
   /// Revalidates the restored session against the server. Fire-and-forget: it
@@ -677,14 +564,18 @@ class AuthNotifier extends _$AuthNotifier {
       // If the access token has expired (typical after a longer offline
       // period) refresh first, so a still-valid refresh token isn't wasted
       // by a 401 on the probe below. The refresh's own failure paths will
-      // clear the session if the refresh token is also dead. Legacy
-      // credentials are no-op here ([AuthCredential.needsRefresh] returns
-      // false for them).
+      // clear the session if the refresh token is also dead.
       if (current.credential?.needsRefresh(refreshLeeway) ?? false) {
         _logger.fine('revalidation: access token within leeway, refreshing first');
         await refreshAccessToken();
         current = state.asData?.value;
         if (current == null || current.status != AuthStatus.loggedIn) {
+          return;
+        }
+        // A refresh that failed on the network keeps the stale token. Probing
+        // with it can only earn a 403 and a logout, so wait for the next run.
+        if (current.credential?.needsRefresh(refreshLeeway) ?? false) {
+          _logger.fine('revalidation: refresh did not deliver, skipping the probe');
           return;
         }
       }
@@ -705,7 +596,7 @@ class AuthNotifier extends _$AuthNotifier {
         _logger.fine('revalidation: server unreachable, keeping session');
         return;
       }
-      if (_isAuthRejection(response.statusCode)) {
+      if (_isAuthRejection(response)) {
         _logger.info(
           'revalidation: token rejected (${response.statusCode}), clearing session',
         );
@@ -757,25 +648,26 @@ class AuthNotifier extends _$AuthNotifier {
   /// with the new token instead of replaying their pre-login error state.
   void _invalidatePostLoginProviders() {
     _logger.fine('Invalidating data providers after login');
+    // Leaf first: the providers below read reachability as they rebuild, and
+    // flushing a still-dirty networkStatusProvider from a create during
+    // widget build crashes. The re-probe also picks up the new server URL.
+    ref.invalidate(networkStatusProvider);
     ref.invalidate(accountProvider);
     ref.invalidate(userProfileProvider);
     ref.invalidate(routinesRiverpodProvider);
     ref.invalidate(nutritionProvider);
     ref.invalidate(trophyStateProvider);
     ref.invalidate(galleryProvider);
-    // Re-probe reachability against the new server. NetworkStatus relies on
-    // this invalidation to pick up the post-login server URL immediately.
-    ref.invalidate(networkStatusProvider);
   }
 
   /// Exchanges the persisted refresh token for a fresh access/refresh pair.
   ///
-  /// Single-flight: concurrent callers share one HTTP request. On any
-  /// failure (missing refresh token, missing serverUrl, network error,
-  /// non-200 response, malformed body) the session is cleared via
-  /// [clearSessionOnly] so the user can re-authenticate without losing
-  /// local data. Pure network errors keep the session intact so offline
-  /// use continues to work.
+  /// Single-flight: concurrent callers share one HTTP request. When the
+  /// server rejects the refresh token (400, 401, 403), or the stored bundle
+  /// is unusable (missing refresh token, missing serverUrl, malformed body),
+  /// the session is cleared via [clearSessionOnly] so the user can
+  /// re-authenticate without losing local data. Network errors and transient
+  /// statuses (5xx, 408, 429) keep the session so offline use continues.
   ///
   /// On success: `state.credential` is updated to the new JWT, the rotated
   /// refresh token (when present) is written to secure storage, and the
@@ -796,31 +688,24 @@ class AuthNotifier extends _$AuthNotifier {
       return;
     }
 
-    final String? refreshToken;
-    try {
-      refreshToken = await _storage.readRefreshToken();
-    } on Exception catch (e, s) {
-      // Secure storage can fail to decrypt the token, e.g. after an Android
-      // backup/restore onto a new device leaves the encrypted blob behind, etc.
-      _logger.warning('refreshAccessToken: secure storage read failed, clearing session', e, s);
+    final refreshToken = await _readStoredRefreshToken();
+    if (refreshToken == null) {
+      _logger.warning('refreshAccessToken: no usable refresh token, clearing session');
       await clearSessionOnly();
       showSessionExpiredSnackbar();
-      return;
-    }
-    if (refreshToken == null || refreshToken.isEmpty) {
-      _logger.warning('refreshAccessToken: no refresh token in secure storage, clearing session');
-      await clearSessionOnly();
       return;
     }
 
     final appVersion = current.applicationVersion ?? await PackageInfo.fromPlatform();
     final http.Response response;
     try {
-      response = await _client.post(
-        makeHeadlessUri(serverUrl, HEADLESS_TOKENS_REFRESH_PATH),
-        headers: jsonApiHeaders(appVersion),
-        body: json.encode({'refresh_token': refreshToken}),
-      );
+      response = await _api
+          .postTokenRefresh(
+            refreshToken: refreshToken,
+            serverUrl: serverUrl,
+            appVersion: appVersion,
+          )
+          .timeout(tokenRefreshTimeout);
     } on Exception catch (e, s) {
       _logger.warning(
         'refreshAccessToken: network error, keeping session so local data stays accessible',
@@ -834,6 +719,15 @@ class AuthNotifier extends _$AuthNotifier {
       final bodySnippet = response.body.length > 200
           ? '${response.body.substring(0, 200)}...'
           : response.body;
+      // Only a rejection ends the session. allauth answers a dead refresh
+      // token with 400; 5xx, 408 or 429 say nothing about the token.
+      if (!_isRefreshRejection(response.statusCode)) {
+        _logger.warning(
+          'refreshAccessToken: status ${response.statusCode}, body: $bodySnippet, '
+          'keeping session',
+        );
+        return;
+      }
       _logger.warning(
         'refreshAccessToken: status ${response.statusCode}, body: $bodySnippet, clearing session',
       );
@@ -855,7 +749,7 @@ class AuthNotifier extends _$AuthNotifier {
       final meta = body['meta'] as Map<String, dynamic>?;
       newAccess = (data?['access_token'] ?? meta?['access_token']) as String;
       newRefresh = (data?['refresh_token'] ?? meta?['refresh_token']) as String?;
-      newExp = jwtExp(decodeJwtPayload(newAccess));
+      newExp = jwtExpOnLocalClock(decodeJwtPayload(newAccess));
     } catch (e, s) {
       // Don't log the body: on the success-shaped path it holds the rotated
       // refresh token
@@ -873,6 +767,16 @@ class AuthNotifier extends _$AuthNotifier {
       'refreshAccessToken: success, new expiry $newExp, '
       'rotated refresh token: ${newRefresh != null}',
     );
+
+    // A logout, user switch or server change while the request was in flight
+    // ended the session this result belongs to; persisting it would replant
+    // the tokens into the freshly cleared storage and republish the session
+    final latest = _currentOrBlank();
+    if (latest.serverUrl != serverUrl ||
+        latest.credential?.accessToken != current.credential?.accessToken) {
+      _logger.warning('refreshAccessToken: session changed while refreshing, discarding result');
+      return;
+    }
 
     final newCred = JwtCredential(accessToken: newAccess, expiresAt: newExp);
     await _storage.updateJwt(credential: newCred, refreshToken: newRefresh);
@@ -906,9 +810,10 @@ class AuthNotifier extends _$AuthNotifier {
   /// [logout] instead, which performs a full wipe.
   Future<void> clearSessionOnly() => _resetSession(wipeLocalData: false, sessionExpired: true);
 
-  /// Shared body for [logout] and [clearSessionOnly]. PowerSync is touched
-  /// before the state mutation so a reader observing the post-reset state
-  /// can never race ahead and re-attach to a DB we're about to wipe.
+  /// Shared body for [logout] and [clearSessionOnly]. On the wipe path
+  /// PowerSync is touched before the state mutation so a reader observing the
+  /// post-reset state can never race ahead and re-attach to a DB we're about
+  /// to wipe.
   ///
   /// [sessionExpired] marks the reset as involuntary in the published state,
   /// so the login screen can tell the user why they were logged out.
@@ -921,13 +826,17 @@ class AuthNotifier extends _$AuthNotifier {
     var wiped = true;
     if (wipeLocalData) {
       try {
-        await _wipeLocalDb();
+        await _powerSync.wipe();
       } catch (e, s) {
         _logger.severe('logout wipe failed, keeping owner marker', e, s);
         wiped = false;
       }
     } else {
-      await _disconnectPowerSyncIfBuilt();
+      // Deliberately not awaited: this path runs inside the single-flight
+      // refresh future, and the disconnect can block on a sync fetch that is
+      // itself awaiting that future (refresh -> disconnect -> sync fetch ->
+      // refresh deadlock). The DB is kept, so there is no wipe to race with.
+      unawaited(_powerSync.disconnect());
     }
 
     state = AsyncData(
@@ -949,66 +858,10 @@ class AuthNotifier extends _$AuthNotifier {
     }
   }
 
-  /// Disconnects an already-built PowerSync DB but keeps its data on
-  /// disk so a subsequent login can re-attach to the same database.
-  /// No-op when PowerSync hasn't been built yet.
-  Future<void> _disconnectPowerSyncIfBuilt() async {
-    final db = builtPowerSyncInstance;
-    if (db == null) {
-      return;
-    }
-    try {
-      await db.disconnect();
-    } catch (e, s) {
-      _logger.warning('PowerSync disconnect failed', e, s);
-    }
-  }
-
   /// Wipes the local PowerSync data when a different user logs in.
   Future<void> _wipeOnUserSwitch() async {
     userSwitchWipeCount++;
-    await _wipeLocalDb();
-  }
-
-  /// Removes the local PowerSync data whether or not the DB has been built:
-  /// when the instance exists we use PowerSync's own `disconnectAndClear`,
-  /// otherwise (cold start, before any data widget has built it) we delete
-  /// the on-disk files directly so no data survives.
-  ///
-  /// Throws if the wipe fails. Callers must abort before advancing the DB
-  /// owner marker, otherwise the previous user's data stay on disk
-  Future<void> _wipeLocalDb() async {
-    final db = builtPowerSyncInstance;
-    if (db != null) {
-      try {
-        await db.disconnectAndClear();
-      } catch (e, s) {
-        _logger.severe('local DB wipe via disconnectAndClear failed', e, s);
-        rethrow;
-      }
-      return;
-    }
-    try {
-      await deletePowerSyncDatabaseFile();
-    } catch (e, s) {
-      _logger.severe('local DB wipe via file delete failed', e, s);
-      rethrow;
-    }
-  }
-
-  /// Reconnects an already-built PowerSync DB with a fresh connector for the
-  /// given [serverUrl]. No-op when PowerSync hasn't been built yet: the next
-  /// access will build it with the current (post-login) auth state.
-  Future<void> _reconnectPowerSyncIfBuilt(String serverUrl) async {
-    final db = builtPowerSyncInstance;
-    if (db == null) {
-      return;
-    }
-    try {
-      connectPowerSync(db, serverUrl, ref.read(authenticatedHttpClientProvider));
-    } catch (e, s) {
-      _logger.warning('PowerSync reconnect failed', e, s);
-    }
+    await _powerSync.wipe();
   }
 
   /// Refreshes the server version into the state.
@@ -1031,35 +884,4 @@ class AuthNotifier extends _$AuthNotifier {
     final userData = json.decode((await prefs.getString(PREFS_LAST_SERVER))!);
     return userData['serverUrl'] as String;
   }
-}
-
-/// In-memory bundle returned by the login / signup flows. Always carries a
-/// [JwtCredential] (fresh logins go through `allauth.headless`); the refresh
-/// token is the one the caller still needs to write to secure storage.
-typedef _FreshCredentials = ({JwtCredential credential, String? refreshToken});
-
-/// User-agent header string identifying the app/version/platform.
-String getAppNameHeader(PackageInfo? applicationVersion) {
-  String out = '';
-  if (applicationVersion != null) {
-    out =
-        '/${applicationVersion.version} '
-        '(${applicationVersion.packageName}; '
-        'build: ${applicationVersion.buildNumber}; '
-        'platform: ${Platform.operatingSystem})'
-        ' - https://github.com/wger-project';
-  }
-  return 'wger App$out';
-}
-
-/// Standard JSON-API headers for the auth endpoints. The `Accept` header keeps
-/// a bot wall (e.g. Anubis) from serving an HTML challenge to these endpoints
-/// instead of JSON. [extra] adds per-request headers (session token, auth, ...).
-Map<String, String> jsonApiHeaders(PackageInfo? appVersion, [Map<String, String>? extra]) {
-  return {
-    HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8',
-    HttpHeaders.acceptHeader: 'application/json',
-    HttpHeaders.userAgentHeader: getAppNameHeader(appVersion),
-    ...?extra,
-  };
 }

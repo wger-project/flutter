@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'app_settings_notifier.dart';
@@ -9,6 +9,7 @@ part of 'app_settings_notifier.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -34,16 +35,21 @@ $AppSettingsCopyWith<AppSettings> get copyWith => _$AppSettingsCopyWithImpl<AppS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppSettings&&(identical(other.themeMode, themeMode) || other.themeMode == themeMode)&&const DeepCollectionEquality().equals(other.dashboardItems, dashboardItems)&&(identical(other.userLocale, userLocale) || other.userLocale == userLocale)&&(identical(other.keepDataOnLogout, keepDataOnLogout) || other.keepDataOnLogout == keepDataOnLogout)&&(identical(other.allowSelfSignedCerts, allowSelfSignedCerts) || other.allowSelfSignedCerts == allowSelfSignedCerts)&&(identical(other.useDynamicColor, useDynamicColor) || other.useDynamicColor == useDynamicColor)&&(identical(other.verboseLogging, verboseLogging) || other.verboseLogging == verboseLogging));
+  final _this = this as AppSettings;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppSettings&&(identical(other.themeMode, _this.themeMode) || other.themeMode == _this.themeMode)&&const DeepCollectionEquality().equals(other.dashboardItems, _this.dashboardItems)&&(identical(other.userLocale, _this.userLocale) || other.userLocale == _this.userLocale)&&(identical(other.keepDataOnLogout, _this.keepDataOnLogout) || other.keepDataOnLogout == _this.keepDataOnLogout)&&(identical(other.allowSelfSignedCerts, _this.allowSelfSignedCerts) || other.allowSelfSignedCerts == _this.allowSelfSignedCerts)&&(identical(other.useDynamicColor, _this.useDynamicColor) || other.useDynamicColor == _this.useDynamicColor)&&(identical(other.verboseLogging, _this.verboseLogging) || other.verboseLogging == _this.verboseLogging));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,themeMode,const DeepCollectionEquality().hash(dashboardItems),userLocale,keepDataOnLogout,allowSelfSignedCerts,useDynamicColor,verboseLogging);
+int get hashCode {
+  final _this = this as AppSettings;
+  return Object.hash(runtimeType,_this.themeMode,const DeepCollectionEquality().hash(_this.dashboardItems),_this.userLocale,_this.keepDataOnLogout,_this.allowSelfSignedCerts,_this.useDynamicColor,_this.verboseLogging);
+}
 
 @override
 String toString() {
-  return 'AppSettings(themeMode: $themeMode, dashboardItems: $dashboardItems, userLocale: $userLocale, keepDataOnLogout: $keepDataOnLogout, allowSelfSignedCerts: $allowSelfSignedCerts, useDynamicColor: $useDynamicColor, verboseLogging: $verboseLogging)';
+  final _this = this as AppSettings;
+  return 'AppSettings(themeMode: ${_this.themeMode}, dashboardItems: ${_this.dashboardItems}, userLocale: ${_this.userLocale}, keepDataOnLogout: ${_this.keepDataOnLogout}, allowSelfSignedCerts: ${_this.allowSelfSignedCerts}, useDynamicColor: ${_this.useDynamicColor}, verboseLogging: ${_this.verboseLogging})';
 }
 
 
@@ -72,7 +78,7 @@ class _$AppSettingsCopyWithImpl<$Res>
 /// Create a copy of AppSettings
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? themeMode = null,Object? dashboardItems = null,Object? userLocale = freezed,Object? keepDataOnLogout = null,Object? allowSelfSignedCerts = null,Object? useDynamicColor = null,Object? verboseLogging = null,}) {
-  return _then(_self.copyWith(
+  return _then(AppSettings(
 themeMode: null == themeMode ? _self.themeMode : themeMode // ignore: cast_nullable_to_non_nullable
 as ThemeMode,dashboardItems: null == dashboardItems ? _self.dashboardItems : dashboardItems // ignore: cast_nullable_to_non_nullable
 as List<DashboardItem>,userLocale: freezed == userLocale ? _self.userLocale : userLocale // ignore: cast_nullable_to_non_nullable
@@ -215,7 +221,7 @@ return $default(_that.themeMode,_that.dashboardItems,_that.userLocale,_that.keep
 
 
 class _AppSettings implements AppSettings {
-  const _AppSettings({this.themeMode = ThemeMode.system, final  List<DashboardItem> dashboardItems = const [], this.userLocale, this.keepDataOnLogout = KEEP_DATA_ON_LOGOUT_DEFAULT, this.allowSelfSignedCerts = ALLOW_SELF_SIGNED_CERTS_DEFAULT, this.useDynamicColor = USE_DYNAMIC_COLOR_DEFAULT, this.verboseLogging = VERBOSE_LOGGING_DEFAULT}): _dashboardItems = dashboardItems;
+  const _AppSettings({this.themeMode = ThemeMode.system,  List<DashboardItem> dashboardItems = const [], this.userLocale, this.keepDataOnLogout = KEEP_DATA_ON_LOGOUT_DEFAULT, this.allowSelfSignedCerts = ALLOW_SELF_SIGNED_CERTS_DEFAULT, this.useDynamicColor = USE_DYNAMIC_COLOR_DEFAULT, this.verboseLogging = VERBOSE_LOGGING_DEFAULT}): _dashboardItems = dashboardItems;
   
 
 @override@JsonKey() final  ThemeMode themeMode;
@@ -251,16 +257,18 @@ _$AppSettingsCopyWith<_AppSettings> get copyWith => __$AppSettingsCopyWithImpl<_
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppSettings&&(identical(other.themeMode, themeMode) || other.themeMode == themeMode)&&const DeepCollectionEquality().equals(other._dashboardItems, _dashboardItems)&&(identical(other.userLocale, userLocale) || other.userLocale == userLocale)&&(identical(other.keepDataOnLogout, keepDataOnLogout) || other.keepDataOnLogout == keepDataOnLogout)&&(identical(other.allowSelfSignedCerts, allowSelfSignedCerts) || other.allowSelfSignedCerts == allowSelfSignedCerts)&&(identical(other.useDynamicColor, useDynamicColor) || other.useDynamicColor == useDynamicColor)&&(identical(other.verboseLogging, verboseLogging) || other.verboseLogging == verboseLogging));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppSettings&&(identical(other.themeMode, themeMode) || other.themeMode == themeMode)&&const DeepCollectionEquality().equals(other.dashboardItems, _dashboardItems)&&(identical(other.userLocale, userLocale) || other.userLocale == userLocale)&&(identical(other.keepDataOnLogout, keepDataOnLogout) || other.keepDataOnLogout == keepDataOnLogout)&&(identical(other.allowSelfSignedCerts, allowSelfSignedCerts) || other.allowSelfSignedCerts == allowSelfSignedCerts)&&(identical(other.useDynamicColor, useDynamicColor) || other.useDynamicColor == useDynamicColor)&&(identical(other.verboseLogging, verboseLogging) || other.verboseLogging == verboseLogging));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,themeMode,const DeepCollectionEquality().hash(_dashboardItems),userLocale,keepDataOnLogout,allowSelfSignedCerts,useDynamicColor,verboseLogging);
+int get hashCode {
+    return Object.hash(runtimeType,themeMode,const DeepCollectionEquality().hash(_dashboardItems),userLocale,keepDataOnLogout,allowSelfSignedCerts,useDynamicColor,verboseLogging);
+}
 
 @override
 String toString() {
-  return 'AppSettings(themeMode: $themeMode, dashboardItems: $dashboardItems, userLocale: $userLocale, keepDataOnLogout: $keepDataOnLogout, allowSelfSignedCerts: $allowSelfSignedCerts, useDynamicColor: $useDynamicColor, verboseLogging: $verboseLogging)';
+    return 'AppSettings(themeMode: $themeMode, dashboardItems: $dashboardItems, userLocale: $userLocale, keepDataOnLogout: $keepDataOnLogout, allowSelfSignedCerts: $allowSelfSignedCerts, useDynamicColor: $useDynamicColor, verboseLogging: $verboseLogging)';
 }
 
 

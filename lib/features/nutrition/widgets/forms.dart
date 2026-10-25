@@ -16,8 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:wger/core/colors.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/core/number_input.dart';
@@ -32,10 +33,11 @@ import 'package:wger/features/nutrition/models/log.dart';
 import 'package:wger/features/nutrition/models/meal.dart';
 import 'package:wger/features/nutrition/models/meal_item.dart';
 import 'package:wger/features/nutrition/models/nutritional_plan.dart';
+import 'package:wger/features/nutrition/models/nutritional_values.dart';
 import 'package:wger/features/nutrition/providers/nutrition_notifier.dart';
 import 'package:wger/features/nutrition/screens/nutritional_plan_screen.dart';
 import 'package:wger/features/nutrition/widgets/helpers.dart';
-import 'package:wger/features/nutrition/widgets/nutrition_tiles.dart';
+import 'package:wger/features/nutrition/widgets/ingredient_images.dart';
 import 'package:wger/features/nutrition/widgets/widgets.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
@@ -208,12 +210,34 @@ class IngredientFormState extends ConsumerState<IngredientForm> {
     });
   }
 
+  void _selectWeightUnit(IngredientWeightUnit? unit) {
+    setState(() {
+      _selectedWeightUnit = unit;
+      _mealItem.weightUnitId = unit?.id;
+      _mealItem.weightUnitObj = unit;
+    });
+  }
+
   // note: does not reset text search and amount inputs
   void unSelectIngredient() {
     setState(() {
       _mealItem.ingredientId = 0;
       _ingredientIdController.text = '';
     });
+  }
+
+  /// Drops the selected ingredient and everything derived from it, keeping
+  /// only the typed amount.
+  void _clearIngredient() {
+    setState(() {
+      _mealItem.ingredient = null;
+      _mealItem.ingredientId = 0;
+      _ingredientController.text = '';
+      _ingredientIdController.text = '';
+      _searchQuery = '';
+      _weightUnits = [];
+    });
+    _selectWeightUnit(null);
   }
 
   void updateSearchQuery(String query) {
@@ -239,183 +263,214 @@ class IngredientFormState extends ConsumerState<IngredientForm> {
       margin: const EdgeInsets.all(20),
       child: Form(
         key: _form,
-        child: Column(
-          children: [
-            IngredientTypeahead(
-              _ingredientIdController,
-              _ingredientController,
-              barcode: widget.barcode,
-              test: widget.test,
-              selectIngredient: selectIngredient,
-              onDeselectIngredient: unSelectIngredient,
-              onUpdateSearchQuery: updateSearchQuery,
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: TextFormField(
-                    key: const Key('field-weight'),
-                    decoration: InputDecoration(
-                      labelText: i18n.weight,
-                      suffix: _weightUnits.isNotEmpty
-                          ? DropdownButton<int?>(
-                              value: _selectedWeightUnit?.id,
-                              underline: const SizedBox(),
-                              isDense: true,
-                              items: [
-                                DropdownMenuItem<int?>(
-                                  value: null,
-                                  child: Text(i18n.g),
-                                ),
-                                ..._weightUnits.map(
-                                  (unit) => DropdownMenuItem<int?>(
-                                    value: unit.id,
-                                    child: Text('${unit.name} (${unit.grams}g)'),
-                                  ),
-                                ),
-                              ],
-                              onChanged: (value) {
-                                setState(() {
-                                  if (value == null) {
-                                    _selectedWeightUnit = null;
-                                    _mealItem.weightUnitId = null;
-                                    _mealItem.weightUnitObj = null;
-                                  } else {
-                                    _selectedWeightUnit = _weightUnits.firstWhere(
-                                      (u) => u.id == value,
-                                    );
-                                    _mealItem.weightUnitId = value;
-                                    _mealItem.weightUnitObj = _selectedWeightUnit;
-                                  }
-                                });
-                              },
-                            )
-                          : Text(i18n.g),
-                    ),
-                    controller: _amountController,
-                    keyboardType: textInputTypeDecimal,
-                    inputFormatters: [
-                      LocalizedDecimalInputFormatter(numberFormat.symbols.DECIMAL_SEP),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              if (_mealItem.ingredient != null && _ingredientIdController.text.isNotEmpty)
+                Padding(
+                  key: const Key('selected-ingredient'),
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: Row(
+                    spacing: 12,
+                    children: [
+                      ClipOval(
+                        child: ColoredBox(
+                          color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                          child: SizedBox.square(
+                            dimension: 64,
+                            child: IngredientImageWidget(image: _mealItem.ingredient!.image),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              _mealItem.ingredient!.name,
+                              style: Theme.of(context).textTheme.titleLarge,
+                            ),
+                            Text(
+                              '${i18n.kcalValue(_mealItem.ingredient!.energy.toString())} / 100 ${i18n.g}',
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                          ],
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.info_outline),
+                        onPressed: () => showIngredientDetails(context, ref, _mealItem.ingredient!),
+                      ),
+                      IconButton(
+                        key: const Key('clear-ingredient'),
+                        icon: const Icon(Icons.close),
+                        tooltip: MaterialLocalizations.of(context).clearButtonTooltip,
+                        onPressed: _clearIngredient,
+                      ),
                     ],
-                    onChanged: (value) {
-                      setState(() {
-                        final v = numberFormat.tryParse(value);
-                        if (v != null) {
-                          _mealItem.amount = v;
-                        }
-                      });
-                    },
-                    onSaved: (value) {
-                      _mealItem.amount = numberFormat.parse(value!);
-                    },
-                    validator: (value) {
-                      final text = value?.trim() ?? '';
-                      if (text.isEmpty) {
-                        return i18n.enterValue;
-                      }
-                      final parsed = numberFormat.tryParse(text);
-                      if (parsed == null) {
-                        return i18n.enterValidNumber;
-                      }
+                  ),
+                )
+              else
+                IngredientTypeahead(
+                  _ingredientIdController,
+                  _ingredientController,
+                  barcode: widget.barcode,
+                  test: widget.test,
+                  selectIngredient: selectIngredient,
+                  onDeselectIngredient: unSelectIngredient,
+                  onUpdateSearchQuery: updateSearchQuery,
+                ),
+              TextFormField(
+                key: const Key('field-weight'),
+                decoration: InputDecoration(
+                  labelText: i18n.weight,
+                  suffixText: _selectedWeightUnit != null
+                      ? '× ${_selectedWeightUnit!.name}'
+                      : i18n.g,
+                ),
+                controller: _amountController,
+                keyboardType: textInputTypeDecimal,
+                inputFormatters: [
+                  LocalizedDecimalInputFormatter(numberFormat.symbols.DECIMAL_SEP),
+                ],
+                onChanged: (value) {
+                  setState(() {
+                    final v = numberFormat.tryParse(value);
+                    if (v != null) {
+                      _mealItem.amount = v;
+                    }
+                  });
+                },
+                onSaved: (value) {
+                  _mealItem.amount = numberFormat.parse(value!);
+                },
+                validator: (value) {
+                  final text = value?.trim() ?? '';
+                  if (text.isEmpty) {
+                    return i18n.enterValue;
+                  }
+                  final parsed = numberFormat.tryParse(text);
+                  if (parsed == null) {
+                    return i18n.enterValidNumber;
+                  }
 
-                      if (parsed < 1 || parsed > 1000) {
-                        return i18n.formMinMaxValues(1, 1000);
-                      }
-                      return null;
-                    },
+                  if (parsed < 1 || parsed > 1000) {
+                    return i18n.formMinMaxValues(1, 1000);
+                  }
+                  return null;
+                },
+              ),
+              if (_weightUnits.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      spacing: 8,
+                      children: [
+                        ChoiceChip(
+                          label: Text(i18n.g),
+                          selected: _selectedWeightUnit == null,
+                          onSelected: (_) => _selectWeightUnit(null),
+                        ),
+                        ..._weightUnits.map(
+                          (unit) => ChoiceChip(
+                            label: Text('${unit.name} (${unit.grams}g)'),
+                            selected: _selectedWeightUnit?.id == unit.id,
+                            onSelected: (_) => _selectWeightUnit(unit),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-                if (widget.withDate)
-                  Expanded(
-                    child: DateInputWidget(
-                      value: _date,
-                      labelText: i18n.date,
-                      firstDate: DateTime(DateTime.now().year - 10),
-                      lastDate: DateTime.now(),
-                      onChanged: (date) => _date = date,
-                    ),
+              if (_ingredientIdController.text.isNotEmpty &&
+                  _amountController.text.isNotEmpty &&
+                  _mealItem.ingredient != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 12, bottom: 4),
+                  child: _MacrosSummary(
+                    key: const Key('macros-summary'),
+                    values: _mealItem.nutritionalValues,
+                    grams: _selectedWeightUnit == null
+                        ? null
+                        : _mealItem.amount * _selectedWeightUnit!.grams,
                   ),
-                if (widget.withDate)
-                  Expanded(
-                    child: TimeInputWidget(
-                      key: const Key('field-time'),
-                      value: _time,
-                      labelText: i18n.time,
-                      onChanged: (time) => _time = time,
-                    ),
-                  ),
-              ],
-            ),
-            if (widget.meals.isNotEmpty)
-              DropdownButtonFormField<String?>(
-                key: const Key('field-meal'),
-                initialValue: _selectedMealId,
-                decoration: InputDecoration(labelText: i18n.meal),
-                items: [
-                  DropdownMenuItem<String?>(
-                    value: null,
-                    child: Text(i18n.otherLogs),
-                  ),
-                  ...widget.meals.map(
-                    (meal) => DropdownMenuItem<String?>(
-                      value: meal.id,
-                      child: Text(
-                        meal.name.isNotEmpty ? meal.name : meal.time?.format(context) ?? '',
+                ),
+              if (widget.withDate)
+                Row(
+                  children: [
+                    Expanded(
+                      child: DateInputWidget(
+                        value: _date,
+                        labelText: i18n.date,
+                        firstDate: DateTime(DateTime.now().year - 10),
+                        lastDate: DateTime.now(),
+                        onChanged: (date) => _date = date,
                       ),
                     ),
-                  ),
-                ],
-                onChanged: (value) => setState(() => _selectedMealId = value),
-              ),
-            if (ingredientIdController.text.isNotEmpty &&
-                _amountController.text.isNotEmpty &&
-                _mealItem.ingredient != null)
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: [
-                    Text(
-                      'Macros preview', // TODO fix l10n
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    MealItemValuesTile(
-                      ingredient: _mealItem.ingredient!,
-                      nutritionalValues: _mealItem.nutritionalValues,
+                    Expanded(
+                      child: TimeInputWidget(
+                        key: const Key('field-time'),
+                        value: _time,
+                        labelText: i18n.time,
+                        onChanged: (time) => _time = time,
+                      ),
                     ),
                   ],
                 ),
+              if (widget.meals.isNotEmpty)
+                DropdownButtonFormField<String?>(
+                  key: const Key('field-meal'),
+                  initialValue: _selectedMealId,
+                  decoration: InputDecoration(labelText: i18n.meal),
+                  items: [
+                    DropdownMenuItem<String?>(
+                      value: null,
+                      child: Text(i18n.otherLogs),
+                    ),
+                    ...widget.meals.map(
+                      (meal) => DropdownMenuItem<String?>(
+                        value: meal.id,
+                        child: Text(
+                          meal.name.isNotEmpty ? meal.name : meal.time?.format(context) ?? '',
+                        ),
+                      ),
+                    ),
+                  ],
+                  onChanged: (value) => setState(() => _selectedMealId = value),
+                ),
+              FormSubmitButton(
+                key: const Key(SUBMIT_BUTTON_KEY_NAME),
+                label: AppLocalizations.of(context).save,
+                onPressed: () async {
+                  if (!_form.currentState!.validate()) {
+                    return;
+                  }
+                  _form.currentState!.save();
+                  _mealItem.ingredientId = int.parse(_ingredientIdController.text);
+
+                  final loggedDate = DateTime(
+                    _date.year,
+                    _date.month,
+                    _date.day,
+                    _time.hour,
+                    _time.minute,
+                  );
+                  widget.onSave(context, ref, _mealItem, loggedDate, _selectedMealId);
+
+                  Navigator.of(context).pop();
+                },
               ),
-            FormSubmitButton(
-              key: const Key(SUBMIT_BUTTON_KEY_NAME),
-              label: AppLocalizations.of(context).save,
-              onPressed: () async {
-                if (!_form.currentState!.validate()) {
-                  return;
-                }
-                _form.currentState!.save();
-                _mealItem.ingredientId = int.parse(_ingredientIdController.text);
-
-                final loggedDate = DateTime(
-                  _date.year,
-                  _date.month,
-                  _date.day,
-                  _time.hour,
-                  _time.minute,
-                );
-                widget.onSave(context, ref, _mealItem, loggedDate, _selectedMealId);
-
-                Navigator.of(context).pop();
-              },
-            ),
-            if (suggestions.isNotEmpty) const SizedBox(height: 10.0),
-            Container(
-              padding: const EdgeInsets.all(10.0),
-              child: Text(AppLocalizations.of(context).recentlyUsedIngredients),
-            ),
-            Expanded(
-              child: ListView.builder(
+              if (suggestions.isNotEmpty) const SizedBox(height: 10.0),
+              Container(
+                padding: const EdgeInsets.all(10.0),
+                child: Text(AppLocalizations.of(context).recentlyUsedIngredients),
+              ),
+              ListView.builder(
                 itemCount: suggestions.length,
                 shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (context, index) {
                   // ingredient is non-null here, the suggestions list above
                   // filters out items whose ingredient hasn't been hydrated.
@@ -463,10 +518,98 @@ class IngredientFormState extends ConsumerState<IngredientForm> {
                   );
                 },
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
+    );
+  }
+}
+
+/// Energy of an entry and how it splits into the macronutrients.
+class _MacrosSummary extends StatelessWidget {
+  const _MacrosSummary({super.key, required this.values, this.grams});
+
+  final NutritionalValues values;
+
+  /// Weight in grams, shown when the amount is entered in another unit
+  final num? grams;
+
+  @override
+  Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    // Same color mapping as the macro pie chart
+    final [carbsColor, proteinColor, fatColor] = chartColorPalette(3, theme.colorScheme);
+    final macros = [
+      (i18n.protein, values.protein, values.protein * ENERGY_PROTEIN, proteinColor),
+      (
+        i18n.carbohydrates,
+        values.carbohydrates,
+        values.carbohydrates * ENERGY_CARBOHYDRATES,
+        carbsColor,
+      ),
+      (i18n.fat, values.fat, values.fat * ENERGY_FAT, fatColor),
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 8,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.baseline,
+          textBaseline: TextBaseline.alphabetic,
+          spacing: 6,
+          children: [
+            Text(values.energy.toStringAsFixed(0), style: theme.textTheme.headlineSmall),
+            Text(i18n.kcal, style: theme.textTheme.bodyMedium),
+            if (grams != null)
+              Text(
+                '· ${i18n.gValue(grams!.toStringAsFixed(0))}',
+                style: theme.textTheme.bodyMedium,
+              ),
+          ],
+        ),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(4),
+          child: SizedBox(
+            height: 8,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              spacing: 2,
+              children: [
+                for (final (_, _, energy, color) in macros)
+                  if ((energy * 10).round() > 0)
+                    Expanded(
+                      flex: (energy * 10).round(),
+                      child: ColoredBox(color: color),
+                    ),
+              ],
+            ),
+          ),
+        ),
+        Wrap(
+          spacing: 14,
+          runSpacing: 4,
+          children: [
+            for (final (label, amount, _, color) in macros)
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                spacing: 6,
+                children: [
+                  DecoratedBox(
+                    decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+                    child: const SizedBox.square(dimension: 10),
+                  ),
+                  Text(
+                    '$label ${i18n.gValue(amount.toStringAsFixed(0))}',
+                    style: theme.textTheme.bodySmall,
+                  ),
+                ],
+              ),
+          ],
+        ),
+      ],
     );
   }
 }

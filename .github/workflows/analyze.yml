@@ -1,6 +1,10 @@
 name: Analyze
 on:
+  # Direct pushes are only validated on master (post-merge); everything else
+  # is covered by the pull_request trigger, avoiding duplicate runs for
+  # same-repo PR branches.
   push:
+    branches: [ master, ]
     paths:
       - '**.dart'
       - 'pubspec.yaml'
@@ -9,7 +13,6 @@ on:
       - 'ios/Runner/Info.plist'
       - 'android/app/src/main/res/xml/locales_config.xml'
   pull_request:
-    branches: [ master, ]
     paths:
       - '**/*.dart'
       - 'pubspec.yaml'

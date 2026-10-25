@@ -19,6 +19,7 @@
 import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wger/core/consts.dart';
+import 'package:wger/core/errors.dart';
 import 'package:wger/core/language.dart';
 import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/core/search_options.dart';
@@ -85,8 +86,8 @@ class Exercises extends _$Exercises {
 
   /// Searches for exercises matching [term].
   ///
-  /// Routes to the REST API when the device is online, or to the in-memory
-  /// snapshot when offline. Empty term returns an empty list.
+  /// Prefers the REST API and falls back to the in-memory snapshot when the
+  /// server cannot be reached. Empty term returns an empty list.
   Future<List<Exercise>> searchExercise(
     String term, {
     String languageCode = 'en',
@@ -95,25 +96,31 @@ class Exercises extends _$Exercises {
     if (term.isEmpty) {
       return [];
     }
-    if (ref.read(networkStatusProvider)) {
-      // The repo's REST search returns just IDs; hydrate them against the
-      // already-loaded snapshot (the catalogue is always fully synced) so
-      // the caller gets full Exercise objects regardless of which path ran.
-      final ids = await ref
-          .read(exerciseRepositoryProvider)
-          .searchExerciseServer(term, languageCode: languageCode, searchEnglish: searchEnglish);
-      return _exercises.where((e) => ids.contains(e.id)).toList();
-    }
-    return _searchExerciseLocal(term, languageCode: languageCode, searchEnglish: searchEnglish);
+    return serverWithLocalFallback(
+      isOnline: ref.read(networkStatusProvider),
+      server: () async {
+        // The repo's REST search returns just IDs; hydrate them against the
+        // already-loaded snapshot (the catalogue is always fully synced) so
+        // the caller gets full Exercise objects regardless of which path ran.
+        final ids = await ref
+            .read(exerciseRepositoryProvider)
+            .searchExerciseServer(term, languageCode: languageCode, searchEnglish: searchEnglish);
+        return _exercises.where((e) => ids.contains(e.id)).toList();
+      },
+      local: () =>
+          _searchExerciseLocal(term, languageCode: languageCode, searchEnglish: searchEnglish),
+      logger: _logger,
+      fallbackLog: 'Exercise search falling back to the local catalogue',
+    );
   }
 
   /// Searches for exercises matching [term] with extended search options:
   /// language scope, fulltext-vs-exact mode, and a category filter.
   ///
-  /// Routes to the REST API when online (the backend handles `searchMode` and
-  /// `categories` server-side), or to the in-memory snapshot when offline
-  /// (substring match within the configured languages, post-filtered by
-  /// [categories]). Empty/short terms return an empty list.
+  /// Prefers the REST API (the backend handles `searchMode` and `categories`
+  /// server-side) and falls back to the in-memory snapshot when the server
+  /// cannot be reached (substring match within the configured languages,
+  /// post-filtered by [categories]). Empty/short terms return an empty list.
   Future<List<Exercise>> searchExerciseWithSearchMode(
     String term, {
     String languageCode = LANGUAGE_SHORT_ENGLISH,
@@ -125,35 +132,41 @@ class Exercises extends _$Exercises {
       return [];
     }
 
-    if (ref.read(networkStatusProvider)) {
-      final ids = await ref
-          .read(exerciseRepositoryProvider)
-          .searchExerciseServerWithSearchMode(
-            term,
-            languageCode: languageCode,
-            searchLanguage: searchLanguage,
-            searchMode: searchMode,
-            categories: categories,
-          );
-      return _exercises.where((e) => ids.contains(e.id)).toList();
-    }
-
-    final searchEnglish = searchLanguage == SearchLanguage.currentAndEnglish;
-    var results = await _searchExerciseLocal(
-      term,
-      languageCode: languageCode,
-      searchEnglish: searchEnglish,
+    return serverWithLocalFallback(
+      isOnline: ref.read(networkStatusProvider),
+      server: () async {
+        final ids = await ref
+            .read(exerciseRepositoryProvider)
+            .searchExerciseServerWithSearchMode(
+              term,
+              languageCode: languageCode,
+              searchLanguage: searchLanguage,
+              searchMode: searchMode,
+              categories: categories,
+            );
+        return _exercises.where((e) => ids.contains(e.id)).toList();
+      },
+      local: () async {
+        final searchEnglish = searchLanguage == SearchLanguage.currentAndEnglish;
+        var results = await _searchExerciseLocal(
+          term,
+          languageCode: languageCode,
+          searchEnglish: searchEnglish,
+        );
+        if (searchMode == ExerciseSearchMode.exact) {
+          final lower = term.toLowerCase();
+          results = results.where((e) {
+            return e.getTranslation(languageCode).name.toLowerCase() == lower;
+          }).toList();
+        }
+        if (categories.isNotEmpty) {
+          results = results.where((e) => categories.contains(e.category)).toList();
+        }
+        return results;
+      },
+      logger: _logger,
+      fallbackLog: 'Filtered exercise search falling back to the local catalogue',
     );
-    if (searchMode == ExerciseSearchMode.exact) {
-      final lower = term.toLowerCase();
-      results = results.where((e) {
-        return e.getTranslation(languageCode).name.toLowerCase() == lower;
-      }).toList();
-    }
-    if (categories.isNotEmpty) {
-      results = results.where((e) => categories.contains(e.category)).toList();
-    }
-    return results;
   }
 
   /// Pure in-memory substring search across the configured translations.
