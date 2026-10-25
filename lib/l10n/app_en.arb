@@ -375,13 +375,12 @@
   "countdown": "Countdown",
   "stopwatch": "Stopwatch",
   "gymModeDefaultCountdownTime": "Default countdown time, in seconds",
-  "gymModeNotifyOnCountdownFinish": "Notify on countdown end",
-  "gymModeRestAlarm": "Rest alarm",
-  "gymModeRestAlarmHelp": "System notification when the rest is over, also with the screen locked",
+  "gymModeAlertOnRestEnd": "Alert when rest ends",
+  "gymModeAlertOnRestEndHelp": "Vibrates in gym mode, or sends a notification when the app is in the background",
   "gymModeWorkoutNotification": "Workout notification",
   "gymModeExactAlarmMissing": "Without the exact alarm permission, the rest alarm can be a few minutes late",
   "gymModeExactAlarmAllow": "Allow",
-  "gymModeWorkoutNotificationHelp": "Shows the rest and the next set, with buttons to log it or skip the rest",
+  "gymModeWorkoutNotificationHelp": "While the app is in the background: rest countdown and next set, with buttons to log or skip",
   "workoutNotificationRestOver": "Rest is over",
   "workoutNotificationNext": "Next: {set}",
   "@workoutNotificationNext": {
@@ -411,6 +410,10 @@
   "workoutNotificationSkipRest": "Skip rest",
   "workoutNotificationNotLoggedTitle": "Set not logged",
   "workoutNotificationNotLoggedBody": "Open gym mode to continue the workout",
+  "workoutNotificationAlarmChannel": "Rest alarm",
+  "@workoutNotificationAlarmChannel": {
+    "description": "Name of the Android notification channel for the alert at the end of a rest"
+  },
   "workoutNotificationChannel": "Workout",
   "@workoutNotificationChannel": {
     "description": "Name of the Android notification channel for the ongoing workout notification"

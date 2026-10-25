@@ -840,7 +840,6 @@
     "countdown": "Compte à rebours",
     "stopwatch": "Chronomètre",
     "gymModeDefaultCountdownTime": "Temps de compte à rebours par défaut, en secondes",
-    "gymModeNotifyOnCountdownFinish": "Notifier à la fin du compte à rebours",
     "duration": "Durée",
     "durationHoursMinutes": "{hours}h {minutes}m",
     "@durationHoursMinutes": {

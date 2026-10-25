@@ -525,30 +525,30 @@ void main() {
     test('Both are on without stored preferences', () async {
       await notifier.loadPrefs();
 
-      expect(notifier.state.restAlarmEnabled, isTrue);
+      expect(notifier.state.alertOnCountdownEnd, isTrue);
       expect(notifier.state.showWorkoutNotification, isTrue);
     });
 
     test('Stored values are loaded', () async {
-      await PreferenceHelper.asyncPref.setBool(PREFS_REST_ALARM, false);
+      await PreferenceHelper.asyncPref.setBool(PREFS_ALERT_COUNTDOWN, false);
       await PreferenceHelper.asyncPref.setBool(PREFS_WORKOUT_NOTIFICATION, false);
 
       await notifier.loadPrefs();
 
-      expect(notifier.state.restAlarmEnabled, isFalse);
+      expect(notifier.state.alertOnCountdownEnd, isFalse);
       expect(notifier.state.showWorkoutNotification, isFalse);
     });
 
     test('The setters change only their own flag and persist it', () async {
-      notifier.setRestAlarmEnabled(false);
+      notifier.setAlertOnCountdownEnd(false);
       await pumpEventQueue();
-      expect(notifier.state.restAlarmEnabled, isFalse);
+      expect(notifier.state.alertOnCountdownEnd, isFalse);
       expect(notifier.state.showWorkoutNotification, isTrue);
-      expect(await PreferenceHelper.asyncPref.getBool(PREFS_REST_ALARM), false);
+      expect(await PreferenceHelper.asyncPref.getBool(PREFS_ALERT_COUNTDOWN), false);
 
       notifier.setShowWorkoutNotification(false);
       await pumpEventQueue();
-      expect(notifier.state.restAlarmEnabled, isFalse);
+      expect(notifier.state.alertOnCountdownEnd, isFalse);
       expect(notifier.state.showWorkoutNotification, isFalse);
       expect(await PreferenceHelper.asyncPref.getBool(PREFS_WORKOUT_NOTIFICATION), false);
     });

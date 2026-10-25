@@ -848,7 +848,6 @@
     "countdown": "Herunterzählen",
     "stopwatch": "Stoppuhr",
     "gymModeDefaultCountdownTime": "Standard-Countdown-Zeit in Sekunden",
-    "gymModeNotifyOnCountdownFinish": "Benachrichtigung bei Ende des Countdowns",
     "duration": "Dauer",
     "durationHoursMinutes": "{hours}h {minutes}m",
     "@durationHoursMinutes": {

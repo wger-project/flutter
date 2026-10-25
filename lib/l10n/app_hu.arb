@@ -406,7 +406,6 @@
     "countdown": "Visszaszámláló",
     "stopwatch": "Stopperóra",
     "gymModeDefaultCountdownTime": "Alapértelmezett visszaszámlálási idő másodpercben",
-    "gymModeNotifyOnCountdownFinish": "Értesítés a visszaszámlálás végén",
     "duration": "Időtartam",
     "durationHoursMinutes": "{hours} ó {minutes} p",
     "@durationHoursMinutes": {

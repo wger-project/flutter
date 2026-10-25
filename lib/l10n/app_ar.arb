@@ -823,7 +823,6 @@
     "countdown": "عد تنازلي",
     "stopwatch": "ساعة توقيت",
     "gymModeDefaultCountdownTime": "وقت العد التنازلي الافتراضي، بالثواني",
-    "gymModeNotifyOnCountdownFinish": "إشعار عند انتهاء العد التنازلي",
     "duration": "المدة",
     "durationHoursMinutes": "{hours}سا {minutes}د",
     "@durationHoursMinutes": {

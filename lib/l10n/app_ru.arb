@@ -884,7 +884,6 @@
     "countdown": "Обратный отсчёт",
     "stopwatch": "Секундомер",
     "gymModeDefaultCountdownTime": "Время обратного отсчёта по умолчанию (в секундах)",
-    "gymModeNotifyOnCountdownFinish": "Уведомлять об окончании отсчёта",
     "duration": "Длительность",
     "durationHoursMinutes": "{hours} ч {minutes} мин",
     "@durationHoursMinutes": {

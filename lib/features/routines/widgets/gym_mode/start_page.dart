@@ -169,27 +169,21 @@ class _GymModeOptionsState extends ConsumerState<GymModeOptions> {
                             ),
                           ),
 
+                          // Enabled without the default countdown too, a set's rest time
+                          // is always counted down
                           SwitchListTile(
                             key: const ValueKey('gym-mode-notify-countdown'),
-                            title: Text(i18n.gymModeNotifyOnCountdownFinish),
+                            title: Text(i18n.gymModeAlertOnRestEnd),
+                            subtitle: Text(i18n.gymModeAlertOnRestEndHelp),
                             value: gymState.alertOnCountdownEnd,
-                            onChanged: (gymState.showTimerPages && gymState.useCountdownBetweenSets)
-                                ? (value) => gymNotifier.setAlertOnCountdownEnd(value)
-                                : null,
-                          ),
-                          SwitchListTile(
-                            key: const ValueKey('gym-mode-rest-alarm'),
-                            title: Text(i18n.gymModeRestAlarm),
-                            subtitle: Text(i18n.gymModeRestAlarmHelp),
-                            value: gymState.restAlarmEnabled,
                             onChanged: gymState.showTimerPages
-                                ? (value) => gymNotifier.setRestAlarmEnabled(value)
+                                ? (value) => gymNotifier.setAlertOnCountdownEnd(value)
                                 : null,
                           ),
                           // Android delays alarms without the exact alarm permission
                           if (isAndroid &&
                               gymState.showTimerPages &&
-                              gymState.restAlarmEnabled &&
+                              gymState.alertOnCountdownEnd &&
                               ref.watch(exactAlarmsAllowedProvider).value == false)
                             ListTile(
                               key: const ValueKey('gym-mode-exact-alarm-hint'),

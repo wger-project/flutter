@@ -34,7 +34,6 @@ const PREFS_COUNTDOWN_DURATION = 'countdownDurationSecondsPrefs';
 const PREFS_LOG_SCOPE_WEEKS = 'logScopeWeeksPrefs';
 const PREFS_SHOW_DISTINCT_LOGS = 'showDistinctLogsPrefs';
 const PREFS_SHOW_WORKOUT_DURATION = 'showWorkoutDurationPrefs';
-const PREFS_REST_ALARM = 'restAlarmPrefs';
 const PREFS_WORKOUT_NOTIFICATION = 'workoutNotificationPrefs';
 
 /// In seconds
@@ -187,15 +186,15 @@ class GymModeState {
   // User settings
   final bool showExercisePages;
   final bool showTimerPages;
+
+  /// Alert at the end of a rest: a vibration in gym mode, an OS notification
+  /// with the app in the background
   final bool alertOnCountdownEnd;
   final bool useCountdownBetweenSets;
   final Duration countdownDuration;
   final int? logScopeWeeks;
   final bool showDistinctLogs;
   final bool showWorkoutDuration;
-
-  /// OS notification when the rest is over, also with the app in the background
-  final bool restAlarmEnabled;
 
   /// Ongoing notification with the rest and the next set (Android)
   final bool showWorkoutNotification;
@@ -220,7 +219,6 @@ class GymModeState {
     this.logScopeWeeks,
     this.showDistinctLogs = true,
     this.showWorkoutDuration = true,
-    this.restAlarmEnabled = true,
     this.showWorkoutNotification = true,
     int? dayId,
     int? iteration,
@@ -271,7 +269,6 @@ class GymModeState {
     bool clearLogScopeWeeks = false,
     bool? showDistinctLogs,
     bool? showWorkoutDuration,
-    bool? restAlarmEnabled,
     bool? showWorkoutNotification,
   }) {
     return GymModeState(
@@ -297,7 +294,6 @@ class GymModeState {
       logScopeWeeks: clearLogScopeWeeks ? null : (logScopeWeeks ?? this.logScopeWeeks),
       showDistinctLogs: showDistinctLogs ?? this.showDistinctLogs,
       showWorkoutDuration: showWorkoutDuration ?? this.showWorkoutDuration,
-      restAlarmEnabled: restAlarmEnabled ?? this.restAlarmEnabled,
       showWorkoutNotification: showWorkoutNotification ?? this.showWorkoutNotification,
     );
   }

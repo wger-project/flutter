@@ -91,7 +91,7 @@ void main() {
     });
 
     test('No alarm when the setting is off', () {
-      notifier.state = notifier.state.copyWith(restAlarmEnabled: false);
+      notifier.state = notifier.state.copyWith(alertOnCountdownEnd: false);
       onPage(timers().first, restStartedAt: now, restEndsAt: now.add(const Duration(seconds: 90)));
 
       final target = build();

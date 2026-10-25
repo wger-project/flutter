@@ -190,7 +190,7 @@ void main() {
 
   test('Each setting only switches off its own notification', () async {
     initGymMode();
-    gymState.state = gymState.state.copyWith(restAlarmEnabled: false);
+    gymState.state = gymState.state.copyWith(alertOnCountdownEnd: false);
     await startRest();
     verifyNever(service.scheduleRestAlarm(any, any));
     verify(service.showControls(any, any));
@@ -198,7 +198,7 @@ void main() {
     clearInteractions(service);
     await withClock(Clock.fixed(now), () async {
       gymState.state = gymState.state.copyWith(
-        restAlarmEnabled: true,
+        alertOnCountdownEnd: true,
         showWorkoutNotification: false,
       );
       await settle();

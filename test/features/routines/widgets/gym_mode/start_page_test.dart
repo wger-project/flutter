@@ -63,7 +63,6 @@ void main() {
       showTimerPages: true,
       useCountdownBetweenSets: true,
       countdownDuration: const Duration(seconds: DEFAULT_COUNTDOWN_DURATION),
-      alertOnCountdownEnd: false,
       dayId: routine.days.first.id,
       iteration: 1,
       routine: routine,
@@ -102,16 +101,11 @@ void main() {
     await tester.tap(optionsTile);
     await tester.pumpAndSettle();
 
-    // Toggle notify countdown first (it is only enabled while timer/countdown are active)
+    // Toggle the rest end alert first (it is only enabled while timer pages are shown)
     final notifySwitch = find.byKey(const ValueKey('gym-mode-notify-countdown'));
     expect(notifySwitch, findsOneWidget);
+    await tester.ensureVisible(notifySwitch);
     await tester.tap(notifySwitch);
-    await tester.pump();
-
-    // The rest alarm is only enabled while timer pages are shown
-    final restAlarmSwitch = find.byKey(const ValueKey('gym-mode-rest-alarm'));
-    await tester.ensureVisible(restAlarmSwitch);
-    await tester.tap(restAlarmSwitch);
     await tester.pump();
 
     final workoutNotificationSwitch = find.byKey(const ValueKey('gym-mode-workout-notification'));
@@ -143,10 +137,25 @@ void main() {
     final notifier = container.read(gymStateProvider.notifier);
     expect(notifier.state.showExercisePages, isFalse);
     expect(notifier.state.showTimerPages, isFalse);
-    expect(notifier.state.alertOnCountdownEnd, isTrue);
+    expect(notifier.state.alertOnCountdownEnd, isFalse);
     expect(notifier.state.showWorkoutDuration, isFalse);
-    expect(notifier.state.restAlarmEnabled, isFalse);
     expect(notifier.state.showWorkoutNotification, isFalse);
+  });
+
+  testWidgets('The rest end alert works without the default countdown', (tester) async {
+    // A set's own rest time is counted down regardless of the setting
+    final notifier = container.read(gymStateProvider.notifier);
+    notifier.setUseCountdownBetweenSets(false);
+    await pumpGymModeOptions(tester);
+    await tester.tap(find.byKey(const ValueKey('gym-mode-options-tile')));
+    await tester.pumpAndSettle();
+
+    final alertSwitch = find.byKey(const ValueKey('gym-mode-notify-countdown'));
+    await tester.ensureVisible(alertSwitch);
+    await tester.tap(alertSwitch);
+    await tester.pump();
+
+    expect(notifier.state.alertOnCountdownEnd, isFalse);
   });
 
   testWidgets('The workout notification switch only shows on Android', (tester) async {
@@ -157,7 +166,7 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('gym-mode-options-tile')));
     await tester.pumpAndSettle();
 
-    expect(find.byKey(const ValueKey('gym-mode-rest-alarm')), findsOneWidget);
+    expect(find.byKey(const ValueKey('gym-mode-notify-countdown')), findsOneWidget);
     expect(find.byKey(const ValueKey('gym-mode-workout-notification')), findsNothing);
     debugDefaultTargetPlatformOverride = null;
   });
@@ -303,13 +312,13 @@ void main() {
       expect(hint, findsNothing);
     });
 
-    testWidgets('Not shown with the permission or with the rest alarm off', (tester) async {
+    testWidgets('Not shown with the permission or with the rest end alert off', (tester) async {
       await openOptions(tester);
       expect(hint, findsNothing);
 
       when(notificationService.canScheduleExactAlarms()).thenAnswer((_) async => false);
       container.invalidate(exactAlarmsAllowedProvider);
-      container.read(gymStateProvider.notifier).setRestAlarmEnabled(false);
+      container.read(gymStateProvider.notifier).setAlertOnCountdownEnd(false);
       await tester.pumpAndSettle();
       expect(hint, findsNothing);
     });

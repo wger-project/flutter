@@ -870,7 +870,6 @@
     "countdown": "Compte enrere",
     "stopwatch": "Cronometre",
     "gymModeDefaultCountdownTime": "Temps de compte enrere per defecte, en segons",
-    "gymModeNotifyOnCountdownFinish": "Notifica en finalitzar el compte enrere",
     "duration": "Duració",
     "durationHoursMinutes": "{hours}h {minutes}m",
     "@durationHoursMinutes": {

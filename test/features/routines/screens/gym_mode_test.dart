@@ -608,10 +608,10 @@ void main() {
   testWidgets(
     'no permission request with both notification settings off',
     (WidgetTester tester) async {
-      await PreferenceHelper.asyncPref.setBool(PREFS_REST_ALARM, false);
+      await PreferenceHelper.asyncPref.setBool(PREFS_ALERT_COUNTDOWN, false);
       await PreferenceHelper.asyncPref.setBool(PREFS_WORKOUT_NOTIFICATION, false);
       addTearDown(() async {
-        await PreferenceHelper.asyncPref.remove(PREFS_REST_ALARM);
+        await PreferenceHelper.asyncPref.remove(PREFS_ALERT_COUNTDOWN);
         await PreferenceHelper.asyncPref.remove(PREFS_WORKOUT_NOTIFICATION);
       });
 

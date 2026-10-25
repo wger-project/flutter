@@ -920,7 +920,6 @@
     "countdown": "Зворотний відлік",
     "stopwatch": "Секундомір",
     "gymModeDefaultCountdownTime": "Час зворотного відліку за замовчуванням, у секундах",
-    "gymModeNotifyOnCountdownFinish": "Повідомити про закінчення зворотного відліку",
     "duration": "Тривалість",
     "durationHoursMinutes": "{hours}год {minutes}хв",
     "@durationHoursMinutes": {

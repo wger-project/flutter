@@ -93,11 +93,6 @@ class GymStateNotifier extends _$GymStateNotifier {
       state = state.copyWith(showWorkoutDuration: showWorkoutDuration);
     }
 
-    final restAlarm = await prefs.getBool(PREFS_REST_ALARM);
-    if (restAlarm != null && restAlarm != state.restAlarmEnabled) {
-      state = state.copyWith(restAlarmEnabled: restAlarm);
-    }
-
     final workoutNotification = await prefs.getBool(PREFS_WORKOUT_NOTIFICATION);
     if (workoutNotification != null && workoutNotification != state.showWorkoutNotification) {
       state = state.copyWith(showWorkoutNotification: workoutNotification);
@@ -113,7 +108,6 @@ class GymStateNotifier extends _$GymStateNotifier {
       'logScopeWeeks=$logScopeWeeks '
       'showDistinctLogs=$showDistinctLogs '
       'showWorkoutDuration=$showWorkoutDuration '
-      'restAlarm=$restAlarm '
       'workoutNotification=$workoutNotification ',
     );
   }
@@ -135,7 +129,6 @@ class GymStateNotifier extends _$GymStateNotifier {
     }
     await prefs.setBool(PREFS_SHOW_DISTINCT_LOGS, state.showDistinctLogs);
     await prefs.setBool(PREFS_SHOW_WORKOUT_DURATION, state.showWorkoutDuration);
-    await prefs.setBool(PREFS_REST_ALARM, state.restAlarmEnabled);
     await prefs.setBool(PREFS_WORKOUT_NOTIFICATION, state.showWorkoutNotification);
 
     _logger.finer(
@@ -148,7 +141,6 @@ class GymStateNotifier extends _$GymStateNotifier {
       'logScopeWeeks=${state.logScopeWeeks} '
       'showDistinctLogs=${state.showDistinctLogs} '
       'showWorkoutDuration=${state.showWorkoutDuration} '
-      'restAlarm=${state.restAlarmEnabled} '
       'workoutNotification=${state.showWorkoutNotification} ',
     );
   }
@@ -468,11 +460,6 @@ class GymStateNotifier extends _$GymStateNotifier {
 
   void setShowWorkoutDuration(bool value) {
     state = state.copyWith(showWorkoutDuration: value);
-    _savePrefs();
-  }
-
-  void setRestAlarmEnabled(bool value) {
-    state = state.copyWith(restAlarmEnabled: value);
     _savePrefs();
   }
 

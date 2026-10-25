@@ -164,7 +164,7 @@ class WorkoutNotificationLabels extends Equatable {
     : logSet = i18n.workoutNotificationLogSet,
       skipRest = i18n.workoutNotificationSkipRest,
       controlsChannel = i18n.workoutNotificationChannel,
-      alarmChannel = i18n.gymModeRestAlarm,
+      alarmChannel = i18n.workoutNotificationAlarmChannel,
       notLoggedTitle = i18n.workoutNotificationNotLoggedTitle,
       notLoggedBody = i18n.workoutNotificationNotLoggedBody;
 
@@ -247,7 +247,7 @@ WorkoutNotificationTarget buildWorkoutNotification(
     final endsAt = state.restEndsAt;
     final restRunning = endsAt != null && endsAt.isAfter(now);
 
-    final alarm = state.restAlarmEnabled && restRunning
+    final alarm = state.alertOnCountdownEnd && restRunning
         ? RestAlarm(
             at: endsAt,
             title: i18n.workoutNotificationRestOver,

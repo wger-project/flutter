@@ -838,7 +838,6 @@
     "countdown": "Cuenta regresiva",
     "stopwatch": "Cronómetro",
     "gymModeDefaultCountdownTime": "Tiempo predeterminado de cuenta regresiva, en segundos",
-    "gymModeNotifyOnCountdownFinish": "Notificar al terminar cuenta regresiva",
     "duration": "Duración",
     "volume": "Volumen",
     "@volume": {

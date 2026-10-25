@@ -1472,12 +1472,155 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
-  String get gymModeNotifyOnCountdownFinish =>
+  String get gymModeAlertOnRestEnd =>
       (super.noSuchMethod(
-            Invocation.getter(#gymModeNotifyOnCountdownFinish),
+            Invocation.getter(#gymModeAlertOnRestEnd),
             returnValue: _i3.dummyValue<String>(
               this,
-              Invocation.getter(#gymModeNotifyOnCountdownFinish),
+              Invocation.getter(#gymModeAlertOnRestEnd),
+            ),
+          )
+          as String);
+
+  @override
+  String get gymModeAlertOnRestEndHelp =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeAlertOnRestEndHelp),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeAlertOnRestEndHelp),
+            ),
+          )
+          as String);
+
+  @override
+  String get gymModeWorkoutNotification =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeWorkoutNotification),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeWorkoutNotification),
+            ),
+          )
+          as String);
+
+  @override
+  String get gymModeExactAlarmMissing =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeExactAlarmMissing),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeExactAlarmMissing),
+            ),
+          )
+          as String);
+
+  @override
+  String get gymModeExactAlarmAllow =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeExactAlarmAllow),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeExactAlarmAllow),
+            ),
+          )
+          as String);
+
+  @override
+  String get gymModeWorkoutNotificationHelp =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeWorkoutNotificationHelp),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeWorkoutNotificationHelp),
+            ),
+          )
+          as String);
+
+  @override
+  String get workoutNotificationRestOver =>
+      (super.noSuchMethod(
+            Invocation.getter(#workoutNotificationRestOver),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#workoutNotificationRestOver),
+            ),
+          )
+          as String);
+
+  @override
+  String get workoutNotificationInProgress =>
+      (super.noSuchMethod(
+            Invocation.getter(#workoutNotificationInProgress),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#workoutNotificationInProgress),
+            ),
+          )
+          as String);
+
+  @override
+  String get workoutNotificationLogSet =>
+      (super.noSuchMethod(
+            Invocation.getter(#workoutNotificationLogSet),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#workoutNotificationLogSet),
+            ),
+          )
+          as String);
+
+  @override
+  String get workoutNotificationSkipRest =>
+      (super.noSuchMethod(
+            Invocation.getter(#workoutNotificationSkipRest),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#workoutNotificationSkipRest),
+            ),
+          )
+          as String);
+
+  @override
+  String get workoutNotificationNotLoggedTitle =>
+      (super.noSuchMethod(
+            Invocation.getter(#workoutNotificationNotLoggedTitle),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#workoutNotificationNotLoggedTitle),
+            ),
+          )
+          as String);
+
+  @override
+  String get workoutNotificationNotLoggedBody =>
+      (super.noSuchMethod(
+            Invocation.getter(#workoutNotificationNotLoggedBody),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#workoutNotificationNotLoggedBody),
+            ),
+          )
+          as String);
+
+  @override
+  String get workoutNotificationAlarmChannel =>
+      (super.noSuchMethod(
+            Invocation.getter(#workoutNotificationAlarmChannel),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#workoutNotificationAlarmChannel),
+            ),
+          )
+          as String);
+
+  @override
+  String get workoutNotificationChannel =>
+      (super.noSuchMethod(
+            Invocation.getter(#workoutNotificationChannel),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#workoutNotificationChannel),
             ),
           )
           as String);
@@ -3688,6 +3831,17 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
+  String get authorHelpText =>
+      (super.noSuchMethod(
+            Invocation.getter(#authorHelpText),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#authorHelpText),
+            ),
+          )
+          as String);
+
+  @override
   String get imageDetailsAuthorLink =>
       (super.noSuchMethod(
             Invocation.getter(#imageDetailsAuthorLink),
@@ -5550,6 +5704,28 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.method(#topSet, [value]),
+            ),
+          )
+          as String);
+
+  @override
+  String workoutNotificationNext(String? set) =>
+      (super.noSuchMethod(
+            Invocation.method(#workoutNotificationNext, [set]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#workoutNotificationNext, [set]),
+            ),
+          )
+          as String);
+
+  @override
+  String workoutNotificationSetOf(int? current, int? total) =>
+      (super.noSuchMethod(
+            Invocation.method(#workoutNotificationSetOf, [current, total]),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.method(#workoutNotificationSetOf, [current, total]),
             ),
           )
           as String);

@@ -127,7 +127,8 @@ class _GymModeState extends ConsumerState<GymMode> {
     final gymState = ref.read(gymStateProvider);
     final service = ref.read(workoutNotificationServiceProvider);
     final wanted =
-        gymState.restAlarmEnabled || (service.supportsControls && gymState.showWorkoutNotification);
+        gymState.alertOnCountdownEnd ||
+        (service.supportsControls && gymState.showWorkoutNotification);
     if (wanted && mounted) {
       unawaited(
         service.requestPermissions(WorkoutNotificationLabels.of(AppLocalizations.of(context))),
