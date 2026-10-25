@@ -1815,5 +1815,134 @@
     "healthConnectRequired": "Uvoz tjelesnih mjera zahtijeva Health Connect",
     "@healthConnectRequired": {
         "description": "Explanation below the install/update Health Connect action"
+    },
+    "calculationNameBmi": "BMI",
+    "@calculationNameBmi": {
+        "description": "Body mass index, the name of a calculated measurement category. It is also prefilled as the category name and stored, so keep it short. Usually left as the abbreviation"
+    },
+    "calculationDescriptionBmi": "Na temelju tvoje tjelesne težine i visine u tvom profilu",
+    "@calculationDescriptionBmi": {
+        "description": "Explains where a calculated category takes its numbers from, shown under the calculation type picker"
+    },
+    "trackNewMetric": "Prati nešto novo",
+    "@trackNewMetric": {
+        "description": "Tooltip of the overview's + button, which opens the sheet for starting a new measurement category"
+    },
+    "whatToTrack": "Što želiš pratiti?",
+    "@whatToTrack": {
+        "description": "Title of the sheet that starts a new measurement category"
+    },
+    "metricAlreadyTracked": "Već se prati",
+    "@metricAlreadyTracked": {
+        "description": "Shown for a metric the user already has a category for, which cannot be picked twice"
+    },
+    "authorHelpText": "Prikazano kao autor vježbe (CC BY-SA 4.0). Promijeni samo ako nisi autor.",
+    "@authorHelpText": {
+        "description": "Helper text below the author field when contributing an exercise"
+    },
+    "sessionTooLong": "Sesija ne može biti dulja od {hours} sata",
+    "@sessionTooLong": {
+        "description": "Validation error when a workout session exceeds the maximum length",
+        "placeholders": {
+            "hours": {
+                "type": "int"
+            }
+        }
+    },
+    "calculationType": "Izračun",
+    "@calculationType": {
+        "description": "Label of the field that picks what the server calculates for a category"
+    },
+    "calculationUnknown": "Ovaj je izračun postavljen u novijoj verziji wgera i ovdje se ne može promijeniti.",
+    "@calculationUnknown": {
+        "description": "Shown when the server uses a calculation type this version of the app does not know"
+    },
+    "calculationParamsIncomplete": "Izračun još nije u potpunosti konfiguriran",
+    "@calculationParamsIncomplete": {
+        "description": "Validation error when a calculation is still missing one of its settings"
+    },
+    "calculationDuplicate": "Već imaš kategoriju {name} s ovim postavkama",
+    "@calculationDuplicate": {
+        "description": "Refuses a second calculated category that would compute exactly the same series",
+        "placeholders": {
+            "name": {
+                "type": "String",
+                "example": "Waist to height ratio"
+            }
+        }
+    },
+    "calculationLocked": "Izračun se ne može promijeniti. Izbriši kategoriju za zaustavljanje izračunjavanja.",
+    "@calculationLocked": {
+        "description": "Helper text under the disabled calculation picker when editing a category that already calculates"
+    },
+    "calculationMissingHeight": "U tvom profilu nedostaje visina , tako da se vrijednosti još ne mogu izračunati.",
+    "@calculationMissingHeight": {
+        "description": "Warning shown when a calculation needs the height from the user profile but it is not set"
+    },
+    "calculationNoSourceCategory": "Još nemaš jednu drugu kategoriju iz koje bi se moglo čitati.",
+    "@calculationNoSourceCategory": {
+        "description": "Shown when a calculation needs another measurement category to read from and the user has none yet"
+    },
+    "calculationEntryInfo": "Ovu vrijednost izračunava wger i ne može se urediti",
+    "@calculationEntryInfo": {
+        "description": "Tooltip on a measurement entry that wger computed, so it cannot be edited by hand"
+    },
+    "calculationNameWhtr": "Omjer struka i visine",
+    "@calculationNameWhtr": {
+        "description": "Name of a calculated category: waist circumference divided by height. It is also prefilled as the category name and stored, so keep it short"
+    },
+    "calculationNameOneRepMax": "Maks. jedno ponavljanje",
+    "@calculationNameOneRepMax": {
+        "description": "Name of a calculated category: the heaviest weight liftable for a single repetition. It is also prefilled as the category name and stored, so keep it short"
+    },
+    "calculationNameOneRmTotal": "Ukupno maks. jedno ponavljanje",
+    "@calculationNameOneRmTotal": {
+        "description": "Name of a calculated category: the one-rep maxima of several exercises added up. It is also prefilled as the category name and stored, so keep it short"
+    },
+    "calculationDescriptionWhtr": "Iz kategorije {category} i visine u tvom profilu",
+    "@calculationDescriptionWhtr": {
+        "description": "Explains where a calculated category takes its numbers from. {category} is the name of another measurement category, e.g. 'Waist'",
+        "placeholders": {
+            "category": {
+                "type": "String",
+                "example": "Waist"
+            }
+        }
+    },
+    "calculationParamCategory": "Kategorija izvora",
+    "@calculationParamCategory": {
+        "description": "Form field label: which other measurement category a calculation reads its values from"
+    },
+    "calculationParamMaxReps": "Maks. broj brojanih ponavljanja",
+    "@calculationParamMaxReps": {
+        "description": "Form field label: the highest number of repetitions a set may have to still count"
+    },
+    "calculationParamWindowDays": "Vremenski okvir u danima",
+    "@calculationParamWindowDays": {
+        "description": "Form field label: how many days back the calculation looks for a best set"
+    },
+    "calculationHelpMaxReps": "{min} do {max}. Serije iznad ovoga se zanemaruju.",
+    "@calculationHelpMaxReps": {
+        "description": "Helper text under the 'Max reps counted' field. Sets with more repetitions than this are left out of the calculation",
+        "placeholders": {
+            "min": {
+                "type": "int"
+            },
+            "max": {
+                "type": "int"
+            }
+        }
+    },
+    "calculationHelpWindowDays": "{min} do {max}. Koliko daleko unatrag se računa najbolja serija.",
+    "@calculationHelpWindowDays": {
+        "description": "Helper text under the 'Window in days' field, how many days back a best set still counts",
+        "placeholders": {
+            "min": {
+                "type": "int"
+            },
+            "max": {
+                "type": "int"
+            }
+        }
     }
 }
