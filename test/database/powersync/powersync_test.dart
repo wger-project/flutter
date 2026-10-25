@@ -16,9 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:io';
+
 import 'package:drift/drift.dart' show DriftSqlType, Table, TableInfo;
 import 'package:drift/native.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:path/path.dart';
+import 'package:powersync/powersync.dart' show SyncStatus;
+import 'package:wger/core/http_overrides.dart';
 import 'package:wger/database/powersync/database.dart';
 import 'package:wger/database/powersync/powersync.dart';
 import 'package:wger/powersync/schema.dart';
@@ -28,6 +34,8 @@ import 'package:wger/powersync/schema.dart';
 /// the Drift definitions drift apart: the column is simply not there, and
 /// every read of it comes back empty.
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   /// Deliberately without `createMigrator().createAll()`: the raw tables have
   /// to come from the DDL under test. On a database that already carries
   /// Drift's own schema the `CREATE TABLE IF NOT EXISTS` would be a no-op and
@@ -95,5 +103,153 @@ void main() {
         );
       }
     }
+  });
+
+  group('syncOptionsFor', () {
+    tearDown(() {
+      WgerHttpOverrides.allowSelfSignedCerts = false;
+      WgerHttpOverrides.trustedHost = null;
+    });
+
+    test('hands the sync isolate a client factory while the server cert is exempt', () {
+      WgerHttpOverrides.allowSelfSignedCerts = true;
+      WgerHttpOverrides.trustServer('https://gym.example.com');
+
+      expect(syncOptionsFor('https://gym.example.com')?.httpClient, isNotNull);
+    });
+
+    test('is null without an exemption', () {
+      expect(syncOptionsFor('https://gym.example.com'), isNull);
+    });
+  });
+
+  group('skipAdapterReconnect', () {
+    // SyncStatus has only @internal constructors, so there is no public way
+    // to build one in a test.
+    SyncStatus status({bool connected = false, bool connecting = false, Object? downloadError}) =>
+        // ignore: invalid_use_of_internal_member
+        SyncStatus(
+          connected: connected,
+          connecting: connecting,
+          lastSyncedAt: null,
+          downloadProgress: null,
+          downloading: false,
+          uploading: false,
+          downloadError: downloadError,
+          uploadError: null,
+          priorityStatusEntries: const [],
+          streamSubscriptions: null,
+          lastAppliedCheckpoint: null,
+        );
+
+    test('skips only while the stream is up', () {
+      expect(skipAdapterReconnect(status(connected: true)), isTrue);
+    });
+
+    test('still reconnects in every other state', () {
+      // connecting and the retry loop after an error are the "retry now"
+      // cases an adapter comeback must be able to interrupt.
+      expect(skipAdapterReconnect(status(connecting: true)), isFalse);
+      expect(skipAdapterReconnect(status(downloadError: Exception('stream died'))), isFalse);
+      expect(skipAdapterReconnect(status()), isFalse);
+    });
+  });
+
+  group('getDatabasePath', () {
+    const pathProviderChannel = MethodChannel('plugins.flutter.io/path_provider');
+    late TestDefaultBinaryMessenger messenger;
+    late Directory supportDir;
+
+    File inRoot(String suffix) => File(join(supportDir.path, 'powersync-wger.db$suffix'));
+
+    File inDbDir(String suffix) =>
+        File(join(supportDir.path, dbDirectoryName, 'powersync-wger.db$suffix'));
+
+    setUp(() {
+      supportDir = Directory.systemTemp.createTempSync('wger_db_path');
+      messenger = TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+      messenger.setMockMethodCallHandler(
+        pathProviderChannel,
+        (call) async => call.method == 'getApplicationSupportDirectory' ? supportDir.path : null,
+      );
+    });
+
+    tearDown(() {
+      messenger.setMockMethodCallHandler(pathProviderChannel, null);
+      supportDir.deleteSync(recursive: true);
+    });
+
+    test('puts the database in its own subdirectory', () async {
+      expect(await getDatabasePath(), inDbDir('').path);
+      expect(Directory(join(supportDir.path, dbDirectoryName)).existsSync(), isTrue);
+    });
+
+    test('takes the sidecars along when it moves an older database', () async {
+      // A database moved without its WAL loses everything the WAL still holds
+      for (final suffix in ['', '-wal', '-shm']) {
+        inRoot(suffix).writeAsStringSync('old$suffix');
+      }
+
+      await getDatabasePath();
+
+      for (final suffix in ['', '-wal', '-shm']) {
+        expect(inRoot(suffix).existsSync(), isFalse, reason: '$suffix stayed behind');
+        expect(inDbDir(suffix).readAsStringSync(), 'old$suffix');
+      }
+    });
+
+    test('never overwrites the database it already moved', () async {
+      Directory(join(supportDir.path, dbDirectoryName)).createSync();
+      inDbDir('').writeAsStringSync('current');
+      inRoot('').writeAsStringSync('stale');
+
+      await getDatabasePath();
+
+      expect(inDbDir('').readAsStringSync(), 'current');
+    });
+
+    test('hands back a path even when the move fails', () async {
+      // A directory where the file belongs: File.existsSync() says no, so the
+      // move is attempted and fails. The app has to start regardless.
+      inRoot('').writeAsStringSync('old');
+      Directory(inDbDir('').path).createSync(recursive: true);
+
+      expect(await getDatabasePath(), inDbDir('').path);
+      expect(inRoot('').existsSync(), isTrue);
+    });
+  });
+
+  group('excludeFromBackup', () {
+    const storageChannel = MethodChannel('de.wger.flutter/storage');
+    late TestDefaultBinaryMessenger messenger;
+
+    setUp(() => messenger = TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger);
+    tearDown(() => messenger.setMockMethodCallHandler(storageChannel, null));
+
+    test('hands the platform the directory', () async {
+      final calls = <MethodCall>[];
+      messenger.setMockMethodCallHandler(storageChannel, (call) async {
+        calls.add(call);
+        return null;
+      });
+
+      await excludeFromBackup('/support/database');
+
+      expect(calls.single.method, 'excludeFromBackup');
+      expect(calls.single.arguments, {'path': '/support/database'});
+    });
+
+    test('shrugs off a platform without the channel', () async {
+      await expectLater(excludeFromBackup('/support/database'), completes);
+    });
+
+    test('shrugs off a platform that refuses', () async {
+      messenger.setMockMethodCallHandler(
+        storageChannel,
+        (call) async => throw PlatformException(code: 'EXCLUDE_FROM_BACKUP_FAILED'),
+      );
+
+      await expectLater(excludeFromBackup('/support/database'), completes);
+    });
   });
 }

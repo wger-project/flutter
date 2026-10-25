@@ -17,6 +17,7 @@
  */
 
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter_test/flutter_test.dart';
@@ -417,6 +418,27 @@ void main() {
       expect(result, isEmpty);
       verifyNever(mockBase.fetch(any, timeout: anyNamed('timeout')));
       verifyNever(mockBase.makeUrl(any, query: anyNamed('query')));
+    });
+
+    test('online: a network error falls back to the local subset', () async {
+      // The caller's status may be stale, so a failing server search still
+      // has to answer with what is on the device.
+      await seedIngredient(id: 42, name: 'Apple pie');
+      when(mockBase.makeUrl('ingredientinfo', query: anyNamed('query'))).thenReturn(uri);
+      when(
+        mockBase.fetch(uri, timeout: anyNamed('timeout')),
+      ).thenThrow(const SocketException('no route to host'));
+
+      final result = await repo.search('apple', isOnline: true);
+
+      expect(result.map((i) => i.id).toList(), [42]);
+    });
+
+    test('online: an error that is not about the network still surfaces', () async {
+      when(mockBase.makeUrl('ingredientinfo', query: anyNamed('query'))).thenReturn(uri);
+      when(mockBase.fetch(uri, timeout: anyNamed('timeout'))).thenThrow(StateError('broken'));
+
+      await expectLater(repo.search('apple', isOnline: true), throwsStateError);
     });
   });
 

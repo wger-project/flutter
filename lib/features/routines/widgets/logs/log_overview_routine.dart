@@ -17,10 +17,12 @@
  */
 
 import 'package:clock/clock.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:wger/core/consts.dart';
+import 'package:wger/core/widgets/legacy_material_scope.dart';
+import 'package:wger/features/account/providers/user_profile_notifier.dart';
 import 'package:wger/features/routines/models/routine.dart';
 import 'package:wger/features/routines/widgets/logs/day_logs_container.dart';
 import 'package:wger/features/trophies/providers/trophy_notifier.dart';
@@ -47,7 +49,7 @@ class WorkoutLogs extends ConsumerWidget {
         ),
         SizedBox(
           width: double.infinity,
-          child: WorkoutLogCalendar(_routine),
+          child: WorkoutLogCalendar(_routine, ref.watch(ownerTimeZoneProvider)),
         ),
       ],
     );
@@ -64,7 +66,11 @@ class WorkoutLogEvent {
 class WorkoutLogCalendar extends StatefulWidget {
   final Routine _routine;
 
-  const WorkoutLogCalendar(this._routine);
+  /// The owner's IANA zone the day markers are cut in, null falls back to
+  /// the device zone
+  final String? _ownerZone;
+
+  const WorkoutLogCalendar(this._routine, this._ownerZone);
 
   @override
   _WorkoutLogCalendarState createState() => _WorkoutLogCalendarState();
@@ -94,9 +100,9 @@ class _WorkoutLogCalendarState extends State<WorkoutLogCalendar> {
 
   void loadEvents() {
     for (final session in widget._routine.sessions) {
-      _events[DateFormatLists.format(session.date)] = [
-        session.date,
-      ];
+      // One entry per session, the calendar draws a marker for each of them
+      final day = session.localDayIn(widget._ownerZone);
+      _events.putIfAbsent(DateFormatLists.format(day), () => []).add(day);
     }
 
     _selectedEvents.value = _getEventsForDay(_selectedDay!);
@@ -121,22 +127,24 @@ class _WorkoutLogCalendarState extends State<WorkoutLogCalendar> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        TableCalendar(
-          locale: Localizations.localeOf(context).languageCode,
-          firstDay: clock.now().subtract(const Duration(days: 1000)),
-          lastDay: clock.now(),
-          focusedDay: _focusedDay,
-          selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-          calendarFormat: CalendarFormat.month,
-          startingDayOfWeek: StartingDayOfWeek.monday,
-          calendarStyle: getWgerCalendarStyle(Theme.of(context)),
-          eventLoader: _getEventsForDay,
-          availableGestures: AvailableGestures.horizontalSwipe,
-          availableCalendarFormats: const {CalendarFormat.month: ''},
-          onDaySelected: _onDaySelected,
-          onPageChanged: (focusedDay) {
-            _focusedDay = focusedDay;
-          },
+        LegacyMaterialScope(
+          child: TableCalendar(
+            locale: Localizations.localeOf(context).languageCode,
+            firstDay: clock.now().subtract(const Duration(days: 1000)),
+            lastDay: clock.now(),
+            focusedDay: _focusedDay,
+            selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+            calendarFormat: CalendarFormat.month,
+            startingDayOfWeek: StartingDayOfWeek.monday,
+            calendarStyle: getWgerCalendarStyle(Theme.of(context)),
+            eventLoader: _getEventsForDay,
+            availableGestures: AvailableGestures.horizontalSwipe,
+            availableCalendarFormats: const {CalendarFormat.month: ''},
+            onDaySelected: _onDaySelected,
+            onPageChanged: (focusedDay) {
+              _focusedDay = focusedDay;
+            },
+          ),
         ),
         const SizedBox(height: 8.0),
         ExpansionTile(
@@ -157,7 +165,8 @@ class _WorkoutLogCalendarState extends State<WorkoutLogCalendar> {
         ValueListenableBuilder<List<DateTime>>(
           valueListenable: _selectedEvents,
           builder: (context, logEvents, _) {
-            // At the moment there is only one "event" per day
+            // Every event of a day carries that same day, the widget below
+            // renders all sessions logged on it
             return logEvents.isNotEmpty
                 ? DayLogWidget(logEvents.first, widget._routine)
                 : Container();

@@ -21,54 +21,32 @@ import 'package:wger/core/network/jwt.dart';
 
 part 'auth_credential.freezed.dart';
 
-/// Sealed credential carried inside `AuthState` for every authenticated
-/// caller. Branch via `switch` or `is` to access the variant-specific
-/// fields; the two getters below cover everything the HTTP layer needs.
+/// Credential carried inside `AuthState` for every authenticated caller: a
+/// short-lived access token from `allauth.headless`, sent as
+/// `Authorization: Bearer <jwt>`. The refresh token is not part of it, it
+/// lives in secure storage.
 ///
-/// The app supports two flavours during the migration to `allauth.headless`:
-///
-/// - [LegacyCredential] — permanent DRF token from `/api/v2/login/`, sent
-///   as `Authorization: Token <key>`. This is what existing installs are
-///   running until they re-authenticate on a build that ships the JWT flow.
-/// - [JwtCredential] — short-lived access token from `allauth.headless`,
-///   sent as `Authorization: Bearer <jwt>`. The refresh token lives in
-///   secure storage, not on the credential itself.
-///
-/// New logins (login, signup, MFA completion, pasted-refresh exchange)
-/// always produce a [JwtCredential].
+/// Every entry point (login, signup, MFA completion, pasted-refresh
+/// exchange, auto-login from storage) produces one of these.
 @freezed
-sealed class AuthCredential with _$AuthCredential {
-  const factory AuthCredential.legacy(String token) = LegacyCredential;
-
-  const factory AuthCredential.jwt({
+abstract class JwtCredential with _$JwtCredential {
+  const factory JwtCredential({
     required String accessToken,
     DateTime? expiresAt,
-  }) = JwtCredential;
+  }) = _JwtCredential;
 
-  const AuthCredential._();
+  const JwtCredential._();
 
   /// `Authorization` header value for outgoing authenticated requests.
-  String get authHeaderValue => switch (this) {
-    LegacyCredential(:final token) => 'Token $token',
-    JwtCredential(:final accessToken) => 'Bearer $accessToken',
-  };
+  String get authHeaderValue => 'Bearer $accessToken';
 
-  /// True when this credential is a JWT whose expiry falls within [leeway]
-  /// of now (or is already past). Always false for [LegacyCredential]:
-  /// permanent DRF tokens have no expiry and are never refreshed.
-  bool needsRefresh(Duration leeway) => switch (this) {
-    LegacyCredential() => false,
-    JwtCredential(:final expiresAt) =>
-      expiresAt != null && expiresAt.isBefore(DateTime.now().toUtc().add(leeway)),
-  };
+  /// True when the expiry falls within [leeway] of now, or is already past.
+  /// False when the token carries no expiry at all.
+  bool needsRefresh(Duration leeway) =>
+      expiresAt != null && expiresAt!.isBefore(DateTime.now().toUtc().add(leeway));
 
-  /// User identifier carried by the credential. For [JwtCredential] this is
-  /// the JWT `sub` claim (decoded on every call, so callers should not
-  /// hammer it in tight loops). Null for [LegacyCredential]: permanent DRF
-  /// tokens don't expose the user-id and the app discovers it lazily via
-  /// the user-profile endpoint instead.
-  String? get userId => switch (this) {
-    LegacyCredential() => null,
-    JwtCredential(:final accessToken) => decodeJwtPayload(accessToken)?['sub']?.toString(),
-  };
+  /// User identifier carried by the token: its `sub` claim. Decoded on
+  /// every call, so callers should not hammer it in tight loops. Null when
+  /// the token isn't decodable or carries no `sub`.
+  String? get userId => decodeJwtPayload(accessToken)?['sub']?.toString();
 }

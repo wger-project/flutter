@@ -23,8 +23,6 @@ import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/exercises/models/muscle.dart';
 import 'package:wger/features/exercises/models/translation.dart';
 
-import 'screenshots_exercises.dart';
-
 const testGerman = Language(id: 1, shortName: 'de', fullName: 'Deutsch');
 const testEnglish = Language(id: 2, shortName: 'en', fullName: 'English');
 const testFrench = Language(id: 3, shortName: 'fr', fullName: 'Français');
@@ -229,15 +227,4 @@ final sideRaisesEn = Translation(
 
 List<Exercise> getTestExercises() {
   return [testBenchPress, testCrunches, testDeadLift, testCurls, testSquats, testSideRaises];
-}
-
-List<Exercise> getScreenshotExercises() {
-  return [
-    testBenchPress.copyWith(translations: benchPressTranslations),
-    testCrunches.copyWith(translations: crunchesTranslations),
-    testDeadLift.copyWith(translations: deadLiftTranslations),
-    testCurls.copyWith(translations: curlsTranslations),
-    testSquats.copyWith(translations: squatsTranslations),
-    testSideRaises.copyWith(translations: raisesTranslations),
-  ];
 }

@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/core/date.dart';
 import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/core/network/network_provider.dart';
@@ -245,6 +245,7 @@ class DetailContentWidget extends StatelessWidget {
                       const Icon(Icons.hotel)
                     else
                       IconButton(
+                        tooltip: AppLocalizations.of(context).gymMode,
                         icon: const Icon(Icons.play_arrow),
                         color: Theme.of(context).colorScheme.primary,
                         onPressed: () {

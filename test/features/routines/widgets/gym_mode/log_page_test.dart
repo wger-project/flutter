@@ -18,9 +18,9 @@
 
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
@@ -38,6 +38,7 @@ import 'package:wger/features/routines/providers/gym_state_notifier.dart';
 import 'package:wger/features/routines/providers/workout_logs_repository.dart';
 import 'package:wger/features/routines/widgets/gym_mode/log_page.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 
 import '../../../../../test_data/exercises.dart';
 import '../../../../../test_data/routines.dart' as testdata;
@@ -74,7 +75,9 @@ void main() {
       testExercises = getTestExercises();
       mockWorkoutLogRepo = MockWorkoutLogRepository();
       // Mimic the real insert: the freshly minted id is written back to the log
-      when(mockWorkoutLogRepo.addLocalDrift(any)).thenAnswer((invocation) async {
+      when(
+        mockWorkoutLogRepo.addLocalDrift(any, dayId: anyNamed('dayId')),
+      ).thenAnswer((invocation) async {
         (invocation.positionalArguments[0] as Log).id = 'new-log-id';
       });
       when(mockWorkoutLogRepo.updateLocalDrift(any)).thenAnswer((_) async {});
@@ -114,7 +117,7 @@ void main() {
           container: container,
           child: MaterialApp(
             locale: const Locale('en'),
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            localizationsDelegates: appLocalizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
             home: Scaffold(
               // A PageView gives LogPage's PageController something to attach to.
@@ -200,6 +203,8 @@ void main() {
       // `contains` would also pass on the prefilled weight of 100
       expect(repText, '10');
       expect(weightText, '10');
+      // The fixture's past logs come from other iterations, the copy must not take theirs
+      expect(container.read(gymLogProvider)!.iteration, 1);
       expect(find.byType(SnackBar), findsOneWidget);
     });
 
@@ -240,13 +245,47 @@ void main() {
       await tester.tap(find.byKey(const ValueKey('save-log-button')));
       await tester.pumpAndSettle();
 
-      final saved = verify(mockWorkoutLogRepo.addLocalDrift(captureAny)).captured.single as Log;
       final gymState = container.read(gymStateProvider);
+      final captured = verify(
+        mockWorkoutLogRepo.addLocalDrift(captureAny, dayId: captureAnyNamed('dayId')),
+      ).captured;
+      final saved = captured[0] as Log;
       expect(saved.repetitions, 12);
       expect(saved.weight, 34);
       expect(saved.slotEntryId, gymState.getSlotEntryPageByIndex()!.setConfigData!.slotEntryId);
       expect(saved.routineId, gymState.routine.id);
       expect(saved.iteration, gymState.iteration);
+      // The lazy session needs the day, otherwise days that need logs to
+      // advance can't see it (issue wger#2460)
+      expect(captured[1], gymState.dayId);
+    });
+
+    testWidgets('carries the logged values over to the next set when sticky values are enabled', (
+      tester,
+    ) async {
+      seedLogPage(testdata.getTestRoutine());
+      container.read(gymStateProvider.notifier).setStickySetValues(true);
+      await pumpLogPage(tester);
+
+      // Log a set with non-default values
+      final fields = find.byType(TextFormField);
+      await tester.enterText(fields.at(0), '12'); // reps
+      await tester.enterText(fields.at(1), '34'); // weight
+      await tester.pump();
+      await tester.tap(find.byKey(const ValueKey('save-log-button')));
+      await tester.pumpAndSettle();
+
+      // Navigate to the next set of the same exercise
+      container.read(gymStateProvider.notifier).setCurrentPage(4);
+      await tester.pumpAndSettle();
+
+      // The form is pre-filled with the values just logged, not the planned ones
+      final gymLog = container.read(gymLogProvider)!;
+      expect(gymLog.repetitions, 12);
+      expect(gymLog.weight, 34);
+      expect(gymLog.id, isNull, reason: 'A fresh log is seeded, not a copy of the saved one');
+      final repField = tester.widget<EditableText>(find.byType(EditableText).at(0));
+      expect(repField.controller.text, '12');
     });
 
     testWidgets('re-visiting a logged page restores the saved values and saving updates the row', (
@@ -262,7 +301,7 @@ void main() {
       await tester.pump();
       await tester.tap(find.byKey(const ValueKey('save-log-button')));
       await tester.pumpAndSettle();
-      verify(mockWorkoutLogRepo.addLocalDrift(captureAny)).called(1);
+      verify(mockWorkoutLogRepo.addLocalDrift(any, dayId: anyNamed('dayId'))).called(1);
 
       // Navigate away (page 3 is the timer) and back (page 2 is the log page)
       final gymNotifier = container.read(gymStateProvider.notifier);
@@ -284,7 +323,7 @@ void main() {
       expect(updated.id, 'new-log-id');
       expect(updated.repetitions, 12);
       expect(updated.weight, 34);
-      verifyNever(mockWorkoutLogRepo.addLocalDrift(any));
+      verifyNever(mockWorkoutLogRepo.addLocalDrift(any, dayId: anyNamed('dayId')));
     });
 
     testWidgets('reps quick buttons increment and decrement the value', (tester) async {

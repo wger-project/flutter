@@ -19,7 +19,6 @@
 import 'package:clock/clock.dart';
 import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/routines/models/log.dart';
 import 'package:wger/features/routines/models/repetition_unit.dart';
 import 'package:wger/features/routines/models/weight_unit.dart';
@@ -36,19 +35,25 @@ class GymLogNotifier extends _$GymLogNotifier {
     return null;
   }
 
-  /// Pass [exercise] to hydrate the copy, logs read from the database only
-  /// carry their exercise ID
-  void setLog(Log log, {Exercise? exercise}) {
+  void setLog(Log log) {
     // Clear the id so Drift mints a fresh UUID on insert, and the sessionId so
-    // the copy lands in today's session instead of the template's historical one.
-    final out = log.copyWith(date: clock.now())
+    // the entry lands in today's session.
+    state = log.copyWith(date: clock.now())
       ..id = null
       ..sessionId = null;
+  }
 
-    if (exercise != null) {
-      out.exercise = exercise;
-    }
-    state = out;
+  /// Takes the entered values (weight, repetitions, their units and RiR) from
+  /// [pastLog]. Routine, slot entry, iteration and targets stay the current set's.
+  void copyValuesFrom(Log pastLog) {
+    state = state?.copyWith()
+      ?..weight = pastLog.weight
+      ..weightUnitId = pastLog.weightUnitId
+      ..weightUnitObj = pastLog.weightUnitObj
+      ..repetitions = pastLog.repetitions
+      ..repetitionsUnitId = pastLog.repetitionsUnitId
+      ..repetitionsUnitObj = pastLog.repetitionsUnitObj
+      ..rir = pastLog.rir;
   }
 
   /// Starts editing a log that was already persisted during the current

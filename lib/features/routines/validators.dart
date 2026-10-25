@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/material.dart';
+import 'package:wger/features/routines/models/session.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 /// Cross-field validation for a workout log entry, mirroring the
@@ -33,21 +33,24 @@ String? validateWorkoutLogCrossField({
   return null;
 }
 
-/// Cross-field validation for a workout session, mirroring the backend
-/// `WorkoutSession.clean()` rules:
+/// Cross-field validation for a workout session, mirroring the backend rules:
+/// the end must not lie before the start, and the session must not last longer
+/// than [sessionMaxDuration].
 ///
-/// - [timeStart] and [timeEnd] must both be set or both be empty,
-/// - if both are set, [timeStart] must not be after [timeEnd].
+/// A session that ran past midnight ends on the following day, so its end is
+/// after its start as well.
 String? validateWorkoutSessionTimes({
-  required TimeOfDay? timeStart,
-  required TimeOfDay? timeEnd,
+  required DateTime datetimeStart,
+  required DateTime? datetimeEnd,
   required AppLocalizations i18n,
 }) {
-  if ((timeStart == null) != (timeEnd == null)) {
-    return i18n.timeStartEndBothOrNeither;
-  }
-  if (timeStart != null && timeEnd != null && timeStart.isAfter(timeEnd)) {
+  if (datetimeEnd != null && datetimeEnd.isBefore(datetimeStart)) {
     return i18n.timeStartAhead;
   }
+
+  if (datetimeEnd != null && datetimeEnd.difference(datetimeStart) > sessionMaxDuration) {
+    return i18n.sessionTooLong(sessionMaxDuration.inHours);
+  }
+
   return null;
 }

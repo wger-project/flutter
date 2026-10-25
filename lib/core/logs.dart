@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:clock/clock.dart';
 import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
 
@@ -23,6 +24,55 @@ import 'package:logging/logging.dart';
 /// INFO and above. Debug builds always log everything.
 void applyVerboseLogging(bool verbose) {
   Logger.root.level = verbose || kDebugMode ? Level.ALL : Level.INFO;
+}
+
+/// How soon a repeated message may appear in the log again.
+const _repeatLogInterval = Duration(minutes: 5);
+
+/// Bound for the repeat-tracking maps, so messages with variable parts
+/// cannot grow them forever.
+const _repeatLogMaxKeys = 64;
+
+/// A logger whose repeats are collapsed: a message logs immediately the
+/// first time, repeats of it at most once per [interval] (with a count).
+/// Different messages always pass through right away.
+Logger repeatCollapsingLogger(String name, {Duration interval = _repeatLogInterval}) {
+  final source = Logger.detached(name)..level = Level.ALL;
+  final collapser = _RepeatCollapser(Logger(name), interval);
+  source.onRecord.listen(collapser.add);
+  return source;
+}
+
+class _RepeatCollapser {
+  _RepeatCollapser(this._target, this._interval);
+
+  final Logger _target;
+  final Duration _interval;
+  final _lastForwarded = <String, DateTime>{};
+  final _suppressed = <String, int>{};
+
+  void add(LogRecord record) {
+    if (!_target.isLoggable(record.level)) {
+      return;
+    }
+    final key = '${record.level.value}:${record.message}';
+    final now = clock.now();
+    final last = _lastForwarded[key];
+    if (last != null && now.difference(last) < _interval) {
+      _suppressed[key] = (_suppressed[key] ?? 0) + 1;
+      return;
+    }
+    if (_lastForwarded.length >= _repeatLogMaxKeys) {
+      _lastForwarded.clear();
+      _suppressed.clear();
+    }
+    _lastForwarded[key] = now;
+    final repeats = _suppressed.remove(key);
+    final message = repeats == null
+        ? record.message
+        : '${record.message} (repeated ${repeats}x since last logged)';
+    _target.log(record.level, message, record.error, record.stackTrace);
+  }
 }
 
 /// Characters of the error text kept per formatted entry. Some exceptions

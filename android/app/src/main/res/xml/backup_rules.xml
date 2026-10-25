@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Android 11 and lower, where fullBackupContent governs the cloud backup and
+  the device transfer together. The health import puts special-category data
+  into the database, so it stays out of both and these devices sync again.
+-->
+<full-backup-content>
+    <exclude domain="file" path="database" />
+</full-backup-content>

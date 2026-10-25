@@ -360,10 +360,6 @@
         }
     },
     "newDay": "Nový den",
-    "newSet": "Nová sada",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
-    },
     "workoutSession": "Tréninková relace",
     "@workoutSession": {
         "description": "A (logged) workout session"
@@ -455,16 +451,6 @@
     "imageFormatNotSupported": "{imageFormat} není podporován",
     "@imageFormatNotSupported": {
         "description": "Label shown on the error container when image format is not supported",
-        "type": "text",
-        "placeholders": {
-            "imageFormat": {
-                "type": "String"
-            }
-        }
-    },
-    "imageFormatNotSupportedDetail": "Obrazy {imageFormat} zatím nejsou podporovány.",
-    "@imageFormatNotSupportedDetail": {
-        "description": "Label shown on the image preview container when image format is not supported",
         "type": "text",
         "placeholders": {
             "imageFormat": {

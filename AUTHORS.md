@@ -2,7 +2,7 @@
 
 Thank you all for contributing to the project, you are true heroes! 🫶
 
-*Generated on 2026-06-17*
+*Generated on 2026-08-28*
 
 ---
 
@@ -145,6 +145,15 @@ Thank you all for contributing to the project, you are true heroes! 🫶
 - HackingAll - [https://github.com/HackingAllYT](https://github.com/HackingAllYT)
 - Kudzai Bosha - [https://github.com/KudziBosh](https://github.com/KudziBosh)
 - Pawel Haracz - [https://github.com/haracz93](https://github.com/haracz93)
+- Charu7596 - [https://github.com/charugupta-dev](https://github.com/charugupta-dev)
+- Ben Tucker - [https://github.com/bentucker](https://github.com/bentucker)
+- Sanji78 - [https://github.com/Sanji78](https://github.com/Sanji78)
+- Praharsha2007 - [https://github.com/Praharsha2007](https://github.com/Praharsha2007)
+- Jure Repinc - [https://github.com/JLP](https://github.com/JLP)
+- Matz Hilven - [https://github.com/MatzHilven](https://github.com/MatzHilven)
+- Arya - [https://github.com/Arya-185](https://github.com/Arya-185)
+- Mustafa Senoglu - [https://github.com/mmustafasenoglu](https://github.com/mmustafasenoglu)
+- bhavit04 - [https://github.com/Bhavit16](https://github.com/Bhavit16)
 
 ## Translators
 
@@ -161,6 +170,7 @@ Thank you all for contributing to the project, you are true heroes! 🫶
 - Anonymous
 - Hanaa - [https://github.com/hn-n](https://github.com/hn-n)
 - Ahmed zein - [https://github.com/Ahmed-Zein](https://github.com/Ahmed-Zein)
+- E Sa
 
 ### Catalan
 
@@ -264,6 +274,7 @@ Thank you all for contributing to the project, you are true heroes! 🫶
 - Antoine Vibien - [https://github.com/r1llettes](https://github.com/r1llettes)
 - Stefano Rossi - [https://github.com/stefanorossiti](https://github.com/stefanorossiti)
 - Louis-Maxime C - [https://github.com/Lumenol](https://github.com/Lumenol)
+- Allan Nordhøy - [https://github.com/comradekingu](https://github.com/comradekingu)
 
 ### German
 
@@ -293,6 +304,7 @@ Thank you all for contributing to the project, you are true heroes! 🫶
 
 - Dimitrys Meliates
 - Antonis-geo
+- Allan Nordhøy - [https://github.com/comradekingu](https://github.com/comradekingu)
 
 ### Hebrew
 
@@ -300,16 +312,19 @@ Thank you all for contributing to the project, you are true heroes! 🫶
 - n,rdo
 - Anonymous
 - Tomer Ben Rachel - [https://github.com/TomerPacific](https://github.com/TomerPacific)
+- Allan Nordhøy - [https://github.com/comradekingu](https://github.com/comradekingu)
 
 ### Hindi
 
 - pavan arun bagwe - [https://github.com/pavanb0](https://github.com/pavanb0)
 - Anonymous
 - Debayan Sutradhar - [https://github.com/rnayabed](https://github.com/rnayabed)
+- Allan Nordhøy - [https://github.com/comradekingu](https://github.com/comradekingu)
 
 ### Hungarian
 
 - Greg
+- tomorigabor - [https://github.com/tomorigabor](https://github.com/tomorigabor)
 
 ### Indonesian
 
@@ -320,6 +335,7 @@ Thank you all for contributing to the project, you are true heroes! 🫶
 - Debi Maulana Ahsan Halla
 - Roland Geider - [https://github.com/rolandgeider](https://github.com/rolandgeider)
 - Taufan Budiman - [https://github.com/taufanbudiman](https://github.com/taufanbudiman)
+- Andini - [https://github.com/Threeguana](https://github.com/Threeguana)
 
 ### Italian
 
@@ -353,6 +369,7 @@ Thank you all for contributing to the project, you are true heroes! 🫶
 - Tsz Hong CHAN - [https://github.com/tomyan112](https://github.com/tomyan112)
 - sasukeiscool - [https://github.com/sasukeiscool](https://github.com/sasukeiscool)
 - yiter
+- Allan Nordhøy - [https://github.com/comradekingu](https://github.com/comradekingu)
 
 ### Korean
 
@@ -374,6 +391,7 @@ Thank you all for contributing to the project, you are true heroes! 🫶
 ### Persian
 
 - Mahmuoud Salehi
+- Allan Nordhøy - [https://github.com/comradekingu](https://github.com/comradekingu)
 
 ### Polish
 
@@ -466,6 +484,11 @@ Thank you all for contributing to the project, you are true heroes! 🫶
 ### Slovak
 
 - Patrik - [https://github.com/P4TR1K1305](https://github.com/P4TR1K1305)
+- Allan Nordhøy - [https://github.com/comradekingu](https://github.com/comradekingu)
+
+### Slovenian
+
+- Jure Repinc - [https://github.com/JLP](https://github.com/JLP)
 
 ### Spanish
 
@@ -492,6 +515,7 @@ Thank you all for contributing to the project, you are true heroes! 🫶
 - martingetzel - [https://github.com/martingetzel](https://github.com/martingetzel)
 - Rodrigo Jurado Villalobos
 - Tiago Natale - [https://github.com/Blu777](https://github.com/Blu777)
+- Allan Nordhøy - [https://github.com/comradekingu](https://github.com/comradekingu)
 
 ### Tamil
 
@@ -511,6 +535,7 @@ Thank you all for contributing to the project, you are true heroes! 🫶
 - Cem Avcı - [https://github.com/cem256](https://github.com/cem256)
 - Cenk Cidecio - [https://github.com/ccidecio](https://github.com/ccidecio)
 - ToldYouThat
+- Allan Nordhøy - [https://github.com/comradekingu](https://github.com/comradekingu)
 
 ### Ukrainian
 

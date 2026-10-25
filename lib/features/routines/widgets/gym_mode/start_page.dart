@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/exercises/widgets/images.dart';
 import 'package:wger/features/routines/models/day.dart';
@@ -195,6 +195,13 @@ class _GymModeOptionsState extends ConsumerState<GymModeOptions> {
                         title: Text(i18n.gymModeDistinctLogs),
                         value: gymState.showDistinctLogs,
                         onChanged: (value) => gymNotifier.setShowDistinctLogs(value),
+                      ),
+                      SwitchListTile(
+                        key: const ValueKey('gym-mode-sticky-set-values'),
+                        title: Text(i18n.gymModeStickySetValues),
+                        subtitle: Text(i18n.gymModeStickySetValuesHelp),
+                        value: gymState.stickySetValues,
+                        onChanged: (value) => gymNotifier.setStickySetValues(value),
                       ),
                     ],
                   ),

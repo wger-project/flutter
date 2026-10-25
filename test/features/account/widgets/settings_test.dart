@@ -16,19 +16,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wger/core/app_settings_notifier.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/features/account/widgets/settings.dart';
+import 'package:wger/features/health/providers/health_repository.dart';
+import 'package:wger/features/health/providers/health_sync.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 import 'package:wger/theme/dynamic_color.dart';
 
 import 'settings_test.mocks.dart';
+
+/// Keeps the health sync tile inert (reports the platform as unavailable) so
+/// the settings page renders without booting the real health/preferences stack.
+class _FakeHealthSyncNotifier extends HealthSyncNotifier {
+  @override
+  HealthSyncState build() => const HealthSyncState();
+
+  @override
+  Future<HealthPlatformAvailability> availability() async => HealthPlatformAvailability.unsupported;
+}
 
 @GenerateMocks([
   SharedPreferencesAsync,
@@ -39,6 +52,9 @@ void main() {
   setUp(() {
     when(mockSharedPreferences.getBool(any)).thenAnswer((_) async => null);
     when(mockSharedPreferences.getString(any)).thenAnswer((_) async => null);
+    when(
+      mockSharedPreferences.getAll(allowList: anyNamed('allowList')),
+    ).thenAnswer((_) async => {});
     when(
       mockSharedPreferences.setBool(any, any),
     ).thenAnswer((_) async {});
@@ -54,13 +70,14 @@ void main() {
     return riverpod.ProviderScope(
       overrides: [
         appSettingsPrefsProvider.overrideWithValue(mockSharedPreferences),
+        healthSyncProvider.overrideWith(_FakeHealthSyncNotifier.new),
         // The plugin has no test implementation and would report the toggle as
         // unsupported, which hides it.
         dynamicColorAvailableProvider.overrideWith((ref) async => dynamicColorAvailable),
       ],
       child: MaterialApp(
         locale: Locale(locale),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: const SettingsPage(),
       ),
@@ -90,7 +107,9 @@ void main() {
     });
 
     testWidgets('dynamic color switch reflects a stored preference', (WidgetTester tester) async {
-      when(mockSharedPreferences.getBool(PREFS_USE_DYNAMIC_COLOR)).thenAnswer((_) async => true);
+      when(
+        mockSharedPreferences.getAll(allowList: anyNamed('allowList')),
+      ).thenAnswer((_) async => {PREFS_USE_DYNAMIC_COLOR: true});
 
       await tester.pumpWidget(createSettingsScreen());
       await tester.pumpAndSettle();

@@ -21,9 +21,10 @@ import 'dart:async';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:timezone/data/latest.dart' as tzdata;
 import 'package:wger/core/app_link_router.dart';
 import 'package:wger/core/app_settings_notifier.dart';
 import 'package:wger/core/consts.dart';
@@ -46,7 +47,9 @@ import 'package:wger/core/splash_screen.dart';
 import 'package:wger/core/update_app_screen.dart';
 import 'package:wger/core/update_server_screen.dart';
 import 'package:wger/core/widgets/about.dart';
+import 'package:wger/core/widgets/legacy_material_scope.dart';
 import 'package:wger/core/widgets/log_overview.dart';
+import 'package:wger/core/widgets/scroll_behavior.dart';
 import 'package:wger/features/account/widgets/settings.dart';
 import 'package:wger/features/auth/screens/auth_screen.dart';
 import 'package:wger/features/auth/screens/auto_login_error_screen.dart';
@@ -55,7 +58,9 @@ import 'package:wger/features/exercises/screens/exercise_screen.dart';
 import 'package:wger/features/exercises/screens/exercises_screen.dart';
 import 'package:wger/features/gallery/screens/gallery_screen.dart';
 import 'package:wger/features/measurements/screens/measurement_categories_screen.dart';
+import 'package:wger/features/measurements/screens/measurement_category_sort_screen.dart';
 import 'package:wger/features/measurements/screens/measurement_entries_screen.dart';
+import 'package:wger/features/measurements/screens/weight_screen.dart';
 import 'package:wger/features/nutrition/screens/ingredient_detail_screen.dart';
 import 'package:wger/features/nutrition/screens/ingredients_screen.dart';
 import 'package:wger/features/nutrition/screens/log_meal_screen.dart';
@@ -70,8 +75,8 @@ import 'package:wger/features/routines/screens/routine_logs_screen.dart';
 import 'package:wger/features/routines/screens/routine_screen.dart';
 import 'package:wger/features/routines/screens/settings_plates_screen.dart';
 import 'package:wger/features/trophies/screens/trophy_screen.dart';
-import 'package:wger/features/weight/screens/weight_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 import 'package:wger/theme/dynamic_color.dart';
 import 'package:wger/theme/theme.dart';
 
@@ -111,6 +116,9 @@ void main() async {
 
   // Logger
   _setupLogging();
+
+  // Timezone database, needed to cut calendar days in the profile zone
+  tzdata.initializeTimeZones();
 
   final logger = Logger('main');
 
@@ -235,16 +243,18 @@ class MainApp extends ConsumerWidget {
 
         return authAsync.when(
           loading: () => MaterialApp(
+            scrollBehavior: const WgerScrollBehavior(),
             theme: light,
             darkTheme: dark,
             themeMode: themeMode,
             home: const SplashScreen(),
           ),
           error: (error, stack) => MaterialApp(
+            scrollBehavior: const WgerScrollBehavior(),
             theme: light,
             darkTheme: dark,
             themeMode: themeMode,
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            localizationsDelegates: appLocalizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
             home: AutoLoginErrorScreen(error: error),
           ),
@@ -253,12 +263,14 @@ class MainApp extends ConsumerWidget {
               title: 'wger',
               navigatorKey: navigatorKey,
               scaffoldMessengerKey: scaffoldMessengerKey,
+              scrollBehavior: const WgerScrollBehavior(),
               theme: light,
               darkTheme: dark,
               highContrastTheme: lightHc,
               highContrastDarkTheme: darkHc,
               themeMode: themeMode,
               locale: userLocale,
+              builder: (context, child) => LegacyMaterialScope(ink: false, child: child!),
               home: _getHomeScreen(authState),
               routes: {
                 DashboardScreen.routeName: (ctx) => const DashboardScreen(),
@@ -267,6 +279,8 @@ class MainApp extends ConsumerWidget {
                 GymModeScreen.routeName: (ctx) => const GymModeScreen(),
                 HomeTabsScreen.routeName: (ctx) => const HomeTabsScreen(),
                 MeasurementCategoriesScreen.routeName: (ctx) => const MeasurementCategoriesScreen(),
+                MeasurementCategorySortScreen.routeName: (ctx) =>
+                    const MeasurementCategorySortScreen(),
                 MeasurementEntriesScreen.routeName: (ctx) => const MeasurementEntriesScreen(),
                 NutritionalPlansScreen.routeName: (ctx) => const NutritionalPlansScreen(),
                 NutritionalDiaryScreen.routeName: (ctx) => const NutritionalDiaryScreen(),
@@ -292,7 +306,7 @@ class MainApp extends ConsumerWidget {
                 TrophyScreen.routeName: (ctx) => const TrophyScreen(),
               },
               localeListResolutionCallback: resolveLocale,
-              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              localizationsDelegates: appLocalizationsDelegates,
               supportedLocales: AppLocalizations.supportedLocales,
             );
           },

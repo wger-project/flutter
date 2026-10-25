@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// NutritionTile is similar to a non-interactive ListTile,
 /// but uses a fixed, easy to understand layout.

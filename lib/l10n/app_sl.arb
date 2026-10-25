@@ -315,10 +315,6 @@
     "routineDays": "Dnevi v rutini",
     "resultingRoutine": "Končna rutina",
     "newDay": "Nov dan",
-    "newSet": "Nov niz",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
-    },
     "personalRecords": "Osebni rekordi",
     "gymMode": "Način telovadbe",
     "@gymMode": {
@@ -481,39 +477,6 @@
     },
     "min": "Min.",
     "max": "Maks.",
-    "chartAllTimeTitle": "{name} – ves čas",
-    "@chartAllTimeTitle": {
-        "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chart30DaysTitle": "{name} – zadnjih 30 dni",
-    "@chart30DaysTitle": {
-        "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chartDuringPlanTitle": "{chartName} – med prehranskim načrtom {planName}",
-    "@chartDuringPlanTitle": {
-        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-        "type": "text",
-        "placeholders": {
-            "chartName": {
-                "type": "String"
-            },
-            "planName": {
-                "type": "String"
-            }
-        }
-    },
     "measurement": "Meritve",
     "measurements": "Meritve",
     "@measurements": {
@@ -1387,9 +1350,9 @@
     "@filterNutriscore": {
         "description": "Heading for the Nutri-Score slider in the ingredient search filter dialog"
     },
-    "filterNutriscoreOff": "Izklopljeno",
-    "@filterNutriscoreOff": {
-        "description": "Label for the first slider stop, which disables the Nutri-Score filter"
+    "off": "Izklopljeno",
+    "@off": {
+        "description": "Generic label for the option that switches something off, e.g. a filter or a line of a chart"
     },
     "filterNutriscoreNoFilter": "Brez filtra",
     "@filterNutriscoreNoFilter": {
@@ -1428,9 +1391,5 @@
     "weightOrRepsRequired": "Vnesite težo, ponovitve ali oboje",
     "@weightOrRepsRequired": {
         "description": "Validation error when both weight and repetitions are empty in a workout log"
-    },
-    "timeStartEndBothOrNeither": "Nastavite tako začetni kot končni čas ali pa oba pustite prazna",
-    "@timeStartEndBothOrNeither": {
-        "description": "Validation error when only one of start/end time is set on a workout session"
     }
 }

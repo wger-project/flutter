@@ -170,10 +170,6 @@
     "@workoutSession": {
         "description": "A (logged) workout session"
     },
-    "newSet": "Nowa seria",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
-    },
     "selectExercises": "Jeśli chcesz zrobić super serię, możesz wyszukać kilka ćwiczeń, zostaną one zgrupowane razem",
     "gymMode": "Tryb treningu",
     "@gymMode": {
@@ -683,26 +679,6 @@
     "@deficit": {
         "description": "Caloric deficit (either planned or unplanned)"
     },
-    "chartAllTimeTitle": "{name} Z całego okresu",
-    "@chartAllTimeTitle": {
-        "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chart30DaysTitle": "{name} ostatnie 30 dni",
-    "@chart30DaysTitle": {
-        "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
     "useApiToken": "Użyj API Token",
     "apiToken": "API Token",
     "restTime": "Czas odpoczynku",
@@ -773,19 +749,6 @@
     "toAddMealsToThePlanGoToNutritionalPlanDetails": "Aby dodać posiłki do planu, przejdź do szczegółów planu żywieniowego",
     "@toAddMealsToThePlanGoToNutritionalPlanDetails": {
         "description": "Message shown to guide users to the nutritional plan details page to add meals"
-    },
-    "chartDuringPlanTitle": "{chartName} w planie żywieniowym {planName}",
-    "@chartDuringPlanTitle": {
-        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-        "type": "text",
-        "placeholders": {
-            "chartName": {
-                "type": "String"
-            },
-            "planName": {
-                "type": "String"
-            }
-        }
     },
     "aboutContributeTitle": "Współtwórz",
     "aboutContributeText": "Zachęcamy do wszelkiego rodzaju wkładu. Niezależnie od tego, czy jesteś programistą, tłumaczem, czy po prostu pasjonatem fitnessu, każda forma wsparcia jest mile widziana!",

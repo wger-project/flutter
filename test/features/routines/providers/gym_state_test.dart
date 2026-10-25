@@ -17,9 +17,9 @@
  */
 
 import 'package:clock/clock.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
@@ -581,6 +581,133 @@ void main() {
       // Assert
       expect(notifier.state.showWorkoutDuration, false);
       expect(await PreferenceHelper.asyncPref.getBool(PREFS_SHOW_WORKOUT_DURATION), false);
+    });
+  });
+
+  group('GymStateNotifier sticky set values', () {
+    // Page structure of the test routine (exercise + timer pages enabled):
+    //   start(0)
+    //   slot 1 (exercise 1): overview(1), log(2), timer(3), log(4), timer(5), log(6), timer(7)
+    //   slot 2 (exercise 6): overview(8), log(9), ...
+
+    Log buildLoggedValues() {
+      final slotPage = notifier.state.pages[1].slotPages[1];
+      return Log.fromSetConfigData(slotPage.setConfigData!, routineId: 1, iteration: 1)
+        ..repetitions = 7
+        ..weight = 42.5
+        ..rir = 1;
+    }
+
+    test('Sets the flag and persists it', () async {
+      // Act
+      notifier.setStickySetValues(true);
+      await pumpEventQueue();
+
+      // Assert
+      expect(notifier.state.stickySetValues, true);
+      expect(await PreferenceHelper.asyncPref.getBool(PREFS_STICKY_SET_VALUES), true);
+    });
+
+    test(
+      'Pre-fills the next set of the exercise with the last logged values when enabled',
+      () async {
+        // Arrange
+        notifier.setStickySetValues(true);
+        await pumpEventQueue();
+        notifier.recordLoggedValues(buildLoggedValues());
+
+        // Act: navigate to the second set of the same exercise
+        notifier.setCurrentPage(4);
+
+        // Assert
+        final gymLog = container.read(gymLogProvider)!;
+        expect(gymLog.repetitions, 7);
+        expect(gymLog.weight, 42.5);
+        expect(gymLog.rir, 1);
+        expect(gymLog.id, isNull, reason: 'A fresh log is seeded, not a copy of the saved one');
+      },
+    );
+
+    test('Pre-fills with the planned values when disabled', () {
+      // Arrange
+      notifier.recordLoggedValues(buildLoggedValues());
+
+      // Act
+      notifier.setCurrentPage(4);
+
+      // Assert: the values of the set configuration
+      final gymLog = container.read(gymLogProvider)!;
+      expect(gymLog.repetitions, 3);
+      expect(gymLog.weight, 100);
+    });
+
+    test('Does not carry values over to a different exercise', () async {
+      // Arrange
+      notifier.setStickySetValues(true);
+      await pumpEventQueue();
+      notifier.recordLoggedValues(buildLoggedValues());
+
+      // Act: navigate to the first set of the second exercise
+      notifier.setCurrentPage(9);
+
+      // Assert: the values of that exercise's set configuration
+      final gymLog = container.read(gymLogProvider)!;
+      expect(gymLog.repetitions, 12);
+      expect(gymLog.weight, 10);
+    });
+
+    test('A new workout forgets the values of an abandoned one', () async {
+      // Arrange: the summary page (and clear()) is never reached
+      notifier.setStickySetValues(true);
+      await pumpEventQueue();
+      notifier.state = notifier.state.copyWith(
+        isInitialized: true,
+        dayId: 1,
+        validUntil: DateTime(2024, 5, 1, 10, 0),
+      );
+      notifier.recordLoggedValues(buildLoggedValues());
+
+      // Act
+      withClock(
+        Clock.fixed(DateTime(2024, 5, 2, 18, 0)),
+        () => notifier.initData(getTestRoutine(), 1, 1),
+      );
+      notifier.setCurrentPage(2);
+
+      // Assert: the values of the set configuration
+      expect(notifier.state.lastLoggedValues, isEmpty);
+      final gymLog = container.read(gymLogProvider)!;
+      expect(gymLog.repetitions, 3);
+      expect(gymLog.weight, 100);
+    });
+
+    test('Resuming the same workout keeps the logged values', () async {
+      // Arrange
+      notifier.setStickySetValues(true);
+      await pumpEventQueue();
+      notifier.state = notifier.state.copyWith(isInitialized: true, dayId: 1);
+      notifier.recordLoggedValues(buildLoggedValues());
+
+      // Act
+      notifier.initData(getTestRoutine(), 1, 1);
+      notifier.setCurrentPage(4);
+
+      // Assert
+      final gymLog = container.read(gymLogProvider)!;
+      expect(gymLog.repetitions, 7);
+      expect(gymLog.weight, 42.5);
+    });
+
+    test('Clearing the state forgets the logged values', () {
+      // Arrange
+      notifier.recordLoggedValues(buildLoggedValues());
+      expect(notifier.state.lastLoggedValues, isNotEmpty);
+
+      // Act
+      notifier.clear();
+
+      // Assert
+      expect(notifier.state.lastLoggedValues, isEmpty);
     });
   });
 
