@@ -196,6 +196,13 @@ class _GymModeOptionsState extends ConsumerState<GymModeOptions> {
                         value: gymState.showDistinctLogs,
                         onChanged: (value) => gymNotifier.setShowDistinctLogs(value),
                       ),
+                      SwitchListTile(
+                        key: const ValueKey('gym-mode-sticky-set-values'),
+                        title: Text(i18n.gymModeStickySetValues),
+                        subtitle: Text(i18n.gymModeStickySetValuesHelp),
+                        value: gymState.stickySetValues,
+                        onChanged: (value) => gymNotifier.setStickySetValues(value),
+                      ),
                     ],
                   ),
                 ),

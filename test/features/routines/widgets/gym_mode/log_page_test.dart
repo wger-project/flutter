@@ -254,6 +254,34 @@ void main() {
       expect(captured[1], gymState.dayId);
     });
 
+    testWidgets('carries the logged values over to the next set when sticky values are enabled', (
+      tester,
+    ) async {
+      seedLogPage(testdata.getTestRoutine());
+      container.read(gymStateProvider.notifier).setStickySetValues(true);
+      await pumpLogPage(tester);
+
+      // Log a set with non-default values
+      final fields = find.byType(TextFormField);
+      await tester.enterText(fields.at(0), '12'); // reps
+      await tester.enterText(fields.at(1), '34'); // weight
+      await tester.pump();
+      await tester.tap(find.byKey(const ValueKey('save-log-button')));
+      await tester.pumpAndSettle();
+
+      // Navigate to the next set of the same exercise
+      container.read(gymStateProvider.notifier).setCurrentPage(4);
+      await tester.pumpAndSettle();
+
+      // The form is pre-filled with the values just logged, not the planned ones
+      final gymLog = container.read(gymLogProvider)!;
+      expect(gymLog.repetitions, 12);
+      expect(gymLog.weight, 34);
+      expect(gymLog.id, isNull, reason: 'A fresh log is seeded, not a copy of the saved one');
+      final repField = tester.widget<EditableText>(find.byType(EditableText).at(0));
+      expect(repField.controller.text, '12');
+    });
+
     testWidgets('reps quick buttons increment and decrement the value', (tester) async {
       final routine = testdata.getTestRoutine();
       routine.dayDataGym[0].slots[0].setConfigs[0].repetitions = 0;

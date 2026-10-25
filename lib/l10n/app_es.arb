@@ -1194,5 +1194,7 @@
     "calculationHelpExercises": "Entre {min} y {max} ejercicios, {count} seleccionados.",
     "calculationHelpMaxReps": "De {min} a {max}. Las series por encima se ignoran.",
     "calculationHelpWindowDays": "De {min} a {max}. Hasta dónde cuenta la mejor serie.",
-    "useDynamicColor": "Usar color dinámico"
+    "useDynamicColor": "Usar color dinámico",
+    "gymModeStickySetValues": "Mantener los valores de la última serie",
+    "gymModeStickySetValuesHelp": "Rellenar la siguiente serie de un ejercicio con los valores que registraste por última vez durante este entrenamiento"
 }
