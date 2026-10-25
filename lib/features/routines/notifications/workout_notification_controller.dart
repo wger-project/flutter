@@ -25,9 +25,13 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/core/app_settings_notifier.dart';
+import 'package:wger/core/network/wger_base.dart';
+import 'package:wger/features/routines/models/log.dart';
 import 'package:wger/features/routines/notifications/workout_notification_content.dart';
 import 'package:wger/features/routines/notifications/workout_notification_service.dart';
+import 'package:wger/features/routines/providers/gym_state.dart';
 import 'package:wger/features/routines/providers/gym_state_notifier.dart';
+import 'package:wger/features/routines/providers/workout_logs_notifier.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 /// Whether the gym mode screen is mounted
@@ -57,6 +61,11 @@ class WorkoutNotificationController {
   /// What the platform shows, null if unknown
   WorkoutNotificationTarget? _shown = WorkoutNotificationTarget.none;
   Future<void> _queue = Future.value();
+
+  /// Earlier logs of the exercise of the set "log set" logs
+  ProviderSubscription<AsyncValue<List<Log>>>? _recentLogsSubscription;
+  int? _recentLogsExerciseId;
+  List<Log> _recentLogs = const [];
 
   WorkoutNotificationController(this._ref, this._service);
 
@@ -88,17 +97,56 @@ class WorkoutNotificationController {
 
     // Only while gym mode is open in the background: on screen it shows the
     // rest itself, and leaving it (X, back) ends the notifications
+    WorkoutNotificationTarget build({required bool withControls}) => buildWorkoutNotification(
+      state,
+      now: clock.now(),
+      i18n: i18n,
+      languageCode: locale.languageCode,
+      withControls: withControls,
+      recentLogs: _recentLogs,
+      mediaUrl: _ref.read(mediaUrlBuilderProvider),
+    );
+
     final target = inForeground || !_ref.read(gymModeVisibleProvider)
         ? WorkoutNotificationTarget.none
-        : buildWorkoutNotification(
-            state,
-            now: clock.now(),
-            i18n: i18n,
-            languageCode: locale.languageCode,
-            withControls: _service.supportsControls && state.showWorkoutNotification,
-          );
+        : build(withControls: _service.supportsControls && state.showWorkoutNotification);
     final labels = WorkoutNotificationLabels.of(i18n);
     unawaited(_enqueue(() => _apply(target, labels)));
+
+    // Also while nothing is shown, so the logs are there once something is
+    _watchRecentLogs(state, build(withControls: true));
+  }
+
+  /// Follows the earlier logs of the set the notification can log
+  void _watchRecentLogs(GymModeState state, WorkoutNotificationTarget target) {
+    final uuid = target.controls?.payload.logSlotUuid;
+    final exerciseId = uuid == null
+        ? null
+        : state.getSlotPageByUUID(uuid)?.setConfigData?.exerciseId;
+    if (exerciseId == _recentLogsExerciseId) {
+      return;
+    }
+
+    _recentLogsSubscription?.close();
+    _recentLogsSubscription = null;
+    _recentLogsExerciseId = exerciseId;
+    _recentLogs = const [];
+    if (exerciseId == null) {
+      return;
+    }
+    _recentLogsSubscription = _ref.listen(
+      pastExerciseLogsProvider(
+        routineId: state.routine.id!,
+        exerciseId: exerciseId,
+        weeksBack: state.logScopeWeeks,
+      ),
+      (_, logs) {
+        _recentLogs = logs.value ?? const [];
+        update();
+      },
+      // The log page may have loaded them already
+      fireImmediately: true,
+    );
   }
 
   /// Like [update], also when nothing seems to have changed: the platform may
@@ -132,9 +180,10 @@ class WorkoutNotificationController {
 
   /// Carries out a notification action. Stale actions only refresh the
   /// notification, without a running session the user is sent to the app.
-  Future<void> handleAction(String? actionId, String? encodedPayload) async {
+  /// [input] is the quick log the user picked, if any.
+  Future<void> handleAction(String? actionId, String? encodedPayload, [String? input]) async {
     try {
-      await _handleAction(actionId, encodedPayload);
+      await _handleAction(actionId, encodedPayload, input);
     } finally {
       // Lets iOS suspend the app again once the notification is up to date
       await _queue;
@@ -142,7 +191,7 @@ class WorkoutNotificationController {
     }
   }
 
-  Future<void> _handleAction(String? actionId, String? encodedPayload) async {
+  Future<void> _handleAction(String? actionId, String? encodedPayload, String? input) async {
     final state = _ref.read(gymStateProvider);
     if (!state.isInitialized) {
       // E.g. iOS started the app in the background just for this action
@@ -157,12 +206,26 @@ class WorkoutNotificationController {
         switch (actionId) {
           case WORKOUT_NOTIFICATION_ACTION_LOG_SET:
             final uuid = payload.logSlotUuid;
-            if (uuid != null) {
-              await notifier.logPlannedSet(uuid);
+            final config = uuid == null ? null : state.getSlotPageByUUID(uuid)?.setConfigData;
+            if (config == null) {
+              break;
+            }
+            if (input == null) {
+              await notifier.logPlannedSet(uuid!);
+            } else {
+              // An unknown label is from an outdated notification
+              final valuesFrom = quickLogChoices(config, _recentLogs)[input];
+              if (valuesFrom != null) {
+                await notifier.logPlannedSet(uuid!, valuesFrom: valuesFrom);
+              }
             }
           case WORKOUT_NOTIFICATION_ACTION_SKIP_REST:
             if (state.getSlotEntryPageByIndex()?.uuid == payload.restSlotUuid) {
               notifier.skipRest();
+            }
+          case WORKOUT_NOTIFICATION_ACTION_EXTEND_REST:
+            if (state.getSlotEntryPageByIndex()?.uuid == payload.restSlotUuid) {
+              notifier.extendRest(REST_EXTENSION);
             }
         }
       } catch (e) {
@@ -192,8 +255,8 @@ final workoutNotificationControllerProvider = Provider<WorkoutNotificationContro
   IsolateNameServer.removePortNameMapping(WORKOUT_NOTIFICATION_PORT);
   IsolateNameServer.registerPortWithName(port.sendPort, WORKOUT_NOTIFICATION_PORT);
   port.listen((message) {
-    final [actionId, payload] = message as List;
-    unawaited(controller.handleAction(actionId as String?, payload as String?));
+    final [actionId, payload, input] = message as List;
+    unawaited(controller.handleAction(actionId as String?, payload as String?, input as String?));
   });
 
   // Notifications of an earlier process outlive it. Only cleaned up once the

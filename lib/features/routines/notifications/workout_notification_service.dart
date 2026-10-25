@@ -18,6 +18,7 @@
 
 import 'dart:ui';
 
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -30,6 +31,7 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 
 const WORKOUT_NOTIFICATION_ACTION_LOG_SET = 'log_set';
 const WORKOUT_NOTIFICATION_ACTION_SKIP_REST = 'skip_rest';
+const WORKOUT_NOTIFICATION_ACTION_EXTEND_REST = 'extend_rest';
 
 /// The main isolate receives notification actions on this port
 const WORKOUT_NOTIFICATION_PORT = 'wger_workout_actions';
@@ -40,7 +42,7 @@ const WORKOUT_NOTIFICATION_PORT = 'wger_workout_actions';
 Future<void> workoutNotificationBackgroundHandler(NotificationResponse response) async {
   final port = IsolateNameServer.lookupPortByName(WORKOUT_NOTIFICATION_PORT);
   if (port != null) {
-    port.send([response.actionId, response.payload]);
+    port.send([response.actionId, response.payload, response.input]);
     return;
   }
 
@@ -212,9 +214,11 @@ class LocalWorkoutNotificationService implements WorkoutNotificationService {
           priority: Priority.high,
           category: AndroidNotificationCategory.alarm,
           visibility: NotificationVisibility.public,
+          largeIcon: await _cachedImage(alarm.image),
           actions: [
-            if (alarm.canLogSet)
-              AndroidNotificationAction(WORKOUT_NOTIFICATION_ACTION_LOG_SET, labels.logSet),
+            if (alarm.canExtendRest)
+              AndroidNotificationAction(WORKOUT_NOTIFICATION_ACTION_EXTEND_REST, labels.extendRest),
+            if (alarm.canLogSet) _logSetAction(alarm.quickLogs, labels),
           ],
         ),
         iOS: DarwinNotificationDetails(
@@ -251,15 +255,46 @@ class LocalWorkoutNotificationService implements WorkoutNotificationService {
           when: chronometerAt?.millisecondsSinceEpoch,
           usesChronometer: chronometerAt != null,
           chronometerCountDown: controls.chronometerCountsDown,
+          largeIcon: await _cachedImage(controls.image),
           actions: [
             if (controls.canSkipRest)
               AndroidNotificationAction(WORKOUT_NOTIFICATION_ACTION_SKIP_REST, labels.skipRest),
-            if (controls.canLogSet)
-              AndroidNotificationAction(WORKOUT_NOTIFICATION_ACTION_LOG_SET, labels.logSet),
+            if (controls.canExtendRest)
+              AndroidNotificationAction(WORKOUT_NOTIFICATION_ACTION_EXTEND_REST, labels.extendRest),
+            if (controls.canLogSet) _logSetAction(controls.quickLogs, labels),
           ],
         ),
       ),
     );
+  }
+
+  /// "Log set" logs the planned values, Android offers the [quickLogs] next to
+  /// it. Without free text, tapping the button itself sends no input.
+  AndroidNotificationAction _logSetAction(
+    List<String> quickLogs,
+    WorkoutNotificationLabels labels,
+  ) => AndroidNotificationAction(
+    WORKOUT_NOTIFICATION_ACTION_LOG_SET,
+    labels.logSet,
+    inputs: [
+      if (quickLogs.isNotEmpty)
+        AndroidNotificationActionInput(choices: quickLogs, allowFreeFormInput: false),
+    ],
+  );
+
+  /// The image if the app has it on disk already, the notification never waits
+  /// for a download
+  Future<FilePathAndroidBitmap?> _cachedImage(Uri? image) async {
+    if (image == null) {
+      return null;
+    }
+    try {
+      final path = await getCachedImageFilePath(image.toString());
+      return path == null ? null : FilePathAndroidBitmap(path);
+    } on Exception catch (e) {
+      _logger.fine('No cached image for the notification: $e');
+      return null;
+    }
   }
 
   @override

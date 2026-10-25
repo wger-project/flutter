@@ -20,9 +20,16 @@ import 'dart:convert';
 
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
+import 'package:wger/core/consts.dart';
+import 'package:wger/core/misc.dart';
+import 'package:wger/features/routines/models/log.dart';
+import 'package:wger/features/routines/models/set_config_data.dart';
 import 'package:wger/features/routines/providers/gym_state.dart';
 import 'package:wger/features/routines/validators.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+
+/// How much "+30 s" adds to a rest
+const REST_EXTENSION = Duration(seconds: 30);
 
 /// Identifies the gym session and the slot pages a notification action targets
 class WorkoutNotificationPayload extends Equatable {
@@ -98,7 +105,14 @@ class WorkoutControls extends Equatable {
 
   final bool canLogSet;
   final bool canSkipRest;
+  final bool canExtendRest;
   final WorkoutNotificationPayload payload;
+
+  /// Values of earlier logs that "log set" offers besides the planned ones
+  final List<String> quickLogs;
+
+  /// Image of the exercise the notification is about
+  final Uri? image;
 
   const WorkoutControls({
     required this.title,
@@ -108,6 +122,9 @@ class WorkoutControls extends Equatable {
     this.chronometerCountsDown = false,
     this.canLogSet = false,
     this.canSkipRest = false,
+    this.canExtendRest = false,
+    this.quickLogs = const [],
+    this.image,
   });
 
   @override
@@ -118,7 +135,10 @@ class WorkoutControls extends Equatable {
     chronometerCountsDown,
     canLogSet,
     canSkipRest,
+    canExtendRest,
     payload,
+    quickLogs,
+    image,
   ];
 }
 
@@ -128,7 +148,12 @@ class RestAlarm extends Equatable {
   final String title;
   final String body;
   final bool canLogSet;
+  final bool canExtendRest;
   final WorkoutNotificationPayload payload;
+
+  /// See [WorkoutControls.quickLogs]
+  final List<String> quickLogs;
+  final Uri? image;
 
   const RestAlarm({
     required this.at,
@@ -136,16 +161,29 @@ class RestAlarm extends Equatable {
     required this.body,
     required this.payload,
     this.canLogSet = false,
+    this.canExtendRest = false,
+    this.quickLogs = const [],
+    this.image,
   });
 
   @override
-  List<Object?> get props => [at, title, body, canLogSet, payload];
+  List<Object?> get props => [
+    at,
+    title,
+    body,
+    canLogSet,
+    canExtendRest,
+    payload,
+    quickLogs,
+    image,
+  ];
 }
 
 /// Localized texts the platform needs besides the notification content
 class WorkoutNotificationLabels extends Equatable {
   final String logSet;
   final String skipRest;
+  final String extendRest;
   final String controlsChannel;
   final String alarmChannel;
   final String notLoggedTitle;
@@ -154,6 +192,7 @@ class WorkoutNotificationLabels extends Equatable {
   const WorkoutNotificationLabels({
     required this.logSet,
     required this.skipRest,
+    required this.extendRest,
     required this.controlsChannel,
     required this.alarmChannel,
     required this.notLoggedTitle,
@@ -163,6 +202,7 @@ class WorkoutNotificationLabels extends Equatable {
   WorkoutNotificationLabels.of(AppLocalizations i18n)
     : logSet = i18n.workoutNotificationLogSet,
       skipRest = i18n.workoutNotificationSkipRest,
+      extendRest = i18n.workoutNotificationExtendRest(REST_EXTENSION.inSeconds),
       controlsChannel = i18n.workoutNotificationChannel,
       alarmChannel = i18n.workoutNotificationAlarmChannel,
       notLoggedTitle = i18n.workoutNotificationNotLoggedTitle,
@@ -172,6 +212,7 @@ class WorkoutNotificationLabels extends Equatable {
   List<Object?> get props => [
     logSet,
     skipRest,
+    extendRest,
     controlsChannel,
     alarmChannel,
     notLoggedTitle,
@@ -194,15 +235,61 @@ class WorkoutNotificationTarget extends Equatable {
   List<Object?> get props => [controls, alarm];
 }
 
+/// How many earlier logs "log set" offers at most
+const _MAX_QUICK_LOGS = 3;
+
+/// The earlier logs of [planned]'s exercise that "log set" offers, by label.
+///
+/// Newest first, one per label, without the planned values. Only plain
+/// repetitions: other units have server names that need a BuildContext.
+Map<String, Log> quickLogChoices(SetConfigData planned, List<Log> recentLogs) {
+  // What "log set" logs, with the units resolved
+  final plannedLog = Log.fromSetConfigData(planned);
+  final choices = <String, Log>{};
+  for (final log in recentLogs) {
+    if (choices.length == _MAX_QUICK_LOGS) {
+      break;
+    }
+    final isPlanned =
+        log.repetitions == plannedLog.repetitions &&
+        log.repetitionsUnitId == plannedLog.repetitionsUnitId &&
+        log.weight == plannedLog.weight &&
+        log.weightUnitId == plannedLog.weightUnitId;
+    if (log.exerciseId != planned.exerciseId ||
+        log.repetitionsUnitId != REP_UNIT_REPETITIONS_ID ||
+        log.repetitions == null ||
+        isPlanned) {
+      continue;
+    }
+    choices.putIfAbsent(_quickLogLabel(log), () => log);
+  }
+  return choices;
+}
+
+String _quickLogLabel(Log log) {
+  final weight = log.weight;
+  final unit = log.weightUnitObj?.name;
+  final rir = log.rir;
+  return [
+    formatNum(log.repetitions!).toString(),
+    if (weight != null && weight != 0) ...['×', formatNum(weight).toString(), ?unit],
+    if (rir != null) '(${formatNum(rir)} RiR)',
+  ].join(' ');
+}
+
 /// Derives the workout notifications from [state] at [now].
 ///
 /// [withControls] is whether the ongoing notification is supported and wanted.
+/// [recentLogs] are earlier logs of the exercise of the set to log, see
+/// [quickLogChoices], and [mediaUrl] turns an image path into its URL.
 WorkoutNotificationTarget buildWorkoutNotification(
   GymModeState state, {
   required DateTime now,
   required AppLocalizations i18n,
   required String languageCode,
   required bool withControls,
+  List<Log> recentLogs = const [],
+  Uri? Function(String? path)? mediaUrl,
 }) {
   if (!state.isInitialized) {
     return WorkoutNotificationTarget.none;
@@ -220,6 +307,12 @@ WorkoutNotificationTarget buildWorkoutNotification(
     repetitions: page.setConfigData!.repetitions,
     weight: page.setConfigData!.weight,
   );
+
+  List<String> quickLogs(SlotPageEntry page) =>
+      quickLogChoices(page.setConfigData!, recentLogs).keys.toList();
+
+  Uri? image(SlotPageEntry? page) =>
+      page == null ? null : mediaUrl?.call(page.setConfigData!.exercise.getMainImage?.image);
 
   WorkoutNotificationPayload payload({String? logSlotUuid, String? restSlotUuid}) =>
       WorkoutNotificationPayload(
@@ -243,6 +336,8 @@ WorkoutNotificationTarget buildWorkoutNotification(
         !next.logDone &&
         plannedComplete(next);
     final actionPayload = payload(logSlotUuid: next?.uuid, restSlotUuid: current!.uuid);
+    final nextQuickLogs = canLogSet ? quickLogs(next) : const <String>[];
+    final nextImage = image(next);
 
     final endsAt = state.restEndsAt;
     final restRunning = endsAt != null && endsAt.isAfter(now);
@@ -253,7 +348,11 @@ WorkoutNotificationTarget buildWorkoutNotification(
             title: i18n.workoutNotificationRestOver,
             body: body,
             canLogSet: canLogSet,
+            // Starts another short countdown once the rest is over
+            canExtendRest: true,
             payload: actionPayload,
+            quickLogs: nextQuickLogs,
+            image: nextImage,
           )
         : null;
 
@@ -265,7 +364,10 @@ WorkoutNotificationTarget buildWorkoutNotification(
             chronometerCountsDown: restRunning,
             canLogSet: canLogSet,
             canSkipRest: true,
+            canExtendRest: endsAt != null,
             payload: actionPayload,
+            quickLogs: nextQuickLogs,
+            image: nextImage,
           )
         : null;
 
@@ -286,6 +388,7 @@ WorkoutNotificationTarget buildWorkoutNotification(
         )
         .toList();
     final config = current.setConfigData!;
+    final canLogSet = !current.logDone && plannedComplete(current);
 
     return WorkoutNotificationTarget(
       controls: WorkoutControls(
@@ -293,8 +396,10 @@ WorkoutNotificationTarget buildWorkoutNotification(
         body:
             '${i18n.workoutNotificationSetOf(sameExercise.indexOf(current) + 1, sameExercise.length)}'
             ' · ${config.textRepr}',
-        canLogSet: !current.logDone && plannedComplete(current),
+        canLogSet: canLogSet,
         payload: payload(logSlotUuid: current.uuid),
+        quickLogs: canLogSet ? quickLogs(current) : const [],
+        image: image(current),
       ),
     );
   }

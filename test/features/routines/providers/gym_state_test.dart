@@ -736,6 +736,57 @@ void main() {
       expect(capturedLog().repetitions, 7);
     });
 
+    test('extendRest adds to a running countdown, after its end from now', () async {
+      final timer = secondLog().pageIndex - 1;
+      withClock(Clock.fixed(start), () => notifier.setCurrentPage(timer));
+      final endsAt = notifier.state.restEndsAt!;
+
+      withClock(Clock.fixed(start), () => notifier.extendRest(const Duration(seconds: 30)));
+      expect(notifier.state.restEndsAt, endsAt.add(const Duration(seconds: 30)));
+
+      final later = endsAt.add(const Duration(minutes: 5));
+      withClock(Clock.fixed(later), () => notifier.extendRest(const Duration(seconds: 30)));
+      expect(notifier.state.restEndsAt, later.add(const Duration(seconds: 30)));
+      expect(notifier.state.restStartedAt, start);
+    });
+
+    test('extendRest does nothing outside a countdown', () {
+      notifier.setCurrentPage(secondLog().pageIndex);
+
+      notifier.extendRest(const Duration(seconds: 30));
+
+      expect(notifier.state.restEndsAt, isNull);
+    });
+
+    test('logPlannedSet with the values of an earlier log logs those instead', () async {
+      final log = secondLog();
+      notifier.setCurrentPage(log.pageIndex - 1);
+      final earlier = Log(exerciseId: log.setConfigData!.exerciseId, repetitions: 8, weight: 62.5);
+      earlier.weightUnit = testWeightUnit2;
+
+      expect(await notifier.logPlannedSet(log.uuid, valuesFrom: earlier), isTrue);
+
+      final saved = capturedLog();
+      expect(saved.repetitions, 8);
+      expect(saved.weight, 62.5);
+      expect(saved.weightUnitId, testWeightUnit2.id);
+      // The planned RiR is 1.5, the earlier log had none
+      expect(saved.rir, isNull);
+      expect(saved.slotEntryId, log.setConfigData!.slotEntryId);
+      expect(notifier.state.currentPage, log.pageIndex + 1);
+    });
+
+    test('logPlannedSet with an earlier log also replaces an edited draft', () async {
+      final log = secondLog();
+      notifier.setCurrentPage(log.pageIndex);
+      container.read(gymLogProvider.notifier).setRepetitions(7);
+      final earlier = Log(exerciseId: log.setConfigData!.exerciseId, repetitions: 9, weight: 60);
+
+      expect(await notifier.logPlannedSet(log.uuid, valuesFrom: earlier), isTrue);
+
+      expect(capturedLog().repetitions, 9);
+    });
+
     test('logPlannedSet on the set page needs the draft', () async {
       // A restored state points at the page before onPageChanged seeds the draft
       final log = secondLog();

@@ -345,6 +345,17 @@ class GymStateNotifier extends _$GymStateNotifier {
     setCurrentPage(state.currentPage + 1);
   }
 
+  /// Adds [extra] to the running countdown, counted from now if the rest is
+  /// already over. No-op without a countdown (other pages, count-up rest).
+  void extendRest(Duration extra) {
+    final endsAt = state.restEndsAt;
+    if (endsAt == null) {
+      return;
+    }
+    final now = clock.now();
+    state = state.copyWith(restEndsAt: (endsAt.isAfter(now) ? endsAt : now).add(extra));
+  }
+
   /// Saves the log draft of the current log page, marks the page as done and
   /// moves on to the next page. A failed write propagates to the caller.
   Future<void> logCurrentSet() async {
@@ -372,8 +383,9 @@ class GymStateNotifier extends _$GymStateNotifier {
 
   /// Logs the set of the log page [slotPageUuid] without the UI, e.g. from a
   /// notification. From the rest right before it the planned values are logged,
-  /// on the page itself the current draft. False if stale, done or incomplete.
-  Future<bool> logPlannedSet(String slotPageUuid) async {
+  /// on the page itself the current draft, in both cases the values of
+  /// [valuesFrom] if given. False if stale, done or incomplete.
+  Future<bool> logPlannedSet(String slotPageUuid, {Log? valuesFrom}) async {
     final target = state.getSlotPageByUUID(slotPageUuid);
     if (target == null || target.type != SlotPageType.log || target.logDone) {
       return false;
@@ -387,13 +399,16 @@ class GymStateNotifier extends _$GymStateNotifier {
       return false;
     }
 
-    final log = onTarget ? ref.read(gymLogProvider) : _draftFor(target);
+    final log = valuesFrom ?? (onTarget ? ref.read(gymLogProvider) : _draftFor(target));
     if (log == null || !isWorkoutLogComplete(repetitions: log.repetitions, weight: log.weight)) {
       return false;
     }
 
     if (onRestBefore) {
       setCurrentPage(target.pageIndex);
+    }
+    if (valuesFrom != null) {
+      ref.read(gymLogProvider.notifier).copyValuesFrom(valuesFrom);
     }
     await logCurrentSet();
     return true;

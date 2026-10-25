@@ -25,11 +25,13 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
+import 'package:wger/features/routines/models/log.dart';
 import 'package:wger/features/routines/notifications/workout_notification_content.dart';
 import 'package:wger/features/routines/notifications/workout_notification_controller.dart';
 import 'package:wger/features/routines/notifications/workout_notification_service.dart';
 import 'package:wger/features/routines/providers/gym_state.dart';
 import 'package:wger/features/routines/providers/gym_state_notifier.dart';
+import 'package:wger/features/routines/providers/workout_logs_notifier.dart';
 import 'package:wger/features/routines/providers/workout_logs_repository.dart';
 
 import '../../../../test_data/routines.dart';
@@ -284,10 +286,134 @@ void main() {
       IsolateNameServer.lookupPortByName(WORKOUT_NOTIFICATION_PORT)!.send([
         WORKOUT_NOTIFICATION_ACTION_SKIP_REST,
         payloadFor(restSlotUuid: slotPage(rest).uuid),
+        null,
       ]);
       await settle();
 
       expect(gymState.state.currentPage, rest + 1);
+    });
+
+    group('Quick logs', () {
+      late Log earlier;
+
+      setUp(() {
+        earlier = Log(
+          exerciseId: getTestRoutine().days.first.slots.first.entries.first.exerciseId,
+          repetitions: 9,
+          weight: 60,
+        );
+        earlier.weightUnit = testWeightUnit1;
+        when(
+          logRepo.watchLogsByExerciseDrift(
+            routineId: anyNamed('routineId'),
+            exerciseId: anyNamed('exerciseId'),
+            since: anyNamed('since'),
+          ),
+        ).thenAnswer((_) => Stream.value([earlier]));
+      });
+
+      Log capturedLog() =>
+          verify(logRepo.addLocalDrift(captureAny, dayId: anyNamed('dayId'))).captured.single
+              as Log;
+
+      test('The notification offers earlier logs of the next set', () async {
+        await startRest();
+
+        final controls = verify(service.showControls(captureAny, any)).captured;
+        expect((controls.last as WorkoutControls).quickLogs, ['9 × 60 kg']);
+      });
+
+      test('Also when the log page already loaded the earlier logs', () async {
+        initGymMode();
+        final next = gymState.state.pages
+            .expand((p) => p.slotPages)
+            .firstWhere((p) => p.type == SlotPageType.log);
+        final pastLogs = container.listen(
+          pastExerciseLogsProvider(
+            routineId: gymState.state.routine.id!,
+            exerciseId: next.setConfigData!.exerciseId,
+            weeksBack: gymState.state.logScopeWeeks,
+          ),
+          (_, _) {},
+        );
+        addTearDown(pastLogs.close);
+        await settle();
+
+        await startRest();
+
+        final controls = verify(service.showControls(captureAny, any)).captured;
+        expect((controls.last as WorkoutControls).quickLogs, ['9 × 60 kg']);
+      });
+
+      test('A picked quick log arrives through the port and logs its values', () async {
+        await startRest();
+        final rest = gymState.state.currentPage;
+
+        IsolateNameServer.lookupPortByName(WORKOUT_NOTIFICATION_PORT)!.send([
+          WORKOUT_NOTIFICATION_ACTION_LOG_SET,
+          payloadFor(logSlotUuid: slotPage(rest + 1).uuid),
+          '9 × 60 kg',
+        ]);
+        await settle();
+
+        final saved = capturedLog();
+        expect(saved.repetitions, 9);
+        expect(saved.weight, 60);
+        expect(gymState.state.currentPage, rest + 2);
+      });
+
+      test('A label the notification no longer offers logs nothing', () async {
+        await startRest();
+        final rest = gymState.state.currentPage;
+
+        await container
+            .read(workoutNotificationControllerProvider)
+            .handleAction(
+              WORKOUT_NOTIFICATION_ACTION_LOG_SET,
+              payloadFor(logSlotUuid: slotPage(rest + 1).uuid),
+              '7 × 50 kg',
+            );
+        await settle();
+
+        verifyNever(logRepo.addLocalDrift(any, dayId: anyNamed('dayId')));
+        expect(gymState.state.currentPage, rest);
+      });
+    });
+
+    test('"+30 s" makes the rest longer and moves the alarm', () async {
+      await startRest();
+      final rest = gymState.state.currentPage;
+      final endsAt = gymState.state.restEndsAt!;
+      clearInteractions(service);
+
+      await withClock(Clock.fixed(now), () async {
+        await container
+            .read(workoutNotificationControllerProvider)
+            .handleAction(
+              WORKOUT_NOTIFICATION_ACTION_EXTEND_REST,
+              payloadFor(restSlotUuid: slotPage(rest).uuid),
+            );
+        await settle();
+      });
+
+      expect(gymState.state.restEndsAt, endsAt.add(REST_EXTENSION));
+      final alarms = verify(service.scheduleRestAlarm(captureAny, any)).captured;
+      expect((alarms.last as RestAlarm).at, endsAt.add(REST_EXTENSION));
+    });
+
+    test('"+30 s" from an earlier rest changes nothing', () async {
+      await startRest();
+      final endsAt = gymState.state.restEndsAt!;
+
+      await container
+          .read(workoutNotificationControllerProvider)
+          .handleAction(
+            WORKOUT_NOTIFICATION_ACTION_EXTEND_REST,
+            payloadFor(restSlotUuid: 'another rest'),
+          );
+      await settle();
+
+      expect(gymState.state.restEndsAt, endsAt);
     });
 
     test('A stale action changes nothing but shows the notification again', () async {

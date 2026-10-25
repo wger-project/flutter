@@ -16,10 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:io';
+
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:path/path.dart' as p;
 import 'package:timezone/data/latest.dart' as tzdata;
 import 'package:wger/features/routines/notifications/workout_notification_content.dart';
 import 'package:wger/features/routines/notifications/workout_notification_service.dart';
@@ -33,6 +37,7 @@ void main() {
   const labels = WorkoutNotificationLabels(
     logSet: 'Log set',
     skipRest: 'Skip rest',
+    extendRest: '+30 s',
     controlsChannel: 'Workout',
     alarmChannel: 'Rest alarm',
     notLoggedTitle: 'Set not logged',
@@ -98,13 +103,19 @@ void main() {
       (calls.singleWhere((c) => c.method == 'zonedSchedule').arguments as Map)['platformSpecifics']
           as Map;
 
-  RestAlarm alarm({bool canLogSet = true}) => RestAlarm(
-    at: DateTime.now().add(const Duration(minutes: 2)),
-    title: 'Rest is over',
-    body: 'Next: Bench press',
-    canLogSet: canLogSet,
-    payload: payload,
-  );
+  RestAlarm alarm({bool canLogSet = true, List<String> quickLogs = const [], Uri? image}) =>
+      RestAlarm(
+        at: DateTime.now().add(const Duration(minutes: 2)),
+        title: 'Rest is over',
+        body: 'Next: Bench press',
+        canLogSet: canLogSet,
+        payload: payload,
+        quickLogs: quickLogs,
+        image: image,
+      );
+
+  Map<Object?, Object?> shown() =>
+      (calls.singleWhere((c) => c.method == 'show').arguments as Map)['platformSpecifics'] as Map;
 
   test('Initializes with the monochrome status bar icon', () async {
     await LocalWorkoutNotificationService().initialize(labels);
@@ -139,5 +150,99 @@ void main() {
     calls.clear();
     await service.scheduleRestAlarm(alarm(canLogSet: false), labels);
     expect(scheduled()['actions'], anyOf(isNull, isEmpty));
+  });
+
+  test('Rest actions in Android order: skip, +30 s, log', () async {
+    await LocalWorkoutNotificationService().showControls(
+      WorkoutControls(
+        title: 'Pause',
+        body: 'Next: Bench press',
+        payload: payload,
+        canSkipRest: true,
+        canExtendRest: true,
+        canLogSet: true,
+      ),
+      labels,
+    );
+
+    expect((shown()['actions'] as List).map((a) => (a as Map)['id']), [
+      WORKOUT_NOTIFICATION_ACTION_SKIP_REST,
+      WORKOUT_NOTIFICATION_ACTION_EXTEND_REST,
+      WORKOUT_NOTIFICATION_ACTION_LOG_SET,
+    ]);
+  });
+
+  group('Log set', () {
+    List<Object?> inputsOfLogSet(Map<Object?, Object?> details) =>
+        ((details['actions'] as List).cast<Map<Object?, Object?>>().singleWhere(
+              (a) => a['id'] == WORKOUT_NOTIFICATION_ACTION_LOG_SET,
+            )['inputs']
+            as List?) ??
+        const [];
+
+    test('Offers the quick logs as choices, without free text', () async {
+      await LocalWorkoutNotificationService().showControls(
+        WorkoutControls(
+          title: 'Pause',
+          body: 'Next: Bench press',
+          payload: payload,
+          canLogSet: true,
+          quickLogs: const ['9 × 60 kg', '8 × 62.5 kg'],
+        ),
+        labels,
+      );
+
+      final input = inputsOfLogSet(shown()).single! as Map;
+      expect(input['choices'], ['9 × 60 kg', '8 × 62.5 kg']);
+      expect(input['allowFreeFormInput'], isFalse);
+    });
+
+    test('Without quick logs the action takes no input', () async {
+      await LocalWorkoutNotificationService().scheduleRestAlarm(alarm(), labels);
+
+      expect(inputsOfLogSet(scheduled()), isEmpty);
+    });
+
+    test('The alarm offers the quick logs too', () async {
+      await LocalWorkoutNotificationService().scheduleRestAlarm(
+        alarm(quickLogs: ['9 × 60 kg']),
+        labels,
+      );
+
+      expect((inputsOfLogSet(scheduled()).single! as Map)['choices'], ['9 × 60 kg']);
+    });
+  });
+
+  group('Exercise image', () {
+    const pathProvider = MethodChannel('plugins.flutter.io/path_provider');
+    final image = Uri.parse('https://wger.test/media/bench.png');
+    late Directory temp;
+
+    setUp(() {
+      temp = Directory.systemTemp.createTempSync('notification_image');
+      addTearDown(() => temp.deleteSync(recursive: true));
+      binding.defaultBinaryMessenger.setMockMethodCallHandler(
+        pathProvider,
+        (call) async => temp.path,
+      );
+      addTearDown(
+        () => binding.defaultBinaryMessenger.setMockMethodCallHandler(pathProvider, null),
+      );
+    });
+
+    test('Shows the image the app has cached', () async {
+      final file = File(p.join(temp.path, cacheImageFolderName, keyToMd5(image.toString())))
+        ..createSync(recursive: true);
+
+      await LocalWorkoutNotificationService().scheduleRestAlarm(alarm(image: image), labels);
+
+      expect(scheduled()['largeIcon'], file.path);
+    });
+
+    test('Does not wait for an image that is not cached', () async {
+      await LocalWorkoutNotificationService().scheduleRestAlarm(alarm(image: image), labels);
+
+      expect(scheduled()['largeIcon'], isNull);
+    });
   });
 }

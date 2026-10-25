@@ -21,6 +21,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
+import 'package:wger/core/consts.dart';
+import 'package:wger/features/exercises/models/image.dart';
+import 'package:wger/features/routines/models/log.dart';
 import 'package:wger/features/routines/notifications/workout_notification_content.dart';
 import 'package:wger/features/routines/providers/gym_state.dart';
 import 'package:wger/features/routines/providers/gym_state_notifier.dart';
@@ -48,12 +51,18 @@ void main() {
   List<SlotPageEntry> logs() => slotPages().where((p) => p.type == SlotPageType.log).toList();
   List<SlotPageEntry> timers() => slotPages().where((p) => p.type == SlotPageType.timer).toList();
 
-  WorkoutNotificationTarget build({bool withControls = true}) => buildWorkoutNotification(
+  WorkoutNotificationTarget build({
+    bool withControls = true,
+    List<Log> recentLogs = const [],
+    Uri? Function(String? path)? mediaUrl,
+  }) => buildWorkoutNotification(
     notifier.state,
     now: now,
     i18n: i18n,
     languageCode: 'en',
     withControls: withControls,
+    recentLogs: recentLogs,
+    mediaUrl: mediaUrl,
   );
 
   void onPage(SlotPageEntry page, {DateTime? restStartedAt, DateTime? restEndsAt}) {
@@ -187,10 +196,126 @@ void main() {
       expect(target.controls!.canLogSet, isFalse);
     });
 
+    test('"+30 s" only for a countdown, also once it is over', () {
+      final timer = timers().first;
+      onPage(timer, restStartedAt: now, restEndsAt: now.add(const Duration(seconds: 90)));
+      expect(build().controls!.canExtendRest, isTrue);
+      expect(build().alarm!.canExtendRest, isTrue);
+
+      onPage(timer, restStartedAt: now, restEndsAt: now.subtract(const Duration(seconds: 1)));
+      expect(build().controls!.canExtendRest, isTrue);
+
+      onPage(timer, restStartedAt: now);
+      expect(build().controls!.canExtendRest, isFalse);
+
+      onPage(logs()[1]);
+      expect(build().controls!.canExtendRest, isFalse);
+    });
+
     test('Without controls there is nothing outside a rest', () {
       onPage(logs()[1]);
 
       expect(build(withControls: false), WorkoutNotificationTarget.none);
+    });
+  });
+
+  group('Quick logs', () {
+    Log logOf({
+      required num repetitions,
+      num? weight,
+      num? rir,
+      int repetitionsUnitId = REP_UNIT_REPETITIONS_ID,
+      int? exerciseId,
+    }) {
+      final planned = logs()[1].setConfigData!;
+      final log = Log(
+        exerciseId: exerciseId ?? planned.exerciseId,
+        repetitions: repetitions,
+        repetitionsUnitId: repetitionsUnitId,
+        weight: weight,
+        rir: rir,
+      );
+      log.weightUnit = testWeightUnit1;
+      return log;
+    }
+
+    test('Newest first, one per label, without the planned values', () {
+      final planned = logs()[1].setConfigData!;
+      final recent = [
+        logOf(repetitions: 9, weight: 60),
+        logOf(repetitions: planned.repetitions!, weight: planned.weight),
+        logOf(repetitions: 9, weight: 60),
+        logOf(repetitions: 8, weight: 62.5, rir: 2),
+        logOf(repetitions: 12),
+        logOf(repetitions: 6, weight: 70),
+      ];
+
+      final choices = quickLogChoices(planned, recent);
+
+      expect(choices.keys, ['9 × 60 kg', '8 × 62.5 kg (2 RiR)', '12']);
+      expect(choices['9 × 60 kg'], same(recent[0]));
+    });
+
+    test('Skips other exercises and units the label cannot name', () {
+      final planned = logs()[1].setConfigData!;
+
+      final choices = quickLogChoices(planned, [
+        logOf(repetitions: 9, weight: 60, exerciseId: planned.exerciseId + 1),
+        logOf(repetitions: 30, repetitionsUnitId: testRepetitionUnit2.id),
+      ]);
+
+      expect(choices, isEmpty);
+    });
+
+    test('The rest before a set and the set page offer them with "log set"', () {
+      final recent = [logOf(repetitions: 9, weight: 60)];
+      final endsAt = now.add(const Duration(seconds: 90));
+      onPage(timers().first, restStartedAt: now, restEndsAt: endsAt);
+
+      var target = build(recentLogs: recent);
+      expect(target.controls!.quickLogs, ['9 × 60 kg']);
+      expect(target.alarm!.quickLogs, ['9 × 60 kg']);
+
+      onPage(logs()[1]);
+      target = build(recentLogs: recent);
+      expect(target.controls!.quickLogs, ['9 × 60 kg']);
+
+      notifier.markSlotPageAsDone(logs()[1].uuid, isDone: true);
+      expect(build(recentLogs: recent).controls!.quickLogs, isEmpty);
+    });
+
+    test("The notification shows the main image of the set's exercise", () {
+      final config = logs()[1].setConfigData!;
+      config.exercise = config.exercise.copyWith(
+        images: [
+          ExerciseImage(
+            id: 1,
+            uuid: 'image',
+            exerciseId: config.exerciseId,
+            image: '/media/bench.png',
+            isMain: true,
+            isAiGenerated: false,
+            style: ExerciseImageStyle.photo,
+            width: null,
+            height: null,
+            created: now,
+            lastUpdate: now,
+            licenseId: 1,
+            licenseTitle: '',
+            licenseObjectUrl: '',
+            licenseAuthor: null,
+            licenseAuthorUrl: '',
+            licenseDerivativeSourceUrl: '',
+          ),
+        ],
+      );
+      Uri? mediaUrl(String? path) => path == null ? null : Uri.parse('https://wger.test$path');
+      onPage(timers().first, restStartedAt: now, restEndsAt: now.add(const Duration(seconds: 90)));
+
+      final target = build(mediaUrl: mediaUrl);
+
+      expect(target.controls!.image, Uri.parse('https://wger.test/media/bench.png'));
+      expect(target.alarm!.image, Uri.parse('https://wger.test/media/bench.png'));
     });
   });
 

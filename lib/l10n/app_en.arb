@@ -403,11 +403,20 @@
     }
   },
   "workoutNotificationInProgress": "Workout in progress",
-  "workoutNotificationLogSet": "Log set",
+  "workoutNotificationLogSet": "Log planned set",
   "@workoutNotificationLogSet": {
     "description": "Notification button that logs the next set with its planned values"
   },
   "workoutNotificationSkipRest": "Skip rest",
+  "workoutNotificationExtendRest": "+{seconds} s",
+  "@workoutNotificationExtendRest": {
+    "description": "Notification button that makes the running rest longer",
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
   "workoutNotificationNotLoggedTitle": "Set not logged",
   "workoutNotificationNotLoggedBody": "Open gym mode to continue the workout",
   "workoutNotificationAlarmChannel": "Rest alarm",
