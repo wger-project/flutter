@@ -20,7 +20,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter/foundation.dart' show visibleForTesting;
+import 'package:flutter/foundation.dart' show kDebugMode, visibleForTesting;
 import 'package:flutter/widgets.dart' show AppLifecycleListener;
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
@@ -874,11 +874,12 @@ class AuthNotifier extends _$AuthNotifier {
     state = AsyncData(current.copyWith(serverVersion: v));
   }
 
-  /// Loads the last server URL the user successfully logged in with.
+  /// Loads the last server URL the user successfully logged in with, or the
+  /// default server of this build (the test server in debug builds).
   static Future<String> getServerUrlFromPrefs() async {
     final prefs = PreferenceHelper.asyncPref;
     if (!(await prefs.containsKey(PREFS_LAST_SERVER))) {
-      return DEFAULT_SERVER_PROD;
+      return kDebugMode ? DEFAULT_SERVER_TEST : DEFAULT_SERVER_PROD;
     }
 
     final userData = json.decode((await prefs.getString(PREFS_LAST_SERVER))!);

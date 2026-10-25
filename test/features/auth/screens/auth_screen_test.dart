@@ -121,6 +121,11 @@ void main() {
   }
 
   setUp(() async {
+    // wger.de was used last; a fresh debug install defaults to the test server
+    await PreferenceHelper.asyncPref.setString(
+      PREFS_LAST_SERVER,
+      json.encode({'serverUrl': DEFAULT_SERVER_PROD}),
+    );
     mockClient = MockClient();
     mockSecureStorage = MockSecureTokenStorage();
     when(mockSecureStorage.deleteRefreshToken()).thenAnswer((_) async {});
@@ -683,6 +688,22 @@ void main() {
       // Self-hosted is already active: its URL field shows without tapping it.
       expect(find.byKey(const Key('inputServer')), findsOneWidget);
       expect(find.text('http://localhost:8000'), findsOneWidget);
+    });
+
+    testWidgets('A fresh debug install points at the test server', (
+      WidgetTester tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(1080, 1920));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      await PreferenceHelper.asyncPref.remove(PREFS_LAST_SERVER);
+
+      await tester.pumpWidget(getWidget());
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('advancedButton')));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('inputServer')), findsOneWidget);
+      expect(find.text(DEFAULT_SERVER_TEST), findsOneWidget);
     });
 
     testWidgets('Sheet round-trip: Refresh token → Username & password', (
