@@ -635,6 +635,18 @@ class MockWorkoutNotificationService extends _i1.Mock implements _i31.WorkoutNot
           as bool);
 
   @override
+  _i10.Future<void> initialize(
+    _i32.WorkoutNotificationLabels? labels, {
+    _i31.WorkoutNotificationTapHandler? onTap,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#initialize, [labels], {#onTap: onTap}),
+            returnValue: _i10.Future<void>.value(),
+            returnValueForMissingStub: _i10.Future<void>.value(),
+          )
+          as _i10.Future<void>);
+
+  @override
   _i10.Future<void> requestPermissions(
     _i32.WorkoutNotificationLabels? labels,
   ) =>
@@ -664,6 +676,15 @@ class MockWorkoutNotificationService extends _i1.Mock implements _i31.WorkoutNot
   ) =>
       (super.noSuchMethod(
             Invocation.method(#showControls, [controls, labels]),
+            returnValue: _i10.Future<void>.value(),
+            returnValueForMissingStub: _i10.Future<void>.value(),
+          )
+          as _i10.Future<void>);
+
+  @override
+  _i10.Future<void> showNotLogged(_i32.WorkoutNotificationLabels? labels) =>
+      (super.noSuchMethod(
+            Invocation.method(#showNotLogged, [labels]),
             returnValue: _i10.Future<void>.value(),
             returnValueForMissingStub: _i10.Future<void>.value(),
           )

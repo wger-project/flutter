@@ -46,6 +46,14 @@ class WorkoutNotificationPayload extends Equatable {
     this.restSlotUuid,
   });
 
+  /// Whether this belongs to the session [state] is running
+  bool matches(GymModeState state) =>
+      state.isInitialized &&
+      state.routine.id == routineId &&
+      state.dayId == dayId &&
+      state.iteration == iteration &&
+      state.workoutStart.isAtSameMomentAs(workoutStart);
+
   String encode() => jsonEncode({
     'routineId': routineId,
     'dayId': dayId,
@@ -140,22 +148,35 @@ class WorkoutNotificationLabels extends Equatable {
   final String skipRest;
   final String controlsChannel;
   final String alarmChannel;
+  final String notLoggedTitle;
+  final String notLoggedBody;
 
   const WorkoutNotificationLabels({
     required this.logSet,
     required this.skipRest,
     required this.controlsChannel,
     required this.alarmChannel,
+    required this.notLoggedTitle,
+    required this.notLoggedBody,
   });
 
   WorkoutNotificationLabels.of(AppLocalizations i18n)
     : logSet = i18n.workoutNotificationLogSet,
       skipRest = i18n.workoutNotificationSkipRest,
       controlsChannel = i18n.workoutNotificationChannel,
-      alarmChannel = i18n.gymModeRestAlarm;
+      alarmChannel = i18n.gymModeRestAlarm,
+      notLoggedTitle = i18n.workoutNotificationNotLoggedTitle,
+      notLoggedBody = i18n.workoutNotificationNotLoggedBody;
 
   @override
-  List<Object?> get props => [logSet, skipRest, controlsChannel, alarmChannel];
+  List<Object?> get props => [
+    logSet,
+    skipRest,
+    controlsChannel,
+    alarmChannel,
+    notLoggedTitle,
+    notLoggedBody,
+  ];
 }
 
 /// What the OS should show for the workout, nothing if both are null

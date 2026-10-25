@@ -7,8 +7,10 @@
 import 'dart:async' as _i3;
 
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:wger/features/routines/models/log.dart' as _i6;
 import 'package:wger/features/routines/notifications/workout_notification_content.dart' as _i4;
 import 'package:wger/features/routines/notifications/workout_notification_service.dart' as _i2;
+import 'package:wger/features/routines/providers/workout_logs_repository.dart' as _i5;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -41,6 +43,18 @@ class MockWorkoutNotificationService extends _i1.Mock implements _i2.WorkoutNoti
             returnValue: false,
           )
           as bool);
+
+  @override
+  _i3.Future<void> initialize(
+    _i4.WorkoutNotificationLabels? labels, {
+    _i2.WorkoutNotificationTapHandler? onTap,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#initialize, [labels], {#onTap: onTap}),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
 
   @override
   _i3.Future<void> requestPermissions(_i4.WorkoutNotificationLabels? labels) =>
@@ -76,9 +90,70 @@ class MockWorkoutNotificationService extends _i1.Mock implements _i2.WorkoutNoti
           as _i3.Future<void>);
 
   @override
+  _i3.Future<void> showNotLogged(_i4.WorkoutNotificationLabels? labels) =>
+      (super.noSuchMethod(
+            Invocation.method(#showNotLogged, [labels]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
+
+  @override
   _i3.Future<void> cancelAll() =>
       (super.noSuchMethod(
             Invocation.method(#cancelAll, []),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
+}
+
+/// A class which mocks [WorkoutLogRepository].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockWorkoutLogRepository extends _i1.Mock implements _i5.WorkoutLogRepository {
+  MockWorkoutLogRepository() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i3.Stream<List<_i6.Log>> watchLogsByExerciseDrift({
+    int? routineId,
+    required int? exerciseId,
+    DateTime? since,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#watchLogsByExerciseDrift, [], {
+              #routineId: routineId,
+              #exerciseId: exerciseId,
+              #since: since,
+            }),
+            returnValue: _i3.Stream<List<_i6.Log>>.empty(),
+          )
+          as _i3.Stream<List<_i6.Log>>);
+
+  @override
+  _i3.Future<void> deleteLocalDrift(String? id) =>
+      (super.noSuchMethod(
+            Invocation.method(#deleteLocalDrift, [id]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
+
+  @override
+  _i3.Future<void> updateLocalDrift(_i6.Log? log) =>
+      (super.noSuchMethod(
+            Invocation.method(#updateLocalDrift, [log]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
+
+  @override
+  _i3.Future<void> addLocalDrift(_i6.Log? log, {int? dayId}) =>
+      (super.noSuchMethod(
+            Invocation.method(#addLocalDrift, [log], {#dayId: dayId}),
             returnValue: _i3.Future<void>.value(),
             returnValueForMissingStub: _i3.Future<void>.value(),
           )

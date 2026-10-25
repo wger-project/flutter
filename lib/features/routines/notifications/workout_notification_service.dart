@@ -16,15 +16,45 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:ui';
+
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:wger/features/routines/notifications/workout_notification_content.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 
 const WORKOUT_NOTIFICATION_ACTION_LOG_SET = 'log_set';
 const WORKOUT_NOTIFICATION_ACTION_SKIP_REST = 'skip_rest';
+
+/// The main isolate receives notification actions on this port
+const WORKOUT_NOTIFICATION_PORT = 'wger_workout_actions';
+
+/// Called with the payload when the user taps the notification itself
+typedef WorkoutNotificationTapHandler = void Function(String? payload);
+
+/// Runs in a separate isolate without the gym state, so it only forwards the
+/// action. Without a running app nothing is logged, the user is sent there.
+@pragma('vm:entry-point')
+Future<void> workoutNotificationBackgroundHandler(NotificationResponse response) async {
+  final port = IsolateNameServer.lookupPortByName(WORKOUT_NOTIFICATION_PORT);
+  if (port != null) {
+    port.send([response.actionId, response.payload]);
+    return;
+  }
+
+  final locale = basicLocaleListResolution(
+    PlatformDispatcher.instance.locales,
+    AppLocalizations.supportedLocales,
+  );
+  final labels = WorkoutNotificationLabels.of(lookupAppLocalizations(locale));
+  final service = LocalWorkoutNotificationService();
+  await service.initialize(labels);
+  await service.showNotLogged(labels);
+}
 
 /// Shows the workout notifications on the platform.
 ///
@@ -34,11 +64,17 @@ abstract class WorkoutNotificationService {
   /// Whether the platform has the ongoing controls notification
   bool get supportsControls;
 
+  /// Registers the actions and [onTap], before anything else is shown
+  Future<void> initialize(WorkoutNotificationLabels labels, {WorkoutNotificationTapHandler? onTap});
+
   Future<void> requestPermissions(WorkoutNotificationLabels labels);
 
   Future<void> scheduleRestAlarm(RestAlarm alarm, WorkoutNotificationLabels labels);
 
   Future<void> showControls(WorkoutControls controls, WorkoutNotificationLabels labels);
+
+  /// Tells the user that an action was not carried out and the app is needed
+  Future<void> showNotLogged(WorkoutNotificationLabels labels);
 
   /// Removes the shown notification and a pending rest alarm
   Future<void> cancelAll();
@@ -50,6 +86,12 @@ class NoopWorkoutNotificationService implements WorkoutNotificationService {
   bool get supportsControls => false;
 
   @override
+  Future<void> initialize(
+    WorkoutNotificationLabels labels, {
+    WorkoutNotificationTapHandler? onTap,
+  }) async {}
+
+  @override
   Future<void> requestPermissions(WorkoutNotificationLabels labels) async {}
 
   @override
@@ -57,6 +99,9 @@ class NoopWorkoutNotificationService implements WorkoutNotificationService {
 
   @override
   Future<void> showControls(WorkoutControls controls, WorkoutNotificationLabels labels) async {}
+
+  @override
+  Future<void> showNotLogged(WorkoutNotificationLabels labels) async {}
 
   @override
   Future<void> cancelAll() async {}
@@ -76,8 +121,12 @@ class LocalWorkoutNotificationService implements WorkoutNotificationService {
   @override
   bool get supportsControls => defaultTargetPlatform == TargetPlatform.android;
 
-  /// The iOS action labels are registered once, with the first labels seen
-  Future<void> _ensureInitialized(WorkoutNotificationLabels labels) {
+  @override
+  Future<void> initialize(
+    WorkoutNotificationLabels labels, {
+    WorkoutNotificationTapHandler? onTap,
+  }) {
+    // The iOS action labels are registered once, with the first labels seen
     return _initialized ??= _plugin
         .initialize(
           settings: InitializationSettings(
@@ -99,9 +148,20 @@ class LocalWorkoutNotificationService implements WorkoutNotificationService {
               ],
             ),
           ),
+          onDidReceiveNotificationResponse: (response) {
+            // Actions go to the background handler, this is a tap on the body
+            if (response.notificationResponseType ==
+                NotificationResponseType.selectedNotification) {
+              onTap?.call(response.payload);
+            }
+          },
+          onDidReceiveBackgroundNotificationResponse: workoutNotificationBackgroundHandler,
         )
         .then((_) {});
   }
+
+  Future<void> _ensureInitialized(WorkoutNotificationLabels labels) =>
+      _initialized ?? initialize(labels);
 
   @override
   Future<void> requestPermissions(WorkoutNotificationLabels labels) async {
@@ -183,12 +243,28 @@ class LocalWorkoutNotificationService implements WorkoutNotificationService {
   }
 
   @override
+  Future<void> showNotLogged(WorkoutNotificationLabels labels) async {
+    await _ensureInitialized(labels);
+    await _plugin.show(
+      id: _notificationId,
+      title: labels.notLoggedTitle,
+      body: labels.notLoggedBody,
+      notificationDetails: NotificationDetails(
+        android: AndroidNotificationDetails(
+          _alarmChannelId,
+          labels.alarmChannel,
+          importance: Importance.high,
+          priority: Priority.high,
+        ),
+        iOS: const DarwinNotificationDetails(),
+      ),
+    );
+  }
+
+  @override
   Future<void> cancelAll() async {
-    // This process has shown nothing yet, leftovers of an earlier one are
-    // cleaned up at startup
-    if (_initialized == null) {
-      return;
-    }
+    // The app initializes the service at startup, so this also reaches
+    // notifications left behind by an earlier process
     await _initialized;
     await _plugin.cancel(id: _notificationId);
   }

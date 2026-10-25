@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:ui';
+
 import 'package:clock/clock.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -24,20 +26,24 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
+import 'package:wger/core/keys.dart';
 import 'package:wger/features/routines/notifications/workout_notification_content.dart';
 import 'package:wger/features/routines/notifications/workout_notification_controller.dart';
 import 'package:wger/features/routines/notifications/workout_notification_service.dart';
 import 'package:wger/features/routines/providers/gym_state.dart';
 import 'package:wger/features/routines/providers/gym_state_notifier.dart';
+import 'package:wger/features/routines/providers/workout_logs_repository.dart';
+import 'package:wger/features/routines/screens/gym_mode.dart';
 
 import '../../../../test_data/routines.dart';
 import 'workout_notification_controller_test.mocks.dart';
 
-@GenerateMocks([WorkoutNotificationService])
+@GenerateMocks([WorkoutNotificationService, WorkoutLogRepository])
 void main() {
   final binding = TestWidgetsFlutterBinding.ensureInitialized();
   final now = DateTime.utc(2025, 3, 29, 14, 33);
   late MockWorkoutNotificationService service;
+  late MockWorkoutLogRepository logRepo;
   late ProviderContainer container;
   late GymStateNotifier gymState;
 
@@ -49,9 +55,16 @@ void main() {
     when(service.cancelAll()).thenAnswer((_) async {});
     when(service.scheduleRestAlarm(any, any)).thenAnswer((_) async {});
     when(service.showControls(any, any)).thenAnswer((_) async {});
+    when(service.showNotLogged(any)).thenAnswer((_) async {});
+    when(service.initialize(any, onTap: anyNamed('onTap'))).thenAnswer((_) async {});
+    logRepo = MockWorkoutLogRepository();
+    when(logRepo.addLocalDrift(any, dayId: anyNamed('dayId'))).thenAnswer((_) async {});
 
     container = ProviderContainer.test(
-      overrides: [workoutNotificationServiceProvider.overrideWithValue(service)],
+      overrides: [
+        workoutNotificationServiceProvider.overrideWithValue(service),
+        workoutLogRepositoryProvider.overrideWithValue(logRepo),
+      ],
     );
     container.read(workoutNotificationControllerProvider);
     gymState = container.read(gymStateProvider.notifier);
@@ -162,5 +175,169 @@ void main() {
 
     verify(service.scheduleRestAlarm(any, any)).called(1);
     verifyNever(service.showControls(any, any));
+  });
+
+  group('Startup', () {
+    test('Initializes the service with the tap handler', () {
+      verify(service.initialize(any, onTap: argThat(isNotNull, named: 'onTap'))).called(1);
+    });
+
+    test('Leftovers of an earlier run are removed when the app comes to the front', () async {
+      await settle();
+      clearInteractions(service);
+
+      // The listener only accepts single steps
+      [
+        AppLifecycleState.inactive,
+        AppLifecycleState.hidden,
+        AppLifecycleState.paused,
+        AppLifecycleState.hidden,
+        AppLifecycleState.inactive,
+        AppLifecycleState.resumed,
+      ].forEach(binding.handleAppLifecycleStateChanged);
+      await settle();
+
+      verify(service.cancelAll()).called(1);
+    });
+  });
+
+  group('Actions', () {
+    SlotPageEntry slotPage(int index) => gymState.state.getSlotEntryPageByIndex(index)!;
+
+    /// The payload the notification on the current page carries
+    String payloadFor({String? logSlotUuid, String? restSlotUuid, DateTime? workoutStart}) =>
+        WorkoutNotificationPayload(
+          routineId: gymState.state.routine.id!,
+          dayId: gymState.state.dayId,
+          iteration: gymState.state.iteration,
+          workoutStart: workoutStart ?? gymState.state.workoutStart,
+          logSlotUuid: logSlotUuid,
+          restSlotUuid: restSlotUuid,
+        ).encode();
+
+    test('"Log set" from the rest logs the next set and shows the next rest', () async {
+      await startRest();
+      final rest = gymState.state.currentPage;
+      clearInteractions(service);
+
+      await withClock(Clock.fixed(now), () async {
+        await container
+            .read(workoutNotificationControllerProvider)
+            .handleAction(
+              WORKOUT_NOTIFICATION_ACTION_LOG_SET,
+              payloadFor(logSlotUuid: slotPage(rest + 1).uuid),
+            );
+        await settle();
+      });
+
+      verify(logRepo.addLocalDrift(any, dayId: anyNamed('dayId'))).called(1);
+      expect(gymState.state.currentPage, rest + 2);
+      final alarms = verify(service.scheduleRestAlarm(captureAny, any)).captured;
+      expect((alarms.last as RestAlarm).payload.restSlotUuid, slotPage(rest + 2).uuid);
+    });
+
+    test('Actions arrive through the port from the background isolate', () async {
+      await startRest();
+      final rest = gymState.state.currentPage;
+
+      IsolateNameServer.lookupPortByName(WORKOUT_NOTIFICATION_PORT)!.send([
+        WORKOUT_NOTIFICATION_ACTION_SKIP_REST,
+        payloadFor(restSlotUuid: slotPage(rest).uuid),
+      ]);
+      await settle();
+
+      expect(gymState.state.currentPage, rest + 1);
+    });
+
+    test('A stale action changes nothing but shows the notification again', () async {
+      await startRest();
+      final rest = gymState.state.currentPage;
+      clearInteractions(service);
+
+      await withClock(Clock.fixed(now), () async {
+        final controller = container.read(workoutNotificationControllerProvider);
+        // From another session
+        await controller.handleAction(
+          WORKOUT_NOTIFICATION_ACTION_LOG_SET,
+          payloadFor(
+            logSlotUuid: slotPage(rest + 1).uuid,
+            workoutStart: DateTime.utc(2020),
+          ),
+        );
+        // For a rest the user already left
+        await controller.handleAction(
+          WORKOUT_NOTIFICATION_ACTION_SKIP_REST,
+          payloadFor(restSlotUuid: slotPage(rest - 2).uuid),
+        );
+        await settle();
+      });
+
+      verifyNever(logRepo.addLocalDrift(any, dayId: anyNamed('dayId')));
+      expect(gymState.state.currentPage, rest);
+      verify(service.cancelAll()).called(2);
+      verify(service.showControls(any, any)).called(2);
+    });
+
+    test('Without a running session the user is sent to the app', () async {
+      await container
+          .read(workoutNotificationControllerProvider)
+          .handleAction(WORKOUT_NOTIFICATION_ACTION_LOG_SET, null);
+      await settle();
+
+      verify(service.showNotLogged(any)).called(1);
+      verifyNever(logRepo.addLocalDrift(any, dayId: anyNamed('dayId')));
+    });
+  });
+
+  group('Tap on the notification', () {
+    Future<void> pumpApp(WidgetTester tester) async {
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp(
+            navigatorKey: navigatorKey,
+            home: const Text('home'),
+            routes: {GymModeScreen.routeName: (_) => const Text('gym mode')},
+          ),
+        ),
+      );
+    }
+
+    String currentPayload() => WorkoutNotificationPayload(
+      routineId: gymState.state.routine.id!,
+      dayId: gymState.state.dayId,
+      iteration: gymState.state.iteration,
+      workoutStart: gymState.state.workoutStart,
+    ).encode();
+
+    testWidgets('Opens the running gym mode', (tester) async {
+      initGymMode();
+      await pumpApp(tester);
+
+      container.read(workoutNotificationControllerProvider).handleTap(currentPayload());
+      await tester.pumpAndSettle();
+
+      expect(find.text('gym mode'), findsOneWidget);
+    });
+
+    testWidgets('Stays put for another session or with gym mode on screen', (tester) async {
+      initGymMode();
+      await pumpApp(tester);
+      final controller = container.read(workoutNotificationControllerProvider);
+
+      controller.handleTap(
+        WorkoutNotificationPayload(
+          routineId: gymState.state.routine.id!,
+          dayId: gymState.state.dayId,
+          iteration: gymState.state.iteration,
+          workoutStart: DateTime.utc(2020),
+        ).encode(),
+      );
+      container.read(gymModeVisibleProvider.notifier).set(true);
+      controller.handleTap(currentPayload());
+      await tester.pumpAndSettle();
+
+      expect(find.text('gym mode'), findsNothing);
+    });
   });
 }

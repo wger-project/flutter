@@ -407,6 +407,8 @@
     "description": "Notification button that logs the next set with its planned values"
   },
   "workoutNotificationSkipRest": "Skip rest",
+  "workoutNotificationNotLoggedTitle": "Set not logged",
+  "workoutNotificationNotLoggedBody": "Open gym mode to continue the workout",
   "workoutNotificationChannel": "Workout",
   "@workoutNotificationChannel": {
     "description": "Name of the Android notification channel for the ongoing workout notification"
