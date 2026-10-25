@@ -1185,5 +1185,21 @@
     "calculationHelpExercises": "Entre {min} et {max} exercices, {count} sélectionnés.",
     "calculationHelpMaxReps": "De {min} à {max}. Les séries au-dessus sont ignorées.",
     "calculationHelpWindowDays": "De {min} à {max}. Jusqu’où remonte la meilleure série.",
-    "useDynamicColor": "Utiliser les couleurs dynamiques"
+    "useDynamicColor": "Utiliser les couleurs dynamiques",
+    "gymModeAlertOnRestEnd": "Alerte en fin de repos",
+    "gymModeAlertOnRestEndHelp": "Vibre en mode entraînement ou envoie une notification lorsque l'application est en arrière-plan",
+    "gymModeWorkoutNotification": "Notification d'entraînement",
+    "gymModeWorkoutNotificationHelp": "Lorsque l'application est en arrière-plan : compte à rebours du repos et série suivante, avec des boutons pour enregistrer ou passer",
+    "gymModeExactAlarmMissing": "Sans l'autorisation des alarmes exactes, l'alarme de repos peut avoir quelques minutes de retard",
+    "gymModeExactAlarmAllow": "Autoriser",
+    "workoutNotificationRestOver": "Fin du repos",
+    "workoutNotificationNext": "Ensuite : {set}",
+    "workoutNotificationSetOf": "Série {current} sur {total}",
+    "workoutNotificationInProgress": "Entraînement en cours",
+    "workoutNotificationLogSet": "Enregistrer la série",
+    "workoutNotificationSkipRest": "Passer le repos",
+    "workoutNotificationNotLoggedTitle": "Série non enregistrée",
+    "workoutNotificationNotLoggedBody": "Ouvrez le mode entraînement pour poursuivre la séance",
+    "workoutNotificationAlarmChannel": "Alarme de repos",
+    "workoutNotificationChannel": "Entraînement"
 }

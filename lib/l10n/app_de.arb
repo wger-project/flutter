@@ -1176,5 +1176,21 @@
     "calculationHelpExercises": "Zwischen {min} und {max} Übungen, {count} ausgewählt.",
     "calculationHelpMaxReps": "{min} bis {max}. Sätze darüber werden ignoriert.",
     "calculationHelpWindowDays": "{min} bis {max}. Wie weit zurück ein bester Satz zählt.",
-    "useDynamicColor": "Dynamische Farben verwenden"
+    "useDynamicColor": "Dynamische Farben verwenden",
+    "gymModeAlertOnRestEnd": "Am Pausenende benachrichtigen",
+    "gymModeAlertOnRestEndHelp": "Vibriert im Studiomodus oder schickt eine Benachrichtigung, wenn die App im Hintergrund ist",
+    "gymModeWorkoutNotification": "Trainings-Benachrichtigung",
+    "gymModeWorkoutNotificationHelp": "Solange die App im Hintergrund ist: Pausen-Countdown und nächster Satz, mit Buttons zum Eintragen oder Überspringen",
+    "gymModeExactAlarmMissing": "Ohne die Berechtigung für exakte Wecker kann der Pausenalarm ein paar Minuten zu spät kommen",
+    "gymModeExactAlarmAllow": "Erlauben",
+    "workoutNotificationRestOver": "Pause vorbei",
+    "workoutNotificationNext": "Als Nächstes: {set}",
+    "workoutNotificationSetOf": "Satz {current} von {total}",
+    "workoutNotificationInProgress": "Training läuft",
+    "workoutNotificationLogSet": "Satz eintragen",
+    "workoutNotificationSkipRest": "Pause überspringen",
+    "workoutNotificationNotLoggedTitle": "Satz nicht eingetragen",
+    "workoutNotificationNotLoggedBody": "Öffne den Studiomodus, um das Training fortzusetzen",
+    "workoutNotificationAlarmChannel": "Pausenalarm",
+    "workoutNotificationChannel": "Training"
 }

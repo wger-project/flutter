@@ -1193,5 +1193,22 @@
     "calculationHelpExercises": "Entre {min} y {max} ejercicios, {count} seleccionados.",
     "calculationHelpMaxReps": "De {min} a {max}. Las series por encima se ignoran.",
     "calculationHelpWindowDays": "De {min} a {max}. Hasta dónde cuenta la mejor serie.",
-    "useDynamicColor": "Usar color dinámico"
+    "useDynamicColor": "Usar color dinámico",
+    "gymModeAlertOnRestEnd": "Avisar al terminar el descanso",
+    "gymModeAlertOnRestEndHelp": "Vibra en el modo gimnasio o envía una notificación cuando la app está en segundo plano",
+    "gymModeWorkoutNotification": "Notificación de entrenamiento",
+    "gymModeWorkoutNotificationHelp": "Mientras la app está en segundo plano: cuenta regresiva del descanso y la siguiente serie, con botones para registrar u omitir",
+    "gymModeExactAlarmMissing": "Sin el permiso de alarmas exactas, la alarma de descanso puede llegar unos minutos tarde",
+    "gymModeExactAlarmAllow": "Permitir",
+    "workoutNotificationRestOver": "Descanso terminado",
+    "workoutNotificationNext": "Siguiente: {set}",
+    "workoutNotificationSetOf": "Serie {current} de {total}",
+    "workoutNotificationInProgress": "Entrenamiento en curso",
+    "workoutNotificationLogSet": "Registrar serie",
+    "workoutNotificationSkipRest": "Saltar descanso",
+    "workoutNotificationNotLoggedTitle": "Serie no registrada",
+    "workoutNotificationNotLoggedBody": "Abre el modo gimnasio para continuar el entrenamiento",
+    "workoutNotificationAlarmChannel": "Alarma de descanso",
+    "workoutNotificationChannel": "Entrenamiento",
+    "authorHelpText": "Se muestra como autor del ejercicio (CC BY-SA 4.0). Cámbialo solo si no eres el autor."
 }
