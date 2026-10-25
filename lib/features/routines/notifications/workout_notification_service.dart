@@ -69,6 +69,12 @@ abstract class WorkoutNotificationService {
 
   Future<void> requestPermissions(WorkoutNotificationLabels labels);
 
+  /// Whether rest alarms fire on time. Without, Android may delay them.
+  Future<bool> canScheduleExactAlarms();
+
+  /// Sends the user to the system setting for exact alarms
+  Future<void> requestExactAlarms();
+
   Future<void> scheduleRestAlarm(RestAlarm alarm, WorkoutNotificationLabels labels);
 
   Future<void> showControls(WorkoutControls controls, WorkoutNotificationLabels labels);
@@ -93,6 +99,12 @@ class NoopWorkoutNotificationService implements WorkoutNotificationService {
 
   @override
   Future<void> requestPermissions(WorkoutNotificationLabels labels) async {}
+
+  @override
+  Future<bool> canScheduleExactAlarms() async => true;
+
+  @override
+  Future<void> requestExactAlarms() async {}
 
   @override
   Future<void> scheduleRestAlarm(RestAlarm alarm, WorkoutNotificationLabels labels) async {}
@@ -130,7 +142,7 @@ class LocalWorkoutNotificationService implements WorkoutNotificationService {
     return _initialized ??= _plugin
         .initialize(
           settings: InitializationSettings(
-            android: const AndroidInitializationSettings('@mipmap/ic_launcher'),
+            android: const AndroidInitializationSettings('ic_stat_wger'),
             iOS: DarwinInitializationSettings(
               requestAlertPermission: false,
               requestBadgePermission: false,
@@ -175,16 +187,31 @@ class LocalWorkoutNotificationService implements WorkoutNotificationService {
     _logger.fine('Notification permission granted: $granted');
   }
 
+  AndroidFlutterLocalNotificationsPlugin? get _android =>
+      _plugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+
+  @override
+  Future<bool> canScheduleExactAlarms() async =>
+      await _android?.canScheduleExactNotifications() ?? true;
+
+  @override
+  Future<void> requestExactAlarms() async {
+    await _android?.requestExactAlarmsPermission();
+  }
+
   @override
   Future<void> scheduleRestAlarm(RestAlarm alarm, WorkoutNotificationLabels labels) async {
     await _ensureInitialized(labels);
+    final exact = await canScheduleExactAlarms();
     await _plugin.zonedSchedule(
       id: _notificationId,
       scheduledDate: tz.TZDateTime.from(alarm.at, tz.UTC),
       title: alarm.title,
       body: alarm.body,
       payload: alarm.payload.encode(),
-      androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+      androidScheduleMode: exact
+          ? AndroidScheduleMode.exactAllowWhileIdle
+          : AndroidScheduleMode.inexactAllowWhileIdle,
       notificationDetails: NotificationDetails(
         android: AndroidNotificationDetails(
           _alarmChannelId,
@@ -269,6 +296,11 @@ class LocalWorkoutNotificationService implements WorkoutNotificationService {
     await _plugin.cancel(id: _notificationId);
   }
 }
+
+/// Whether rest alarms fire on time, rechecked whenever it is shown again
+final exactAlarmsAllowedProvider = FutureProvider.autoDispose<bool>(
+  (ref) => ref.read(workoutNotificationServiceProvider).canScheduleExactAlarms(),
+);
 
 final workoutNotificationServiceProvider = Provider<WorkoutNotificationService>((ref) {
   if (!kIsWeb &&

@@ -658,6 +658,23 @@ class MockWorkoutNotificationService extends _i1.Mock implements _i31.WorkoutNot
           as _i10.Future<void>);
 
   @override
+  _i10.Future<bool> canScheduleExactAlarms() =>
+      (super.noSuchMethod(
+            Invocation.method(#canScheduleExactAlarms, []),
+            returnValue: _i10.Future<bool>.value(false),
+          )
+          as _i10.Future<bool>);
+
+  @override
+  _i10.Future<void> requestExactAlarms() =>
+      (super.noSuchMethod(
+            Invocation.method(#requestExactAlarms, []),
+            returnValue: _i10.Future<void>.value(),
+            returnValueForMissingStub: _i10.Future<void>.value(),
+          )
+          as _i10.Future<void>);
+
+  @override
   _i10.Future<void> scheduleRestAlarm(
     _i32.RestAlarm? alarm,
     _i32.WorkoutNotificationLabels? labels,

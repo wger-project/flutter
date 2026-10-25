@@ -20,8 +20,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
+import 'package:wger/features/routines/notifications/workout_notification_service.dart';
 import 'package:wger/features/routines/providers/gym_state.dart';
 import 'package:wger/features/routines/providers/gym_state_notifier.dart';
 import 'package:wger/features/routines/widgets/gym_mode/start_page.dart';
@@ -29,19 +32,27 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/l10n/localizations_delegates.dart';
 
 import '../../../../../test_data/routines.dart';
+import 'start_page_test.mocks.dart';
 
+@GenerateMocks([WorkoutNotificationService])
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   late ProviderContainer container;
+  late MockWorkoutNotificationService notificationService;
 
   setUp(() {
     // Use in-memory shared preferences to avoid platform channels during tests
     SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
 
+    notificationService = MockWorkoutNotificationService();
+    when(notificationService.canScheduleExactAlarms()).thenAnswer((_) async => true);
+    when(notificationService.requestExactAlarms()).thenAnswer((_) async {});
+
     container = ProviderContainer(
       overrides: [
         gymStateProvider.overrideWith(() => GymStateNotifier()),
+        workoutNotificationServiceProvider.overrideWithValue(notificationService),
       ],
     );
 
@@ -247,5 +258,40 @@ void main() {
     await tester.pump();
 
     expect(notifier.state.showDistinctLogs, isFalse);
+  });
+
+  group('Exact alarm hint', () {
+    Future<void> openOptions(WidgetTester tester) async {
+      await pumpGymModeOptions(tester);
+      await tester.tap(find.byKey(const ValueKey('gym-mode-options-tile')));
+      await tester.pumpAndSettle();
+    }
+
+    final hint = find.byKey(const ValueKey('gym-mode-exact-alarm-hint'));
+
+    testWidgets('Shown without the permission, the button asks for it', (tester) async {
+      when(notificationService.canScheduleExactAlarms()).thenAnswer((_) async => false);
+      await openOptions(tester);
+      expect(hint, findsOneWidget);
+
+      when(notificationService.canScheduleExactAlarms()).thenAnswer((_) async => true);
+      await tester.ensureVisible(find.descendant(of: hint, matching: find.byType(TextButton)));
+      await tester.tap(find.descendant(of: hint, matching: find.byType(TextButton)));
+      await tester.pumpAndSettle();
+
+      verify(notificationService.requestExactAlarms()).called(1);
+      expect(hint, findsNothing, reason: 'rechecked after returning from the setting');
+    });
+
+    testWidgets('Not shown with the permission or with the rest alarm off', (tester) async {
+      await openOptions(tester);
+      expect(hint, findsNothing);
+
+      when(notificationService.canScheduleExactAlarms()).thenAnswer((_) async => false);
+      container.invalidate(exactAlarmsAllowedProvider);
+      container.read(gymStateProvider.notifier).setRestAlarmEnabled(false);
+      await tester.pumpAndSettle();
+      expect(hint, findsNothing);
+    });
   });
 }

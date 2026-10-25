@@ -379,6 +379,8 @@
   "gymModeRestAlarm": "Rest alarm",
   "gymModeRestAlarmHelp": "System notification when the rest is over, also with the screen locked",
   "gymModeWorkoutNotification": "Workout notification",
+  "gymModeExactAlarmMissing": "Without the exact alarm permission, the rest alarm can be a few minutes late",
+  "gymModeExactAlarmAllow": "Allow",
   "gymModeWorkoutNotificationHelp": "Shows the rest and the next set, with buttons to log it or skip the rest",
   "workoutNotificationRestOver": "Rest is over",
   "workoutNotificationNext": "Next: {set}",

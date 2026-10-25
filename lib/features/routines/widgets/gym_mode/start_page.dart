@@ -22,6 +22,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/exercises/widgets/images.dart';
 import 'package:wger/features/routines/models/day.dart';
+import 'package:wger/features/routines/notifications/workout_notification_service.dart';
 import 'package:wger/features/routines/providers/gym_state.dart';
 import 'package:wger/features/routines/providers/gym_state_notifier.dart';
 import 'package:wger/features/routines/widgets/gym_mode/navigation.dart';
@@ -55,6 +56,7 @@ class _GymModeOptionsState extends ConsumerState<GymModeOptions> {
   Widget build(BuildContext context) {
     final gymState = ref.watch(gymStateProvider);
     final gymNotifier = ref.watch(gymStateProvider.notifier);
+    final isAndroid = !kIsWeb && defaultTargetPlatform == TargetPlatform.android;
     final i18n = AppLocalizations.of(context);
 
     // If the value in the provider changed, update the controller text
@@ -176,8 +178,27 @@ class _GymModeOptionsState extends ConsumerState<GymModeOptions> {
                             ? (value) => gymNotifier.setRestAlarmEnabled(value)
                             : null,
                       ),
+                      // Android delays alarms without the exact alarm permission
+                      if (isAndroid &&
+                          gymState.showTimerPages &&
+                          gymState.restAlarmEnabled &&
+                          ref.watch(exactAlarmsAllowedProvider).value == false)
+                        ListTile(
+                          key: const ValueKey('gym-mode-exact-alarm-hint'),
+                          leading: const Icon(Icons.alarm_off),
+                          title: Text(i18n.gymModeExactAlarmMissing),
+                          trailing: TextButton(
+                            onPressed: () async {
+                              await ref
+                                  .read(workoutNotificationServiceProvider)
+                                  .requestExactAlarms();
+                              ref.invalidate(exactAlarmsAllowedProvider);
+                            },
+                            child: Text(i18n.gymModeExactAlarmAllow),
+                          ),
+                        ),
                       // The ongoing notification only exists on Android
-                      if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android)
+                      if (isAndroid)
                         SwitchListTile(
                           key: const ValueKey('gym-mode-workout-notification'),
                           title: Text(i18n.gymModeWorkoutNotification),
