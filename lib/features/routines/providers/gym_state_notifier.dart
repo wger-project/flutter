@@ -459,7 +459,8 @@ class GymStateNotifier extends _$GymStateNotifier {
       return;
     }
 
-    _updateSlotPage(uuid, slotPage.copyWith(logDone: isDone, loggedEntry: log));
+    // A copy, so later edits in the form don't change the saved entry
+    _updateSlotPage(uuid, slotPage.copyWith(logDone: isDone, loggedEntry: log?.copyWith()));
     _logger.fine('Set logDone=$isDone for slot page UUID $uuid');
 
     // Scrolling past the timer (e.g. "jump to") already started it

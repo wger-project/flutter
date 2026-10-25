@@ -100,7 +100,9 @@ void main() {
       notifier.markSlotPageAsDone(slotPage.uuid, isDone: true, log: log);
 
       // Assert
-      expect(notifier.state.getSlotPageByUUID(slotPage.uuid)!.loggedEntry, same(log));
+      final loggedEntry = notifier.state.getSlotPageByUUID(slotPage.uuid)!.loggedEntry!;
+      expect(loggedEntry.id, 'log-1');
+      expect(loggedEntry, isNot(same(log)));
     });
   });
 
@@ -120,7 +122,6 @@ void main() {
       // Assert: the id and session are kept so saving updates the row
       // instead of inserting a duplicate
       final gymLog = container.read(gymLogProvider);
-      expect(gymLog, same(log));
       expect(gymLog!.id, 'log-1');
       expect(gymLog.sessionId, 'session-1');
     });

@@ -326,6 +326,42 @@ void main() {
       verifyNever(mockWorkoutLogRepo.addLocalDrift(any, dayId: anyNamed('dayId')));
     });
 
+    testWidgets('an unsaved edit on a logged page does not change the saved entry', (
+      tester,
+    ) async {
+      seedLogPage(testdata.getTestRoutine());
+      await pumpLogPage(tester);
+      await tester.tap(find.byKey(const ValueKey('save-log-button')));
+      await tester.pumpAndSettle();
+      final gymNotifier = container.read(gymStateProvider.notifier);
+      final logPageUuid = container.read(gymStateProvider).getSlotEntryPageByIndex(2)!.uuid;
+      final savedRir = container
+          .read(gymStateProvider)
+          .getSlotPageByUUID(logPageUuid)!
+          .loggedEntry!
+          .rir;
+      expect(savedRir, isNot(3));
+
+      // Go back to the logged set and change the RiR without saving
+      gymNotifier.setCurrentPage(3);
+      gymNotifier.setCurrentPage(2);
+      await tester.pumpAndSettle();
+      tester.widget<Slider>(find.byType(Slider)).onChanged!(3);
+      await tester.pump();
+
+      // Leave and come back
+      gymNotifier.setCurrentPage(3);
+      gymNotifier.setCurrentPage(2);
+      await tester.pumpAndSettle();
+
+      final loggedEntry = container
+          .read(gymStateProvider)
+          .getSlotPageByUUID(logPageUuid)!
+          .loggedEntry!;
+      expect(loggedEntry.rir, savedRir);
+      expect(container.read(gymLogProvider)!.rir, savedRir);
+    });
+
     testWidgets('reps quick buttons increment and decrement the value', (tester) async {
       final routine = testdata.getTestRoutine();
       routine.dayDataGym[0].slots[0].setConfigs[0].repetitions = 0;
