@@ -145,18 +145,15 @@ class _TimerCountdownWidgetState extends ConsumerState<TimerCountdownWidget> {
   void initState() {
     super.initState();
 
+    // Don't notify when returning to a countdown that already expired while
+    // the user was on another page. Set before the first build, which notifies.
+    _hasNotified = _endTime(ref.read(gymStateProvider)).isBefore(clock.now());
+
     // Deferred because a provider can't be modified during the widget
     // life-cycle.
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) {
-        return;
-      }
-      ref.read(gymStateProvider.notifier).startTimerIfNeeded(widget.slotUuid);
-
-      // Don't notify when returning to a countdown that already expired while
-      // the user was on another page.
-      if (_endTime(ref.read(gymStateProvider)).isBefore(clock.now())) {
-        _hasNotified = true;
+      if (mounted) {
+        ref.read(gymStateProvider.notifier).startTimerIfNeeded(widget.slotUuid);
       }
     });
 

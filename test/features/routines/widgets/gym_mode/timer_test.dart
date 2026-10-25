@@ -18,6 +18,7 @@
 
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
@@ -126,6 +127,40 @@ void main() {
         await pumpTimer(tester, 3);
         expect(find.text('0:45'), findsOneWidget);
       });
+    });
+
+    testWidgets('alerts once, but not again when returning to an expired countdown', (
+      tester,
+    ) async {
+      final haptics = <MethodCall>[];
+      tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(SystemChannels.platform, (
+        call,
+      ) async {
+        if (call.method == 'HapticFeedback.vibrate') {
+          haptics.add(call);
+        }
+        return null;
+      });
+      addTearDown(
+        () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+          SystemChannels.platform,
+          null,
+        ),
+      );
+      final t0 = DateTime(2024, 5, 2, 12);
+
+      await withClock(Clock.fixed(t0), () => pumpTimer(tester, 3));
+
+      // The 90s countdown runs out while the page is shown
+      await withClock(Clock.fixed(t0.add(const Duration(seconds: 95))), () => pumpTimer(tester, 3));
+      expect(haptics, hasLength(1));
+
+      // Leaving and coming back re-creates the widget
+      await withClock(Clock.fixed(t0.add(const Duration(seconds: 120))), () async {
+        await tester.pumpWidget(const SizedBox());
+        await pumpTimer(tester, 3);
+      });
+      expect(haptics, hasLength(1));
     });
   });
 }
