@@ -162,6 +162,40 @@ void main() {
         DateTime(2024, 5, 2, 12),
       );
     });
+
+    test('Saving a set restarts the following timer, editing it does not', () {
+      // Arrange: the timer was started by scrolling past it
+      final logPage = notifier.state.pages[1].slotPages[1];
+      final timerPage = notifier.state.pages[1].slotPages[2];
+      expect(logPage.type, SlotPageType.log);
+      expect(timerPage.type, SlotPageType.timer);
+      withClock(Clock.fixed(DateTime(2024, 5, 2, 12)), () {
+        notifier.startTimerIfNeeded(timerPage.uuid);
+      });
+      final log = Log.fromSetConfigData(logPage.setConfigData!, routineId: 1, iteration: 1);
+
+      // Act: the set is saved
+      withClock(Clock.fixed(DateTime(2024, 5, 2, 12, 10)), () {
+        notifier.markSlotPageAsDone(logPage.uuid, isDone: true, log: log);
+      });
+
+      // Assert
+      expect(
+        notifier.state.getSlotPageByUUID(timerPage.uuid)!.timerStartedAt,
+        DateTime(2024, 5, 2, 12, 10),
+      );
+
+      // Act: correcting the saved set keeps the running timer
+      withClock(Clock.fixed(DateTime(2024, 5, 2, 12, 11)), () {
+        notifier.markSlotPageAsDone(logPage.uuid, isDone: true, log: log);
+      });
+
+      // Assert
+      expect(
+        notifier.state.getSlotPageByUUID(timerPage.uuid)!.timerStartedAt,
+        DateTime(2024, 5, 2, 12, 10),
+      );
+    });
   });
 
   group('GymStateNotifier.recalculateIndices', () {

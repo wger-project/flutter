@@ -450,6 +450,8 @@ class GymStateNotifier extends _$GymStateNotifier {
   /// is kept on the slot page so revisiting the page pre-fills the form with
   /// the saved values and saving updates the row instead of inserting a
   /// duplicate.
+  ///
+  /// The first save also (re)starts the rest timer that follows the set.
   void markSlotPageAsDone(String uuid, {required bool isDone, Log? log}) {
     final slotPage = state.getSlotPageByUUID(uuid);
     if (slotPage == null) {
@@ -459,6 +461,12 @@ class GymStateNotifier extends _$GymStateNotifier {
 
     _updateSlotPage(uuid, slotPage.copyWith(logDone: isDone, loggedEntry: log));
     _logger.fine('Set logDone=$isDone for slot page UUID $uuid');
+
+    // Scrolling past the timer (e.g. "jump to") already started it
+    final timerPage = state.getSlotEntryPageByIndex(slotPage.pageIndex + 1);
+    if (slotPage.loggedEntry == null && timerPage?.type == SlotPageType.timer) {
+      _updateSlotPage(timerPage!.uuid, timerPage.copyWith(timerStartedAt: clock.now()));
+    }
   }
 
   void replaceExercises(
