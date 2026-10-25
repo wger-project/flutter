@@ -314,4 +314,26 @@ void main() {
       expect(hint, findsNothing);
     });
   });
+  testWidgets('The opened options fit a short screen, e.g. with the keyboard up', (tester) async {
+    tester.view.physicalSize = const Size(400, 480);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: MaterialApp(
+          locale: const Locale('en'),
+          localizationsDelegates: appLocalizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Scaffold(body: StartPage(PageController())),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('gym-mode-options-tile')));
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+  });
 }
