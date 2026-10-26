@@ -17,8 +17,8 @@
  */
 
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/exercises/models/image.dart';
@@ -139,7 +139,9 @@ class MuscleWidget extends StatelessWidget {
     this.isFront = true,
   }) {
     this.muscles = muscles.where((m) => m.isFront == isFront).toList();
-    this.musclesSecondary = musclesSecondary.where((m) => m.isFront == isFront).toList();
+    this.musclesSecondary = musclesSecondary
+        .where((m) => m.isFront == isFront && !this.muscles.contains(m))
+        .toList();
   }
 
   @override
@@ -150,13 +152,9 @@ class MuscleWidget extends StatelessWidget {
       children: [
         SvgPicture.asset('assets/images/muscles/$background.svg'),
         ...muscles.map((m) => SvgPicture.asset('assets/images/muscles/main/muscle-${m.id}.svg')),
-        ...musclesSecondary
-            .where((m) => !muscles.contains(m))
-            .map(
-              (m) => SvgPicture.asset(
-                'assets/images/muscles/secondary/muscle-${m.id}.svg',
-              ),
-            ),
+        ...musclesSecondary.map(
+          (m) => SvgPicture.asset('assets/images/muscles/secondary/muscle-${m.id}.svg'),
+        ),
       ],
     );
   }
@@ -206,7 +204,9 @@ class _CarouselImagesState extends State<CarouselImages> {
                 height: 8,
                 width: 8,
                 decoration: BoxDecoration(
-                  color: pageIndex == index ? Colors.black : Colors.black26,
+                  color: pageIndex == index
+                      ? Theme.of(context).colorScheme.primary
+                      : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.26),
                   shape: BoxShape.circle,
                 ),
               ),

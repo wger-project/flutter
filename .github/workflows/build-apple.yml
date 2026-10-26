@@ -23,6 +23,7 @@ jobs:
       - name: Checkout application
         uses: actions/checkout@v7
         with:
+          persist-credentials: false
           ref: ${{ inputs.ref }}
 
       - name: Xcode setup
@@ -51,6 +52,7 @@ jobs:
       - name: Checkout application
         uses: actions/checkout@v7
         with:
+          persist-credentials: false
           ref: ${{ inputs.ref }}
 
       - name: Xcode setup
@@ -79,6 +81,7 @@ jobs:
       - name: Checkout application
         uses: actions/checkout@v7
         with:
+          persist-credentials: false
           ref: ${{ inputs.ref }}
 
       - name: Xcode setup

@@ -1,6 +1,6 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c) 2020, 2025 wger Team
+ * Copyright (c) 2020 - 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -22,6 +22,9 @@ import 'package:wger/features/exercises/models/category.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/routines/models/log.dart';
 import 'package:wger/features/routines/models/set_config_data.dart';
+import 'package:wger/features/routines/models/weight_unit.dart';
+
+import '../../../../test_data/exercises.dart';
 
 void main() {
   group('Log.volume', () {
@@ -178,6 +181,24 @@ void main() {
       expect(log.repetitionsUnitId, REP_UNIT_TILL_FAILURE_ID);
     });
 
+    test('derives the unit ID from the resolved unit object when no explicit ID is set', () {
+      // Imperial users: routine hydration leaves weightUnitId null and only
+      // resolves the weightUnit object (lb) from the profile. The log must pick
+      // up lb for *both* the ID and the object
+      const lb = WeightUnit(id: WEIGHT_UNIT_LB, name: 'lb');
+      final setConfig = SetConfigData(
+        exerciseId: 1,
+        slotEntryId: 1,
+        exercise: exercise,
+        weightUnit: lb,
+      );
+
+      final log = Log.fromSetConfigData(setConfig);
+
+      expect(log.weightUnitId, WEIGHT_UNIT_LB);
+      expect(log.weightUnitObj, lb);
+    });
+
     test('copies weight and repetitions values', () {
       final setConfig = SetConfigData(
         exerciseId: 1,
@@ -196,6 +217,40 @@ void main() {
       expect(log.repetitionsTarget, 12);
       expect(log.rir, 2);
       expect(log.rirTarget, 2);
+    });
+  });
+
+  group('Log exercise hydration', () {
+    /// A log as it comes out of the database, with only the exercise ID set
+    Log makeDriftLog() => Log(
+      id: 'log-1',
+      exerciseId: 1,
+      routineId: 100,
+      weight: 20,
+      repetitions: 10,
+      date: DateTime(2026, 1, 1),
+    );
+
+    test('copies a log whose exercise was never hydrated', () {
+      final copy = makeDriftLog().copyWith(date: DateTime(2026, 2, 2));
+
+      expect(copy.exerciseObjOrNull, isNull);
+    });
+
+    test('reading an unhydrated exercise throws a descriptive error', () {
+      expect(
+        () => makeDriftLog().exerciseObj,
+        throwsA(isA<StateError>().having((e) => e.message, 'message', contains('log-1'))),
+      );
+    });
+
+    test('propagates the exercise when it is hydrated', () {
+      final log = makeDriftLog()..exercise = testBenchPress;
+
+      final copy = log.copyWith(weight: 30);
+
+      expect(copy.exerciseObj.id, testBenchPress.id);
+      expect(copy.exerciseId, testBenchPress.id);
     });
   });
 

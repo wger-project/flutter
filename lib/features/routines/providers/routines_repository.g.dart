@@ -21,7 +21,7 @@ final class RoutinesRepositoryProvider
         argument: null,
         retry: null,
         name: r'routinesRepositoryProvider',
-        isAutoDispose: false,
+        isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -49,4 +49,4 @@ final class RoutinesRepositoryProvider
   }
 }
 
-String _$routinesRepositoryHash() => r'249951c94887d0ff4882d7a88bd9dcfb25282f4e';
+String _$routinesRepositoryHash() => r'0686dd0def72f02d2f61dc369d82223928037e1a';

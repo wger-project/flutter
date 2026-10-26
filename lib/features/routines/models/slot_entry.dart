@@ -91,8 +91,26 @@ class SlotEntry {
   @JsonKey(required: true)
   late SlotEntryType type;
 
+  Exercise? _exerciseObj;
+
+  /// The exercise of this entry, throws if it was never hydrated
+  ///
+  /// Entries parsed from the API only carry [exerciseId], the exercise is
+  /// attached later from the local exercise list, which may not have synced
+  /// yet. Use [exerciseObjOrNull] for callers that handle that case.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  late Exercise exerciseObj;
+  Exercise get exerciseObj {
+    if (_exerciseObj == null) {
+      throw StateError('Slot entry $id has no hydrated exercise (exercise ID $exerciseId)');
+    }
+    return _exerciseObj!;
+  }
+
+  set exerciseObj(Exercise value) => _exerciseObj = value;
+
+  /// Like [exerciseObj] but returns null instead of throwing
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  Exercise? get exerciseObjOrNull => _exerciseObj;
 
   @JsonKey(required: true, name: 'exercise')
   late int exerciseId;
@@ -112,6 +130,7 @@ class SlotEntry {
   @JsonKey(required: false, name: 'max_repetitions_configs', includeToJson: false)
   late List<BaseConfig> maxRepetitionsConfigs = [];
 
+  /// Null means no explicit unit; the user's profile default (kg/lb) applies.
   @JsonKey(required: true, name: 'weight_unit')
   late int? weightUnitId;
 
@@ -192,7 +211,7 @@ class SlotEntry {
     int? order,
     SlotEntryType? type,
     required Exercise exercise,
-    int? weightUnitId,
+    this.weightUnitId,
     this.weightRounding,
     int? repetitionUnitId,
     this.repetitionRounding,
@@ -203,13 +222,7 @@ class SlotEntry {
     this.type = type ?? SlotEntryType.normal;
     exerciseObj = exercise;
     exerciseId = exercise.id;
-    this.weightUnitId = weightUnitId ?? WEIGHT_UNIT_KG;
-
     this.repetitionUnitId = repetitionUnitId ?? REP_UNIT_REPETITIONS_ID;
-  }
-
-  String get rir {
-    return 'DELETE ME! RIR';
   }
 
   bool get hasProgressionRules {

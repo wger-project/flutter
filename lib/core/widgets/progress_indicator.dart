@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class BoxedProgressIndicator extends StatelessWidget {
   const BoxedProgressIndicator({super.key});
@@ -44,12 +44,12 @@ class FormProgressIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const SizedBox(
+    return SizedBox(
       height: 20,
       width: 20,
-      child: CircularProgressIndicator(
-        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-      ),
+      // Takes the surrounding foreground: the label color inside a button, the
+      // leading icon color inside a ListTile.
+      child: CircularProgressIndicator(color: IconTheme.of(context).color),
     );
   }
 }

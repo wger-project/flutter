@@ -19,17 +19,31 @@
 import 'dart:convert';
 
 import 'package:clock/clock.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:mockito/mockito.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/core/shared_preferences.dart';
+import 'package:wger/features/account/models/user_profile.dart';
+import 'package:wger/features/account/providers/user_profile_notifier.dart';
+import 'package:wger/features/account/providers/user_profile_repository.dart';
+import 'package:wger/features/exercises/models/exercise.dart';
+import 'package:wger/features/routines/models/day.dart';
+import 'package:wger/features/routines/models/day_data.dart';
+import 'package:wger/features/routines/models/log.dart';
+import 'package:wger/features/routines/models/routine.dart';
+import 'package:wger/features/routines/models/set_config_data.dart';
+import 'package:wger/features/routines/models/slot_data.dart';
+import 'package:wger/features/routines/providers/gym_log_notifier.dart';
 import 'package:wger/features/routines/providers/gym_state.dart';
 import 'package:wger/features/routines/providers/gym_state_notifier.dart';
+import 'package:wger/features/routines/providers/routines_notifier.dart';
 
 import '../../../../test_data/exercises.dart';
 import '../../../../test_data/routines.dart';
+import '../helpers/routine_form_test_overrides.dart';
 
 void main() {
   late GymStateNotifier notifier;
@@ -75,6 +89,151 @@ void main() {
           }
         }
       }
+    });
+
+    test('Stores the logged entry on the slot page', () {
+      // Arrange
+      final slotPage = notifier.state.pages[1].slotPages[1];
+      expect(slotPage.type, SlotPageType.log);
+      final log = Log.fromSetConfigData(slotPage.setConfigData!, routineId: 1, iteration: 1)
+        ..id = 'log-1';
+
+      // Act
+      notifier.markSlotPageAsDone(slotPage.uuid, isDone: true, log: log);
+
+      // Assert
+      final loggedEntry = notifier.state.getSlotPageByUUID(slotPage.uuid)!.loggedEntry!;
+      expect(loggedEntry.id, 'log-1');
+      expect(loggedEntry, isNot(same(log)));
+    });
+  });
+
+  group('GymStateNotifier.setCurrentPage', () {
+    test('Seeds the gym log from the saved entry when re-visiting a logged page', () {
+      // Arrange
+      final slotPage = notifier.state.pages[1].slotPages[1];
+      expect(slotPage.type, SlotPageType.log);
+      final log = Log.fromSetConfigData(slotPage.setConfigData!, routineId: 1, iteration: 1)
+        ..id = 'log-1'
+        ..sessionId = 'session-1';
+      notifier.markSlotPageAsDone(slotPage.uuid, isDone: true, log: log);
+
+      // Act
+      notifier.setCurrentPage(slotPage.pageIndex);
+
+      // Assert: the id and session are kept so saving updates the row
+      // instead of inserting a duplicate
+      final gymLog = container.read(gymLogProvider);
+      expect(gymLog!.id, 'log-1');
+      expect(gymLog.sessionId, 'session-1');
+    });
+
+    test('Seeds a fresh template for a page without a saved entry', () {
+      // Act
+      notifier.setCurrentPage(2);
+
+      // Assert
+      expect(container.read(gymLogProvider)!.id, isNull);
+    });
+  });
+
+  group('GymStateNotifier.startNewEntry', () {
+    test('Seeds a fresh entry on a page that was already logged', () {
+      // Arrange
+      final slotPage = notifier.state.pages[1].slotPages[1];
+      final log = Log.fromSetConfigData(slotPage.setConfigData!, routineId: 1, iteration: 1)
+        ..id = 'log-1'
+        ..repetitions = 99;
+      notifier.markSlotPageAsDone(slotPage.uuid, isDone: true, log: log);
+      notifier.setCurrentPage(slotPage.pageIndex);
+      expect(container.read(gymLogProvider)!.id, 'log-1');
+
+      // Act
+      notifier.startNewEntry();
+
+      // Assert: the planned values, without an id so saving inserts a row
+      final gymLog = container.read(gymLogProvider)!;
+      expect(gymLog.id, isNull);
+      expect(gymLog.repetitions, slotPage.setConfigData!.repetitions);
+      expect(notifier.state.getSlotPageByUUID(slotPage.uuid)!.loggedEntry!.id, 'log-1');
+    });
+  });
+
+  group('GymStateNotifier.startTimerIfNeeded', () {
+    test('Sets the start time only once', () {
+      // Arrange
+      final timerPage = notifier.state.pages[1].slotPages[2];
+      expect(timerPage.type, SlotPageType.timer);
+
+      // Act
+      withClock(Clock.fixed(DateTime(2024, 5, 2, 12)), () {
+        notifier.startTimerIfNeeded(timerPage.uuid);
+      });
+
+      // Assert
+      expect(
+        notifier.state.getSlotPageByUUID(timerPage.uuid)!.timerStartedAt,
+        DateTime(2024, 5, 2, 12),
+      );
+
+      // Act: starting again does not restart the timer
+      withClock(Clock.fixed(DateTime(2024, 5, 2, 12, 5)), () {
+        notifier.startTimerIfNeeded(timerPage.uuid);
+      });
+
+      // Assert
+      expect(
+        notifier.state.getSlotPageByUUID(timerPage.uuid)!.timerStartedAt,
+        DateTime(2024, 5, 2, 12),
+      );
+    });
+
+    test('Saving a new set restarts the following timer, correcting it does not', () {
+      // Arrange: the timer was started by scrolling past it
+      final logPage = notifier.state.pages[1].slotPages[1];
+      final timerPage = notifier.state.pages[1].slotPages[2];
+      expect(logPage.type, SlotPageType.log);
+      expect(timerPage.type, SlotPageType.timer);
+      withClock(Clock.fixed(DateTime(2024, 5, 2, 12)), () {
+        notifier.startTimerIfNeeded(timerPage.uuid);
+      });
+      // The id is minted by the insert
+      final log = Log.fromSetConfigData(logPage.setConfigData!, routineId: 1, iteration: 1)
+        ..id = 'log-1';
+
+      // Act: the set is saved
+      withClock(Clock.fixed(DateTime(2024, 5, 2, 12, 10)), () {
+        notifier.markSlotPageAsDone(logPage.uuid, isDone: true, log: log);
+      });
+
+      // Assert
+      expect(
+        notifier.state.getSlotPageByUUID(timerPage.uuid)!.timerStartedAt,
+        DateTime(2024, 5, 2, 12, 10),
+      );
+
+      // Act: correcting the saved set keeps the running timer
+      withClock(Clock.fixed(DateTime(2024, 5, 2, 12, 11)), () {
+        notifier.markSlotPageAsDone(logPage.uuid, isDone: true, log: log);
+      });
+
+      // Assert
+      expect(
+        notifier.state.getSlotPageByUUID(timerPage.uuid)!.timerStartedAt,
+        DateTime(2024, 5, 2, 12, 10),
+      );
+
+      // Act: another set is logged on the same page ("add set")
+      final extraLog = log.copyWith(id: 'log-2');
+      withClock(Clock.fixed(DateTime(2024, 5, 2, 12, 15)), () {
+        notifier.markSlotPageAsDone(logPage.uuid, isDone: true, log: extraLog);
+      });
+
+      // Assert
+      expect(
+        notifier.state.getSlotPageByUUID(timerPage.uuid)!.timerStartedAt,
+        DateTime(2024, 5, 2, 12, 15),
+      );
     });
   });
 
@@ -160,16 +319,191 @@ void main() {
   group('GymStateNotifier.replaceExercises', () {
     test('Correctly swaps an exercise', () {
       // Arrange
-      final slotPage = notifier.state.pages[1].slotPages[1];
+      final page = notifier.state.pages[1];
+      final slotPage = page.slotPages[1];
       expect(slotPage.type, SlotPageType.log);
-      notifier.state.pages.every((p) => p.exercises.every((s) => s.id != testSquats.id));
+      expect(
+        notifier.state.pages.every((p) => p.exercises.every((e) => e.id != testSquats.id)),
+        isTrue,
+        reason: 'the new exercise is not part of the routine yet',
+      );
 
       // Act
-      notifier.replaceExercises(slotPage.uuid, originalExerciseId: 1, newExercise: testSquats);
-      // print(notifier.readPageStructure());
+      notifier.replaceExercises(page.uuid, originalExerciseId: 1, newExercise: testSquats);
 
-      // Assert
-      expect(notifier.state.pages[1].exercises.first.id, testSquats.id);
+      // Assert: every slot page of that page carries the new exercise, and the
+      // routine itself was rebuilt too (the log draft reads from it)
+      final updated = notifier.state.pages[1];
+      expect(
+        updated.slotPages
+            .where((s) => s.setConfigData != null)
+            .map((s) => s.setConfigData!.exercise.id),
+        everyElement(testSquats.id),
+      );
+      expect(updated.exercises.map((e) => e.id), everyElement(testSquats.id));
+      expect(
+        notifier.state.routine.dayDataGym
+            .expand((d) => d.slots)
+            .expand((s) => s.setConfigs)
+            .every((c) => c.exerciseId != 1),
+        isTrue,
+        reason: 'the replaced exercise is gone from the routine',
+      );
+    });
+  });
+
+  group('GymStateNotifier.addExerciseAfterPage', () {
+    test('Stamps the profile default weight unit on the ad-hoc set configs', () async {
+      // Ad-hoc exercises bypass routine hydration, so the notifier itself
+      // resolves the profile default: lb (id 2) for an imperial user.
+      final profileRepo = MockUserProfileRepository();
+      when(
+        profileRepo.watchDrift(),
+      ).thenAnswer((_) => Stream.value(UserProfile(id: 1, weightUnitStr: 'lb')));
+
+      final imperialContainer = ProviderContainer.test(
+        overrides: [
+          userProfileRepositoryProvider.overrideWithValue(profileRepo),
+          routineWeightUnitProvider.overrideWith((ref) => Stream.value(testWeightUnits)),
+        ],
+      );
+      // Let both streams emit before the notifier reads them (in the app the
+      // dashboard keeps them alive long before gym mode starts).
+      imperialContainer.listen(userProfileProvider, (_, _) {});
+      imperialContainer.listen(routineWeightUnitProvider, (_, _) {});
+      await pumpEventQueue();
+
+      final imperialNotifier = imperialContainer.read(gymStateProvider.notifier);
+      imperialNotifier.state = imperialNotifier.state.copyWith(
+        showExercisePages: true,
+        showTimerPages: true,
+        dayId: 1,
+        iteration: 1,
+        routine: getTestRoutine(),
+      );
+      imperialNotifier.calculatePages();
+      final setPage = imperialNotifier.state.pages.firstWhere((p) => p.type == PageType.set);
+
+      imperialNotifier.addExerciseAfterPage(setPage.uuid, newExercise: testSquats);
+
+      // recalculateIndices copies the page objects, so look the page up by uuid.
+      final pages = imperialNotifier.state.pages;
+      final newPage = pages[pages.indexWhere((p) => p.uuid == setPage.uuid) + 1];
+      expect(newPage.slotPages, isNotEmpty);
+      for (final slotPage in newPage.slotPages) {
+        // testWeightUnit2 has id 2 == WEIGHT_UNIT_LB.
+        expect(slotPage.setConfigData!.weightUnit, testWeightUnit2);
+        expect(slotPage.setConfigData!.weightUnitId, isNull);
+      }
+    });
+  });
+
+  group('GymStateNotifier.calculatePages, supersets', () {
+    // A superset slot holds several exercises that are trained alternating.
+    // calculatePages then has to emit one overview page per exercise instead
+    // of the single one a normal slot gets.
+
+    SetConfigData configFor(int exerciseId, Exercise exercise) => SetConfigData(
+      exerciseId: exerciseId,
+      exercise: exercise,
+      slotEntryId: exerciseId,
+      nrOfSets: 1,
+      repetitions: 8,
+      repetitionsUnit: testRepetitionUnits.first,
+      weight: 40,
+      weightUnit: testWeightUnits.first,
+      restTime: 60,
+      textRepr: '8x40kg',
+    );
+
+    /// A routine whose only slot supersets [exerciseIds].
+    Routine supersetRoutine(List<int> exerciseIds, {List<SetConfigData>? setConfigs}) {
+      final exercises = getTestExercises();
+      final day = Day(id: 1, routineId: 1, name: 'Superset day');
+
+      return getTestRoutine()
+        ..dayDataGym = [
+          DayData(
+            iteration: 1,
+            date: DateTime(2024, 11, 1),
+            day: day,
+            slots: [
+              SlotData(
+                isSuperset: true,
+                exerciseIds: exerciseIds,
+                setConfigs:
+                    setConfigs ?? [for (final id in exerciseIds) configFor(id, exercises[id - 1])],
+              ),
+            ],
+          ),
+        ];
+    }
+
+    test('emits one overview page per exercise of the slot', () {
+      notifier.state = notifier.state.copyWith(
+        showExercisePages: true,
+        showTimerPages: false,
+        dayId: 1,
+        iteration: 1,
+        routine: supersetRoutine([1, 2]),
+      );
+
+      notifier.calculatePages();
+
+      final slotPages = notifier.state.pages[1].slotPages;
+      final overviews = slotPages.where((p) => p.type == SlotPageType.exerciseOverview);
+      expect(overviews, hasLength(2));
+      expect(
+        overviews.map((p) => p.setConfigData!.exerciseId),
+        [1, 2],
+        reason: 'each exercise of the superset gets its own overview page',
+      );
+      expect(slotPages.where((p) => p.type == SlotPageType.log), hasLength(2));
+    });
+
+    test('page indices stay consecutive across the superset', () {
+      notifier.state = notifier.state.copyWith(
+        showExercisePages: true,
+        showTimerPages: false,
+        dayId: 1,
+        iteration: 1,
+        routine: supersetRoutine([1, 2]),
+      );
+
+      notifier.calculatePages();
+
+      final indices = notifier.state.pages[1].slotPages.map((p) => p.pageIndex);
+      expect(indices, [1, 2, 3, 4]);
+    });
+
+    test('an exercise without a set config is skipped instead of crashing', () {
+      // The exercise list and the set configs come from separate parts of the
+      // API response, so they can disagree while a routine is being edited
+      final exercises = getTestExercises();
+      final routine = supersetRoutine(
+        [1, 2],
+        setConfigs: [configFor(1, exercises[0])],
+      );
+      notifier.state = notifier.state.copyWith(
+        showExercisePages: true,
+        showTimerPages: false,
+        dayId: 1,
+        iteration: 1,
+        routine: routine,
+      );
+
+      notifier.calculatePages();
+
+      final slotPages = notifier.state.pages[1].slotPages;
+      expect(
+        slotPages
+            .where((p) => p.type == SlotPageType.exerciseOverview)
+            .single
+            .setConfigData!
+            .exerciseId,
+        1,
+      );
+      expect(slotPages.where((p) => p.type == SlotPageType.log), hasLength(1));
     });
   });
 
@@ -323,6 +657,133 @@ void main() {
     });
   });
 
+  group('GymStateNotifier sticky set values', () {
+    // Page structure of the test routine (exercise + timer pages enabled):
+    //   start(0)
+    //   slot 1 (exercise 1): overview(1), log(2), timer(3), log(4), timer(5), log(6), timer(7)
+    //   slot 2 (exercise 6): overview(8), log(9), ...
+
+    Log buildLoggedValues() {
+      final slotPage = notifier.state.pages[1].slotPages[1];
+      return Log.fromSetConfigData(slotPage.setConfigData!, routineId: 1, iteration: 1)
+        ..repetitions = 7
+        ..weight = 42.5
+        ..rir = 1;
+    }
+
+    test('Sets the flag and persists it', () async {
+      // Act
+      notifier.setStickySetValues(true);
+      await pumpEventQueue();
+
+      // Assert
+      expect(notifier.state.stickySetValues, true);
+      expect(await PreferenceHelper.asyncPref.getBool(PREFS_STICKY_SET_VALUES), true);
+    });
+
+    test(
+      'Pre-fills the next set of the exercise with the last logged values when enabled',
+      () async {
+        // Arrange
+        notifier.setStickySetValues(true);
+        await pumpEventQueue();
+        notifier.recordLoggedValues(buildLoggedValues());
+
+        // Act: navigate to the second set of the same exercise
+        notifier.setCurrentPage(4);
+
+        // Assert
+        final gymLog = container.read(gymLogProvider)!;
+        expect(gymLog.repetitions, 7);
+        expect(gymLog.weight, 42.5);
+        expect(gymLog.rir, 1);
+        expect(gymLog.id, isNull, reason: 'A fresh log is seeded, not a copy of the saved one');
+      },
+    );
+
+    test('Pre-fills with the planned values when disabled', () {
+      // Arrange
+      notifier.recordLoggedValues(buildLoggedValues());
+
+      // Act
+      notifier.setCurrentPage(4);
+
+      // Assert: the values of the set configuration
+      final gymLog = container.read(gymLogProvider)!;
+      expect(gymLog.repetitions, 3);
+      expect(gymLog.weight, 100);
+    });
+
+    test('Does not carry values over to a different exercise', () async {
+      // Arrange
+      notifier.setStickySetValues(true);
+      await pumpEventQueue();
+      notifier.recordLoggedValues(buildLoggedValues());
+
+      // Act: navigate to the first set of the second exercise
+      notifier.setCurrentPage(9);
+
+      // Assert: the values of that exercise's set configuration
+      final gymLog = container.read(gymLogProvider)!;
+      expect(gymLog.repetitions, 12);
+      expect(gymLog.weight, 10);
+    });
+
+    test('A new workout forgets the values of an abandoned one', () async {
+      // Arrange: the summary page (and clear()) is never reached
+      notifier.setStickySetValues(true);
+      await pumpEventQueue();
+      notifier.state = notifier.state.copyWith(
+        isInitialized: true,
+        dayId: 1,
+        validUntil: DateTime(2024, 5, 1, 10, 0),
+      );
+      notifier.recordLoggedValues(buildLoggedValues());
+
+      // Act
+      withClock(
+        Clock.fixed(DateTime(2024, 5, 2, 18, 0)),
+        () => notifier.initData(getTestRoutine(), 1, 1),
+      );
+      notifier.setCurrentPage(2);
+
+      // Assert: the values of the set configuration
+      expect(notifier.state.lastLoggedValues, isEmpty);
+      final gymLog = container.read(gymLogProvider)!;
+      expect(gymLog.repetitions, 3);
+      expect(gymLog.weight, 100);
+    });
+
+    test('Resuming the same workout keeps the logged values', () async {
+      // Arrange
+      notifier.setStickySetValues(true);
+      await pumpEventQueue();
+      notifier.state = notifier.state.copyWith(isInitialized: true, dayId: 1);
+      notifier.recordLoggedValues(buildLoggedValues());
+
+      // Act
+      notifier.initData(getTestRoutine(), 1, 1);
+      notifier.setCurrentPage(4);
+
+      // Assert
+      final gymLog = container.read(gymLogProvider)!;
+      expect(gymLog.repetitions, 7);
+      expect(gymLog.weight, 42.5);
+    });
+
+    test('Clearing the state forgets the logged values', () {
+      // Arrange
+      notifier.recordLoggedValues(buildLoggedValues());
+      expect(notifier.state.lastLoggedValues, isNotEmpty);
+
+      // Act
+      notifier.clear();
+
+      // Assert
+      expect(notifier.state.lastLoggedValues, isEmpty);
+    });
+  });
+
   group('GymStateNotifier.startWorkout', () {
     test('Resets the workout start time to now', () {
       // Arrange
@@ -383,6 +844,47 @@ void main() {
 
       // Assert
       expect(notifier.state.workoutStart, DateTime(2024, 5, 1, 10, 0));
+    });
+
+    test('Returns the stored page so a resumed workout reopens where it left off', () {
+      // The return value is what gym_mode jumps the PageView to
+      notifier.state = notifier.state.copyWith(
+        isInitialized: true,
+        dayId: 1,
+        currentPage: 4,
+      );
+
+      expect(notifier.initData(getTestRoutine(), 1, 1), 4);
+      expect(notifier.state.currentPage, 4);
+    });
+
+    test('Starting a different day resets to the first page', () {
+      notifier.state = notifier.state.copyWith(
+        isInitialized: true,
+        dayId: 1,
+        currentPage: 4,
+      );
+
+      expect(notifier.initData(getTestRoutine(), 2, 1), 0);
+      expect(notifier.state.dayId, 2);
+    });
+
+    test('An expired validUntil resets even on the same day', () {
+      // The session is only resumable for a while; after that the same day
+      // starts over instead of dropping the user in the middle of it
+      notifier.state = notifier.state.copyWith(
+        isInitialized: true,
+        dayId: 1,
+        currentPage: 4,
+        validUntil: DateTime(2024, 5, 1, 10, 0),
+      );
+
+      final page = withClock(
+        Clock.fixed(DateTime(2024, 5, 2, 18, 0)),
+        () => notifier.initData(getTestRoutine(), 1, 1),
+      );
+
+      expect(page, 0);
     });
   });
 
@@ -523,6 +1025,34 @@ void main() {
       final state = notifier.state.copyWith(logScopeWeeks: 8);
 
       expect(state.copyWith(clearLogScopeWeeks: true).logScopeWeeks, isNull);
+    });
+  });
+
+  group('GymModeState.getNextLogPage', () {
+    // Page structure of the test routine (exercise + timer pages enabled):
+    //   start(0)
+    //   slot 1 (exercise 1): overview(1), log(2), timer(3), log(4), timer(5), log(6), timer(7)
+    //   slot 2 (exercise 6): overview(8), log(9), timer(10), log(11), timer(12), log(13), timer(14)
+    //   session(15), summary(16)
+
+    test('Returns the next set of the same exercise for a rest between sets', () {
+      final next = notifier.state.getNextLogPage(3);
+
+      expect(next!.type, SlotPageType.log);
+      expect(next.pageIndex, 4);
+      expect(next.setConfigData!.exerciseId, getTestExercises()[0].id);
+    });
+
+    test('Returns the first set of the next exercise after the final rest of an exercise', () {
+      final next = notifier.state.getNextLogPage(7);
+
+      expect(next!.type, SlotPageType.log);
+      expect(next.pageIndex, 9);
+      expect(next.setConfigData!.exerciseId, getTestExercises()[5].id);
+    });
+
+    test('Returns null after the last set of the day', () {
+      expect(notifier.state.getNextLogPage(14), isNull);
     });
   });
 }

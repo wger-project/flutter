@@ -16,25 +16,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:wger/features/account/models/user_profile.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/exercises/providers/exercises_notifier.dart';
 import 'package:wger/features/routines/models/day.dart';
+import 'package:wger/features/routines/models/day_data.dart';
 import 'package:wger/features/routines/models/log.dart';
 import 'package:wger/features/routines/models/routine.dart';
 import 'package:wger/features/routines/models/session.dart';
+import 'package:wger/features/routines/models/set_config_data.dart';
 import 'package:wger/features/routines/models/slot.dart';
+import 'package:wger/features/routines/models/slot_data.dart';
 import 'package:wger/features/routines/models/slot_entry.dart';
 import 'package:wger/features/routines/providers/routines_notifier.dart';
 import 'package:wger/features/routines/providers/routines_repository.dart';
 
 import '../../../../test_data/exercises.dart';
 import '../../../../test_data/routines.dart';
-import '../../../fake_connectivity.dart';
+import '../../../helpers/fake_connectivity.dart';
 import '../helpers/routine_form_test_overrides.dart';
 import 'routines_notifier_test.mocks.dart';
 
@@ -211,6 +217,76 @@ void main() {
     );
   });
 
+  group('carry-forward across stream emissions', () {
+    // The plan structure (days, slots, set configs) comes from REST, not from
+    // PowerSync, so every further emission of the Drift stream would arrive
+    // without it. build() copies it over from the previous state; without
+    // that, an unrelated remote edit wipes the structure and the dashboard
+    // re-hydrates in a loop.
+
+    /// Feeds [emissions] through one controller so the notifier sees a second
+    /// value the way a remote edit would deliver it.
+    Future<RoutinesState?> emitAll(List<List<Routine>> emissions) async {
+      final controller = StreamController<List<Routine>>();
+      addTearDown(controller.close);
+      when(mockRepo.watchAllDrift()).thenAnswer((_) => controller.stream);
+
+      final container = ProviderContainer.test(
+        overrides: [
+          routinesRepositoryProvider.overrideWithValue(mockRepo),
+          ...ambientOverrides(),
+        ],
+      );
+      container.listen(routinesRiverpodProvider, (_, _) {});
+
+      for (final emission in emissions) {
+        controller.add(emission);
+        await pumpEventQueue();
+      }
+      return container.read(routinesRiverpodProvider).value;
+    }
+
+    /// A routine as PowerSync delivers it: no structure, not hydrated.
+    Routine bare({String name = 'Routine'}) => Routine(
+      id: 101,
+      name: name,
+      description: '',
+      created: DateTime(2026, 1, 1),
+      start: DateTime(2026, 1, 1),
+      end: DateTime(2026, 3, 1),
+    );
+
+    test('keeps the REST-loaded structure when the same routine is re-emitted', () async {
+      final hydrated = bare()
+        ..days = [testDay]
+        ..dayData = [DayData(iteration: 1, date: DateTime(2026, 1, 2), day: testDay)]
+        ..isHydrated = true;
+
+      final state = await emitAll([
+        [hydrated],
+        // The remote edit only changes a column PowerSync knows about
+        [bare(name: 'renamed')],
+      ]);
+
+      final routine = state!.routines.single;
+      expect(routine.name, 'renamed');
+      expect(routine.days, [testDay]);
+      expect(routine.dayData, hasLength(1));
+      expect(routine.isHydrated, isTrue);
+    });
+
+    test('a routine that appears later starts unhydrated', () async {
+      final state = await emitAll([
+        [bare()],
+        [bare(), bare(name: 'second')..id = 102],
+      ]);
+
+      final fresh = state!.routines.firstWhere((r) => r.id == 102);
+      expect(fresh.isHydrated, isFalse);
+      expect(fresh.days, isEmpty);
+    });
+  });
+
   group('hydration via fetchAndSetRoutineFull', () {
     // The provider's `_hydrateRoutine` walks four data paths to attach
     // exercise + unit references to objects.
@@ -311,7 +387,7 @@ void main() {
       final session = WorkoutSession(
         id: 'session-1',
         routineId: 101,
-        date: DateTime(2025, 1, 1),
+        datetimeStart: DateTime(2025, 1, 1),
         logs: [log],
       );
       when(
@@ -359,9 +435,168 @@ void main() {
       // Assert: `_fullFetchInFlight` collapses them into a single roundtrip.
       verify(mockRepo.fetchAndSetRoutineFullServer(101)).called(1);
     });
+
+    test('resolves the default weight unit from an imperial profile', () async {
+      // A slot entry or set config without an explicit weight unit must inherit
+      // the unit implied by the profile: lb (id 2) for an imperial user, not kg.
+      overrideStreams(mockExerciseRepo);
+      final setConfig = SetConfigData(
+        exerciseId: 1,
+        slotEntryId: 1,
+        exercise: getTestExercises()[0],
+        // No weightUnit / weightUnitId: the server omits it, the default applies.
+      );
+      final routine = Routine(id: 101, name: 'Test routine')
+        ..days = [
+          Day(id: 1, routineId: 101, name: 'Test', order: 1)
+            ..slots = [
+              Slot.withData(id: 1, day: 1, order: 1)
+                ..entries.add(
+                  SlotEntry(
+                    id: 1,
+                    slotId: 1,
+                    exerciseId: 1,
+                    repetitionUnitId: 1,
+                    repetitionRounding: null,
+                    weightUnitId: null,
+                    weightRounding: null,
+                  ),
+                ),
+            ],
+        ]
+        ..dayDataGym = [
+          DayData(
+            iteration: 1,
+            date: DateTime(2024, 11, 1),
+            label: '',
+            day: Day(id: 1, routineId: 101, name: 'Test', order: 1),
+            slots: [
+              SlotData(comment: '', isSuperset: false, exerciseIds: [1], setConfigs: [setConfig]),
+            ],
+          ),
+        ];
+      when(mockRepo.fetchAndSetRoutineFullServer(101)).thenAnswer((_) async => routine);
+
+      final imperialProfileRepo = MockUserProfileRepository();
+      when(
+        imperialProfileRepo.watchDrift(),
+      ).thenAnswer((_) => Stream.value(UserProfile(id: 1, weightUnitStr: 'lb')));
+
+      final container = ProviderContainer.test(
+        overrides: [
+          routinesRepositoryProvider.overrideWithValue(mockRepo),
+          ...routineFormAmbientOverrides(
+            exercise: mockExerciseRepo,
+            session: mockSessionRepo,
+            userProfile: imperialProfileRepo,
+            repetitionUnits: testRepetitionUnits,
+            weightUnits: testWeightUnits,
+          ),
+        ],
+      );
+
+      final notifier = container.read(routinesRiverpodProvider.notifier);
+      final result = await notifier.fetchAndSetRoutineFull(101);
+
+      // testWeightUnit2 has id 2 == WEIGHT_UNIT_LB.
+      final hydratedConfig = result.dayDataGym[0].slots[0].setConfigs[0];
+      expect(hydratedConfig.weightUnit, testWeightUnit2);
+      final hydratedEntry = result.days[0].slots[0].entries[0];
+      expect(hydratedEntry.weightUnitObj, testWeightUnit2);
+    });
+
+    test('waits for the profile before hydrating and re-hydrates when it changes', () async {
+      overrideStreams(mockExerciseRepo);
+      final setConfig = SetConfigData(
+        exerciseId: 1,
+        slotEntryId: 1,
+        exercise: getTestExercises()[0],
+      );
+      final routine = Routine(id: 101, name: 'Test routine')
+        ..dayDataGym = [
+          DayData(
+            iteration: 1,
+            date: DateTime(2024, 11, 1),
+            label: '',
+            day: Day(id: 1, routineId: 101, name: 'Test', order: 1),
+            slots: [
+              SlotData(comment: '', isSuperset: false, exerciseIds: [1], setConfigs: [setConfig]),
+            ],
+          ),
+        ];
+      when(mockRepo.fetchAndSetRoutineFullServer(101)).thenAnswer((_) async => routine);
+
+      final profileController = StreamController<UserProfile?>();
+      addTearDown(profileController.close);
+      final profileRepo = MockUserProfileRepository();
+      when(profileRepo.watchDrift()).thenAnswer((_) => profileController.stream);
+
+      final container = ProviderContainer.test(
+        overrides: [
+          routinesRepositoryProvider.overrideWithValue(mockRepo),
+          ...routineFormAmbientOverrides(
+            exercise: mockExerciseRepo,
+            session: mockSessionRepo,
+            userProfile: profileRepo,
+            repetitionUnits: testRepetitionUnits,
+            weightUnits: testWeightUnits,
+          ),
+        ],
+      );
+      container.listen(routinesRiverpodProvider, (_, _) {});
+
+      // The fetch must park on the profile instead of hydrating with the kg
+      // fallback while the profile row hasn't synced yet. Snapshot the unit
+      // the moment the fetch resolves: later re-hydration mutates the same
+      // routine instance and would mask a too-early completion.
+      final notifier = container.read(routinesRiverpodProvider.notifier);
+      final unitAtFetchCompletion = notifier
+          .fetchAndSetRoutineFull(101)
+          .then((r) => r.dayDataGym[0].slots[0].setConfigs[0].weightUnit);
+      await pumpEventQueue();
+      profileController.add(UserProfile(id: 1, weightUnitStr: 'lb'));
+      expect(await unitAtFetchCompletion, testWeightUnit2);
+
+      // A later profile change (settings switch to metric) re-hydrates in place.
+      profileController.add(UserProfile(id: 1, weightUnitStr: 'kg'));
+      await pumpEventQueue();
+      final routines = container.read(routinesRiverpodProvider).value!.routines;
+      final rehydrated = routines.singleWhere((r) => r.id == 101);
+      expect(rehydrated.dayDataGym[0].slots[0].setConfigs[0].weightUnit, testWeightUnit1);
+    });
   });
 
   group('routineHydration family', () {
+    test('creation defers all provider reads past the synchronous phase', () async {
+      // Regression: the provider is created by a ref.watch during widget
+      // build, and a synchronous read of the then-dirty repository chain
+      // crashed mid-build. No provider may be touched before a yield.
+      var repoRead = false;
+      when(
+        mockRepo.fetchAndSetRoutineFullServer(101),
+      ).thenAnswer((_) async => Routine(id: 101, name: 'Test routine'));
+      final container = ProviderContainer.test(
+        overrides: [
+          routinesRepositoryProvider.overrideWith((ref) {
+            repoRead = true;
+            return mockRepo;
+          }),
+          ...ambientOverrides(),
+        ],
+      );
+
+      container.listen(routineHydrationProvider(101), (_, _) {});
+      expect(
+        repoRead,
+        false,
+        reason: 'no provider may be read synchronously during create (build phase)',
+      );
+
+      await container.read(routineHydrationProvider(101).future);
+      expect(repoRead, true);
+      verify(mockRepo.fetchAndSetRoutineFullServer(101)).called(1);
+    });
+
     test('watching the provider triggers a single structure fetch', () async {
       // Arrange
       when(

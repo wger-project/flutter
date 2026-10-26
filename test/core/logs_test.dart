@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:clock/clock.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/core/logs.dart';
@@ -81,6 +82,148 @@ void main() {
       final formatted = logStore.getFormattedLogs(minLevel: Level.INFO, maxEntries: 10);
       expect(formatted.length, 3);
       expect(formatted.first.contains('this is log 2'), true);
+    });
+
+    test('formatted entries include the error and the stack trace', () {
+      logStore.add(
+        LogRecord(
+          Level.WARNING,
+          'Sync service error',
+          'testLogger',
+          Exception('connection refused'),
+          StackTrace.fromString('#0 first frame\n#1 second frame'),
+        ),
+      );
+
+      final formatted = logStore.getFormattedLogs(minLevel: Level.INFO).first;
+      expect(formatted, contains('Sync service error'));
+      expect(formatted, contains('connection refused'));
+      expect(formatted, contains('#0 first frame'));
+      expect(formatted, contains('#1 second frame'));
+    });
+
+    test('formatted entries use UTC timestamps', () {
+      final record = LogRecord(Level.INFO, 'this is a test', 'testLogger');
+      logStore.add(record);
+
+      final formatted = logStore.getFormattedLogs(minLevel: Level.INFO).first;
+      expect(formatted, startsWith(record.time.toUtc().toIso8601String()));
+      expect(formatted, contains('Z '));
+    });
+  });
+
+  group('log formatting', () {
+    test('long errors are clamped', () {
+      final record = LogRecord(Level.WARNING, 'boom', 'testLogger', 'x' * 2000);
+
+      expect(formatLogDetails(record).length, lessThan(1000));
+      expect(formatLogDetails(record), contains('…'));
+    });
+
+    test('long stack traces are shortened', () {
+      final frames = List.generate(40, (i) => '#$i some frame').join('\n');
+      final record = LogRecord(
+        Level.WARNING,
+        'boom',
+        'testLogger',
+        Exception('nope'),
+        StackTrace.fromString(frames),
+      );
+
+      final formatted = formatLogDetails(record);
+      expect(formatted, contains('#0 some frame'));
+      expect(formatted, isNot(contains('#39 some frame')));
+      expect(formatted, contains('more frames'));
+    });
+
+    test('entries without an error render just the message', () {
+      final record = LogRecord(Level.INFO, 'nothing to see here', 'testLogger');
+
+      expect(formatLogDetails(record), 'nothing to see here');
+    });
+  });
+  group('repeatCollapsingLogger', () {
+    late List<LogRecord> records;
+    late DateTime now;
+
+    setUp(() {
+      records = [];
+      now = DateTime(2026, 8, 21, 12);
+      final sub = Logger.root.onRecord.listen(records.add);
+      addTearDown(sub.cancel);
+    });
+
+    Iterable<String> forwarded(String name) =>
+        records.where((r) => r.loggerName == name).map((r) => r.message);
+
+    test('a first occurrence is forwarded immediately', () {
+      withClock(Clock(() => now), () {
+        final logger = repeatCollapsingLogger('CollapseFirst');
+        logger.warning('Sync error: Sync service error');
+
+        expect(forwarded('CollapseFirst'), ['Sync error: Sync service error']);
+      });
+    });
+
+    test('alternating messages are each collapsed on their own', () {
+      // The SDK retry loop cycles two or three distinct lines every few
+      // seconds; suppressing only consecutive duplicates would never fire.
+      withClock(Clock(() => now), () {
+        final logger = repeatCollapsingLogger('CollapseCycle');
+        for (var i = 0; i < 5; i++) {
+          logger.info('Starting Rust sync iteration');
+          logger.warning('Sync error: Sync service error');
+          now = now.add(const Duration(seconds: 5));
+        }
+
+        expect(forwarded('CollapseCycle'), [
+          'Starting Rust sync iteration',
+          'Sync error: Sync service error',
+        ]);
+      });
+    });
+
+    test('after the interval the repeat is logged again, with a count', () {
+      withClock(Clock(() => now), () {
+        final logger = repeatCollapsingLogger(
+          'CollapseAgain',
+          interval: const Duration(minutes: 5),
+        );
+        for (var i = 0; i < 4; i++) {
+          logger.warning('Sync error: Sync service error');
+          now = now.add(const Duration(minutes: 2));
+        }
+
+        expect(forwarded('CollapseAgain'), [
+          'Sync error: Sync service error',
+          'Sync error: Sync service error (repeated 2x since last logged)',
+        ]);
+      });
+    });
+
+    test('a different message passes through right away', () {
+      withClock(Clock(() => now), () {
+        final logger = repeatCollapsingLogger('CollapseOther');
+        logger.warning('Sync error: Sync service error');
+        logger.warning('Sync error: Configuration error');
+
+        expect(
+          forwarded('CollapseOther'),
+          ['Sync error: Sync service error', 'Sync error: Configuration error'],
+        );
+      });
+    });
+
+    test('records below the log level are dropped, not tracked', () {
+      Logger.root.level = Level.INFO;
+      addTearDown(() => Logger.root.level = Level.ALL);
+
+      withClock(Clock(() => now), () {
+        final logger = repeatCollapsingLogger('CollapseLevel');
+        logger.fine('Credentials: PowerSyncCredentials<...>');
+
+        expect(forwarded('CollapseLevel'), isEmpty);
+      });
     });
   });
 }

@@ -16,15 +16,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Minimum server version required by this version of the app.
 ///
 /// Bump this value whenever you depend on API changes that are only available
 /// in a newer server release. The check is performed during login and
 /// auto-login and mirrors what the server does with MIN_APP_VERSION.
-const MIN_SERVER_VERSION = '2.6';
+///
+/// A pre-release is lower than its release, so the spelling decides the
+/// meaning:
+///
+///   '2.8.0-dev.3'  at least that point of the 2.8 development cycle
+///   '2.8.0'        the finished 2.8 or newer, no development server
+///   '2.8'          the same as '2.8.0'
+///
+/// While 2.8 is unreleased, only the first form is safe. wger runs master
+/// and reports as e.g. 2.8.0-dev.N, so '2.8' would lock the app out of it
+/// and out of every self hosted instance following latest, for the whole cycle.
+///
+/// Count with a dot: '2.8.0-dev.10' is above '2.8.0-dev.9', while
+/// '2.8.0-dev10' would sort below '2.8.0-dev9'.
+const MIN_SERVER_VERSION = '2.7';
 
 /// Size for the "smaller" icons, e.g. when they belong to less important items
 /// and we don't want to fill the whole screen
@@ -54,20 +68,30 @@ const SUBMIT_BUTTON_KEY_NAME = 'submit-button';
 /// Local Preferences keys
 const PREFS_INGREDIENTS = 'ingredientData';
 const PREFS_WORKOUT_UNITS = 'workoutUnits';
+
+/// Pre-JWT credential blob. Only still read to delete it on startup.
 const PREFS_USER = 'userData';
 const PREFS_USER_DARK_THEME = 'userDarkMode';
 const PREFS_USER_LOCALE = 'userLocale';
 const PREFS_LAST_SERVER = 'lastServer';
 
-/// Headless JWT auth: SharedPreferences keys.
+/// User preference: use Material You dynamic colors from the platform instead
+/// of the fixed wger seed palette. Defaults to [USE_DYNAMIC_COLOR_DEFAULT].
 ///
-/// Read in parallel with the legacy `PREFS_USER` blob during the migration
-/// window; once a user logs in via the headless flow these supersede it.
-/// The refresh token is **not** stored here, it lives in secure storage
-/// (`SECURE_STORAGE_REFRESH_TOKEN`).
+/// Android 12+ supplies a wallpaper palette, macOS (10.14+), Windows and
+/// GTK-based Linux a system accent color. iOS and the web have no
+/// implementation, so the setting is only offered where dynamicColorAvailable
+/// reports true.
+const PREFS_USE_DYNAMIC_COLOR = 'useDynamicColor';
+const USE_DYNAMIC_COLOR_DEFAULT = false;
+
+/// The chart range the measurement screens share, held as `ChartRange.name`
+const PREFS_CHART_RANGE = 'measurementChartRange';
+
+/// Headless JWT auth: SharedPreferences keys. The refresh token is **not**
+/// stored here, it lives in secure storage (`SECURE_STORAGE_REFRESH_TOKEN`).
 const PREFS_ACCESS_TOKEN = 'accessToken';
 const PREFS_ACCESS_EXPIRES_AT = 'accessExpiresAt';
-const PREFS_TOKEN_TYPE = 'tokenType';
 const PREFS_SERVER_URL = 'serverUrl';
 
 /// JWT `sub` of the user whose data is materialised in the local PowerSync
@@ -78,6 +102,19 @@ const PREFS_DB_OWNER_USER_ID = 'dbOwnerUserId';
 /// it. Defaults to [KEEP_DATA_ON_LOGOUT_DEFAULT].
 const PREFS_KEEP_DATA_ON_LOGOUT = 'keepDataOnLogout';
 const KEEP_DATA_ON_LOGOUT_DEFAULT = true;
+
+/// User preference: accept an invalid TLS certificate from the configured
+/// self-hosted server, so the app can reach instances behind a self-signed
+/// cert. Off by default, and never applies to the official servers. Defaults
+/// to [ALLOW_SELF_SIGNED_CERTS_DEFAULT].
+const PREFS_ALLOW_SELF_SIGNED_CERTS = 'allowSelfSignedCerts';
+const ALLOW_SELF_SIGNED_CERTS_DEFAULT = false;
+
+/// User preference: log everything instead of INFO and above, so a bug report
+/// also carries the fine-grained diagnostics. Persisted rather than a session
+/// switch, the interesting phase is the one right after a cold start.
+const PREFS_VERBOSE_LOGGING = 'verboseLogging';
+const VERBOSE_LOGGING_DEFAULT = false;
 
 /// Secure-storage key for the headless refresh token.
 const SECURE_STORAGE_REFRESH_TOKEN = 'wger_refresh_token';
@@ -161,14 +198,21 @@ const GITHUB_ISSUES_URL = '$GITHUB_REPO_URL/issues/new/choose';
 const GITHUB_ISSUES_BUG_URL = '$GITHUB_REPO_URL/issues/new?template=1_bug.yml';
 const GITHUB_SPONSORS_URL = 'https://github.com/sponsors/wger-project';
 
-/// Maximum length for a pre-filled GitHub issue URL
-const GITHUB_ISSUES_MAX_URL_LENGTH = 8000;
+/// Maximum length for a pre-filled GitHub issue URL. GitHub starts answering
+/// issues/new with an error page at roughly 7050 characters (measured 2026-07),
+/// so stay well below that.
+const GITHUB_ISSUES_MAX_URL_LENGTH = 6500;
 const DISCORD_URL = 'https://discord.gg/rPWFv6W';
 const MASTODON_URL = 'https://fosstodon.org/@wger';
 const READTHEDOCS_URL = 'https://wger.readthedocs.io';
 const WEBLATE_URL = 'https://hosted.weblate.org/engage/wger';
 const BUY_ME_A_COFFEE_URL = 'https://buymeacoffee.com/wger';
 const LIBERAPAY_URL = 'https://liberapay.com/wger';
+
+/// Terms of service and privacy policy, served by every instance. What it says
+/// is up to whoever runs the server, upstream ships a placeholder. The Health
+/// Connect entry points in MainActivity.kt use wger.de's copy of this page.
+const TERMS_OF_SERVICE_PATH = 'software/terms-of-service';
 
 /// Factor to multiply / divide in the charts when converting dates to milliseconds
 /// from epoch since fl_charts does not support real time series charts and using

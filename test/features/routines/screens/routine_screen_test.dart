@@ -19,17 +19,18 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/features/routines/models/routine.dart';
 import 'package:wger/features/routines/providers/routines_notifier.dart';
 import 'package:wger/features/routines/screens/routine_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 
 import '../../../../test_data/routines.dart';
-import '../../../fake_auth_environment.dart';
+import '../../../helpers/fake_auth_environment.dart';
 
 class _StubRoutinesRiverpod extends RoutinesRiverpod {
   _StubRoutinesRiverpod(this._routines);
@@ -66,7 +67,7 @@ void main() {
       container: container,
       child: MaterialApp(
         locale: Locale(locale),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: key,
         home: TextButton(
@@ -88,6 +89,7 @@ void main() {
     (WidgetTester tester) async {
       tester.view.physicalSize = const Size(500, 1000);
       tester.view.devicePixelRatio = 1.0; // Ensure correct pixel ratio
+      addTearDown(tester.view.reset);
 
       await tester.pumpWidget(renderWidget());
       await tester.tap(find.byType(TextButton));
@@ -183,7 +185,7 @@ void main() {
         container: container,
         child: MaterialApp(
           locale: const Locale('en'),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           navigatorKey: key,
           home: TextButton(

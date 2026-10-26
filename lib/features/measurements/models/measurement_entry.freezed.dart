@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'measurement_entry.dart';
@@ -9,13 +9,13 @@ part of 'measurement_entry.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$MeasurementEntry {
 
-/// Client-generated UUID, is `null` only before the first persist
- String? get id; String get categoryId; DateTime get date; num get value; String get notes;
+
 /// Create a copy of MeasurementEntry
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -26,16 +26,21 @@ $MeasurementEntryCopyWith<MeasurementEntry> get copyWith => _$MeasurementEntryCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MeasurementEntry&&(identical(other.id, id) || other.id == id)&&(identical(other.categoryId, categoryId) || other.categoryId == categoryId)&&(identical(other.date, date) || other.date == date)&&(identical(other.value, value) || other.value == value)&&(identical(other.notes, notes) || other.notes == notes));
+  final _this = this as MeasurementEntry;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MeasurementEntry&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.categoryId, _this.categoryId) || other.categoryId == _this.categoryId)&&(identical(other.date, _this.date) || other.date == _this.date)&&(identical(other.value, _this.value) || other.value == _this.value)&&(identical(other.notes, _this.notes) || other.notes == _this.notes)&&(identical(other.source, _this.source) || other.source == _this.source)&&(identical(other.externalId, _this.externalId) || other.externalId == _this.externalId)&&const DeepCollectionEquality().equals(other.extraData, _this.extraData));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,categoryId,date,value,notes);
+int get hashCode {
+  final _this = this as MeasurementEntry;
+  return Object.hash(runtimeType,_this.id,_this.categoryId,_this.date,_this.value,_this.notes,_this.source,_this.externalId,const DeepCollectionEquality().hash(_this.extraData));
+}
 
 @override
 String toString() {
-  return 'MeasurementEntry(id: $id, categoryId: $categoryId, date: $date, value: $value, notes: $notes)';
+  final _this = this as MeasurementEntry;
+  return 'MeasurementEntry(id: ${_this.id}, categoryId: ${_this.categoryId}, date: ${_this.date}, value: ${_this.value}, notes: ${_this.notes}, source: ${_this.source}, externalId: ${_this.externalId}, extraData: ${_this.extraData})';
 }
 
 
@@ -46,7 +51,7 @@ abstract mixin class $MeasurementEntryCopyWith<$Res>  {
   factory $MeasurementEntryCopyWith(MeasurementEntry value, $Res Function(MeasurementEntry) _then) = _$MeasurementEntryCopyWithImpl;
 @useResult
 $Res call({
- String? id, String categoryId, DateTime date, num value, String notes
+ String? id, String categoryId, DateTime date, num value, String notes, String source, String? externalId, Map<String, dynamic>? extraData
 });
 
 
@@ -63,14 +68,17 @@ class _$MeasurementEntryCopyWithImpl<$Res>
 
 /// Create a copy of MeasurementEntry
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? categoryId = null,Object? date = null,Object? value = null,Object? notes = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? categoryId = null,Object? date = null,Object? value = null,Object? notes = null,Object? source = null,Object? externalId = freezed,Object? extraData = freezed,}) {
   return _then(MeasurementEntry(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String?,categoryId: null == categoryId ? _self.categoryId : categoryId // ignore: cast_nullable_to_non_nullable
 as String,date: null == date ? _self.date : date // ignore: cast_nullable_to_non_nullable
 as DateTime,value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
 as num,notes: null == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
-as String,
+as String,source: null == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
+as String,externalId: freezed == externalId ? _self.externalId : externalId // ignore: cast_nullable_to_non_nullable
+as String?,extraData: freezed == extraData ? _self.extraData : extraData // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>?,
   ));
 }
 

@@ -17,10 +17,11 @@
  */
 
 import 'package:clock/clock.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/core/uuid.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/routines/models/day_data.dart';
+import 'package:wger/features/routines/models/log.dart';
 import 'package:wger/features/routines/models/routine.dart';
 import 'package:wger/features/routines/models/set_config_data.dart';
 
@@ -34,6 +35,7 @@ const PREFS_COUNTDOWN_DURATION = 'countdownDurationSecondsPrefs';
 const PREFS_LOG_SCOPE_WEEKS = 'logScopeWeeksPrefs';
 const PREFS_SHOW_DISTINCT_LOGS = 'showDistinctLogsPrefs';
 const PREFS_SHOW_WORKOUT_DURATION = 'showWorkoutDurationPrefs';
+const PREFS_STICKY_SET_VALUES = 'stickySetValuesPrefs';
 const PREFS_WORKOUT_PROGRESS = 'workoutProgressPrefs';
 
 /// In seconds
@@ -119,6 +121,16 @@ class SlotPageEntry {
   /// Whether the log page has been marked as done
   final bool logDone;
 
+  /// The log saved from this page during the current workout, if any. Kept
+  /// so revisiting the page pre-fills the form with the saved values and
+  /// saving updates the row instead of inserting a duplicate.
+  final Log? loggedEntry;
+
+  /// When the timer of this page was started. Lives in the state (not the
+  /// timer widget) so the countdown continues when the user navigates away
+  /// and back.
+  final DateTime? timerStartedAt;
+
   /// The associated SetConfigData
   final SetConfigData? setConfigData;
 
@@ -128,6 +140,8 @@ class SlotPageEntry {
     required this.setIndex,
     this.setConfigData,
     this.logDone = false,
+    this.loggedEntry,
+    this.timerStartedAt,
     String? uuid,
   }) : assert(
          type != SlotPageType.log || setConfigData != null,
@@ -143,6 +157,8 @@ class SlotPageEntry {
     int? pageIndex,
     SetConfigData? setConfigData,
     bool? logDone,
+    Log? loggedEntry,
+    DateTime? timerStartedAt,
   }) {
     return SlotPageEntry(
       uuid: uuid ?? this.uuid,
@@ -151,6 +167,8 @@ class SlotPageEntry {
       pageIndex: pageIndex ?? this.pageIndex,
       setConfigData: setConfigData ?? this.setConfigData,
       logDone: logDone ?? this.logDone,
+      loggedEntry: loggedEntry ?? this.loggedEntry,
+      timerStartedAt: timerStartedAt ?? this.timerStartedAt,
     );
   }
 
@@ -187,6 +205,15 @@ class GymModeState {
   final bool showDistinctLogs;
   final bool showWorkoutDuration;
 
+  /// Whether the log form of a set is pre-filled with the values last
+  /// logged for the same exercise during this workout, instead of the
+  /// planned ones. Disabled by default.
+  final bool stickySetValues;
+
+  /// The values last logged per exercise during this workout, used to
+  /// pre-fill the log form when [stickySetValues] is enabled.
+  final Map<int, Log> lastLoggedValues;
+
   // Routine data
   late final int dayId;
   late final int iteration;
@@ -205,6 +232,8 @@ class GymModeState {
     this.logScopeWeeks,
     this.showDistinctLogs = true,
     this.showWorkoutDuration = true,
+    this.stickySetValues = false,
+    this.lastLoggedValues = const {},
     int? dayId,
     int? iteration,
     Routine? routine,
@@ -249,6 +278,8 @@ class GymModeState {
     bool clearLogScopeWeeks = false,
     bool? showDistinctLogs,
     bool? showWorkoutDuration,
+    bool? stickySetValues,
+    Map<int, Log>? lastLoggedValues,
   }) {
     return GymModeState(
       isInitialized: isInitialized ?? this.isInitialized,
@@ -271,6 +302,8 @@ class GymModeState {
       logScopeWeeks: clearLogScopeWeeks ? null : (logScopeWeeks ?? this.logScopeWeeks),
       showDistinctLogs: showDistinctLogs ?? this.showDistinctLogs,
       showWorkoutDuration: showWorkoutDuration ?? this.showWorkoutDuration,
+      stickySetValues: stickySetValues ?? this.stickySetValues,
+      lastLoggedValues: lastLoggedValues ?? this.lastLoggedValues,
     );
   }
 
@@ -332,6 +365,21 @@ class GymModeState {
   /// True from the moment the start page is left until the summary page is
   /// reached, i.e. exactly while there is progress that leaving would discard.
   bool get isWorkoutInProgress => isInitialized && currentPage > 0 && currentPage < totalPages - 1;
+
+  /// Returns the next log page after the slot page at [pageIndex], i.e. the
+  /// set that will be performed once the current rest timer ends.
+  ///
+  /// This deliberately returns the next *set*, which may belong to the same
+  /// exercise (e.g. when progressing weights within an exercise) or to the
+  /// next one. Returns null when the workout has no further sets.
+  SlotPageEntry? getNextLogPage(int pageIndex) {
+    for (final slotPage in pages.expand((p) => p.slotPages)) {
+      if (slotPage.pageIndex > pageIndex && slotPage.type == SlotPageType.log) {
+        return slotPage;
+      }
+    }
+    return null;
+  }
 
   double get ratioCompleted {
     if (totalPages == 0) {

@@ -19,9 +19,12 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
+import 'package:logging/logging.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/errors.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
@@ -128,6 +131,41 @@ void main() {
     });
   });
 
+  group('collectAppVersion', () {
+    void mockPackageInfo({String? installerStore}) {
+      PackageInfo.setMockInitialValues(
+        appName: 'wger',
+        packageName: 'de.wger.flutter',
+        version: '2.1.0',
+        buildNumber: '260',
+        buildSignature: '',
+        installerStore: installerStore,
+      );
+    }
+
+    setUp(() {
+      debugDefaultTargetPlatformOverride = TargetPlatform.android;
+      addTearDown(() {
+        debugDefaultTargetPlatformOverride = null;
+      });
+    });
+
+    test('Reports version, build, platform and installer', () async {
+      mockPackageInfo(installerStore: 'org.fdroid.fdroid');
+
+      expect(
+        await collectAppVersion(),
+        '2.1.0+260 on android, installed by org.fdroid.fdroid',
+      );
+    });
+
+    test('Omits the installer when the platform reports none', () async {
+      mockPackageInfo();
+
+      expect(await collectAppVersion(), '2.1.0+260 on android');
+    });
+  });
+
   group('buildGithubIssueUrl', () {
     test('Encodes the title and pre-fills the description', () {
       final url = buildGithubIssueUrl(
@@ -135,16 +173,82 @@ void main() {
         issueErrorMessage: 'Something broke',
         stackTrace: '#0 main (file.dart:1)',
         applicationLogs: ['log line 1', 'log line 2'],
+        appVersion: '2.1.0+260 on android',
+        serverVersion: '2.7.0',
       );
 
       expect(url, startsWith(GITHUB_ISSUES_BUG_URL));
       expect(url, contains('&title=An%20error%20occurred'));
       expect(url.length, lessThanOrEqualTo(GITHUB_ISSUES_MAX_URL_LENGTH));
 
+      // The template renders these as its own fields, not in the description
+      final query = Uri.parse(url).queryParameters;
+      expect(query['app-version'], '2.1.0+260 on android');
+      expect(query['server-version'], '2.7.0');
+
       final description = Uri.parse(url).queryParameters['description']!;
       expect(description, contains('Error message: Something broke'));
       expect(description, contains('#0 main (file.dart:1)'));
       expect(description, contains('log line 1'));
+    });
+
+    test('Builds a user-initiated report without error sections', () {
+      final url = buildGithubIssueUrl(
+        applicationLogs: ['log line'],
+        syncDiagnostics: 'connected: true',
+      );
+
+      expect(url, startsWith(GITHUB_ISSUES_BUG_URL));
+      expect(url, isNot(contains('&title=')));
+      expect(url, isNot(contains('&app-version=')));
+      expect(url, isNot(contains('&server-version=')));
+      final description = Uri.parse(url).queryParameters['description']!;
+      expect(description, contains('[Please describe the problem you are seeing.]'));
+      expect(description, isNot(contains('Error details')));
+      expect(description, contains('Sync status:'));
+      expect(description, contains('log line'));
+    });
+
+    test('Includes the sync status section when diagnostics are passed', () {
+      final url = buildGithubIssueUrl(
+        issueTitle: 'Sync error',
+        issueErrorMessage: 'boom',
+        applicationLogs: ['log line'],
+        syncDiagnostics: 'connected: false\npending uploads: 3',
+      );
+
+      final description = Uri.parse(url).queryParameters['description']!;
+      expect(description, contains('Sync status:'));
+      expect(description, contains('pending uploads: 3'));
+      // No stack trace was passed, so the section is omitted entirely
+      expect(description, isNot(contains('Stack trace:')));
+    });
+
+    test('Keeps the sync status section and drops logs instead', () {
+      final url = buildGithubIssueUrl(
+        issueTitle: 'Sync error',
+        issueErrorMessage: 'boom',
+        applicationLogs: List.generate(3000, (i) => 'log entry number $i'),
+        syncDiagnostics: 'connected: false\npending uploads: 3',
+      );
+
+      expect(url.length, lessThanOrEqualTo(GITHUB_ISSUES_MAX_URL_LENGTH));
+      final description = Uri.parse(url).queryParameters['description']!;
+      expect(description, contains('pending uploads: 3'));
+      expect(description, isNot(contains('log entry number 2999')));
+    });
+
+    test('Omits the sync status section without diagnostics', () {
+      final url = buildGithubIssueUrl(
+        issueTitle: 'An error occurred',
+        issueErrorMessage: 'boom',
+        stackTrace: 'trace',
+        applicationLogs: ['log line'],
+      );
+
+      final description = Uri.parse(url).queryParameters['description']!;
+      expect(description, isNot(contains('Sync status:')));
+      expect(description, contains('Stack trace:'));
     });
 
     test('Drops the oldest log entries, keeps the newest', () {
@@ -164,7 +268,7 @@ void main() {
       expect(description, isNot(contains('log entry 2999'))); // oldest dropped
     });
 
-    test('Keeps the full stack trace and drops logs instead', () {
+    test('Drops logs first, then trims the stack trace from the bottom', () {
       final longTrace = List.generate(
         80,
         (i) => '#$i SomeClass.someMethod (package:wger/some/file.dart:$i:11)',
@@ -179,9 +283,11 @@ void main() {
 
       expect(url.length, lessThanOrEqualTo(GITHUB_ISSUES_MAX_URL_LENGTH));
       final description = Uri.parse(url).queryParameters['description']!;
-      // The stack trace is never trimmed: first and last frame survive.
+      // The trace alone exceeds the limit here, so the logs are gone and
+      // the outermost frames were dropped; the top of the trace survives.
       expect(description, contains('#0 SomeClass.someMethod'));
-      expect(description, contains('#79 SomeClass.someMethod'));
+      expect(description, isNot(contains('#79 SomeClass.someMethod')));
+      expect(description, isNot(contains('log entry number')));
     });
   });
 
@@ -221,6 +327,69 @@ void main() {
       expect(classifyError(Exception('boom')), ErrorSeverity.fatal);
       expect(classifyError(StateError('bad state')), ErrorSeverity.fatal);
       expect(classifyError(null), ErrorSeverity.fatal);
+    });
+  });
+
+  group('serverWithLocalFallback', () {
+    final logger = Logger('test');
+
+    test('online: returns the server result without touching local', () async {
+      var localCalls = 0;
+      final result = await serverWithLocalFallback(
+        isOnline: true,
+        server: () async => 'server',
+        local: () {
+          localCalls++;
+          return 'local';
+        },
+        logger: logger,
+        fallbackLog: 'falling back',
+      );
+
+      expect(result, 'server');
+      expect(localCalls, 0);
+    });
+
+    test('offline: skips the server attempt entirely', () async {
+      var serverCalls = 0;
+      final result = await serverWithLocalFallback(
+        isOnline: false,
+        server: () async {
+          serverCalls++;
+          return 'server';
+        },
+        local: () => 'local',
+        logger: logger,
+        fallbackLog: 'falling back',
+      );
+
+      expect(result, 'local');
+      expect(serverCalls, 0);
+    });
+
+    test('online: a network error falls back to local', () async {
+      final result = await serverWithLocalFallback(
+        isOnline: true,
+        server: () async => throw const SocketException('no route to host'),
+        local: () => 'local',
+        logger: logger,
+        fallbackLog: 'falling back',
+      );
+
+      expect(result, 'local');
+    });
+
+    test('online: an error that is not about the network rethrows', () async {
+      await expectLater(
+        serverWithLocalFallback<String>(
+          isOnline: true,
+          server: () async => throw StateError('broken'),
+          local: () => 'local',
+          logger: logger,
+          fallbackLog: 'falling back',
+        ),
+        throwsStateError,
+      );
     });
   });
 }

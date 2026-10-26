@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Background of the adaptive launcher icon. Overrides the release blue so
+         a debug build is recognisable at a glance next to the installed app -->
+    <color name="ic_launcher_background">#e63946</color>
+</resources>

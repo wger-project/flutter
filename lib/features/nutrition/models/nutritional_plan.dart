@@ -117,6 +117,10 @@ class NutritionalPlan {
   ///
   /// If [id] is null, Drift's `clientDefault` mints a fresh UUID on insert.
   /// If set, the value round-trips into the row as-is.
+  ///
+  /// Nullable fields are written as an explicit NULL rather than left absent,
+  /// so that clearing one (end date, goal macros) also clears the column on
+  /// update; an absent value would leave the previous value in place.
   NutritionalPlanTableCompanion toCompanion() {
     return NutritionalPlanTableCompanion(
       id: id != null ? drift.Value(id!) : const drift.Value.absent(),
@@ -124,22 +128,16 @@ class NutritionalPlan {
       creationDate: drift.Value(creationDate.toUtc()),
       // `start`/`end` are `DateField` server-side
       startDate: drift.Value(DateTime.utc(startDate.year, startDate.month, startDate.day)),
-      endDate: endDate == null
-          ? const drift.Value.absent()
-          : drift.Value(DateTime.utc(endDate!.year, endDate!.month, endDate!.day)),
+      endDate: drift.Value(
+        endDate == null ? null : DateTime.utc(endDate!.year, endDate!.month, endDate!.day),
+      ),
       onlyLogging: drift.Value(onlyLogging),
       hasGoalCalories: drift.Value(hasGoalCalories),
-      goalEnergy: goalEnergy == null
-          ? const drift.Value.absent()
-          : drift.Value(goalEnergy!.toInt()),
-      goalProtein: goalProtein == null
-          ? const drift.Value.absent()
-          : drift.Value(goalProtein!.toInt()),
-      goalCarbohydrates: goalCarbohydrates == null
-          ? const drift.Value.absent()
-          : drift.Value(goalCarbohydrates!.toInt()),
-      goalFiber: goalFiber == null ? const drift.Value.absent() : drift.Value(goalFiber!.toInt()),
-      goalFat: goalFat == null ? const drift.Value.absent() : drift.Value(goalFat!.toInt()),
+      goalEnergy: drift.Value(goalEnergy?.toInt()),
+      goalProtein: drift.Value(goalProtein?.toInt()),
+      goalCarbohydrates: drift.Value(goalCarbohydrates?.toInt()),
+      goalFiber: drift.Value(goalFiber?.toInt()),
+      goalFat: drift.Value(goalFat?.toInt()),
     );
   }
 

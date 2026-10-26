@@ -358,10 +358,6 @@
     "@musclesSecondary": {
         "description": "secondary muscles trained by an exercise"
     },
-    "newSet": "新增训练日",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
-    },
     "plateCalculatorNotDivisible": "达不到预定重量",
     "@plateCalculatorNotDivisible": {
         "description": "Error message when the current weight is not reachable with plates (e.g. 33.1 kg)"
@@ -573,29 +569,6 @@
     "goalTypeMeals": "从饮食出发",
     "goalTypeBasic": "基础",
     "goalTypeAdvanced": "进阶",
-    "chartAllTimeTitle": "{name} 历史记录曲线",
-    "@chartAllTimeTitle": {
-        "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chartDuringPlanTitle": "{chartName} 在计划 \"{planName}\" 期间的改变曲线",
-    "@chartDuringPlanTitle": {
-        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-        "type": "text",
-        "placeholders": {
-            "chartName": {
-                "type": "String"
-            },
-            "planName": {
-                "type": "String"
-            }
-        }
-    },
     "indicatorRaw": "原始值",
     "indicatorAvg": "平均值",
     "textPromptTitle": "准备就绪？",
@@ -657,16 +630,6 @@
     "none__bodyweight_exercise_": "无（自重动作）",
     "@none__bodyweight_exercise_": {
         "description": "Generated entry for translation for server strings"
-    },
-    "chart30DaysTitle": "{name} 过去三十天",
-    "@chart30DaysTitle": {
-        "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
     },
     "oneNamePerLine": "每行一个名字",
     "settingsExerciseCacheDescription": "动作缓存",

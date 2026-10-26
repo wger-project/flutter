@@ -16,10 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/widgets.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/core/colors.dart';
 import 'package:wger/core/misc.dart';
-import 'package:wger/features/measurements/widgets/charts.dart';
+import 'package:wger/core/widgets/legend.dart';
 import 'package:wger/features/routines/models/log.dart';
 import 'package:wger/features/routines/widgets/charts.dart';
 
@@ -30,7 +30,10 @@ class ExerciseLogChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = generateChartColors(_logs.keys.length).iterator;
+    final colors = generateChartColors(
+      _logs.keys.length,
+      Theme.of(context).colorScheme,
+    ).iterator;
 
     return Column(
       mainAxisSize: MainAxisSize.max,

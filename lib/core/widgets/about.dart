@@ -18,16 +18,20 @@
 
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/core/consts.dart';
+import 'package:wger/core/errors.dart' show buildGithubIssueUrl, collectAppVersion;
+import 'package:wger/core/helpers.dart' show makePageUri;
+import 'package:wger/core/logs.dart';
 import 'package:wger/core/misc.dart';
 import 'package:wger/core/network/auth_notifier.dart';
 import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/features/exercises/screens/add_exercise_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/powersync/sync_diagnostics.dart' show collectSyncDiagnostics;
 
 import 'log_overview.dart';
 
@@ -55,6 +59,10 @@ class AboutPage extends ConsumerWidget {
     final isOnline = ref.watch(networkStatusProvider);
     final i18n = AppLocalizations.of(context);
     final today = DateTime.now();
+
+    // The terms are the server operator's, not ours, so point at the instance
+    // the user is actually connected to
+    final serverUrl = authState?.serverUrl;
 
     return Scaffold(
       appBar: AppBar(title: Text(i18n.aboutPageTitle)),
@@ -113,7 +121,20 @@ class AboutPage extends ConsumerWidget {
                 trailing: const Icon(Icons.arrow_outward),
                 title: Text(i18n.aboutBugsListTitle),
                 contentPadding: EdgeInsets.zero,
-                onTap: () => launchURL(GITHUB_ISSUES_URL, context),
+                // Pre-fill the report with the app logs and the sync
+                // snapshot, so user-initiated issues carry the same context
+                // as crash reports
+                onTap: () async {
+                  final url = buildGithubIssueUrl(
+                    applicationLogs: InMemoryLogStore().getFormattedLogs(),
+                    syncDiagnostics: await collectSyncDiagnostics(),
+                    appVersion: await collectAppVersion(),
+                    serverVersion: authState?.serverVersion,
+                  );
+                  if (context.mounted) {
+                    launchURL(url, context);
+                  }
+                },
               ),
               ListTile(
                 leading: const Icon(Icons.translate),
@@ -240,6 +261,15 @@ class AboutPage extends ConsumerWidget {
                 contentPadding: EdgeInsets.zero,
                 onTap: () => launchURL(READTHEDOCS_URL, context),
               ),
+              if (serverUrl != null)
+                ListTile(
+                  leading: const Icon(Icons.privacy_tip),
+                  trailing: const Icon(Icons.arrow_outward),
+                  title: Text(i18n.aboutPrivacyPolicyTitle),
+                  contentPadding: EdgeInsets.zero,
+                  onTap: () =>
+                      launchURL(makePageUri(serverUrl, TERMS_OF_SERVICE_PATH).toString(), context),
+                ),
             ],
           ),
         ),

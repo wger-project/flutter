@@ -73,7 +73,7 @@ class WorkoutLogMutations {
 
   WorkoutLogMutations(this._repo);
 
-  Future<void> addEntry(Log log) => _repo.addLocalDrift(log);
+  Future<void> addEntry(Log log, {int? dayId}) => _repo.addLocalDrift(log, dayId: dayId);
 
   Future<void> updateEntry(Log log) => _repo.updateLocalDrift(log);
 

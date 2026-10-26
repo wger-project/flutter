@@ -46,6 +46,7 @@ jobs:
       - name: Checkout application
         uses: actions/checkout@v7
         with:
+          persist-credentials: false
           ref: ${{ inputs.ref }}
 
       - name: Read Flutter SDK version
@@ -97,8 +98,8 @@ jobs:
 
       - name: Push updated config to flathub repository
         run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -b release-${{ inputs.ref }}
           git add -A
           git commit -m "Update to ${{ inputs.ref }}"

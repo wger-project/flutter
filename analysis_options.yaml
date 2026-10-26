@@ -5,6 +5,13 @@ analyzer:
     - '**/*.g.dart'
     - '**/*.freezed.dart'
     - '**/*.mocks.dart'
+    - build/**
+    - android/**
+    - ios/**
+    - web/**
+    - windows/**
+    - macos/**
+    - linux/**
   strong-mode:
     implicit-casts: true # to be changed
     implicit-dynamic: true # to be changed
@@ -22,9 +29,6 @@ analyzer:
 formatter:
   page_width: 100
   trailing_commas: preserve
-
-plugins:
-  riverpod_lint: 3.1.3
 
 linter:
   rules:

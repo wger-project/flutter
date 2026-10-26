@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'exercise_submission.dart';
@@ -9,6 +9,7 @@ part of 'exercise_submission.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -28,16 +29,21 @@ $ExerciseAliasSubmissionApiCopyWith<ExerciseAliasSubmissionApi> get copyWith => 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ExerciseAliasSubmissionApi&&(identical(other.alias, alias) || other.alias == alias));
+  final _this = this as ExerciseAliasSubmissionApi;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ExerciseAliasSubmissionApi&&(identical(other.alias, _this.alias) || other.alias == _this.alias));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,alias);
+int get hashCode {
+  final _this = this as ExerciseAliasSubmissionApi;
+  return Object.hash(runtimeType,_this.alias);
+}
 
 @override
 String toString() {
-  return 'ExerciseAliasSubmissionApi(alias: $alias)';
+  final _this = this as ExerciseAliasSubmissionApi;
+  return 'ExerciseAliasSubmissionApi(alias: ${_this.alias})';
 }
 
 
@@ -66,7 +72,7 @@ class _$ExerciseAliasSubmissionApiCopyWithImpl<$Res>
 /// Create a copy of ExerciseAliasSubmissionApi
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? alias = null,}) {
-  return _then(_self.copyWith(
+  return _then(ExerciseAliasSubmissionApi(
 alias: null == alias ? _self.alias : alias // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -221,16 +227,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ExerciseAliasSubmissionApi&&(identical(other.alias, alias) || other.alias == alias));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ExerciseAliasSubmissionApi&&(identical(other.alias, alias) || other.alias == alias));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,alias);
+int get hashCode {
+    return Object.hash(runtimeType,alias);
+}
 
 @override
 String toString() {
-  return 'ExerciseAliasSubmissionApi(alias: $alias)';
+    return 'ExerciseAliasSubmissionApi(alias: $alias)';
 }
 
 
@@ -285,16 +293,21 @@ $ExerciseCommentSubmissionApiCopyWith<ExerciseCommentSubmissionApi> get copyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ExerciseCommentSubmissionApi&&(identical(other.alias, alias) || other.alias == alias));
+  final _this = this as ExerciseCommentSubmissionApi;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ExerciseCommentSubmissionApi&&(identical(other.alias, _this.alias) || other.alias == _this.alias));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,alias);
+int get hashCode {
+  final _this = this as ExerciseCommentSubmissionApi;
+  return Object.hash(runtimeType,_this.alias);
+}
 
 @override
 String toString() {
-  return 'ExerciseCommentSubmissionApi(alias: $alias)';
+  final _this = this as ExerciseCommentSubmissionApi;
+  return 'ExerciseCommentSubmissionApi(alias: ${_this.alias})';
 }
 
 
@@ -323,7 +336,7 @@ class _$ExerciseCommentSubmissionApiCopyWithImpl<$Res>
 /// Create a copy of ExerciseCommentSubmissionApi
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? alias = null,}) {
-  return _then(_self.copyWith(
+  return _then(ExerciseCommentSubmissionApi(
 alias: null == alias ? _self.alias : alias // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -478,16 +491,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ExerciseCommentSubmissionApi&&(identical(other.alias, alias) || other.alias == alias));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ExerciseCommentSubmissionApi&&(identical(other.alias, alias) || other.alias == alias));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,alias);
+int get hashCode {
+    return Object.hash(runtimeType,alias);
+}
 
 @override
 String toString() {
-  return 'ExerciseCommentSubmissionApi(alias: $alias)';
+    return 'ExerciseCommentSubmissionApi(alias: $alias)';
 }
 
 
@@ -542,16 +557,21 @@ $ExerciseTranslationSubmissionApiCopyWith<ExerciseTranslationSubmissionApi> get 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ExerciseTranslationSubmissionApi&&(identical(other.name, name) || other.name == name)&&(identical(other.descriptionSource, descriptionSource) || other.descriptionSource == descriptionSource)&&(identical(other.language, language) || other.language == language)&&(identical(other.author, author) || other.author == author)&&const DeepCollectionEquality().equals(other.aliases, aliases)&&const DeepCollectionEquality().equals(other.comments, comments));
+  final _this = this as ExerciseTranslationSubmissionApi;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ExerciseTranslationSubmissionApi&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.descriptionSource, _this.descriptionSource) || other.descriptionSource == _this.descriptionSource)&&(identical(other.language, _this.language) || other.language == _this.language)&&(identical(other.author, _this.author) || other.author == _this.author)&&const DeepCollectionEquality().equals(other.aliases, _this.aliases)&&const DeepCollectionEquality().equals(other.comments, _this.comments));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,descriptionSource,language,author,const DeepCollectionEquality().hash(aliases),const DeepCollectionEquality().hash(comments));
+int get hashCode {
+  final _this = this as ExerciseTranslationSubmissionApi;
+  return Object.hash(runtimeType,_this.name,_this.descriptionSource,_this.language,_this.author,const DeepCollectionEquality().hash(_this.aliases),const DeepCollectionEquality().hash(_this.comments));
+}
 
 @override
 String toString() {
-  return 'ExerciseTranslationSubmissionApi(name: $name, descriptionSource: $descriptionSource, language: $language, author: $author, aliases: $aliases, comments: $comments)';
+  final _this = this as ExerciseTranslationSubmissionApi;
+  return 'ExerciseTranslationSubmissionApi(name: ${_this.name}, descriptionSource: ${_this.descriptionSource}, language: ${_this.language}, author: ${_this.author}, aliases: ${_this.aliases}, comments: ${_this.comments})';
 }
 
 
@@ -580,7 +600,7 @@ class _$ExerciseTranslationSubmissionApiCopyWithImpl<$Res>
 /// Create a copy of ExerciseTranslationSubmissionApi
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? descriptionSource = null,Object? language = null,Object? author = null,Object? aliases = null,Object? comments = null,}) {
-  return _then(_self.copyWith(
+  return _then(ExerciseTranslationSubmissionApi(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,descriptionSource: null == descriptionSource ? _self.descriptionSource : descriptionSource // ignore: cast_nullable_to_non_nullable
 as String,language: null == language ? _self.language : language // ignore: cast_nullable_to_non_nullable
@@ -722,7 +742,7 @@ return $default(_that.name,_that.descriptionSource,_that.language,_that.author,_
 @JsonSerializable()
 
 class _ExerciseTranslationSubmissionApi implements ExerciseTranslationSubmissionApi {
-  const _ExerciseTranslationSubmissionApi({required this.name, @JsonKey(name: 'description_source') required this.descriptionSource, required this.language, @JsonKey(name: 'license_author') required this.author, final  List<ExerciseAliasSubmissionApi> aliases = const [], final  List<ExerciseCommentSubmissionApi> comments = const []}): _aliases = aliases,_comments = comments;
+  const _ExerciseTranslationSubmissionApi({required this.name, @JsonKey(name: 'description_source') required this.descriptionSource, required this.language, @JsonKey(name: 'license_author') required this.author,  List<ExerciseAliasSubmissionApi> aliases = const [],  List<ExerciseCommentSubmissionApi> comments = const []}): _aliases = aliases,_comments = comments;
   factory _ExerciseTranslationSubmissionApi.fromJson(Map<String, dynamic> json) => _$ExerciseTranslationSubmissionApiFromJson(json);
 
 @override final  String name;
@@ -757,16 +777,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ExerciseTranslationSubmissionApi&&(identical(other.name, name) || other.name == name)&&(identical(other.descriptionSource, descriptionSource) || other.descriptionSource == descriptionSource)&&(identical(other.language, language) || other.language == language)&&(identical(other.author, author) || other.author == author)&&const DeepCollectionEquality().equals(other._aliases, _aliases)&&const DeepCollectionEquality().equals(other._comments, _comments));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ExerciseTranslationSubmissionApi&&(identical(other.name, name) || other.name == name)&&(identical(other.descriptionSource, descriptionSource) || other.descriptionSource == descriptionSource)&&(identical(other.language, language) || other.language == language)&&(identical(other.author, author) || other.author == author)&&const DeepCollectionEquality().equals(other.aliases, _aliases)&&const DeepCollectionEquality().equals(other.comments, _comments));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,descriptionSource,language,author,const DeepCollectionEquality().hash(_aliases),const DeepCollectionEquality().hash(_comments));
+int get hashCode {
+    return Object.hash(runtimeType,name,descriptionSource,language,author,const DeepCollectionEquality().hash(_aliases),const DeepCollectionEquality().hash(_comments));
+}
 
 @override
 String toString() {
-  return 'ExerciseTranslationSubmissionApi(name: $name, descriptionSource: $descriptionSource, language: $language, author: $author, aliases: $aliases, comments: $comments)';
+    return 'ExerciseTranslationSubmissionApi(name: $name, descriptionSource: $descriptionSource, language: $language, author: $author, aliases: $aliases, comments: $comments)';
 }
 
 
@@ -827,16 +849,21 @@ $ExerciseSubmissionApiCopyWith<ExerciseSubmissionApi> get copyWith => _$Exercise
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ExerciseSubmissionApi&&(identical(other.category, category) || other.category == category)&&const DeepCollectionEquality().equals(other.muscles, muscles)&&const DeepCollectionEquality().equals(other.musclesSecondary, musclesSecondary)&&const DeepCollectionEquality().equals(other.equipment, equipment)&&(identical(other.author, author) || other.author == author)&&(identical(other.variationGroup, variationGroup) || other.variationGroup == variationGroup)&&(identical(other.variationConnectTo, variationConnectTo) || other.variationConnectTo == variationConnectTo)&&const DeepCollectionEquality().equals(other.translations, translations));
+  final _this = this as ExerciseSubmissionApi;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ExerciseSubmissionApi&&(identical(other.category, _this.category) || other.category == _this.category)&&const DeepCollectionEquality().equals(other.muscles, _this.muscles)&&const DeepCollectionEquality().equals(other.musclesSecondary, _this.musclesSecondary)&&const DeepCollectionEquality().equals(other.equipment, _this.equipment)&&(identical(other.author, _this.author) || other.author == _this.author)&&(identical(other.variationGroup, _this.variationGroup) || other.variationGroup == _this.variationGroup)&&(identical(other.variationConnectTo, _this.variationConnectTo) || other.variationConnectTo == _this.variationConnectTo)&&const DeepCollectionEquality().equals(other.translations, _this.translations));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,category,const DeepCollectionEquality().hash(muscles),const DeepCollectionEquality().hash(musclesSecondary),const DeepCollectionEquality().hash(equipment),author,variationGroup,variationConnectTo,const DeepCollectionEquality().hash(translations));
+int get hashCode {
+  final _this = this as ExerciseSubmissionApi;
+  return Object.hash(runtimeType,_this.category,const DeepCollectionEquality().hash(_this.muscles),const DeepCollectionEquality().hash(_this.musclesSecondary),const DeepCollectionEquality().hash(_this.equipment),_this.author,_this.variationGroup,_this.variationConnectTo,const DeepCollectionEquality().hash(_this.translations));
+}
 
 @override
 String toString() {
-  return 'ExerciseSubmissionApi(category: $category, muscles: $muscles, musclesSecondary: $musclesSecondary, equipment: $equipment, author: $author, variationGroup: $variationGroup, variationConnectTo: $variationConnectTo, translations: $translations)';
+  final _this = this as ExerciseSubmissionApi;
+  return 'ExerciseSubmissionApi(category: ${_this.category}, muscles: ${_this.muscles}, musclesSecondary: ${_this.musclesSecondary}, equipment: ${_this.equipment}, author: ${_this.author}, variationGroup: ${_this.variationGroup}, variationConnectTo: ${_this.variationConnectTo}, translations: ${_this.translations})';
 }
 
 
@@ -865,7 +892,7 @@ class _$ExerciseSubmissionApiCopyWithImpl<$Res>
 /// Create a copy of ExerciseSubmissionApi
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? category = null,Object? muscles = null,Object? musclesSecondary = null,Object? equipment = null,Object? author = null,Object? variationGroup = freezed,Object? variationConnectTo = freezed,Object? translations = null,}) {
-  return _then(_self.copyWith(
+  return _then(ExerciseSubmissionApi(
 category: null == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
 as int,muscles: null == muscles ? _self.muscles : muscles // ignore: cast_nullable_to_non_nullable
 as List<int>,musclesSecondary: null == musclesSecondary ? _self.musclesSecondary : musclesSecondary // ignore: cast_nullable_to_non_nullable
@@ -1009,7 +1036,7 @@ return $default(_that.category,_that.muscles,_that.musclesSecondary,_that.equipm
 @JsonSerializable()
 
 class _ExerciseSubmissionApi implements ExerciseSubmissionApi {
-  const _ExerciseSubmissionApi({required this.category, required final  List<int> muscles, @JsonKey(name: 'muscles_secondary') required final  List<int> musclesSecondary, required final  List<int> equipment, @JsonKey(name: 'license_author') required this.author, @JsonKey(includeToJson: true, name: 'variation_group') this.variationGroup, @JsonKey(includeToJson: true, name: 'variations_connect_to') this.variationConnectTo, required final  List<ExerciseTranslationSubmissionApi> translations}): _muscles = muscles,_musclesSecondary = musclesSecondary,_equipment = equipment,_translations = translations;
+  const _ExerciseSubmissionApi({required this.category, required  List<int> muscles, @JsonKey(name: 'muscles_secondary') required  List<int> musclesSecondary, required  List<int> equipment, @JsonKey(name: 'license_author') required this.author, @JsonKey(includeToJson: true, name: 'variation_group') this.variationGroup, @JsonKey(includeToJson: true, name: 'variations_connect_to') this.variationConnectTo, required  List<ExerciseTranslationSubmissionApi> translations}): _muscles = muscles,_musclesSecondary = musclesSecondary,_equipment = equipment,_translations = translations;
   factory _ExerciseSubmissionApi.fromJson(Map<String, dynamic> json) => _$ExerciseSubmissionApiFromJson(json);
 
 @override final  int category;
@@ -1059,16 +1086,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ExerciseSubmissionApi&&(identical(other.category, category) || other.category == category)&&const DeepCollectionEquality().equals(other._muscles, _muscles)&&const DeepCollectionEquality().equals(other._musclesSecondary, _musclesSecondary)&&const DeepCollectionEquality().equals(other._equipment, _equipment)&&(identical(other.author, author) || other.author == author)&&(identical(other.variationGroup, variationGroup) || other.variationGroup == variationGroup)&&(identical(other.variationConnectTo, variationConnectTo) || other.variationConnectTo == variationConnectTo)&&const DeepCollectionEquality().equals(other._translations, _translations));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ExerciseSubmissionApi&&(identical(other.category, category) || other.category == category)&&const DeepCollectionEquality().equals(other.muscles, _muscles)&&const DeepCollectionEquality().equals(other.musclesSecondary, _musclesSecondary)&&const DeepCollectionEquality().equals(other.equipment, _equipment)&&(identical(other.author, author) || other.author == author)&&(identical(other.variationGroup, variationGroup) || other.variationGroup == variationGroup)&&(identical(other.variationConnectTo, variationConnectTo) || other.variationConnectTo == variationConnectTo)&&const DeepCollectionEquality().equals(other.translations, _translations));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,category,const DeepCollectionEquality().hash(_muscles),const DeepCollectionEquality().hash(_musclesSecondary),const DeepCollectionEquality().hash(_equipment),author,variationGroup,variationConnectTo,const DeepCollectionEquality().hash(_translations));
+int get hashCode {
+    return Object.hash(runtimeType,category,const DeepCollectionEquality().hash(_muscles),const DeepCollectionEquality().hash(_musclesSecondary),const DeepCollectionEquality().hash(_equipment),author,variationGroup,variationConnectTo,const DeepCollectionEquality().hash(_translations));
+}
 
 @override
 String toString() {
-  return 'ExerciseSubmissionApi(category: $category, muscles: $muscles, musclesSecondary: $musclesSecondary, equipment: $equipment, author: $author, variationGroup: $variationGroup, variationConnectTo: $variationConnectTo, translations: $translations)';
+    return 'ExerciseSubmissionApi(category: $category, muscles: $muscles, musclesSecondary: $musclesSecondary, equipment: $equipment, author: $author, variationGroup: $variationGroup, variationConnectTo: $variationConnectTo, translations: $translations)';
 }
 
 

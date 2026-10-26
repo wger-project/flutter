@@ -16,15 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/features/routines/providers/gym_state.dart';
 import 'package:wger/features/routines/providers/gym_state_notifier.dart';
 import 'package:wger/features/routines/widgets/gym_mode/start_page.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 
 import '../../../../../test_data/routines.dart';
 
@@ -69,7 +70,7 @@ void main() {
         container: container,
         child: const MaterialApp(
           locale: Locale('en'),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates: appLocalizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           home: Scaffold(
             body: GymModeOptions(),
@@ -113,11 +114,19 @@ void main() {
     await tester.tap(durationSwitch);
     await tester.pump();
 
+    // Toggle sticky set values
+    final stickySwitch = find.byKey(const ValueKey('gym-mode-sticky-set-values'));
+    expect(stickySwitch, findsOneWidget);
+    await tester.ensureVisible(stickySwitch);
+    await tester.tap(stickySwitch);
+    await tester.pump();
+
     final notifier = container.read(gymStateProvider.notifier);
     expect(notifier.state.showExercisePages, isFalse);
     expect(notifier.state.showTimerPages, isFalse);
     expect(notifier.state.alertOnCountdownEnd, isTrue);
     expect(notifier.state.showWorkoutDuration, isFalse);
+    expect(notifier.state.stickySetValues, isTrue);
   });
 
   testWidgets('Dropdown, text field and refresh button update notifier state', (tester) async {

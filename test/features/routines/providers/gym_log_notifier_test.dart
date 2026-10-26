@@ -41,8 +41,6 @@ void main() {
     num repetitions = 10,
     DateTime? date,
   }) {
-    // Log.copyWith reads exerciseObj internally, so it must be set before
-    // setLog (which calls copyWith) is invoked.
     return Log(
       id: id ?? 'log-1',
       exerciseId: exerciseId,
@@ -50,11 +48,19 @@ void main() {
       weight: weight,
       repetitions: repetitions,
       date: date ?? DateTime.utc(2020, 1, 1),
-    )..exerciseObj = testBenchPress;
+    );
   }
 
   test('initial state is null', () {
     expect(container.read(gymLogProvider), isNull);
+  });
+
+  test('setLog accepts a log with no exercise, as read from the database', () {
+    container.read(gymLogProvider.notifier).setLog(makeLog());
+
+    final state = container.read(gymLogProvider)!;
+    expect(state.exerciseId, 1);
+    expect(state.exerciseObjOrNull, isNull);
   });
 
   test('setLog stores a copy with cleared id/sessionId and the current clock as date', () {
@@ -74,6 +80,86 @@ void main() {
       // and must land in today's session, not back on the template's old one.
       expect(state.id, isNull);
       expect(state.sessionId, isNull);
+    });
+  });
+
+  group('copyValuesFrom', () {
+    const kg = WeightUnit(id: 1, name: 'kg');
+    const lbs = WeightUnit(id: 2, name: 'lbs');
+    const reps = RepetitionUnit(id: 1, name: 'Repetitions');
+    const seconds = RepetitionUnit(id: 3, name: 'Seconds');
+
+    setUp(() {
+      final current =
+          Log(
+              exerciseId: testBenchPress.id,
+              routineId: 100,
+              slotEntryId: 7,
+              iteration: 5,
+              weight: 80,
+              weightTarget: 80,
+              repetitions: 8,
+              repetitionsTarget: 8,
+              rir: 2,
+              rirTarget: 2,
+              date: DateTime.utc(2026, 10, 19),
+            )
+            ..exercise = testBenchPress
+            ..weightUnit = kg
+            ..repetitionUnit = reps;
+      container.read(gymLogProvider.notifier).setLog(current);
+    });
+
+    test('takes the entered values, the set context stays the current one', () {
+      final pastLog =
+          Log(
+              id: 'past',
+              exerciseId: testBenchPress.id,
+              routineId: 99,
+              sessionId: 'past-session',
+              slotEntryId: 3,
+              iteration: 1,
+              weight: 95,
+              weightTarget: 90,
+              repetitions: 7,
+              repetitionsTarget: 6,
+              rir: 1,
+              rirTarget: 3,
+            )
+            ..weightUnit = lbs
+            ..repetitionUnit = seconds;
+
+      container.read(gymLogProvider.notifier).copyValuesFrom(pastLog);
+
+      final state = container.read(gymLogProvider)!;
+      expect(state.weight, 95);
+      expect(state.weightUnitId, lbs.id);
+      expect(state.weightUnitObj, lbs);
+      expect(state.repetitions, 7);
+      expect(state.repetitionsUnitId, seconds.id);
+      expect(state.repetitionsUnitObj, seconds);
+      expect(state.rir, 1);
+
+      expect(state.id, isNull);
+      expect(state.sessionId, isNull);
+      expect(state.routineId, 100);
+      expect(state.slotEntryId, 7);
+      expect(state.iteration, 5);
+      expect(state.weightTarget, 80);
+      expect(state.repetitionsTarget, 8);
+      expect(state.rirTarget, 2);
+      expect(state.exerciseObj.id, testBenchPress.id);
+    });
+
+    test('clears values the past log left empty', () {
+      final pastLog = Log(exerciseId: testBenchPress.id, repetitions: 12);
+
+      container.read(gymLogProvider.notifier).copyValuesFrom(pastLog);
+
+      final state = container.read(gymLogProvider)!;
+      expect(state.repetitions, 12);
+      expect(state.weight, isNull);
+      expect(state.rir, isNull);
     });
   });
 
@@ -120,6 +206,12 @@ void main() {
   });
 
   group('setters are no-ops when state is null', () {
+    test('copyValuesFrom on null state stays null', () {
+      container.read(gymLogProvider.notifier).copyValuesFrom(makeLog());
+
+      expect(container.read(gymLogProvider), isNull);
+    });
+
     test('setWeight on null state stays null', () {
       container.read(gymLogProvider.notifier).setWeight(99);
 

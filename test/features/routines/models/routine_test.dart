@@ -23,7 +23,22 @@ import '../../../../test_data/routines.dart';
 void main() {
   group('Routine model tests', () {
     test('correctly filters out null days', () {
-      // Arrange
+      // Arrange: a rest day of the "fixed weekly schedule" carries no day
+      final routine = getTestRoutine();
+      final withDay = getTestRoutine().dayData[0];
+      final withoutDay = getTestRoutine().dayData[0]..day = null;
+      routine.dayData = [withDay, withoutDay];
+      withDay.date = DateTime(2026, 1, 1);
+      withoutDay.date = DateTime(2026, 1, 2);
+
+      // Assert
+      expect(routine.dayDataCurrentIteration.length, equals(2));
+      expect(routine.dayDataCurrentIterationFiltered, [withDay]);
+    });
+
+    test('keeps the last entry of a day repeated by the weekly schedule', () {
+      // Arrange: three entries for the same day, as the fixed weekly
+      // schedule produces them
       final routine = getTestRoutine();
       routine.dayData = [
         getTestRoutine().dayData[0],
@@ -36,7 +51,7 @@ void main() {
 
       // Assert
       expect(routine.dayDataCurrentIteration.length, equals(3));
-      expect(routine.dayDataCurrentIterationFiltered.length, equals(1));
+      expect(routine.dayDataCurrentIterationFiltered, [routine.dayData[2]]);
     });
 
     test('Test the filterLogsByExercise method', () {

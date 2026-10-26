@@ -45,28 +45,21 @@ enum LoginActions {
   proceed,
 }
 
-/// Storage-layer discriminator for the persisted credential bundle. Lives in
-/// `PREFS_TOKEN_TYPE` so auto-login can tell which set of preference keys to
-/// read on startup. Runtime code should branch on the [AuthCredential]
-/// subtype (`LegacyCredential` / `JwtCredential`) instead.
-enum AuthTokenType {
-  /// Permanent DRF token persisted under `PREFS_USER`.
-  legacyApiToken,
-
-  /// Headless JWT bundle persisted under the `PREFS_ACCESS_TOKEN` family of
-  /// keys; refresh token lives in secure storage.
-  headlessJwt,
-}
-
 @freezed
 sealed class AuthState with _$AuthState {
   const factory AuthState({
     @Default(AuthStatus.loggedOut) AuthStatus status,
-    AuthCredential? credential,
+    JwtCredential? credential,
     String? serverUrl,
     String? serverVersion,
     PackageInfo? applicationVersion,
     @Default(false) bool serverConfigWarning,
+
+    /// True when the previous session ended involuntarily (expired or
+    /// revoked tokens). The login screen shows a hint so the user knows
+    /// why they have to log in again. Reset by the next login, which
+    /// builds a fresh state.
+    @Default(false) bool sessionExpired,
   }) = _AuthState;
 
   const AuthState._();

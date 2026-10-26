@@ -16,55 +16,57 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/material.dart';
+import 'package:drift/native.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/core/home_tabs_screen.dart';
 import 'package:wger/core/network/auth_notifier.dart';
 import 'package:wger/core/network/auth_state.dart';
 import 'package:wger/core/network/network_provider.dart';
+import 'package:wger/database/powersync/database.dart';
+import 'package:wger/database/powersync/powersync.dart';
 import 'package:wger/features/account/providers/user_profile_repository.dart';
+import 'package:wger/features/exercises/providers/exercise_repository.dart';
 import 'package:wger/features/gallery/providers/gallery_repository.dart';
-import 'package:wger/features/measurements/models/measurement_category.dart';
+import 'package:wger/features/health/providers/health_repository.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
 import 'package:wger/features/nutrition/providers/ingredient_repository.dart';
 import 'package:wger/features/nutrition/providers/nutrition_notifier.dart';
 import 'package:wger/features/nutrition/providers/nutrition_repository.dart';
 import 'package:wger/features/routines/providers/routines_repository.dart';
+import 'package:wger/features/routines/providers/workout_session_repository.dart';
 import 'package:wger/features/trophies/providers/trophy_repository.dart';
-import 'package:wger/features/weight/providers/body_weight_repository.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 import 'package:wger/theme/theme.dart';
 
 import '../../test_data/body_weight.dart';
-import '../../test_data/exercises.dart';
 import '../../test_data/gallery.dart';
-import '../../test_data/measurements.dart';
-import '../../test_data/nutritional_plans.dart';
 import '../../test_data/profile.dart';
-import '../../test_data/routines.dart';
+import '../../test_data/screenshots/measurements.dart';
+import '../../test_data/screenshots/nutrition.dart';
+import '../../test_data/screenshots/routines.dart';
+import '../../test_data/screenshots/weight.dart';
 import '../../test_data/trophies.dart';
+import '../helpers/fake_auth_notifier.dart';
+import '../helpers/measurement_repository_stubs.dart';
+import '../helpers/sync_status.dart';
 import 'screenshots_01_dashboard.mocks.dart';
-
-class _FakeAuthNotifier extends AuthNotifier {
-  _FakeAuthNotifier(this._state);
-
-  final AuthState _state;
-
-  @override
-  Future<AuthState> build() async => _state;
-}
 
 @GenerateMocks([
   GalleryRepository,
   NutritionRepository,
   IngredientRepository,
-  BodyWeightRepository,
   MeasurementRepository,
   UserProfileRepository,
   RoutinesRepository,
   TrophyRepository,
+  // The dashboard builds these too, they just have nothing to answer here
+  ExerciseRepository,
+  HealthRepository,
+  WorkoutSessionRepository,
 ])
 Widget createDashboardScreen({Locale? locale}) {
   locale ??= const Locale('en');
@@ -76,15 +78,13 @@ Widget createDashboardScreen({Locale? locale}) {
   final mockIngredientRepo = MockIngredientRepository();
   when(mockIngredientRepo.getById(any)).thenAnswer((_) async => null);
 
-  final mockBodyWeightRepository = MockBodyWeightRepository();
-  when(
-    mockBodyWeightRepository.watchAllDrift(),
-  ).thenAnswer((_) => Stream.value(getScreenshotWeightEntries()));
-
   final mockMeasurementRepo = MockMeasurementRepository();
-  when(
-    mockMeasurementRepo.watchAll(),
-  ).thenAnswer((_) => Stream<List<MeasurementCategory>>.value(getMeasurementCategories()));
+  final measurements = getScreenshotMeasurements();
+  stubMeasurementReads(
+    mockMeasurementRepo,
+    [getBodyWeightCategory(), ...measurements.categories],
+    {...getScreenshotBodyWeightEntries(), ...measurements.entries},
+  );
 
   final mockUserProfileRepo = MockUserProfileRepository();
   when(
@@ -94,7 +94,7 @@ Widget createDashboardScreen({Locale? locale}) {
   final mockRoutinesRepo = MockRoutinesRepository();
   when(
     mockRoutinesRepo.watchAllDrift(),
-  ).thenAnswer((_) => Stream.value([getTestRoutine(exercises: getScreenshotExercises())]));
+  ).thenAnswer((_) => Stream.value([getScreenshotRoutine()]));
 
   final mockTrophyRepo = MockTrophyRepository();
   when(
@@ -115,14 +115,17 @@ Widget createDashboardScreen({Locale? locale}) {
 
   const loggedInAuth = AuthState(
     status: AuthStatus.loggedIn,
-    credential: LegacyCredential('test-token'),
+    credential: JwtCredential(accessToken: 'test-token'),
     serverUrl: 'http://localhost',
   );
   final container = ProviderContainer.test(
     overrides: [
-      bodyWeightRepositoryProvider.overrideWithValue(mockBodyWeightRepository),
+      // Backstop for repositories that are not mocked: they all read the
+      // database, and none of them should reach the real PowerSync file
+      driftPowerSyncDatabase.overrideWithValue(DriftPowersyncDatabase(NativeDatabase.memory())),
+      syncStatus.overrideWithValue(buildUninitializedSyncStatus()),
       measurementRepositoryProvider.overrideWithValue(mockMeasurementRepo),
-      authProvider.overrideWith(() => _FakeAuthNotifier(loggedInAuth)),
+      authProvider.overrideWith(() => FakeAuthNotifier(loggedInAuth)),
       userProfileRepositoryProvider.overrideWithValue(mockUserProfileRepo),
       nutritionRepositoryProvider.overrideWithValue(mockNutritionRepo),
       ingredientRepositoryProvider.overrideWithValue(mockIngredientRepo),
@@ -131,6 +134,9 @@ Widget createDashboardScreen({Locale? locale}) {
       networkStatusProvider.overrideWithValue(true),
       routinesRepositoryProvider.overrideWithValue(mockRoutinesRepo),
       trophyRepositoryProvider.overrideWithValue(mockTrophyRepo),
+      exerciseRepositoryProvider.overrideWithValue(MockExerciseRepository()),
+      healthRepositoryProvider.overrideWithValue(MockHealthRepository()),
+      workoutSessionRepositoryProvider.overrideWithValue(MockWorkoutSessionRepository()),
     ],
   );
 
@@ -151,7 +157,7 @@ Widget createDashboardScreen({Locale? locale}) {
       child: MaterialApp(
         locale: locale,
         debugShowCheckedModeBanner: false,
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         theme: wgerLightTheme,
         home: const HomeTabsScreen(),

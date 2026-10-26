@@ -16,8 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wger/core/misc.dart';
 import 'package:wger/core/network/auth_notifier.dart';
@@ -28,7 +29,6 @@ import 'package:wger/features/account/models/user_profile.dart';
 import 'package:wger/features/account/providers/account_notifier.dart';
 import 'package:wger/features/account/providers/user_profile_notifier.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/theme/theme.dart';
 
 /// Shows the user's account data and lets them edit the profile preferences.
 ///
@@ -48,6 +48,10 @@ class _UserProfileFormState extends ConsumerState<UserProfileForm> {
 
   /// Pending weight-unit edit, null while it still mirrors the synced value.
   String? _weightUnitStr;
+
+  /// Body height in cm as the field last held it, filled on save. Null is a
+  /// profile without one, which the server allows.
+  int? _height;
 
   /// The email field is seeded from the loaded account exactly once; later
   /// rebuilds must not clobber what the user typed.
@@ -83,7 +87,7 @@ class _UserProfileFormState extends ConsumerState<UserProfileForm> {
       child: Column(
         children: [
           ListTile(
-            leading: const Icon(Icons.person, color: wgerPrimaryColor),
+            leading: Icon(Icons.person, color: Theme.of(context).colorScheme.primary),
             title: Text(i18n.username),
             subtitle: Text(account.username),
           ),
@@ -98,8 +102,41 @@ class _UserProfileFormState extends ConsumerState<UserProfileForm> {
             },
             dense: true,
           ),
+          // The height is what BMI and the waist-to-height ratio are computed
+          // from, so a calculated category stays empty until it is set
           ListTile(
-            leading: const Icon(Icons.email_rounded, color: wgerPrimaryColor),
+            leading: Icon(Icons.straighten, color: Theme.of(context).colorScheme.primary),
+            title: TextFormField(
+              key: const Key('heightField'),
+              initialValue: profile.height?.toString() ?? '',
+              decoration: InputDecoration(
+                labelText: i18n.metricHeight,
+                suffixText: 'cm',
+              ),
+              keyboardType: TextInputType.number,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              onSaved: (value) => _height = value == null ? null : int.tryParse(value),
+              validator: (value) {
+                // Empty is a profile that has none, which is what an account
+                // starts as
+                if (value == null || value.isEmpty) {
+                  return null;
+                }
+                final parsed = int.tryParse(value);
+                if (parsed == null ||
+                    parsed < UserProfile.minHeightCm ||
+                    parsed > UserProfile.maxHeightCm) {
+                  return i18n.formMinMaxValues(
+                    UserProfile.minHeightCm,
+                    UserProfile.maxHeightCm,
+                  );
+                }
+                return null;
+              },
+            ),
+          ),
+          ListTile(
+            leading: Icon(Icons.email_rounded, color: Theme.of(context).colorScheme.primary),
             title: TextFormField(
               decoration: InputDecoration(
                 labelText: account.emailVerified ? i18n.verifiedEmail : i18n.unVerifiedEmail,
@@ -135,7 +172,7 @@ class _UserProfileFormState extends ConsumerState<UserProfileForm> {
           const Divider(height: 32),
           ListTile(
             key: const Key('manageAccountOnWebTile'),
-            leading: const Icon(Icons.open_in_new, color: wgerPrimaryColor),
+            leading: Icon(Icons.open_in_new, color: Theme.of(context).colorScheme.primary),
             title: Text(i18n.manageAccountOnWeb),
             subtitle: Text(i18n.manageAccountOnWebSubtitle),
             enabled: isOnline,
@@ -157,12 +194,17 @@ class _UserProfileFormState extends ConsumerState<UserProfileForm> {
               if (!_form.currentState!.validate()) {
                 return;
               }
+              _form.currentState!.save();
 
-              // The weight unit is synced through PowerSync and saves offline.
+              // Both are synced through PowerSync and save offline.
               await ref
                   .read(userProfileProvider.notifier)
                   .updateProfile(
-                    UserProfile(id: profile.id, weightUnitStr: weightUnitStr),
+                    UserProfile(
+                      id: profile.id,
+                      weightUnitStr: weightUnitStr,
+                      height: _height,
+                    ),
                   );
 
               // Changing the email needs the server: a verification mail is

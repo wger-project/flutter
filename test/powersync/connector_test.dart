@@ -16,18 +16,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:drift/drift.dart' show GeneratedColumnWithTypeConverter;
+import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
+import 'package:http/testing.dart';
 import 'package:logging/logging.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:powersync/powersync.dart';
+import 'package:wger/database/converters/date_only_text_converter.dart';
 import 'package:wger/powersync/api_client.dart';
 import 'package:wger/powersync/connector.dart';
 
+import '../helpers/in_memory_drift.dart';
 import 'connector_test.mocks.dart';
 
 @GenerateMocks([ApiClient])
@@ -75,6 +81,16 @@ void main() {
       expect(out.containsKey('routine_id'), isFalse);
     });
 
+    test('keeps `external_id`, which is a value column and not a foreign key', () {
+      final out = connector.genericTransform(
+        'measurements_measurement',
+        {'external_id': 'abc-123', 'category_id': 5},
+        '1',
+      );
+      expect(out['external_id'], 'abc-123');
+      expect(out['category'], 5);
+    });
+
     test('handles null opData (delete events)', () {
       final out = connector.genericTransform('manager_routine', null, '99');
       expect(out, {'id': '99'});
@@ -99,17 +115,19 @@ void main() {
         expect(out['created'], '2024-10-30T10:15:00.000Z');
       });
 
-      test('strips the time component on `manager_workoutsession.date`', () {
+      test('leaves the session timestamps untouched', () {
+        // The session no longer has a date-only column, both timestamps go to
+        // the server as the full ISO8601 values they are.
         final out = connector.genericTransform(
           'manager_workoutsession',
           {
-            'date': '2024-11-01T00:00:00.000Z',
+            'datetime_start': '2024-11-01T18:30:00.000Z',
             'notes': 'felt great',
             'impression': '1',
           },
           '12',
         );
-        expect(out['date'], '2024-11-01');
+        expect(out['datetime_start'], '2024-11-01T18:30:00.000Z');
         expect(out['notes'], 'felt great');
       });
 
@@ -163,13 +181,61 @@ void main() {
         expect(out['start'], '2024-11-01');
         expect(out['end'], isNull);
       });
+
+      test('trims every date-only column in the Drift schema', () async {
+        // The registry of date-only fields is maintained by hand, so a new
+        // table backed by a Django `DateField` can be forgotten, and the push
+        // then fails on a value the backend cannot parse. Derive the columns
+        // from the schema instead of listing them here again.
+        final db = await openTestDatabase();
+        addTearDown(db.close);
+
+        final dateOnlyColumns = <(String, String)>[];
+        for (final table in db.allTables) {
+          for (final column in table.$columns) {
+            if (column is GeneratedColumnWithTypeConverter &&
+                column.converter is DateOnlyTextConverter) {
+              dateOnlyColumns.add((table.actualTableName, column.name));
+            }
+          }
+        }
+        expect(dateOnlyColumns, isNotEmpty);
+
+        for (final (table, column) in dateOnlyColumns) {
+          final out = connector.genericTransform(table, {column: '2024-11-01T00:00:00.000Z'}, '1');
+          expect(
+            out[column],
+            '2024-11-01',
+            reason: '$table.$column is not registered as a date-only field',
+          );
+        }
+      });
     });
   });
 
   group('fetchCredentials', () {
+    /// Probe client answering 200 for any liveness probe, so the endpoint
+    /// resolution keeps whatever URL the token response advertised.
+    MockClient anyLivenessOk() => MockClient(
+      (request) async => request.url.path.endsWith('/probes/liveness')
+          ? http.Response('{"ready":true}', 200)
+          : http.Response('not found', 404),
+    );
+
+    /// Probe client answering 200 only for [probeUrl].
+    MockClient liveOnlyAt(String probeUrl) => MockClient(
+      (request) async => request.url.toString() == probeUrl
+          ? http.Response('{"ready":true}', 200)
+          : http.Response('not found', 404),
+    );
+
     test('builds PowerSyncCredentials with userId from sub and expiresAt from exp', () async {
       final mockApi = MockApiClient();
-      final connector = DjangoConnector(baseUrl: 'http://example.invalid', apiClient: mockApi);
+      final connector = DjangoConnector(
+        baseUrl: 'http://example.invalid',
+        apiClient: mockApi,
+        client: anyLivenessOk(),
+      );
       final jwt = makeJwt({'sub': 'user-42', 'exp': 1700000000});
       when(mockApi.getPowersyncToken()).thenAnswer(
         (_) async => {'token': jwt, 'powersync_url': 'https://ps.example.com'},
@@ -186,7 +252,11 @@ void main() {
 
     test('coerces a numeric sub into a String (Django sends ints)', () async {
       final mockApi = MockApiClient();
-      final connector = DjangoConnector(baseUrl: 'http://example.invalid', apiClient: mockApi);
+      final connector = DjangoConnector(
+        baseUrl: 'http://example.invalid',
+        apiClient: mockApi,
+        client: anyLivenessOk(),
+      );
       final jwt = makeJwt({'sub': 42, 'exp': 1700000000});
       when(mockApi.getPowersyncToken()).thenAnswer(
         (_) async => {'token': jwt, 'powersync_url': 'https://ps.example.com'},
@@ -199,7 +269,11 @@ void main() {
 
     test('still produces credentials when JWT is opaque (userId/expiresAt null)', () async {
       final mockApi = MockApiClient();
-      final connector = DjangoConnector(baseUrl: 'http://example.invalid', apiClient: mockApi);
+      final connector = DjangoConnector(
+        baseUrl: 'http://example.invalid',
+        apiClient: mockApi,
+        client: anyLivenessOk(),
+      );
       when(mockApi.getPowersyncToken()).thenAnswer(
         (_) async => {'token': 'not.a.jwt', 'powersync_url': 'https://ps.example.com'},
       );
@@ -212,19 +286,139 @@ void main() {
       expect(creds.expiresAt, isNull);
     });
 
-    test('returns null when the backend is unreachable', () async {
+    test('falls back to <baseUrl>/ps/ when powersync_url does not answer the probe', () async {
+      final mockApi = MockApiClient();
+      final connector = DjangoConnector(
+        baseUrl: 'http://example.invalid',
+        apiClient: mockApi,
+        client: liveOnlyAt('http://example.invalid/ps/probes/liveness'),
+      );
+      final jwt = makeJwt({'sub': 'user-42', 'exp': 1700000000});
+      when(mockApi.getPowersyncToken()).thenAnswer(
+        (_) async => {'token': jwt, 'powersync_url': 'http://localhost/ps/'},
+      );
+
+      final creds = await connector.fetchCredentials();
+
+      expect(creds!.endpoint, 'http://example.invalid/ps/');
+    });
+
+    test('falls back to <baseUrl>/ps/ when powersync_url is missing', () async {
+      final mockApi = MockApiClient();
+      final connector = DjangoConnector(
+        baseUrl: 'http://example.invalid',
+        apiClient: mockApi,
+        client: liveOnlyAt('http://example.invalid/ps/probes/liveness'),
+      );
+      final jwt = makeJwt({'sub': 'user-42', 'exp': 1700000000});
+      when(mockApi.getPowersyncToken()).thenAnswer(
+        (_) async => {'token': jwt},
+      );
+
+      final creds = await connector.fetchCredentials();
+
+      expect(creds!.endpoint, 'http://example.invalid/ps/');
+    });
+
+    test('probes once per powersync_url value, again when it changes', () async {
+      final probes = <String>[];
+      final mockApi = MockApiClient();
+      final connector = DjangoConnector(
+        baseUrl: 'http://example.invalid',
+        apiClient: mockApi,
+        client: MockClient((request) async {
+          probes.add(request.url.toString());
+          return http.Response('{"ready":true}', 200);
+        }),
+      );
+      final jwt = makeJwt({'sub': 'u', 'exp': 1700000000});
+      when(mockApi.getPowersyncToken()).thenAnswer(
+        (_) async => {'token': jwt, 'powersync_url': 'https://ps.example.com'},
+      );
+
+      await connector.fetchCredentials();
+      await connector.fetchCredentials();
+      expect(probes, ['https://ps.example.com/probes/liveness']);
+
+      when(mockApi.getPowersyncToken()).thenAnswer(
+        (_) async => {'token': jwt, 'powersync_url': 'https://other.example.com'},
+      );
+      final creds = await connector.fetchCredentials();
+
+      expect(probes, hasLength(2));
+      expect(creds!.endpoint, 'https://other.example.com');
+    });
+
+    test('does not cache a failed resolution', () async {
+      final probes = <String>[];
+      final mockApi = MockApiClient();
+      final connector = DjangoConnector(
+        baseUrl: 'http://example.invalid',
+        apiClient: mockApi,
+        client: MockClient((request) async {
+          probes.add(request.url.toString());
+          return http.Response('not found', 404);
+        }),
+      );
+      final jwt = makeJwt({'sub': 'u', 'exp': 1700000000});
+      when(mockApi.getPowersyncToken()).thenAnswer(
+        (_) async => {'token': jwt, 'powersync_url': 'https://ps.example.com'},
+      );
+
+      await expectLater(connector.fetchCredentials(), throwsA(isA<NoPowerSyncEndpointException>()));
+      await expectLater(connector.fetchCredentials(), throwsA(isA<NoPowerSyncEndpointException>()));
+
+      // Both candidates probed on both attempts: no negative caching.
+      expect(probes, hasLength(4));
+    });
+
+    test('rethrows when the backend is unreachable', () async {
+      // Null would mean "not logged in" to the SDK, which turns a plain
+      // outage into a CredentialsException ("Authentication error" in the
+      // sync dialog). A connection error has to stay a connection error.
       final mockApi = MockApiClient();
       final connector = DjangoConnector(baseUrl: 'http://example.invalid', apiClient: mockApi);
       when(
         mockApi.getPowersyncToken(),
       ).thenThrow(http.ClientException('Connection refused'));
 
-      expect(await connector.fetchCredentials(), isNull);
+      await expectLater(connector.fetchCredentials(), throwsA(isA<http.ClientException>()));
+    });
+
+    test('times out when the token request hangs', () {
+      // On token expiry the SDK awaits fetchCredentials inline in its sync
+      // loop; without the ceiling a request that never answers freezes sync
+      // (disconnect included) until process restart.
+      fakeAsync((async) {
+        final mockApi = MockApiClient();
+        final connector = DjangoConnector(baseUrl: 'http://example.invalid', apiClient: mockApi);
+        when(
+          mockApi.getPowersyncToken(),
+        ).thenAnswer((_) => Completer<Map<String, dynamic>>().future);
+
+        Object? error;
+        connector.fetchCredentials().then<void>(
+          (_) {},
+          onError: (Object e) {
+            error = e;
+          },
+        );
+
+        async.elapse(DjangoConnector.credentialFetchTimeout - const Duration(seconds: 1));
+        expect(error, isNull);
+
+        async.elapse(const Duration(seconds: 2));
+        expect(error, isA<TimeoutException>());
+      });
     });
 
     test('anchors expiresAt to the local clock via the token lifetime', () async {
       final mockApi = MockApiClient();
-      final connector = DjangoConnector(baseUrl: 'http://example.invalid', apiClient: mockApi);
+      final connector = DjangoConnector(
+        baseUrl: 'http://example.invalid',
+        apiClient: mockApi,
+        client: anyLivenessOk(),
+      );
       // iat/exp lie far in the past; only their 600 s difference may matter.
       final jwt = makeJwt({'sub': 'u', 'iat': 1700000000, 'exp': 1700000600});
       when(mockApi.getPowersyncToken()).thenAnswer(
@@ -244,7 +438,11 @@ void main() {
 
       setUp(() {
         mockApi = MockApiClient();
-        connector = DjangoConnector(baseUrl: 'http://example.invalid', apiClient: mockApi);
+        connector = DjangoConnector(
+          baseUrl: 'http://example.invalid',
+          apiClient: mockApi,
+          client: anyLivenessOk(),
+        );
         records = [];
         final sub = Logger.root.onRecord.listen(records.add);
         addTearDown(sub.cancel);
@@ -253,14 +451,25 @@ void main() {
       Iterable<LogRecord> infoLines(String needle) =>
           records.where((r) => r.level == Level.INFO && r.message.contains(needle));
 
+      /// Unreachable fetches rethrow; these tests only assert the log lines.
+      Future<void> fetchIgnoringNetworkError() async {
+        try {
+          await connector.fetchCredentials();
+        } on http.ClientException {
+          // expected, the backend is stubbed unreachable
+        } on SocketException {
+          // expected, the backend is stubbed unreachable
+        }
+      }
+
       test('logs the outage at INFO once, not per retry', () async {
         when(
           mockApi.getPowersyncToken(),
         ).thenThrow(http.ClientException('Connection refused'));
 
-        await connector.fetchCredentials();
-        await connector.fetchCredentials();
-        await connector.fetchCredentials();
+        await fetchIgnoringNetworkError();
+        await fetchIgnoringNetworkError();
+        await fetchIgnoringNetworkError();
 
         expect(infoLines('backend unreachable'), hasLength(1));
       });
@@ -269,7 +478,7 @@ void main() {
         when(
           mockApi.getPowersyncToken(),
         ).thenThrow(const SocketException('Network is unreachable'));
-        await connector.fetchCredentials();
+        await fetchIgnoringNetworkError();
 
         final jwt = makeJwt({'sub': 'u', 'iat': 1700000000, 'exp': 1700000600});
         when(mockApi.getPowersyncToken()).thenAnswer(
@@ -284,7 +493,7 @@ void main() {
         when(
           mockApi.getPowersyncToken(),
         ).thenThrow(http.ClientException('Connection refused'));
-        await connector.fetchCredentials();
+        await fetchIgnoringNetworkError();
 
         final jwt = makeJwt({'sub': 'u', 'iat': 1700000000, 'exp': 1700000600});
         when(mockApi.getPowersyncToken()).thenAnswer(
@@ -295,9 +504,26 @@ void main() {
         when(
           mockApi.getPowersyncToken(),
         ).thenThrow(http.ClientException('Connection refused'));
-        await connector.fetchCredentials();
+        await fetchIgnoringNetworkError();
 
         expect(infoLines('backend unreachable'), hasLength(2));
+      });
+
+      test('logs the endpoint once, again only when it changes', () async {
+        final jwt = makeJwt({'sub': 'u', 'iat': 1700000000, 'exp': 1700000600});
+        when(mockApi.getPowersyncToken()).thenAnswer(
+          (_) async => {'token': jwt, 'powersync_url': 'https://ps.example.com'},
+        );
+        await connector.fetchCredentials();
+        await connector.fetchCredentials();
+
+        when(mockApi.getPowersyncToken()).thenAnswer(
+          (_) async => {'token': jwt, 'powersync_url': 'https://other.example.com'},
+        );
+        await connector.fetchCredentials();
+
+        expect(infoLines('endpoint https://ps.example.com'), hasLength(1));
+        expect(infoLines('endpoint https://other.example.com'), hasLength(1));
       });
 
       test('does not log recovery when there was no outage', () async {
@@ -316,6 +542,7 @@ void main() {
   group('processTransaction', () {
     late MockApiClient api;
     late DjangoConnector conn;
+    late List<LogRecord> records;
 
     // Mirrors PowerSync clearing the op from the local queue: set to true once
     // transaction.complete() runs.
@@ -325,15 +552,23 @@ void main() {
       api = MockApiClient();
       conn = DjangoConnector(baseUrl: 'http://example.invalid', apiClient: api);
       completed = false;
+      records = [];
+      final sub = Logger.root.onRecord.listen(records.add);
+      addTearDown(sub.cancel);
     });
 
-    CrudTransaction txWith(CrudEntry entry) => CrudTransaction(
+    Iterable<LogRecord> logLines(Level level, String needle) =>
+        records.where((r) => r.level == level && r.message.contains(needle));
+
+    CrudTransaction txWithAll(List<CrudEntry> entries) => CrudTransaction(
       transactionId: 1,
-      crud: [entry],
+      crud: entries,
       complete: ({String? writeCheckpoint}) async {
         completed = true;
       },
     );
+
+    CrudTransaction txWith(CrudEntry entry) => txWithAll([entry]);
 
     test('uploads a put through the transform and completes on success', () async {
       when(api.upsert(any)).thenAnswer((_) async => http.Response('{}', 200));
@@ -364,6 +599,44 @@ void main() {
       verify(api.delete(any)).called(1);
     });
 
+    test('hands an unexpected error on as a plain stand-in', () async {
+      // An error object that cannot be sent between isolates never reaches
+      // the sync isolate and wedges the upload queue for the rest of the
+      // process (powersync-ja/powersync.dart#452), so the original must not
+      // leave this method. The op stays queued either way.
+      when(api.upsert(any)).thenThrow(_UnsendableException());
+
+      await expectLater(
+        conn.processTransaction(
+          txWith(CrudEntry(1, UpdateType.put, 'manager_routine', 'r1', 1, {'name': 'x'})),
+        ),
+        throwsA(
+          isA<UploadFailedException>().having((e) => e.details, 'details', contains('boom')),
+        ),
+      );
+
+      expect(completed, isFalse);
+    });
+
+    test('hands an unexpected Error on as a plain stand-in as well', () async {
+      // Errors are not Exceptions: an `on Exception` clause would let a
+      // TypeError or JsonUnsupportedObjectError (which references the
+      // unencodable object) escape as the original across the isolate
+      // boundary.
+      when(api.upsert(any)).thenThrow(ArgumentError('boom'));
+
+      await expectLater(
+        conn.processTransaction(
+          txWith(CrudEntry(1, UpdateType.put, 'manager_routine', 'r1', 1, {'name': 'x'})),
+        ),
+        throwsA(
+          isA<UploadFailedException>().having((e) => e.details, 'details', contains('boom')),
+        ),
+      );
+
+      expect(completed, isFalse);
+    });
+
     test('completes the transaction even when the backend rejects the op', () async {
       // The key anti-poison-pill behaviour: a 200 with an `error` body is a
       // permanent rejection. processTransaction must not rethrow (that would
@@ -380,6 +653,85 @@ void main() {
       expect(completed, isTrue);
     });
 
+    test('a rejected op does not stop the ops behind it', () async {
+      // One bad op must not block the queue: the rest of the transaction is
+      // still sent and the transaction completes.
+      when(api.upsert(any)).thenAnswer(
+        (_) async => http.Response(json.encode({'error': 'invalid'}), 200),
+      );
+      when(api.update(any)).thenAnswer((_) async => http.Response('{}', 200));
+
+      await conn.processTransaction(
+        txWithAll([
+          CrudEntry(1, UpdateType.put, 'manager_routine', 'r1', 1, {'name': 'x'}),
+          CrudEntry(2, UpdateType.patch, 'manager_routine', 'r2', 1, {'name': 'y'}),
+        ]),
+      );
+
+      verify(api.update(any)).called(1);
+      expect(completed, isTrue);
+    });
+
+    test('the same refusal is only surfaced once, however many rows it hits', () async {
+      // A category the backend refuses orphans every measurement pointing at
+      // it. One dialog per orphan is thousands of them, each one re-popping as
+      // the user dismisses the last, so the refusal is reported per reason.
+      // The warning and the dialog sit behind the same gate.
+      when(api.upsert(any)).thenAnswer(
+        (_) async => http.Response(
+          json.encode({'error': 'Forbidden', 'details': 'Measurement references an object'}),
+          200,
+        ),
+      );
+
+      for (final id in ['m1', 'm2', 'm3']) {
+        await conn.processTransaction(
+          txWith(CrudEntry(1, UpdateType.put, 'measurements_measurement', id, 1, {'value': 1})),
+        );
+      }
+
+      expect(logLines(Level.WARNING, 'Backend rejected'), hasLength(1));
+    });
+
+    test('a different refusal is surfaced on its own', () async {
+      when(api.upsert(any)).thenAnswer(
+        (_) async => http.Response(json.encode({'error': 'Forbidden'}), 200),
+      );
+      await conn.processTransaction(
+        txWith(CrudEntry(1, UpdateType.put, 'measurements_measurement', 'm1', 1, {'value': 1})),
+      );
+
+      when(api.upsert(any)).thenAnswer(
+        (_) async => http.Response(json.encode({'error': 'Validation failed'}), 200),
+      );
+      await conn.processTransaction(
+        txWith(CrudEntry(1, UpdateType.put, 'measurements_category', 'c1', 1, {'unit': ''})),
+      );
+
+      expect(logLines(Level.WARNING, 'Backend rejected'), hasLength(2));
+    });
+
+    test('a retryable op leaves the whole transaction queued for a replay', () async {
+      // The op ahead of it was already sent, so the replay re-sends it: this is
+      // the at-least-once delivery the backend handlers have to be idempotent
+      // for.
+      when(api.upsert(any)).thenAnswer((_) async => http.Response('{}', 200));
+      when(api.update(any)).thenAnswer((_) async => http.Response('', 503));
+
+      await expectLater(
+        conn.processTransaction(
+          txWithAll([
+            CrudEntry(1, UpdateType.put, 'manager_routine', 'r1', 1, {'name': 'x'}),
+            CrudEntry(2, UpdateType.patch, 'manager_routine', 'r2', 1, {'name': 'y'}),
+          ]),
+        ),
+        throwsA(isA<RetryableUploadException>()),
+      );
+
+      verify(api.upsert(any)).called(1);
+      expect(completed, isFalse);
+    });
+
     test('rethrows and leaves the transaction queued when the backend is unreachable', () async {
       when(api.upsert(any)).thenThrow(http.ClientException('Connection refused'));
 
@@ -393,11 +745,26 @@ void main() {
       expect(completed, isFalse);
     });
 
+    test('a TLS handshake failure defers quietly like any network error', () async {
+      // HandshakeException is a network error too (isNetworkError), but is
+      // neither a ClientException nor a SocketException: it must take the
+      // quiet retry path, not the severe-logged UploadFailedException wrap.
+      when(api.upsert(any)).thenThrow(const HandshakeException('bad certificate'));
+
+      await expectLater(
+        conn.processTransaction(
+          txWith(CrudEntry(1, UpdateType.put, 'manager_routine', 'r1', 1, {'name': 'x'})),
+        ),
+        throwsA(isA<HandshakeException>()),
+      );
+      expect(completed, isFalse);
+    });
+
     test('rethrows RetryableUploadException on transient/retryable statuses', () async {
-      // Server errors, gateway timeout, rate limiting and a non-recoverable 401
-      // are retried: throw so PowerSync keeps the transaction queued. Mirrors
-      // the ClientException test above.
-      for (final status in [500, 502, 503, 504, 408, 429, 401]) {
+      // Server errors, gateway timeout, rate limiting and a non-recoverable
+      // 401/403 are retried: throw so PowerSync keeps the transaction queued.
+      // Mirrors the ClientException test above.
+      for (final status in [500, 502, 503, 504, 408, 429, 401, 403]) {
         completed = false;
         when(api.upsert(any)).thenAnswer((_) async => http.Response('', status));
 
@@ -414,10 +781,10 @@ void main() {
 
     test('reports and completes on unexpected permanent client errors', () async {
       // Retrying these would not help, so the op is surfaced and discarded
-      // rather than blocking the queue. 403 is here, not in the retry set: the
-      // backend delivers ownership refusals as 200 + {error}, so a real 403 is
-      // a permanent refusal.
-      for (final status in [400, 403, 404, 409, 422]) {
+      // rather than blocking the queue. 403 is not here: the endpoint only
+      // answers 403 for an unauthenticated request, and dropping the op would
+      // lose the row over an expired token (issue #1350).
+      for (final status in [400, 404, 409, 422]) {
         completed = false;
         when(api.upsert(any)).thenAnswer((_) async => http.Response('', status));
 
@@ -439,4 +806,13 @@ void main() {
       expect(completed, isTrue);
     });
   });
+}
+
+/// Stands in for an error that holds isolate-unsendable state, like dio's
+/// DioException with its CancelToken.
+class _UnsendableException implements Exception {
+  final Completer<void> completer = Completer();
+
+  @override
+  String toString() => 'boom';
 }

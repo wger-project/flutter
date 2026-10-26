@@ -221,6 +221,43 @@ void main() {
       expect(emitted.single.description, 'updated');
     });
 
+    test('editLocalDrift clears an end date and goals that were nulled', () async {
+      final plan = NutritionalPlan(
+        id: planUuid1,
+        description: 'with goals',
+        creationDate: DateTime.utc(2024),
+        startDate: DateTime.utc(2024, 1, 1),
+        endDate: DateTime.utc(2024, 3, 1),
+        hasGoalCalories: true,
+        goalEnergy: 2000,
+        goalProtein: 150,
+        goalCarbohydrates: 200,
+        goalFat: 60,
+        goalFiber: 30,
+      );
+      await repo.addPlanLocalDrift(plan);
+
+      // The user clears the end date and switches the goal type back to
+      // "from meals"
+      plan.endDate = null;
+      plan.goalEnergy = null;
+      plan.goalProtein = null;
+      plan.goalCarbohydrates = null;
+      plan.goalFat = null;
+      plan.goalFiber = null;
+      await repo.editLocalDrift(plan);
+
+      final row = await (db.select(
+        db.nutritionalPlanTable,
+      )..where((t) => t.id.equals(planUuid1))).getSingle();
+      expect(row.endDate, isNull);
+      expect(row.goalEnergy, isNull);
+      expect(row.goalProtein, isNull);
+      expect(row.goalCarbohydrates, isNull);
+      expect(row.goalFat, isNull);
+      expect(row.goalFiber, isNull);
+    });
+
     test('editLocalDrift throws StateError when id is null', () async {
       final plan = NutritionalPlan(
         description: 'no id',
@@ -353,6 +390,25 @@ void main() {
         db.mealItemTable,
       )..where((t) => t.id.equals(itemUuid1))).getSingle();
       expect(row.amount, 250);
+    });
+
+    test('editMealItemLocalDrift clears a weight unit that was nulled', () async {
+      await seedPlan(id: planUuid1);
+      await seedMeal(id: mealUuid, planId: planUuid1);
+      await seedIngredient(id: 1, name: 'Apple');
+      await seedMealItem(id: itemUuid1, mealId: mealUuid, ingredientId: 1, amount: 1);
+      await (db.update(db.mealItemTable)..where((t) => t.id.equals(itemUuid1))).write(
+        const MealItemTableCompanion(weightUnitId: drift.Value(5)),
+      );
+
+      // The user switches the item from a portion unit back to grams
+      final updated = MealItem(id: itemUuid1, mealId: mealUuid, ingredientId: 1, amount: 100);
+      await repo.editMealItemLocalDrift(updated);
+
+      final row = await (db.select(
+        db.mealItemTable,
+      )..where((t) => t.id.equals(itemUuid1))).getSingle();
+      expect(row.weightUnitId, isNull);
     });
 
     test('editMealItemLocalDrift throws StateError when id is null', () async {

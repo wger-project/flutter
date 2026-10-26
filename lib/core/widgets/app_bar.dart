@@ -16,15 +16,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/material.dart';
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/core/form_screen.dart';
+import 'package:wger/core/network/auth_http_client.dart';
 import 'package:wger/core/network/auth_notifier.dart';
 import 'package:wger/core/network/network_provider.dart';
+import 'package:wger/core/network/wger_base.dart';
 import 'package:wger/core/settings_dashboard_widgets_screen.dart';
 import 'package:wger/core/widgets/about.dart';
 import 'package:wger/core/widgets/sync_status_dialog.dart';
-import 'package:wger/database/powersync/powersync.dart' show syncStatus, syncWatchdogProvider;
+import 'package:wger/database/powersync/powersync.dart'
+    show builtPowerSyncInstance, connectPowerSync, syncStatus, syncWatchdogProvider;
 import 'package:wger/features/account/providers/account_notifier.dart';
 import 'package:wger/features/account/widgets/forms.dart';
 import 'package:wger/features/account/widgets/settings.dart';
@@ -38,7 +43,11 @@ class MainAppBar extends ConsumerWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final syncState = ref.watch(syncStatus);
-    final status = syncStatusIconAndLabel(syncState, AppLocalizations.of(context));
+    final status = syncStatusIconAndLabel(
+      syncState,
+      AppLocalizations.of(context),
+      deviceOnline: ref.watch(networkStatusProvider),
+    );
 
     return AppBar(
       title: Text(_title),
@@ -51,14 +60,48 @@ class MainAppBar extends ConsumerWidget implements PreferredSizeWidget {
         ),
         IconButton(
           icon: Icon(status.icon),
-          onPressed: () => showDialog<void>(
-            context: context,
-            // Like syncState, the stalled flag is a snapshot taken when the dialog opens
-            builder: (_) => SyncStatusDialog(
-              syncState,
-              stalled: ref.read(syncWatchdogProvider).stalled.value,
-            ),
-          ),
+          onPressed: () {
+            // The dialog watches the sync state itself; the server URL and
+            // adapter gate are tap-time snapshots. The route builder runs
+            // during build, where a dirty provider read forces a mid-build
+            // refresh. Reconnect gates on the adapter, a platform fact,
+            // never on the reachability status (it exists for when that
+            // status is wrong).
+            final serverUrl = ref.read(wgerBaseProvider).serverUrl;
+            final adapterAvailable = ref.read(networkAdapterAvailableProvider);
+
+            showDialog<void>(
+              context: context,
+              builder: (_) => SyncStatusDialog(
+                serverUrl: serverUrl,
+                onReconnect: !adapterAvailable
+                    ? null
+                    : () {
+                        unawaited(ref.read(networkStatusProvider.notifier).check(optimistic: true));
+
+                        final db = builtPowerSyncInstance;
+                        final url = ref.read(wgerBaseProvider).serverUrl;
+                        // The adapter re-check covers it disappearing while
+                        // the dialog was open.
+                        if (db == null ||
+                            url == null ||
+                            !ref.read(networkAdapterAvailableProvider)) {
+                          return;
+                        }
+                        // A manual reconnect is a deliberate new connection epoch.
+                        final watchdog = ref.read(syncWatchdogProvider);
+                        watchdog.reset();
+                        connectPowerSync(
+                          db,
+                          url,
+                          ref.read(authenticatedHttpClientProvider),
+                          watchdog,
+                          reason: 'manual retry',
+                        );
+                      },
+              ),
+            );
+          },
         ),
         IconButton(
           icon: const Icon(Icons.settings),

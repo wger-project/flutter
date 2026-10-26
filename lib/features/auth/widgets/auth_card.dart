@@ -17,10 +17,11 @@
  */
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wger/core/app_link_router.dart';
+import 'package:wger/core/app_settings_notifier.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/error_dialogs.dart';
 import 'package:wger/core/errors.dart';
@@ -28,7 +29,6 @@ import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/core/exceptions/mfa_required_exception.dart';
 import 'package:wger/core/network/auth_notifier.dart';
 import 'package:wger/core/network/auth_state.dart';
-import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/core/widgets/server_config_warning_dialog.dart';
 import 'package:wger/features/auth/screens/mfa_challenge_screen.dart';
 import 'package:wger/features/auth/widgets/advanced_sheet.dart';
@@ -247,18 +247,25 @@ class _AuthCardState extends ConsumerState<AuthCard> {
   }
 
   /// Opens the advanced bottom sheet (server + sign-in-method selection).
-  void _showAdvancedSheet() {
+  ///
+  /// [allowSelfSignedCerts] is the persisted setting, passed in from `build` so
+  /// the sheet opens on the current value.
+  void _showAdvancedSheet(bool allowSelfSignedCerts) {
     showAdvancedSheet(
       context: context,
       initialHideCustomServer: _hideCustomServer,
       initialUsePassword: _useUsernameAndPassword,
+      initialAllowSelfSignedCerts: allowSelfSignedCerts,
       loginMode: _authMode == AuthMode.login,
       serverUrlController: _serverUrlController,
-      onChanged: (hideCustomServer, usePassword) {
+      onChanged: (hideCustomServer, usePassword, allowSelfSigned) {
         setState(() {
           _hideCustomServer = hideCustomServer;
           _useUsernameAndPassword = usePassword;
         });
+        // Persist immediately so the next login request, still made from this
+        // screen, already trusts the certificate.
+        ref.read(appSettingsProvider.notifier).setAllowSelfSignedCerts(allowSelfSigned);
       },
     ).then((_) {
       if (mounted) {
@@ -271,9 +278,19 @@ class _AuthCardState extends ConsumerState<AuthCard> {
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
     final deviceSize = MediaQuery.sizeOf(context);
-    // Login/registration both need the server, so disable the action while
-    // there is no connectivity.
-    final isOnline = ref.watch(networkStatusProvider);
+    final allowSelfSignedCerts = ref.watch(
+      appSettingsProvider.select(
+        (s) => s.value?.allowSelfSignedCerts ?? ALLOW_SELF_SIGNED_CERTS_DEFAULT,
+      ),
+    );
+
+    // Involuntary logout (expired/revoked tokens): tell the user why they
+    // are looking at the login form. The transient snackbar shown at the
+    // moment of the logout is easy to miss, this hint persists until the
+    // next login.
+    final sessionExpired = ref.watch(
+      authProvider.select((s) => s.value?.sessionExpired ?? false),
+    );
 
     Widget errorMessage = const SizedBox.shrink();
     if (_httpError != null) {
@@ -309,6 +326,15 @@ class _AuthCardState extends ConsumerState<AuthCard> {
             child: AutofillGroup(
               child: Column(
                 children: [
+                  if (sessionExpired && _authMode == AuthMode.login)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: Text(
+                        i18n.sessionExpired,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Theme.of(context).colorScheme.primary),
+                      ),
+                    ),
                   errorMessage,
                   if (_useUsernameAndPassword) UsernameField(controller: _usernameController),
                   if (_authMode == AuthMode.register) EmailField(controller: _emailController),
@@ -336,18 +362,21 @@ class _AuthCardState extends ConsumerState<AuthCard> {
                   // Bespoke submit:  the shared FormSubmitButton only surfaces
                   // WgerHttpException and has no style override, so it is
                   // intentionally not used here.
+                  //
+                  // Never gated on the network status: the login attempt is
+                  // the better probe and a wrong status would lock the user
+                  // out of the app. A failure lands in the error message
+                  // above.
                   SizedBox(
                     width: double.infinity,
                     height: 45,
                     child: ElevatedButton(
                       key: const Key('actionButton'),
-                      onPressed: isOnline
-                          ? () {
-                              if (!_isLoading) {
-                                _submit(context);
-                              }
-                            }
-                          : null,
+                      onPressed: () {
+                        if (!_isLoading) {
+                          _submit(context);
+                        }
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Theme.of(context).colorScheme.primary,
                       ),
@@ -377,7 +406,7 @@ class _AuthCardState extends ConsumerState<AuthCard> {
                     isCustomServer: !_hideCustomServer,
                     isTokenMode: _authMode == AuthMode.login && !_useUsernameAndPassword,
                     serverUrl: _serverUrlController.text,
-                    onTap: _showAdvancedSheet,
+                    onTap: () => _showAdvancedSheet(allowSelfSignedCerts),
                   ),
                 ],
               ),

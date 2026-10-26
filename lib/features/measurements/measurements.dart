@@ -18,11 +18,13 @@
 
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/date.dart';
-import 'package:wger/features/measurements/widgets/charts.dart';
+import 'package:wger/features/measurements/charts/series.dart';
 
 extension MeasurementChartEntryListExtensions on List<MeasurementChartEntry> {
   List<MeasurementChartEntry> whereDate(DateTime start, DateTime? end) {
-    return where((e) => e.date.isAfter(start) && (end == null || e.date.isBefore(end))).toList();
+    // Inclusive at the start: day buckets sit exactly at midnight, and the
+    // range cutoff is one too
+    return where((e) => !e.date.isBefore(start) && (end == null || e.date.isBefore(end))).toList();
   }
 
   // assures values on the start (and optionally end) dates exist, by interpolating if needed
@@ -35,6 +37,12 @@ extension MeasurementChartEntryListExtensions on List<MeasurementChartEntry> {
     // Avoid mutating the original list (it may be unmodifiable/const). Work on a copy.
     final List<MeasurementChartEntry> sorted = [...this];
     sorted.sort((a, b) => a.date.compareTo(b.date));
+
+    // The window is inclusive on both ends at day granularity: callers pass in
+    // plan dates, which carry no time of day, while entries are timestamps.
+    // Comparing instants would drop an entry recorded during the end day.
+    final startDay = DateTime(start.year, start.month, start.day);
+    final dayAfterEnd = end == null ? null : DateTime(end.year, end.month, end.day + 1);
 
     // Initialize result list
     final List<MeasurementChartEntry> result = [];
@@ -60,24 +68,23 @@ extension MeasurementChartEntryListExtensions on List<MeasurementChartEntry> {
         lastBeforeEnd = entry;
       }
 
-      if (entry.date.isBefore(start)) {
+      if (entry.date.isBefore(startDay)) {
         lastBeforeStart = entry;
       } else {
         // insert interpolated start value if needed
         if (!hasEntryOnStartDay && lastBeforeStart != null) {
-          result.insert(0, interpolateBetween(lastBeforeStart, entry, start));
+          result.insert(0, _interpolateBetween(lastBeforeStart, entry, start));
           hasEntryOnStartDay = true;
         }
 
-        if (end == null || entry.date.isBefore(end)) {
+        if (dayAfterEnd == null || entry.date.isBefore(dayAfterEnd)) {
           result.add(entry);
-        }
-        if (end != null && entry.date.isAfter(end)) {
+        } else {
           // insert interpolated end value if needed
           // note: we only interpolate end if we have data going beyond end
           // if let's say your plan ends in a week from now, we wouldn't want to fake data until next week.
           if (!hasEntryOnEndDay && lastBeforeEnd != null) {
-            result.add(interpolateBetween(lastBeforeEnd, entry, end));
+            result.add(_interpolateBetween(lastBeforeEnd, entry, end!));
             hasEntryOnEndDay = true;
           }
           // we added all our values and did all interpolations
@@ -91,7 +98,7 @@ extension MeasurementChartEntryListExtensions on List<MeasurementChartEntry> {
 }
 
 // caller needs to make sure that before.date < date < after.date
-MeasurementChartEntry interpolateBetween(
+MeasurementChartEntry _interpolateBetween(
   MeasurementChartEntry before,
   MeasurementChartEntry after,
   DateTime date,

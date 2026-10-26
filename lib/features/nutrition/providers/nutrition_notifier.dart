@@ -200,9 +200,10 @@ class NutritionNotifier extends _$NutritionNotifier {
     MealItem mealItem,
     String planId, [
     DateTime? dateTime,
+    String? mealId,
   ]) async {
     final repo = ref.read(nutritionRepositoryProvider);
-    final log = LogItem.fromMealItem(mealItem, planId, null, dateTime);
+    final log = LogItem.fromMealItem(mealItem, planId, mealId, dateTime);
     await repo.addLogLocalDrift(log);
   }
 

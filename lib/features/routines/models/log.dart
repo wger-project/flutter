@@ -17,7 +17,7 @@
  */
 
 import 'package:drift/drift.dart' as drift;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/i18n.dart';
 import 'package:wger/core/misc.dart';
@@ -26,13 +26,6 @@ import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/routines/models/repetition_unit.dart';
 import 'package:wger/features/routines/models/set_config_data.dart';
 import 'package:wger/features/routines/models/weight_unit.dart';
-
-enum LogTargetStatus {
-  lessThanTarget,
-  atTarget,
-  moreThanTarget,
-  notSet,
-}
 
 class Log {
   /// Max value the backend stores for weight / repetitions
@@ -43,7 +36,25 @@ class Log {
   String? id;
 
   late int exerciseId;
-  late Exercise exerciseObj;
+
+  Exercise? _exerciseObj;
+
+  /// The exercise this log belongs to, throws if it was never hydrated
+  ///
+  /// Logs read from the database only carry [exerciseId], joining the whole
+  /// exercise with its translations, images and muscles would be wasteful for
+  /// a value most callers don't need. Use [exerciseObjOrNull] for those.
+  Exercise get exerciseObj {
+    if (_exerciseObj == null) {
+      throw StateError('Log $id has no hydrated exercise (exercise ID $exerciseId)');
+    }
+    return _exerciseObj!;
+  }
+
+  set exerciseObj(Exercise value) => _exerciseObj = value;
+
+  /// Like [exerciseObj] but returns null instead of throwing
+  Exercise? get exerciseObjOrNull => _exerciseObj;
 
   int? routineId;
   String? sessionId;
@@ -93,7 +104,9 @@ class Log {
 
     weight = setConfig.weight;
     weightTarget = setConfig.weight;
-    weightUnitId = setConfig.weightUnitId ?? WEIGHT_UNIT_KG;
+    // Fall back to the resolved unit object (set during routine hydration from
+    // the user's metric preference) when the config carries no explicit unit.
+    weightUnitId = setConfig.weightUnitId ?? setConfig.weightUnit?.id ?? WEIGHT_UNIT_KG;
     weightUnitObj = setConfig.weightUnit;
 
     repetitions = setConfig.repetitions;
@@ -153,7 +166,11 @@ class Log {
       out.weightUnitObj = weightUnitObj;
       out.weightUnitId = weightUnitObj.id;
     }
-    out.exerciseObj = exerciseObj;
+
+    // Logs read from the database have no exercise, so only copy an existing one
+    if (_exerciseObj != null) {
+      out.exerciseObj = _exerciseObj!;
+    }
 
     return out;
   }
@@ -163,27 +180,19 @@ class Log {
       id: id != null ? drift.Value(id!) : const drift.Value.absent(),
       exerciseId: drift.Value(exerciseId),
       routineId: drift.Value(routineId),
-      sessionId: sessionId != null ? drift.Value(sessionId) : const drift.Value.absent(),
-      iteration: iteration != null ? drift.Value(iteration) : const drift.Value.absent(),
-      slotEntryId: slotEntryId != null ? drift.Value(slotEntryId) : const drift.Value.absent(),
-      rir: rir != null ? drift.Value(rir!.toDouble()) : const drift.Value.absent(),
-      rirTarget: rirTarget != null
-          ? drift.Value(rirTarget!.toDouble())
-          : const drift.Value.absent(),
-      repetitions: repetitions != null
-          ? drift.Value(repetitions!.toDouble())
-          : const drift.Value.absent(),
-      repetitionsTarget: repetitionsTarget != null
-          ? drift.Value(repetitionsTarget!.toDouble())
-          : const drift.Value.absent(),
-      repetitionsUnitId: repetitionsUnitId != null
-          ? drift.Value(repetitionsUnitId)
-          : const drift.Value.absent(),
-      weight: weight != null ? drift.Value(weight!.toDouble()) : const drift.Value.absent(),
-      weightTarget: weightTarget != null
-          ? drift.Value(weightTarget!.toDouble())
-          : const drift.Value.absent(),
-      weightUnitId: weightUnitId != null ? drift.Value(weightUnitId) : const drift.Value.absent(),
+      // Explicit NULL, not absent: clearing a value (e.g. the RiR or the
+      // weight in the log edit dialog) has to clear the column too
+      sessionId: drift.Value(sessionId),
+      iteration: drift.Value(iteration),
+      slotEntryId: drift.Value(slotEntryId),
+      rir: drift.Value(rir?.toDouble()),
+      rirTarget: drift.Value(rirTarget?.toDouble()),
+      repetitions: drift.Value(repetitions?.toDouble()),
+      repetitionsTarget: drift.Value(repetitionsTarget?.toDouble()),
+      repetitionsUnitId: drift.Value(repetitionsUnitId),
+      weight: drift.Value(weight?.toDouble()),
+      weightTarget: drift.Value(weightTarget?.toDouble()),
+      weightUnitId: drift.Value(weightUnitId),
       date: drift.Value(date),
     );
   }
@@ -251,32 +260,6 @@ class Log {
       return weight! * repetitions!;
     }
     return 0;
-  }
-
-  LogTargetStatus get targetStatus {
-    if (weightTarget == null && repetitionsTarget == null && rirTarget == null) {
-      return LogTargetStatus.notSet;
-    }
-
-    final weightOk = weightTarget == null || (weight != null && weight! >= weightTarget!);
-    final repsOk =
-        repetitionsTarget == null || (repetitions != null && repetitions! >= repetitionsTarget!);
-    final rirOk = rirTarget == null || (rir != null && rir! <= rirTarget!);
-
-    if (weightOk && repsOk && rirOk) {
-      return LogTargetStatus.atTarget;
-    }
-
-    final weightMore = weightTarget != null && weight != null && weight! > weightTarget!;
-    final repsMore =
-        repetitionsTarget != null && repetitions != null && repetitions! > repetitionsTarget!;
-    final rirLess = rirTarget != null && rir != null && rir! < rirTarget!;
-
-    if (weightMore || repsMore || rirLess) {
-      return LogTargetStatus.moreThanTarget;
-    }
-
-    return LogTargetStatus.lessThanTarget;
   }
 
   /// Override the equals operator

@@ -111,7 +111,7 @@ final class RoutinesRiverpodProvider
   RoutinesRiverpod create() => RoutinesRiverpod();
 }
 
-String _$routinesRiverpodHash() => r'32b35ad1f9f0caa96b4503bbb6c0e28c8bb8492c';
+String _$routinesRiverpodHash() => r'feae88eddcc72d83b3adf392c39770683a64d864';
 
 abstract class _$RoutinesRiverpod extends $StreamNotifier<RoutinesState> {
   Stream<RoutinesState> build();
@@ -212,7 +212,7 @@ final class RoutineHydrationProvider
   }
 }
 
-String _$routineHydrationHash() => r'ab11ee73aaa26fd715d0516213459a454657a47e';
+String _$routineHydrationHash() => r'fa59f88e76242efcab98cc1f78e081584f513ea4';
 
 /// Drives the on-demand full-structure load for a single routine.
 ///

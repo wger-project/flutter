@@ -26,22 +26,21 @@ import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:package_info_plus/package_info_plus.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
-import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/core/exceptions/mfa_required_exception.dart';
 import 'package:wger/core/network/auth_credentials_storage.dart';
 import 'package:wger/core/network/auth_notifier.dart';
 import 'package:wger/core/network/auth_state.dart';
+import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/core/network/secure_token_storage.dart';
 import 'package:wger/core/shared_preferences.dart';
 import 'package:wger/features/account/models/account.dart';
 import 'package:wger/features/account/providers/account_notifier.dart';
 import 'package:wger/features/account/providers/account_repository.dart';
+import 'package:wger/features/account/providers/timezone_sync.dart';
 
+import '../../helpers/fake_auth_environment.dart';
 import 'auth_notifier_login_test.mocks.dart';
 
 /// Storage that simulates the process dying at the moment login claims DB
@@ -65,7 +64,7 @@ void main() {
   // Needed to install the path_provider mock channel below.
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+  installFakeAuthEnvironment();
 
   late MockClient mockClient;
   late MockSecureTokenStorage mockSecureStorage;
@@ -144,16 +143,6 @@ void main() {
       }
     });
 
-    SharedPreferences.setMockInitialValues({});
-    PackageInfo.setMockInitialValues(
-      appName: 'wger',
-      packageName: 'com.example.example',
-      version: '1.2.3',
-      buildNumber: '2',
-      buildSignature: 'buildSignature',
-    );
-    await PreferenceHelper.asyncPref.clear();
-
     // Default gating-chain mocks (happy path). Login-flow tests override
     // only what they care about.
     when(mockClient.get(tVersion)).thenAnswer((_) async => Response('"99.99.99"', 200));
@@ -186,7 +175,7 @@ void main() {
   });
 
   group('login: headless happy path', () {
-    test('200 → stores headless JWT bundle, wipes legacy PREFS_USER, state has tokens', () async {
+    test('200 → stores headless JWT bundle, state has tokens', () async {
       final accessJwt = makeJwt({'sub': '7', 'exp': 1900000000});
       when(
         mockClient.post(tHeadlessLogin, headers: anyNamed('headers'), body: anyNamed('body')),
@@ -202,16 +191,8 @@ void main() {
       );
 
       final container = makeContainer();
-      // Let auto-login settle as logged-out (no PREFS_USER yet).
+      // Let auto-login settle as logged-out (nothing stored yet).
       await container.read(authProvider.future);
-
-      // Seed a stale legacy blob *after* auto-login, so we can assert
-      // login() wipes it on success without auto-login itself trying to
-      // probe with it.
-      await PreferenceHelper.asyncPref.setString(
-        PREFS_USER,
-        jsonEncode({'token': 'stale-legacy', 'serverUrl': serverUrl}),
-      );
 
       final result = await container
           .read(authProvider.notifier)
@@ -230,12 +211,8 @@ void main() {
       // logged-in user so the next login can detect a user-switch.
       final prefs = PreferenceHelper.asyncPref;
       expect(await prefs.getString(PREFS_ACCESS_TOKEN), accessJwt);
-      expect(await prefs.getString(PREFS_TOKEN_TYPE), AuthTokenType.headlessJwt.name);
       expect(await prefs.getString(PREFS_SERVER_URL), serverUrl);
       expect(await prefs.getString(PREFS_DB_OWNER_USER_ID), '7');
-
-      // Stale legacy blob wiped.
-      expect(await prefs.containsKey(PREFS_USER), false);
 
       // No prior session, so the user-switch wipe path must not have fired.
       expect(container.read(authProvider.notifier).userSwitchWipeCount, 0);
@@ -418,6 +395,23 @@ void main() {
       // And ownership is now claimed for the new user so a future re-login
       // can detect the next switch.
       expect(await PreferenceHelper.asyncPref.getString(PREFS_DB_OWNER_USER_ID), '7');
+    });
+
+    test('a user switch drops the previous account-scoped preferences', () async {
+      // Health opt-in, watermarks and the timezone-report marker describe the
+      // previous account: inherited, they would import health data without an
+      // opt-in and let the sync overwrite the new user's chosen zone
+      await PreferenceHelper.asyncPref.setString(PREFS_DB_OWNER_USER_ID, '5');
+      await PreferenceHelper.instance.setHealthSyncEnabled(true);
+      await PreferenceHelper.asyncPref.setString(reportedTimezonePrefKey, 'Pacific/Auckland');
+      stubLoginSuccess(makeJwt({'sub': '7', 'exp': 1900000000}));
+
+      final container = makeContainer();
+      await container.read(authProvider.future);
+      await container.read(authProvider.notifier).login(username, password, serverUrl, null);
+
+      expect(await PreferenceHelper.instance.getHealthSyncEnabled(), isFalse);
+      expect(await PreferenceHelper.asyncPref.getString(reportedTimezonePrefKey), isNull);
     });
 
     test('same user logging back in keeps the local DB', () async {
@@ -628,6 +622,33 @@ void main() {
               ).captured.single
               as String;
       expect(jsonDecode(captured)['refresh_token'], 'pasted-refresh-token');
+    });
+
+    test('expiry follows the token lifetime on the local clock', () async {
+      // Same anchoring as on the background refresh: a server clock far from
+      // the device's must not leave the app with a token it never renews
+      const iat = 1000000000;
+      final newAccess = makeJwt({'iat': iat, 'exp': iat + 900});
+      when(
+        mockClient.post(tRefresh, headers: anyNamed('headers'), body: anyNamed('body')),
+      ).thenAnswer(
+        (_) async => Response(
+          jsonEncode({
+            'status': 200,
+            'data': {'access_token': newAccess, 'refresh_token': 'rotated-refresh'},
+            'meta': {'is_authenticated': true},
+          }),
+          200,
+        ),
+      );
+
+      final container = makeContainer();
+      await container.read(authProvider.future);
+      final before = DateTime.now().toUtc();
+      await container.read(authProvider.notifier).login('', '', serverUrl, 'pasted-refresh-token');
+
+      final cred = container.read(authProvider).value!.credential as JwtCredential;
+      expect(cred.expiresAt!.difference(before).inSeconds, closeTo(900, 10));
     });
 
     test('server rejection surfaces as WgerHttpException', () async {

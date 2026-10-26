@@ -22,14 +22,18 @@ import 'package:clock/clock.dart';
 import 'package:collection/collection.dart';
 import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:wger/core/consts.dart';
 import 'package:wger/core/shared_preferences.dart';
+import 'package:wger/features/account/providers/user_profile_notifier.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/routines/models/log.dart';
 import 'package:wger/features/routines/models/routine.dart';
 import 'package:wger/features/routines/models/set_config_data.dart';
+import 'package:wger/features/routines/models/weight_unit.dart';
 import 'package:wger/features/routines/models/workout_progress.dart';
 import 'package:wger/features/routines/providers/gym_log_notifier.dart';
 import 'package:wger/features/routines/providers/gym_state.dart';
+import 'package:wger/features/routines/providers/routines_notifier.dart';
 
 part 'gym_state_notifier.g.dart';
 
@@ -90,6 +94,11 @@ class GymStateNotifier extends _$GymStateNotifier {
       state = state.copyWith(showWorkoutDuration: showWorkoutDuration);
     }
 
+    final stickySetValues = await prefs.getBool(PREFS_STICKY_SET_VALUES);
+    if (stickySetValues != null && stickySetValues != state.stickySetValues) {
+      state = state.copyWith(stickySetValues: stickySetValues);
+    }
+
     _logger.finer(
       'Loaded saved preferences: '
       'showExercise=$showExercise '
@@ -120,6 +129,7 @@ class GymStateNotifier extends _$GymStateNotifier {
     }
     await prefs.setBool(PREFS_SHOW_DISTINCT_LOGS, state.showDistinctLogs);
     await prefs.setBool(PREFS_SHOW_WORKOUT_DURATION, state.showWorkoutDuration);
+    await prefs.setBool(PREFS_STICKY_SET_VALUES, state.stickySetValues);
 
     _logger.finer(
       'Saved preferences: '
@@ -385,7 +395,7 @@ class GymStateNotifier extends _$GymStateNotifier {
 
     final shouldReset =
         (!state.isInitialized || state.isInitialized && dayId != state.dayId) ||
-        validUntil.isBefore(DateTime.now());
+        validUntil.isBefore(clock.now());
     if (shouldReset) {
       _logger.fine('Day ID mismatch or expired validUntil date. Resetting to page 0.');
     }
@@ -400,6 +410,8 @@ class GymStateNotifier extends _$GymStateNotifier {
       currentPage: initialPage,
       // A fresh workout also restarts the elapsed timer
       workoutStart: shouldReset ? clock.now() : null,
+      // An abandoned workout never reaches clear(), so forget its values here
+      lastLoggedValues: shouldReset ? const {} : null,
     );
 
     // Calculate the pages.
@@ -417,6 +429,21 @@ class GymStateNotifier extends _$GymStateNotifier {
     state = state.copyWith(currentPage: page);
     _saveProgress();
 
+    // Re-visiting a page that was already logged in this workout: seed the
+    // form with the saved entry (keeping its id and session) so saving
+    // updates the row instead of inserting a duplicate.
+    final loggedEntry = state.getSlotEntryPageByIndex()?.loggedEntry;
+    if (loggedEntry != null) {
+      ref.read(gymLogProvider.notifier).editLog(loggedEntry);
+      return;
+    }
+
+    startNewEntry();
+  }
+
+  /// Seeds the log form of the current page with a fresh entry, also to log
+  /// another set on a page that was already logged.
+  void startNewEntry() {
     // Ensure that there is a log entry for the current slot entry
     final slotEntryPage = state.getSlotEntryPageByIndex();
     if (slotEntryPage == null || slotEntryPage.setConfigData == null) {
@@ -428,7 +455,16 @@ class GymStateNotifier extends _$GymStateNotifier {
       routineId: state.routine.id,
       iteration: state.iteration,
     );
-    ref.read(gymLogProvider.notifier).setLog(log);
+    final logNotifier = ref.read(gymLogProvider.notifier)..setLog(log);
+
+    // Pre-fill with the values last logged for this exercise during this
+    // workout (e.g. when dialing in the weight over the first sets), if enabled
+    final lastValues = state.stickySetValues
+        ? state.lastLoggedValues[slotEntryPage.setConfigData!.exerciseId]
+        : null;
+    if (lastValues != null) {
+      logNotifier.copyValuesFrom(lastValues);
+    }
   }
 
   void setShowExercisePages(bool value) {
@@ -474,15 +510,22 @@ class GymStateNotifier extends _$GymStateNotifier {
     _savePrefs();
   }
 
-  void markSlotPageAsDone(String uuid, {required bool isDone}) {
-    final slotPage = state.getSlotPageByUUID(uuid);
-    if (slotPage == null) {
-      _logger.warning('No slot page found for UUID $uuid');
-      return;
-    }
+  void setStickySetValues(bool value) {
+    state = state.copyWith(stickySetValues: value);
+    _savePrefs();
+  }
 
-    final updatedSlotPage = slotPage.copyWith(logDone: isDone);
+  /// Remembers the values logged for the log's exercise so that the next
+  /// set of the exercise can be pre-filled with them, see
+  /// [GymModeState.stickySetValues].
+  void recordLoggedValues(Log log) {
+    final updated = Map<int, Log>.of(state.lastLoggedValues);
+    updated[log.exerciseId] = log;
+    state = state.copyWith(lastLoggedValues: updated);
+  }
 
+  /// Replaces the slot page with [uuid] by [updatedSlotPage] in the state.
+  void _updateSlotPage(String uuid, SlotPageEntry updatedSlotPage) {
     final updatedPages = state.pages.map((page) {
       if (page.type != PageType.set) {
         return page;
@@ -499,8 +542,54 @@ class GymStateNotifier extends _$GymStateNotifier {
     }).toList();
 
     state = state.copyWith(pages: updatedPages);
+  }
+
+  /// Starts the timer of the slot page with [uuid], unless it is already
+  /// running.
+  ///
+  /// The start time lives in the gym state (not the timer widget) so the
+  /// countdown continues when the page is disposed and re-created while
+  /// navigating, e.g. when going back to correct a logged set during the
+  /// rest period.
+  void startTimerIfNeeded(String uuid) {
+    final slotPage = state.getSlotPageByUUID(uuid);
+    if (slotPage == null) {
+      _logger.warning('No slot page found for UUID $uuid');
+      return;
+    }
+    if (slotPage.timerStartedAt != null) {
+      return;
+    }
+
+    _updateSlotPage(uuid, slotPage.copyWith(timerStartedAt: clock.now()));
+    _logger.fine('Started timer for slot page UUID $uuid');
+  }
+
+  /// [log] is the entry saved from this page during the current workout. It
+  /// is kept on the slot page so revisiting the page pre-fills the form with
+  /// the saved values and saving updates the row instead of inserting a
+  /// duplicate.
+  ///
+  /// Saving a new entry, unlike correcting one, also (re)starts the rest timer
+  /// that follows the set.
+  void markSlotPageAsDone(String uuid, {required bool isDone, Log? log}) {
+    final slotPage = state.getSlotPageByUUID(uuid);
+    if (slotPage == null) {
+      _logger.warning('No slot page found for UUID $uuid');
+      return;
+    }
+
+    // A copy, so later edits in the form don't change the saved entry
+    _updateSlotPage(uuid, slotPage.copyWith(logDone: isDone, loggedEntry: log?.copyWith()));
     _saveProgress();
     _logger.fine('Set logDone=$isDone for slot page UUID $uuid');
+
+    // Scrolling past the timer (e.g. "jump to") already started it
+    final timerPage = state.getSlotEntryPageByIndex(slotPage.pageIndex + 1);
+    final isNewEntry = slotPage.loggedEntry?.id != log?.id;
+    if (isNewEntry && timerPage?.type == SlotPageType.timer) {
+      _updateSlotPage(timerPage!.uuid, timerPage.copyWith(timerStartedAt: clock.now()));
+    }
   }
 
   void replaceExercises(
@@ -545,6 +634,14 @@ class GymStateNotifier extends _$GymStateNotifier {
     String pageEntryUUID, {
     required Exercise newExercise,
   }) {
+    // Ad-hoc set configs bypass routine hydration, so resolve the profile
+    // default weight unit (kg/lb) here; the log draft picks it up from the
+    // unit object.
+    final profile = ref.read(userProfileProvider).value;
+    final weightUnits = ref.read(routineWeightUnitProvider).value ?? const <WeightUnit>[];
+    final defaultWeightUnitId = profile?.defaultWeightUnitId ?? WEIGHT_UNIT_KG;
+    final defaultWeightUnit = weightUnits.firstWhereOrNull((u) => u.id == defaultWeightUnitId);
+
     final List<PageEntry> pages = [];
     for (final page in state.pages) {
       pages.add(page);
@@ -564,6 +661,7 @@ class GymStateNotifier extends _$GymStateNotifier {
                 exerciseId: newExercise.id,
                 exercise: newExercise,
                 slotEntryId: setConfigData.slotEntryId,
+                weightUnit: defaultWeightUnit,
               ),
             ),
           );
@@ -595,6 +693,7 @@ class GymStateNotifier extends _$GymStateNotifier {
       isInitialized: false,
       pages: [],
       currentPage: 0,
+      lastLoggedValues: const {},
 
       validUntil: clock.now().add(DEFAULT_DURATION),
       workoutStart: clock.now(),

@@ -14,19 +14,21 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 
-import 'package:flutter/material.dart';
+import 'package:drift/native.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
+import 'package:material_ui/material_ui.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:wger/database/powersync/database.dart';
 import 'package:wger/features/routines/providers/routines_repository.dart';
 import 'package:wger/features/routines/screens/routine_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 import 'package:wger/theme/theme.dart';
 
-import '../../test_data/exercises.dart';
-import '../../test_data/routines.dart';
+import '../../test_data/screenshots/routines.dart';
 import 'screenshots_02_workout.mocks.dart';
 
 @GenerateMocks([RoutinesRepository])
@@ -34,12 +36,15 @@ Widget createWorkoutDetailScreen({Locale? locale}) {
   locale ??= const Locale('en');
   final key = GlobalKey<NavigatorState>();
 
-  final routine = getTestRoutine(exercises: getScreenshotExercises());
+  final routine = getScreenshotRoutine();
   final mockRoutinesRepo = MockRoutinesRepository();
   when(mockRoutinesRepo.watchAllDrift()).thenAnswer((_) => Stream.value([routine]));
 
   final container = riverpod.ProviderContainer.test(
     overrides: [
+      // Backstop for repositories that are not mocked: they all read the
+      // database, and none of them should reach the real PowerSync file
+      driftPowerSyncDatabase.overrideWithValue(DriftPowersyncDatabase(NativeDatabase.memory())),
       routinesRepositoryProvider.overrideWithValue(mockRoutinesRepo),
     ],
   );
@@ -55,7 +60,7 @@ Widget createWorkoutDetailScreen({Locale? locale}) {
       child: MaterialApp(
         locale: locale,
         debugShowCheckedModeBanner: false,
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         theme: wgerLightTheme,
         navigatorKey: key,

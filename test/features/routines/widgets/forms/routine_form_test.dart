@@ -18,15 +18,16 @@
 
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/core/widgets/form_submit_button.dart';
+import 'package:wger/features/account/providers/user_profile_repository.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/exercises/providers/exercise_repository.dart';
 import 'package:wger/features/exercises/providers/exercises_notifier.dart';
@@ -41,18 +42,25 @@ import 'package:wger/features/routines/screens/routine_edit_screen.dart';
 import 'package:wger/features/routines/screens/routine_screen.dart';
 import 'package:wger/features/routines/widgets/forms/routine.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 
 import '../../../../../test_data/routines.dart';
-import '../../../../fake_connectivity.dart';
+import '../../../../helpers/fake_connectivity.dart';
 import './routine_form_test.mocks.dart';
 
-@GenerateMocks([RoutinesRepository, WorkoutSessionRepository, ExerciseRepository])
+@GenerateMocks([
+  RoutinesRepository,
+  WorkoutSessionRepository,
+  ExerciseRepository,
+  UserProfileRepository,
+])
 void main() {
   installFakeConnectivity();
 
   late MockRoutinesRepository mockRoutinesRepository;
   late MockWorkoutSessionRepository mockSessionRepo;
   late MockExerciseRepository mockExerciseRepo;
+  late MockUserProfileRepository mockUserProfileRepo;
   late StreamController<List<Routine>> routineStream;
   late Routine existingRoutine;
   late Routine newRoutine;
@@ -92,6 +100,10 @@ void main() {
     when(
       mockExerciseRepo.watchAllDrift(),
     ).thenAnswer((_) => Stream.value(ExerciseState(const <Exercise>[])));
+    // RoutinesRiverpod.build() also listens to the user profile for the default
+    // weight unit; stub it so the real PowerSync DB isn't pulled in.
+    mockUserProfileRepo = MockUserProfileRepository();
+    when(mockUserProfileRepo.watchDrift()).thenAnswer((_) => Stream.value(null));
   });
 
   tearDown(() {
@@ -106,6 +118,7 @@ void main() {
         routinesRepositoryProvider.overrideWithValue(mockRoutinesRepository),
         workoutSessionRepositoryProvider.overrideWithValue(mockSessionRepo),
         exerciseRepositoryProvider.overrideWithValue(mockExerciseRepo),
+        userProfileRepositoryProvider.overrideWithValue(mockUserProfileRepo),
         networkStatusProvider.overrideWithValue(isOnline),
         routineRepetitionUnitProvider.overrideWith(
           (ref) => Stream<List<RepetitionUnit>>.value(testRepetitionUnits),
@@ -116,7 +129,7 @@ void main() {
       ],
       child: MaterialApp(
         locale: Locale(locale),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: key,
         home: Scaffold(body: RoutineForm(routine)),
@@ -280,9 +293,12 @@ void main() {
     );
     expect(button.enabled, isFalse);
 
-    // And tapping it must not trigger the create request.
+    // Fill the form first: an invalid form is rejected by the validator, which
+    // would make the verifyNever below pass no matter what the gate does.
+    await tester.enterText(find.byKey(const Key('field-name')), 'New cool routine');
     await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)), warnIfMissed: false);
-    await tester.pump();
+    await tester.pumpAndSettle();
+
     verifyNever(mockRoutinesRepository.addRoutineServer(any));
   });
 }

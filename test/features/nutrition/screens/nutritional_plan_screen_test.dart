@@ -20,49 +20,53 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
+import 'package:material_ui/material_ui.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/core/network/network_provider.dart';
+import 'package:wger/features/measurements/providers/measurement_repository.dart';
 import 'package:wger/features/nutrition/models/ingredient.dart';
 import 'package:wger/features/nutrition/models/nutritional_plan.dart';
 import 'package:wger/features/nutrition/providers/ingredient_repository.dart';
 import 'package:wger/features/nutrition/providers/nutrition_repository.dart';
 import 'package:wger/features/nutrition/screens/nutritional_plan_screen.dart';
-import 'package:wger/features/weight/providers/body_weight_repository.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 
 import '../../../../test_data/body_weight.dart';
 import '../../../../test_data/nutritional_plans.dart';
-import '../../../fake_auth_environment.dart';
-import '../../../fake_connectivity.dart';
 import '../../../fixtures/fixture_reader.dart';
+import '../../../helpers/fake_auth_environment.dart';
+import '../../../helpers/fake_connectivity.dart';
+import '../../../helpers/measurement_repository_stubs.dart';
 import 'nutritional_plan_screen_test.mocks.dart';
 
 @GenerateMocks([
   NutritionRepository,
   IngredientRepository,
   http.Client,
-  BodyWeightRepository,
+  MeasurementRepository,
 ])
 void main() {
   installFakeConnectivity();
   installFakeAuthEnvironment();
 
-  late BodyWeightRepository mockBodyWeightRepository;
+  late MockMeasurementRepository mockMeasurementRepository;
   late MockNutritionRepository mockNutritionRepo;
   late MockIngredientRepository mockIngredientRepo;
 
   late Ingredient fetchedIngredient;
 
   setUp(() {
-    mockBodyWeightRepository = MockBodyWeightRepository();
-    when(
-      mockBodyWeightRepository.watchAllDrift(),
-    ).thenAnswer((_) => Stream.value([testWeightEntry1]));
+    mockMeasurementRepository = MockMeasurementRepository();
+    stubMeasurementReads(
+      mockMeasurementRepository,
+      [getBodyWeightCategory()],
+      bodyWeightEntries([testWeightEntry1]),
+    );
 
     mockNutritionRepo = MockNutritionRepository();
     mockIngredientRepo = MockIngredientRepository();
@@ -94,7 +98,7 @@ void main() {
     final container = ProviderContainer(
       overrides: [
         networkStatusProvider.overrideWithValue(isOnline),
-        bodyWeightRepositoryProvider.overrideWithValue(mockBodyWeightRepository),
+        measurementRepositoryProvider.overrideWithValue(mockMeasurementRepository),
         nutritionRepositoryProvider.overrideWithValue(mockNutritionRepo),
         ingredientRepositoryProvider.overrideWithValue(mockIngredientRepo),
       ],
@@ -112,7 +116,7 @@ void main() {
       child: MaterialApp(
         key: GlobalKey(),
         locale: Locale(locale),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: key,
         home: TextButton(
@@ -133,6 +137,7 @@ void main() {
     (tester) async {
       tester.view.physicalSize = const Size(500, 1000);
       tester.view.devicePixelRatio = 1.0; // Ensure correct pixel ratio
+      addTearDown(tester.view.reset);
 
       final container = makeContainer();
       await tester.pumpWidget(createNutritionalPlan(container: container));

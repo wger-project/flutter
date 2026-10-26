@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/core/error_dialogs.dart' show ServerHtmlError;
 import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -154,7 +154,11 @@ class _PlainErrorBody extends StatelessWidget {
             const SizedBox(height: 8),
             SelectableText(
               stacktrace.toString(),
-              style: const TextStyle(fontFamily: 'monospace', fontSize: 11, color: Colors.grey),
+              style: TextStyle(
+                fontFamily: 'monospace',
+                fontSize: 11,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
             ),
           ],
         ],

@@ -16,20 +16,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/core/form_screen.dart';
 import 'package:wger/core/network/network_provider.dart';
-import 'package:wger/features/nutrition/widgets/forms.dart';
 import 'package:wger/features/routines/models/routine.dart';
 import 'package:wger/features/routines/providers/routines_repository.dart';
 import 'package:wger/features/routines/screens/routine_list_screen.dart';
 import 'package:wger/features/routines/screens/routine_screen.dart';
 import 'package:wger/features/routines/widgets/forms/routine.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 
 import 'routine_list_screen_test.mocks.dart';
 
@@ -75,7 +75,7 @@ void main() {
       container: container,
       child: MaterialApp(
         locale: Locale(locale),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: const RoutineListScreen(),
         routes: {
@@ -107,12 +107,27 @@ void main() {
 
     // Confirmation dialog
     expect(find.byType(AlertDialog), findsOneWidget);
+    verifyNever(mockRoutinesRepository.deleteLocalDrift(any));
 
-    // Confirm tap, note: the actual delete now goes through Drift +
-    // PowerSync (not REST), so we don't verify a repository call here.
-    // The UI flow up to dispatch is what's covered.
     await tester.tap(find.text('Delete'));
     await tester.pumpAndSettle();
+
+    // The delete goes through Drift + PowerSync, so it lands on the
+    // repository rather than on a REST endpoint
+    verify(mockRoutinesRepository.deleteLocalDrift(routine1.id)).called(1);
+  });
+
+  testWidgets('Cancelling the delete dialog deletes nothing', (WidgetTester tester) async {
+    await tester.pumpWidget(renderWidget());
+    await tester.pumpAndSettle();
+    await tester.tap(find.byIcon(Icons.delete).first);
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Cancel'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(AlertDialog), findsNothing);
+    verifyNever(mockRoutinesRepository.deleteLocalDrift(any));
   });
 
   testWidgets('Delete button stays enabled when offline', (WidgetTester tester) async {
@@ -125,18 +140,35 @@ void main() {
     );
     expect(deleteButton.onPressed, isNotNull);
 
-    // The confirmation dialog opens and the delete flow runs through.
+    // The confirmation dialog opens and the delete reaches the repository
     await tester.tap(find.byIcon(Icons.delete).first);
     await tester.pumpAndSettle();
     expect(find.byType(AlertDialog), findsOneWidget);
     await tester.tap(find.text('Delete'));
     await tester.pumpAndSettle();
+
+    verify(mockRoutinesRepository.deleteLocalDrift(routine1.id)).called(1);
+  });
+
+  testWidgets('Creating a routine is blocked when offline', (WidgetTester tester) async {
+    // The counterpart of the delete above: creation goes through REST, so the
+    // FAB has to be inert offline instead of opening a form that cannot save.
+    await tester.pumpWidget(renderWidget(isOnline: false));
+    await tester.pumpAndSettle();
+
+    final fab = tester.widget<FloatingActionButton>(find.byType(FloatingActionButton));
+    expect(fab.onPressed, isNull);
+
+    await tester.tap(find.byType(FloatingActionButton));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(RoutineForm), findsNothing);
   });
 
   testWidgets('Test the form on the workout plan screen', (WidgetTester tester) async {
     await tester.pumpWidget(renderWidget());
 
-    expect(find.byType(PlanForm), findsNothing);
+    expect(find.byType(RoutineForm), findsNothing);
     await tester.tap(find.byType(FloatingActionButton));
     await tester.pumpAndSettle();
     expect(find.byType(RoutineForm), findsOneWidget);

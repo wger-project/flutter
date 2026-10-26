@@ -18,9 +18,10 @@
 
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:logging/logging.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
@@ -130,6 +131,33 @@ void main() {
       // Missing items default to visible
       expect(items.isWidgetVisible(DashboardWidget.weight), true);
       expect(items.isWidgetVisible(DashboardWidget.trophies), true);
+    });
+
+    // The settings screen shows the default arrangement while the stored one
+    // is still being read, so an edit can land before it arrives
+    test('an edit during the load applies to the stored arrangement', () async {
+      SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+      final prefs = SharedPreferencesAsync();
+      await prefs.setString(
+        PREFS_DASHBOARD_CONFIG,
+        jsonEncode([
+          for (final widget in DashboardWidget.values.reversed)
+            {'widget': widget.value, 'visible': true},
+        ]),
+      );
+
+      container.dispose();
+      container = ProviderContainer(
+        overrides: [appSettingsPrefsProvider.overrideWithValue(prefs)],
+      );
+
+      // Deliberately not awaiting the provider first
+      final notifier = container.read(appSettingsProvider.notifier);
+      await notifier.setDashboardOrder(0, 1);
+
+      final items = container.read(appSettingsProvider).requireValue.dashboardItems;
+      expect(items.allWidgets[0], DashboardWidget.measurements);
+      expect(items.allWidgets[1], DashboardWidget.calendar);
     });
   });
 
@@ -320,6 +348,125 @@ void main() {
 
       expect(container.read(appSettingsProvider).requireValue.keepDataOnLogout, true);
       expect(await prefs.getBool(PREFS_KEEP_DATA_ON_LOGOUT), true);
+    });
+  });
+
+  group('allow self-signed certs', () {
+    test('defaults to false', () async {
+      final settings = await container.read(appSettingsProvider.future);
+      expect(settings.allowSelfSignedCerts, false);
+    });
+
+    test('loads true from prefs', () async {
+      SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+      final prefs = SharedPreferencesAsync();
+      await prefs.setBool(PREFS_ALLOW_SELF_SIGNED_CERTS, true);
+
+      container.dispose();
+      container = ProviderContainer(
+        overrides: [appSettingsPrefsProvider.overrideWithValue(prefs)],
+      );
+
+      final settings = await container.read(appSettingsProvider.future);
+      expect(settings.allowSelfSignedCerts, true);
+    });
+
+    test('setAllowSelfSignedCerts persists the toggle', () async {
+      SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+      final prefs = SharedPreferencesAsync();
+
+      container.dispose();
+      container = ProviderContainer(
+        overrides: [appSettingsPrefsProvider.overrideWithValue(prefs)],
+      );
+
+      await container.read(appSettingsProvider.future);
+      await container.read(appSettingsProvider.notifier).setAllowSelfSignedCerts(true);
+
+      expect(container.read(appSettingsProvider).requireValue.allowSelfSignedCerts, true);
+      expect(await prefs.getBool(PREFS_ALLOW_SELF_SIGNED_CERTS), true);
+    });
+  });
+
+  group('use dynamic color', () {
+    test('defaults to false', () async {
+      final settings = await container.read(appSettingsProvider.future);
+      expect(settings.useDynamicColor, false);
+    });
+
+    test('loads true from prefs', () async {
+      SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+      final prefs = SharedPreferencesAsync();
+      await prefs.setBool(PREFS_USE_DYNAMIC_COLOR, true);
+
+      container.dispose();
+      container = ProviderContainer(
+        overrides: [appSettingsPrefsProvider.overrideWithValue(prefs)],
+      );
+
+      final settings = await container.read(appSettingsProvider.future);
+      expect(settings.useDynamicColor, true);
+    });
+
+    test('setUseDynamicColor persists the toggle', () async {
+      SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+      final prefs = SharedPreferencesAsync();
+
+      container.dispose();
+      container = ProviderContainer(
+        overrides: [appSettingsPrefsProvider.overrideWithValue(prefs)],
+      );
+
+      await container.read(appSettingsProvider.future);
+      await container.read(appSettingsProvider.notifier).setUseDynamicColor(true);
+
+      expect(container.read(appSettingsProvider).requireValue.useDynamicColor, true);
+      expect(await prefs.getBool(PREFS_USE_DYNAMIC_COLOR), true);
+    });
+  });
+
+  group('verbose logging', () {
+    // The setting drives a global, so put it back the way the test found it
+    setUp(() {
+      final level = Logger.root.level;
+      addTearDown(() => Logger.root.level = level);
+    });
+
+    test('defaults to false', () async {
+      final settings = await container.read(appSettingsProvider.future);
+      expect(settings.verboseLogging, false);
+    });
+
+    test('loading it from the prefs raises the log level', () async {
+      SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+      final prefs = SharedPreferencesAsync();
+      await prefs.setBool(PREFS_VERBOSE_LOGGING, true);
+
+      container.dispose();
+      container = ProviderContainer(
+        overrides: [appSettingsPrefsProvider.overrideWithValue(prefs)],
+      );
+
+      final settings = await container.read(appSettingsProvider.future);
+      expect(settings.verboseLogging, true);
+      expect(Logger.root.level, Level.ALL);
+    });
+
+    test('setVerboseLogging persists the toggle and applies the level', () async {
+      SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+      final prefs = SharedPreferencesAsync();
+
+      container.dispose();
+      container = ProviderContainer(
+        overrides: [appSettingsPrefsProvider.overrideWithValue(prefs)],
+      );
+
+      await container.read(appSettingsProvider.future);
+      await container.read(appSettingsProvider.notifier).setVerboseLogging(true);
+
+      expect(container.read(appSettingsProvider).requireValue.verboseLogging, true);
+      expect(await prefs.getBool(PREFS_VERBOSE_LOGGING), true);
+      expect(Logger.root.level, Level.ALL);
     });
   });
 }

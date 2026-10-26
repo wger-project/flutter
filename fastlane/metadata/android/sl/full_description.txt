@@ -1,0 +1,39 @@
+Od ljubiteljev fitnesa za ljubitelje fitnesa – organizirajte svoje zdravje z aplikacijo WGER, vašim upravljalnikom treningov!
+
+Našli ste svojo novo najljubšo aplikacijo za fitnes. Ali radi ustvarjate svoje lastne športne rutine? Ne glede na to kake vrste ŽIVALI/POŠASTI ste – vsi imamo nekaj skupnega: radi spremljamo naše podatke o zdravju <3
+
+Ne obsojamo vas, če svoje fitnes potovanje še vedno upravljate s staro dobro papirnato beležnico treningov. Dobrodošli pa v 2026!
+
+Za vas smo ustvarili 100 % brezplačno digitalno aplikacijo za sledenje zdravju in treningom. Vsebuje vse najbolj pomembne zmožnosti, ki vam olajšajo življenje. Začnite z uporabo, redno trenirajte in slavite svoj napredek!
+
+WGER je svoboden in odprto-koden projekt, ki se osredotoča na:
+* Vaše telo
+* Vaše treninge
+* Vaš napredek
+* Vaše podatke
+
+Vaše telo:
+Ni vam potrebno po spletu iskati sestavin vaših priljubljenih obrokov in prigrizkov – izbirajte svoje dnevne obroke iz več kot 100.000 izdelkov in takoj vidite njihove prehrambene vrednosti. Obroke dodajte prehranskemu načrtu in imejte pregled nad svojo dieto v koledarju.
+
+Vaši treningi:
+Sami veste, kaj je najboljše za vaše telo. Ustvarjajte svoje treninge s kombiniranjem vse bolj raznolikih vrst vaj. Na voljo je že več kot 200 različnih vaj. Nato uporabite način za telovadnico, ki vas bo vodil skozi trening, medtem ko uteži vnašate v dnevnik z enim samim dotikom.
+
+Vaš napredek:
+Nikoli ne izgubite fokusa na svoje cilje. Sledite svoji telesni teži in vodite statistiko.
+
+Vaši podatki:
+WGER je vaš osebni dnevnik fitnesa – in samo vi si lastite svoje osebne podatke. Za dostop do podatkov lahko uporabljate programski vmesnik REST in s podatki ustvarjate čudovite stvari.
+
+Vedite: Ta brezplačna aplikacija ni odvisna od skritega financiranja in od vas ne zahtevamo plačila za njeno uporabo. Je veliko več. Je projekt skupnosti, ki stalno raste. Kadarkoli lahko pričakujete nove zmožnosti in funkcije!
+
+#OdprtaKoda – kaj to pomeni?
+
+Svobodna in odprta koda pomeni, da je celotna izvorna koda te aplikacije in strežnika, s katero aplikacija komunicira, prosta in na voljo vsakomur:
+* Ali bi radi WGER poganjali na svojem lastnem strežniku za vaš krajevni fitnes? Kar dajte!
+* Ali pogrešate neko zmožnost ali funkcijo in bi jo radi dodali? Začnite takoj!
+* Ali želite preveriti, da se noben vaš osebni podatek ne pošilja nekomu drugemu na skrivaj? Tudi to lahko!
+
+Pridružite se naši skupnosti in postanite del športnih navdušencev in računalniških zanesenjakov z vsega sveta. Neprestano delamo na prilagajanju in optimiziranju aplikacije za naše (in vaše) potrebe. Veseli smo vašega mnenja zato kadarkoli skočite med nas in prispevajte svoje želje in ideje!
+
+➙ izvorno kodo najdete na https://github.com/wger-project
+➙ vprašajte nas karkoli ali pa nas pridite pozdravit v našo klepetalnico na Discordu https://discord.gg/rPWFv6W

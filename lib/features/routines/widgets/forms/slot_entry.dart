@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/error_dialogs.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
@@ -225,10 +225,7 @@ class _SlotEntryFormState extends ConsumerState<SlotEntryForm> {
           if (!widget.simpleMode)
             WeightUnitInputWidget(
               widget.entry.weightUnitObj,
-              onChanged: (value) {
-                widget.entry.weightUnitObj = null;
-                widget.entry.weightUnitId = null;
-              },
+              onChanged: (value) => widget.entry.weightUnit = value,
             ),
           Row(
             spacing: 10,
@@ -259,10 +256,7 @@ class _SlotEntryFormState extends ConsumerState<SlotEntryForm> {
           if (!widget.simpleMode)
             RepetitionUnitInputWidget(
               widget.entry.repetitionUnitObj,
-              onChanged: (value) {
-                widget.entry.repetitionUnitObj = null;
-                widget.entry.repetitionUnitId = null;
-              },
+              onChanged: (value) => widget.entry.repetitionUnit = value,
             ),
           Row(
             spacing: 10,

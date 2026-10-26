@@ -18,12 +18,12 @@
 
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:http/http.dart' as http;
+import 'package:material_ui/material_ui.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:network_image_mock/network_image_mock.dart';
@@ -31,6 +31,8 @@ import 'package:shared_preferences_platform_interface/in_memory_shared_preferenc
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/features/nutrition/models/ingredient.dart';
+import 'package:wger/features/nutrition/models/ingredient_weight_unit.dart';
+import 'package:wger/features/nutrition/models/log.dart';
 import 'package:wger/features/nutrition/models/meal.dart';
 import 'package:wger/features/nutrition/models/meal_item.dart';
 import 'package:wger/features/nutrition/models/nutritional_plan.dart';
@@ -40,10 +42,11 @@ import 'package:wger/features/nutrition/providers/nutrition_repository.dart';
 import 'package:wger/features/nutrition/screens/nutritional_plan_screen.dart';
 import 'package:wger/features/nutrition/widgets/forms.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 
 import '../../../../test_data/nutritional_plans.dart';
-import '../../../fake_connectivity.dart';
 import '../../../fixtures/fixture_reader.dart';
+import '../../../helpers/fake_connectivity.dart';
 import 'nutritional_meal_item_form_test.mocks.dart';
 
 @GenerateMocks([http.Client, IngredientRepository, NutritionRepository])
@@ -168,13 +171,36 @@ void main() {
       container: container,
       child: MaterialApp(
         locale: Locale(locale),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: key,
         home: Scaffold(
           body: Scrollable(
             viewportBuilder: (BuildContext context, ViewportOffset position) =>
                 getMealItemForm(meal, const [], code, test),
+          ),
+        ),
+        routes: {
+          NutritionalPlanScreen.routeName: (ctx) => const NutritionalPlanScreen(),
+        },
+      ),
+    );
+  }
+
+  Widget createIngredientLogFormScreen(NutritionalPlan plan, {locale = 'en'}) {
+    final key = GlobalKey<NavigatorState>();
+
+    return UncontrolledProviderScope(
+      container: container,
+      child: MaterialApp(
+        locale: Locale(locale),
+        localizationsDelegates: appLocalizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        navigatorKey: key,
+        home: Scaffold(
+          body: Scrollable(
+            viewportBuilder: (BuildContext context, ViewportOffset position) =>
+                getIngredientLogForm(plan),
           ),
         ),
         routes: {
@@ -192,8 +218,195 @@ void main() {
     expect(find.byType(TextFormField), findsWidgets);
     expect(find.byKey(const Key('scan-button')), findsOneWidget);
     expect(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)), findsOneWidget);
+    // Adding to a meal has the meal fixed, so no selector is offered
+    expect(find.byKey(const Key('field-meal')), findsNothing);
 
     expect(meal1.mealItems.length, 2);
+  });
+
+  group('Test logging a single ingredient', () {
+    Ingredient ingredientWithUnits() => Ingredient.fromJson(ingredient.toJson())
+      ..weightUnits = [
+        IngredientWeightUnit(
+          id: 1,
+          uuid: 'cc000000-0000-4000-8000-000000000001',
+          ingredientId: ingredient.id,
+          name: 'cup, loosely packed',
+          grams: 158,
+        ),
+      ];
+
+    testWidgets('the meal can be selected and is logged with the entry', (
+      WidgetTester tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(1080, 1920));
+      tester.view.devicePixelRatio = 1.0;
+      when(mockRepo.addLogLocalDrift(any)).thenAnswer((_) async => Future.value());
+
+      await tester.pumpWidget(createIngredientLogFormScreen(plan1));
+      await tester.pumpAndSettle();
+
+      // The plan's meals are offered, defaulting to no meal ("other logs")
+      expect(find.byKey(const Key('field-meal')), findsOneWidget);
+      await tester.tap(find.byKey(const Key('field-meal')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Initial Name 2').last);
+      await tester.pumpAndSettle();
+
+      final IngredientFormState formState = tester.state(find.byType(IngredientForm));
+      formState.selectIngredient(ingredient, 50);
+      await tester.enterText(find.byKey(const Key('field-weight')), '50');
+      await mockNetworkImagesFor(() => tester.pumpAndSettle());
+
+      await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
+      await tester.pump();
+
+      final log = verify(mockRepo.addLogLocalDrift(captureAny)).captured.single as LogItem;
+      expect(log.mealId, testMealUuid2);
+      expect(log.ingredientId, ingredient.id);
+      expect(log.amount, 50);
+    });
+
+    testWidgets('without picking a meal the entry is logged without one', (
+      WidgetTester tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(1080, 1920));
+      tester.view.devicePixelRatio = 1.0;
+      when(mockRepo.addLogLocalDrift(any)).thenAnswer((_) async => Future.value());
+
+      await tester.pumpWidget(createIngredientLogFormScreen(plan1));
+      await tester.pumpAndSettle();
+
+      final IngredientFormState formState = tester.state(find.byType(IngredientForm));
+      formState.selectIngredient(ingredient, 50);
+      await tester.enterText(find.byKey(const Key('field-weight')), '50');
+      await mockNetworkImagesFor(() => tester.pumpAndSettle());
+
+      await tester.tap(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)));
+      await tester.pump();
+
+      final log = verify(mockRepo.addLogLocalDrift(captureAny)).captured.single as LogItem;
+      expect(log.mealId, isNull);
+    });
+
+    testWidgets('weight stays editable on a phone with a long weight unit name', (
+      WidgetTester tester,
+    ) async {
+      tester.view.physicalSize = const Size(1170, 2532);
+      tester.view.devicePixelRatio = 3.0;
+      addTearDown(tester.view.reset);
+
+      final withUnits = ingredientWithUnits();
+
+      await tester.pumpWidget(createIngredientLogFormScreen(plan1));
+      await tester.pumpAndSettle();
+
+      final IngredientFormState formState = tester.state(find.byType(IngredientForm));
+      formState.selectIngredient(withUnits, 142);
+      await mockNetworkImagesFor(() => tester.pumpAndSettle());
+
+      // Tapping the field must focus the input, not open the unit menu
+      await tester.tap(find.byKey(const Key('field-weight')));
+      await tester.pumpAndSettle();
+      final input = find.descendant(
+        of: find.byKey(const Key('field-weight')),
+        matching: find.byType(EditableText),
+      );
+      expect(tester.widget<EditableText>(input).focusNode.hasFocus, isTrue);
+
+      await tester.enterText(find.byKey(const Key('field-weight')), '80');
+      await tester.pump();
+      expect(formState.mealItem.amount, 80);
+    });
+
+    testWidgets('the form scrolls instead of overflowing with the keyboard open', (
+      WidgetTester tester,
+    ) async {
+      tester.view.physicalSize = const Size(1170, 2532);
+      tester.view.devicePixelRatio = 3.0;
+      tester.view.viewInsets = const FakeViewPadding(bottom: 336 * 3);
+      addTearDown(tester.view.reset);
+
+      await tester.pumpWidget(createIngredientLogFormScreen(plan1));
+      await tester.pumpAndSettle();
+      final IngredientFormState formState = tester.state(find.byType(IngredientForm));
+      formState.selectIngredient(ingredientWithUnits(), 2);
+      await mockNetworkImagesFor(() => tester.pumpAndSettle());
+
+      // A RenderFlex overflow fails the test on its own, the save button
+      // must still be reachable by scrolling.
+      await tester.scrollUntilVisible(
+        find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)),
+        100,
+        scrollable: find
+            .descendant(of: find.byType(IngredientForm), matching: find.byType(Scrollable))
+            .first,
+      );
+      expect(find.byKey(const Key(SUBMIT_BUTTON_KEY_NAME)).hitTestable(), findsOneWidget);
+    });
+
+    testWidgets('a unit chip sets the weight unit, the gram chip clears it', (
+      WidgetTester tester,
+    ) async {
+      tester.view.physicalSize = const Size(1170, 2532);
+      tester.view.devicePixelRatio = 3.0;
+      addTearDown(tester.view.reset);
+
+      await tester.pumpWidget(createIngredientLogFormScreen(plan1));
+      await tester.pumpAndSettle();
+      final IngredientFormState formState = tester.state(find.byType(IngredientForm));
+      formState.selectIngredient(ingredientWithUnits(), 2);
+      await mockNetworkImagesFor(() => tester.pumpAndSettle());
+
+      await tester.tap(find.widgetWithText(ChoiceChip, 'cup, loosely packed (158g)'));
+      await tester.pumpAndSettle();
+      expect(formState.mealItem.weightUnitId, 1);
+      expect(formState.mealItem.weightUnitObj?.grams, 158);
+      expect(find.text('× cup, loosely packed'), findsOneWidget);
+      final summary = find.byKey(const Key('macros-summary'));
+      Finder inSummary(String text) => find.descendant(of: summary, matching: find.text(text));
+      expect(inSummary('· 316 g'), findsOneWidget);
+      expect(inSummary('1580'), findsOneWidget);
+      expect(inSummary('Protein 16 g'), findsOneWidget);
+
+      await tester.tap(find.widgetWithText(ChoiceChip, 'g'));
+      await tester.pumpAndSettle();
+      expect(formState.mealItem.weightUnitId, isNull);
+      expect(formState.mealItem.weightUnitObj, isNull);
+      expect(inSummary('· 316 g'), findsNothing);
+      expect(inSummary('10'), findsOneWidget);
+    });
+
+    testWidgets('clearing the selected ingredient brings back the search', (
+      WidgetTester tester,
+    ) async {
+      tester.view.physicalSize = const Size(1170, 2532);
+      tester.view.devicePixelRatio = 3.0;
+      addTearDown(tester.view.reset);
+
+      await tester.pumpWidget(createIngredientLogFormScreen(plan1));
+      await tester.pumpAndSettle();
+      final IngredientFormState formState = tester.state(find.byType(IngredientForm));
+      formState.selectIngredient(ingredientWithUnits(), 2);
+      await mockNetworkImagesFor(() => tester.pumpAndSettle());
+      await tester.tap(find.widgetWithText(ChoiceChip, 'cup, loosely packed (158g)'));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('selected-ingredient')), findsOneWidget);
+      expect(find.byType(TypeAheadField<Ingredient>), findsNothing);
+
+      await tester.tap(find.byKey(const Key('clear-ingredient')));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('selected-ingredient')), findsNothing);
+      expect(find.byType(TypeAheadField<Ingredient>), findsOneWidget);
+      expect(find.byType(ChoiceChip), findsNothing);
+      expect(formState.ingredientIdController.text, isEmpty);
+      expect(formState.mealItem.ingredient, isNull);
+      expect(formState.mealItem.weightUnitObj, isNull);
+      // The typed amount survives picking a different ingredient
+      expect(formState.mealItem.amount, 2);
+    });
   });
 
   group('Test the AlertDialogs for scanning result', () {

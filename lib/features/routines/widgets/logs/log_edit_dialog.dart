@@ -16,9 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/core/snackbar.dart';
 import 'package:wger/features/routines/models/log.dart';
 import 'package:wger/features/routines/models/repetition_unit.dart';
@@ -101,13 +101,16 @@ class _LogEditDialogState extends ConsumerState<LogEditDialog> {
 
     setState(() => _saving = true);
 
-    final updated = widget.log.copyWith(
-      repetitions: _repetitions,
-      weight: _weight,
-      rir: _rir,
-      repetitionsUnitObj: _repetitionUnit,
-      weightUnitObj: _weightUnit,
-    );
+    // copyWith falls back to the old value on null, so the fields the user can
+    // clear are assigned directly
+    final updated =
+        widget.log.copyWith(
+            repetitionsUnitObj: _repetitionUnit,
+            weightUnitObj: _weightUnit,
+          )
+          ..repetitions = _repetitions
+          ..weight = _weight
+          ..rir = _rir;
 
     try {
       await ref.read(workoutLogProvider).updateEntry(updated);
