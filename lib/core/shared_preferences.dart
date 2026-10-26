@@ -11,13 +11,13 @@ import 'package:wger/features/nutrition/models/ingredient_filters.dart';
 /// and handles migration from the legacy SharedPreferences to
 /// SharedPreferencesAsync.
 class PreferenceHelper {
-  SharedPreferencesAsync _asyncPref = SharedPreferencesAsync();
-
   PreferenceHelper._instantiate();
 
   static final PreferenceHelper _instance = PreferenceHelper._instantiate();
 
-  static SharedPreferencesAsync get asyncPref => _instance._asyncPref;
+  /// Always bound to the current platform store, so a store swapped in by a
+  /// test isn't shadowed by one an earlier test left behind.
+  static SharedPreferencesAsync get asyncPref => SharedPreferencesAsync();
 
   static PreferenceHelper get instance => _instance;
 
@@ -35,7 +35,6 @@ class PreferenceHelper {
       sharedPreferencesAsyncOptions: sharedPreferencesOptions,
       migrationCompletedKey: 'migrationCompleted',
     );
-    _asyncPref = SharedPreferencesAsync();
   }
 
   //ingredients filters
