@@ -98,20 +98,9 @@ class _GymModeState extends ConsumerState<GymMode> {
       fallbackLog: 'Server unreachable, starting from the local routine',
     );
 
-    final gymViewModel = ref.read(gymStateProvider.notifier);
-    final initialPage = gymViewModel.initData(
-      routine,
-      widget._args.dayId,
-      widget._args.iteration,
-    );
-    await gymViewModel.loadPrefs();
-    gymViewModel.calculatePages();
-
-    // A workout the OS interrupted (app killed while in the background)
-    // continues where it stopped, the pages have to be calculated by now
-    final restoredPage = await gymViewModel.restoreProgress();
-
-    return restoredPage ?? initialPage;
+    return ref
+        .read(gymStateProvider.notifier)
+        .open(routine, widget._args.dayId, widget._args.iteration);
   }
 
   List<Widget> _getContent(GymModeState state) {

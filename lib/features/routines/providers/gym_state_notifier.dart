@@ -184,20 +184,29 @@ class GymStateNotifier extends _$GymStateNotifier {
     _logger.finer('Cleared stored workout progress');
   }
 
-  /// Continues a workout that was interrupted by the app being killed
+  /// Opens gym mode for a day and returns the page to start on
   ///
-  /// Returns the page to continue on, or null when there is nothing to restore.
-  /// Call this after [initData] and [calculatePages], the restored "done" flags
-  /// are matched against the pages as they were just calculated.
-  Future<int?> restoreProgress() async {
-    final stored = await PreferenceHelper.asyncPref.getString(PREFS_WORKOUT_PROGRESS);
-    if (stored == null) {
-      return null;
+  /// Continues the workout still in memory as it is, otherwise starts a new one
+  /// that picks up the progress stored before the app was killed, if any.
+  Future<int> open(Routine routine, int dayId, int iteration) async {
+    final resume = _canResume(dayId);
+    final initialPage = initData(routine, dayId, iteration);
+    await loadPrefs();
+
+    if (resume && state.pages.isNotEmpty) {
+      return initialPage;
     }
 
-    // A workout that is still in memory (the app was not killed, the user only
-    // left gym mode and came back) is more current than what was stored.
-    if (state.currentPage != 0) {
+    calculatePages();
+    return await _restoreProgress() ?? initialPage;
+  }
+
+  /// Applies the stored progress to the freshly calculated pages
+  ///
+  /// Returns the page to continue on, or null when there is nothing to restore.
+  Future<int?> _restoreProgress() async {
+    final stored = await PreferenceHelper.asyncPref.getString(PREFS_WORKOUT_PROGRESS);
+    if (stored == null) {
       return null;
     }
 
@@ -389,13 +398,14 @@ class GymStateNotifier extends _$GymStateNotifier {
     return out.join('\n');
   }
 
+  /// Whether the workout in memory is the one for [dayId] and still valid
+  bool _canResume(int dayId) =>
+      state.isInitialized && dayId == state.dayId && !state.validUntil.isBefore(clock.now());
+
   int initData(Routine routine, int dayId, int iteration) {
-    final validUntil = state.validUntil;
     final currentPage = state.currentPage;
 
-    final shouldReset =
-        (!state.isInitialized || state.isInitialized && dayId != state.dayId) ||
-        validUntil.isBefore(clock.now());
+    final shouldReset = !_canResume(dayId);
     if (shouldReset) {
       _logger.fine('Day ID mismatch or expired validUntil date. Resetting to page 0.');
     }

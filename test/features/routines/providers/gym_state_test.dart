@@ -898,34 +898,50 @@ void main() {
   });
 
   group('GymStateNotifier workout progress', () {
-    /// Simulates the app being killed and gym mode being opened again: a new
-    /// container means a new (empty) notifier, while the stored preferences
-    /// survive, exactly as on a real restart.
-    Future<GymStateNotifier> restartedNotifier({int dayId = 1, int iteration = 1}) async {
-      final restartedContainer = ProviderContainer.test();
-      final restarted = restartedContainer.read(gymStateProvider.notifier);
-      restarted.initData(getTestRoutine(), dayId, iteration);
-      restarted.calculatePages();
+    /// Simulates the app being killed: a new container means a new (empty)
+    /// notifier, while the stored preferences survive, as on a real restart.
+    GymStateNotifier restartedNotifier() =>
+        ProviderContainer.test().read(gymStateProvider.notifier);
 
-      return restarted;
-    }
+    Future<int> openDay1(GymStateNotifier gymNotifier) => gymNotifier.open(getTestRoutine(), 1, 1);
 
     /// Runs a workout up to [currentPage], with one log page marked as done
     Future<void> runWorkout({int currentPage = 2}) async {
-      notifier.initData(getTestRoutine(), 1, 1);
-      notifier.calculatePages();
+      await openDay1(notifier);
       notifier.markSlotPageAsDone(notifier.state.pages[1].slotPages[1].uuid, isDone: true);
       notifier.setCurrentPage(currentPage);
       await pumpEventQueue();
     }
 
+    /// Changes one field of the stored progress
+    Future<void> editStoredProgress(String key, Object value) async {
+      final stored =
+          json.decode((await PreferenceHelper.asyncPref.getString(PREFS_WORKOUT_PROGRESS))!)
+              as Map<String, dynamic>;
+      stored[key] = value;
+      await PreferenceHelper.asyncPref.setString(PREFS_WORKOUT_PROGRESS, json.encode(stored));
+    }
+
+    test('Continues the workout in memory with its progress', () async {
+      await runWorkout();
+      final doneUuid = notifier.state.pages[1].slotPages[1].uuid;
+
+      // The app kept running, the user only left gym mode and came back
+      expect(await openDay1(notifier), 2);
+      expect(notifier.state.pages[1].slotPages[1].uuid, doneUuid);
+      expect(
+        notifier.state.pages[1].slotPages[1].logDone,
+        isTrue,
+        reason: 'the set that was already logged is still marked as done',
+      );
+    });
+
     test('Continues an interrupted workout where it stopped', () async {
       await runWorkout();
 
-      final restarted = await restartedNotifier();
-      final restoredPage = await restarted.restoreProgress();
+      final restarted = restartedNotifier();
 
-      expect(restoredPage, 2);
+      expect(await openDay1(restarted), 2);
       expect(restarted.state.currentPage, 2);
       expect(
         restarted.state.pages[1].slotPages[1].logDone,
@@ -941,8 +957,8 @@ void main() {
 
       // Two minutes later the app is started again
       await withClock(Clock.fixed(DateTime(2026, 7, 26, 18, 32)), () async {
-        final restarted = await restartedNotifier();
-        await restarted.restoreProgress();
+        final restarted = restartedNotifier();
+        await openDay1(restarted);
 
         expect(restarted.state.workoutStart, DateTime(2026, 7, 26, 18, 30));
       });
@@ -950,18 +966,11 @@ void main() {
 
     test('Does not continue the workout of another day', () async {
       await runWorkout();
+      await editStoredProgress('dayId', 2);
 
-      // Rewrite the stored progress to belong to a different day of the
-      // routine, the workout that is opened now is not the one that stopped
-      final stored =
-          json.decode((await PreferenceHelper.asyncPref.getString(PREFS_WORKOUT_PROGRESS))!)
-              as Map<String, dynamic>;
-      stored['dayId'] = 2;
-      await PreferenceHelper.asyncPref.setString(PREFS_WORKOUT_PROGRESS, json.encode(stored));
+      final restarted = restartedNotifier();
 
-      final restarted = await restartedNotifier();
-
-      expect(await restarted.restoreProgress(), isNull);
+      expect(await openDay1(restarted), 0);
       expect(restarted.state.currentPage, 0);
     });
 
@@ -972,9 +981,9 @@ void main() {
 
       // The next morning the workout is long over
       await withClock(Clock.fixed(DateTime(2026, 7, 27, 9, 0)), () async {
-        final restarted = await restartedNotifier();
+        final restarted = restartedNotifier();
 
-        expect(await restarted.restoreProgress(), isNull);
+        expect(await openDay1(restarted), 0);
         expect(restarted.state.currentPage, 0);
       });
     });
@@ -984,19 +993,9 @@ void main() {
 
       // The routine was edited in the meantime and is now shorter than the
       // page the workout stopped on
-      final restarted = await restartedNotifier();
-      restarted.state = restarted.state.copyWith(pages: restarted.state.pages.sublist(0, 1));
+      await editStoredProgress('currentPage', 999);
 
-      expect(await restarted.restoreProgress(), isNull);
-    });
-
-    test('Keeps the workout in memory over the stored one', () async {
-      await runWorkout();
-
-      // Same notifier, i.e. the app kept running and the user only left gym
-      // mode and came back. Nothing to restore, the state is already there.
-      expect(await notifier.restoreProgress(), isNull);
-      expect(notifier.state.currentPage, 2);
+      expect(await openDay1(restartedNotifier()), 0);
     });
 
     test('Forgets the workout once it is finished', () async {
@@ -1005,16 +1004,13 @@ void main() {
       notifier.clear();
       await pumpEventQueue();
 
-      final restarted = await restartedNotifier();
-      expect(await restarted.restoreProgress(), isNull);
+      expect(await openDay1(restartedNotifier()), 0);
     });
 
     test('Ignores stored progress that can not be read', () async {
       await PreferenceHelper.asyncPref.setString(PREFS_WORKOUT_PROGRESS, 'not json');
 
-      final restarted = await restartedNotifier();
-
-      expect(await restarted.restoreProgress(), isNull);
+      expect(await openDay1(restartedNotifier()), 0);
       expect(
         await PreferenceHelper.asyncPref.getString(PREFS_WORKOUT_PROGRESS),
         isNull,
