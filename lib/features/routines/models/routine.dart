@@ -26,6 +26,7 @@ import 'package:wger/features/routines/models/day.dart';
 import 'package:wger/features/routines/models/day_data.dart';
 import 'package:wger/features/routines/models/log.dart';
 import 'package:wger/features/routines/models/session.dart';
+import 'package:wger/features/routines/models/slot_data.dart';
 
 part 'routine.g.dart';
 
@@ -278,51 +279,52 @@ class Routine {
     return groupedLogs;
   }
 
+  /// Returns a copy with [oldExerciseId] replaced by [newExercise] in the days
+  /// and session logs, this routine is left untouched
   Routine replaceExercise(int oldExerciseId, Exercise newExercise) {
-    final updatedRoutine = copyWith(
-      sessions: List<WorkoutSession>.from(sessions),
-      dayData: List<DayData>.from(dayData),
-      dayDataGym: List<DayData>.from(dayDataGym),
+    List<DayData> replaceInDays(List<DayData> days) => [
+      for (final day in days)
+        DayData(
+          iteration: day.iteration,
+          date: day.date,
+          label: day.label,
+          day: day.day,
+          slots: [
+            for (final slot in day.slots)
+              SlotData(
+                comment: slot.comment,
+                isSuperset: slot.isSuperset,
+                exerciseIds: [
+                  for (final id in slot.exerciseIds)
+                    if (id == oldExerciseId) newExercise.id else id,
+                ],
+                setConfigs: [
+                  for (final config in slot.setConfigs)
+                    if (config.exerciseId == oldExerciseId)
+                      config.copyWith(exerciseId: newExercise.id, exercise: newExercise)
+                    else
+                      config,
+                ],
+              ),
+          ],
+        ),
+    ];
+
+    return copyWith(
+      sessions: [
+        for (final session in sessions)
+          session.copyWith(
+            logs: [
+              for (final log in session.logs)
+                if (log.exerciseId == oldExerciseId)
+                  log.copyWith()..exercise = newExercise
+                else
+                  log,
+            ],
+          ),
+      ],
+      dayData: replaceInDays(dayData),
+      dayDataGym: replaceInDays(dayDataGym),
     );
-
-    for (final session in updatedRoutine.sessions) {
-      for (final log in session.logs) {
-        if (log.exerciseId == oldExerciseId) {
-          log.exerciseId = newExercise.id;
-          log.exercise = newExercise;
-        }
-      }
-    }
-
-    for (final day in updatedRoutine.dayData) {
-      for (final slot in day.slots) {
-        slot.exerciseIds = [
-          for (final id in slot.exerciseIds)
-            if (id == oldExerciseId) newExercise.id else id,
-        ];
-        for (final config in slot.setConfigs) {
-          if (config.exerciseId == oldExerciseId) {
-            config.exerciseId = newExercise.id;
-            config.exercise = newExercise;
-          }
-        }
-      }
-    }
-
-    for (final day in updatedRoutine.dayDataGym) {
-      for (final slot in day.slots) {
-        slot.exerciseIds = [
-          for (final id in slot.exerciseIds)
-            if (id == oldExerciseId) newExercise.id else id,
-        ];
-        for (final config in slot.setConfigs) {
-          if (config.exerciseId == oldExerciseId) {
-            config.exerciseId = newExercise.id;
-            config.exercise = newExercise;
-          }
-        }
-      }
-    }
-    return updatedRoutine;
   }
 }
