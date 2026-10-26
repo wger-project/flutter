@@ -3,6 +3,7 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+
 import 'dart:async' as _i11;
 
 import 'package:health_bridge/health.dart' as _i44;
@@ -1127,6 +1128,14 @@ class MockHealthRepository extends _i1.Mock implements _i43.HealthRepository {
           as String);
 
   @override
+  bool get hasPlatformTotals =>
+      (super.noSuchMethod(
+            Invocation.getter(#hasPlatformTotals),
+            returnValue: false,
+          )
+          as bool);
+
+  @override
   _i11.Future<_i43.HealthPlatformAvailability> availability() =>
       (super.noSuchMethod(
             Invocation.method(#availability, []),
@@ -1172,6 +1181,18 @@ class MockHealthRepository extends _i1.Mock implements _i43.HealthRepository {
             returnValue: _i11.Future<bool>.value(false),
           )
           as _i11.Future<bool>);
+
+  @override
+  _i11.Future<double?> platformTotal(
+    _i44.HealthDataType? type,
+    DateTime? start,
+    DateTime? end,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#platformTotal, [type, start, end]),
+            returnValue: _i11.Future<double?>.value(),
+          )
+          as _i11.Future<double?>);
 
   @override
   _i11.Future<void> read({
