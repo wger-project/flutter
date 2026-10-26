@@ -33,6 +33,7 @@ import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/routines/models/day.dart';
 import 'package:wger/features/routines/models/day_data.dart';
 import 'package:wger/features/routines/models/log.dart';
+import 'package:wger/features/routines/models/page_progress.dart';
 import 'package:wger/features/routines/models/routine.dart';
 import 'package:wger/features/routines/models/set_config_data.dart';
 import 'package:wger/features/routines/models/slot_data.dart';
@@ -71,21 +72,23 @@ void main() {
       final slotPage = notifier.state.pages[1].slotPages[1];
       expect(slotPage.type, SlotPageType.log);
       expect(
-        notifier.state.pages.every((p) => p.slotPages.every((s) => !s.logDone)),
+        notifier.state.pages.every(
+          (p) => p.slotPages.every((s) => !notifier.state.progressOf(s.key).done),
+        ),
         true,
         reason: 'All slot pages are initially not done',
       );
 
       // Act
-      notifier.markSlotPageAsDone(slotPage.uuid, isDone: true);
+      notifier.markSlotPageAsDone(slotPage.key, isDone: true);
 
       // Assert
       for (final page in notifier.state.pages.where((p) => p.type == PageType.set)) {
         for (final slot in page.slotPages.where((s) => s.type == SlotPageType.log)) {
-          if (slot.uuid == slotPage.uuid) {
-            expect(slot.logDone, true);
+          if (slot.key == slotPage.key) {
+            expect(notifier.state.progressOf(slot.key).done, true);
           } else {
-            expect(slot.logDone, false);
+            expect(notifier.state.progressOf(slot.key).done, false);
           }
         }
       }
@@ -99,10 +102,10 @@ void main() {
         ..id = 'log-1';
 
       // Act
-      notifier.markSlotPageAsDone(slotPage.uuid, isDone: true, log: log);
+      notifier.markSlotPageAsDone(slotPage.key, isDone: true, log: log);
 
       // Assert
-      final loggedEntry = notifier.state.getSlotPageByUUID(slotPage.uuid)!.loggedEntry!;
+      final loggedEntry = notifier.state.progressOf(slotPage.key).loggedEntry!;
       expect(loggedEntry.id, 'log-1');
       expect(loggedEntry, isNot(same(log)));
     });
@@ -116,7 +119,7 @@ void main() {
       final log = Log.fromSetConfigData(slotPage.setConfigData!, routineId: 1, iteration: 1)
         ..id = 'log-1'
         ..sessionId = 'session-1';
-      notifier.markSlotPageAsDone(slotPage.uuid, isDone: true, log: log);
+      notifier.markSlotPageAsDone(slotPage.key, isDone: true, log: log);
 
       // Act
       notifier.setCurrentPage(slotPage.pageIndex);
@@ -144,7 +147,7 @@ void main() {
       final log = Log.fromSetConfigData(slotPage.setConfigData!, routineId: 1, iteration: 1)
         ..id = 'log-1'
         ..repetitions = 99;
-      notifier.markSlotPageAsDone(slotPage.uuid, isDone: true, log: log);
+      notifier.markSlotPageAsDone(slotPage.key, isDone: true, log: log);
       notifier.setCurrentPage(slotPage.pageIndex);
       expect(container.read(gymLogProvider)!.id, 'log-1');
 
@@ -155,7 +158,7 @@ void main() {
       final gymLog = container.read(gymLogProvider)!;
       expect(gymLog.id, isNull);
       expect(gymLog.repetitions, slotPage.setConfigData!.repetitions);
-      expect(notifier.state.getSlotPageByUUID(slotPage.uuid)!.loggedEntry!.id, 'log-1');
+      expect(notifier.state.progressOf(slotPage.key).loggedEntry!.id, 'log-1');
     });
   });
 
@@ -167,23 +170,23 @@ void main() {
 
       // Act
       withClock(Clock.fixed(DateTime(2024, 5, 2, 12)), () {
-        notifier.startTimerIfNeeded(timerPage.uuid);
+        notifier.startTimerIfNeeded(timerPage.key);
       });
 
       // Assert
       expect(
-        notifier.state.getSlotPageByUUID(timerPage.uuid)!.timerStartedAt,
+        notifier.state.progressOf(timerPage.key).timerStartedAt,
         DateTime(2024, 5, 2, 12),
       );
 
       // Act: starting again does not restart the timer
       withClock(Clock.fixed(DateTime(2024, 5, 2, 12, 5)), () {
-        notifier.startTimerIfNeeded(timerPage.uuid);
+        notifier.startTimerIfNeeded(timerPage.key);
       });
 
       // Assert
       expect(
-        notifier.state.getSlotPageByUUID(timerPage.uuid)!.timerStartedAt,
+        notifier.state.progressOf(timerPage.key).timerStartedAt,
         DateTime(2024, 5, 2, 12),
       );
     });
@@ -195,7 +198,7 @@ void main() {
       expect(logPage.type, SlotPageType.log);
       expect(timerPage.type, SlotPageType.timer);
       withClock(Clock.fixed(DateTime(2024, 5, 2, 12)), () {
-        notifier.startTimerIfNeeded(timerPage.uuid);
+        notifier.startTimerIfNeeded(timerPage.key);
       });
       // The id is minted by the insert
       final log = Log.fromSetConfigData(logPage.setConfigData!, routineId: 1, iteration: 1)
@@ -203,35 +206,35 @@ void main() {
 
       // Act: the set is saved
       withClock(Clock.fixed(DateTime(2024, 5, 2, 12, 10)), () {
-        notifier.markSlotPageAsDone(logPage.uuid, isDone: true, log: log);
+        notifier.markSlotPageAsDone(logPage.key, isDone: true, log: log);
       });
 
       // Assert
       expect(
-        notifier.state.getSlotPageByUUID(timerPage.uuid)!.timerStartedAt,
+        notifier.state.progressOf(timerPage.key).timerStartedAt,
         DateTime(2024, 5, 2, 12, 10),
       );
 
       // Act: correcting the saved set keeps the running timer
       withClock(Clock.fixed(DateTime(2024, 5, 2, 12, 11)), () {
-        notifier.markSlotPageAsDone(logPage.uuid, isDone: true, log: log);
+        notifier.markSlotPageAsDone(logPage.key, isDone: true, log: log);
       });
 
       // Assert
       expect(
-        notifier.state.getSlotPageByUUID(timerPage.uuid)!.timerStartedAt,
+        notifier.state.progressOf(timerPage.key).timerStartedAt,
         DateTime(2024, 5, 2, 12, 10),
       );
 
       // Act: another set is logged on the same page ("add set")
       final extraLog = log.copyWith(id: 'log-2');
       withClock(Clock.fixed(DateTime(2024, 5, 2, 12, 15)), () {
-        notifier.markSlotPageAsDone(logPage.uuid, isDone: true, log: extraLog);
+        notifier.markSlotPageAsDone(logPage.key, isDone: true, log: extraLog);
       });
 
       // Assert
       expect(
-        notifier.state.getSlotPageByUUID(timerPage.uuid)!.timerStartedAt,
+        notifier.state.progressOf(timerPage.key).timerStartedAt,
         DateTime(2024, 5, 2, 12, 15),
       );
     });
@@ -245,36 +248,36 @@ void main() {
         PageEntry(
           type: PageType.set,
           pageIndex: 1111,
-          uuid: 'new-page-1',
+          key: 'new-page-1',
         ),
         PageEntry(
           type: PageType.set,
           pageIndex: 9,
-          uuid: 'new-page-2',
+          key: 'new-page-2',
         ),
         ...notifier.state.pages.sublist(2),
         PageEntry(
           type: PageType.set,
           pageIndex: 0,
-          uuid: 'new-page-3',
+          key: 'new-page-3',
           slotPages: [
             SlotPageEntry(
               type: SlotPageType.timer,
               pageIndex: 10,
               setIndex: 9,
-              uuid: 'new-slot-1',
+              key: 'new-slot-1',
             ),
             SlotPageEntry(
               type: SlotPageType.timer,
               pageIndex: 10,
               setIndex: 6,
-              uuid: 'new-slot-2',
+              key: 'new-slot-2',
             ),
             SlotPageEntry(
               type: SlotPageType.timer,
               pageIndex: 100,
               setIndex: 100,
-              uuid: 'new-slot-3',
+              key: 'new-slot-3',
             ),
           ],
         ),
@@ -300,17 +303,17 @@ void main() {
       expect(pages[7].pageIndex, 17);
 
       // Preserve the order of new pages
-      expect(pages[7].uuid, 'new-page-3');
+      expect(pages[7].key, 'new-page-3');
 
       // Slot pages have correct indices, the original order is preserved
       final slotPages = pages[7].slotPages;
-      expect(slotPages[0].uuid, 'new-slot-1');
+      expect(slotPages[0].key, 'new-slot-1');
       expect(slotPages[0].pageIndex, 17);
       expect(slotPages[0].setIndex, 0);
-      expect(slotPages[1].uuid, 'new-slot-2');
+      expect(slotPages[1].key, 'new-slot-2');
       expect(slotPages[1].pageIndex, 18);
       expect(slotPages[1].setIndex, 1);
-      expect(slotPages[2].uuid, 'new-slot-3');
+      expect(slotPages[2].key, 'new-slot-3');
       expect(slotPages[2].pageIndex, 19);
       expect(slotPages[2].setIndex, 2);
     });
@@ -329,7 +332,7 @@ void main() {
       );
 
       // Act
-      notifier.replaceExercises(page.uuid, originalExerciseId: 1, newExercise: testSquats);
+      notifier.replaceExercises(page.key, originalExerciseId: 1, newExercise: testSquats);
 
       // Assert: every slot page of that page carries the new exercise, and the
       // routine itself was rebuilt too (the log draft reads from it)
@@ -384,17 +387,27 @@ void main() {
       imperialNotifier.calculatePages();
       final setPage = imperialNotifier.state.pages.firstWhere((p) => p.type == PageType.set);
 
-      imperialNotifier.addExerciseAfterPage(setPage.uuid, newExercise: testSquats);
+      imperialNotifier.addExerciseAfterPage(setPage.key, newExercise: testSquats);
 
-      // recalculateIndices copies the page objects, so look the page up by uuid.
+      // recalculateIndices copies the page objects, so look the page up by key.
       final pages = imperialNotifier.state.pages;
-      final newPage = pages[pages.indexWhere((p) => p.uuid == setPage.uuid) + 1];
+      final newPage = pages[pages.indexWhere((p) => p.key == setPage.key) + 1];
       expect(newPage.slotPages, isNotEmpty);
       for (final slotPage in newPage.slotPages) {
         // testWeightUnit2 has id 2 == WEIGHT_UNIT_LB.
         expect(slotPage.setConfigData!.weightUnit, testWeightUnit2);
         expect(slotPage.setConfigData!.weightUnitId, isNull);
       }
+
+      // The ad-hoc sets borrow the slot entry of the page they follow, so
+      // their keys must not be derived from it
+      expect(newPage.key, 'added:1');
+      expect(newPage.slotPages.map((p) => p.key), [
+        'added:1:log:1',
+        'added:1:log:2',
+        'added:1:log:3',
+        'added:1:log:4',
+      ]);
     });
   });
 
@@ -505,9 +518,82 @@ void main() {
       );
       expect(slotPages.where((p) => p.type == SlotPageType.log), hasLength(1));
     });
+
+    test('numbers the sets of each exercise on its own', () {
+      final exercises = getTestExercises();
+      notifier.state = notifier.state.copyWith(
+        showExercisePages: false,
+        showTimerPages: true,
+        dayId: 1,
+        iteration: 1,
+        routine: supersetRoutine(
+          [1, 2],
+          setConfigs: [
+            configFor(1, exercises[0]),
+            configFor(2, exercises[1]),
+            configFor(1, exercises[0]),
+            configFor(2, exercises[1]),
+          ],
+        ),
+      );
+
+      notifier.calculatePages();
+
+      expect(notifier.state.pages[1].slotPages.map((p) => p.key), [
+        'log:1:1',
+        'timer:1:1',
+        'log:2:1',
+        'timer:2:1',
+        'log:1:2',
+        'timer:1:2',
+        'log:2:2',
+        'timer:2:2',
+      ]);
+    });
   });
 
   group('GymStateNotifier.calculatePages', () {
+    test('Keeps the progress when the layout changes mid-workout', () {
+      final logPage = notifier.state.pages[1].slotPages[1];
+      final timerPage = notifier.state.pages[1].slotPages[2];
+      final log = Log(id: 'log-1', exerciseId: 1, date: DateTime(2026, 7, 26));
+      withClock(Clock.fixed(DateTime(2026, 7, 26, 18, 30)), () {
+        notifier.markSlotPageAsDone(logPage.key, isDone: true, log: log);
+      });
+
+      notifier.state = notifier.state.copyWith(showExercisePages: false);
+      notifier.calculatePages();
+
+      expect(notifier.state.pages[1].slotPages.first.key, logPage.key);
+      final progress = notifier.state.progressOf(logPage.key);
+      expect(progress.done, isTrue);
+      expect(progress.loggedEntry!.id, 'log-1');
+      expect(
+        notifier.state.progressOf(timerPage.key).timerStartedAt,
+        DateTime(2026, 7, 26, 18, 30),
+      );
+    });
+
+    test('Keeps the keys of the set pages when the layout changes', () {
+      List<String> logKeys() => [
+        for (final slotPage in notifier.state.pages.expand((p) => p.slotPages))
+          if (slotPage.type == SlotPageType.log) slotPage.key,
+      ];
+
+      notifier.state = notifier.state.copyWith(showExercisePages: true, showTimerPages: true);
+      notifier.calculatePages();
+      final allKeys = [
+        for (final page in notifier.state.pages) ...[page.key, ...page.slotPages.map((p) => p.key)],
+      ];
+      final keysWithAllPages = logKeys();
+
+      notifier.state = notifier.state.copyWith(showExercisePages: false, showTimerPages: false);
+      notifier.calculatePages();
+
+      expect(logKeys(), keysWithAllPages);
+      expect(allKeys.toSet(), hasLength(allKeys.length), reason: 'every page has its own key');
+    });
+
     test(
       'Correctly generates pages - exercise and timer',
       () {
@@ -801,9 +887,12 @@ void main() {
   });
 
   group('GymStateNotifier.clear', () {
-    test('Resets the workout start time', () {
+    test('Resets the workout start time and the progress', () {
       // Arrange
-      notifier.state = notifier.state.copyWith(workoutStart: DateTime(2024, 5, 1, 10, 0));
+      notifier.state = notifier.state.copyWith(
+        workoutStart: DateTime(2024, 5, 1, 10, 0),
+        progress: {'log:1:1': const PageProgress(done: true)},
+      );
 
       // Act
       withClock(Clock.fixed(DateTime(2024, 5, 2, 9, 15)), () {
@@ -812,6 +901,7 @@ void main() {
 
       // Assert
       expect(notifier.state.workoutStart, DateTime(2024, 5, 2, 9, 15));
+      expect(notifier.state.progress, isEmpty);
     });
   });
 
@@ -863,10 +953,12 @@ void main() {
         isInitialized: true,
         dayId: 1,
         currentPage: 4,
+        progress: {'log:1:1': const PageProgress(done: true)},
       );
 
       expect(notifier.initData(getTestRoutine(), 2, 1), 0);
       expect(notifier.state.dayId, 2);
+      expect(notifier.state.progress, isEmpty, reason: 'the new workout starts without progress');
     });
 
     test('An expired validUntil resets even on the same day', () {
@@ -908,7 +1000,7 @@ void main() {
     /// Runs a workout up to [currentPage], with one log page marked as done
     Future<void> runWorkout({int currentPage = 2}) async {
       await openDay1(notifier);
-      notifier.markSlotPageAsDone(notifier.state.pages[1].slotPages[1].uuid, isDone: true);
+      notifier.markSlotPageAsDone(notifier.state.pages[1].slotPages[1].key, isDone: true);
       notifier.setCurrentPage(currentPage);
       await pumpEventQueue();
     }
@@ -924,15 +1016,22 @@ void main() {
 
     test('Continues the workout in memory with its progress', () async {
       await runWorkout();
-      final doneUuid = notifier.state.pages[1].slotPages[1].uuid;
+      final timerKey = notifier.state.pages[1].slotPages[2].key;
+      withClock(Clock.fixed(DateTime(2026, 7, 26, 18, 30)), () {
+        notifier.startTimerIfNeeded(timerKey);
+      });
 
       // The app kept running, the user only left gym mode and came back
       expect(await openDay1(notifier), 2);
-      expect(notifier.state.pages[1].slotPages[1].uuid, doneUuid);
       expect(
-        notifier.state.pages[1].slotPages[1].logDone,
+        notifier.state.progressOf(notifier.state.pages[1].slotPages[1].key).done,
         isTrue,
         reason: 'the set that was already logged is still marked as done',
+      );
+      expect(
+        notifier.state.progressOf(timerKey).timerStartedAt,
+        DateTime(2026, 7, 26, 18, 30),
+        reason: 'the rest timer is not part of the stored progress, only of the one in memory',
       );
     });
 
@@ -944,7 +1043,7 @@ void main() {
       expect(await openDay1(restarted), 2);
       expect(restarted.state.currentPage, 2);
       expect(
-        restarted.state.pages[1].slotPages[1].logDone,
+        restarted.state.progressOf(restarted.state.pages[1].slotPages[1].key).done,
         isTrue,
         reason: 'the set that was already logged is still marked as done',
       );

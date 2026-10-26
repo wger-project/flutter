@@ -87,7 +87,7 @@ void main() {
 
     expect(find.byType(ExerciseSwapWidget), findsNothing);
 
-    await tester.tap(find.byKey(Key('swap-icon-${notifier.state.pages[1].uuid}')));
+    await tester.tap(find.byKey(Key('swap-icon-${notifier.state.pages[1].key}')));
     await tester.pumpAndSettle();
     expect(find.byType(ExerciseSwapWidget), findsOne);
   });
@@ -97,7 +97,7 @@ void main() {
 
     expect(find.byType(ExerciseAddWidget), findsNothing);
 
-    await tester.tap(find.byKey(Key('add-icon-${notifier.state.pages[1].uuid}')));
+    await tester.tap(find.byKey(Key('add-icon-${notifier.state.pages[1].key}')));
     await tester.pumpAndSettle();
     expect(find.byType(ExerciseAddWidget), findsOne);
   });

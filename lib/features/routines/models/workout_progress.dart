@@ -18,10 +18,8 @@
 
 /// The progress through a running workout, as stored in the preferences
 ///
-/// Only the parts that can't be recalculated are kept. The pages themselves are
-/// derived from the routine again on the next start, which is also why the
-/// finished log pages are referenced by their page index: the UUIDs are
-/// generated anew every time the pages are calculated.
+/// Only the parts that can't be recalculated are kept, the pages themselves
+/// are derived from the routine again on the next start.
 class WorkoutProgress {
   final int dayId;
   final int iteration;
