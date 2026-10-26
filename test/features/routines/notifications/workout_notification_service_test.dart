@@ -103,16 +103,21 @@ void main() {
       (calls.singleWhere((c) => c.method == 'zonedSchedule').arguments as Map)['platformSpecifics']
           as Map;
 
-  RestAlarm alarm({bool canLogSet = true, List<String> quickLogs = const [], Uri? image}) =>
-      RestAlarm(
-        at: DateTime.now().add(const Duration(minutes: 2)),
-        title: 'Rest is over',
-        body: 'Next: Bench press',
-        canLogSet: canLogSet,
-        payload: payload,
-        quickLogs: quickLogs,
-        image: image,
-      );
+  RestAlarm alarm({
+    bool canLogSet = true,
+    bool canExtendRest = false,
+    List<String> quickLogs = const [],
+    Uri? image,
+  }) => RestAlarm(
+    at: DateTime.now().add(const Duration(minutes: 2)),
+    title: 'Rest is over',
+    body: 'Next: Bench press',
+    canLogSet: canLogSet,
+    canExtendRest: canExtendRest,
+    payload: payload,
+    quickLogs: quickLogs,
+    image: image,
+  );
 
   Map<Object?, Object?> shown() =>
       (calls.singleWhere((c) => c.method == 'show').arguments as Map)['platformSpecifics'] as Map;
@@ -258,6 +263,40 @@ void main() {
       await LocalWorkoutNotificationService().scheduleRestAlarm(alarm(image: image), labels);
 
       expect(scheduled()['largeIcon'], isNull);
+    });
+  });
+
+  group('iOS', () {
+    setUp(() {
+      FlutterLocalNotificationsPlatform.instance = IOSFlutterLocalNotificationsPlugin();
+      debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+      addTearDown(() => debugDefaultTargetPlatformOverride = null);
+    });
+
+    test('The alarm offers "+30 s" next to "Log set", or alone', () async {
+      final service = LocalWorkoutNotificationService();
+      await service.initialize(labels);
+      final categories = {
+        for (final c in (calls.single.arguments as Map)['notificationCategories'] as List)
+          (c as Map)['identifier']: [
+            for (final a in c['actions'] as List) (a as Map)['identifier'],
+          ],
+      };
+
+      Future<Object?> categoryOf(RestAlarm alarm) async {
+        calls.clear();
+        await service.scheduleRestAlarm(alarm, labels);
+        return scheduled()['categoryIdentifier'];
+      }
+
+      expect(categories[await categoryOf(alarm(canExtendRest: true))], [
+        WORKOUT_NOTIFICATION_ACTION_LOG_SET,
+        WORKOUT_NOTIFICATION_ACTION_EXTEND_REST,
+      ]);
+      expect(categories[await categoryOf(alarm(canLogSet: false, canExtendRest: true))], [
+        WORKOUT_NOTIFICATION_ACTION_EXTEND_REST,
+      ]);
+      expect(await categoryOf(alarm(canLogSet: false)), isNull);
     });
   });
 }

@@ -128,6 +128,7 @@ class LocalWorkoutNotificationService implements WorkoutNotificationService {
   static const _controlsChannelId = 'workout_controls';
   static const _alarmChannelId = 'rest_alarm';
   static const _restEndCategory = 'workout_rest_end';
+  static const _restEndNoLogCategory = 'workout_rest_end_no_log';
   static const _actionTasksChannel = MethodChannel('de.wger.flutter/notification_actions');
 
   final _logger = Logger('LocalWorkoutNotificationService');
@@ -155,6 +156,19 @@ class LocalWorkoutNotificationService implements WorkoutNotificationService {
                     DarwinNotificationAction.plain(
                       WORKOUT_NOTIFICATION_ACTION_LOG_SET,
                       labels.logSet,
+                    ),
+                    DarwinNotificationAction.plain(
+                      WORKOUT_NOTIFICATION_ACTION_EXTEND_REST,
+                      labels.extendRest,
+                    ),
+                  ],
+                ),
+                DarwinNotificationCategory(
+                  _restEndNoLogCategory,
+                  actions: [
+                    DarwinNotificationAction.plain(
+                      WORKOUT_NOTIFICATION_ACTION_EXTEND_REST,
+                      labels.extendRest,
                     ),
                   ],
                 ),
@@ -225,7 +239,10 @@ class LocalWorkoutNotificationService implements WorkoutNotificationService {
         iOS: DarwinNotificationDetails(
           subtitle: alarm.subtitle,
           presentSound: true,
-          categoryIdentifier: alarm.canLogSet ? _restEndCategory : null,
+          // iOS fixes the actions per category, these are the combinations used
+          categoryIdentifier: alarm.canLogSet
+              ? _restEndCategory
+              : (alarm.canExtendRest ? _restEndNoLogCategory : null),
         ),
       ),
     );
