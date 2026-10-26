@@ -3,6 +3,7 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+
 import 'dart:async' as _i5;
 
 import 'package:mockito/mockito.dart' as _i1;
@@ -154,6 +155,14 @@ class MockWorkoutLogRepository extends _i1.Mock implements _i9.WorkoutLogReposit
             returnValue: _i5.Stream<List<_i10.Log>>.empty(),
           )
           as _i5.Stream<List<_i10.Log>>);
+
+  @override
+  _i5.Future<List<_i10.Log>> getLogsByIds(List<String>? ids) =>
+      (super.noSuchMethod(
+            Invocation.method(#getLogsByIds, [ids]),
+            returnValue: _i5.Future<List<_i10.Log>>.value(<_i10.Log>[]),
+          )
+          as _i5.Future<List<_i10.Log>>);
 
   @override
   _i5.Future<void> deleteLocalDrift(String? id) =>

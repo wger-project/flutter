@@ -16,55 +16,38 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'workout_progress.freezed.dart';
+part 'workout_progress.g.dart';
+
 /// The progress through a running workout, as stored in the preferences
 ///
-/// Only the parts that can't be recalculated are kept, the pages themselves
-/// are derived from the routine again on the next start.
-class WorkoutProgress {
-  final int dayId;
-  final int iteration;
-  final int currentPage;
-  final DateTime workoutStart;
-  final DateTime validUntil;
+/// Only the parts that can't be recalculated are kept. The pages are derived
+/// from the routine again and matched by their keys.
+@freezed
+sealed class WorkoutProgress with _$WorkoutProgress {
+  const factory WorkoutProgress({
+    required int dayId,
+    required int iteration,
+    required String currentPageKey,
+    required DateTime workoutStart,
+    required DateTime validUntil,
+    @Default({}) Map<String, StoredPageProgress> pages,
+  }) = _WorkoutProgress;
 
-  /// Absolute page indices of the log pages already marked as done
-  final List<int> donePageIndices;
+  factory WorkoutProgress.fromJson(Map<String, dynamic> json) => _$WorkoutProgressFromJson(json);
+}
 
-  const WorkoutProgress({
-    required this.dayId,
-    required this.iteration,
-    required this.currentPage,
-    required this.workoutStart,
-    required this.validUntil,
-    required this.donePageIndices,
-  });
+/// The stored part of a page's progress, the logged entry only by its ID
+@freezed
+sealed class StoredPageProgress with _$StoredPageProgress {
+  const factory StoredPageProgress({
+    @Default(false) bool done,
+    String? logId,
+    DateTime? timerStartedAt,
+  }) = _StoredPageProgress;
 
-  factory WorkoutProgress.fromJson(Map<String, dynamic> json) => WorkoutProgress(
-    dayId: json['dayId'] as int,
-    iteration: json['iteration'] as int,
-    currentPage: json['currentPage'] as int,
-    workoutStart: DateTime.parse(json['workoutStart'] as String),
-    validUntil: DateTime.parse(json['validUntil'] as String),
-    donePageIndices: (json['donePageIndices'] as List<dynamic>).cast<int>(),
-  );
-
-  Map<String, dynamic> toJson() => {
-    'dayId': dayId,
-    'iteration': iteration,
-    'currentPage': currentPage,
-    'workoutStart': workoutStart.toIso8601String(),
-    'validUntil': validUntil.toIso8601String(),
-    'donePageIndices': donePageIndices,
-  };
-
-  @override
-  String toString() =>
-      'WorkoutProgress('
-      'dayId: $dayId, '
-      'iteration: $iteration, '
-      'currentPage: $currentPage, '
-      'workoutStart: $workoutStart, '
-      'validUntil: $validUntil, '
-      'donePageIndices: $donePageIndices'
-      ')';
+  factory StoredPageProgress.fromJson(Map<String, dynamic> json) =>
+      _$StoredPageProgressFromJson(json);
 }

@@ -36,6 +36,7 @@ import 'package:wger/features/routines/models/workout_progress.dart';
 import 'package:wger/features/routines/providers/gym_log_notifier.dart';
 import 'package:wger/features/routines/providers/gym_state.dart';
 import 'package:wger/features/routines/providers/routines_notifier.dart';
+import 'package:wger/features/routines/providers/workout_logs_repository.dart';
 
 part 'gym_state_notifier.g.dart';
 
@@ -146,19 +147,11 @@ class GymStateNotifier extends _$GymStateNotifier {
     );
   }
 
-  /// Absolute page indices of the log pages already marked as done
-  List<int> get _donePageIndices => state.pages
-      .expand((page) => page.slotPages)
-      .where((slotPage) => state.progressOf(slotPage.key).done)
-      .map((slotPage) => slotPage.pageIndex)
-      .toList();
-
   /// Stores the progress through the running workout
   ///
   /// Riverpod keeps the state alive for as long as the app is running, but the
   /// OS can kill a backgrounded app at any point, e.g. while the user switches
-  /// to a music app between two sets. Without this, that loses the session, the
-  /// elapsed time and which sets were already done.
+  /// to a music app between two sets.
   Future<void> _saveProgress() async {
     // Before initData there is no dayId to store the progress under
     if (!state.isInitialized) {
@@ -168,10 +161,17 @@ class GymStateNotifier extends _$GymStateNotifier {
     final progress = WorkoutProgress(
       dayId: state.dayId,
       iteration: state.iteration,
-      currentPage: state.currentPage,
+      currentPageKey: state.keyOfPage(state.currentPage) ?? 'start',
       workoutStart: state.workoutStart,
       validUntil: state.validUntil,
-      donePageIndices: _donePageIndices,
+      pages: {
+        for (final MapEntry(:key, :value) in state.progress.entries)
+          key: StoredPageProgress(
+            done: value.done,
+            logId: value.loggedEntry?.id,
+            timerStartedAt: value.timerStartedAt,
+          ),
+      },
     );
 
     await PreferenceHelper.asyncPref.setString(
@@ -212,42 +212,60 @@ class GymStateNotifier extends _$GymStateNotifier {
       return null;
     }
 
-    final WorkoutProgress progress;
+    final WorkoutProgress saved;
     try {
-      progress = WorkoutProgress.fromJson(json.decode(stored) as Map<String, dynamic>);
-    } on Exception catch (e) {
+      saved = WorkoutProgress.fromJson(json.decode(stored) as Map<String, dynamic>);
+    } catch (e) {
       _logger.warning('Discarding unreadable stored workout progress: $e');
       await _clearProgress();
       return null;
     }
 
-    // Only ever continue the same workout, only while it is plausibly still
-    // running, and only if the routine still has the page it stopped on (it
-    // might have been edited in the meantime).
-    if (progress.dayId != state.dayId ||
-        progress.iteration != state.iteration ||
-        progress.validUntil.isBefore(clock.now()) ||
-        progress.currentPage >= state.totalPages) {
+    // Only ever continue the same workout, and only while it is plausibly
+    // still running
+    if (saved.dayId != state.dayId ||
+        saved.iteration != state.iteration ||
+        saved.validUntil.isBefore(clock.now())) {
       _logger.fine('Stored workout progress does not apply any more, discarding it');
       await _clearProgress();
       return null;
     }
 
+    final logIds = saved.pages.values.map((p) => p.logId).nonNulls.toList();
+    final logs = {
+      if (logIds.isNotEmpty)
+        for (final log in await ref.read(workoutLogRepositoryProvider).getLogsByIds(logIds))
+          log.id: log,
+    };
+
+    // Pages the routine no longer has (it was edited, or they were added
+    // during the workout) are left out
+    final slotPages = state.pages.expand((page) => page.slotPages);
+    final progress = {
+      for (final slotPage in slotPages)
+        if (saved.pages[slotPage.key] case final stored?)
+          slotPage.key: PageProgress(
+            done: stored.done,
+            loggedEntry: logs[stored.logId],
+            timerStartedAt: stored.timerStartedAt,
+          ),
+    };
+
     state = state.copyWith(
-      currentPage: progress.currentPage,
-      workoutStart: progress.workoutStart,
-      validUntil: progress.validUntil,
-      progress: {
-        for (final slotPage in state.pages.expand((page) => page.slotPages))
-          if (slotPage.type == SlotPageType.log &&
-              progress.donePageIndices.contains(slotPage.pageIndex))
-            slotPage.key: const PageProgress(done: true),
+      currentPage: state.pageIndexOf(saved.currentPageKey) ?? 0,
+      workoutStart: saved.workoutStart,
+      validUntil: saved.validUntil,
+      progress: progress,
+      // In page order, so the last set of an exercise wins
+      lastLoggedValues: {
+        for (final log in slotPages.map((p) => progress[p.key]?.loggedEntry).nonNulls)
+          log.exerciseId: log,
       },
     );
 
-    _logger.fine('Restored workout progress on page ${progress.currentPage}');
+    _logger.fine('Restored workout progress on page ${state.currentPage}');
 
-    return progress.currentPage;
+    return state.currentPage;
   }
 
   /// Calculates the page entries
@@ -547,6 +565,7 @@ class GymStateNotifier extends _$GymStateNotifier {
   /// Applies [update] to the progress of the page with [key]
   void _updateProgress(String key, PageProgress Function(PageProgress) update) {
     state = state.copyWith(progress: {...state.progress, key: update(state.progressOf(key))});
+    _saveProgress();
   }
 
   /// Starts the timer of the slot page with [key], unless it is already
@@ -591,7 +610,6 @@ class GymStateNotifier extends _$GymStateNotifier {
       key,
       (p) => p.copyWith(done: isDone, loggedEntry: log?.copyWith() ?? p.loggedEntry),
     );
-    _saveProgress();
     _logger.fine('Set done=$isDone for slot page $key');
 
     // Scrolling past the timer (e.g. "jump to") already started it

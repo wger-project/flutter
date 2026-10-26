@@ -345,6 +345,31 @@ class GymModeState {
     return null;
   }
 
+  /// Key of the page shown at [pageIndex]
+  String? keyOfPage(int pageIndex) {
+    for (final page in pages) {
+      if (page.type != PageType.set && page.pageIndex == pageIndex) {
+        return page.key;
+      }
+      for (final slotPage in page.slotPages) {
+        if (slotPage.pageIndex == pageIndex) {
+          return slotPage.key;
+        }
+      }
+    }
+    return null;
+  }
+
+  /// Index of the page with [key], the reverse of [keyOfPage]
+  int? pageIndexOf(String key) {
+    for (final page in pages) {
+      if (page.type != PageType.set && page.key == key) {
+        return page.pageIndex;
+      }
+    }
+    return getSlotPageByKey(key)?.pageIndex;
+  }
+
   SlotPageEntry? getSlotPageByKey(String key) {
     for (final slotPage in pages.expand((p) => p.slotPages)) {
       if (slotPage.key == key) {

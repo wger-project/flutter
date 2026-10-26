@@ -22,6 +22,7 @@ import 'package:clock/clock.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
@@ -42,11 +43,14 @@ import 'package:wger/features/routines/providers/gym_log_notifier.dart';
 import 'package:wger/features/routines/providers/gym_state.dart';
 import 'package:wger/features/routines/providers/gym_state_notifier.dart';
 import 'package:wger/features/routines/providers/routines_notifier.dart';
+import 'package:wger/features/routines/providers/workout_logs_repository.dart';
 
 import '../../../../test_data/exercises.dart';
 import '../../../../test_data/routines.dart';
 import '../helpers/routine_form_test_overrides.dart';
+import 'gym_state_test.mocks.dart';
 
+@GenerateMocks([WorkoutLogRepository])
 void main() {
   late GymStateNotifier notifier;
   late ProviderContainer container;
@@ -976,9 +980,20 @@ void main() {
 
   group('GymStateNotifier workout progress', () {
     /// Simulates the app being killed: a new container means a new (empty)
-    /// notifier, while the stored preferences survive, as on a real restart.
-    GymStateNotifier restartedNotifier() =>
-        ProviderContainer.test().read(gymStateProvider.notifier);
+    /// notifier, while the stored preferences and [logs] survive, as on a real
+    /// restart.
+    GymStateNotifier restartedNotifier({List<Log> logs = const []}) {
+      final logRepo = MockWorkoutLogRepository();
+      when(logRepo.getLogsByIds(any)).thenAnswer(
+        (invocation) async => [
+          for (final log in logs)
+            if ((invocation.positionalArguments.first as List<String>).contains(log.id)) log,
+        ],
+      );
+      return ProviderContainer.test(
+        overrides: [workoutLogRepositoryProvider.overrideWithValue(logRepo)],
+      ).read(gymStateProvider.notifier);
+    }
 
     Future<int> openDay1(GymStateNotifier gymNotifier) => gymNotifier.open(getTestRoutine(), 1, 1);
 
@@ -1016,7 +1031,7 @@ void main() {
       expect(
         notifier.state.progressOf(timerKey).timerStartedAt,
         DateTime(2026, 7, 26, 18, 30),
-        reason: 'the rest timer is not part of the stored progress, only of the one in memory',
+        reason: 'the rest timer keeps running',
       );
     });
 
@@ -1072,14 +1087,84 @@ void main() {
       });
     });
 
-    test('Does not continue on a page the routine no longer has', () async {
+    test('Restores the logged entries and the rest timers', () async {
+      final logPage = notifier.state.pages[1].slotPages[1];
+      final timerKey = notifier.state.pages[1].slotPages[2].key;
+      final log = Log(id: 'log-1', exerciseId: 1, weight: 80, date: DateTime(2026, 7, 26));
+      await openDay1(notifier);
+      withClock(Clock.fixed(DateTime(2026, 7, 26, 18, 30)), () {
+        notifier.markSlotPageAsDone(logPage.key, isDone: true, log: log);
+      });
+      notifier.setCurrentPage(3);
+      await pumpEventQueue();
+
+      final restarted = restartedNotifier(logs: [log]);
+
+      expect(await openDay1(restarted), 3);
+      expect(restarted.state.progressOf(logPage.key).loggedEntry!.id, 'log-1');
+      expect(
+        restarted.state.progressOf(timerKey).timerStartedAt,
+        DateTime(2026, 7, 26, 18, 30),
+        reason: 'the rest that started with the logged set keeps running',
+      );
+      expect(
+        restarted.state.lastLoggedValues[1]!.weight,
+        80,
+        reason: 'the sticky values come from the restored logs',
+      );
+    });
+
+    test('Stores a rest timer as soon as it starts', () async {
+      await runWorkout();
+      final timerKey = notifier.state.pages[1].slotPages[2].key;
+
+      // Killed during the rest, before moving on to another page
+      withClock(Clock.fixed(DateTime(2026, 7, 26, 18, 30)), () {
+        notifier.startTimerIfNeeded(timerKey);
+      });
+      await pumpEventQueue();
+
+      final restarted = restartedNotifier();
+      await openDay1(restarted);
+
+      expect(restarted.state.progressOf(timerKey).timerStartedAt, DateTime(2026, 7, 26, 18, 30));
+    });
+
+    test('Leaves out the pages the routine no longer has', () async {
       await runWorkout();
 
-      // The routine was edited in the meantime and is now shorter than the
-      // page the workout stopped on
-      await editStoredProgress('currentPage', 999);
+      // The routine was edited in the meantime, the page the workout stopped
+      // on and one of the done sets are gone
+      await editStoredProgress('currentPageKey', 'log:999:1');
+      final stored =
+          json.decode((await PreferenceHelper.asyncPref.getString(PREFS_WORKOUT_PROGRESS))!)
+              as Map<String, dynamic>;
+      await editStoredProgress('pages', {
+        ...stored['pages'] as Map<String, dynamic>,
+        'log:999:2': {'done': true},
+      });
+
+      final restarted = restartedNotifier();
+
+      expect(await openDay1(restarted), 0);
+      expect(restarted.state.progress.keys, ['log:1:1']);
+    });
+
+    test('Ignores progress stored in an older format', () async {
+      await PreferenceHelper.asyncPref.setString(
+        PREFS_WORKOUT_PROGRESS,
+        json.encode({
+          'dayId': 1,
+          'iteration': 1,
+          'currentPage': 2,
+          'workoutStart': DateTime.now().toIso8601String(),
+          'validUntil': DateTime.now().add(const Duration(hours: 1)).toIso8601String(),
+          'donePageIndices': [2],
+        }),
+      );
 
       expect(await openDay1(restartedNotifier()), 0);
+      expect(await PreferenceHelper.asyncPref.getString(PREFS_WORKOUT_PROGRESS), isNull);
     });
 
     test('Forgets the workout once it is finished', () async {
