@@ -37,7 +37,6 @@ const PREFS_LOG_SCOPE_WEEKS = 'logScopeWeeksPrefs';
 const PREFS_SHOW_DISTINCT_LOGS = 'showDistinctLogsPrefs';
 const PREFS_SHOW_WORKOUT_DURATION = 'showWorkoutDurationPrefs';
 const PREFS_STICKY_SET_VALUES = 'stickySetValuesPrefs';
-const PREFS_WORKOUT_PROGRESS = 'workoutProgressPrefs';
 
 /// In seconds
 const DEFAULT_COUNTDOWN_DURATION = 180;

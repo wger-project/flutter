@@ -7,6 +7,10 @@ import 'package:wger/features/exercises/models/exercise_filters.dart';
 import 'package:wger/features/nutrition/models/ingredient.dart';
 import 'package:wger/features/nutrition/models/ingredient_filters.dart';
 
+/// The progress of a running gym mode workout. Belongs to the account, so it
+/// leaves with the local data.
+const PREFS_WORKOUT_PROGRESS = 'workoutProgressPrefs';
+
 /// A helper class that manages preferences using SharedPreferencesAsync
 /// and handles migration from the legacy SharedPreferences to
 /// SharedPreferencesAsync.
