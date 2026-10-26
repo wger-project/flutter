@@ -1883,5 +1883,21 @@
     "@filterNutriscore": {
         "description": "Heading for the Nutri-Score slider in the ingredient search filter dialog"
     },
-    "meal": "Прийом їжі"
+    "meal": "Прийом їжі",
+    "upNext": "Далі",
+    "@upNext": {
+        "description": "Label shown on the rest timer pages in the gym mode above the information about the upcoming set"
+    },
+    "gymModeStickySetValues": "Повторювати значення підходу",
+    "@gymModeStickySetValues": {
+        "description": "Label for a gym mode setting: when enabled, the next set of an exercise is pre-filled with the values last logged instead of the planned ones"
+    },
+    "gymModeStickySetValuesHelp": "Для наступного підходу автоматично підставляти останні записані значення цієї вправи в поточному тренуванні",
+    "@gymModeStickySetValuesHelp": {
+        "description": "Help text for the sticky set values setting in the gym mode"
+    },
+    "authorHelpText": "Буде вказаний як автор вправи (CC BY-SA 4.0). Змінюйте це поле, лише якщо ви не є автором.",
+    "@authorHelpText": {
+        "description": "Helper text below the author field when contributing an exercise"
+    }
 }
