@@ -296,6 +296,10 @@ class Routine {
 
     for (final day in updatedRoutine.dayData) {
       for (final slot in day.slots) {
+        slot.exerciseIds = [
+          for (final id in slot.exerciseIds)
+            if (id == oldExerciseId) newExercise.id else id,
+        ];
         for (final config in slot.setConfigs) {
           if (config.exerciseId == oldExerciseId) {
             config.exerciseId = newExercise.id;
@@ -307,6 +311,10 @@ class Routine {
 
     for (final day in updatedRoutine.dayDataGym) {
       for (final slot in day.slots) {
+        slot.exerciseIds = [
+          for (final id in slot.exerciseIds)
+            if (id == oldExerciseId) newExercise.id else id,
+        ];
         for (final config in slot.setConfigs) {
           if (config.exerciseId == oldExerciseId) {
             config.exerciseId = newExercise.id;

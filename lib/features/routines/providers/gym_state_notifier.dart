@@ -26,6 +26,7 @@ import 'package:wger/core/consts.dart';
 import 'package:wger/core/shared_preferences.dart';
 import 'package:wger/features/account/providers/user_profile_notifier.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
+import 'package:wger/features/routines/models/added_exercise.dart';
 import 'package:wger/features/routines/models/log.dart';
 import 'package:wger/features/routines/models/page_progress.dart';
 import 'package:wger/features/routines/models/routine.dart';
@@ -263,6 +264,42 @@ class GymStateNotifier extends _$GymStateNotifier {
     final setsPerEntry = <int, int>{};
     String nextSet(int slotEntryId) => '$slotEntryId:${(setsPerEntry[slotEntryId] ?? 0) + 1}';
 
+    // Exercises added during the workout follow the page they were added after
+    void addAddedPages(String afterKey) {
+      for (final (i, added) in state.addedExercises.indexed) {
+        if (added.afterPageKey != afterKey) {
+          continue;
+        }
+
+        final addedKey = 'added:${i + 1}';
+        final slotPageIndex = pageIndex;
+        pages.add(
+          PageEntry(
+            type: PageType.set,
+            pageIndex: slotPageIndex,
+            key: addedKey,
+            slotPages: [
+              for (var nr = 1; nr <= 4; nr++)
+                SlotPageEntry(
+                  type: SlotPageType.log,
+                  setIndex: nr - 1,
+                  pageIndex: pageIndex++,
+                  key: '$addedKey:log:$nr',
+                  setConfigData: SetConfigData(
+                    textRepr: '-/-',
+                    exerciseId: added.exercise.id,
+                    exercise: added.exercise,
+                    slotEntryId: added.slotEntryId,
+                    weightUnit: added.weightUnit,
+                  ),
+                ),
+            ],
+          ),
+        );
+        addAddedPages(addedKey);
+      }
+    }
+
     pageIndex++;
     for (final (slotIndex, slotData) in state.dayDataGym.slots.indexed) {
       final slotPageIndex = pageIndex;
@@ -337,6 +374,7 @@ class GymStateNotifier extends _$GymStateNotifier {
           slotPages: slotEntries,
         ),
       );
+      addAddedPages(slotKey);
     }
 
     // Session and summary page
@@ -348,44 +386,6 @@ class GymStateNotifier extends _$GymStateNotifier {
     state = state.copyWith(pages: pages);
     // print(readPageStructure());
     _logger.finer('Initialized ${state.pages.length} pages');
-  }
-
-  // Recalculates the indices of all pages
-  void recalculateIndices() {
-    var pageIndex = 0;
-    final updatedPages = <PageEntry>[];
-
-    for (final page in state.pages) {
-      final slotPageIndex = pageIndex;
-      var setIndex = 0;
-      final updatedSlotPages = <SlotPageEntry>[];
-
-      for (final slotPage in page.slotPages) {
-        updatedSlotPages.add(
-          slotPage.copyWith(
-            pageIndex: pageIndex,
-            setIndex: setIndex,
-          ),
-        );
-        setIndex++;
-        pageIndex++;
-      }
-
-      if (page.type != PageType.set) {
-        pageIndex++;
-      }
-
-      updatedPages.add(
-        page.copyWith(
-          pageIndex: slotPageIndex,
-          slotPages: updatedSlotPages,
-        ),
-      );
-    }
-
-    state = state.copyWith(pages: updatedPages);
-    // _logger.fine(readPageStructure());
-    _logger.fine('Recalculated page indices');
   }
 
   /// Reads the current page structure for debugging purposes
@@ -430,6 +430,7 @@ class GymStateNotifier extends _$GymStateNotifier {
       // An abandoned workout never reaches clear(), so forget its values here
       lastLoggedValues: shouldReset ? const {} : null,
       progress: shouldReset ? const {} : null,
+      addedExercises: shouldReset ? const [] : null,
     );
 
     // Calculate the pages.
@@ -601,41 +602,23 @@ class GymStateNotifier extends _$GymStateNotifier {
     }
   }
 
+  /// Replaces the exercise everywhere in the workout, also where it was added
   void replaceExercises(
     String pageEntryKey, {
     required int originalExerciseId,
     required Exercise newExercise,
   }) {
-    final updatedPages = state.pages.map((page) {
-      if (page.type != PageType.set) {
-        return page;
-      }
-
-      if (page.key != pageEntryKey) {
-        return page;
-      }
-
-      final updatedSlotPages = page.slotPages.map((slotPage) {
-        if (slotPage.setConfigData != null &&
-            slotPage.setConfigData!.exercise.id == originalExerciseId) {
-          final updatedSetConfigData = slotPage.setConfigData!.copyWith(
-            exerciseId: newExercise.id,
-            exercise: newExercise,
-          );
-          return slotPage.copyWith(setConfigData: updatedSetConfigData);
-        }
-        return slotPage;
-      }).toList();
-
-      return page.copyWith(slotPages: updatedSlotPages);
-    }).toList();
-
-    // replace and update new immutable routine instance
-    final updatedRoutine = state.routine.replaceExercise(originalExerciseId, newExercise);
     state = state.copyWith(
-      pages: updatedPages,
-      routine: updatedRoutine,
+      routine: state.routine.replaceExercise(originalExerciseId, newExercise),
+      addedExercises: [
+        for (final added in state.addedExercises)
+          if (added.exercise.id == originalExerciseId)
+            added.copyWith(exercise: newExercise)
+          else
+            added,
+      ],
     );
+    calculatePages();
     _logger.fine('Replaced exercise $originalExerciseId with ${newExercise.id}');
   }
 
@@ -643,6 +626,12 @@ class GymStateNotifier extends _$GymStateNotifier {
     String pageEntryKey, {
     required Exercise newExercise,
   }) {
+    final page = state.pages.firstWhereOrNull((p) => p.key == pageEntryKey);
+    if (page == null) {
+      _logger.warning('No page found for key $pageEntryKey');
+      return;
+    }
+
     // Ad-hoc set configs bypass routine hydration, so resolve the profile
     // default weight unit (kg/lb) here; the log draft picks it up from the
     // unit object.
@@ -651,51 +640,18 @@ class GymStateNotifier extends _$GymStateNotifier {
     final defaultWeightUnitId = profile?.defaultWeightUnitId ?? WEIGHT_UNIT_KG;
     final defaultWeightUnit = weightUnits.firstWhereOrNull((u) => u.id == defaultWeightUnitId);
 
-    // Not part of the routine, so numbered in the order they were added
-    final addedKey = 'added:${state.pages.where((p) => p.key.startsWith('added:')).length + 1}';
-
-    final List<PageEntry> pages = [];
-    for (final page in state.pages) {
-      pages.add(page);
-
-      if (page.key == pageEntryKey) {
-        final setConfigData = page.slotPages.first.setConfigData!;
-
-        final List<SlotPageEntry> newSlotPages = [];
-        for (var i = 1; i <= 4; i++) {
-          newSlotPages.add(
-            SlotPageEntry(
-              type: SlotPageType.log,
-              pageIndex: 1,
-              setIndex: 0,
-              key: '$addedKey:log:$i',
-              setConfigData: SetConfigData(
-                textRepr: '-/-',
-                exerciseId: newExercise.id,
-                exercise: newExercise,
-                slotEntryId: setConfigData.slotEntryId,
-                weightUnit: defaultWeightUnit,
-              ),
-            ),
-          );
-        }
-
-        final newPage = PageEntry(
-          type: PageType.set,
-          pageIndex: 1,
-          key: addedKey,
-          slotPages: newSlotPages,
-        );
-
-        pages.add(newPage);
-      }
-    }
-
     state = state.copyWith(
-      pages: pages,
+      addedExercises: [
+        ...state.addedExercises,
+        AddedExercise(
+          afterPageKey: pageEntryKey,
+          exercise: newExercise,
+          slotEntryId: page.slotPages.first.setConfigData!.slotEntryId,
+          weightUnit: defaultWeightUnit,
+        ),
+      ],
     );
-
-    recalculateIndices();
+    calculatePages();
   }
 
   /// Resets the workout start time to now, e.g. when the user taps "start"
@@ -713,6 +669,7 @@ class GymStateNotifier extends _$GymStateNotifier {
       currentPage: 0,
       lastLoggedValues: const {},
       progress: const {},
+      addedExercises: const [],
 
       validUntil: clock.now().add(DEFAULT_DURATION),
       workoutStart: clock.now(),

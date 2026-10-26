@@ -30,6 +30,7 @@ import 'package:wger/features/account/models/user_profile.dart';
 import 'package:wger/features/account/providers/user_profile_notifier.dart';
 import 'package:wger/features/account/providers/user_profile_repository.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
+import 'package:wger/features/routines/models/added_exercise.dart';
 import 'package:wger/features/routines/models/day.dart';
 import 'package:wger/features/routines/models/day_data.dart';
 import 'package:wger/features/routines/models/log.dart';
@@ -240,90 +241,12 @@ void main() {
     });
   });
 
-  group('GymStateNotifier.recalculateIndices', () {
-    test('Correctly recalculates indices if new pages are added', () {
-      // Arrange
-      final newPages = [
-        ...notifier.state.pages.sublist(0, 2),
-        PageEntry(
-          type: PageType.set,
-          pageIndex: 1111,
-          key: 'new-page-1',
-        ),
-        PageEntry(
-          type: PageType.set,
-          pageIndex: 9,
-          key: 'new-page-2',
-        ),
-        ...notifier.state.pages.sublist(2),
-        PageEntry(
-          type: PageType.set,
-          pageIndex: 0,
-          key: 'new-page-3',
-          slotPages: [
-            SlotPageEntry(
-              type: SlotPageType.timer,
-              pageIndex: 10,
-              setIndex: 9,
-              key: 'new-slot-1',
-            ),
-            SlotPageEntry(
-              type: SlotPageType.timer,
-              pageIndex: 10,
-              setIndex: 6,
-              key: 'new-slot-2',
-            ),
-            SlotPageEntry(
-              type: SlotPageType.timer,
-              pageIndex: 100,
-              setIndex: 100,
-              key: 'new-slot-3',
-            ),
-          ],
-        ),
-      ];
-      notifier.state = notifier.state.copyWith(pages: newPages);
-
-      // Act
-      notifier.recalculateIndices();
-
-      // Assert
-      final pages = notifier.state.pages;
-      expect(pages[0].pageIndex, 0);
-      expect(pages[1].pageIndex, 1);
-
-      // These three have the same pageIndex because the new ones don't have any slot
-      // pages (this should not happen in practice)
-      expect(pages[2].pageIndex, 8);
-      expect(pages[3].pageIndex, 8);
-      expect(pages[4].pageIndex, 8);
-
-      expect(pages[5].pageIndex, 15);
-      expect(pages[6].pageIndex, 16);
-      expect(pages[7].pageIndex, 17);
-
-      // Preserve the order of new pages
-      expect(pages[7].key, 'new-page-3');
-
-      // Slot pages have correct indices, the original order is preserved
-      final slotPages = pages[7].slotPages;
-      expect(slotPages[0].key, 'new-slot-1');
-      expect(slotPages[0].pageIndex, 17);
-      expect(slotPages[0].setIndex, 0);
-      expect(slotPages[1].key, 'new-slot-2');
-      expect(slotPages[1].pageIndex, 18);
-      expect(slotPages[1].setIndex, 1);
-      expect(slotPages[2].key, 'new-slot-3');
-      expect(slotPages[2].pageIndex, 19);
-      expect(slotPages[2].setIndex, 2);
-    });
-  });
-
   group('GymStateNotifier.replaceExercises', () {
     test('Correctly swaps an exercise', () {
       // Arrange
       final page = notifier.state.pages[1];
       final slotPage = page.slotPages[1];
+      final slotPageKeys = page.slotPages.map((s) => s.key).toList();
       expect(slotPage.type, SlotPageType.log);
       expect(
         notifier.state.pages.every((p) => p.exercises.every((e) => e.id != testSquats.id)),
@@ -337,6 +260,11 @@ void main() {
       // Assert: every slot page of that page carries the new exercise, and the
       // routine itself was rebuilt too (the log draft reads from it)
       final updated = notifier.state.pages[1];
+      expect(
+        updated.slotPages.map((s) => s.key),
+        slotPageKeys,
+        reason: 'the layout is the same, including the overview of the exercise',
+      );
       expect(
         updated.slotPages
             .where((s) => s.setConfigData != null)
@@ -356,9 +284,8 @@ void main() {
   });
 
   group('GymStateNotifier.addExerciseAfterPage', () {
-    test('Stamps the profile default weight unit on the ad-hoc set configs', () async {
-      // Ad-hoc exercises bypass routine hydration, so the notifier itself
-      // resolves the profile default: lb (id 2) for an imperial user.
+    /// A notifier for an imperial user, with the pages calculated
+    Future<GymStateNotifier> imperialGymNotifier() async {
       final profileRepo = MockUserProfileRepository();
       when(
         profileRepo.watchDrift(),
@@ -385,11 +312,18 @@ void main() {
         routine: getTestRoutine(),
       );
       imperialNotifier.calculatePages();
+      return imperialNotifier;
+    }
+
+    test('Stamps the profile default weight unit on the ad-hoc set configs', () async {
+      // Ad-hoc exercises bypass routine hydration, so the notifier itself
+      // resolves the profile default: lb (id 2) for an imperial user.
+      final imperialNotifier = await imperialGymNotifier();
       final setPage = imperialNotifier.state.pages.firstWhere((p) => p.type == PageType.set);
 
       imperialNotifier.addExerciseAfterPage(setPage.key, newExercise: testSquats);
 
-      // recalculateIndices copies the page objects, so look the page up by key.
+      // The pages are recalculated, so look the page up by key
       final pages = imperialNotifier.state.pages;
       final newPage = pages[pages.indexWhere((p) => p.key == setPage.key) + 1];
       expect(newPage.slotPages, isNotEmpty);
@@ -408,6 +342,49 @@ void main() {
         'added:1:log:3',
         'added:1:log:4',
       ]);
+    });
+
+    test('Keeps the added exercises when the pages are recalculated', () async {
+      final gymNotifier = await imperialGymNotifier();
+      final slotKey = gymNotifier.state.pages[1].key;
+      gymNotifier.addExerciseAfterPage(slotKey, newExercise: testSquats);
+      gymNotifier.addExerciseAfterPage('added:1', newExercise: testCurls);
+      gymNotifier.markSlotPageAsDone('added:1:log:1', isDone: true);
+
+      gymNotifier.state = gymNotifier.state.copyWith(showExercisePages: false);
+      gymNotifier.calculatePages();
+
+      final pages = gymNotifier.state.pages;
+      expect(pages.map((p) => p.key).toList().sublist(1, 4), [slotKey, 'added:1', 'added:2']);
+      expect(pages[2].exercises.single.id, testSquats.id);
+      expect(pages[3].exercises.single.id, testCurls.id);
+      expect(
+        pages[2].slotPages.map((p) => p.setIndex),
+        [0, 1, 2, 3],
+        reason: 'the sets of the exercise are numbered on their own',
+      );
+      expect(pages[2].slotPages.first.setConfigData!.weightUnit, testWeightUnit2);
+      expect(gymNotifier.state.progressOf('added:1:log:1').done, isTrue);
+      expect(
+        pages.expand((p) => p.slotPages).map((p) => p.pageIndex),
+        List.generate(pages.expand((p) => p.slotPages).length, (i) => i + 1),
+        reason: 'the page indices stay consecutive',
+      );
+    });
+
+    test('Keeps a replaced added exercise when the pages are recalculated', () async {
+      final gymNotifier = await imperialGymNotifier();
+      gymNotifier.addExerciseAfterPage(gymNotifier.state.pages[1].key, newExercise: testSquats);
+
+      gymNotifier.replaceExercises(
+        'added:1',
+        originalExerciseId: testSquats.id,
+        newExercise: testCurls,
+      );
+      gymNotifier.calculatePages();
+
+      final added = gymNotifier.state.pages.firstWhere((p) => p.key == 'added:1');
+      expect(added.exercises.single.id, testCurls.id);
     });
   });
 
@@ -892,6 +869,9 @@ void main() {
       notifier.state = notifier.state.copyWith(
         workoutStart: DateTime(2024, 5, 1, 10, 0),
         progress: {'log:1:1': const PageProgress(done: true)},
+        addedExercises: [
+          AddedExercise(afterPageKey: 'slot:1:1', exercise: testSquats, slotEntryId: 1),
+        ],
       );
 
       // Act
@@ -902,6 +882,7 @@ void main() {
       // Assert
       expect(notifier.state.workoutStart, DateTime(2024, 5, 2, 9, 15));
       expect(notifier.state.progress, isEmpty);
+      expect(notifier.state.addedExercises, isEmpty);
     });
   });
 
@@ -954,11 +935,15 @@ void main() {
         dayId: 1,
         currentPage: 4,
         progress: {'log:1:1': const PageProgress(done: true)},
+        addedExercises: [
+          AddedExercise(afterPageKey: 'slot:1:1', exercise: testSquats, slotEntryId: 1),
+        ],
       );
 
       expect(notifier.initData(getTestRoutine(), 2, 1), 0);
       expect(notifier.state.dayId, 2);
       expect(notifier.state.progress, isEmpty, reason: 'the new workout starts without progress');
+      expect(notifier.state.addedExercises, isEmpty);
     });
 
     test('An expired validUntil resets even on the same day', () {

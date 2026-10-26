@@ -19,6 +19,7 @@
 import 'package:clock/clock.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
+import 'package:wger/features/routines/models/added_exercise.dart';
 import 'package:wger/features/routines/models/day_data.dart';
 import 'package:wger/features/routines/models/log.dart';
 import 'package:wger/features/routines/models/page_progress.dart';
@@ -191,6 +192,9 @@ class GymModeState {
   /// so that recalculating them doesn't lose it.
   final Map<String, PageProgress> progress;
 
+  /// Exercises added during the workout, in the order they were added
+  final List<AddedExercise> addedExercises;
+
   // Routine data
   late final int dayId;
   late final int iteration;
@@ -212,6 +216,7 @@ class GymModeState {
     this.stickySetValues = false,
     this.lastLoggedValues = const {},
     this.progress = const {},
+    this.addedExercises = const [],
     int? dayId,
     int? iteration,
     Routine? routine,
@@ -259,6 +264,7 @@ class GymModeState {
     bool? stickySetValues,
     Map<int, Log>? lastLoggedValues,
     Map<String, PageProgress>? progress,
+    List<AddedExercise>? addedExercises,
   }) {
     return GymModeState(
       isInitialized: isInitialized ?? this.isInitialized,
@@ -284,6 +290,7 @@ class GymModeState {
       stickySetValues: stickySetValues ?? this.stickySetValues,
       lastLoggedValues: lastLoggedValues ?? this.lastLoggedValues,
       progress: progress ?? this.progress,
+      addedExercises: addedExercises ?? this.addedExercises,
     );
   }
 
