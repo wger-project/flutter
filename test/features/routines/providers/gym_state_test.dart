@@ -885,6 +885,15 @@ void main() {
       );
 
       expect(page, 0);
+
+      // The new workout gets its own window, so it can be resumed in turn
+      notifier.state = notifier.state.copyWith(currentPage: 3);
+      final resumedPage = withClock(
+        Clock.fixed(DateTime(2024, 5, 2, 19, 0)),
+        () => notifier.initData(getTestRoutine(), 1, 1),
+      );
+
+      expect(resumedPage, 3);
     });
   });
 

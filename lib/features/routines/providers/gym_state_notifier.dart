@@ -408,8 +408,9 @@ class GymStateNotifier extends _$GymStateNotifier {
       routine: routine,
       iteration: iteration,
       currentPage: initialPage,
-      // A fresh workout also restarts the elapsed timer
+      // A fresh workout also restarts the elapsed timer and the resume window
       workoutStart: shouldReset ? clock.now() : null,
+      validUntil: shouldReset ? clock.now().add(DEFAULT_DURATION) : null,
       // An abandoned workout never reaches clear(), so forget its values here
       lastLoggedValues: shouldReset ? const {} : null,
     );
