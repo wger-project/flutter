@@ -902,5 +902,9 @@
     "@volume": {
         "description": "The volume of a workout or set, i.e. weight x reps"
     },
-    "workoutCompleted": "Тренировка завершена"
+    "workoutCompleted": "Тренировка завершена",
+    "upNext": "Следующий подход",
+    "@upNext": {
+        "description": "Label shown on the rest timer pages in the gym mode above the information about the upcoming set"
+    }
 }
