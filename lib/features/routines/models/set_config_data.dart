@@ -45,6 +45,10 @@ class SetConfigData {
 
   String get textReprWithType => '$textRepr${type.typeLabel}';
 
+  /// [textRepr] without sets, RiR and rest, null from older servers
+  @JsonKey(name: 'text_repr_short')
+  String? textReprShort;
+
   @JsonKey(required: true, name: 'sets')
   num? nrOfSets;
 
@@ -120,6 +124,7 @@ class SetConfigData {
     this.maxRestTime,
     this.comment = '',
     this.textRepr = '',
+    this.textReprShort,
     Exercise? exercise,
     WeightUnit? weightUnit,
     RepetitionUnit? repetitionsUnit,
@@ -140,6 +145,7 @@ class SetConfigData {
     int? slotEntryId,
     SlotEntryType? type,
     String? textRepr,
+    String? textReprShort,
     num? nrOfSets,
     num? maxNrOfSets,
     num? weight,
@@ -165,6 +171,7 @@ class SetConfigData {
       slotEntryId: slotEntryId ?? this.slotEntryId,
       type: type ?? this.type,
       textRepr: textRepr ?? this.textRepr,
+      textReprShort: textReprShort ?? this.textReprShort,
       nrOfSets: nrOfSets ?? this.nrOfSets,
       maxNrOfSets: maxNrOfSets ?? this.maxNrOfSets,
       weight: weight ?? this.weight,

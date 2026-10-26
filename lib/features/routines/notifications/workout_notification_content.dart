@@ -270,30 +270,18 @@ Map<String, Log> quickLogChoices(SetConfigData planned, List<Log> recentLogs) {
         isPlanned) {
       continue;
     }
-    final label = _valuesLabel(
-      repetitions: log.repetitions!,
-      weight: log.weight,
-      unit: log.weightUnitObj?.name,
-    );
+    final weight = log.weight;
+    final label = [
+      formatNum(log.repetitions!).toString(),
+      if (weight != null && weight != 0) ...[
+        '×',
+        formatNum(weight).toString(),
+        ?log.weightUnitObj?.name,
+      ],
+    ].join(' ');
     choices.putIfAbsent(label, () => log.copyWith()..rir = plannedLog.rir);
   }
   return choices;
-}
-
-/// "8-12 × 60 kg", the upper bounds and the unit if given
-String _valuesLabel({
-  required num repetitions,
-  num? maxRepetitions,
-  num? weight,
-  num? maxWeight,
-  String? unit,
-}) {
-  String range(num value, num? max) =>
-      [formatNum(value), if (max != null) formatNum(max)].join('-');
-  return [
-    range(repetitions, maxRepetitions),
-    if (weight != null && weight != 0) ...['×', range(weight, maxWeight), ?unit],
-  ].join(' ');
 }
 
 /// Derives the workout notifications from [state] at [now].
@@ -317,22 +305,8 @@ WorkoutNotificationTarget buildWorkoutNotification(
   final slotPages = state.pages.expand((p) => p.slotPages).toList();
   final current = state.getSlotEntryPageByIndex();
 
-  /// The planned values without RiR and rest, the server text for other units
-  String values(SetConfigData config) {
-    final repetitions = config.repetitions;
-    if (repetitions == null || config.repetitionsUnitId != REP_UNIT_REPETITIONS_ID) {
-      return config.textRepr;
-    }
-    final weight = config.weight;
-    final label = _valuesLabel(
-      repetitions: repetitions,
-      maxRepetitions: config.maxRepetitions,
-      weight: weight,
-      maxWeight: config.maxWeight,
-      unit: config.weightUnit?.name,
-    );
-    return weight == null || weight == 0 ? '$label ${i18n.reps}' : label;
-  }
+  // The rest and RiR in the full text don't fit a notification
+  String values(SetConfigData config) => config.textReprShort ?? config.textRepr;
 
   String setText(SlotPageEntry page) {
     final config = page.setConfigData!;
