@@ -16,11 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:timezone/data/latest_all.dart' as tzdata;
 import 'package:wger/core/widgets/dashboard/calendar.dart';
+import 'package:wger/core/widgets/error.dart';
+import 'package:wger/core/widgets/progress_indicator.dart';
 import 'package:wger/features/account/models/user_profile.dart';
 import 'package:wger/features/account/providers/user_profile_notifier.dart';
 import 'package:wger/features/measurements/models/measurement_bucket.dart';
@@ -29,6 +33,7 @@ import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/nutrition/providers/nutrition_notifier.dart';
 import 'package:wger/features/routines/models/session.dart';
 import 'package:wger/features/routines/providers/routines_notifier.dart';
+import 'package:wger/features/routines/providers/workout_session_notifier.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/l10n/localizations_delegates.dart';
 
@@ -45,15 +50,19 @@ class _StubUserProfileNotifier extends UserProfileNotifier {
   Stream<UserProfile?> build() => Stream.value(_profile);
 }
 
-/// Feeds fixed sessions in, which the state derives from its routines.
+/// Mirrors routine hydration: only sessions linked to a routine are attached.
 class _StubRoutinesRiverpod extends RoutinesRiverpod {
-  _StubRoutinesRiverpod(this._sessions);
+  _StubRoutinesRiverpod(this._sessions, this._hasRoutines);
 
   final List<WorkoutSession> _sessions;
+  final bool _hasRoutines;
 
   @override
-  Stream<RoutinesState> build() =>
-      Stream.value(RoutinesState(routines: [getTestRoutine()..sessions = _sessions]));
+  Stream<RoutinesState> build() {
+    final routine = getTestRoutine();
+    routine.sessions = _sessions.where((session) => session.routineId == routine.id).toList();
+    return Stream.value(RoutinesState(routines: _hasRoutines ? [routine] : []));
+  }
 }
 
 class _StubNutritionNotifier extends NutritionNotifier {
@@ -85,6 +94,8 @@ void main() {
     required Map<String, List<MeasurementBucket>> dailyBuckets,
     List<MeasurementCategory> categories = const [],
     List<WorkoutSession> sessions = const [],
+    Stream<List<WorkoutSession>>? sessionStream,
+    bool hasRoutines = true,
     bool isMetric = true,
     String? timeZone,
   }) {
@@ -97,7 +108,10 @@ void main() {
         ),
         measurementCategoriesProvider.overrideWith((ref) => Stream.value(categories)),
         measurementDailyBucketsProvider.overrideWith((ref) => Stream.value(dailyBuckets)),
-        routinesRiverpodProvider.overrideWith(() => _StubRoutinesRiverpod(sessions)),
+        routinesRiverpodProvider.overrideWith(() => _StubRoutinesRiverpod(sessions, hasRoutines)),
+        workoutSessionProvider.overrideWithBuild(
+          (ref, notifier) => sessionStream ?? Stream.value(sessions),
+        ),
         nutritionProvider.overrideWith(_StubNutritionNotifier.new),
       ],
       child: const MaterialApp(
@@ -113,6 +127,110 @@ void main() {
 
   /// The day the calendar starts on, which is the one it lists events for
   final today = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+
+  testWidgets('sessions without a routine appear alongside linked sessions exactly once', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      renderWidget(
+        dailyBuckets: const {},
+        sessions: [
+          WorkoutSession(
+            id: 'standalone-session',
+            routineId: null,
+            datetimeStart: today.add(const Duration(hours: 9)),
+            impression: WorkoutImpression.good,
+          ),
+          WorkoutSession(
+            id: 'linked-session',
+            routineId: getTestRoutine().id,
+            datetimeStart: today.add(const Duration(hours: 10)),
+          ),
+        ],
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Workout session'), findsNWidgets(2));
+    expect(find.textContaining('Impression: Good'), findsOneWidget);
+    expect(find.textContaining('Impression: Neutral'), findsOneWidget);
+  });
+
+  for (final routineId in <int?>[null, 99]) {
+    testWidgets('sessions remain visible with no routines (routine: $routineId)', (tester) async {
+      await tester.pumpWidget(
+        renderWidget(
+          dailyBuckets: const {},
+          hasRoutines: false,
+          sessions: [
+            WorkoutSession(
+              routineId: routineId,
+              datetimeStart: today.add(const Duration(hours: 9)),
+            ),
+          ],
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Workout session'), findsOneWidget);
+    });
+  }
+
+  testWidgets('the calendar updates when a session loses its routine', (tester) async {
+    final controller = StreamController<List<WorkoutSession>>();
+    addTearDown(() => unawaited(controller.close()));
+    final session = WorkoutSession(
+      id: 'preserved-session',
+      routineId: getTestRoutine().id,
+      datetimeStart: today.add(const Duration(hours: 9)),
+    );
+
+    await tester.pumpWidget(
+      renderWidget(dailyBuckets: const {}, sessions: [session], sessionStream: controller.stream),
+    );
+    controller.add([session]);
+    await tester.pumpAndSettle();
+    expect(find.text('Workout session'), findsOneWidget);
+
+    controller.add([session.copyWith(routineId: null, impression: WorkoutImpression.good)]);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Workout session'), findsOneWidget);
+    expect(find.textContaining('Impression: Good'), findsOneWidget);
+    expect(find.textContaining('Impression: Neutral'), findsNothing);
+  });
+
+  testWidgets('waits for the session stream before showing the calendar', (tester) async {
+    final controller = StreamController<List<WorkoutSession>>();
+    addTearDown(() => unawaited(controller.close()));
+
+    await tester.pumpWidget(
+      renderWidget(dailyBuckets: const {}, sessionStream: controller.stream),
+    );
+    await tester.pump();
+
+    expect(find.byType(BoxedProgressIndicator), findsOneWidget);
+
+    controller.add([]);
+    await tester.pumpAndSettle();
+
+    expect(find.byType(BoxedProgressIndicator), findsNothing);
+    expect(find.text('Workout session'), findsNothing);
+  });
+
+  testWidgets('shows an error when the session stream fails', (tester) async {
+    await tester.pumpWidget(
+      renderWidget(
+        dailyBuckets: const {},
+        sessionStream: Stream.error(StateError('Workout history unavailable')),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byType(StreamErrorIndicator), findsOneWidget);
+    expect(find.textContaining('Workout history unavailable'), findsOneWidget);
+    expect(find.byType(BoxedProgressIndicator), findsNothing);
+  });
 
   testWidgets('a day of readings is one event, not one per reading', (tester) async {
     await tester.pumpWidget(
