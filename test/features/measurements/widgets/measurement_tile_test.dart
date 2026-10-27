@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:clock/clock.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -40,7 +41,7 @@ import 'measurement_tile_test.mocks.dart';
 
 /// The calendar day [daysAgo] days back, at midnight like a day bucket.
 DateTime _day(int daysAgo) {
-  final now = DateTime.now();
+  final now = clock.now();
   return DateTime(now.year, now.month, now.day - daysAgo);
 }
 
@@ -236,31 +237,35 @@ void main() {
     });
 
     testWidgets('the range filter decides between daily and weekly slots', (tester) async {
-      final steps = MeasurementCategory(
-        id: 'steps',
-        name: 'Steps',
-        metricType: MetricType.steps,
-      );
-      final entries = {
-        'steps': [_entry('steps', 8000, _day(1)), _entry('steps', 6000, _day(2))],
-      };
+      // Late evening the day after the European autumn DST switch, where counting the
+      // week in elapsed hours drops a day
+      await withClock(Clock.fixed(DateTime(2026, 10, 26, 23, 30)), () async {
+        final steps = MeasurementCategory(
+          id: 'steps',
+          name: 'Steps',
+          metricType: MetricType.steps,
+        );
+        final entries = {
+          'steps': [_entry('steps', 8000, _day(1)), _entry('steps', 6000, _day(2))],
+        };
 
-      // A week is seven daily slots and a month one per day; three months
-      // come as calendar weeks
-      await tester.pumpWidget(_wrap(steps, entries: entries, range: ChartRange.lastWeek));
-      await tester.pumpAndSettle();
-      var chart = tester.widget<SparkBarChart>(find.byType(SparkBarChart));
-      expect(chart.data.slotCount, 7);
+        // A week is seven daily slots and a month one per day; three months
+        // come as calendar weeks
+        await tester.pumpWidget(_wrap(steps, entries: entries, range: ChartRange.lastWeek));
+        await tester.pumpAndSettle();
+        var chart = tester.widget<SparkBarChart>(find.byType(SparkBarChart));
+        expect(chart.data.slotCount, 7);
 
-      await tester.pumpWidget(_wrap(steps, entries: entries, range: ChartRange.lastMonth));
-      await tester.pumpAndSettle();
-      chart = tester.widget<SparkBarChart>(find.byType(SparkBarChart));
-      expect(chart.data.slotCount, 31);
+        await tester.pumpWidget(_wrap(steps, entries: entries, range: ChartRange.lastMonth));
+        await tester.pumpAndSettle();
+        chart = tester.widget<SparkBarChart>(find.byType(SparkBarChart));
+        expect(chart.data.slotCount, 31);
 
-      await tester.pumpWidget(_wrap(steps, entries: entries, range: ChartRange.last3Months));
-      await tester.pumpAndSettle();
-      chart = tester.widget<SparkBarChart>(find.byType(SparkBarChart));
-      expect(chart.data.slotCount, 13);
+        await tester.pumpWidget(_wrap(steps, entries: entries, range: ChartRange.last3Months));
+        await tester.pumpAndSettle();
+        chart = tester.widget<SparkBarChart>(find.byType(SparkBarChart));
+        expect(chart.data.slotCount, 13);
+      });
     });
 
     testWidgets('blood pressure tile: the reading quoted high over low', (tester) async {

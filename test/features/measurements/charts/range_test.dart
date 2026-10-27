@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:clock/clock.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wger/features/measurements/charts/range.dart';
 
@@ -31,12 +32,25 @@ void main() {
     });
 
     test('the week covers today plus the six days before it', () {
-      // Seven calendar days in all: the count cutoff sits at midnight six
-      // days back, so a weekday axis gets one letter per day
-      final count = ChartRange.lastWeek.countCutoff!;
-      final now = DateTime.now();
+      // Seven calendar days, so a weekday axis gets one letter per day. Next to
+      // the European DST switches, where counting elapsed hours lands a day off
+      final weekStarts = {
+        DateTime(2026, 10, 26, 23, 30): DateTime(2026, 10, 20),
+        DateTime(2026, 3, 30, 0, 30): DateTime(2026, 3, 24),
+      };
 
-      expect(DateTime(now.year, now.month, now.day - 6), count);
+      for (final MapEntry(key: now, value: start) in weekStarts.entries) {
+        withClock(Clock.fixed(now), () {
+          expect(ChartRange.lastWeek.countCutoff, start, reason: 'at $now');
+        });
+      }
+    });
+
+    test('the read cutoff counts its lead in calendar days', () {
+      // The 30-day lead from 4 April reaches back across the European spring DST switch
+      withClock(Clock.fixed(DateTime(2026, 4, 10, 12)), () {
+        expect(ChartRange.lastWeek.readCutoff, DateTime(2026, 3, 5));
+      });
     });
 
     test('the cutoff sits at the same midnight as the count cutoff', () {

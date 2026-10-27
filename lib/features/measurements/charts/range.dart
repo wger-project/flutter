@@ -16,7 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:clock/clock.dart';
 import 'package:collection/collection.dart';
+import 'package:wger/features/measurements/charts/calendar.dart';
 import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
@@ -44,8 +46,7 @@ enum ChartRange {
     if (days == null) {
       return null;
     }
-    final from = DateTime.now().subtract(Duration(days: days));
-    return DateTime(from.year, from.month, from.day);
+    return shiftDays(dayOf(clock.now()), -days);
   }
 
   /// Days read beyond [cutoff], so the moving average of the first days in
@@ -58,21 +59,21 @@ enum ChartRange {
   ///
   /// Reaches [_averageLeadDays] beyond [cutoff], and is rounded down to
   /// midnight like [countCutoff], for the same reason.
-  DateTime? get readCutoff => _atMidnight(Duration(days: _averageLeadDays));
+  DateTime? get readCutoff => _atMidnight(_averageLeadDays);
 
   /// Oldest entry to count, null for the full history: the range itself, with
   /// no lead, for the queries that summarise exactly what is on screen.
-  DateTime? get countCutoff => _atMidnight(Duration.zero);
+  DateTime? get countCutoff => _atMidnight(0);
 
-  /// [cutoff] minus [lead], rounded down to midnight.
+  /// [cutoff] moved back [leadDays] calendar days, at midnight.
   ///
   /// The rounding is deliberate: these identify a provider and have to stay
   /// the same across rebuilds, which a bound derived from the current instant
   /// would not.
-  DateTime? _atMidnight(Duration lead) {
-    final from = cutoff?.subtract(lead);
+  DateTime? _atMidnight(int leadDays) {
+    final from = cutoff;
 
-    return from == null ? null : DateTime(from.year, from.month, from.day);
+    return from == null ? null : shiftDays(from, -leadDays);
   }
 
   /// Label for the selector, counted rather than one string per range, so a
