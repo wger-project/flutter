@@ -231,12 +231,20 @@ class GymStateNotifier extends _$GymStateNotifier {
       return null;
     }
 
+    // Without the logs the done sets and timers still come back, a correction
+    // then inserts a new row instead of updating the old one
     final logIds = saved.pages.values.map((p) => p.logId).nonNulls.toList();
-    final logs = {
-      if (logIds.isNotEmpty)
-        for (final log in await ref.read(workoutLogRepositoryProvider).getLogsByIds(logIds))
-          log.id: log,
-    };
+    var logs = <String?, Log>{};
+    if (logIds.isNotEmpty) {
+      try {
+        logs = {
+          for (final log in await ref.read(workoutLogRepositoryProvider).getLogsByIds(logIds))
+            log.id: log,
+        };
+      } catch (e) {
+        _logger.warning('Could not read the logs of the stored workout progress: $e');
+      }
+    }
 
     // Pages the routine no longer has (it was edited, or they were added
     // during the workout) are left out
@@ -590,9 +598,9 @@ class GymStateNotifier extends _$GymStateNotifier {
   }
 
   /// [log] is the entry saved from this page during the current workout. It
-  /// is kept on the slot page so revisiting the page pre-fills the form with
-  /// the saved values and saving updates the row instead of inserting a
-  /// duplicate.
+  /// is kept in the page's progress so revisiting the page pre-fills the form
+  /// with the saved values and saving updates the row instead of inserting a
+  /// duplicate. Without [log], an entry saved before is kept.
   ///
   /// Saving a new entry, unlike correcting one, also (re)starts the rest timer
   /// that follows the set.

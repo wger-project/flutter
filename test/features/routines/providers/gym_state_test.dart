@@ -99,7 +99,7 @@ void main() {
       }
     });
 
-    test('Stores the logged entry on the slot page', () {
+    test('Stores the logged entry in the page progress', () {
       // Arrange
       final slotPage = notifier.state.pages[1].slotPages[1];
       expect(slotPage.type, SlotPageType.log);
@@ -113,6 +113,11 @@ void main() {
       final loggedEntry = notifier.state.progressOf(slotPage.key).loggedEntry!;
       expect(loggedEntry.id, 'log-1');
       expect(loggedEntry, isNot(same(log)));
+
+      // Undoing the flag without a log, e.g. after a failed write, keeps the entry
+      notifier.markSlotPageAsDone(slotPage.key, isDone: false);
+      expect(notifier.state.progressOf(slotPage.key).done, isFalse);
+      expect(notifier.state.progressOf(slotPage.key).loggedEntry!.id, 'log-1');
     });
   });
 
@@ -982,14 +987,17 @@ void main() {
     /// Simulates the app being killed: a new container means a new (empty)
     /// notifier, while the stored preferences and [logs] survive, as on a real
     /// restart.
-    GymStateNotifier restartedNotifier({List<Log> logs = const []}) {
+    GymStateNotifier restartedNotifier({List<Log> logs = const [], Object? lookupError}) {
       final logRepo = MockWorkoutLogRepository();
-      when(logRepo.getLogsByIds(any)).thenAnswer(
-        (invocation) async => [
+      when(logRepo.getLogsByIds(any)).thenAnswer((invocation) async {
+        if (lookupError != null) {
+          throw lookupError;
+        }
+        return [
           for (final log in logs)
             if ((invocation.positionalArguments.first as List<String>).contains(log.id)) log,
-        ],
-      );
+        ];
+      });
       return ProviderContainer.test(
         overrides: [workoutLogRepositoryProvider.overrideWithValue(logRepo)],
       ).read(gymStateProvider.notifier);
@@ -1112,6 +1120,25 @@ void main() {
         80,
         reason: 'the sticky values come from the restored logs',
       );
+    });
+
+    test('Restores the rest of the progress when the logs can not be read', () async {
+      final logPage = notifier.state.pages[1].slotPages[1];
+      final timerKey = notifier.state.pages[1].slotPages[2].key;
+      final log = Log(id: 'log-1', exerciseId: 1, date: DateTime(2026, 7, 26));
+      await openDay1(notifier);
+      withClock(Clock.fixed(DateTime(2026, 7, 26, 18, 30)), () {
+        notifier.markSlotPageAsDone(logPage.key, isDone: true, log: log);
+      });
+      notifier.setCurrentPage(3);
+      await pumpEventQueue();
+
+      final restarted = restartedNotifier(lookupError: StateError('database closed'));
+
+      expect(await openDay1(restarted), 3);
+      expect(restarted.state.progressOf(logPage.key).done, isTrue);
+      expect(restarted.state.progressOf(logPage.key).loggedEntry, isNull);
+      expect(restarted.state.progressOf(timerKey).timerStartedAt, DateTime(2026, 7, 26, 18, 30));
     });
 
     test('Stores a rest timer as soon as it starts', () async {
