@@ -267,6 +267,40 @@ void main() {
     });
   });
 
+  group('getLatestLogByExercise', () {
+    test('returns null when the exercise was never logged', () async {
+      await db.into(db.workoutLogTable).insert(makeLog(exerciseId: 2).toCompanion());
+
+      expect(await repo.getLatestLogByExercise(1), isNull);
+    });
+
+    test('returns the newest log of the exercise across routines', () async {
+      await seedUnits();
+      await db
+          .into(db.workoutLogTable)
+          .insert(makeLog(date: DateTime.utc(2026, 4, 14), weight: 14).toCompanion());
+      await db
+          .into(db.workoutLogTable)
+          .insert(
+            makeLog(routineId: 999, date: DateTime.utc(2026, 4, 16), weight: 16).toCompanion(),
+          );
+      await db
+          .into(db.workoutLogTable)
+          .insert(makeLog(date: DateTime.utc(2026, 4, 15), weight: 15).toCompanion());
+      // Newer, but a different exercise
+      await db
+          .into(db.workoutLogTable)
+          .insert(
+            makeLog(exerciseId: 2, date: DateTime.utc(2026, 4, 17), weight: 17).toCompanion(),
+          );
+
+      final log = await repo.getLatestLogByExercise(1);
+
+      expect(log!.weight, 16);
+      expect(log.weightUnitObj?.name, 'kg');
+    });
+  });
+
   group('updateLocalDrift', () {
     test('overwrites the row with matching id', () async {
       final log = makeLog(sessionId: 'session-1', weight: 50);

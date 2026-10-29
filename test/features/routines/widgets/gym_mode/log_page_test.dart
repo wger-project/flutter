@@ -70,17 +70,39 @@ void main() {
     late ProviderContainer container;
     late MockWorkoutLogRepository mockWorkoutLogRepo;
 
+    /// What the mocked repository wrote, so the sticky values can be read back
+    late List<Log> storedLogs;
+
+    void storeLog(Log log) {
+      storedLogs
+        ..removeWhere((l) => l.id == log.id)
+        ..add(log.copyWith());
+    }
+
     setUp(() {
       SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
       testExercises = getTestExercises();
       mockWorkoutLogRepo = MockWorkoutLogRepository();
+      storedLogs = [];
       // Mimic the real insert: the freshly minted id is written back to the log
       when(
         mockWorkoutLogRepo.addLocalDrift(any, dayId: anyNamed('dayId')),
       ).thenAnswer((invocation) async {
-        (invocation.positionalArguments[0] as Log).id = 'new-log-id';
+        storeLog((invocation.positionalArguments[0] as Log)..id = 'new-log-id');
       });
-      when(mockWorkoutLogRepo.updateLocalDrift(any)).thenAnswer((_) async {});
+      when(mockWorkoutLogRepo.updateLocalDrift(any)).thenAnswer((invocation) async {
+        storeLog(invocation.positionalArguments[0] as Log);
+      });
+      // Newest first like the real query, on equal dates the later write wins
+      when(mockWorkoutLogRepo.getLatestLogByExercise(any)).thenAnswer((invocation) async {
+        final exerciseId = invocation.positionalArguments[0] as int;
+        return storedLogs
+            .where((l) => l.exerciseId == exerciseId)
+            .fold<Log?>(
+              null,
+              (newest, l) => newest == null || !l.date.isBefore(newest.date) ? l : newest,
+            );
+      });
       // Past logs on the page come from this stream (per exercise); reuse the
       // test routine's logs so the previous-entries assertions keep working.
       when(
@@ -311,7 +333,7 @@ void main() {
         when(
           mockWorkoutLogRepo.addLocalDrift(any, dayId: anyNamed('dayId')),
         ).thenAnswer((invocation) async {
-          (invocation.positionalArguments[0] as Log).id = 'log-${++count}';
+          storeLog((invocation.positionalArguments[0] as Log)..id = 'log-${++count}');
         });
       });
 
@@ -329,6 +351,7 @@ void main() {
 
         // Set 3 is pre-filled with the values of set 2
         container.read(gymStateProvider.notifier).setCurrentPage(6);
+        await tester.pump();
         final gymLog = container.read(gymLogProvider)!;
         expect(gymLog.repetitions, 14);
         expect(gymLog.weight, 40);
@@ -346,6 +369,7 @@ void main() {
 
         // Set 2 is pre-filled with the corrected values
         container.read(gymStateProvider.notifier).setCurrentPage(4);
+        await tester.pump();
         final gymLog = container.read(gymLogProvider)!;
         expect(gymLog.repetitions, 12);
         expect(gymLog.weight, 36);

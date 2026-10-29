@@ -21,7 +21,6 @@ import 'package:material_ui/material_ui.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/routines/models/added_exercise.dart';
 import 'package:wger/features/routines/models/day_data.dart';
-import 'package:wger/features/routines/models/log.dart';
 import 'package:wger/features/routines/models/page_progress.dart';
 import 'package:wger/features/routines/models/routine.dart';
 import 'package:wger/features/routines/models/set_config_data.dart';
@@ -179,13 +178,9 @@ class GymModeState {
   final bool showWorkoutDuration;
 
   /// Whether the log form of a set is pre-filled with the values last
-  /// logged for the same exercise during this workout, instead of the
-  /// planned ones. Disabled by default.
+  /// logged for the same exercise, in this or an earlier workout, instead
+  /// of the planned ones. Disabled by default.
   final bool stickySetValues;
-
-  /// The values last logged per exercise during this workout, used to
-  /// pre-fill the log form when [stickySetValues] is enabled.
-  final Map<int, Log> lastLoggedValues;
 
   /// What happened on the pages so far, by page key. Kept apart from the pages
   /// so that recalculating them doesn't lose it.
@@ -213,7 +208,6 @@ class GymModeState {
     this.showDistinctLogs = true,
     this.showWorkoutDuration = true,
     this.stickySetValues = false,
-    this.lastLoggedValues = const {},
     this.progress = const {},
     this.addedExercises = const [],
     int? dayId,
@@ -261,7 +255,6 @@ class GymModeState {
     bool? showDistinctLogs,
     bool? showWorkoutDuration,
     bool? stickySetValues,
-    Map<int, Log>? lastLoggedValues,
     Map<String, PageProgress>? progress,
     List<AddedExercise>? addedExercises,
   }) {
@@ -287,7 +280,6 @@ class GymModeState {
       showDistinctLogs: showDistinctLogs ?? this.showDistinctLogs,
       showWorkoutDuration: showWorkoutDuration ?? this.showWorkoutDuration,
       stickySetValues: stickySetValues ?? this.stickySetValues,
-      lastLoggedValues: lastLoggedValues ?? this.lastLoggedValues,
       progress: progress ?? this.progress,
       addedExercises: addedExercises ?? this.addedExercises,
     );

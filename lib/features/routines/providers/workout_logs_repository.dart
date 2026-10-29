@@ -75,6 +75,17 @@ class WorkoutLogRepository {
     return query.watch().map((rows) => rows.map(_readWithUnits).toList());
   }
 
+  /// The newest log of an exercise across all routines, with its units, or
+  /// null if the exercise was never logged
+  Future<Log?> getLatestLogByExercise(int exerciseId) async {
+    final query = _selectWithUnits()
+      ..where(_db.workoutLogTable.exerciseId.equals(exerciseId))
+      ..orderBy([OrderingTerm(expression: _db.workoutLogTable.date, mode: OrderingMode.desc)])
+      ..limit(1);
+    final row = await query.getSingleOrNull();
+    return row == null ? null : _readWithUnits(row);
+  }
+
   /// The logs with one of the [ids] that exist locally, with their units
   Future<List<Log>> getLogsByIds(List<String> ids) async {
     final query = _selectWithUnits()..where(_db.workoutLogTable.id.isIn(ids));

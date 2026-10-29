@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:clock/clock.dart';
@@ -735,9 +736,23 @@ void main() {
     //   slot 1 (exercise 1): overview(1), log(2), timer(3), log(4), timer(5), log(6), timer(7)
     //   slot 2 (exercise 6): overview(8), log(9), ...
 
+    late MockWorkoutLogRepository logRepo;
+
+    setUp(() {
+      logRepo = MockWorkoutLogRepository();
+      when(logRepo.getLatestLogByExercise(any)).thenAnswer((_) async => null);
+
+      final initialState = notifier.state;
+      container = ProviderContainer.test(
+        overrides: [workoutLogRepositoryProvider.overrideWithValue(logRepo)],
+      );
+      notifier = container.read(gymStateProvider.notifier)..state = initialState;
+    });
+
     Log buildLoggedValues() {
       final slotPage = notifier.state.pages[1].slotPages[1];
       return Log.fromSetConfigData(slotPage.setConfigData!, routineId: 1, iteration: 1)
+        ..id = 'log-1'
         ..repetitions = 7
         ..weight = 42.5
         ..rir = 1;
@@ -753,106 +768,72 @@ void main() {
       expect(await PreferenceHelper.asyncPref.getBool(PREFS_STICKY_SET_VALUES), true);
     });
 
-    test(
-      'Pre-fills the next set of the exercise with the last logged values when enabled',
-      () async {
-        // Arrange
-        notifier.setStickySetValues(true);
-        await pumpEventQueue();
-        notifier.recordLoggedValues(buildLoggedValues());
-
-        // Act: navigate to the second set of the same exercise
-        notifier.setCurrentPage(4);
-
-        // Assert
-        final gymLog = container.read(gymLogProvider)!;
-        expect(gymLog.repetitions, 7);
-        expect(gymLog.weight, 42.5);
-        expect(gymLog.rir, 1);
-        expect(gymLog.id, isNull, reason: 'A fresh log is seeded, not a copy of the saved one');
-      },
-    );
-
-    test('Pre-fills with the planned values when disabled', () {
+    test('Pre-fills the set with the last logged values of the exercise when enabled', () async {
       // Arrange
-      notifier.recordLoggedValues(buildLoggedValues());
+      notifier.setStickySetValues(true);
+      await pumpEventQueue();
+      when(logRepo.getLatestLogByExercise(1)).thenAnswer((_) async => buildLoggedValues());
 
       // Act
       notifier.setCurrentPage(4);
-
-      // Assert: the values of the set configuration
-      final gymLog = container.read(gymLogProvider)!;
-      expect(gymLog.repetitions, 3);
-      expect(gymLog.weight, 100);
-    });
-
-    test('Does not carry values over to a different exercise', () async {
-      // Arrange
-      notifier.setStickySetValues(true);
       await pumpEventQueue();
-      notifier.recordLoggedValues(buildLoggedValues());
-
-      // Act: navigate to the first set of the second exercise
-      notifier.setCurrentPage(9);
-
-      // Assert: the values of that exercise's set configuration
-      final gymLog = container.read(gymLogProvider)!;
-      expect(gymLog.repetitions, 12);
-      expect(gymLog.weight, 10);
-    });
-
-    test('A new workout forgets the values of an abandoned one', () async {
-      // Arrange: the summary page (and clear()) is never reached
-      notifier.setStickySetValues(true);
-      await pumpEventQueue();
-      notifier.state = notifier.state.copyWith(
-        isInitialized: true,
-        dayId: 1,
-        validUntil: DateTime(2024, 5, 1, 10, 0),
-      );
-      notifier.recordLoggedValues(buildLoggedValues());
-
-      // Act
-      withClock(
-        Clock.fixed(DateTime(2024, 5, 2, 18, 0)),
-        () => notifier.initData(getTestRoutine(), 1, 1),
-      );
-      notifier.setCurrentPage(2);
-
-      // Assert: the values of the set configuration
-      expect(notifier.state.lastLoggedValues, isEmpty);
-      final gymLog = container.read(gymLogProvider)!;
-      expect(gymLog.repetitions, 3);
-      expect(gymLog.weight, 100);
-    });
-
-    test('Resuming the same workout keeps the logged values', () async {
-      // Arrange
-      notifier.setStickySetValues(true);
-      await pumpEventQueue();
-      notifier.state = notifier.state.copyWith(isInitialized: true, dayId: 1);
-      notifier.recordLoggedValues(buildLoggedValues());
-
-      // Act
-      notifier.initData(getTestRoutine(), 1, 1);
-      notifier.setCurrentPage(4);
 
       // Assert
       final gymLog = container.read(gymLogProvider)!;
       expect(gymLog.repetitions, 7);
       expect(gymLog.weight, 42.5);
+      expect(gymLog.rir, 1);
+      expect(gymLog.id, isNull, reason: 'A fresh log is seeded, not a copy of the saved one');
     });
 
-    test('Clearing the state forgets the logged values', () {
+    test('Pre-fills with the planned values when disabled', () async {
       // Arrange
-      notifier.recordLoggedValues(buildLoggedValues());
-      expect(notifier.state.lastLoggedValues, isNotEmpty);
+      when(logRepo.getLatestLogByExercise(1)).thenAnswer((_) async => buildLoggedValues());
 
       // Act
-      notifier.clear();
+      notifier.setCurrentPage(4);
+      await pumpEventQueue();
+
+      // Assert: the values of the set configuration
+      final gymLog = container.read(gymLogProvider)!;
+      expect(gymLog.repetitions, 3);
+      expect(gymLog.weight, 100);
+      verifyNever(logRepo.getLatestLogByExercise(any));
+    });
+
+    test('Pre-fills with the planned values when the exercise was never logged', () async {
+      // Arrange
+      notifier.setStickySetValues(true);
+      await pumpEventQueue();
+
+      // Act: the first set of the second exercise
+      notifier.setCurrentPage(9);
+      await pumpEventQueue();
+
+      // Assert: the values of that exercise's set configuration
+      verify(logRepo.getLatestLogByExercise(6));
+      final gymLog = container.read(gymLogProvider)!;
+      expect(gymLog.repetitions, 12);
+      expect(gymLog.weight, 10);
+    });
+
+    test('Does not overwrite values entered while the lookup was running', () async {
+      // Arrange
+      notifier.setStickySetValues(true);
+      await pumpEventQueue();
+      final lookup = Completer<Log?>();
+      when(logRepo.getLatestLogByExercise(1)).thenAnswer((_) => lookup.future);
+
+      // Act
+      notifier.setCurrentPage(4);
+      container.read(gymLogProvider.notifier).setWeight(55);
+      lookup.complete(buildLoggedValues());
+      await pumpEventQueue();
 
       // Assert
-      expect(notifier.state.lastLoggedValues, isEmpty);
+      final gymLog = container.read(gymLogProvider)!;
+      expect(gymLog.weight, 55);
+      expect(gymLog.repetitions, 3);
     });
   });
 
@@ -1114,11 +1095,6 @@ void main() {
         restarted.state.progressOf(timerKey).timerStartedAt,
         DateTime(2026, 7, 26, 18, 30),
         reason: 'the rest that started with the logged set keeps running',
-      );
-      expect(
-        restarted.state.lastLoggedValues[1]!.weight,
-        80,
-        reason: 'the sticky values come from the restored logs',
       );
     });
 

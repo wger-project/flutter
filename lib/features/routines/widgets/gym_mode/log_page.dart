@@ -414,12 +414,6 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
                   }
 
                   gymProvider.markSlotPageAsDone(page.key, isDone: true, log: log);
-
-                  // Correcting an earlier set must not replace a later set's values
-                  final lastLogged = gymState.lastLoggedValues[log.exerciseId];
-                  if (isNewEntry || lastLogged?.id == log.id) {
-                    gymProvider.recordLoggedValues(log);
-                  }
                   showSnackbar(
                     context,
                     i18n.successfullySaved,

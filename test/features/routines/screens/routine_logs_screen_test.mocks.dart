@@ -157,6 +157,14 @@ class MockWorkoutLogRepository extends _i1.Mock implements _i9.WorkoutLogReposit
           as _i5.Stream<List<_i10.Log>>);
 
   @override
+  _i5.Future<_i10.Log?> getLatestLogByExercise(int? exerciseId) =>
+      (super.noSuchMethod(
+            Invocation.method(#getLatestLogByExercise, [exerciseId]),
+            returnValue: _i5.Future<_i10.Log?>.value(),
+          )
+          as _i5.Future<_i10.Log?>);
+
+  @override
   _i5.Future<List<_i10.Log>> getLogsByIds(List<String>? ids) =>
       (super.noSuchMethod(
             Invocation.method(#getLogsByIds, [ids]),

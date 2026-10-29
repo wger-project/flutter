@@ -1179,6 +1179,6 @@
     "calculationHelpWindowDays": "{min} bis {max}. Wie weit zurück ein bester Satz zählt.",
     "useDynamicColor": "Dynamische Farben verwenden",
     "gymModeStickySetValues": "Werte des letzten Satzes übernehmen",
-    "gymModeStickySetValuesHelp": "Den nächsten Satz einer Übung mit den Werten vorbelegen, die du in diesem Training zuletzt dafür eingetragen hast",
+    "gymModeStickySetValuesHelp": "Den nächsten Satz einer Übung mit den Werten vorbelegen, die du zuletzt dafür eingetragen hast",
     "upNext": "Als Nächstes"
 }

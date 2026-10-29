@@ -259,11 +259,6 @@ class GymStateNotifier extends _$GymStateNotifier {
       workoutStart: saved.workoutStart,
       validUntil: saved.validUntil,
       progress: progress,
-      // In page order, so the last set of an exercise wins
-      lastLoggedValues: {
-        for (final log in slotPages.map((p) => progress[p.key]?.loggedEntry).nonNulls)
-          log.exerciseId: log,
-      },
     );
 
     _logger.fine('Restored workout progress on page ${state.currentPage}');
@@ -448,8 +443,6 @@ class GymStateNotifier extends _$GymStateNotifier {
       // A fresh workout also restarts the elapsed timer and the resume window
       workoutStart: shouldReset ? clock.now() : null,
       validUntil: shouldReset ? clock.now().add(DEFAULT_DURATION) : null,
-      // An abandoned workout never reaches clear(), so forget its values here
-      lastLoggedValues: shouldReset ? const {} : null,
       progress: shouldReset ? const {} : null,
       addedExercises: shouldReset ? const [] : null,
     );
@@ -484,7 +477,7 @@ class GymStateNotifier extends _$GymStateNotifier {
 
   /// Seeds the log form of the current page with a fresh entry, also to log
   /// another set on a page that was already logged.
-  void startNewEntry() {
+  Future<void> startNewEntry() async {
     // Ensure that there is a log entry for the current slot entry
     final slotEntryPage = state.getSlotEntryPageByIndex();
     if (slotEntryPage == null || slotEntryPage.setConfigData == null) {
@@ -497,13 +490,20 @@ class GymStateNotifier extends _$GymStateNotifier {
       iteration: state.iteration,
     );
     final logNotifier = ref.read(gymLogProvider.notifier)..setLog(log);
+    if (!state.stickySetValues) {
+      return;
+    }
 
-    // Pre-fill with the values last logged for this exercise during this
-    // workout (e.g. when dialing in the weight over the first sets), if enabled
-    final lastValues = state.stickySetValues
-        ? state.lastLoggedValues[slotEntryPage.setConfigData!.exerciseId]
-        : null;
-    if (lastValues != null) {
+    // Pre-fill with the values last logged for this exercise, in this or any
+    // earlier workout. Read from the DB so they survive however gym mode was
+    // left, and a corrected earlier set keeps its date and doesn't win.
+    final seeded = ref.read(gymLogProvider);
+    final lastValues = await ref
+        .read(workoutLogRepositoryProvider)
+        .getLatestLogByExercise(slotEntryPage.setConfigData!.exerciseId);
+
+    // Leave the form alone if the user already moved on or started typing
+    if (lastValues != null && ref.mounted && identical(ref.read(gymLogProvider), seeded)) {
       logNotifier.copyValuesFrom(lastValues);
     }
   }
@@ -554,15 +554,6 @@ class GymStateNotifier extends _$GymStateNotifier {
   void setStickySetValues(bool value) {
     state = state.copyWith(stickySetValues: value);
     _savePrefs();
-  }
-
-  /// Remembers the values logged for the log's exercise so that the next
-  /// set of the exercise can be pre-filled with them, see
-  /// [GymModeState.stickySetValues].
-  void recordLoggedValues(Log log) {
-    final updated = Map<int, Log>.of(state.lastLoggedValues);
-    updated[log.exerciseId] = log;
-    state = state.copyWith(lastLoggedValues: updated);
   }
 
   /// Applies [update] to the progress of the page with [key]
@@ -688,7 +679,6 @@ class GymStateNotifier extends _$GymStateNotifier {
       isInitialized: false,
       pages: [],
       currentPage: 0,
-      lastLoggedValues: const {},
       progress: const {},
       addedExercises: const [],
 
