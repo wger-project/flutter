@@ -18,6 +18,7 @@
 
 import 'package:flutter_test/flutter_test.dart';
 
+import '../../../../test_data/exercises.dart';
 import '../../../../test_data/routines.dart';
 
 void main() {
@@ -79,6 +80,30 @@ void main() {
       expect(result[8], [routine.logs[2]]);
       expect(result[10], [routine.logs[0]]);
       expect(result[12], [routine.logs[1]]);
+    });
+
+    test('replaceExercise returns a copy and leaves the original untouched', () {
+      final routine = getTestRoutine();
+
+      final replaced = routine.replaceExercise(1, testSquats);
+
+      final gymSlot = replaced.dayDataGym[0].slots[0];
+      expect(gymSlot.exerciseIds, [testSquats.id]);
+      expect(gymSlot.setConfigs.map((c) => c.exerciseId), everyElement(testSquats.id));
+      expect(gymSlot.setConfigs.map((c) => c.exercise.id), everyElement(testSquats.id));
+      expect(replaced.dayData[0].slots[0].exerciseIds, [testSquats.id]);
+      expect(replaced.dayData[0].slots[0].setConfigs.single.exerciseId, testSquats.id);
+      expect(replaced.logs.map((l) => l.exerciseId), [testSquats.id, testSquats.id, 2]);
+      expect(replaced.logs.first.exerciseObj.id, testSquats.id);
+
+      final originalGymSlot = routine.dayDataGym[0].slots[0];
+      expect(originalGymSlot.exerciseIds, [1]);
+      expect(originalGymSlot.setConfigs.map((c) => c.exerciseId), everyElement(1));
+      expect(originalGymSlot.setConfigs.map((c) => c.exercise.id), everyElement(1));
+      expect(routine.dayData[0].slots[0].exerciseIds, [1]);
+      expect(routine.dayData[0].slots[0].setConfigs.single.exerciseId, 1);
+      expect(routine.logs.map((l) => l.exerciseId), [1, 1, 2]);
+      expect(routine.logs.first.exerciseObj.id, 1);
     });
   });
 }

@@ -72,7 +72,7 @@ class NavigationTab extends ConsumerWidget {
         children: [
           ...state.pages.where((pageEntry) => pageEntry.type == PageType.set).map((page) {
             return ListTile(
-              leading: page.allLogsDone ? const Icon(Icons.check) : null,
+              leading: state.allLogsDone(page) ? const Icon(Icons.check) : null,
               title: Text(
                 page.exercises
                     .map(
@@ -83,7 +83,9 @@ class NavigationTab extends ConsumerWidget {
                     .toList()
                     .join('\n'),
                 style: TextStyle(
-                  decoration: page.allLogsDone ? TextDecoration.lineThrough : TextDecoration.none,
+                  decoration: state.allLogsDone(page)
+                      ? TextDecoration.lineThrough
+                      : TextDecoration.none,
                 ),
               ),
               trailing: const Icon(Icons.chevron_right),
@@ -131,7 +133,7 @@ class _ProgressionTabState extends ConsumerState<ProgressionTab> {
           children: [
             ...state.pages.where((page) => page.type == PageType.set).map((page) {
               if (page.exercises.isEmpty) {
-                widget._logger.warning('Page ${page.uuid} has no exercises, skipping');
+                widget._logger.warning('Page ${page.key} has no exercises, skipping');
                 return Container();
               }
 
@@ -170,12 +172,12 @@ class _ProgressionTabState extends ConsumerState<ProgressionTab> {
                       }
 
                       // Sets that are done are marked with a strikethrough
-                      final decoration = slotPage.logDone
+                      final decoration = state.progressOf(slotPage.key).done
                           ? TextDecoration.lineThrough
                           : TextDecoration.none;
 
                       // Sets that are done have a lighter color
-                      final color = slotPage.logDone
+                      final color = state.progressOf(slotPage.key).done
                           ? theme.colorScheme.onSurface.withValues(alpha: 0.6)
                           : null;
 
@@ -185,7 +187,7 @@ class _ProgressionTabState extends ConsumerState<ProgressionTab> {
                           : null;
 
                       IconData icon = Icons.circle_outlined;
-                      if (slotPage.logDone) {
+                      if (state.progressOf(slotPage.key).done) {
                         icon = Icons.check_circle_rounded;
                       } else if (state.currentPage == slotPage.pageIndex) {
                         icon = Icons.play_circle_fill;
@@ -213,45 +215,45 @@ class _ProgressionTabState extends ConsumerState<ProgressionTab> {
                     //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       IconButton(
-                        onPressed: page.allLogsDone
+                        onPressed: state.allLogsDone(page)
                             ? null
                             : () {
-                                if (showSwapWidgetToPage == page.uuid) {
+                                if (showSwapWidgetToPage == page.key) {
                                   setState(() {
                                     showSwapWidgetToPage = null;
                                   });
                                 } else {
                                   setState(() {
-                                    showSwapWidgetToPage = page.uuid;
+                                    showSwapWidgetToPage = page.key;
                                     showAddExerciseWidgetToPage = null;
                                   });
                                 }
                               },
                         icon: Icon(
-                          key: ValueKey('swap-icon-${page.uuid}'),
-                          showSwapWidgetToPage == page.uuid
+                          key: ValueKey('swap-icon-${page.key}'),
+                          showSwapWidgetToPage == page.key
                               ? Icons.change_circle
                               : Icons.change_circle_outlined,
                         ),
                       ),
                       IconButton(
-                        onPressed: page.allLogsDone
+                        onPressed: state.allLogsDone(page)
                             ? null
                             : () {
-                                if (showAddExerciseWidgetToPage == page.uuid) {
+                                if (showAddExerciseWidgetToPage == page.key) {
                                   setState(() {
                                     showAddExerciseWidgetToPage = null;
                                   });
                                 } else {
                                   setState(() {
-                                    showAddExerciseWidgetToPage = page.uuid;
+                                    showAddExerciseWidgetToPage = page.key;
                                     showSwapWidgetToPage = null;
                                   });
                                 }
                               },
                         icon: Icon(
-                          key: ValueKey('add-icon-${page.uuid}'),
-                          showAddExerciseWidgetToPage == page.uuid ? Icons.add_circle : Icons.add,
+                          key: ValueKey('add-icon-${page.key}'),
+                          showAddExerciseWidgetToPage == page.key ? Icons.add_circle : Icons.add,
                         ),
                       ),
                       Expanded(child: Container()),
@@ -268,18 +270,18 @@ class _ProgressionTabState extends ConsumerState<ProgressionTab> {
                       ),
                     ],
                   ),
-                  if (showSwapWidgetToPage == page.uuid)
+                  if (showSwapWidgetToPage == page.key)
                     ExerciseSwapWidget(
-                      page.uuid,
+                      page.key,
                       onDone: () {
                         setState(() {
                           showSwapWidgetToPage = null;
                         });
                       },
                     ),
-                  if (showAddExerciseWidgetToPage == page.uuid)
+                  if (showAddExerciseWidgetToPage == page.key)
                     ExerciseAddWidget(
-                      page.uuid,
+                      page.key,
                       onDone: () {
                         setState(() {
                           showAddExerciseWidgetToPage = null;
@@ -309,16 +311,16 @@ class _ProgressionTabState extends ConsumerState<ProgressionTab> {
 class ExerciseSwapWidget extends ConsumerWidget {
   final _logger = Logger('ExerciseSwapWidget');
 
-  final String pageUUID;
+  final String pageKey;
   final VoidCallback? onDone;
 
-  ExerciseSwapWidget(this.pageUUID, {this.onDone, super.key});
+  ExerciseSwapWidget(this.pageKey, {this.onDone, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(gymStateProvider);
     final gymProvider = ref.read(gymStateProvider.notifier);
-    final page = state.pages.firstWhere((p) => p.uuid == pageUUID);
+    final page = state.pages.firstWhere((p) => p.key == pageKey);
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
@@ -339,7 +341,7 @@ class ExerciseSwapWidget extends ConsumerWidget {
                     ExerciseAutocompleter(
                       onExerciseSelected: (exercise) {
                         gymProvider.replaceExercises(
-                          page.uuid,
+                          page.key,
                           originalExerciseId: e.id,
                           newExercise: exercise,
                         );
@@ -362,16 +364,16 @@ class ExerciseSwapWidget extends ConsumerWidget {
 class ExerciseAddWidget extends ConsumerWidget {
   final _logger = Logger('ExerciseAddWidget');
 
-  final String pageUUID;
+  final String pageKey;
   final VoidCallback? onDone;
 
-  ExerciseAddWidget(this.pageUUID, {this.onDone, super.key});
+  ExerciseAddWidget(this.pageKey, {this.onDone, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(gymStateProvider);
     final gymProvider = ref.read(gymStateProvider.notifier);
-    final page = state.pages.firstWhere((p) => p.uuid == pageUUID);
+    final page = state.pages.firstWhere((p) => p.key == pageKey);
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
@@ -383,11 +385,11 @@ class ExerciseAddWidget extends ConsumerWidget {
               ExerciseAutocompleter(
                 onExerciseSelected: (exercise) {
                   gymProvider.addExerciseAfterPage(
-                    page.uuid,
+                    page.key,
                     newExercise: exercise,
                   );
                   onDone?.call();
-                  _logger.fine('Added exercise ${exercise.id} after page $pageUUID');
+                  _logger.fine('Added exercise ${exercise.id} after page $pageKey');
                 },
               ),
               const Icon(Icons.arrow_downward),

@@ -33,9 +33,9 @@ class TimerWidget extends ConsumerStatefulWidget {
   /// Identifies which slot page this widget renders, so it shows its own
   /// up-next information instead of whatever the globally-current page
   /// happens to be.
-  final String slotUuid;
+  final String slotKey;
 
-  const TimerWidget(this._controller, this.slotUuid);
+  const TimerWidget(this._controller, this.slotKey);
 
   @override
   _TimerWidgetState createState() => _TimerWidgetState();
@@ -54,7 +54,7 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
     // provider can't be modified during the widget life-cycle.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        ref.read(gymStateProvider.notifier).startTimerIfNeeded(widget.slotUuid);
+        ref.read(gymStateProvider.notifier).startTimerIfNeeded(widget.slotKey);
       }
     });
 
@@ -74,10 +74,7 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final startTime = ref
-        .watch(gymStateProvider)
-        .getSlotPageByUUID(widget.slotUuid)
-        ?.timerStartedAt;
+    final startTime = ref.watch(gymStateProvider).progressOf(widget.slotKey).timerStartedAt;
     final elapsed = clock.now().difference(startTime ?? clock.now()).inSeconds;
     final displaySeconds = elapsed > _maxSeconds ? _maxSeconds : elapsed;
     final displayTime = DateTime(2000, 1, 1, 0, 0, 0).add(Duration(seconds: displaySeconds));
@@ -99,7 +96,7 @@ class _TimerWidgetState extends ConsumerState<TimerWidget> {
                 ).textTheme.displayLarge!.copyWith(color: Theme.of(context).colorScheme.primary),
               ),
               const SizedBox(height: 16),
-              UpNextWidget(widget.slotUuid),
+              UpNextWidget(widget.slotKey),
             ],
           ),
         ),
@@ -116,12 +113,12 @@ class TimerCountdownWidget extends ConsumerStatefulWidget {
   /// Identifies which slot page this widget renders, so it shows its own
   /// up-next information instead of whatever the globally-current page
   /// happens to be.
-  final String slotUuid;
+  final String slotKey;
 
   const TimerCountdownWidget(
     this._controller,
     this._seconds,
-    this.slotUuid,
+    this.slotKey,
   );
 
   @override
@@ -137,7 +134,7 @@ class _TimerCountdownWidgetState extends ConsumerState<TimerCountdownWidget> {
   /// the countdown continues when the page is disposed and re-created while
   /// navigating; until the state is updated, fall back to starting now.
   DateTime _endTime(GymModeState gymState) {
-    final startedAt = gymState.getSlotPageByUUID(widget.slotUuid)?.timerStartedAt;
+    final startedAt = gymState.progressOf(widget.slotKey).timerStartedAt;
     return (startedAt ?? clock.now()).add(Duration(seconds: widget._seconds));
   }
 
@@ -153,7 +150,7 @@ class _TimerCountdownWidgetState extends ConsumerState<TimerCountdownWidget> {
     // life-cycle.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        ref.read(gymStateProvider.notifier).startTimerIfNeeded(widget.slotUuid);
+        ref.read(gymStateProvider.notifier).startTimerIfNeeded(widget.slotKey);
       }
     });
 
@@ -208,7 +205,7 @@ class _TimerCountdownWidgetState extends ConsumerState<TimerCountdownWidget> {
                 ).textTheme.displayLarge!.copyWith(color: Theme.of(context).colorScheme.primary),
               ),
               const SizedBox(height: 16),
-              UpNextWidget(widget.slotUuid),
+              UpNextWidget(widget.slotKey),
             ],
           ),
         ),
@@ -219,20 +216,20 @@ class _TimerCountdownWidgetState extends ConsumerState<TimerCountdownWidget> {
 }
 
 /// Shows the set that will be performed once the rest timer on the slot page
-/// identified by [slotUuid] ends. This can be the next set of the same
+/// identified by [slotKey] ends. This can be the next set of the same
 /// exercise (e.g. when progressing weights within an exercise) or the first
 /// set of the next exercise. Renders nothing for the last rest of the day.
 class UpNextWidget extends ConsumerWidget {
-  final String slotUuid;
+  final String slotKey;
 
-  const UpNextWidget(this.slotUuid, {super.key});
+  const UpNextWidget(this.slotKey, {super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final gymState = ref.watch(gymStateProvider);
 
-    final currentSlotPage = gymState.getSlotPageByUUID(slotUuid);
+    final currentSlotPage = gymState.getSlotPageByKey(slotKey);
     final nextSlotPage = currentSlotPage == null
         ? null
         : gymState.getNextLogPage(currentSlotPage.pageIndex);

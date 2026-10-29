@@ -18,10 +18,11 @@
 
 import 'package:clock/clock.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:wger/core/uuid.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
+import 'package:wger/features/routines/models/added_exercise.dart';
 import 'package:wger/features/routines/models/day_data.dart';
 import 'package:wger/features/routines/models/log.dart';
+import 'package:wger/features/routines/models/page_progress.dart';
 import 'package:wger/features/routines/models/routine.dart';
 import 'package:wger/features/routines/models/set_config_data.dart';
 
@@ -56,7 +57,8 @@ enum SlotPageType {
 }
 
 class PageEntry {
-  final String uuid;
+  /// Identifies the page across recalculations, derived from the routine
+  final String key;
 
   final PageType type;
 
@@ -68,22 +70,21 @@ class PageEntry {
   PageEntry({
     required this.type,
     required this.pageIndex,
+    required this.key,
     this.slotPages = const [],
-    String? uuid,
-  }) : uuid = uuid ?? uuidV4(),
-       assert(
+  }) : assert(
          slotPages.isEmpty || type == PageType.set,
          'SlotEntries can only be set for set pages',
        );
 
   PageEntry copyWith({
-    String? uuid,
+    String? key,
     PageType? type,
     int? pageIndex,
     List<SlotPageEntry>? slotPages,
   }) {
     return PageEntry(
-      uuid: uuid ?? this.uuid,
+      key: key ?? this.key,
       type: type ?? this.type,
       pageIndex: pageIndex ?? this.pageIndex,
       slotPages: slotPages ?? this.slotPages,
@@ -98,16 +99,13 @@ class PageEntry {
     return exerciseSet.toList();
   }
 
-  // Whether all sub-pages (e.g. log pages) are marked as done.
-  bool get allLogsDone =>
-      slotPages.where((entry) => entry.type == SlotPageType.log).every((entry) => entry.logDone);
-
   @override
-  String toString() => 'PageEntry(type: $type, pageIndex: $pageIndex)';
+  String toString() => 'PageEntry(key: $key, type: $type, pageIndex: $pageIndex)';
 }
 
 class SlotPageEntry {
-  final String uuid;
+  /// Identifies the page across recalculations, derived from the routine
+  final String key;
 
   final SlotPageType type;
 
@@ -117,19 +115,6 @@ class SlotPageEntry {
   /// Absolute page index
   final int pageIndex;
 
-  /// Whether the log page has been marked as done
-  final bool logDone;
-
-  /// The log saved from this page during the current workout, if any. Kept
-  /// so revisiting the page pre-fills the form with the saved values and
-  /// saving updates the row instead of inserting a duplicate.
-  final Log? loggedEntry;
-
-  /// When the timer of this page was started. Lives in the state (not the
-  /// timer widget) so the countdown continues when the user navigates away
-  /// and back.
-  final DateTime? timerStartedAt;
-
   /// The associated SetConfigData
   final SetConfigData? setConfigData;
 
@@ -137,48 +122,37 @@ class SlotPageEntry {
     required this.type,
     required this.pageIndex,
     required this.setIndex,
+    required this.key,
     this.setConfigData,
-    this.logDone = false,
-    this.loggedEntry,
-    this.timerStartedAt,
-    String? uuid,
   }) : assert(
          type != SlotPageType.log || setConfigData != null,
          'You need to set setConfigData for SlotPageType.log',
-       ),
-       uuid = uuid ?? uuidV4();
+       );
 
   SlotPageEntry copyWith({
-    String? uuid,
+    String? key,
     SlotPageType? type,
     int? exerciseId,
     int? setIndex,
     int? pageIndex,
     SetConfigData? setConfigData,
-    bool? logDone,
-    Log? loggedEntry,
-    DateTime? timerStartedAt,
   }) {
     return SlotPageEntry(
-      uuid: uuid ?? this.uuid,
+      key: key ?? this.key,
       type: type ?? this.type,
       setIndex: setIndex ?? this.setIndex,
       pageIndex: pageIndex ?? this.pageIndex,
       setConfigData: setConfigData ?? this.setConfigData,
-      logDone: logDone ?? this.logDone,
-      loggedEntry: loggedEntry ?? this.loggedEntry,
-      timerStartedAt: timerStartedAt ?? this.timerStartedAt,
     );
   }
 
   @override
   String toString() =>
       'SlotPageEntry('
-      'uuid: $uuid, '
+      'key: $key, '
       'type: $type, '
       'setIndex: $setIndex, '
-      'pageIndex: $pageIndex, '
-      'logDone: $logDone'
+      'pageIndex: $pageIndex'
       ')';
 }
 
@@ -213,6 +187,13 @@ class GymModeState {
   /// pre-fill the log form when [stickySetValues] is enabled.
   final Map<int, Log> lastLoggedValues;
 
+  /// What happened on the pages so far, by page key. Kept apart from the pages
+  /// so that recalculating them doesn't lose it.
+  final Map<String, PageProgress> progress;
+
+  /// Exercises added during the workout, in the order they were added
+  final List<AddedExercise> addedExercises;
+
   // Routine data
   late final int dayId;
   late final int iteration;
@@ -233,6 +214,8 @@ class GymModeState {
     this.showWorkoutDuration = true,
     this.stickySetValues = false,
     this.lastLoggedValues = const {},
+    this.progress = const {},
+    this.addedExercises = const [],
     int? dayId,
     int? iteration,
     Routine? routine,
@@ -279,6 +262,8 @@ class GymModeState {
     bool? showWorkoutDuration,
     bool? stickySetValues,
     Map<int, Log>? lastLoggedValues,
+    Map<String, PageProgress>? progress,
+    List<AddedExercise>? addedExercises,
   }) {
     return GymModeState(
       isInitialized: isInitialized ?? this.isInitialized,
@@ -303,8 +288,17 @@ class GymModeState {
       showWorkoutDuration: showWorkoutDuration ?? this.showWorkoutDuration,
       stickySetValues: stickySetValues ?? this.stickySetValues,
       lastLoggedValues: lastLoggedValues ?? this.lastLoggedValues,
+      progress: progress ?? this.progress,
+      addedExercises: addedExercises ?? this.addedExercises,
     );
   }
+
+  PageProgress progressOf(String key) => progress[key] ?? const PageProgress();
+
+  /// Whether every set of [page] has been logged
+  bool allLogsDone(PageEntry page) => page.slotPages
+      .where((entry) => entry.type == SlotPageType.log)
+      .every((entry) => progressOf(entry.key).done);
 
   /// The start of the workout as a [TimeOfDay], e.g. for the session form
   TimeOfDay get startTime => TimeOfDay.fromDateTime(workoutStart);
@@ -350,9 +344,34 @@ class GymModeState {
     return null;
   }
 
-  SlotPageEntry? getSlotPageByUUID(String uuid) {
+  /// Key of the page shown at [pageIndex]
+  String? keyOfPage(int pageIndex) {
+    for (final page in pages) {
+      if (page.type != PageType.set && page.pageIndex == pageIndex) {
+        return page.key;
+      }
+      for (final slotPage in page.slotPages) {
+        if (slotPage.pageIndex == pageIndex) {
+          return slotPage.key;
+        }
+      }
+    }
+    return null;
+  }
+
+  /// Index of the page with [key], the reverse of [keyOfPage]
+  int? pageIndexOf(String key) {
+    for (final page in pages) {
+      if (page.type != PageType.set && page.key == key) {
+        return page.pageIndex;
+      }
+    }
+    return getSlotPageByKey(key)?.pageIndex;
+  }
+
+  SlotPageEntry? getSlotPageByKey(String key) {
     for (final slotPage in pages.expand((p) => p.slotPages)) {
-      if (slotPage.uuid == uuid) {
+      if (slotPage.key == key) {
         return slotPage;
       }
     }

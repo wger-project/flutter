@@ -464,4 +464,21 @@ void main() {
       await sub.cancel();
     });
   });
+
+  group('getLogsByIds', () {
+    test('returns the logs with the given ids, with their units', () async {
+      await seedUnits();
+      final logs = [
+        for (final weight in [10, 20, 30]) makeLog(weight: weight, sessionId: 's'),
+      ];
+      for (final log in logs) {
+        await repo.addLocalDrift(log);
+      }
+
+      final found = await repo.getLogsByIds([logs[0].id!, logs[2].id!, 'does-not-exist']);
+
+      expect(found.map((l) => l.weight), unorderedEquals([10, 30]));
+      expect(found.map((l) => l.weightUnitObj?.name), everyElement('kg'));
+    });
+  });
 }

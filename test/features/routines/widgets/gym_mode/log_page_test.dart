@@ -109,9 +109,9 @@ void main() {
     }
 
     Future<void> pumpLogPage(WidgetTester tester) async {
-      // The widget resolves its own slot now, so hand it the uuid of the slot
+      // The widget resolves its own slot now, so hand it the key of the slot
       // the gym state was seeded on (via setCurrentPage above).
-      final slotUuid = container.read(gymStateProvider).getSlotEntryPageByIndex()!.uuid;
+      final slotKey = container.read(gymStateProvider).getSlotEntryPageByIndex()!.key;
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
@@ -126,7 +126,7 @@ void main() {
                   final controller = PageController();
                   return PageView(
                     controller: controller,
-                    children: [LogPage(controller, slotUuid)],
+                    children: [LogPage(controller, slotKey)],
                   );
                 },
               ),
@@ -434,8 +434,8 @@ void main() {
       expect((added[1] as Log).id, 'log-2');
       expect((added[1] as Log).repetitions, 10);
       verifyNever(mockWorkoutLogRepo.updateLocalDrift(any));
-      final page = container.read(gymStateProvider).getSlotEntryPageByIndex(2)!;
-      expect(page.loggedEntry!.id, 'log-2');
+      final state = container.read(gymStateProvider);
+      expect(state.progressOf(state.getSlotEntryPageByIndex(2)!.key).loggedEntry!.id, 'log-2');
     });
 
     testWidgets('an unsaved edit on a logged page does not change the saved entry', (
@@ -446,12 +446,8 @@ void main() {
       await tester.tap(find.byKey(const ValueKey('save-log-button')));
       await tester.pumpAndSettle();
       final gymNotifier = container.read(gymStateProvider.notifier);
-      final logPageUuid = container.read(gymStateProvider).getSlotEntryPageByIndex(2)!.uuid;
-      final savedRir = container
-          .read(gymStateProvider)
-          .getSlotPageByUUID(logPageUuid)!
-          .loggedEntry!
-          .rir;
+      final logPageKey = container.read(gymStateProvider).getSlotEntryPageByIndex(2)!.key;
+      final savedRir = container.read(gymStateProvider).progressOf(logPageKey).loggedEntry!.rir;
       expect(savedRir, isNot(3));
 
       // Go back to the logged set and change the RiR without saving
@@ -466,10 +462,7 @@ void main() {
       gymNotifier.setCurrentPage(2);
       await tester.pumpAndSettle();
 
-      final loggedEntry = container
-          .read(gymStateProvider)
-          .getSlotPageByUUID(logPageUuid)!
-          .loggedEntry!;
+      final loggedEntry = container.read(gymStateProvider).progressOf(logPageKey).loggedEntry!;
       expect(loggedEntry.rir, savedRir);
       expect(container.read(gymLogProvider)!.rir, savedRir);
     });

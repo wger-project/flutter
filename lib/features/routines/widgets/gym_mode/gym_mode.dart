@@ -98,16 +98,9 @@ class _GymModeState extends ConsumerState<GymMode> {
       fallbackLog: 'Server unreachable, starting from the local routine',
     );
 
-    final gymViewModel = ref.read(gymStateProvider.notifier);
-    final initialPage = gymViewModel.initData(
-      routine,
-      widget._args.dayId,
-      widget._args.iteration,
-    );
-    await gymViewModel.loadPrefs();
-    gymViewModel.calculatePages();
-
-    return initialPage;
+    return ref
+        .read(gymStateProvider.notifier)
+        .open(routine, widget._args.dayId, widget._args.iteration);
   }
 
   List<Widget> _getContent(GymModeState state) {
@@ -121,11 +114,11 @@ class _GymModeState extends ConsumerState<GymMode> {
     for (final page in state.pages) {
       for (final slotPage in page.slotPages) {
         if (slotPage.type == SlotPageType.exerciseOverview) {
-          out.add(ExerciseOverview(_controller, slotPage.uuid));
+          out.add(ExerciseOverview(_controller, slotPage.key));
         }
 
         if (slotPage.type == SlotPageType.log) {
-          out.add(LogPage(_controller, slotPage.uuid));
+          out.add(LogPage(_controller, slotPage.key));
         }
 
         // Timer. Use rest time from config data if available, otherwise use user settings
@@ -136,9 +129,9 @@ class _GymModeState extends ConsumerState<GymMode> {
                 ? TimerCountdownWidget(
                     _controller,
                     (rest ?? gymState.countdownDuration.inSeconds).toInt(),
-                    slotPage.uuid,
+                    slotPage.key,
                   )
-                : TimerWidget(_controller, slotPage.uuid),
+                : TimerWidget(_controller, slotPage.key),
           );
         }
       }

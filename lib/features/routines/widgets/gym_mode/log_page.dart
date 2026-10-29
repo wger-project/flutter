@@ -48,9 +48,9 @@ class LogPage extends ConsumerWidget {
 
   /// Identifies which slot page this widget renders, so it shows its own
   /// content instead of whatever the globally-current page happens to be.
-  final String slotUuid;
+  final String slotKey;
 
-  LogPage(this._controller, this.slotUuid);
+  LogPage(this._controller, this.slotKey);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -58,9 +58,9 @@ class LogPage extends ConsumerWidget {
     final gymState = ref.watch(gymStateProvider);
     final languageCode = Localizations.localeOf(context).languageCode;
 
-    final slotEntryPage = gymState.getSlotPageByUUID(slotUuid);
+    final slotEntryPage = gymState.getSlotPageByKey(slotKey);
     if (slotEntryPage == null) {
-      _logger.info('getSlotPageByUUID for $slotUuid returned null, showing empty container.');
+      _logger.info('getSlotPageByKey for $slotKey returned null, showing empty container.');
       return Container();
     }
 
@@ -85,7 +85,7 @@ class LogPage extends ConsumerWidget {
     );
 
     // Mark done sets
-    final decorationStyle = slotEntryPage.logDone
+    final decorationStyle = gymState.progressOf(slotEntryPage.key).done
         ? TextDecoration.lineThrough
         : TextDecoration.none;
 
@@ -154,7 +154,7 @@ class LogPage extends ConsumerWidget {
               child: LogFormWidget(
                 controller: _controller,
                 configData: setConfigData,
-                key: ValueKey('log-form-${slotEntryPage.uuid}'),
+                key: ValueKey('log-form-${slotEntryPage.key}'),
               ),
             ),
           ),
@@ -413,7 +413,7 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
                     return;
                   }
 
-                  gymProvider.markSlotPageAsDone(page.uuid, isDone: true, log: log);
+                  gymProvider.markSlotPageAsDone(page.key, isDone: true, log: log);
 
                   // Correcting an earlier set must not replace a later set's values
                   final lastLogged = gymState.lastLoggedValues[log.exerciseId];

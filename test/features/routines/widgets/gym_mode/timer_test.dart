@@ -68,7 +68,7 @@ void main() {
                   final controller = PageController();
                   return PageView(
                     controller: controller,
-                    children: [TimerCountdownWidget(controller, 90, slotPage.uuid)],
+                    children: [TimerCountdownWidget(controller, 90, slotPage.key)],
                   );
                 },
               ),
