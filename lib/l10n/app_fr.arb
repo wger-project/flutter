@@ -1202,5 +1202,8 @@
     "workoutNotificationNotLoggedTitle": "Série non enregistrée",
     "workoutNotificationNotLoggedBody": "Ouvrez le mode entraînement pour poursuivre la séance",
     "workoutNotificationAlarmChannel": "Alarme de repos",
-    "workoutNotificationChannel": "Entraînement"
+    "workoutNotificationChannel": "Entraînement",
+    "gymModeStickySetValues": "Reprendre les valeurs de la dernière série",
+    "gymModeStickySetValuesHelp": "Pré-remplir la série suivante d'un exercice avec les dernières valeurs que vous avez enregistrées",
+    "upNext": "À suivre"
 }

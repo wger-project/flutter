@@ -404,6 +404,7 @@ void main() {
       await PreferenceHelper.asyncPref.setString(PREFS_DB_OWNER_USER_ID, '5');
       await PreferenceHelper.instance.setHealthSyncEnabled(true);
       await PreferenceHelper.asyncPref.setString(reportedTimezonePrefKey, 'Pacific/Auckland');
+      await PreferenceHelper.asyncPref.setString(PREFS_WORKOUT_PROGRESS, '{"dayId": 1}');
       stubLoginSuccess(makeJwt({'sub': '7', 'exp': 1900000000}));
 
       final container = makeContainer();
@@ -412,6 +413,7 @@ void main() {
 
       expect(await PreferenceHelper.instance.getHealthSyncEnabled(), isFalse);
       expect(await PreferenceHelper.asyncPref.getString(reportedTimezonePrefKey), isNull);
+      expect(await PreferenceHelper.asyncPref.getString(PREFS_WORKOUT_PROGRESS), isNull);
     });
 
     test('same user logging back in keeps the local DB', () async {

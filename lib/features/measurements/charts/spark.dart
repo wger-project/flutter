@@ -23,6 +23,7 @@ library;
 
 import 'dart:math';
 
+import 'package:clock/clock.dart';
 import 'package:collection/collection.dart';
 import 'package:wger/features/measurements/charts/calendar.dart';
 import 'package:wger/features/measurements/charts/series.dart';
@@ -93,7 +94,7 @@ class SparkWindow {
 /// the heatmap follows it within its own, tighter legibility bounds. The
 /// delta window gets one slot beyond its weeks for the running week.
 SparkWindow sparkWindowFor(SparkKind kind, {required DateTime? cutoff, DateTime? today}) {
-  final now = dayOf(today ?? DateTime.now());
+  final now = dayOf(today ?? clock.now());
   final days = cutoff == null ? null : daysBetween(dayOf(cutoff), now) + 1;
   int weeksOf(int? days) => days == null ? sparkMaxWeeks : min(sparkMaxWeeks, (days / 7).ceil());
 

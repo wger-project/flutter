@@ -246,14 +246,14 @@ void main() {
     SlotPageEntry slotPage(int index) => gymState.state.getSlotEntryPageByIndex(index)!;
 
     /// The payload the notification on the current page carries
-    String payloadFor({String? logSlotUuid, String? restSlotUuid, DateTime? workoutStart}) =>
+    String payloadFor({String? logSlotKey, String? restSlotKey, DateTime? workoutStart}) =>
         WorkoutNotificationPayload(
           routineId: gymState.state.routine.id!,
           dayId: gymState.state.dayId,
           iteration: gymState.state.iteration,
           workoutStart: workoutStart ?? gymState.state.workoutStart,
-          logSlotUuid: logSlotUuid,
-          restSlotUuid: restSlotUuid,
+          logSlotKey: logSlotKey,
+          restSlotKey: restSlotKey,
         ).encode();
 
     test('"Log set" from the rest logs the next set and shows the next rest', () async {
@@ -266,7 +266,7 @@ void main() {
             .read(workoutNotificationControllerProvider)
             .handleAction(
               WORKOUT_NOTIFICATION_ACTION_LOG_SET,
-              payloadFor(logSlotUuid: slotPage(rest + 1).uuid),
+              payloadFor(logSlotKey: slotPage(rest + 1).key),
             );
         await settle();
       });
@@ -276,7 +276,7 @@ void main() {
       // Only once the notification shows the new rest may iOS suspend the app
       verifyInOrder([service.showControls(any, any), service.actionHandled()]);
       final alarms = verify(service.scheduleRestAlarm(captureAny, any)).captured;
-      expect((alarms.last as RestAlarm).payload.restSlotUuid, slotPage(rest + 2).uuid);
+      expect((alarms.last as RestAlarm).payload.restSlotKey, slotPage(rest + 2).key);
     });
 
     test('Actions arrive through the port from the background isolate', () async {
@@ -285,7 +285,7 @@ void main() {
 
       IsolateNameServer.lookupPortByName(WORKOUT_NOTIFICATION_PORT)!.send([
         WORKOUT_NOTIFICATION_ACTION_SKIP_REST,
-        payloadFor(restSlotUuid: slotPage(rest).uuid),
+        payloadFor(restSlotKey: slotPage(rest).key),
         null,
       ]);
       await settle();
@@ -353,7 +353,7 @@ void main() {
 
         IsolateNameServer.lookupPortByName(WORKOUT_NOTIFICATION_PORT)!.send([
           WORKOUT_NOTIFICATION_ACTION_LOG_SET,
-          payloadFor(logSlotUuid: slotPage(rest + 1).uuid),
+          payloadFor(logSlotKey: slotPage(rest + 1).key),
           '9 × 60 kg',
         ]);
         await settle();
@@ -372,7 +372,7 @@ void main() {
             .read(workoutNotificationControllerProvider)
             .handleAction(
               WORKOUT_NOTIFICATION_ACTION_LOG_SET,
-              payloadFor(logSlotUuid: slotPage(rest + 1).uuid),
+              payloadFor(logSlotKey: slotPage(rest + 1).key),
               '7 × 50 kg',
             );
         await settle();
@@ -393,7 +393,7 @@ void main() {
             .read(workoutNotificationControllerProvider)
             .handleAction(
               WORKOUT_NOTIFICATION_ACTION_EXTEND_REST,
-              payloadFor(restSlotUuid: slotPage(rest).uuid),
+              payloadFor(restSlotKey: slotPage(rest).key),
             );
         await settle();
       });
@@ -411,7 +411,7 @@ void main() {
           .read(workoutNotificationControllerProvider)
           .handleAction(
             WORKOUT_NOTIFICATION_ACTION_EXTEND_REST,
-            payloadFor(restSlotUuid: 'another rest'),
+            payloadFor(restSlotKey: 'another rest'),
           );
       await settle();
 
@@ -429,14 +429,14 @@ void main() {
         await controller.handleAction(
           WORKOUT_NOTIFICATION_ACTION_LOG_SET,
           payloadFor(
-            logSlotUuid: slotPage(rest + 1).uuid,
+            logSlotKey: slotPage(rest + 1).key,
             workoutStart: DateTime.utc(2020),
           ),
         );
         // For a rest the user already left
         await controller.handleAction(
           WORKOUT_NOTIFICATION_ACTION_SKIP_REST,
-          payloadFor(restSlotUuid: slotPage(rest - 2).uuid),
+          payloadFor(restSlotKey: slotPage(rest - 2).key),
         );
         await settle();
       });

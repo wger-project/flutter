@@ -3,6 +3,7 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i3;
 import 'package:wger/l10n/generated/app_localizations.dart' as _i2;
@@ -1687,6 +1688,39 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
             returnValue: _i3.dummyValue<String>(
               this,
               Invocation.getter(#pause),
+            ),
+          )
+          as String);
+
+  @override
+  String get upNext =>
+      (super.noSuchMethod(
+            Invocation.getter(#upNext),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#upNext),
+            ),
+          )
+          as String);
+
+  @override
+  String get gymModeStickySetValues =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeStickySetValues),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeStickySetValues),
+            ),
+          )
+          as String);
+
+  @override
+  String get gymModeStickySetValuesHelp =>
+      (super.noSuchMethod(
+            Invocation.getter(#gymModeStickySetValuesHelp),
+            returnValue: _i3.dummyValue<String>(
+              this,
+              Invocation.getter(#gymModeStickySetValuesHelp),
             ),
           )
           as String);

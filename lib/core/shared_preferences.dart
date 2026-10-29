@@ -7,6 +7,10 @@ import 'package:wger/features/exercises/models/exercise_filters.dart';
 import 'package:wger/features/nutrition/models/ingredient.dart';
 import 'package:wger/features/nutrition/models/ingredient_filters.dart';
 
+/// The progress of a running gym mode workout. Belongs to the account, so it
+/// leaves with the local data.
+const PREFS_WORKOUT_PROGRESS = 'workoutProgressPrefs';
+
 /// A helper class that manages preferences using SharedPreferencesAsync
 /// and handles migration from the legacy SharedPreferences to
 /// SharedPreferencesAsync.
@@ -15,8 +19,8 @@ class PreferenceHelper {
 
   static final PreferenceHelper _instance = PreferenceHelper._instantiate();
 
-  /// Bound to the current `SharedPreferencesAsyncPlatform.instance` on every
-  /// read, so a platform swapped in later (e.g. per test) takes effect.
+  /// Always bound to the current platform store, so a store swapped in by a
+  /// test isn't shadowed by one an earlier test left behind.
   static SharedPreferencesAsync get asyncPref => SharedPreferencesAsync();
 
   static PreferenceHelper get instance => _instance;

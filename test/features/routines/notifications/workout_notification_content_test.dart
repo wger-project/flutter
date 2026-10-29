@@ -24,6 +24,7 @@ import 'package:shared_preferences_platform_interface/shared_preferences_async_p
 import 'package:wger/core/consts.dart';
 import 'package:wger/features/exercises/models/image.dart';
 import 'package:wger/features/routines/models/log.dart';
+import 'package:wger/features/routines/models/page_progress.dart';
 import 'package:wger/features/routines/notifications/workout_notification_content.dart';
 import 'package:wger/features/routines/providers/gym_state.dart';
 import 'package:wger/features/routines/providers/gym_state_notifier.dart';
@@ -65,12 +66,18 @@ void main() {
     mediaUrl: mediaUrl,
   );
 
+  /// The state keeps a rest by its start, the end of a countdown follows from
+  /// the rest length of [page]
   void onPage(SlotPageEntry page, {DateTime? restStartedAt, DateTime? restEndsAt}) {
+    final startedAt = restEndsAt == null
+        ? restStartedAt
+        : restEndsAt.subtract(notifier.state.restDurationFor(page)!);
     notifier.state = notifier.state.copyWith(
       currentPage: page.pageIndex,
-      clearRest: true,
-      restStartedAt: restStartedAt,
-      restEndsAt: restEndsAt,
+      progress: {
+        ...notifier.state.progress,
+        if (startedAt != null) page.key: PageProgress(timerStartedAt: startedAt),
+      },
     );
   }
 
@@ -94,13 +101,13 @@ void main() {
       expect(target.alarm!.subtitle, 'Rest is over');
       expect(target.alarm!.body, 'Set 2 of 3 · 3x100kg');
       expect(target.alarm!.canLogSet, isTrue);
-      expect(target.alarm!.payload.logSlotUuid, logs()[1].uuid);
+      expect(target.alarm!.payload.logSlotKey, logs()[1].key);
       expect(target.controls!.title, 'Pause');
       expect(target.controls!.body, 'Next: Bench press 3x100kg');
       expect(target.controls!.chronometerAt, endsAt);
       expect(target.controls!.chronometerCountsDown, isTrue);
       expect(target.controls!.canSkipRest, isTrue);
-      expect(target.controls!.payload.restSlotUuid, timer.uuid);
+      expect(target.controls!.payload.restSlotKey, timer.key);
     });
 
     test('No alarm when the setting is off', () {
@@ -184,7 +191,7 @@ void main() {
       expect(controls.body, 'Set 2 of 3 · 3x100kg');
       expect(controls.canLogSet, isTrue);
       expect(controls.canSkipRest, isFalse);
-      expect(controls.payload.logSlotUuid, logs()[1].uuid);
+      expect(controls.payload.logSlotKey, logs()[1].key);
     });
 
     test('The short server text when there is one, without the rest time', () {
@@ -197,7 +204,7 @@ void main() {
     });
 
     test('A logged set cannot be logged again', () {
-      notifier.markSlotPageAsDone(logs()[1].uuid, isDone: true);
+      notifier.markSlotPageAsDone(logs()[1].key, isDone: true);
       onPage(logs()[1]);
 
       expect(build().controls!.canLogSet, isFalse);
@@ -223,7 +230,8 @@ void main() {
       onPage(timer, restStartedAt: now, restEndsAt: now.subtract(const Duration(seconds: 1)));
       expect(build().controls!.canExtendRest, isTrue);
 
-      onPage(timer, restStartedAt: now);
+      // The other exercise has no rest time and the countdown setting is off
+      onPage(timers().last, restStartedAt: now);
       expect(build().controls!.canExtendRest, isFalse);
 
       onPage(logs()[1]);
@@ -311,7 +319,7 @@ void main() {
       target = build(recentLogs: recent);
       expect(target.controls!.quickLogs, ['9 × 60 kg']);
 
-      notifier.markSlotPageAsDone(logs()[1].uuid, isDone: true);
+      notifier.markSlotPageAsDone(logs()[1].key, isDone: true);
       expect(build(recentLogs: recent).controls!.quickLogs, isEmpty);
     });
 
@@ -357,8 +365,8 @@ void main() {
         dayId: 2,
         iteration: 3,
         workoutStart: DateTime.utc(2025, 3, 29, 14, 33),
-        logSlotUuid: 'log',
-        restSlotUuid: 'rest',
+        logSlotKey: 'log',
+        restSlotKey: 'rest',
       );
 
       expect(WorkoutNotificationPayload.decode(payload.encode()), payload);

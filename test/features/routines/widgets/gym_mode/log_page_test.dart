@@ -70,11 +70,39 @@ void main() {
     late ProviderContainer container;
     late MockWorkoutLogRepository mockWorkoutLogRepo;
 
+    /// What the mocked repository wrote, so the sticky values can be read back
+    late List<Log> storedLogs;
+
+    void storeLog(Log log) {
+      storedLogs
+        ..removeWhere((l) => l.id == log.id)
+        ..add(log.copyWith());
+    }
+
     setUp(() {
       SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
       testExercises = getTestExercises();
       mockWorkoutLogRepo = MockWorkoutLogRepository();
-      when(mockWorkoutLogRepo.addLocalDrift(any)).thenAnswer((_) async {});
+      storedLogs = [];
+      // Mimic the real insert: the freshly minted id is written back to the log
+      when(
+        mockWorkoutLogRepo.addLocalDrift(any, dayId: anyNamed('dayId')),
+      ).thenAnswer((invocation) async {
+        storeLog((invocation.positionalArguments[0] as Log)..id = 'new-log-id');
+      });
+      when(mockWorkoutLogRepo.updateLocalDrift(any)).thenAnswer((invocation) async {
+        storeLog(invocation.positionalArguments[0] as Log);
+      });
+      // Newest first like the real query, on equal dates the later write wins
+      when(mockWorkoutLogRepo.getLatestLogByExercise(any)).thenAnswer((invocation) async {
+        final exerciseId = invocation.positionalArguments[0] as int;
+        return storedLogs
+            .where((l) => l.exerciseId == exerciseId)
+            .fold<Log?>(
+              null,
+              (newest, l) => newest == null || !l.date.isBefore(newest.date) ? l : newest,
+            );
+      });
       // Past logs on the page come from this stream (per exercise); reuse the
       // test routine's logs so the previous-entries assertions keep working.
       when(
@@ -103,9 +131,9 @@ void main() {
     }
 
     Future<void> pumpLogPage(WidgetTester tester) async {
-      // The widget resolves its own slot now, so hand it the uuid of the slot
+      // The widget resolves its own slot now, so hand it the key of the slot
       // the gym state was seeded on (via setCurrentPage above).
-      final slotUuid = container.read(gymStateProvider).getSlotEntryPageByIndex()!.uuid;
+      final slotKey = container.read(gymStateProvider).getSlotEntryPageByIndex()!.key;
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
@@ -120,7 +148,7 @@ void main() {
                   final controller = PageController();
                   return PageView(
                     controller: controller,
-                    children: [LogPage(controller, slotUuid)],
+                    children: [LogPage(controller, slotKey)],
                   );
                 },
               ),
@@ -252,6 +280,215 @@ void main() {
       // The lazy session needs the day, otherwise days that need logs to
       // advance can't see it (issue wger#2460)
       expect(captured[1], gymState.dayId);
+    });
+
+    testWidgets('carries the logged values over to the next set when sticky values are enabled', (
+      tester,
+    ) async {
+      seedLogPage(testdata.getTestRoutine());
+      container.read(gymStateProvider.notifier).setStickySetValues(true);
+      await pumpLogPage(tester);
+
+      // Log a set with non-default values
+      final fields = find.byType(TextFormField);
+      await tester.enterText(fields.at(0), '12'); // reps
+      await tester.enterText(fields.at(1), '34'); // weight
+      await tester.pump();
+      await tester.tap(find.byKey(const ValueKey('save-log-button')));
+      await tester.pumpAndSettle();
+
+      // Navigate to the next set of the same exercise
+      container.read(gymStateProvider.notifier).setCurrentPage(4);
+      await tester.pumpAndSettle();
+
+      // The form is pre-filled with the values just logged, not the planned ones
+      final gymLog = container.read(gymLogProvider)!;
+      expect(gymLog.repetitions, 12);
+      expect(gymLog.weight, 34);
+      expect(gymLog.id, isNull, reason: 'A fresh log is seeded, not a copy of the saved one');
+      final repField = tester.widget<EditableText>(find.byType(EditableText).at(0));
+      expect(repField.controller.text, '12');
+    });
+
+    group('sticky values when correcting a logged set', () {
+      Future<void> logSet(WidgetTester tester, int page, {String? reps, String? weight}) async {
+        container.read(gymStateProvider.notifier).setCurrentPage(page);
+        await tester.pumpWidget(const SizedBox());
+        await pumpLogPage(tester);
+        final fields = find.byType(TextFormField);
+        if (reps != null) {
+          await tester.enterText(fields.at(0), reps);
+        }
+        if (weight != null) {
+          await tester.enterText(fields.at(1), weight);
+        }
+        await tester.pump();
+        await tester.tap(find.byKey(const ValueKey('save-log-button')));
+        await tester.pumpAndSettle();
+      }
+
+      setUp(() {
+        // Distinct ids, so the saved sets can be told apart
+        var count = 0;
+        when(
+          mockWorkoutLogRepo.addLocalDrift(any, dayId: anyNamed('dayId')),
+        ).thenAnswer((invocation) async {
+          storeLog((invocation.positionalArguments[0] as Log)..id = 'log-${++count}');
+        });
+      });
+
+      testWidgets('correcting an earlier set keeps the values of a later one', (tester) async {
+        seedLogPage(testdata.getTestRoutine());
+        container.read(gymStateProvider.notifier).setStickySetValues(true);
+
+        // Sets 1 and 2 of the same exercise (pages 2 and 4)
+        await logSet(tester, 2, reps: '12', weight: '34');
+        await logSet(tester, 4, reps: '14', weight: '40');
+
+        // Correct set 1
+        await logSet(tester, 2, reps: '13');
+        verify(mockWorkoutLogRepo.updateLocalDrift(any)).called(1);
+
+        // Set 3 is pre-filled with the values of set 2
+        container.read(gymStateProvider.notifier).setCurrentPage(6);
+        await tester.pump();
+        final gymLog = container.read(gymLogProvider)!;
+        expect(gymLog.repetitions, 14);
+        expect(gymLog.weight, 40);
+      });
+
+      testWidgets('correcting the latest set updates the values', (tester) async {
+        seedLogPage(testdata.getTestRoutine());
+        container.read(gymStateProvider.notifier).setStickySetValues(true);
+
+        await logSet(tester, 2, reps: '12', weight: '34');
+
+        // Correct the weight of the same set
+        await logSet(tester, 2, weight: '36');
+        verify(mockWorkoutLogRepo.updateLocalDrift(any)).called(1);
+
+        // Set 2 is pre-filled with the corrected values
+        container.read(gymStateProvider.notifier).setCurrentPage(4);
+        await tester.pump();
+        final gymLog = container.read(gymLogProvider)!;
+        expect(gymLog.repetitions, 12);
+        expect(gymLog.weight, 36);
+      });
+    });
+
+    testWidgets('re-visiting a logged page restores the saved values and saving updates the row', (
+      tester,
+    ) async {
+      seedLogPage(testdata.getTestRoutine());
+      await pumpLogPage(tester);
+
+      // Enter and save non-default values
+      final fields = find.byType(TextFormField);
+      await tester.enterText(fields.at(0), '12'); // reps
+      await tester.enterText(fields.at(1), '34'); // weight
+      await tester.pump();
+      await tester.tap(find.byKey(const ValueKey('save-log-button')));
+      await tester.pumpAndSettle();
+      verify(mockWorkoutLogRepo.addLocalDrift(any, dayId: anyNamed('dayId'))).called(1);
+
+      // Navigate away (page 3 is the timer) and back (page 2 is the log page)
+      final gymNotifier = container.read(gymStateProvider.notifier);
+      gymNotifier.setCurrentPage(3);
+      gymNotifier.setCurrentPage(2);
+      await tester.pumpAndSettle();
+
+      // The form is seeded from the saved entry, keeping its id
+      expect(container.read(gymLogProvider)!.id, 'new-log-id');
+      final repField = tester.widget<EditableText>(find.byType(EditableText).at(0));
+      expect(repField.controller.text, '12');
+
+      // Saving again updates the existing row instead of inserting a duplicate
+      await tester.tap(find.byKey(const ValueKey('save-log-button')));
+      await tester.pumpAndSettle();
+
+      final updated =
+          verify(mockWorkoutLogRepo.updateLocalDrift(captureAny)).captured.single as Log;
+      expect(updated.id, 'new-log-id');
+      expect(updated.repetitions, 12);
+      expect(updated.weight, 34);
+      verifyNever(mockWorkoutLogRepo.addLocalDrift(any, dayId: anyNamed('dayId')));
+    });
+
+    testWidgets('a logged page is shown for editing and "add set" logs another row', (
+      tester,
+    ) async {
+      var count = 0;
+      when(
+        mockWorkoutLogRepo.addLocalDrift(any, dayId: anyNamed('dayId')),
+      ).thenAnswer((invocation) async {
+        (invocation.positionalArguments[0] as Log).id = 'log-${++count}';
+      });
+      seedLogPage(testdata.getTestRoutine());
+      await pumpLogPage(tester);
+      expect(find.text('New entry'), findsOneWidget);
+      expect(find.byKey(const ValueKey('add-set-button')), findsNothing);
+
+      await tester.tap(find.byKey(const ValueKey('save-log-button')));
+      await tester.pumpAndSettle();
+
+      // Going back shows the saved set for editing
+      final gymNotifier = container.read(gymStateProvider.notifier);
+      gymNotifier.setCurrentPage(3);
+      gymNotifier.setCurrentPage(2);
+      await tester.pumpAndSettle();
+      expect(find.text('Edit'), findsOneWidget);
+      expect(find.text('New entry'), findsNothing);
+
+      // "Add set" switches to a fresh entry
+      await tester.tap(find.byKey(const ValueKey('add-set-button')));
+      await tester.pumpAndSettle();
+      expect(find.text('New entry'), findsOneWidget);
+      expect(find.byKey(const ValueKey('add-set-button')), findsNothing);
+
+      await tester.enterText(find.byType(TextFormField).at(0), '10');
+      await tester.pump();
+      await tester.tap(find.byKey(const ValueKey('save-log-button')));
+      await tester.pumpAndSettle();
+
+      // A second row, the first one is left alone
+      final added = verify(
+        mockWorkoutLogRepo.addLocalDrift(captureAny, dayId: anyNamed('dayId')),
+      ).captured;
+      expect(added, hasLength(2));
+      expect((added[1] as Log).id, 'log-2');
+      expect((added[1] as Log).repetitions, 10);
+      verifyNever(mockWorkoutLogRepo.updateLocalDrift(any));
+      final state = container.read(gymStateProvider);
+      expect(state.progressOf(state.getSlotEntryPageByIndex(2)!.key).loggedEntry!.id, 'log-2');
+    });
+
+    testWidgets('an unsaved edit on a logged page does not change the saved entry', (
+      tester,
+    ) async {
+      seedLogPage(testdata.getTestRoutine());
+      await pumpLogPage(tester);
+      await tester.tap(find.byKey(const ValueKey('save-log-button')));
+      await tester.pumpAndSettle();
+      final gymNotifier = container.read(gymStateProvider.notifier);
+      final logPageKey = container.read(gymStateProvider).getSlotEntryPageByIndex(2)!.key;
+      final savedRir = container.read(gymStateProvider).progressOf(logPageKey).loggedEntry!.rir;
+      expect(savedRir, isNot(3));
+
+      // Go back to the logged set and change the RiR without saving
+      gymNotifier.setCurrentPage(3);
+      gymNotifier.setCurrentPage(2);
+      await tester.pumpAndSettle();
+      tester.widget<Slider>(find.byType(Slider)).onChanged!(3);
+      await tester.pump();
+
+      // Leave and come back
+      gymNotifier.setCurrentPage(3);
+      gymNotifier.setCurrentPage(2);
+      await tester.pumpAndSettle();
+
+      final loggedEntry = container.read(gymStateProvider).progressOf(logPageKey).loggedEntry!;
+      expect(loggedEntry.rir, savedRir);
+      expect(container.read(gymLogProvider)!.rir, savedRir);
     });
 
     testWidgets('reps quick buttons increment and decrement the value', (tester) async {

@@ -119,10 +119,8 @@ class WorkoutNotificationController {
 
   /// Follows the earlier logs of the set the notification can log
   void _watchRecentLogs(GymModeState state, WorkoutNotificationTarget target) {
-    final uuid = target.controls?.payload.logSlotUuid;
-    final exerciseId = uuid == null
-        ? null
-        : state.getSlotPageByUUID(uuid)?.setConfigData?.exerciseId;
+    final key = target.controls?.payload.logSlotKey;
+    final exerciseId = key == null ? null : state.getSlotPageByKey(key)?.setConfigData?.exerciseId;
     if (exerciseId == _recentLogsExerciseId) {
       return;
     }
@@ -205,26 +203,26 @@ class WorkoutNotificationController {
       try {
         switch (actionId) {
           case WORKOUT_NOTIFICATION_ACTION_LOG_SET:
-            final uuid = payload.logSlotUuid;
-            final config = uuid == null ? null : state.getSlotPageByUUID(uuid)?.setConfigData;
+            final key = payload.logSlotKey;
+            final config = key == null ? null : state.getSlotPageByKey(key)?.setConfigData;
             if (config == null) {
               break;
             }
             if (input == null) {
-              await notifier.logPlannedSet(uuid!);
+              await notifier.logPlannedSet(key!);
             } else {
               // An unknown label is from an outdated notification
               final valuesFrom = quickLogChoices(config, _recentLogs)[input];
               if (valuesFrom != null) {
-                await notifier.logPlannedSet(uuid!, valuesFrom: valuesFrom);
+                await notifier.logPlannedSet(key!, valuesFrom: valuesFrom);
               }
             }
           case WORKOUT_NOTIFICATION_ACTION_SKIP_REST:
-            if (state.getSlotEntryPageByIndex()?.uuid == payload.restSlotUuid) {
+            if (state.getSlotEntryPageByIndex()?.key == payload.restSlotKey) {
               notifier.skipRest();
             }
           case WORKOUT_NOTIFICATION_ACTION_EXTEND_REST:
-            if (state.getSlotEntryPageByIndex()?.uuid == payload.restSlotUuid) {
+            if (state.getSlotEntryPageByIndex()?.key == payload.restSlotKey) {
               notifier.extendRest(REST_EXTENSION);
             }
         }

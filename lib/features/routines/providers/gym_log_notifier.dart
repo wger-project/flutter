@@ -35,6 +35,11 @@ class GymLogNotifier extends _$GymLogNotifier {
     return null;
   }
 
+  /// [Log.==] ignores the id, so a fresh entry would be "equal" to a saved one
+  /// with the same values and the form wouldn't switch over
+  @override
+  bool updateShouldNotify(Log? previous, Log? next) => !identical(previous, next);
+
   void setLog(Log log) {
     // Clear the id so Drift mints a fresh UUID on insert, and the sessionId so
     // the entry lands in today's session.
@@ -54,6 +59,14 @@ class GymLogNotifier extends _$GymLogNotifier {
       ..repetitionsUnitId = pastLog.repetitionsUnitId
       ..repetitionsUnitObj = pastLog.repetitionsUnitObj
       ..rir = pastLog.rir;
+  }
+
+  /// Starts editing a log that was already persisted during the current
+  /// workout. Unlike [setLog], the id, session and date are kept so saving
+  /// updates the existing row instead of inserting a duplicate. [log] itself
+  /// is not modified by the edits.
+  void editLog(Log log) {
+    state = log.copyWith();
   }
 
   void setWeight(num weight) {

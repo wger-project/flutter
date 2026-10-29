@@ -1,13 +1,13 @@
 /*
  * This file is part of wger Workout Manager <https://github.com/wger-project>.
- * Copyright (c)  2026 wger Team
+ * Copyright (c) 2026 wger Team
  *
  * wger Workout Manager is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
+ * wger Workout Manager is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
@@ -23,125 +23,204 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
+import 'package:wger/features/routines/models/page_progress.dart';
 import 'package:wger/features/routines/providers/gym_state.dart';
 import 'package:wger/features/routines/providers/gym_state_notifier.dart';
 import 'package:wger/features/routines/widgets/gym_mode/timer.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/l10n/localizations_delegates.dart';
 
-import '../../../../../test_data/routines.dart';
+import '../../../../../test_data/routines.dart' as testdata;
 
 void main() {
-  final now = DateTime.utc(2025, 3, 29, 14, 33);
-  late ProviderContainer container;
-  late GymStateNotifier notifier;
+  TestWidgetsFlutterBinding.ensureInitialized();
 
-  setUp(() {
-    SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
-    container = ProviderContainer.test();
-    notifier = container.read(gymStateProvider.notifier);
-    final routine = getTestRoutine();
-    notifier.initData(routine, routine.days.first.id!, 1);
-  });
+  group('Timer up-next', () {
+    late ProviderContainer container;
 
-  // In the fixture the first slot rests 120 s, the second has no rest time
-  SlotPageEntry timerPage({required bool withRestTime}) => notifier.state.pages
-      .expand((p) => p.slotPages)
-      .firstWhere(
-        (p) => p.type == SlotPageType.timer && (p.setConfigData!.restTime != null) == withRestTime,
-      );
+    // Page structure of the test routine (exercise + timer pages enabled):
+    //   start(0)
+    //   slot 1 (bench press): overview(1), log(2), timer(3), log(4), timer(5), log(6), timer(7)
+    //   slot 2 (side raises): overview(8), log(9), timer(10), log(11), timer(12), log(13), timer(14)
+    //   session(15), summary(16)
+    setUp(() {
+      SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+      container = ProviderContainer.test();
+      final notifier = container.read(gymStateProvider.notifier);
+      final routine = testdata.getTestRoutine();
+      notifier.initData(routine, routine.days.first.id!, 1);
+    });
 
-  Future<void> pumpTimer(WidgetTester tester, Widget timer) async {
-    await tester.pumpWidget(
-      UncontrolledProviderScope(
-        container: container,
-        child: MaterialApp(
-          locale: const Locale('en'),
-          localizationsDelegates: appLocalizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: Scaffold(
-            body: Builder(
-              builder: (context) {
-                final controller = PageController();
-                return PageView(controller: controller, children: [timer]);
-              },
+    Future<void> pumpTimer(WidgetTester tester, int timerPageIndex, {bool countsUp = false}) async {
+      final slotPage = container.read(gymStateProvider).getSlotEntryPageByIndex(timerPageIndex)!;
+      expect(slotPage.type, SlotPageType.timer);
+
+      // No pumpAndSettle: the widgets keep a periodic UI timer alive, which
+      // would never settle.
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp(
+            locale: const Locale('en'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: Scaffold(
+              body: Builder(
+                builder: (context) {
+                  final controller = PageController();
+                  return PageView(
+                    controller: controller,
+                    children: [
+                      if (countsUp)
+                        TimerWidget(controller, slotPage.key)
+                      else
+                        TimerCountdownWidget(controller, 90, slotPage.key),
+                    ],
+                  );
+                },
+              ),
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  group('TimerCountdownWidget', () {
-    testWidgets('counts down to the rest end of the gym state', (tester) async {
-      final page = timerPage(withRestTime: true);
-      notifier.state = notifier.state.copyWith(
-        currentPage: page.pageIndex,
-        restStartedAt: now.subtract(const Duration(seconds: 75)),
-        restEndsAt: now.add(const Duration(seconds: 45)),
       );
+      await tester.pump();
+    }
 
-      await withClock(Clock.fixed(now), () async {
-        await pumpTimer(tester, TimerCountdownWidget(PageController(), page.uuid));
-      });
+    testWidgets('shows the next set of the same exercise for a rest between sets', (tester) async {
+      await pumpTimer(tester, 3);
 
-      expect(find.text('0:45'), findsOneWidget);
+      expect(find.text('Up next'), findsOneWidget);
+      expect(find.text('Bench press'), findsOneWidget);
+      expect(find.text('3x100kg'), findsOneWidget);
+      expect(find.text('2 / 3'), findsOneWidget);
     });
 
-    testWidgets('a timer page that is not current shows its full rest', (tester) async {
-      // The rest end in the state belongs to the current page only
-      final page = timerPage(withRestTime: true);
-      notifier.state = notifier.state.copyWith(
-        currentPage: page.pageIndex + 1,
-        restEndsAt: now.add(const Duration(seconds: 45)),
-      );
+    testWidgets('shows the next exercise after the final rest of an exercise', (tester) async {
+      await pumpTimer(tester, 7);
 
-      await withClock(Clock.fixed(now), () async {
-        await pumpTimer(tester, TimerCountdownWidget(PageController(), page.uuid));
-      });
-
-      expect(find.text('2:00'), findsOneWidget);
+      expect(find.text('Up next'), findsOneWidget);
+      expect(find.text('Side raises'), findsOneWidget);
+      expect(find.text('12x10kg'), findsOneWidget);
+      expect(find.text('1 / 3'), findsOneWidget);
     });
 
-    testWidgets('alerts once when the rest is over', (tester) async {
-      final calls = <String>[];
-      tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
-        SystemChannels.platform,
-        (call) async {
-          calls.add(call.method);
-          return null;
-        },
-      );
+    testWidgets('shows nothing after the last set of the day', (tester) async {
+      await pumpTimer(tester, 14);
+
+      expect(find.text('Up next'), findsNothing);
+    });
+
+    testWidgets('countdown continues when the page is disposed and re-created', (tester) async {
+      final t0 = DateTime(2024, 5, 2, 12);
+
+      await withClock(Clock.fixed(t0), () async {
+        await pumpTimer(tester, 3);
+        expect(find.text('1:30'), findsOneWidget);
+      });
+
+      // 30s later the countdown kept running (re-pumping forces a rebuild,
+      // in the app the periodic UI timer does this every second)
+      await withClock(Clock.fixed(t0.add(const Duration(seconds: 30))), () async {
+        await pumpTimer(tester, 3);
+        expect(find.text('1:00'), findsOneWidget);
+      });
+
+      // Leaving the page disposes the widget ...
+      await withClock(Clock.fixed(t0.add(const Duration(seconds: 45))), () async {
+        await tester.pumpWidget(const SizedBox());
+        await tester.pump();
+
+        // ... and coming back must not restart the countdown
+        await pumpTimer(tester, 3);
+        expect(find.text('0:45'), findsOneWidget);
+      });
+    });
+
+    testWidgets('alerts once, but not again when returning to an expired countdown', (
+      tester,
+    ) async {
+      final haptics = <MethodCall>[];
+      tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(SystemChannels.platform, (
+        call,
+      ) async {
+        if (call.method == 'HapticFeedback.vibrate') {
+          haptics.add(call);
+        }
+        return null;
+      });
       addTearDown(
         () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
           SystemChannels.platform,
           null,
         ),
       );
-      final page = timerPage(withRestTime: true);
-      notifier.state = notifier.state.copyWith(currentPage: page.pageIndex, restEndsAt: now);
+      final t0 = DateTime(2024, 5, 2, 12);
 
-      await withClock(Clock.fixed(now), () async {
-        await pumpTimer(tester, TimerCountdownWidget(PageController(), page.uuid));
-        // The widget repaints every second and keeps seeing the end
-        await tester.pump(const Duration(seconds: 3));
+      await withClock(Clock.fixed(t0), () => pumpTimer(tester, 3));
+
+      // The 90s countdown runs out while the page is shown
+      await withClock(Clock.fixed(t0.add(const Duration(seconds: 95))), () => pumpTimer(tester, 3));
+      expect(haptics, hasLength(1));
+
+      // Leaving and coming back re-creates the widget
+      await withClock(Clock.fixed(t0.add(const Duration(seconds: 120))), () async {
+        await tester.pumpWidget(const SizedBox());
+        await pumpTimer(tester, 3);
       });
-
-      expect(calls.where((m) => m == 'HapticFeedback.vibrate'), hasLength(1));
+      expect(haptics, hasLength(1));
     });
-  });
 
-  group('TimerWidget', () {
-    testWidgets('counts up from the rest start of the gym state', (tester) async {
-      final page = timerPage(withRestTime: false);
+    testWidgets('alerts again when the rest is extended after its end', (tester) async {
+      final haptics = <MethodCall>[];
+      tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(SystemChannels.platform, (
+        call,
+      ) async {
+        if (call.method == 'HapticFeedback.vibrate') {
+          haptics.add(call);
+        }
+        return null;
+      });
+      addTearDown(
+        () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+          SystemChannels.platform,
+          null,
+        ),
+      );
+      final t0 = DateTime(2024, 5, 2, 12);
+      final key = container.read(gymStateProvider).getSlotEntryPageByIndex(3)!.key;
+
+      await withClock(Clock.fixed(t0), () => pumpTimer(tester, 3));
+      await withClock(Clock.fixed(t0.add(const Duration(seconds: 95))), () => pumpTimer(tester, 3));
+      expect(haptics, hasLength(1));
+      expect(haptics.single.arguments, isNull, reason: 'the full vibration, not a light impact');
+
+      // Extending moves the start, so the countdown ends 30 s later
+      final notifier = container.read(gymStateProvider.notifier);
       notifier.state = notifier.state.copyWith(
-        currentPage: page.pageIndex,
-        restStartedAt: now.subtract(const Duration(seconds: 30)),
+        progress: {key: PageProgress(timerStartedAt: t0.add(const Duration(seconds: 30)))},
+      );
+      await withClock(
+        Clock.fixed(t0.add(const Duration(seconds: 100))),
+        () => pumpTimer(tester, 3),
+      );
+      expect(find.text('0:20'), findsOneWidget);
+      expect(haptics, hasLength(1));
+
+      await withClock(
+        Clock.fixed(t0.add(const Duration(seconds: 125))),
+        () => pumpTimer(tester, 3),
+      );
+      expect(haptics, hasLength(2));
+    });
+
+    testWidgets('counts up from the start in the gym state', (tester) async {
+      final t0 = DateTime(2024, 5, 2, 12);
+      final key = container.read(gymStateProvider).getSlotEntryPageByIndex(3)!.key;
+      final notifier = container.read(gymStateProvider.notifier);
+      notifier.state = notifier.state.copyWith(
+        progress: {key: PageProgress(timerStartedAt: t0.subtract(const Duration(seconds: 30)))},
       );
 
-      await withClock(Clock.fixed(now), () async {
-        await pumpTimer(tester, TimerWidget(PageController(), page.uuid));
-      });
+      await withClock(Clock.fixed(t0), () => pumpTimer(tester, 3, countsUp: true));
 
       expect(find.text('0:30'), findsOneWidget);
     });

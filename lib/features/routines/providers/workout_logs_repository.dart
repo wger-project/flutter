@@ -34,8 +34,8 @@ final workoutLogRepositoryProvider = Provider<WorkoutLogRepository>((ref) {
 });
 
 /// Local access to the `workout_log` table: writes (add/update/delete) plus a
-/// per-exercise read stream. Reading logs grouped under their parent session
-/// happens through `WorkoutSessionRepository.watchAllDrift`.
+/// per-exercise read stream and a lookup by ID. Reading logs grouped under
+/// their parent session happens through `WorkoutSessionRepository.watchAllDrift`.
 class WorkoutLogRepository {
   final _logger = Logger('WorkoutLogRepository');
   final DriftPowersyncDatabase _db;
@@ -58,16 +58,7 @@ class WorkoutLogRepository {
       'routine ${routineId ?? 'any'}, since ${since ?? 'always'}',
     );
 
-    final query = _db.select(_db.workoutLogTable).join([
-      leftOuterJoin(
-        _db.routineRepetitionUnitTable,
-        _db.routineRepetitionUnitTable.id.equalsExp(_db.workoutLogTable.repetitionsUnitId),
-      ),
-      leftOuterJoin(
-        _db.routineWeightUnitTable,
-        _db.routineWeightUnitTable.id.equalsExp(_db.workoutLogTable.weightUnitId),
-      ),
-    ]);
+    final query = _selectWithUnits();
 
     var whereCondition = _db.workoutLogTable.exerciseId.equals(exerciseId);
     if (routineId != null) {
@@ -81,20 +72,50 @@ class WorkoutLogRepository {
       OrderingTerm(expression: _db.workoutLogTable.date, mode: OrderingMode.desc),
     ]);
 
-    return query.watch().map((rows) {
-      return rows.map((row) {
-        final log = row.readTable(_db.workoutLogTable);
-        final repetitionUnit = row.readTableOrNull(_db.routineRepetitionUnitTable);
-        if (repetitionUnit != null) {
-          log.repetitionUnit = repetitionUnit;
-        }
-        final weightUnit = row.readTableOrNull(_db.routineWeightUnitTable);
-        if (weightUnit != null) {
-          log.weightUnit = weightUnit;
-        }
-        return log;
-      }).toList();
-    });
+    return query.watch().map((rows) => rows.map(_readWithUnits).toList());
+  }
+
+  /// The newest log of an exercise across all routines, with its units, or
+  /// null if the exercise was never logged
+  Future<Log?> getLatestLogByExercise(int exerciseId) async {
+    final query = _selectWithUnits()
+      ..where(_db.workoutLogTable.exerciseId.equals(exerciseId))
+      ..orderBy([OrderingTerm(expression: _db.workoutLogTable.date, mode: OrderingMode.desc)])
+      ..limit(1);
+    final row = await query.getSingleOrNull();
+    return row == null ? null : _readWithUnits(row);
+  }
+
+  /// The logs with one of the [ids] that exist locally, with their units
+  Future<List<Log>> getLogsByIds(List<String> ids) async {
+    final query = _selectWithUnits()..where(_db.workoutLogTable.id.isIn(ids));
+    return (await query.get()).map(_readWithUnits).toList();
+  }
+
+  JoinedSelectStatement<HasResultSet, dynamic> _selectWithUnits() {
+    return _db.select(_db.workoutLogTable).join([
+      leftOuterJoin(
+        _db.routineRepetitionUnitTable,
+        _db.routineRepetitionUnitTable.id.equalsExp(_db.workoutLogTable.repetitionsUnitId),
+      ),
+      leftOuterJoin(
+        _db.routineWeightUnitTable,
+        _db.routineWeightUnitTable.id.equalsExp(_db.workoutLogTable.weightUnitId),
+      ),
+    ]);
+  }
+
+  Log _readWithUnits(TypedResult row) {
+    final log = row.readTable(_db.workoutLogTable);
+    final repetitionUnit = row.readTableOrNull(_db.routineRepetitionUnitTable);
+    if (repetitionUnit != null) {
+      log.repetitionUnit = repetitionUnit;
+    }
+    final weightUnit = row.readTableOrNull(_db.routineWeightUnitTable);
+    if (weightUnit != null) {
+      log.weightUnit = weightUnit;
+    }
+    return log;
   }
 
   Future<void> deleteLocalDrift(String id) async {

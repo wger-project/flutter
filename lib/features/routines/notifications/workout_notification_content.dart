@@ -39,18 +39,18 @@ class WorkoutNotificationPayload extends Equatable {
   final DateTime workoutStart;
 
   /// The log page the "log set" action logs
-  final String? logSlotUuid;
+  final String? logSlotKey;
 
   /// The timer page the "skip rest" action leaves
-  final String? restSlotUuid;
+  final String? restSlotKey;
 
   const WorkoutNotificationPayload({
     required this.routineId,
     required this.dayId,
     required this.iteration,
     required this.workoutStart,
-    this.logSlotUuid,
-    this.restSlotUuid,
+    this.logSlotKey,
+    this.restSlotKey,
   });
 
   /// Whether this belongs to the session [state] is running
@@ -66,8 +66,8 @@ class WorkoutNotificationPayload extends Equatable {
     'dayId': dayId,
     'iteration': iteration,
     'workoutStart': workoutStart.toUtc().toIso8601String(),
-    'logSlotUuid': logSlotUuid,
-    'restSlotUuid': restSlotUuid,
+    'logSlotKey': logSlotKey,
+    'restSlotKey': restSlotKey,
   });
 
   /// Null if [payload] is missing or not one of ours
@@ -82,8 +82,8 @@ class WorkoutNotificationPayload extends Equatable {
         dayId: json['dayId'] as int,
         iteration: json['iteration'] as int,
         workoutStart: DateTime.parse(json['workoutStart'] as String),
-        logSlotUuid: json['logSlotUuid'] as String?,
-        restSlotUuid: json['restSlotUuid'] as String?,
+        logSlotKey: json['logSlotKey'] as String?,
+        restSlotKey: json['restSlotKey'] as String?,
       );
     } on Object {
       return null;
@@ -91,7 +91,7 @@ class WorkoutNotificationPayload extends Equatable {
   }
 
   @override
-  List<Object?> get props => [routineId, dayId, iteration, workoutStart, logSlotUuid, restSlotUuid];
+  List<Object?> get props => [routineId, dayId, iteration, workoutStart, logSlotKey, restSlotKey];
 }
 
 /// The ongoing notification while a workout runs (Android)
@@ -332,7 +332,7 @@ WorkoutNotificationTarget buildWorkoutNotification(
   }
 
   bool canLog(SlotPageEntry page) =>
-      !page.logDone &&
+      !state.progressOf(page.key).done &&
       isWorkoutLogComplete(
         repetitions: page.setConfigData!.repetitions,
         weight: page.setConfigData!.weight,
@@ -344,14 +344,14 @@ WorkoutNotificationTarget buildWorkoutNotification(
   Uri? image(SlotPageEntry? page) =>
       page == null ? null : mediaUrl?.call(page.setConfigData!.exercise.getMainImage?.image);
 
-  WorkoutNotificationPayload payload({String? logSlotUuid, String? restSlotUuid}) =>
+  WorkoutNotificationPayload payload({String? logSlotKey, String? restSlotKey}) =>
       WorkoutNotificationPayload(
         routineId: state.routine.id!,
         dayId: state.dayId,
         iteration: state.iteration,
         workoutStart: state.workoutStart,
-        logSlotUuid: logSlotUuid,
-        restSlotUuid: restSlotUuid,
+        logSlotKey: logSlotKey,
+        restSlotKey: restSlotKey,
       );
 
   if (current?.type == SlotPageType.timer) {
@@ -360,7 +360,7 @@ WorkoutNotificationTarget buildWorkoutNotification(
     );
     // The set right after the rest, the one the rest end is about
     final next = following?.pageIndex == current!.pageIndex + 1 ? following : null;
-    final actionPayload = payload(logSlotUuid: next?.uuid, restSlotUuid: current.uuid);
+    final actionPayload = payload(logSlotKey: next?.key, restSlotKey: current.key);
 
     final nextText = following == null ? '' : i18n.workoutNotificationNext(setText(following));
     final endsAt = state.restEndsAt;
@@ -423,7 +423,7 @@ WorkoutNotificationTarget buildWorkoutNotification(
         title: exerciseName(current!),
         body: setOf(current),
         canLogSet: canLog(current),
-        payload: payload(logSlotUuid: current.uuid),
+        payload: payload(logSlotKey: current.key),
         quickLogs: quickLogs(current),
         image: image(current),
       ),

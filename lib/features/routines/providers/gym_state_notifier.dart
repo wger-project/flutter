@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:convert';
+
 import 'package:clock/clock.dart';
 import 'package:collection/collection.dart';
 import 'package:logging/logging.dart';
@@ -24,14 +26,18 @@ import 'package:wger/core/consts.dart';
 import 'package:wger/core/shared_preferences.dart';
 import 'package:wger/features/account/providers/user_profile_notifier.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
+import 'package:wger/features/routines/models/added_exercise.dart';
 import 'package:wger/features/routines/models/log.dart';
+import 'package:wger/features/routines/models/page_progress.dart';
 import 'package:wger/features/routines/models/routine.dart';
 import 'package:wger/features/routines/models/set_config_data.dart';
 import 'package:wger/features/routines/models/weight_unit.dart';
+import 'package:wger/features/routines/models/workout_progress.dart';
 import 'package:wger/features/routines/providers/gym_log_notifier.dart';
 import 'package:wger/features/routines/providers/gym_state.dart';
 import 'package:wger/features/routines/providers/routines_notifier.dart';
 import 'package:wger/features/routines/providers/workout_logs_notifier.dart';
+import 'package:wger/features/routines/providers/workout_logs_repository.dart';
 import 'package:wger/features/routines/validators.dart';
 
 part 'gym_state_notifier.g.dart';
@@ -93,6 +99,11 @@ class GymStateNotifier extends _$GymStateNotifier {
       state = state.copyWith(showWorkoutDuration: showWorkoutDuration);
     }
 
+    final stickySetValues = await prefs.getBool(PREFS_STICKY_SET_VALUES);
+    if (stickySetValues != null && stickySetValues != state.stickySetValues) {
+      state = state.copyWith(stickySetValues: stickySetValues);
+    }
+
     final workoutNotification = await prefs.getBool(PREFS_WORKOUT_NOTIFICATION);
     if (workoutNotification != null && workoutNotification != state.showWorkoutNotification) {
       state = state.copyWith(showWorkoutNotification: workoutNotification);
@@ -129,6 +140,7 @@ class GymStateNotifier extends _$GymStateNotifier {
     }
     await prefs.setBool(PREFS_SHOW_DISTINCT_LOGS, state.showDistinctLogs);
     await prefs.setBool(PREFS_SHOW_WORKOUT_DURATION, state.showWorkoutDuration);
+    await prefs.setBool(PREFS_STICKY_SET_VALUES, state.stickySetValues);
     await prefs.setBool(PREFS_WORKOUT_NOTIFICATION, state.showWorkoutNotification);
 
     _logger.finer(
@@ -145,20 +157,185 @@ class GymStateNotifier extends _$GymStateNotifier {
     );
   }
 
+  /// Stores the progress through the running workout, since the OS can kill a
+  /// backgrounded app at any point, e.g. between two sets
+  Future<void> _saveProgress() async {
+    // Before initData there is no dayId to store the progress under
+    if (!state.isInitialized) {
+      return;
+    }
+
+    final progress = WorkoutProgress(
+      dayId: state.dayId,
+      iteration: state.iteration,
+      currentPageKey: state.keyOfPage(state.currentPage) ?? 'start',
+      workoutStart: state.workoutStart,
+      validUntil: state.validUntil,
+      pages: {
+        for (final MapEntry(:key, :value) in state.progress.entries)
+          key: StoredPageProgress(
+            done: value.done,
+            logId: value.loggedEntry?.id,
+            timerStartedAt: value.timerStartedAt,
+          ),
+      },
+    );
+
+    await PreferenceHelper.asyncPref.setString(
+      PREFS_WORKOUT_PROGRESS,
+      json.encode(progress.toJson()),
+    );
+    _logger.finer('Saved $progress');
+  }
+
+  Future<void> _clearProgress() async {
+    await PreferenceHelper.asyncPref.remove(PREFS_WORKOUT_PROGRESS);
+    _logger.finer('Cleared stored workout progress');
+  }
+
+  /// Opens gym mode for a day and returns the page to start on. Continues the
+  /// workout in memory, otherwise starts one that picks up any stored progress.
+  Future<int> open(Routine routine, int dayId, int iteration) async {
+    final resume = _canResume(dayId);
+    final initialPage = initData(routine, dayId, iteration);
+    await loadPrefs();
+
+    if (resume && state.pages.isNotEmpty) {
+      return initialPage;
+    }
+
+    calculatePages();
+    return await _restoreProgress() ?? initialPage;
+  }
+
+  /// Applies the stored progress to the freshly calculated pages
+  ///
+  /// Returns the page to continue on, or null when there is nothing to restore.
+  Future<int?> _restoreProgress() async {
+    final stored = await PreferenceHelper.asyncPref.getString(PREFS_WORKOUT_PROGRESS);
+    if (stored == null) {
+      return null;
+    }
+
+    final WorkoutProgress saved;
+    try {
+      saved = WorkoutProgress.fromJson(json.decode(stored) as Map<String, dynamic>);
+    } catch (e) {
+      _logger.warning('Discarding unreadable stored workout progress: $e');
+      await _clearProgress();
+      return null;
+    }
+
+    // Only ever continue the same workout, and only while it is plausibly
+    // still running
+    if (saved.dayId != state.dayId ||
+        saved.iteration != state.iteration ||
+        saved.validUntil.isBefore(clock.now())) {
+      _logger.fine('Stored workout progress does not apply any more, discarding it');
+      await _clearProgress();
+      return null;
+    }
+
+    // Without the logs the done sets and timers still come back, a correction
+    // then inserts a new row instead of updating the old one
+    final logIds = saved.pages.values.map((p) => p.logId).nonNulls.toList();
+    var logs = <String?, Log>{};
+    if (logIds.isNotEmpty) {
+      try {
+        logs = {
+          for (final log in await ref.read(workoutLogRepositoryProvider).getLogsByIds(logIds))
+            log.id: log,
+        };
+      } catch (e) {
+        _logger.warning('Could not read the logs of the stored workout progress: $e');
+      }
+    }
+
+    // Pages the routine no longer has (it was edited, or they were added
+    // during the workout) are left out
+    final slotPages = state.pages.expand((page) => page.slotPages);
+    final progress = {
+      for (final slotPage in slotPages)
+        if (saved.pages[slotPage.key] case final stored?)
+          slotPage.key: PageProgress(
+            done: stored.done,
+            loggedEntry: logs[stored.logId],
+            timerStartedAt: stored.timerStartedAt,
+          ),
+    };
+
+    state = state.copyWith(
+      currentPage: state.pageIndexOf(saved.currentPageKey) ?? 0,
+      workoutStart: saved.workoutStart,
+      validUntil: saved.validUntil,
+      progress: progress,
+    );
+
+    _logger.fine('Restored workout progress on page ${state.currentPage}');
+
+    return state.currentPage;
+  }
+
   /// Calculates the page entries
   void calculatePages() {
     var pageIndex = 0;
 
     final List<PageEntry> pages = [
       // Start page
-      PageEntry(type: PageType.start, pageIndex: pageIndex),
+      PageEntry(type: PageType.start, pageIndex: pageIndex, key: 'start'),
     ];
 
+    // Pages are keyed by a slot entry (a database row) and the number of its
+    // set. Counted over the whole day, so an entry in two slots can't collide.
+    final setsPerEntry = <int, int>{};
+    String nextSet(int slotEntryId) => '$slotEntryId:${(setsPerEntry[slotEntryId] ?? 0) + 1}';
+
+    // Exercises added during the workout follow the page they were added after
+    void addAddedPages(String afterKey) {
+      for (final (i, added) in state.addedExercises.indexed) {
+        if (added.afterPageKey != afterKey) {
+          continue;
+        }
+
+        final addedKey = 'added:${i + 1}';
+        final slotPageIndex = pageIndex;
+        pages.add(
+          PageEntry(
+            type: PageType.set,
+            pageIndex: slotPageIndex,
+            key: addedKey,
+            slotPages: [
+              for (var nr = 1; nr <= 4; nr++)
+                SlotPageEntry(
+                  type: SlotPageType.log,
+                  setIndex: nr - 1,
+                  pageIndex: pageIndex++,
+                  key: '$addedKey:log:$nr',
+                  setConfigData: SetConfigData(
+                    textRepr: '-/-',
+                    exerciseId: added.exercise.id,
+                    exercise: added.exercise,
+                    slotEntryId: added.slotEntryId,
+                    weightUnit: added.weightUnit,
+                  ),
+                ),
+            ],
+          ),
+        );
+        addAddedPages(addedKey);
+      }
+    }
+
     pageIndex++;
-    for (final slotData in state.dayDataGym.slots) {
+    for (final (slotIndex, slotData) in state.dayDataGym.slots.indexed) {
       final slotPageIndex = pageIndex;
       final slotEntries = <SlotPageEntry>[];
       int setIndex = 0;
+
+      final firstConfig = slotData.setConfigs.firstOrNull;
+      final slotKey = firstConfig == null
+          ? 'slot:empty$slotIndex'
+          : 'slot:${nextSet(firstConfig.slotEntryId)}';
 
       // exercise overview page
       if (state.showExercisePages) {
@@ -175,6 +352,7 @@ class GymStateNotifier extends _$GymStateNotifier {
               type: SlotPageType.exerciseOverview,
               setIndex: setIndex,
               pageIndex: pageIndex,
+              key: 'overview:${nextSet(setConfig.slotEntryId)}',
               setConfigData: setConfig,
             ),
           );
@@ -183,12 +361,16 @@ class GymStateNotifier extends _$GymStateNotifier {
       }
 
       for (final config in slotData.setConfigs) {
+        final setKey = nextSet(config.slotEntryId);
+        setsPerEntry.update(config.slotEntryId, (nr) => nr + 1, ifAbsent: () => 1);
+
         // Log page
         slotEntries.add(
           SlotPageEntry(
             type: SlotPageType.log,
             setIndex: setIndex,
             pageIndex: pageIndex,
+            key: 'log:$setKey',
             setConfigData: config,
           ),
         );
@@ -202,6 +384,7 @@ class GymStateNotifier extends _$GymStateNotifier {
               type: SlotPageType.timer,
               setIndex: setIndex,
               pageIndex: pageIndex,
+              key: 'timer:$setKey',
               setConfigData: config,
             ),
           );
@@ -213,56 +396,22 @@ class GymStateNotifier extends _$GymStateNotifier {
         PageEntry(
           type: PageType.set,
           pageIndex: slotPageIndex,
+          key: slotKey,
           slotPages: slotEntries,
         ),
       );
+      addAddedPages(slotKey);
     }
 
     // Session and summary page
-    pages.add(PageEntry(type: PageType.session, pageIndex: pageIndex));
-    pages.add(PageEntry(type: PageType.workoutSummary, pageIndex: pageIndex + 1));
+    pages.add(PageEntry(type: PageType.session, pageIndex: pageIndex, key: 'session'));
+    pages.add(
+      PageEntry(type: PageType.workoutSummary, pageIndex: pageIndex + 1, key: 'summary'),
+    );
 
     state = state.copyWith(pages: pages);
     // print(readPageStructure());
     _logger.finer('Initialized ${state.pages.length} pages');
-  }
-
-  // Recalculates the indices of all pages
-  void recalculateIndices() {
-    var pageIndex = 0;
-    final updatedPages = <PageEntry>[];
-
-    for (final page in state.pages) {
-      final slotPageIndex = pageIndex;
-      var setIndex = 0;
-      final updatedSlotPages = <SlotPageEntry>[];
-
-      for (final slotPage in page.slotPages) {
-        updatedSlotPages.add(
-          slotPage.copyWith(
-            pageIndex: pageIndex,
-            setIndex: setIndex,
-          ),
-        );
-        setIndex++;
-        pageIndex++;
-      }
-
-      if (page.type != PageType.set) {
-        pageIndex++;
-      }
-
-      updatedPages.add(
-        page.copyWith(
-          pageIndex: slotPageIndex,
-          slotPages: updatedSlotPages,
-        ),
-      );
-    }
-
-    state = state.copyWith(pages: updatedPages);
-    // _logger.fine(readPageStructure());
-    _logger.fine('Recalculated page indices');
   }
 
   /// Reads the current page structure for debugging purposes
@@ -281,13 +430,14 @@ class GymStateNotifier extends _$GymStateNotifier {
     return out.join('\n');
   }
 
+  /// Whether the workout in memory is the one for [dayId] and still valid
+  bool _canResume(int dayId) =>
+      state.isInitialized && dayId == state.dayId && !state.validUntil.isBefore(clock.now());
+
   int initData(Routine routine, int dayId, int iteration) {
-    final validUntil = state.validUntil;
     final currentPage = state.currentPage;
 
-    final shouldReset =
-        (!state.isInitialized || state.isInitialized && dayId != state.dayId) ||
-        validUntil.isBefore(clock.now());
+    final shouldReset = !_canResume(dayId);
     if (shouldReset) {
       _logger.fine('Day ID mismatch or expired validUntil date. Resetting to page 0.');
     }
@@ -300,9 +450,11 @@ class GymStateNotifier extends _$GymStateNotifier {
       routine: routine,
       iteration: iteration,
       currentPage: initialPage,
-      clearRest: shouldReset,
-      // A fresh workout also restarts the elapsed timer
+      // A fresh workout also restarts the elapsed timer and the resume window
       workoutStart: shouldReset ? clock.now() : null,
+      validUntil: shouldReset ? clock.now().add(DEFAULT_DURATION) : null,
+      progress: shouldReset ? const {} : null,
+      addedExercises: shouldReset ? const [] : null,
     );
 
     // Calculate the pages.
@@ -317,17 +469,55 @@ class GymStateNotifier extends _$GymStateNotifier {
   }
 
   void setCurrentPage(int page) {
-    final pageChanged = page != state.currentPage;
     state = state.copyWith(currentPage: page);
-    _updateRest(restart: pageChanged);
+    _saveProgress();
 
+    // Re-visiting a page that was already logged in this workout: seed the
+    // form with the saved entry (keeping its id and session) so saving
+    // updates the row instead of inserting a duplicate.
+    final slotPage = state.getSlotEntryPageByIndex();
+
+    // Not only from the timer widget, the notifications need the rest while
+    // the app draws no frames in the background
+    if (slotPage?.type == SlotPageType.timer) {
+      startTimerIfNeeded(slotPage!.key);
+    }
+
+    final loggedEntry = slotPage == null ? null : state.progressOf(slotPage.key).loggedEntry;
+    if (loggedEntry != null) {
+      ref.read(gymLogProvider.notifier).editLog(loggedEntry);
+      return;
+    }
+
+    startNewEntry();
+  }
+
+  /// Seeds the log form of the current page with a fresh entry, also to log
+  /// another set on a page that was already logged.
+  Future<void> startNewEntry() async {
     // Ensure that there is a log entry for the current slot entry
     final slotEntryPage = state.getSlotEntryPageByIndex();
     if (slotEntryPage == null || slotEntryPage.setConfigData == null) {
       return;
     }
 
-    ref.read(gymLogProvider.notifier).setLog(_draftFor(slotEntryPage));
+    final logNotifier = ref.read(gymLogProvider.notifier)..setLog(_draftFor(slotEntryPage));
+    if (!state.stickySetValues) {
+      return;
+    }
+
+    // Pre-fill with the values last logged for this exercise, in this or any
+    // earlier workout. Read from the DB so they survive however gym mode was
+    // left, and a corrected earlier set keeps its date and doesn't win.
+    final seeded = ref.read(gymLogProvider);
+    final lastValues = await ref
+        .read(workoutLogRepositoryProvider)
+        .getLatestLogByExercise(slotEntryPage.setConfigData!.exerciseId);
+
+    // Leave the form alone if the user already moved on or started typing
+    if (lastValues != null && ref.mounted && identical(ref.read(gymLogProvider), seeded)) {
+      logNotifier.copyValuesFrom(lastValues);
+    }
   }
 
   /// The log draft a slot page starts with, prefilled with the planned values
@@ -348,16 +538,21 @@ class GymStateNotifier extends _$GymStateNotifier {
   /// Adds [extra] to the running countdown, counted from now if the rest is
   /// already over. No-op without a countdown (other pages, count-up rest).
   void extendRest(Duration extra) {
+    final slotPage = state.getSlotEntryPageByIndex();
     final endsAt = state.restEndsAt;
-    if (endsAt == null) {
+    if (slotPage == null || endsAt == null) {
       return;
     }
     final now = clock.now();
-    state = state.copyWith(restEndsAt: (endsAt.isAfter(now) ? endsAt : now).add(extra));
+    final newEnd = (endsAt.isAfter(now) ? endsAt : now).add(extra);
+
+    // The rest is stored by its start, so the start moves along with the end
+    final startedAt = newEnd.subtract(state.restDurationFor(slotPage)!);
+    _updateProgress(slotPage.key, (p) => p.copyWith(timerStartedAt: startedAt));
   }
 
-  /// Saves the log draft of the current log page, marks the page as done and
-  /// moves on to the next page. A failed write propagates to the caller.
+  /// Saves the log draft of the current log page, a new set or a correction,
+  /// and moves on to the next page. A failed write propagates to the caller.
   Future<void> logCurrentSet() async {
     final slotPage = state.getSlotEntryPageByIndex();
     final log = ref.read(gymLogProvider);
@@ -367,13 +562,20 @@ class GymStateNotifier extends _$GymStateNotifier {
     }
 
     // Done before the write, so a repeated logPlannedSet is rejected meanwhile
-    markSlotPageAsDone(slotPage.uuid, isDone: true);
+    final wasDone = state.progressOf(slotPage.key).done;
+    _updateProgress(slotPage.key, (p) => p.copyWith(done: true));
     try {
-      await ref.read(workoutLogProvider).addEntry(log, dayId: state.dayId);
+      final logs = ref.read(workoutLogProvider);
+      if (log.id == null) {
+        await logs.addEntry(log, dayId: state.dayId);
+      } else {
+        await logs.updateEntry(log);
+      }
     } catch (_) {
-      markSlotPageAsDone(slotPage.uuid, isDone: false);
+      _updateProgress(slotPage.key, (p) => p.copyWith(done: wasDone));
       rethrow;
     }
+    markSlotPageAsDone(slotPage.key, isDone: true, log: log);
 
     // The user may have moved on or left gym mode during the write
     if (state.currentPage == slotPage.pageIndex) {
@@ -381,13 +583,13 @@ class GymStateNotifier extends _$GymStateNotifier {
     }
   }
 
-  /// Logs the set of the log page [slotPageUuid] without the UI, e.g. from a
+  /// Logs the set of the log page [slotPageKey] without the UI, e.g. from a
   /// notification. From the rest right before it the planned values are logged,
   /// on the page itself the current draft, in both cases the values of
   /// [valuesFrom] if given. False if stale, done or incomplete.
-  Future<bool> logPlannedSet(String slotPageUuid, {Log? valuesFrom}) async {
-    final target = state.getSlotPageByUUID(slotPageUuid);
-    if (target == null || target.type != SlotPageType.log || target.logDone) {
+  Future<bool> logPlannedSet(String slotPageKey, {Log? valuesFrom}) async {
+    final target = state.getSlotPageByKey(slotPageKey);
+    if (target == null || target.type != SlotPageType.log || state.progressOf(target.key).done) {
       return false;
     }
 
@@ -412,27 +614,6 @@ class GymStateNotifier extends _$GymStateNotifier {
     }
     await logCurrentSet();
     return true;
-  }
-
-  /// Starts the rest when on a timer page, ends it everywhere else. A rest
-  /// that is already running on the current page keeps going unless [restart].
-  void _updateRest({required bool restart}) {
-    final slotPage = state.getSlotEntryPageByIndex();
-    if (slotPage?.type != SlotPageType.timer) {
-      state = state.copyWith(clearRest: true);
-      return;
-    }
-    if (!restart && state.restStartedAt != null) {
-      return;
-    }
-
-    final now = clock.now();
-    final duration = state.restDurationFor(slotPage!);
-    state = state.copyWith(
-      clearRest: true,
-      restStartedAt: now,
-      restEndsAt: duration == null ? null : now.add(duration),
-    );
   }
 
   void setShowExercisePages(bool value) {
@@ -478,81 +659,104 @@ class GymStateNotifier extends _$GymStateNotifier {
     _savePrefs();
   }
 
+  void setStickySetValues(bool value) {
+    state = state.copyWith(stickySetValues: value);
+    _savePrefs();
+  }
+
   void setShowWorkoutNotification(bool value) {
     state = state.copyWith(showWorkoutNotification: value);
     _savePrefs();
   }
 
-  void markSlotPageAsDone(String uuid, {required bool isDone}) {
-    final slotPage = state.getSlotPageByUUID(uuid);
+  /// Applies [update] to the progress of the page with [key]
+  void _updateProgress(String key, PageProgress Function(PageProgress) update) {
+    state = state.copyWith(progress: {...state.progress, key: update(state.progressOf(key))});
+    _saveProgress();
+  }
+
+  /// Starts the timer of the slot page with [key], unless it is already
+  /// running.
+  ///
+  /// The start time lives in the gym state (not the timer widget) so the
+  /// countdown continues when the page is disposed and re-created while
+  /// navigating, e.g. when going back to correct a logged set during the
+  /// rest period.
+  void startTimerIfNeeded(String key) {
+    final slotPage = state.getSlotPageByKey(key);
     if (slotPage == null) {
-      _logger.warning('No slot page found for UUID $uuid');
+      _logger.warning('No slot page found for key $key');
+      return;
+    }
+    if (state.progressOf(key).timerStartedAt != null) {
       return;
     }
 
-    final updatedSlotPage = slotPage.copyWith(logDone: isDone);
-
-    final updatedPages = state.pages.map((page) {
-      if (page.type != PageType.set) {
-        return page;
-      }
-
-      final updatedSlotPages = page.slotPages.map((sp) {
-        if (sp.uuid == uuid) {
-          return updatedSlotPage;
-        }
-        return sp;
-      }).toList();
-
-      return page.copyWith(slotPages: updatedSlotPages);
-    }).toList();
-
-    state = state.copyWith(pages: updatedPages);
-    _logger.fine('Set logDone=$isDone for slot page UUID $uuid');
+    _updateProgress(key, (p) => p.copyWith(timerStartedAt: clock.now()));
+    _logger.fine('Started timer for slot page $key');
   }
 
+  /// [log] is the entry saved from this page during the current workout. It
+  /// is kept in the page's progress so revisiting the page pre-fills the form
+  /// with the saved values and saving updates the row instead of inserting a
+  /// duplicate. Without [log], an entry saved before is kept.
+  ///
+  /// Saving a new entry, unlike correcting one, also (re)starts the rest timer
+  /// that follows the set.
+  void markSlotPageAsDone(String key, {required bool isDone, Log? log}) {
+    final slotPage = state.getSlotPageByKey(key);
+    if (slotPage == null) {
+      _logger.warning('No slot page found for key $key');
+      return;
+    }
+
+    final previousEntry = state.progressOf(key).loggedEntry;
+
+    // A copy, so later edits in the form don't change the saved entry
+    _updateProgress(
+      key,
+      (p) => p.copyWith(done: isDone, loggedEntry: log?.copyWith() ?? p.loggedEntry),
+    );
+    _logger.fine('Set done=$isDone for slot page $key');
+
+    // Scrolling past the timer (e.g. "jump to") already started it
+    final timerPage = state.getSlotEntryPageByIndex(slotPage.pageIndex + 1);
+    final isNewEntry = previousEntry?.id != log?.id;
+    if (isNewEntry && timerPage?.type == SlotPageType.timer) {
+      _updateProgress(timerPage!.key, (p) => p.copyWith(timerStartedAt: clock.now()));
+    }
+  }
+
+  /// Replaces the exercise everywhere in the workout, also where it was added
   void replaceExercises(
-    String pageEntryUUID, {
+    String pageEntryKey, {
     required int originalExerciseId,
     required Exercise newExercise,
   }) {
-    final updatedPages = state.pages.map((page) {
-      if (page.type != PageType.set) {
-        return page;
-      }
-
-      if (page.uuid != pageEntryUUID) {
-        return page;
-      }
-
-      final updatedSlotPages = page.slotPages.map((slotPage) {
-        if (slotPage.setConfigData != null &&
-            slotPage.setConfigData!.exercise.id == originalExerciseId) {
-          final updatedSetConfigData = slotPage.setConfigData!.copyWith(
-            exerciseId: newExercise.id,
-            exercise: newExercise,
-          );
-          return slotPage.copyWith(setConfigData: updatedSetConfigData);
-        }
-        return slotPage;
-      }).toList();
-
-      return page.copyWith(slotPages: updatedSlotPages);
-    }).toList();
-
-    // replace and update new immutable routine instance
-    final updatedRoutine = state.routine.replaceExercise(originalExerciseId, newExercise);
     state = state.copyWith(
-      pages: updatedPages,
-      routine: updatedRoutine,
+      routine: state.routine.replaceExercise(originalExerciseId, newExercise),
+      addedExercises: [
+        for (final added in state.addedExercises)
+          if (added.exercise.id == originalExerciseId)
+            added.copyWith(exercise: newExercise)
+          else
+            added,
+      ],
     );
+    calculatePages();
     _logger.fine('Replaced exercise $originalExerciseId with ${newExercise.id}');
   }
 
   void addExerciseAfterPage(
-    String pageEntryUUID, {
+    String pageEntryKey, {
     required Exercise newExercise,
   }) {
+    final page = state.pages.firstWhereOrNull((p) => p.key == pageEntryKey);
+    if (page == null) {
+      _logger.warning('No page found for key $pageEntryKey');
+      return;
+    }
+
     // Ad-hoc set configs bypass routine hydration, so resolve the profile
     // default weight unit (kg/lb) here; the log draft picks it up from the
     // unit object.
@@ -561,48 +765,25 @@ class GymStateNotifier extends _$GymStateNotifier {
     final defaultWeightUnitId = profile?.defaultWeightUnitId ?? WEIGHT_UNIT_KG;
     final defaultWeightUnit = weightUnits.firstWhereOrNull((u) => u.id == defaultWeightUnitId);
 
-    final List<PageEntry> pages = [];
-    for (final page in state.pages) {
-      pages.add(page);
-
-      if (page.uuid == pageEntryUUID) {
-        final setConfigData = page.slotPages.first.setConfigData!;
-
-        final List<SlotPageEntry> newSlotPages = [];
-        for (var i = 1; i <= 4; i++) {
-          newSlotPages.add(
-            SlotPageEntry(
-              type: SlotPageType.log,
-              pageIndex: 1,
-              setIndex: 0,
-              setConfigData: SetConfigData(
-                textRepr: '-/-',
-                exerciseId: newExercise.id,
-                exercise: newExercise,
-                slotEntryId: setConfigData.slotEntryId,
-                weightUnit: defaultWeightUnit,
-              ),
-            ),
-          );
-        }
-
-        final newPage = PageEntry(type: PageType.set, pageIndex: 1, slotPages: newSlotPages);
-
-        pages.add(newPage);
-      }
-    }
-
     state = state.copyWith(
-      pages: pages,
+      addedExercises: [
+        ...state.addedExercises,
+        AddedExercise(
+          afterPageKey: pageEntryKey,
+          exercise: newExercise,
+          slotEntryId: page.slotPages.first.setConfigData!.slotEntryId,
+          weightUnit: defaultWeightUnit,
+        ),
+      ],
     );
-
-    recalculateIndices();
+    calculatePages();
   }
 
   /// Resets the workout start time to now, e.g. when the user taps "start"
   void startWorkout() {
     _logger.fine('Setting workout start time');
     state = state.copyWith(workoutStart: clock.now());
+    _saveProgress();
   }
 
   void clear() {
@@ -611,10 +792,12 @@ class GymStateNotifier extends _$GymStateNotifier {
       isInitialized: false,
       pages: [],
       currentPage: 0,
-      clearRest: true,
+      progress: const {},
+      addedExercises: const [],
 
       validUntil: clock.now().add(DEFAULT_DURATION),
       workoutStart: clock.now(),
     );
+    _clearProgress();
   }
 }

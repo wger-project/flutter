@@ -1211,5 +1211,8 @@
     "workoutNotificationNotLoggedBody": "Abre el modo gimnasio para continuar el entrenamiento",
     "workoutNotificationAlarmChannel": "Alarma de descanso",
     "workoutNotificationChannel": "Entrenamiento",
-    "authorHelpText": "Se muestra como autor del ejercicio (CC BY-SA 4.0). Cámbialo solo si no eres el autor."
+    "authorHelpText": "Se muestra como autor del ejercicio (CC BY-SA 4.0). Cámbialo solo si no eres el autor.",
+    "gymModeStickySetValues": "Mantener los valores de la última serie",
+    "gymModeStickySetValuesHelp": "Rellenar la siguiente serie de un ejercicio con los valores que registraste por última vez",
+    "upNext": "A continuación"
 }

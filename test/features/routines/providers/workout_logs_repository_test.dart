@@ -267,6 +267,40 @@ void main() {
     });
   });
 
+  group('getLatestLogByExercise', () {
+    test('returns null when the exercise was never logged', () async {
+      await db.into(db.workoutLogTable).insert(makeLog(exerciseId: 2).toCompanion());
+
+      expect(await repo.getLatestLogByExercise(1), isNull);
+    });
+
+    test('returns the newest log of the exercise across routines', () async {
+      await seedUnits();
+      await db
+          .into(db.workoutLogTable)
+          .insert(makeLog(date: DateTime.utc(2026, 4, 14), weight: 14).toCompanion());
+      await db
+          .into(db.workoutLogTable)
+          .insert(
+            makeLog(routineId: 999, date: DateTime.utc(2026, 4, 16), weight: 16).toCompanion(),
+          );
+      await db
+          .into(db.workoutLogTable)
+          .insert(makeLog(date: DateTime.utc(2026, 4, 15), weight: 15).toCompanion());
+      // Newer, but a different exercise
+      await db
+          .into(db.workoutLogTable)
+          .insert(
+            makeLog(exerciseId: 2, date: DateTime.utc(2026, 4, 17), weight: 17).toCompanion(),
+          );
+
+      final log = await repo.getLatestLogByExercise(1);
+
+      expect(log!.weight, 16);
+      expect(log.weightUnitObj?.name, 'kg');
+    });
+  });
+
   group('updateLocalDrift', () {
     test('overwrites the row with matching id', () async {
       final log = makeLog(sessionId: 'session-1', weight: 50);
@@ -462,6 +496,23 @@ void main() {
 
       expect(emissions.last, hasLength(1));
       await sub.cancel();
+    });
+  });
+
+  group('getLogsByIds', () {
+    test('returns the logs with the given ids, with their units', () async {
+      await seedUnits();
+      final logs = [
+        for (final weight in [10, 20, 30]) makeLog(weight: weight, sessionId: 's'),
+      ];
+      for (final log in logs) {
+        await repo.addLocalDrift(log);
+      }
+
+      final found = await repo.getLogsByIds([logs[0].id!, logs[2].id!, 'does-not-exist']);
+
+      expect(found.map((l) => l.weight), unorderedEquals([10, 30]));
+      expect(found.map((l) => l.weightUnitObj?.name), everyElement('kg'));
     });
   });
 }

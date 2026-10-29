@@ -88,10 +88,11 @@ class PowerSyncSession {
     }
 
     // The account-scoped preferences leave with the data: the next account
-    // must not inherit the health-sync opt-in and watermarks, nor a timezone
-    // marker that would let the sync overwrite its chosen zone
+    // must not inherit the health-sync opt-in and watermarks, a timezone marker
+    // that would let the sync overwrite its chosen zone, or a running workout
     await PreferenceHelper.instance.clearHealthSyncPreferences();
     await PreferenceHelper.asyncPref.remove(reportedTimezonePrefKey);
+    await PreferenceHelper.asyncPref.remove(PREFS_WORKOUT_PROGRESS);
   }
 }
 

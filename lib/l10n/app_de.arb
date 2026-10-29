@@ -1193,5 +1193,8 @@
     "workoutNotificationNotLoggedTitle": "Satz nicht eingetragen",
     "workoutNotificationNotLoggedBody": "Öffne den Studiomodus, um das Training fortzusetzen",
     "workoutNotificationAlarmChannel": "Pausenalarm",
-    "workoutNotificationChannel": "Training"
+    "workoutNotificationChannel": "Training",
+    "gymModeStickySetValues": "Werte des letzten Satzes übernehmen",
+    "gymModeStickySetValuesHelp": "Den nächsten Satz einer Übung mit den Werten vorbelegen, die du zuletzt dafür eingetragen hast",
+    "upNext": "Als Nächstes"
 }

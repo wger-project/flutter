@@ -156,6 +156,22 @@ class MockWorkoutLogRepository extends _i1.Mock implements _i5.WorkoutLogReposit
           as _i3.Stream<List<_i6.Log>>);
 
   @override
+  _i3.Future<_i6.Log?> getLatestLogByExercise(int? exerciseId) =>
+      (super.noSuchMethod(
+            Invocation.method(#getLatestLogByExercise, [exerciseId]),
+            returnValue: _i3.Future<_i6.Log?>.value(),
+          )
+          as _i3.Future<_i6.Log?>);
+
+  @override
+  _i3.Future<List<_i6.Log>> getLogsByIds(List<String>? ids) =>
+      (super.noSuchMethod(
+            Invocation.method(#getLogsByIds, [ids]),
+            returnValue: _i3.Future<List<_i6.Log>>.value(<_i6.Log>[]),
+          )
+          as _i3.Future<List<_i6.Log>>);
+
+  @override
   _i3.Future<void> deleteLocalDrift(String? id) =>
       (super.noSuchMethod(
             Invocation.method(#deleteLocalDrift, [id]),

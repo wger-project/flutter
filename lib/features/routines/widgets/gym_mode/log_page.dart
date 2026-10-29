@@ -47,9 +47,9 @@ class LogPage extends ConsumerWidget {
 
   /// Identifies which slot page this widget renders, so it shows its own
   /// content instead of whatever the globally-current page happens to be.
-  final String slotUuid;
+  final String slotKey;
 
-  LogPage(this._controller, this.slotUuid);
+  LogPage(this._controller, this.slotKey);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -57,9 +57,9 @@ class LogPage extends ConsumerWidget {
     final gymState = ref.watch(gymStateProvider);
     final languageCode = Localizations.localeOf(context).languageCode;
 
-    final slotEntryPage = gymState.getSlotPageByUUID(slotUuid);
+    final slotEntryPage = gymState.getSlotPageByKey(slotKey);
     if (slotEntryPage == null) {
-      _logger.info('getSlotPageByUUID for $slotUuid returned null, showing empty container.');
+      _logger.info('getSlotPageByKey for $slotKey returned null, showing empty container.');
       return Container();
     }
 
@@ -84,7 +84,7 @@ class LogPage extends ConsumerWidget {
     );
 
     // Mark done sets
-    final decorationStyle = slotEntryPage.logDone
+    final decorationStyle = gymState.progressOf(slotEntryPage.key).done
         ? TextDecoration.lineThrough
         : TextDecoration.none;
 
@@ -153,7 +153,7 @@ class LogPage extends ConsumerWidget {
               child: LogFormWidget(
                 controller: _controller,
                 configData: setConfigData,
-                key: ValueKey('log-form-${slotEntryPage.uuid}'),
+                key: ValueKey('log-form-${slotEntryPage.key}'),
               ),
             ),
           ),
@@ -302,13 +302,16 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
       return const SizedBox.shrink();
     }
 
+    // A log with an id was already saved, saving it again updates the row
+    final isNewEntry = log.id == null;
+
     return Form(
       key: _form,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            i18n.newEntry,
+            isNewEntry ? i18n.newEntry : i18n.edit,
             style: Theme.of(context).textTheme.titleLarge,
             textAlign: TextAlign.center,
           ),
@@ -360,41 +363,56 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
               log.rir = value == '' ? null : num.parse(value);
             },
           ),
-          FilledButton(
-            key: const ValueKey('save-log-button'),
-            onPressed: () async {
-              final isValid = _form.currentState!.validate();
-              if (!isValid) {
-                return;
-              }
-              _form.currentState!.save();
+          // Side by side to save the height, wrapped only if they don't fit
+          Wrap(
+            alignment: WrapAlignment.center,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 8,
+            children: [
+              if (!isNewEntry)
+                TextButton.icon(
+                  key: const ValueKey('add-set-button'),
+                  onPressed: () => ref.read(gymStateProvider.notifier).startNewEntry(),
+                  label: Text(i18n.addSet),
+                ),
+              FilledButton(
+                key: const ValueKey('save-log-button'),
+                onPressed: () async {
+                  final isValid = _form.currentState!.validate();
+                  if (!isValid) {
+                    return;
+                  }
+                  _form.currentState!.save();
 
-              final error = validateWorkoutLogCrossField(
-                repetitions: log.repetitions,
-                weight: log.weight,
-                i18n: i18n,
-              );
-              if (error != null) {
-                showSnackbar(context, error);
-                return;
-              }
+                  final error = validateWorkoutLogCrossField(
+                    repetitions: log.repetitions,
+                    weight: log.weight,
+                    i18n: i18n,
+                  );
+                  if (error != null) {
+                    showSnackbar(context, error);
+                    return;
+                  }
 
-              // A failed write is intentionally left to propagate to the global
-              // error handler; the success path below is then skipped. The
-              // PageView follows the page change from the gym state.
-              await ref.read(gymStateProvider.notifier).logCurrentSet();
-              if (!context.mounted) {
-                return;
-              }
+                  // A failed write is intentionally left to propagate to the global
+                  // error handler; the success path below is then skipped. A page
+                  // logged before updates its row, and the PageView follows the
+                  // page change from the gym state.
+                  await ref.read(gymStateProvider.notifier).logCurrentSet();
+                  if (!context.mounted) {
+                    return;
+                  }
 
-              showSnackbar(
-                context,
-                i18n.successfullySaved,
-                center: true,
-                duration: const Duration(seconds: 2),
-              );
-            },
-            child: Text(i18n.save),
+                  showSnackbar(
+                    context,
+                    i18n.successfullySaved,
+                    center: true,
+                    duration: const Duration(seconds: 2),
+                  );
+                },
+                child: Text(i18n.save),
+              ),
+            ],
           ),
         ],
       ),
