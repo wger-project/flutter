@@ -21,10 +21,8 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'workout_progress.freezed.dart';
 part 'workout_progress.g.dart';
 
-/// The progress through a running workout, as stored in the preferences
-///
-/// Only the parts that can't be recalculated are kept. The pages are derived
-/// from the routine again and matched by their keys.
+/// The progress through a running workout, as stored in the preferences. The
+/// pages themselves are derived from the routine again and matched by key.
 @freezed
 sealed class WorkoutProgress with _$WorkoutProgress {
   const factory WorkoutProgress({

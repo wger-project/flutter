@@ -147,11 +147,8 @@ class GymStateNotifier extends _$GymStateNotifier {
     );
   }
 
-  /// Stores the progress through the running workout
-  ///
-  /// Riverpod keeps the state alive for as long as the app is running, but the
-  /// OS can kill a backgrounded app at any point, e.g. while the user switches
-  /// to a music app between two sets.
+  /// Stores the progress through the running workout, since the OS can kill a
+  /// backgrounded app at any point, e.g. between two sets
   Future<void> _saveProgress() async {
     // Before initData there is no dayId to store the progress under
     if (!state.isInitialized) {
@@ -186,10 +183,8 @@ class GymStateNotifier extends _$GymStateNotifier {
     _logger.finer('Cleared stored workout progress');
   }
 
-  /// Opens gym mode for a day and returns the page to start on
-  ///
-  /// Continues the workout still in memory as it is, otherwise starts a new one
-  /// that picks up the progress stored before the app was killed, if any.
+  /// Opens gym mode for a day and returns the page to start on. Continues the
+  /// workout in memory, otherwise starts one that picks up any stored progress.
   Future<int> open(Routine routine, int dayId, int iteration) async {
     final resume = _canResume(dayId);
     final initialPage = initData(routine, dayId, iteration);
