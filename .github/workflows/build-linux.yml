@@ -83,24 +83,48 @@ jobs:
       - build_linux
 
     steps:
+      - name: Checkout application
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+          ref: ${{ inputs.ref }}
+          # flutpak resolves the tag to its commit
+          fetch-depth: 0
+
+      - name: Common setup
+        uses: ./.github/actions/flutter-common
+
+      - name: Setup flutpak
+        uses: o-murphy/flutpak/.github/actions/setup-flutpak@v0.8.7
+
+      - name: Generate manifest with flutpak
+        env:
+          REF: ${{ inputs.ref }}
+          FLUTTER_VERSION: ${{ needs.build_linux.outputs.flutter_sdk_version }}
+        run: flutpak generate --tag "$REF" --flutter "$FLUTTER_VERSION"
+
       - name: Checkout flatpak-flathub repo
         uses: actions/checkout@v7
         with:
           repository: wger-project/de.wger.flutter
           ssh-key: ${{ secrets.SSH_DEPLOY_KEY }}
+          path: flathub
 
-      - name: Bump version and update manifest
+      - name: Copy manifest to flathub repository
+        working-directory: flathub
         run: |
-          git clone https://github.com/TheAppgineer/flatpak-flutter.git --branch 0.15.0 ../flatpak-flutter
-          pip install -r ../flatpak-flutter/requirements.txt
-          python bump-versions.py ${{ inputs.ref }} ${{ needs.build_linux.outputs.flutter_sdk_version }}
-          ../flatpak-flutter/flatpak-flutter.py --app-module wger flatpak-flutter.yml
+          # The SDK module carries the Flutter version in its name, don't keep old ones
+          rm -rf flutter-sdk-*.json patches
+          cp -r ../flatpak/generated/. .
 
       - name: Push updated config to flathub repository
+        working-directory: flathub
+        env:
+          REF: ${{ inputs.ref }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git checkout -b release-${{ inputs.ref }}
+          git checkout -b "release-$REF"
           git add -A
-          git commit -m "Update to ${{ inputs.ref }}"
-          git push origin release-${{ inputs.ref }}
+          git commit -m "Update to $REF"
+          git push origin "release-$REF"
