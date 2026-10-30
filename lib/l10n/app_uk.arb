@@ -1892,7 +1892,7 @@
     "@gymModeStickySetValues": {
         "description": "Label for a gym mode setting: when enabled, the next set of an exercise is pre-filled with the values last logged instead of the planned ones"
     },
-    "gymModeStickySetValuesHelp": "Для наступного підходу автоматично підставляти останні записані значення цієї вправи в поточному тренуванні",
+    "gymModeStickySetValuesHelp": "Автоматично заповнювати наступний підхід останніми записаними значеннями вправи",
     "@gymModeStickySetValuesHelp": {
         "description": "Help text for the sticky set values setting in the gym mode"
     },
