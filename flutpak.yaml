@@ -1,0 +1,66 @@
+# Flatpak packaging for Flathub (de.wger.flutter), see https://github.com/o-murphy/flutpak
+app-id: de.wger.flutter
+command: wger
+runtime-version: '25.08'
+repo-url: https://github.com/wger-project/flutter
+
+flutter:
+  ref: '3.47.7'
+
+foreign-deps-ref: v0.8.7
+
+metainfo-path: flatpak/de.wger.flutter.metainfo.xml
+desktop-entry-path: flatpak/de.wger.flutter.desktop
+icons:
+  - size: 64x64
+    path: flatpak/logo64.png
+  - size: 128x128
+    path: flatpak/logo128.png
+  - size: 256x256
+    path: flatpak/logo256.png
+  - size: 512x512
+    path: flatpak/logo512.png
+
+finish-args:
+  - --share=network
+  - --socket=pulseaudio
+  # See https://github.com/fluttercommunity/plus_plugins/issues/1241
+  - --system-talk-name=org.freedesktop.NetworkManager
+  # Secret Service for flutter_secure_storage (JWT refresh token)
+  - --talk-name=org.freedesktop.secrets
+
+# flutpak doesn't handle git dependencies (o-murphy/flutpak#60). Keep the commit in sync
+# with resolved-ref in pubspec.lock; the cache dir suffix is the sha1 of the url
+sources:
+  - type: git
+    url: https://github.com/ytsni/health_bridge.git
+    commit: 05515122beb1ac6e93a3b558b5468af16c3e5aaf
+    dest: .pub-cache/git/health_bridge-05515122beb1ac6e93a3b558b5468af16c3e5aaf
+  - type: shell
+    commands:
+      - mkdir -p .pub-cache/git/cache/health_bridge-dc30f18fd891da4313044228eccaea8192df5eda
+      - cp -rf .pub-cache/git/health_bridge-05515122beb1ac6e93a3b558b5468af16c3e5aaf/.git/* .pub-cache/git/cache/health_bridge-dc30f18fd891da4313044228eccaea8192df5eda
+
+foreign-deps:
+  # The registry only has 3.7.0, whose prebuilt lands in the wrong download dir
+  sqlite3:
+    '3.7.1':
+      manifest:
+        sources:
+          - type: file
+            only-arches: [x86_64]
+            url: https://github.com/simolus3/sqlite3.dart/releases/download/sqlite3-3.7.1/libsqlite3.x64.linux.so
+            sha256: 1ff25026f7bcd7e740f98d5b852ae6e79d2400c076f046096295f91a5b60aeb8
+            dest: $APP/.dart_tool/hooks_runner/shared/sqlite3/build/download-1ff25026
+            dest-filename: libsqlite3.so
+          - type: file
+            only-arches: [aarch64]
+            url: https://github.com/simolus3/sqlite3.dart/releases/download/sqlite3-3.7.1/libsqlite3.arm64.linux.so
+            sha256: c2858e7048931194b4acd71258ac36bdb7c881c697b1d972b7206142bdaa68f6
+            dest: $APP/.dart_tool/hooks_runner/shared/sqlite3/build/download-c2858e70
+            dest-filename: libsqlite3.so
+  # EOL stub without native code; the registry's 0.6.8 entry would add an unused download
+  sqlcipher_flutter_libs:
+    '0.7.0':
+      manifest:
+        sources: []
