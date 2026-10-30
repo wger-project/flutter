@@ -35,6 +35,7 @@ const PREFS_COUNTDOWN_DURATION = 'countdownDurationSecondsPrefs';
 const PREFS_LOG_SCOPE_WEEKS = 'logScopeWeeksPrefs';
 const PREFS_SHOW_DISTINCT_LOGS = 'showDistinctLogsPrefs';
 const PREFS_SHOW_WORKOUT_DURATION = 'showWorkoutDurationPrefs';
+const PREFS_WORKOUT_NOTIFICATION = 'workoutNotificationPrefs';
 const PREFS_STICKY_SET_VALUES = 'stickySetValuesPrefs';
 
 /// In seconds
@@ -170,12 +171,18 @@ class GymModeState {
   // User settings
   final bool showExercisePages;
   final bool showTimerPages;
+
+  /// Alert at the end of a rest: a vibration in gym mode, an OS notification
+  /// with the app in the background
   final bool alertOnCountdownEnd;
   final bool useCountdownBetweenSets;
   final Duration countdownDuration;
   final int? logScopeWeeks;
   final bool showDistinctLogs;
   final bool showWorkoutDuration;
+
+  /// Ongoing notification with the rest and the next set (Android)
+  final bool showWorkoutNotification;
 
   /// Whether the log form of a set is pre-filled with the values last
   /// logged for the same exercise, in this or an earlier workout, instead
@@ -207,6 +214,7 @@ class GymModeState {
     this.logScopeWeeks,
     this.showDistinctLogs = true,
     this.showWorkoutDuration = true,
+    this.showWorkoutNotification = true,
     this.stickySetValues = false,
     this.progress = const {},
     this.addedExercises = const [],
@@ -254,6 +262,7 @@ class GymModeState {
     bool clearLogScopeWeeks = false,
     bool? showDistinctLogs,
     bool? showWorkoutDuration,
+    bool? showWorkoutNotification,
     bool? stickySetValues,
     Map<String, PageProgress>? progress,
     List<AddedExercise>? addedExercises,
@@ -279,6 +288,7 @@ class GymModeState {
       logScopeWeeks: clearLogScopeWeeks ? null : (logScopeWeeks ?? this.logScopeWeeks),
       showDistinctLogs: showDistinctLogs ?? this.showDistinctLogs,
       showWorkoutDuration: showWorkoutDuration ?? this.showWorkoutDuration,
+      showWorkoutNotification: showWorkoutNotification ?? this.showWorkoutNotification,
       stickySetValues: stickySetValues ?? this.stickySetValues,
       progress: progress ?? this.progress,
       addedExercises: addedExercises ?? this.addedExercises,
@@ -294,6 +304,31 @@ class GymModeState {
 
   /// The start of the workout as a [TimeOfDay], e.g. for the session form
   TimeOfDay get startTime => TimeOfDay.fromDateTime(workoutStart);
+
+  /// Countdown length of a timer page, or null if the rest counts up
+  Duration? restDurationFor(SlotPageEntry slotPage) {
+    final restTime = slotPage.setConfigData?.restTime;
+    if (restTime != null) {
+      return Duration(seconds: restTime.toInt());
+    }
+    return useCountdownBetweenSets ? countdownDuration : null;
+  }
+
+  /// When the rest on the current timer page started, null on other pages
+  DateTime? get restStartedAt {
+    final slotPage = getSlotEntryPageByIndex();
+    return slotPage?.type == SlotPageType.timer ? progressOf(slotPage!.key).timerStartedAt : null;
+  }
+
+  /// When the countdown on the current timer page ends, null if it counts up
+  DateTime? get restEndsAt {
+    final startedAt = restStartedAt;
+    if (startedAt == null) {
+      return null;
+    }
+    final duration = restDurationFor(getSlotEntryPageByIndex()!);
+    return duration == null ? null : startedAt.add(duration);
+  }
 
   int get totalPages {
     // Main pages (start, session, etc.)
@@ -398,6 +433,8 @@ class GymModeState {
   String toString() {
     return 'GymState('
         'currentPage: $currentPage, '
+        'restStartedAt: $restStartedAt, '
+        'restEndsAt: $restEndsAt, '
         'validUntil: $validUntil '
         'workoutStart: $workoutStart, '
         'showExercisePages: $showExercisePages, '

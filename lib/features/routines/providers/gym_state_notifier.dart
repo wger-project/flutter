@@ -36,7 +36,9 @@ import 'package:wger/features/routines/models/workout_progress.dart';
 import 'package:wger/features/routines/providers/gym_log_notifier.dart';
 import 'package:wger/features/routines/providers/gym_state.dart';
 import 'package:wger/features/routines/providers/routines_notifier.dart';
+import 'package:wger/features/routines/providers/workout_logs_notifier.dart';
 import 'package:wger/features/routines/providers/workout_logs_repository.dart';
+import 'package:wger/features/routines/validators.dart';
 
 part 'gym_state_notifier.g.dart';
 
@@ -102,6 +104,11 @@ class GymStateNotifier extends _$GymStateNotifier {
       state = state.copyWith(stickySetValues: stickySetValues);
     }
 
+    final workoutNotification = await prefs.getBool(PREFS_WORKOUT_NOTIFICATION);
+    if (workoutNotification != null && workoutNotification != state.showWorkoutNotification) {
+      state = state.copyWith(showWorkoutNotification: workoutNotification);
+    }
+
     _logger.finer(
       'Loaded saved preferences: '
       'showExercise=$showExercise '
@@ -111,7 +118,8 @@ class GymStateNotifier extends _$GymStateNotifier {
       'defaultCountdownDurationSeconds=$defaultCountdownDurationSeconds'
       'logScopeWeeks=$logScopeWeeks '
       'showDistinctLogs=$showDistinctLogs '
-      'showWorkoutDuration=$showWorkoutDuration ',
+      'showWorkoutDuration=$showWorkoutDuration '
+      'workoutNotification=$workoutNotification ',
     );
   }
 
@@ -133,6 +141,7 @@ class GymStateNotifier extends _$GymStateNotifier {
     await prefs.setBool(PREFS_SHOW_DISTINCT_LOGS, state.showDistinctLogs);
     await prefs.setBool(PREFS_SHOW_WORKOUT_DURATION, state.showWorkoutDuration);
     await prefs.setBool(PREFS_STICKY_SET_VALUES, state.stickySetValues);
+    await prefs.setBool(PREFS_WORKOUT_NOTIFICATION, state.showWorkoutNotification);
 
     _logger.finer(
       'Saved preferences: '
@@ -143,7 +152,8 @@ class GymStateNotifier extends _$GymStateNotifier {
       'defaultCountdownDuration=${state.countdownDuration.inSeconds}'
       'logScopeWeeks=${state.logScopeWeeks} '
       'showDistinctLogs=${state.showDistinctLogs} '
-      'showWorkoutDuration=${state.showWorkoutDuration} ',
+      'showWorkoutDuration=${state.showWorkoutDuration} '
+      'workoutNotification=${state.showWorkoutNotification} ',
     );
   }
 
@@ -466,6 +476,13 @@ class GymStateNotifier extends _$GymStateNotifier {
     // form with the saved entry (keeping its id and session) so saving
     // updates the row instead of inserting a duplicate.
     final slotPage = state.getSlotEntryPageByIndex();
+
+    // Not only from the timer widget, the notifications need the rest while
+    // the app draws no frames in the background
+    if (slotPage?.type == SlotPageType.timer) {
+      startTimerIfNeeded(slotPage!.key);
+    }
+
     final loggedEntry = slotPage == null ? null : state.progressOf(slotPage.key).loggedEntry;
     if (loggedEntry != null) {
       ref.read(gymLogProvider.notifier).editLog(loggedEntry);
@@ -484,12 +501,7 @@ class GymStateNotifier extends _$GymStateNotifier {
       return;
     }
 
-    final log = Log.fromSetConfigData(
-      slotEntryPage.setConfigData!,
-      routineId: state.routine.id,
-      iteration: state.iteration,
-    );
-    final logNotifier = ref.read(gymLogProvider.notifier)..setLog(log);
+    final logNotifier = ref.read(gymLogProvider.notifier)..setLog(_draftFor(slotEntryPage));
     if (!state.stickySetValues) {
       return;
     }
@@ -506,6 +518,102 @@ class GymStateNotifier extends _$GymStateNotifier {
     if (lastValues != null && ref.mounted && identical(ref.read(gymLogProvider), seeded)) {
       logNotifier.copyValuesFrom(lastValues);
     }
+  }
+
+  /// The log draft a slot page starts with, prefilled with the planned values
+  Log _draftFor(SlotPageEntry slotPage) => Log.fromSetConfigData(
+    slotPage.setConfigData!,
+    routineId: state.routine.id,
+    iteration: state.iteration,
+  );
+
+  /// Ends the rest of the current timer page and moves on. No-op on other pages.
+  void skipRest() {
+    if (state.getSlotEntryPageByIndex()?.type != SlotPageType.timer) {
+      return;
+    }
+    setCurrentPage(state.currentPage + 1);
+  }
+
+  /// Adds [extra] to the running countdown, counted from now if the rest is
+  /// already over. No-op without a countdown (other pages, count-up rest).
+  void extendRest(Duration extra) {
+    final slotPage = state.getSlotEntryPageByIndex();
+    final endsAt = state.restEndsAt;
+    if (slotPage == null || endsAt == null) {
+      return;
+    }
+    final now = clock.now();
+    final newEnd = (endsAt.isAfter(now) ? endsAt : now).add(extra);
+
+    // The rest is stored by its start, so the start moves along with the end
+    final startedAt = newEnd.subtract(state.restDurationFor(slotPage)!);
+    _updateProgress(slotPage.key, (p) => p.copyWith(timerStartedAt: startedAt));
+  }
+
+  /// Saves the log draft of the current log page, a new set or a correction,
+  /// and moves on to the next page. A failed write propagates to the caller.
+  Future<void> logCurrentSet() async {
+    final slotPage = state.getSlotEntryPageByIndex();
+    final log = ref.read(gymLogProvider);
+    if (slotPage == null || slotPage.type != SlotPageType.log || log == null) {
+      _logger.warning('logCurrentSet called without a log draft on a log page');
+      return;
+    }
+
+    // Done before the write, so a repeated logPlannedSet is rejected meanwhile
+    final wasDone = state.progressOf(slotPage.key).done;
+    _updateProgress(slotPage.key, (p) => p.copyWith(done: true));
+    try {
+      final logs = ref.read(workoutLogProvider);
+      if (log.id == null) {
+        await logs.addEntry(log, dayId: state.dayId);
+      } else {
+        await logs.updateEntry(log);
+      }
+    } catch (_) {
+      _updateProgress(slotPage.key, (p) => p.copyWith(done: wasDone));
+      rethrow;
+    }
+    markSlotPageAsDone(slotPage.key, isDone: true, log: log);
+
+    // The user may have moved on or left gym mode during the write
+    if (state.currentPage == slotPage.pageIndex) {
+      setCurrentPage(slotPage.pageIndex + 1);
+    }
+  }
+
+  /// Logs the set of the log page [slotPageKey] without the UI, e.g. from a
+  /// notification. From the rest right before it the planned values are logged,
+  /// on the page itself the current draft, in both cases the values of
+  /// [valuesFrom] if given. False if stale, done or incomplete.
+  Future<bool> logPlannedSet(String slotPageKey, {Log? valuesFrom}) async {
+    final target = state.getSlotPageByKey(slotPageKey);
+    if (target == null || target.type != SlotPageType.log || state.progressOf(target.key).done) {
+      return false;
+    }
+
+    final onTarget = state.currentPage == target.pageIndex;
+    final onRestBefore =
+        state.currentPage == target.pageIndex - 1 &&
+        state.getSlotEntryPageByIndex()?.type == SlotPageType.timer;
+    if (!onTarget && !onRestBefore) {
+      return false;
+    }
+
+    final log = valuesFrom ?? (onTarget ? ref.read(gymLogProvider) : _draftFor(target));
+    if (log == null || !isWorkoutLogComplete(repetitions: log.repetitions, weight: log.weight)) {
+      return false;
+    }
+
+    if (onRestBefore) {
+      setCurrentPage(target.pageIndex);
+    }
+    if (valuesFrom != null) {
+      ref.read(gymLogProvider.notifier).copyValuesFrom(valuesFrom);
+    }
+    await logCurrentSet();
+    return true;
   }
 
   void setShowExercisePages(bool value) {
@@ -553,6 +661,11 @@ class GymStateNotifier extends _$GymStateNotifier {
 
   void setStickySetValues(bool value) {
     state = state.copyWith(stickySetValues: value);
+    _savePrefs();
+  }
+
+  void setShowWorkoutNotification(bool value) {
+    state = state.copyWith(showWorkoutNotification: value);
     _savePrefs();
   }
 

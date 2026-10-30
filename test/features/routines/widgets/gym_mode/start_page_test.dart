@@ -16,11 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
+import 'package:wger/features/routines/notifications/workout_notification_service.dart';
 import 'package:wger/features/routines/providers/gym_state.dart';
 import 'package:wger/features/routines/providers/gym_state_notifier.dart';
 import 'package:wger/features/routines/widgets/gym_mode/start_page.dart';
@@ -28,19 +32,27 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/l10n/localizations_delegates.dart';
 
 import '../../../../../test_data/routines.dart';
+import 'start_page_test.mocks.dart';
 
+@GenerateMocks([WorkoutNotificationService])
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   late ProviderContainer container;
+  late MockWorkoutNotificationService notificationService;
 
   setUp(() {
     // Use in-memory shared preferences to avoid platform channels during tests
     SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
 
+    notificationService = MockWorkoutNotificationService();
+    when(notificationService.canScheduleExactAlarms()).thenAnswer((_) async => true);
+    when(notificationService.requestExactAlarms()).thenAnswer((_) async {});
+
     container = ProviderContainer(
       overrides: [
         gymStateProvider.overrideWith(() => GymStateNotifier()),
+        workoutNotificationServiceProvider.overrideWithValue(notificationService),
       ],
     );
 
@@ -51,7 +63,6 @@ void main() {
       showTimerPages: true,
       useCountdownBetweenSets: true,
       countdownDuration: const Duration(seconds: DEFAULT_COUNTDOWN_DURATION),
-      alertOnCountdownEnd: false,
       dayId: routine.days.first.id,
       iteration: 1,
       routine: routine,
@@ -90,27 +101,36 @@ void main() {
     await tester.tap(optionsTile);
     await tester.pumpAndSettle();
 
-    // Toggle notify countdown first (it is only enabled while timer/countdown are active)
+    // Toggle the rest end alert first (it is only enabled while timer pages are shown)
     final notifySwitch = find.byKey(const ValueKey('gym-mode-notify-countdown'));
     expect(notifySwitch, findsOneWidget);
+    await tester.ensureVisible(notifySwitch);
     await tester.tap(notifySwitch);
+    await tester.pump();
+
+    final workoutNotificationSwitch = find.byKey(const ValueKey('gym-mode-workout-notification'));
+    await tester.ensureVisible(workoutNotificationSwitch);
+    await tester.tap(workoutNotificationSwitch);
     await tester.pump();
 
     // Now toggle show exercises
     final showExercisesSwitch = find.byKey(const ValueKey('gym-mode-option-show-exercises'));
     expect(showExercisesSwitch, findsOneWidget);
+    await tester.ensureVisible(showExercisesSwitch);
     await tester.tap(showExercisesSwitch);
     await tester.pump();
 
     // Toggle show timer (this will disable notify switch)
     final showTimerSwitch = find.byKey(const ValueKey('gym-mode-option-show-timer'));
     expect(showTimerSwitch, findsOneWidget);
+    await tester.ensureVisible(showTimerSwitch);
     await tester.tap(showTimerSwitch);
     await tester.pump();
 
     // Toggle show workout duration
     final durationSwitch = find.byKey(const ValueKey('gym-mode-option-show-workout-duration'));
     expect(durationSwitch, findsOneWidget);
+    await tester.ensureVisible(durationSwitch);
     await tester.tap(durationSwitch);
     await tester.pump();
 
@@ -124,9 +144,68 @@ void main() {
     final notifier = container.read(gymStateProvider.notifier);
     expect(notifier.state.showExercisePages, isFalse);
     expect(notifier.state.showTimerPages, isFalse);
-    expect(notifier.state.alertOnCountdownEnd, isTrue);
+    expect(notifier.state.alertOnCountdownEnd, isFalse);
     expect(notifier.state.showWorkoutDuration, isFalse);
+    expect(notifier.state.showWorkoutNotification, isFalse);
     expect(notifier.state.stickySetValues, isTrue);
+  });
+
+  testWidgets('The rest end alert works without the default countdown', (tester) async {
+    // A set's own rest time is counted down regardless of the setting
+    final notifier = container.read(gymStateProvider.notifier);
+    notifier.setUseCountdownBetweenSets(false);
+    await pumpGymModeOptions(tester);
+    await tester.tap(find.byKey(const ValueKey('gym-mode-options-tile')));
+    await tester.pumpAndSettle();
+
+    final alertSwitch = find.byKey(const ValueKey('gym-mode-notify-countdown'));
+    await tester.ensureVisible(alertSwitch);
+    await tester.tap(alertSwitch);
+    await tester.pump();
+
+    expect(notifier.state.alertOnCountdownEnd, isFalse);
+  });
+
+  testWidgets('Switching a notification on asks for the permission, off does not', (tester) async {
+    // Gym mode was opened with both off, so it did not ask then
+    when(notificationService.requestPermissions(any)).thenAnswer((_) async {});
+    final notifier = container.read(gymStateProvider.notifier);
+    notifier.setAlertOnCountdownEnd(false);
+    notifier.setShowWorkoutNotification(false);
+    await pumpGymModeOptions(tester);
+    await tester.tap(find.byKey(const ValueKey('gym-mode-options-tile')));
+    await tester.pumpAndSettle();
+
+    for (final key in ['gym-mode-notify-countdown', 'gym-mode-workout-notification']) {
+      final toggle = find.byKey(ValueKey(key));
+      await tester.ensureVisible(toggle);
+      await tester.tap(toggle);
+      await tester.pump();
+    }
+    verify(notificationService.requestPermissions(any)).called(2);
+
+    for (final key in ['gym-mode-notify-countdown', 'gym-mode-workout-notification']) {
+      final toggle = find.byKey(ValueKey(key));
+      await tester.ensureVisible(toggle);
+      await tester.tap(toggle);
+      await tester.pump();
+    }
+    verifyNever(notificationService.requestPermissions(any));
+    expect(notifier.state.alertOnCountdownEnd, isFalse);
+    expect(notifier.state.showWorkoutNotification, isFalse);
+  });
+
+  testWidgets('The workout notification switch only shows on Android', (tester) async {
+    debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+    addTearDown(() => debugDefaultTargetPlatformOverride = null);
+
+    await pumpGymModeOptions(tester);
+    await tester.tap(find.byKey(const ValueKey('gym-mode-options-tile')));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const ValueKey('gym-mode-notify-countdown')), findsOneWidget);
+    expect(find.byKey(const ValueKey('gym-mode-workout-notification')), findsNothing);
+    debugDefaultTargetPlatformOverride = null;
   });
 
   testWidgets('Dropdown, text field and refresh button update notifier state', (tester) async {
@@ -225,5 +304,82 @@ void main() {
     await tester.pump();
 
     expect(notifier.state.showDistinctLogs, isFalse);
+  });
+
+  group('Exact alarm hint', () {
+    Future<void> openOptions(WidgetTester tester) async {
+      await pumpGymModeOptions(tester);
+      await tester.tap(find.byKey(const ValueKey('gym-mode-options-tile')));
+      await tester.pumpAndSettle();
+    }
+
+    final hint = find.byKey(const ValueKey('gym-mode-exact-alarm-hint'));
+
+    testWidgets('Shown without the permission, the button asks for it', (tester) async {
+      when(notificationService.canScheduleExactAlarms()).thenAnswer((_) async => false);
+      await openOptions(tester);
+      expect(hint, findsOneWidget);
+
+      when(notificationService.canScheduleExactAlarms()).thenAnswer((_) async => true);
+      await tester.ensureVisible(find.descendant(of: hint, matching: find.byType(TextButton)));
+      await tester.tap(find.descendant(of: hint, matching: find.byType(TextButton)));
+      await tester.pumpAndSettle();
+
+      verify(notificationService.requestExactAlarms()).called(1);
+      expect(hint, findsNothing, reason: 'rechecked after returning from the setting');
+    });
+
+    testWidgets('Rechecked when the app comes back from the system settings', (tester) async {
+      when(notificationService.canScheduleExactAlarms()).thenAnswer((_) async => false);
+      await openOptions(tester);
+      expect(hint, findsOneWidget);
+
+      // Granted outside the app, e.g. in the system settings
+      when(notificationService.canScheduleExactAlarms()).thenAnswer((_) async => true);
+      [
+        AppLifecycleState.inactive,
+        AppLifecycleState.hidden,
+        AppLifecycleState.paused,
+        AppLifecycleState.hidden,
+        AppLifecycleState.inactive,
+        AppLifecycleState.resumed,
+      ].forEach(tester.binding.handleAppLifecycleStateChanged);
+      await tester.pumpAndSettle();
+
+      expect(hint, findsNothing);
+    });
+
+    testWidgets('Not shown with the permission or with the rest end alert off', (tester) async {
+      await openOptions(tester);
+      expect(hint, findsNothing);
+
+      when(notificationService.canScheduleExactAlarms()).thenAnswer((_) async => false);
+      container.invalidate(exactAlarmsAllowedProvider);
+      container.read(gymStateProvider.notifier).setAlertOnCountdownEnd(false);
+      await tester.pumpAndSettle();
+      expect(hint, findsNothing);
+    });
+  });
+  testWidgets('The opened options fit a short screen, e.g. with the keyboard up', (tester) async {
+    tester.view.physicalSize = const Size(400, 480);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: MaterialApp(
+          locale: const Locale('en'),
+          localizationsDelegates: appLocalizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Scaffold(body: StartPage(PageController())),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('gym-mode-options-tile')));
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
   });
 }

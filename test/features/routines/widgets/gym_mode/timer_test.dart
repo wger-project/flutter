@@ -23,6 +23,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
+import 'package:wger/features/routines/models/page_progress.dart';
 import 'package:wger/features/routines/providers/gym_state.dart';
 import 'package:wger/features/routines/providers/gym_state_notifier.dart';
 import 'package:wger/features/routines/widgets/gym_mode/timer.dart';
@@ -49,7 +50,7 @@ void main() {
       notifier.initData(routine, routine.days.first.id!, 1);
     });
 
-    Future<void> pumpTimer(WidgetTester tester, int timerPageIndex) async {
+    Future<void> pumpTimer(WidgetTester tester, int timerPageIndex, {bool countsUp = false}) async {
       final slotPage = container.read(gymStateProvider).getSlotEntryPageByIndex(timerPageIndex)!;
       expect(slotPage.type, SlotPageType.timer);
 
@@ -68,7 +69,12 @@ void main() {
                   final controller = PageController();
                   return PageView(
                     controller: controller,
-                    children: [TimerCountdownWidget(controller, 90, slotPage.key)],
+                    children: [
+                      if (countsUp)
+                        TimerWidget(controller, slotPage.key)
+                      else
+                        TimerCountdownWidget(controller, 90, slotPage.key),
+                    ],
                   );
                 },
               ),
@@ -161,6 +167,62 @@ void main() {
         await pumpTimer(tester, 3);
       });
       expect(haptics, hasLength(1));
+    });
+
+    testWidgets('alerts again when the rest is extended after its end', (tester) async {
+      final haptics = <MethodCall>[];
+      tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(SystemChannels.platform, (
+        call,
+      ) async {
+        if (call.method == 'HapticFeedback.vibrate') {
+          haptics.add(call);
+        }
+        return null;
+      });
+      addTearDown(
+        () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+          SystemChannels.platform,
+          null,
+        ),
+      );
+      final t0 = DateTime(2024, 5, 2, 12);
+      final key = container.read(gymStateProvider).getSlotEntryPageByIndex(3)!.key;
+
+      await withClock(Clock.fixed(t0), () => pumpTimer(tester, 3));
+      await withClock(Clock.fixed(t0.add(const Duration(seconds: 95))), () => pumpTimer(tester, 3));
+      expect(haptics, hasLength(1));
+      expect(haptics.single.arguments, isNull, reason: 'the full vibration, not a light impact');
+
+      // Extending moves the start, so the countdown ends 30 s later
+      final notifier = container.read(gymStateProvider.notifier);
+      notifier.state = notifier.state.copyWith(
+        progress: {key: PageProgress(timerStartedAt: t0.add(const Duration(seconds: 30)))},
+      );
+      await withClock(
+        Clock.fixed(t0.add(const Duration(seconds: 100))),
+        () => pumpTimer(tester, 3),
+      );
+      expect(find.text('0:20'), findsOneWidget);
+      expect(haptics, hasLength(1));
+
+      await withClock(
+        Clock.fixed(t0.add(const Duration(seconds: 125))),
+        () => pumpTimer(tester, 3),
+      );
+      expect(haptics, hasLength(2));
+    });
+
+    testWidgets('counts up from the start in the gym state', (tester) async {
+      final t0 = DateTime(2024, 5, 2, 12);
+      final key = container.read(gymStateProvider).getSlotEntryPageByIndex(3)!.key;
+      final notifier = container.read(gymStateProvider.notifier);
+      notifier.state = notifier.state.copyWith(
+        progress: {key: PageProgress(timerStartedAt: t0.subtract(const Duration(seconds: 30)))},
+      );
+
+      await withClock(Clock.fixed(t0), () => pumpTimer(tester, 3, countsUp: true));
+
+      expect(find.text('0:30'), findsOneWidget);
     });
   });
 }

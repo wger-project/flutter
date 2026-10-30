@@ -365,7 +365,6 @@
     "countdown": "Numărătoare inversă",
     "stopwatch": "Cronometru",
     "gymModeDefaultCountdownTime": "Timp implicit pentru numărătoare inversă, în secunde",
-    "gymModeNotifyOnCountdownFinish": "Notifică la finalul numărătorii inverse",
     "duration": "Durată",
     "durationHoursMinutes": "{hours}h {minutes}m",
     "@durationHoursMinutes": {

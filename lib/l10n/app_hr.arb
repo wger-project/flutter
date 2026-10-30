@@ -992,7 +992,6 @@
     "countdown": "Odbrojavanje",
     "stopwatch": "Štoperica",
     "gymModeDefaultCountdownTime": "Zadano vrijeme odbrojavanja, u sekundama",
-    "gymModeNotifyOnCountdownFinish": "Obavijesti pri kraju odbrojavanja",
     "duration": "Trajanje",
     "durationHoursMinutes": "{hours} h {minutes} min",
     "@durationHoursMinutes": {

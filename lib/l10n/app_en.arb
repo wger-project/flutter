@@ -375,7 +375,61 @@
   "countdown": "Countdown",
   "stopwatch": "Stopwatch",
   "gymModeDefaultCountdownTime": "Default countdown time, in seconds",
-  "gymModeNotifyOnCountdownFinish": "Notify on countdown end",
+  "gymModeAlertOnRestEnd": "Alert when rest ends",
+  "gymModeAlertOnRestEndHelp": "Vibrates in gym mode, or sends a notification when the app is in the background",
+  "gymModeWorkoutNotification": "Workout notification",
+  "gymModeExactAlarmMissing": "Without the exact alarm permission, the rest alarm can be a few minutes late",
+  "gymModeExactAlarmAllow": "Allow",
+  "gymModeWorkoutNotificationHelp": "Allows accessing and controlling the current workout via a persistent notification",
+  "workoutNotificationRestOver": "Rest is over",
+  "workoutNotificationNext": "Next: {set}",
+  "@workoutNotificationNext": {
+    "description": "Notification text with the next planned set, e.g. 'Next: Bench press 3 × 100 kg'",
+    "placeholders": {
+      "set": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutNotificationSetOf": "Set {current} of {total}",
+  "@workoutNotificationSetOf": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutNotificationInProgress": "Workout in progress",
+  "workoutNotificationLogSet": "Log planned set",
+  "@workoutNotificationLogSet": {
+    "description": "Notification button that logs the next set with its planned values. Shown next to up to two other buttons in a single row, so keep it very short; translate the meaning, not word for word"
+  },
+  "workoutNotificationSkipRest": "Skip",
+  "@workoutNotificationSkipRest": {
+    "description": "Notification button that ends the running rest. Shown next to up to two other buttons in a single row, so keep it very short; translate the meaning, not word for word"
+  },
+  "workoutNotificationExtendRest": "+{seconds} s",
+  "@workoutNotificationExtendRest": {
+    "description": "Notification button that makes the running rest longer. Shown next to up to two other buttons in a single row, so keep it very short; translate the meaning, not word for word",
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutNotificationNotLoggedTitle": "Set not logged",
+  "workoutNotificationNotLoggedBody": "Open gym mode to continue the workout",
+  "workoutNotificationAlarmChannel": "Rest alarm",
+  "@workoutNotificationAlarmChannel": {
+    "description": "Name of the Android notification channel for the alert at the end of a rest"
+  },
+  "workoutNotificationChannel": "Workout",
+  "@workoutNotificationChannel": {
+    "description": "Name of the Android notification channel for the ongoing workout notification"
+  },
   "duration": "Duration",
   "durationHoursMinutes": "{hours}h {minutes}m",
   "@durationHoursMinutes": {

@@ -19,7 +19,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:wger/core/consts.dart';
 import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/core/snackbar.dart';
 import 'package:wger/core/widgets/core.dart';
@@ -186,6 +185,7 @@ class LogsPlatesWidget extends ConsumerWidget {
     final plateWeightsState = ref.watch(plateCalculatorProvider);
 
     return Container(
+      width: double.infinity,
       color: Theme.of(context).colorScheme.onInverseSurface,
       child: Column(
         children: [
@@ -294,7 +294,6 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
   @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
-    final logProvider = ref.read(workoutLogProvider);
     final log = ref.watch(gymLogProvider);
 
     // The log is populated when the page becomes current: the PageView can lay
@@ -395,34 +394,20 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
                     return;
                   }
 
-                  final gymState = ref.read(gymStateProvider);
-                  final gymProvider = ref.read(gymStateProvider.notifier);
-                  final page = gymState.getSlotEntryPageByIndex()!;
-
                   // A failed write is intentionally left to propagate to the global
-                  // error handler; the success path below is then skipped.
-                  //
-                  // Re-saving a page that was already logged in this workout
-                  // updates the existing row instead of inserting a duplicate.
-                  if (isNewEntry) {
-                    await logProvider.addEntry(log, dayId: gymState.dayId);
-                  } else {
-                    await logProvider.updateEntry(log);
-                  }
+                  // error handler; the success path below is then skipped. A page
+                  // logged before updates its row, and the PageView follows the
+                  // page change from the gym state.
+                  await ref.read(gymStateProvider.notifier).logCurrentSet();
                   if (!context.mounted) {
                     return;
                   }
 
-                  gymProvider.markSlotPageAsDone(page.key, isDone: true, log: log);
                   showSnackbar(
                     context,
                     i18n.successfullySaved,
                     center: true,
                     duration: const Duration(seconds: 2),
-                  );
-                  widget.controller.nextPage(
-                    duration: DEFAULT_ANIMATION_DURATION,
-                    curve: DEFAULT_ANIMATION_CURVE,
                   );
                 },
                 child: Text(i18n.save),

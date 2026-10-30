@@ -834,7 +834,6 @@
     "countdown": "Odliczanie",
     "stopwatch": "Stoper",
     "gymModeDefaultCountdownTime": "Domyślny czas timera, w sekundach",
-    "gymModeNotifyOnCountdownFinish": "Powiadom na koniec odliczania",
     "duration": "Czas trwania",
     "durationHoursMinutes": "{hours}h {minutes}m",
     "@durationHoursMinutes": {

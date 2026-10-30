@@ -902,7 +902,6 @@
     "countdown": "Contagem regressiva",
     "stopwatch": "cronômetro",
     "gymModeDefaultCountdownTime": "Tempo de contagem regressiva padrão, em segundos",
-    "gymModeNotifyOnCountdownFinish": "Notificar no final da contagem regressiva",
     "duration": "Duração",
     "durationHoursMinutes": "{hours}h {minutes}m",
     "@durationHoursMinutes": {

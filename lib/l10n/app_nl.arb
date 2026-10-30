@@ -254,7 +254,6 @@
     "countdown": "Afteller",
     "stopwatch": "Stopwatch",
     "gymModeDefaultCountdownTime": "Standaard afteltijd, in secondes",
-    "gymModeNotifyOnCountdownFinish": "Notificeer op einde aftelling",
     "duration": "Duur",
     "durationHoursMinutes": "{hours}u {minutes}m",
     "@durationHoursMinutes": {

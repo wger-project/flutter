@@ -128,7 +128,9 @@ class TimerCountdownWidget extends ConsumerStatefulWidget {
 class _TimerCountdownWidgetState extends ConsumerState<TimerCountdownWidget> {
   late Timer _uiTimer;
 
-  bool _hasNotified = false;
+  /// The end the alert was played for, so each rest (also an extended one)
+  /// alerts once
+  DateTime? _alertedFor;
 
   /// The moment the countdown ends. The start time lives in the gym state so
   /// the countdown continues when the page is disposed and re-created while
@@ -144,7 +146,8 @@ class _TimerCountdownWidgetState extends ConsumerState<TimerCountdownWidget> {
 
     // Don't notify when returning to a countdown that already expired while
     // the user was on another page. Set before the first build, which notifies.
-    _hasNotified = _endTime(ref.read(gymStateProvider)).isBefore(clock.now());
+    final endTime = _endTime(ref.read(gymStateProvider));
+    _alertedFor = endTime.isBefore(clock.now()) ? endTime : null;
 
     // Deferred because a provider can't be modified during the widget
     // life-cycle.
@@ -171,21 +174,22 @@ class _TimerCountdownWidgetState extends ConsumerState<TimerCountdownWidget> {
   @override
   Widget build(BuildContext context) {
     final gymState = ref.watch(gymStateProvider);
-    final remaining = _endTime(gymState).difference(clock.now());
+    final endTime = _endTime(gymState);
+    final remaining = endTime.difference(clock.now());
     final remainingSeconds = remaining.inSeconds <= 0 ? 0 : remaining.inSeconds;
     final displayTime = DateTime(2000, 1, 1, 0, 0, 0).add(Duration(seconds: remainingSeconds));
 
     //  When countdown finishes, notify ONCE, and respect settings
-    if (remainingSeconds == 0 && !_hasNotified) {
+    if (remainingSeconds == 0 && _alertedFor != endTime) {
+      _alertedFor = endTime;
       if (gymState.alertOnCountdownEnd) {
-        HapticFeedback.mediumImpact();
+        // Strongest built-in haptic on both platforms (iOS: full vibration,
+        // Android: LONG_PRESS). heavyImpact maps to a weak tick on Android.
+        HapticFeedback.vibrate();
 
         // Not that this only works on desktop platforms
         SystemSound.play(SystemSoundType.alert);
       }
-      setState(() {
-        _hasNotified = true;
-      });
     }
 
     return Column(

@@ -16,18 +16,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/exercises/widgets/images.dart';
 import 'package:wger/features/routines/models/day.dart';
+import 'package:wger/features/routines/notifications/workout_notification_content.dart';
+import 'package:wger/features/routines/notifications/workout_notification_service.dart';
 import 'package:wger/features/routines/providers/gym_state.dart';
 import 'package:wger/features/routines/providers/gym_state_notifier.dart';
 import 'package:wger/features/routines/widgets/gym_mode/navigation.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 class GymModeOptions extends ConsumerStatefulWidget {
-  const GymModeOptions({super.key});
+  /// Height the options take at most, the opened card shrinks and scrolls
+  final double maxHeight;
+
+  const GymModeOptions({super.key, this.maxHeight = double.infinity});
 
   @override
   ConsumerState<GymModeOptions> createState() => _GymModeOptionsState();
@@ -50,10 +58,20 @@ class _GymModeOptionsState extends ConsumerState<GymModeOptions> {
     super.dispose();
   }
 
+  /// Gym mode only asks on opening if a notification is on, so switching one
+  /// on later has to ask as well
+  void _requestPermissionsIfOn(bool value) {
+    if (value) {
+      final labels = WorkoutNotificationLabels.of(AppLocalizations.of(context));
+      unawaited(ref.read(workoutNotificationServiceProvider).requestPermissions(labels));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final gymState = ref.watch(gymStateProvider);
     final gymNotifier = ref.watch(gymStateProvider.notifier);
+    final isAndroid = !kIsWeb && defaultTargetPlatform == TargetPlatform.android;
     final i18n = AppLocalizations.of(context);
 
     // If the value in the provider changed, update the controller text
@@ -62,164 +80,208 @@ class _GymModeOptionsState extends ConsumerState<GymModeOptions> {
       _countdownController.text = currentText;
     }
 
-    return Column(
-      children: [
-        AnimatedCrossFade(
-          firstChild: const SizedBox.shrink(),
-          secondChild: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxHeight: 400),
-              child: Card(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      SwitchListTile(
-                        key: const ValueKey('gym-mode-option-show-exercises'),
-                        title: Text(i18n.gymModeShowExercises),
-                        value: gymState.showExercisePages,
-                        onChanged: (value) => gymNotifier.setShowExercisePages(value),
-                      ),
-                      SwitchListTile(
-                        key: const ValueKey('gym-mode-option-show-workout-duration'),
-                        title: Text(i18n.gymModeShowWorkoutDuration),
-                        value: gymState.showWorkoutDuration,
-                        onChanged: (value) => gymNotifier.setShowWorkoutDuration(value),
-                      ),
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxHeight: widget.maxHeight),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Flexible(
+            child: AnimatedCrossFade(
+              firstChild: const SizedBox.shrink(),
+              secondChild: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxHeight: 400),
+                  child: Card(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          SwitchListTile(
+                            key: const ValueKey('gym-mode-option-show-exercises'),
+                            title: Text(i18n.gymModeShowExercises),
+                            value: gymState.showExercisePages,
+                            onChanged: (value) => gymNotifier.setShowExercisePages(value),
+                          ),
+                          SwitchListTile(
+                            key: const ValueKey('gym-mode-option-show-workout-duration'),
+                            title: Text(i18n.gymModeShowWorkoutDuration),
+                            value: gymState.showWorkoutDuration,
+                            onChanged: (value) => gymNotifier.setShowWorkoutDuration(value),
+                          ),
 
-                      const Divider(),
-                      SwitchListTile(
-                        key: const ValueKey('gym-mode-option-show-timer'),
-                        title: Text(i18n.gymModeShowTimer),
-                        value: gymState.showTimerPages,
-                        onChanged: (value) => gymNotifier.setShowTimerPages(value),
-                      ),
-                      ListTile(
-                        key: const ValueKey('gym-mode-timer-type'),
-                        enabled: gymState.showTimerPages,
-                        title: Text(i18n.gymModeTimerType),
-                        trailing: DropdownButton<bool>(
-                          key: const ValueKey('countdown-type-dropdown'),
-                          value: gymState.useCountdownBetweenSets,
-                          onChanged: gymState.showTimerPages
-                              ? (bool? newValue) {
-                                  if (newValue != null) {
-                                    gymNotifier.setUseCountdownBetweenSets(newValue);
-                                  }
-                                }
-                              : null,
-                          items: [false, true].map<DropdownMenuItem<bool>>((bool value) {
-                            final label = value ? i18n.countdown : i18n.stopwatch;
-
-                            return DropdownMenuItem<bool>(value: value, child: Text(label));
-                          }).toList(),
-                        ),
-                        subtitle: Text(i18n.gymModeTimerTypeHelText),
-                      ),
-                      ListTile(
-                        key: const ValueKey('gym-mode-default-countdown-time'),
-                        enabled: gymState.showTimerPages,
-                        title: TextFormField(
-                          controller: _countdownController,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            labelText: i18n.gymModeDefaultCountdownTime,
-                            suffix: IconButton(
-                              onPressed: gymState.showTimerPages && gymState.useCountdownBetweenSets
-                                  ? () => gymNotifier.setCountdownDuration(
-                                      DEFAULT_COUNTDOWN_DURATION,
-                                    )
+                          const Divider(),
+                          SwitchListTile(
+                            key: const ValueKey('gym-mode-option-show-timer'),
+                            title: Text(i18n.gymModeShowTimer),
+                            value: gymState.showTimerPages,
+                            onChanged: (value) => gymNotifier.setShowTimerPages(value),
+                          ),
+                          ListTile(
+                            key: const ValueKey('gym-mode-timer-type'),
+                            enabled: gymState.showTimerPages,
+                            title: Text(i18n.gymModeTimerType),
+                            trailing: DropdownButton<bool>(
+                              key: const ValueKey('countdown-type-dropdown'),
+                              value: gymState.useCountdownBetweenSets,
+                              onChanged: gymState.showTimerPages
+                                  ? (bool? newValue) {
+                                      if (newValue != null) {
+                                        gymNotifier.setUseCountdownBetweenSets(newValue);
+                                      }
+                                    }
                                   : null,
-                              icon: const Icon(Icons.refresh),
+                              items: [false, true].map<DropdownMenuItem<bool>>((bool value) {
+                                final label = value ? i18n.countdown : i18n.stopwatch;
+
+                                return DropdownMenuItem<bool>(value: value, child: Text(label));
+                              }).toList(),
+                            ),
+                            subtitle: Text(i18n.gymModeTimerTypeHelText),
+                          ),
+                          ListTile(
+                            key: const ValueKey('gym-mode-default-countdown-time'),
+                            enabled: gymState.showTimerPages,
+                            title: TextFormField(
+                              controller: _countdownController,
+                              keyboardType: TextInputType.number,
+                              decoration: InputDecoration(
+                                labelText: i18n.gymModeDefaultCountdownTime,
+                                suffix: IconButton(
+                                  onPressed:
+                                      gymState.showTimerPages && gymState.useCountdownBetweenSets
+                                      ? () => gymNotifier.setCountdownDuration(
+                                          DEFAULT_COUNTDOWN_DURATION,
+                                        )
+                                      : null,
+                                  icon: const Icon(Icons.refresh),
+                                ),
+                              ),
+                              onChanged: (value) {
+                                final intValue = int.tryParse(value);
+                                if (intValue != null &&
+                                    intValue > 0 &&
+                                    intValue < MAX_COUNTDOWN_DURATION) {
+                                  gymNotifier.setCountdownDuration(intValue);
+                                }
+                              },
+                              autovalidateMode: AutovalidateMode.onUserInteraction,
+                              validator: (String? value) {
+                                final intValue = int.tryParse(value!);
+                                if (intValue == null ||
+                                    intValue < MIN_COUNTDOWN_DURATION ||
+                                    intValue > MAX_COUNTDOWN_DURATION) {
+                                  return i18n.formMinMaxValues(
+                                    MIN_COUNTDOWN_DURATION,
+                                    MAX_COUNTDOWN_DURATION,
+                                  );
+                                }
+                                return null;
+                              },
+                              enabled: gymState.showTimerPages && gymState.useCountdownBetweenSets,
                             ),
                           ),
-                          onChanged: (value) {
-                            final intValue = int.tryParse(value);
-                            if (intValue != null &&
-                                intValue > 0 &&
-                                intValue < MAX_COUNTDOWN_DURATION) {
-                              gymNotifier.setCountdownDuration(intValue);
-                            }
-                          },
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          validator: (String? value) {
-                            final intValue = int.tryParse(value!);
-                            if (intValue == null ||
-                                intValue < MIN_COUNTDOWN_DURATION ||
-                                intValue > MAX_COUNTDOWN_DURATION) {
-                              return i18n.formMinMaxValues(
-                                MIN_COUNTDOWN_DURATION,
-                                MAX_COUNTDOWN_DURATION,
-                              );
-                            }
-                            return null;
-                          },
-                          enabled: gymState.showTimerPages && gymState.useCountdownBetweenSets,
-                        ),
-                      ),
 
-                      SwitchListTile(
-                        key: const ValueKey('gym-mode-notify-countdown'),
-                        title: Text(i18n.gymModeNotifyOnCountdownFinish),
-                        value: gymState.alertOnCountdownEnd,
-                        onChanged: (gymState.showTimerPages && gymState.useCountdownBetweenSets)
-                            ? (value) => gymNotifier.setAlertOnCountdownEnd(value)
-                            : null,
-                      ),
-
-                      const Divider(),
-                      ListTile(
-                        key: const ValueKey('gym-mode-log-scope'),
-                        title: Text(i18n.gymModeLogScope),
-                        subtitle: Text(i18n.gymModeLogScopeHelp),
-                        trailing: DropdownButton<int?>(
-                          key: const ValueKey('log-scope-dropdown'),
-                          value: gymState.logScopeWeeks,
-                          onChanged: (value) => gymNotifier.setLogScopeWeeks(value),
-                          items: [
-                            DropdownMenuItem<int?>(
-                              value: null,
-                              child: Text(i18n.gymModeLogScopeCurrentRoutine),
-                            ),
-                            ...[8, 12, 25, 50].map(
-                              (weeks) => DropdownMenuItem<int?>(
-                                value: weeks,
-                                child: Text(i18n.gymModeLogScopeWeeks(weeks)),
+                          // Enabled without the default countdown too, a set's rest time
+                          // is always counted down
+                          SwitchListTile(
+                            key: const ValueKey('gym-mode-notify-countdown'),
+                            title: Text(i18n.gymModeAlertOnRestEnd),
+                            subtitle: Text(i18n.gymModeAlertOnRestEndHelp),
+                            value: gymState.alertOnCountdownEnd,
+                            onChanged: gymState.showTimerPages
+                                ? (value) {
+                                    gymNotifier.setAlertOnCountdownEnd(value);
+                                    _requestPermissionsIfOn(value);
+                                  }
+                                : null,
+                          ),
+                          // Android delays alarms without the exact alarm permission
+                          if (isAndroid &&
+                              gymState.showTimerPages &&
+                              gymState.alertOnCountdownEnd &&
+                              ref.watch(exactAlarmsAllowedProvider).value == false)
+                            ListTile(
+                              key: const ValueKey('gym-mode-exact-alarm-hint'),
+                              leading: const Icon(Icons.alarm_off),
+                              title: Text(i18n.gymModeExactAlarmMissing),
+                              trailing: TextButton(
+                                onPressed: () async {
+                                  await ref
+                                      .read(workoutNotificationServiceProvider)
+                                      .requestExactAlarms();
+                                  ref.invalidate(exactAlarmsAllowedProvider);
+                                },
+                                child: Text(i18n.gymModeExactAlarmAllow),
                               ),
                             ),
-                          ],
-                        ),
+                          // The ongoing notification only exists on Android
+                          if (isAndroid)
+                            SwitchListTile(
+                              key: const ValueKey('gym-mode-workout-notification'),
+                              title: Text(i18n.gymModeWorkoutNotification),
+                              subtitle: Text(i18n.gymModeWorkoutNotificationHelp),
+                              value: gymState.showWorkoutNotification,
+                              onChanged: (value) {
+                                gymNotifier.setShowWorkoutNotification(value);
+                                _requestPermissionsIfOn(value);
+                              },
+                            ),
+
+                          const Divider(),
+                          ListTile(
+                            key: const ValueKey('gym-mode-log-scope'),
+                            title: Text(i18n.gymModeLogScope),
+                            subtitle: Text(i18n.gymModeLogScopeHelp),
+                            trailing: DropdownButton<int?>(
+                              key: const ValueKey('log-scope-dropdown'),
+                              value: gymState.logScopeWeeks,
+                              onChanged: (value) => gymNotifier.setLogScopeWeeks(value),
+                              items: [
+                                DropdownMenuItem<int?>(
+                                  value: null,
+                                  child: Text(i18n.gymModeLogScopeCurrentRoutine),
+                                ),
+                                ...[8, 12, 25, 50].map(
+                                  (weeks) => DropdownMenuItem<int?>(
+                                    value: weeks,
+                                    child: Text(i18n.gymModeLogScopeWeeks(weeks)),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SwitchListTile(
+                            key: const ValueKey('gym-mode-distinct-logs'),
+                            title: Text(i18n.gymModeDistinctLogs),
+                            value: gymState.showDistinctLogs,
+                            onChanged: (value) => gymNotifier.setShowDistinctLogs(value),
+                          ),
+                          SwitchListTile(
+                            key: const ValueKey('gym-mode-sticky-set-values'),
+                            title: Text(i18n.gymModeStickySetValues),
+                            subtitle: Text(i18n.gymModeStickySetValuesHelp),
+                            value: gymState.stickySetValues,
+                            onChanged: (value) => gymNotifier.setStickySetValues(value),
+                          ),
+                        ],
                       ),
-                      SwitchListTile(
-                        key: const ValueKey('gym-mode-distinct-logs'),
-                        title: Text(i18n.gymModeDistinctLogs),
-                        value: gymState.showDistinctLogs,
-                        onChanged: (value) => gymNotifier.setShowDistinctLogs(value),
-                      ),
-                      SwitchListTile(
-                        key: const ValueKey('gym-mode-sticky-set-values'),
-                        title: Text(i18n.gymModeStickySetValues),
-                        subtitle: Text(i18n.gymModeStickySetValuesHelp),
-                        value: gymState.stickySetValues,
-                        onChanged: (value) => gymNotifier.setStickySetValues(value),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
               ),
+              crossFadeState: _showOptions ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+              duration: const Duration(milliseconds: 200),
             ),
           ),
-          crossFadeState: _showOptions ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-          duration: const Duration(milliseconds: 200),
-        ),
 
-        ListTile(
-          key: const ValueKey('gym-mode-options-tile'),
-          title: Text(i18n.settingsTitle),
-          leading: const Icon(Icons.settings),
-          onTap: () => setState(() => _showOptions = !_showOptions),
-        ),
-      ],
+          ListTile(
+            key: const ValueKey('gym-mode-options-tile'),
+            title: Text(i18n.settingsTitle),
+            leading: const Icon(Icons.settings),
+            onTap: () => setState(() => _showOptions = !_showOptions),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -241,50 +303,61 @@ class StartPage extends ConsumerWidget {
           showEndWorkoutButton: false,
         ),
 
+        // The opened options may take all of the room, e.g. with the keyboard up
         Expanded(
-          child: ListView(
-            children: [
-              if (dayDataDisplay.day!.isSpecialType)
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(15),
-                    child: Text(
-                      '${dayDataDisplay.day!.type.name.toUpperCase()}\n${dayDataDisplay.day!.type.i18Label(AppLocalizations.of(context))}',
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.headlineSmall,
-                    ),
+          child: LayoutBuilder(
+            builder: (context, constraints) => Column(
+              children: [
+                Expanded(
+                  child: ListView(
+                    children: [
+                      if (dayDataDisplay.day!.isSpecialType)
+                        Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(15),
+                            child: Text(
+                              '${dayDataDisplay.day!.type.name.toUpperCase()}\n${dayDataDisplay.day!.type.i18Label(AppLocalizations.of(context))}',
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context).textTheme.headlineSmall,
+                            ),
+                          ),
+                        ),
+                      ...dayDataDisplay.slots
+                          .expand((slot) => slot.setConfigs)
+                          .fold<Map<Exercise, List<String>>>({}, (acc, entry) {
+                            acc.putIfAbsent(entry.exercise, () => []).add(entry.textReprWithType);
+                            return acc;
+                          })
+                          .entries
+                          .map((entry) {
+                            final exercise = entry.key;
+                            return Column(
+                              children: [
+                                ListTile(
+                                  leading: SizedBox(
+                                    width: 45,
+                                    child: ExerciseImageWidget(image: exercise.getMainImage),
+                                  ),
+                                  title: Text(
+                                    exercise
+                                        .getTranslation(
+                                          Localizations.localeOf(context).languageCode,
+                                        )
+                                        .name,
+                                  ),
+                                  subtitle: Text(entry.value.toList().join('\n')),
+                                ),
+                              ],
+                            );
+                          }),
+                    ],
                   ),
                 ),
-              ...dayDataDisplay.slots
-                  .expand((slot) => slot.setConfigs)
-                  .fold<Map<Exercise, List<String>>>({}, (acc, entry) {
-                    acc.putIfAbsent(entry.exercise, () => []).add(entry.textReprWithType);
-                    return acc;
-                  })
-                  .entries
-                  .map((entry) {
-                    final exercise = entry.key;
-                    return Column(
-                      children: [
-                        ListTile(
-                          leading: SizedBox(
-                            width: 45,
-                            child: ExerciseImageWidget(image: exercise.getMainImage),
-                          ),
-                          title: Text(
-                            exercise
-                                .getTranslation(Localizations.localeOf(context).languageCode)
-                                .name,
-                          ),
-                          subtitle: Text(entry.value.toList().join('\n')),
-                        ),
-                      ],
-                    );
-                  }),
-            ],
+                GymModeOptions(maxHeight: constraints.maxHeight),
+              ],
+            ),
           ),
         ),
-        const GymModeOptions(),
         FilledButton(
           child: Text(AppLocalizations.of(context).start),
           onPressed: () {

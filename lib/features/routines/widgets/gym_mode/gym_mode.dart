@@ -23,14 +23,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:wger/core/build_safety.dart';
+import 'package:wger/core/consts.dart';
 import 'package:wger/core/errors.dart';
 import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/core/widgets/error.dart';
 import 'package:wger/core/widgets/progress_indicator.dart';
+import 'package:wger/features/routines/notifications/workout_notification_content.dart';
+import 'package:wger/features/routines/notifications/workout_notification_controller.dart';
+import 'package:wger/features/routines/notifications/workout_notification_service.dart';
 import 'package:wger/features/routines/providers/gym_state.dart';
 import 'package:wger/features/routines/providers/gym_state_notifier.dart';
 import 'package:wger/features/routines/providers/routines_notifier.dart';
 import 'package:wger/features/routines/screens/gym_mode.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 
 import 'exercise_overview.dart';
 import 'log_page.dart';
@@ -53,17 +58,22 @@ class _GymModeState extends ConsumerState<GymMode> {
   late Future<int> _initData;
   bool _initialPageJumped = false;
   late final PageController _controller;
+  late final GymModeVisibleNotifier _visibility;
 
   @override
   void initState() {
     super.initState();
     _controller = PageController(initialPage: 0);
+    _visibility = ref.read(gymModeVisibleProvider.notifier);
     _initData = _loadGymState();
   }
 
   @override
   void dispose() {
     _controller.dispose();
+    // Providers can't change while the tree is being finalized
+    final visibility = _visibility;
+    scheduleMicrotask(() => visibility.set(false));
     super.dispose();
   }
 
@@ -74,6 +84,7 @@ class _GymModeState extends ConsumerState<GymMode> {
     // gym-state mutations with no await in between, and modifying a provider
     // during a life-cycle is not allowed.
     await yieldPastBuild();
+    _visibility.set(true);
 
     final notifier = ref.read(routinesRiverpodProvider.notifier);
     final routineId = widget._args.routineId;
@@ -98,9 +109,26 @@ class _GymModeState extends ConsumerState<GymMode> {
       fallbackLog: 'Server unreachable, starting from the local routine',
     );
 
-    return ref
+    final initialPage = await ref
         .read(gymStateProvider.notifier)
         .open(routine, widget._args.dayId, widget._args.iteration);
+    _requestNotificationPermissions();
+
+    return initialPage;
+  }
+
+  /// Asked here rather than at app start, and only if a notification is wanted
+  void _requestNotificationPermissions() {
+    final gymState = ref.read(gymStateProvider);
+    final service = ref.read(workoutNotificationServiceProvider);
+    final wanted =
+        gymState.alertOnCountdownEnd ||
+        (service.supportsControls && gymState.showWorkoutNotification);
+    if (wanted && mounted) {
+      unawaited(
+        service.requestPermissions(WorkoutNotificationLabels.of(AppLocalizations.of(context))),
+      );
+    }
   }
 
   List<Widget> _getContent(GymModeState state) {
@@ -121,16 +149,11 @@ class _GymModeState extends ConsumerState<GymMode> {
           out.add(LogPage(_controller, slotPage.key));
         }
 
-        // Timer. Use rest time from config data if available, otherwise use user settings
-        final rest = slotPage.setConfigData?.restTime;
         if (slotPage.type == SlotPageType.timer) {
+          final rest = gymState.restDurationFor(slotPage);
           out.add(
-            (rest != null || gymState.useCountdownBetweenSets)
-                ? TimerCountdownWidget(
-                    _controller,
-                    (rest ?? gymState.countdownDuration.inSeconds).toInt(),
-                    slotPage.key,
-                  )
+            rest != null
+                ? TimerCountdownWidget(_controller, rest.inSeconds, slotPage.key)
                 : TimerWidget(_controller, slotPage.key),
           );
         }
@@ -144,8 +167,35 @@ class _GymModeState extends ConsumerState<GymMode> {
     return out;
   }
 
+  /// Shows [page] when the state moved without the PageView, e.g. after a
+  /// notification action or a logged set
+  void _followCurrentPage(int page) {
+    final shown = _controller.hasClients ? _controller.page?.round() : null;
+    if (shown == null || shown == page) {
+      return;
+    }
+
+    final resumed = WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed;
+    if (resumed && (page - shown).abs() == 1) {
+      _controller.animateToPage(
+        page,
+        duration: DEFAULT_ANIMATION_DURATION,
+        curve: DEFAULT_ANIMATION_CURVE,
+      );
+    } else {
+      _controller.jumpToPage(page);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    ref.listen(gymStateProvider.select((s) => s.currentPage), (_, page) {
+      // clear() also resets the page, but the summary has to stay visible
+      if (ref.read(gymStateProvider).isInitialized) {
+        _followCurrentPage(page);
+      }
+    });
+
     return FutureBuilder<int>(
       future: _initData,
       builder: (context, snapshot) {

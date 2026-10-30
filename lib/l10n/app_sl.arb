@@ -328,7 +328,6 @@
     "countdown": "Odštevanje",
     "stopwatch": "Štoparica",
     "gymModeDefaultCountdownTime": "Privzeti čas za odštevanje, v sekundah",
-    "gymModeNotifyOnCountdownFinish": "Opomnik ob koncu odštevanja",
     "duration": "Trajanje",
     "durationHoursMinutes": "{hours} h  {minutes} min",
     "@durationHoursMinutes": {

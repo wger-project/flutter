@@ -943,7 +943,6 @@
     "countdown": "Conto alla rovescia",
     "stopwatch": "Cronometro",
     "gymModeDefaultCountdownTime": "Conto alla rovescia di default, in secondi",
-    "gymModeNotifyOnCountdownFinish": "Notifica quando il conto alla rovescia finisce",
     "duration": "Durata",
     "durationHoursMinutes": "{hours}h {minutes}m",
     "@durationHoursMinutes": {

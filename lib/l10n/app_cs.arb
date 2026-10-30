@@ -873,7 +873,6 @@
     "countdown": "Odpočet",
     "stopwatch": "Stopky",
     "gymModeDefaultCountdownTime": "Výchozí doba odpočítávání v sekundách",
-    "gymModeNotifyOnCountdownFinish": "Upozornit na konec odpočítávání",
     "duration": "Doba trvání",
     "durationHoursMinutes": "{hours}h {minutes}m",
     "@durationHoursMinutes": {
