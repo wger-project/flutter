@@ -1,7 +1,10 @@
 # Flatpak packaging for Flathub (de.wger.flutter), see https://github.com/o-murphy/flutpak
 app-id: de.wger.flutter
 command: wger
-runtime-version: '25.08'
+# See https://gitlab.com/freedesktop-sdk/freedesktop-sdk/-/wikis/Releases
+# for deprecation and release dates. Keep in sync with the template, which
+# also names the matching llvm SDK extension (flutpak doesn't map every runtime)
+runtime-version: '26.08'
 repo-url: https://github.com/wger-project/flutter
 
 flutter:
@@ -42,23 +45,6 @@ sources:
       - cp -rf .pub-cache/git/health_bridge-05515122beb1ac6e93a3b558b5468af16c3e5aaf/.git/* .pub-cache/git/cache/health_bridge-dc30f18fd891da4313044228eccaea8192df5eda
 
 foreign-deps:
-  # The registry only has 3.7.0, whose prebuilt lands in the wrong download dir
-  sqlite3:
-    '3.7.1':
-      manifest:
-        sources:
-          - type: file
-            only-arches: [x86_64]
-            url: https://github.com/simolus3/sqlite3.dart/releases/download/sqlite3-3.7.1/libsqlite3.x64.linux.so
-            sha256: 1ff25026f7bcd7e740f98d5b852ae6e79d2400c076f046096295f91a5b60aeb8
-            dest: $APP/.dart_tool/hooks_runner/shared/sqlite3/build/download-1ff25026
-            dest-filename: libsqlite3.so
-          - type: file
-            only-arches: [aarch64]
-            url: https://github.com/simolus3/sqlite3.dart/releases/download/sqlite3-3.7.1/libsqlite3.arm64.linux.so
-            sha256: c2858e7048931194b4acd71258ac36bdb7c881c697b1d972b7206142bdaa68f6
-            dest: $APP/.dart_tool/hooks_runner/shared/sqlite3/build/download-c2858e70
-            dest-filename: libsqlite3.so
   # EOL stub without native code; the registry's 0.6.8 entry would add an unused download
   sqlcipher_flutter_libs:
     '0.7.0':
