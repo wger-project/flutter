@@ -341,16 +341,24 @@ class NutritionRepository {
         amount != double.parse(amount.toStringAsFixed(2))) {
       throw ArgumentError.value(amount, 'amount', 'Must be 1–1000 with at most two decimals');
     }
-    final updated = await (_db.update(_db.logItemTable)..where((t) => t.id.equals(id))).write(
-      LogItemTableCompanion(
-        amount: Value(amount.toDouble()),
-        datetime: Value(datetime),
-        weightUnitId: Value(weightUnitId),
-      ),
-    );
-    if (updated != 1) {
-      throw StateError('Diary entry no longer exists');
-    }
+    await _db.transaction(() async {
+      // PowerSync writes through SQLite views, whose INSTEAD OF triggers do
+      // not contribute to the affected-row count. Check existence in the same
+      // transaction instead of interpreting a successful view update as missing.
+      final existing = await (_db.select(
+        _db.logItemTable,
+      )..where((t) => t.id.equals(id))).getSingleOrNull();
+      if (existing == null) {
+        throw StateError('Diary entry no longer exists');
+      }
+      await (_db.update(_db.logItemTable)..where((t) => t.id.equals(id))).write(
+        LogItemTableCompanion(
+          amount: Value(amount.toDouble()),
+          datetime: Value(datetime),
+          weightUnitId: Value(weightUnitId),
+        ),
+      );
+    });
   }
 
   /// Deletes a diary entry by its UUID

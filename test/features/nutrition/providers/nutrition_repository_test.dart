@@ -16,9 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:io';
+
 import 'package:drift/drift.dart' as drift;
+import 'package:drift_sqlite_async/drift_sqlite_async.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:powersync/powersync.dart' as ps;
 import 'package:wger/database/powersync/database.dart';
+import 'package:wger/database/powersync/tables/nutrition.dart';
 import 'package:wger/features/nutrition/models/log.dart';
 import 'package:wger/features/nutrition/models/meal.dart';
 import 'package:wger/features/nutrition/models/meal_item.dart';
@@ -38,6 +43,63 @@ void main() {
 
   tearDown(() async {
     await db.close();
+  });
+
+  test('editLogLocalDrift succeeds on PowerSync views and queues only editable fields', () async {
+    final directory = await Directory.systemTemp.createTemp('nutrition-repository-');
+    final sync = ps.PowerSyncDatabase(
+      schema: const ps.Schema([PowersyncLogItemTable]),
+      path: '${directory.path}/test.sqlite',
+    );
+    await sync.initialize();
+    final syncDrift = DriftPowersyncDatabase(SqliteAsyncDriftConnection(sync));
+    addTearDown(() async {
+      await syncDrift.close();
+      await sync.close();
+      await directory.delete(recursive: true);
+    });
+    await sync.execute(
+      'INSERT INTO nutrition_logitem '
+      '(id, plan_id, meal_id, ingredient_id, weight_unit_id, amount, datetime, comment) '
+      'VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+      ['log', 'plan', 'meal', 7, 3, 100, '2026-10-25T01:30:00.000Z', 'Keep me'],
+    );
+    await (await sync.getNextCrudTransaction())!.complete();
+    final repository = NutritionRepository(syncDrift);
+    final instant = DateTime.utc(2026, 10, 26, 1, 30);
+    await repository.editLogLocalDrift(
+      id: 'log',
+      amount: 80.5,
+      datetime: instant,
+      weightUnitId: null,
+    );
+    final row = await sync.get('SELECT * FROM nutrition_logitem WHERE id = ?', ['log']);
+    expect(row, containsPair('amount', 80.5));
+    expect(row['weight_unit_id'], isNull);
+    expect(DateTime.parse(row['datetime'] as String).toUtc(), instant);
+    expect(row['plan_id'], 'plan');
+    expect(row['meal_id'], 'meal');
+    expect(row['ingredient_id'], 7);
+    expect(row['comment'], 'Keep me');
+    final transaction = (await sync.getNextCrudTransaction())!;
+    expect(transaction.crud, hasLength(1));
+    expect(transaction.crud.single.op, ps.UpdateType.patch);
+    expect(transaction.crud.single.opData, {
+      'amount': 80.5,
+      'datetime': instant.toIso8601String(),
+      'weight_unit_id': null,
+    });
+    await transaction.complete();
+    await expectLater(
+      repository.editLogLocalDrift(
+        id: 'missing',
+        amount: 80.5,
+        datetime: instant,
+        weightUnitId: null,
+      ),
+      throwsStateError,
+    );
+    expect(await sync.getNextCrudTransaction(), isNull);
   });
 
   // ---- seed helpers ---------------------------------------------------------
