@@ -246,6 +246,11 @@ const _backgroundStates = {
 final workoutNotificationControllerProvider = Provider<WorkoutNotificationController>((ref) {
   final service = ref.read(workoutNotificationServiceProvider);
   final controller = WorkoutNotificationController(ref, service);
+
+  // Nothing to keep in line, and the web has no isolates for the actions
+  if (service is NoopWorkoutNotificationService) {
+    return controller;
+  }
   unawaited(service.initialize(controller.labels));
 
   // Actions arrive from the background isolate

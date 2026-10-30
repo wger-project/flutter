@@ -240,6 +240,19 @@ void main() {
 
       verify(service.cancelAll()).called(1);
     });
+
+    test('Platforms without notifications set nothing up, the web has no isolates', () {
+      IsolateNameServer.removePortNameMapping(WORKOUT_NOTIFICATION_PORT);
+      final noop = ProviderContainer.test(
+        overrides: [
+          workoutNotificationServiceProvider.overrideWithValue(NoopWorkoutNotificationService()),
+        ],
+      );
+
+      noop.read(workoutNotificationControllerProvider);
+
+      expect(IsolateNameServer.lookupPortByName(WORKOUT_NOTIFICATION_PORT), isNull);
+    });
   });
 
   group('Actions', () {
