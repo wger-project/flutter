@@ -7,6 +7,7 @@ import 'package:wger/features/nutrition/models/log.dart';
 import 'package:wger/features/nutrition/models/nutritional_plan.dart';
 import 'package:wger/features/nutrition/models/nutritional_values.dart';
 import 'package:wger/features/nutrition/providers/nutrition_notifier.dart';
+import 'package:wger/features/nutrition/widgets/forms/diary_entry_edit.dart';
 import 'package:wger/features/nutrition/widgets/helpers.dart';
 import 'package:wger/features/nutrition/widgets/nutrition_tile.dart';
 import 'package:wger/features/nutrition/widgets/widgets.dart';
@@ -81,15 +82,34 @@ class DiaryEntryTile extends ConsumerWidget {
         context,
         muted(getNutritionalValues(diaryEntry.nutritionalValues, context)),
       ),
+      trailingWidth: nutritionalPlan == null ? 20 : 96,
       trailing: (nutritionalPlan == null)
           ? null
-          : IconButton(
-              tooltip: AppLocalizations.of(context).delete,
-              onPressed: () {
-                ref.read(nutritionProvider.notifier).deleteLog(diaryEntry.id!);
-              },
-              icon: const Icon(Icons.delete_outline),
-              iconSize: ICON_SIZE_SMALL,
+          : Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  tooltip: AppLocalizations.of(context).edit,
+                  onPressed: diaryEntry.id == null
+                      ? null
+                      : () {
+                          showDialog<void>(
+                            context: context,
+                            builder: (_) => DiaryEntryEditDialog(entry: diaryEntry),
+                          );
+                        },
+                  icon: const Icon(Icons.edit_outlined),
+                  iconSize: ICON_SIZE_SMALL,
+                ),
+                IconButton(
+                  tooltip: AppLocalizations.of(context).delete,
+                  onPressed: () {
+                    ref.read(nutritionProvider.notifier).deleteLog(diaryEntry.id!);
+                  },
+                  icon: const Icon(Icons.delete_outline),
+                  iconSize: ICON_SIZE_SMALL,
+                ),
+              ],
             ),
     );
   }
