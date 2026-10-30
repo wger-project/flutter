@@ -154,6 +154,8 @@ void main() {
 
       expect(chartData(tester).lineBarsData, hasLength(3));
       expect(chartData(tester).betweenBarsData, isEmpty);
+      final curved = chartData(tester).lineBarsData.where((l) => l.isCurved);
+      expect(curved.every((l) => l.preventCurveOverShooting), isTrue);
     });
 
     testWidgets('omits the lines it was not given', (tester) async {
