@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:markdown/markdown.dart' as md;
 import 'package:material_ui/material_ui.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -261,7 +261,7 @@ class _MarkdownEditorState extends State<MarkdownEditor> {
                       child: Builder(
                         builder: (ctx) {
                           final raw = _controller.text;
-                          return Html(data: md.markdownToHtml(raw));
+                          return HtmlWidget(md.markdownToHtml(raw));
                         },
                       ),
                     ),

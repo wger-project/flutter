@@ -91,7 +91,7 @@ void main() {
     );
     expect(find.text('Gluteus maximus'), findsOneWidget, reason: 'Secondary muscles');
     expect(find.text('Description'), findsOneWidget, reason: 'Description header');
-    expect(find.text('add clever text'), findsOneWidget, reason: 'Description');
+    expect(find.text('add clever text', findRichText: true), findsOneWidget, reason: 'Description');
     expect(find.text('Variations'), findsNothing);
   });
 }

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:wger/features/exercises/models/translation.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
@@ -35,7 +35,7 @@ class DescriptionSection extends StatelessWidget {
           AppLocalizations.of(context).description,
           style: Theme.of(context).textTheme.headlineSmall,
         ),
-        Html(data: translation.description),
+        HtmlWidget(translation.description),
       ],
     );
   }

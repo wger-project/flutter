@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:markdown/markdown.dart' as md;
 import 'package:material_ui/material_ui.dart';
 import 'package:wger/core/widgets/cards.dart';
@@ -52,7 +52,7 @@ class Step6Overview extends ConsumerWidget {
             TableRow(
               children: [
                 Text(i18n.description),
-                Html(data: md.markdownToHtml(state.descriptionEn ?? '...')),
+                HtmlWidget(md.markdownToHtml(state.descriptionEn ?? '...')),
               ],
             ),
             TableRow(children: [Text(i18n.category), Text(state.category?.name ?? '...')]),
@@ -125,7 +125,7 @@ class Step6Overview extends ConsumerWidget {
                 if (state.descriptionTrans == null)
                   const Text('...')
                 else
-                  Html(data: md.markdownToHtml(state.descriptionTrans!)),
+                  HtmlWidget(md.markdownToHtml(state.descriptionTrans!)),
               ],
             ),
             TableRow(

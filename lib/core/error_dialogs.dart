@@ -18,7 +18,7 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:logging/logging.dart';
 import 'package:material_ui/material_ui.dart';
@@ -370,13 +370,14 @@ class ServerHtmlError extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Html(
-      data: data,
-      style: {
-        'h1': Style(fontSize: FontSize(theme.textTheme.bodyLarge?.fontSize ?? 15)),
-        'h2': Style(fontSize: FontSize(theme.textTheme.bodyMedium?.fontSize ?? 15)),
+    return HtmlWidget(
+      data,
+      customStylesBuilder: (element) => switch (element.localName) {
+        'h1' => {'font-size': '${theme.textTheme.bodyLarge?.fontSize ?? 15}px'},
+        'h2' => {'font-size': '${theme.textTheme.bodyMedium?.fontSize ?? 15}px'},
+        'a' => {'display': 'none'},
+        _ => null,
       },
-      doNotRenderTheseTags: const {'a'},
     );
   }
 }
@@ -492,7 +493,7 @@ class FormHttpErrorsWidget extends StatelessWidget {
 
     // A JSON endpoint answering with HTML often means a proxy or bot wall such
     // as Anubis intercepted the request. Such pages render near-blank through
-    // flutter_html since their visible content is JS-driven. In these cases we
+    // the HTML widget since their visible content is JS-driven. In these cases we
     // try pull out the <title>, which usually names the culprit
     final htmlTitle = exception.type == ErrorType.html ? htmlErrorTitle(exception.htmlError) : null;
 
