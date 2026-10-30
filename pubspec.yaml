@@ -57,7 +57,7 @@ dependencies:
   health_bridge:
     git:
       url: https://github.com/ytsni/health_bridge.git
-      ref: v2.0.0
+      ref: v2.1.0
   http: ^1.6.0
   image_picker: ^1.2.3
   intl: ^0.20.2

@@ -763,11 +763,11 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "v2.0.0"
-      resolved-ref: c2494e985f04f2911eb6217efb69a58ee8a1cb14
+      ref: "v2.1.0"
+      resolved-ref: "05515122beb1ac6e93a3b558b5468af16c3e5aaf"
       url: "https://github.com/ytsni/health_bridge.git"
     source: git
-    version: "2.0.0"
+    version: "2.1.0"
   hooks:
     dependency: transitive
     description:
