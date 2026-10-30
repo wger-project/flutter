@@ -1194,6 +1194,16 @@
       }
     }
   },
+  "enterMinWords": "Please enter at least {min} words",
+  "@enterMinWords": {
+    "description": "Error message when the user hasn't entered the minimum amount of words in a form",
+    "type": "text",
+    "placeholders": {
+      "min": {
+        "type": "String"
+      }
+    }
+  },
   "enterMaxCharacters": "Please enter at most {max} characters",
   "@enterMaxCharacters": {
     "description": "Error message when the user has entered more than the allowed amount of characters in a form",

@@ -509,6 +509,7 @@
     "incline_bench": "Schrägbank",
     "lats": "Latissimus",
     "enterMinCharacters": "Bitte gebe mindestens {min} Zeichen ein",
+    "enterMinWords": "Bitte gib mindestens {min} Wörter ein",
     "@enterMinCharacters": {
         "description": "Error message when the user hasn't entered the minimum amount characters in a form",
         "type": "text",

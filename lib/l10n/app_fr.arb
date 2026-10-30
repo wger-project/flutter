@@ -466,6 +466,7 @@
     },
     "back": "Dos",
     "enterMinCharacters": "Veuillez entrer au moins {min} caractères",
+    "enterMinWords": "Veuillez saisir au moins {min} mots",
     "@enterMinCharacters": {
         "description": "Error message when the user hasn't entered the minimum amount characters in a form",
         "type": "text",
