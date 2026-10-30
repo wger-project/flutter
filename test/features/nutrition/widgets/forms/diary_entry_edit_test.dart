@@ -144,6 +144,60 @@ void main() {
     expect(entry.datetime, DateTime.utc(2026, 10, 25, 1, 30));
   });
 
+  testWidgets('confirming the same date and time preserves the second DST occurrence', (
+    tester,
+  ) async {
+    await open(tester);
+    final local = entry.datetime.toLocal();
+    tester
+        .widget<DateInputWidget>(find.byType(DateInputWidget))
+        .onChanged(
+          DateTime(local.year, local.month, local.day),
+        );
+    await tester.pump();
+    tester
+        .widget<TimeInputWidget>(find.byType(TimeInputWidget))
+        .onChanged(TimeOfDay.fromDateTime(local));
+    await tester.pump();
+    await tester.tap(find.byKey(const Key('diary-edit-save')));
+    await tester.pumpAndSettle();
+    final saved =
+        verify(
+              repo.editLogLocalDrift(
+                id: 'entry',
+                amount: 100,
+                datetime: captureAnyNamed('datetime'),
+                weightUnitId: 10,
+              ),
+            ).captured.single
+            as DateTime;
+    expect(saved.toUtc(), DateTime.utc(2026, 10, 25, 1, 30));
+  });
+
+  testWidgets('changing minutes keeps the second DST occurrence when still valid', (tester) async {
+    await open(tester);
+    final local = entry.datetime.toLocal();
+    tester
+        .widget<TimeInputWidget>(find.byType(TimeInputWidget))
+        .onChanged(
+          TimeOfDay(hour: local.hour, minute: 45),
+        );
+    await tester.pump();
+    await tester.tap(find.byKey(const Key('diary-edit-save')));
+    await tester.pumpAndSettle();
+    final saved =
+        verify(
+              repo.editLogLocalDrift(
+                id: 'entry',
+                amount: 100,
+                datetime: captureAnyNamed('datetime'),
+                weightUnitId: 10,
+              ),
+            ).captured.single
+            as DateTime;
+    expect(saved.toUtc(), DateTime.utc(2026, 10, 25, 1, 45));
+  });
+
   testWidgets('a failed local write keeps the dialog open and shows an error', (tester) async {
     when(
       repo.editLogLocalDrift(

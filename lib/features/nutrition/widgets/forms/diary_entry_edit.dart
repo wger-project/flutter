@@ -72,6 +72,34 @@ class _DiaryEntryEditDialogState extends ConsumerState<DiaryEntryEditDialog> {
     }
   }
 
+  void _selectLocalTime(int year, int month, int day, int hour, int minute) {
+    if (_datetime.year == year &&
+        _datetime.month == month &&
+        _datetime.day == day &&
+        _datetime.hour == hour &&
+        _datetime.minute == minute) {
+      return;
+    }
+    // A repeated hour has two instants. Prefer the draft's existing offset
+    // when it still represents the requested local wall time.
+    final candidate = DateTime.utc(
+      year,
+      month,
+      day,
+      hour,
+      minute,
+    ).subtract(_datetime.timeZoneOffset).toLocal();
+    final matches =
+        candidate.year == year &&
+        candidate.month == month &&
+        candidate.day == day &&
+        candidate.hour == hour &&
+        candidate.minute == minute;
+    setState(() {
+      _datetime = matches ? candidate : DateTime(year, month, day, hour, minute);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
@@ -128,28 +156,24 @@ class _DiaryEntryEditDialogState extends ConsumerState<DiaryEntryEditDialog> {
                     labelText: i18n.date,
                     firstDate: _datetime.isBefore(firstDate) ? _datetime : firstDate,
                     lastDate: _datetime.isAfter(now) ? _datetime : now,
-                    onChanged: (date) => setState(() {
-                      _datetime = DateTime(
-                        date.year,
-                        date.month,
-                        date.day,
-                        _datetime.hour,
-                        _datetime.minute,
-                      );
-                    }),
+                    onChanged: (date) => _selectLocalTime(
+                      date.year,
+                      date.month,
+                      date.day,
+                      _datetime.hour,
+                      _datetime.minute,
+                    ),
                   ),
                   TimeInputWidget(
                     value: TimeOfDay.fromDateTime(_datetime),
                     labelText: i18n.time,
-                    onChanged: (time) => setState(() {
-                      _datetime = DateTime(
-                        _datetime.year,
-                        _datetime.month,
-                        _datetime.day,
-                        time.hour,
-                        time.minute,
-                      );
-                    }),
+                    onChanged: (time) => _selectLocalTime(
+                      _datetime.year,
+                      _datetime.month,
+                      _datetime.day,
+                      time.hour,
+                      time.minute,
+                    ),
                   ),
                   if (_error != null)
                     Text(
