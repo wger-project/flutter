@@ -270,7 +270,7 @@ void main() {
       );
 
       // Act
-      notifier.replaceExercises(page.key, originalExerciseId: 1, newExercise: testSquats);
+      notifier.replaceExercises(originalExerciseId: 1, newExercise: testSquats);
 
       // Assert: every slot page of that page carries the new exercise, and the
       // routine itself was rebuilt too (the log draft reads from it)
@@ -392,7 +392,6 @@ void main() {
       gymNotifier.addExerciseAfterPage(gymNotifier.state.pages[1].key, newExercise: testSquats);
 
       gymNotifier.replaceExercises(
-        'added:1',
         originalExerciseId: testSquats.id,
         newExercise: testCurls,
       );

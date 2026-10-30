@@ -341,7 +341,6 @@ class ExerciseSwapWidget extends ConsumerWidget {
                     ExerciseAutocompleter(
                       onExerciseSelected: (exercise) {
                         gymProvider.replaceExercises(
-                          page.key,
                           originalExerciseId: e.id,
                           newExercise: exercise,
                         );

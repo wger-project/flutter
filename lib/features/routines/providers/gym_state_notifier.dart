@@ -728,8 +728,7 @@ class GymStateNotifier extends _$GymStateNotifier {
   }
 
   /// Replaces the exercise everywhere in the workout, also where it was added
-  void replaceExercises(
-    String pageEntryKey, {
+  void replaceExercises({
     required int originalExerciseId,
     required Exercise newExercise,
   }) {
