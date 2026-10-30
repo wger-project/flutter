@@ -1883,5 +1883,76 @@
     "@filterNutriscore": {
         "description": "Heading for the Nutri-Score slider in the ingredient search filter dialog"
     },
-    "meal": "Прийом їжі"
+    "meal": "Прийом їжі",
+    "upNext": "Далі",
+    "@upNext": {
+        "description": "Label shown on the rest timer pages in the gym mode above the information about the upcoming set"
+    },
+    "gymModeStickySetValues": "Повторювати значення підходу",
+    "@gymModeStickySetValues": {
+        "description": "Label for a gym mode setting: when enabled, the next set of an exercise is pre-filled with the values last logged instead of the planned ones"
+    },
+    "gymModeStickySetValuesHelp": "Автоматично заповнювати наступний підхід останніми записаними значеннями вправи",
+    "@gymModeStickySetValuesHelp": {
+        "description": "Help text for the sticky set values setting in the gym mode"
+    },
+    "authorHelpText": "Буде вказаний як автор вправи (CC BY-SA 4.0). Змінюйте це поле, лише якщо ви не є автором.",
+    "@authorHelpText": {
+        "description": "Helper text below the author field when contributing an exercise"
+    },
+    "gymModeAlertOnRestEnd": "Сповіщати про завершення відпочинку",
+    "gymModeAlertOnRestEndHelp": "Вібрація в режимі тренування або сповіщення, коли застосунок працює у фоновому режимі",
+    "gymModeWorkoutNotification": "Сповіщення про тренування",
+    "gymModeExactAlarmMissing": "Без дозволу на точне планування сигналів сповіщення про завершення відпочинку може надійти із запізненням на кілька хвилин",
+    "gymModeExactAlarmAllow": "Дозволити",
+    "gymModeWorkoutNotificationHelp": "Дає змогу переглядати поточне тренування та керувати ним через постійне сповіщення",
+    "workoutNotificationRestOver": "Час відпочинку завершився",
+    "workoutNotificationNext": "Далі:: {set}",
+    "@workoutNotificationNext": {
+        "description": "Notification text with the next planned set, e.g. 'Next: Bench press 3 × 100 kg'",
+        "placeholders": {
+            "set": {
+                "type": "String"
+            }
+        }
+    },
+    "workoutNotificationSetOf": "Підхід {current} із {total}",
+    "@workoutNotificationSetOf": {
+        "placeholders": {
+            "current": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "workoutNotificationInProgress": "Тренування триває",
+    "workoutNotificationLogSet": "Записати підхід",
+    "@workoutNotificationLogSet": {
+        "description": "Notification button that logs the next set with its planned values. Shown next to up to two other buttons in a single row, so keep it very short; translate the meaning, not word for word"
+    },
+    "workoutNotificationSkipRest": "Пропустити",
+    "@workoutNotificationSkipRest": {
+        "description": "Notification button that ends the running rest. Shown next to up to two other buttons in a single row, so keep it very short; translate the meaning, not word for word"
+    },
+    "workoutNotificationExtendRest": "+{seconds} сек",
+    "@workoutNotificationExtendRest": {
+        "description": "Notification button that makes the running rest longer. Shown next to up to two other buttons in a single row, so keep it very short; translate the meaning, not word for word",
+        "placeholders": {
+            "seconds": {
+                "type": "int"
+            }
+        }
+    },
+    "workoutNotificationNotLoggedTitle": "Підхід не записано",
+    "workoutNotificationNotLoggedBody": "Відкрийте режим тренування, щоб продовжити",
+    "workoutNotificationAlarmChannel": "Сигнал завершення відпочинку",
+    "@workoutNotificationAlarmChannel": {
+        "description": "Name of the Android notification channel for the alert at the end of a rest"
+    },
+    "workoutNotificationChannel": "Тренування",
+    "@workoutNotificationChannel": {
+        "description": "Name of the Android notification channel for the ongoing workout notification"
+    }
 }
