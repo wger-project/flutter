@@ -161,6 +161,9 @@ class RestAlarm extends Equatable {
   final List<String> quickLogs;
   final Uri? image;
 
+  /// Without sound, only to switch the controls to the rest end
+  final bool silent;
+
   const RestAlarm({
     required this.at,
     required this.title,
@@ -171,6 +174,7 @@ class RestAlarm extends Equatable {
     this.canExtendRest = false,
     this.quickLogs = const [],
     this.image,
+    this.silent = false,
   });
 
   @override
@@ -184,6 +188,7 @@ class RestAlarm extends Equatable {
     payload,
     quickLogs,
     image,
+    silent,
   ];
 }
 
@@ -367,8 +372,9 @@ WorkoutNotificationTarget buildWorkoutNotification(
     final restRunning = endsAt != null && endsAt.isAfter(now);
 
     // Once the rest is over the notification shows the set, like the page
-    // after the rest. Logging during the rest is left to the set itself.
-    final alarm = state.alertOnCountdownEnd && restRunning
+    // after the rest. Logging during the rest is left to the set itself. With
+    // the alert off the controls still switch over, silently.
+    final alarm = restRunning && (state.alertOnCountdownEnd || withControls)
         ? RestAlarm(
             at: endsAt,
             title: next == null ? i18n.workoutNotificationRestOver : exerciseName(next),
@@ -380,6 +386,7 @@ WorkoutNotificationTarget buildWorkoutNotification(
             payload: actionPayload,
             quickLogs: next == null ? const [] : quickLogs(next),
             image: image(next ?? following),
+            silent: !state.alertOnCountdownEnd,
           )
         : null;
 

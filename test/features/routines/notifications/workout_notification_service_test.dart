@@ -177,6 +177,31 @@ void main() {
     ]);
   });
 
+  test('A silent alarm stands in for the controls, without sound', () async {
+    final service = LocalWorkoutNotificationService();
+
+    await service.scheduleRestAlarm(alarm(), labels);
+    expect(scheduled()['channelId'], 'rest_alarm');
+    expect(scheduled()['playSound'], isTrue);
+
+    calls.clear();
+    await service.scheduleRestAlarm(
+      RestAlarm(
+        at: DateTime.now().add(const Duration(minutes: 2)),
+        title: 'Bench press',
+        body: 'Set 2 of 3 · 3x100kg',
+        payload: payload,
+        silent: true,
+      ),
+      labels,
+    );
+    expect(scheduled()['channelId'], 'workout_controls');
+    expect(scheduled()['playSound'], isFalse);
+    expect(scheduled()['enableVibration'], isFalse);
+    expect(scheduled()['ongoing'], isTrue);
+    expect(scheduled()['autoCancel'], isFalse);
+  });
+
   test('The alarm says next to the app name that the rest is over', () async {
     await LocalWorkoutNotificationService().scheduleRestAlarm(
       RestAlarm(

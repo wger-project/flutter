@@ -110,14 +110,25 @@ void main() {
       expect(target.controls!.payload.restSlotKey, timer.key);
     });
 
-    test('No alarm when the setting is off', () {
+    test('With the alert off the controls still switch at the rest end, silently', () {
       notifier.state = notifier.state.copyWith(alertOnCountdownEnd: false);
-      onPage(timers().first, restStartedAt: now, restEndsAt: now.add(const Duration(seconds: 90)));
+      final endsAt = now.add(const Duration(seconds: 90));
+      onPage(timers().first, restStartedAt: now, restEndsAt: endsAt);
 
       final target = build();
-
-      expect(target.alarm, isNull);
+      expect(target.alarm!.silent, isTrue);
+      expect(target.alarm!.at, endsAt);
+      expect(target.alarm!.body, 'Set 2 of 3 · 3x100kg');
       expect(target.controls, isNotNull);
+
+      // Without controls there is nothing to switch
+      expect(build(withControls: false), WorkoutNotificationTarget.none);
+    });
+
+    test('With the alert on the alarm is not silent', () {
+      onPage(timers().first, restStartedAt: now, restEndsAt: now.add(const Duration(seconds: 90)));
+
+      expect(build().alarm!.silent, isFalse);
     });
 
     test('A rest that is already over has no alarm and no chronometer', () {

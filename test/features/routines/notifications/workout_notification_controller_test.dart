@@ -194,7 +194,9 @@ void main() {
     initGymMode();
     gymState.state = gymState.state.copyWith(alertOnCountdownEnd: false);
     await startRest();
-    verifyNever(service.scheduleRestAlarm(any, any));
+    // Only the silent switch of the controls at the rest end
+    final silent = verify(service.scheduleRestAlarm(captureAny, any)).captured.single as RestAlarm;
+    expect(silent.silent, isTrue);
     verify(service.showControls(any, any));
 
     clearInteractions(service);
@@ -205,7 +207,8 @@ void main() {
       );
       await settle();
     });
-    verify(service.scheduleRestAlarm(any, any)).called(1);
+    final alarm = verify(service.scheduleRestAlarm(captureAny, any)).captured.single as RestAlarm;
+    expect(alarm.silent, isFalse);
     verifyNever(service.showControls(any, any));
   });
 

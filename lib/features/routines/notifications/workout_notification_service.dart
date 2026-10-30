@@ -222,11 +222,18 @@ class LocalWorkoutNotificationService implements WorkoutNotificationService {
           : AndroidScheduleMode.inexactAllowWhileIdle,
       notificationDetails: NotificationDetails(
         android: AndroidNotificationDetails(
-          _alarmChannelId,
-          labels.alarmChannel,
-          importance: Importance.high,
-          priority: Priority.high,
-          category: AndroidNotificationCategory.alarm,
+          alarm.silent ? _controlsChannelId : _alarmChannelId,
+          alarm.silent ? labels.controlsChannel : labels.alarmChannel,
+          importance: alarm.silent ? Importance.low : Importance.high,
+          priority: alarm.silent ? Priority.low : Priority.high,
+          // A silent one stands in for the controls, so it stays like them
+          ongoing: alarm.silent,
+          autoCancel: !alarm.silent,
+          playSound: !alarm.silent,
+          enableVibration: !alarm.silent,
+          category: alarm.silent
+              ? AndroidNotificationCategory.workout
+              : AndroidNotificationCategory.alarm,
           visibility: NotificationVisibility.public,
           subText: alarm.subtitle,
           largeIcon: await _cachedImage(alarm.image),
@@ -238,7 +245,7 @@ class LocalWorkoutNotificationService implements WorkoutNotificationService {
         ),
         iOS: DarwinNotificationDetails(
           subtitle: alarm.subtitle,
-          presentSound: true,
+          presentSound: !alarm.silent,
           // iOS fixes the actions per category, these are the combinations used
           categoryIdentifier: alarm.canLogSet
               ? _restEndCategory
