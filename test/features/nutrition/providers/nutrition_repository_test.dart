@@ -477,6 +477,94 @@ void main() {
   });
 
   group('Diary logs', () {
+    test('editLogLocalDrift clears the unit and changes only portion and timestamp', () async {
+      await seedPlan(id: planUuid1);
+      await seedIngredient(id: 1, name: 'Apple');
+      await seedIngredientWeightUnit(id: 10, ingredientId: 1, grams: 125);
+      await seedMeal(id: 'meal-edit', planId: planUuid1);
+      await repo.addLogLocalDrift(
+        LogItem(
+          id: 'log-edit',
+          planId: planUuid1,
+          mealId: 'meal-edit',
+          ingredientId: 1,
+          weightUnitId: 10,
+          amount: 100,
+          datetime: DateTime.utc(2026, 4, 15),
+          comment: 'Keep this comment',
+        ),
+      );
+
+      await repo.editLogLocalDrift(
+        id: 'log-edit',
+        amount: 80.5,
+        datetime: DateTime.parse('2026-10-25T02:30:00+01:00'),
+        weightUnitId: null,
+      );
+
+      final stored = await db.select(db.logItemTable).getSingle();
+      expect(stored.amount, 80.5);
+      expect(stored.weightUnitId, isNull);
+      expect(stored.datetime.toUtc(), DateTime.utc(2026, 10, 25, 1, 30));
+      expect(stored.id, 'log-edit');
+      expect(stored.ingredientId, 1);
+      expect(stored.planId, planUuid1);
+      expect(stored.mealId, 'meal-edit');
+      expect(stored.comment, 'Keep this comment');
+      final hydrated = (await repo.watchAllLogsHydrated().first).single;
+      expect(hydrated.nutritionalValues.energy, 80.5);
+    });
+
+    test('editLogLocalDrift reports a missing entry', () async {
+      await expectLater(
+        repo.editLogLocalDrift(
+          id: 'missing',
+          amount: 100,
+          datetime: DateTime.utc(2026),
+          weightUnitId: null,
+        ),
+        throwsStateError,
+      );
+    });
+
+    test('editLogLocalDrift rejects invalid amounts without changing the row', () async {
+      await seedPlan(id: planUuid1);
+      await seedIngredient(id: 1, name: 'Apple');
+      await repo.addLogLocalDrift(
+        LogItem(
+          id: 'log-edit',
+          planId: planUuid1,
+          ingredientId: 1,
+          amount: 100,
+          datetime: DateTime.utc(2026),
+        ),
+      );
+      for (final amount in [double.nan, double.infinity, -1, 0, 0.99, 1000.01, 1.001]) {
+        await expectLater(
+          repo.editLogLocalDrift(
+            id: 'log-edit',
+            amount: amount,
+            datetime: DateTime.utc(2027),
+            weightUnitId: null,
+          ),
+          throwsArgumentError,
+          reason: '$amount must not enter the sync queue',
+        );
+        final stored = await db.select(db.logItemTable).getSingle();
+        expect(stored.amount, 100);
+        expect(stored.datetime.toUtc(), DateTime.utc(2026));
+      }
+      for (final amount in [1, 1.1, 80.55, 1000]) {
+        await repo.editLogLocalDrift(
+          id: 'log-edit',
+          amount: amount,
+          datetime: DateTime.utc(2026),
+          weightUnitId: null,
+        );
+        expect((await db.select(db.logItemTable).getSingle()).amount, amount);
+      }
+    });
+
     test('watchAllLogsHydrated emits empty when no logs exist', () async {
       expect(await repo.watchAllLogsHydrated().first, isEmpty);
     });
