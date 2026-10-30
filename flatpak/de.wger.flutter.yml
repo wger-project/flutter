@@ -9,10 +9,10 @@ app-id: de.wger.flutter
 runtime: org.freedesktop.Platform
 # See https://gitlab.com/freedesktop-sdk/freedesktop-sdk/-/wikis/Releases
 # for deprecation and release dates
-runtime-version: '25.08'
+runtime-version: '26.08'
 sdk: org.freedesktop.Sdk
 sdk-extensions:
-  - org.freedesktop.Sdk.Extension.llvm20
+  - org.freedesktop.Sdk.Extension.llvm22
 command: wger
 separate-locales: false
 finish-args:
@@ -69,8 +69,8 @@ modules:
           # (-mbranch-protection is invalid on x86_64.)
           cflags: -mbranch-protection=none
           cxxflags: -mbranch-protection=none
-      append-path: /usr/lib/sdk/llvm20/bin:/var/lib/flutter/bin
-      prepend-ld-library-path: /usr/lib/sdk/llvm20/lib
+      append-path: /usr/lib/sdk/llvm22/bin:/var/lib/flutter/bin
+      prepend-ld-library-path: /usr/lib/sdk/llvm22/lib
       env:
         PUB_CACHE: /run/build/flutter/.pub-cache
     build-commands:
