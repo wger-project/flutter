@@ -36,6 +36,7 @@ leaving out what it doesn't need and never inventing other top-level names:
 ```
 features/<feature>/
 ├── models/      @freezed entities, filters, enums
+├── notifications/ platform notifications (content, service, controller)
 ├── providers/   notifiers AND repositories (<name>_repository.dart, <name>_notifier.dart)
 ├── screens/     full screens (<name>_screen.dart)
 ├── widgets/     UI fragments, forms under widgets/forms/ or widgets/<area>/
