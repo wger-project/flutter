@@ -92,9 +92,13 @@ Widget createDashboardScreen({Locale? locale}) {
   ).thenAnswer((_) => Stream.value(tUserProfile1));
 
   final mockRoutinesRepo = MockRoutinesRepository();
+  final routine = getScreenshotRoutine();
+  final mockSessionRepo = MockWorkoutSessionRepository();
+  final sessions = routine.sessions;
+  when(mockSessionRepo.watchAllDrift()).thenAnswer((_) => Stream.value(sessions));
   when(
     mockRoutinesRepo.watchAllDrift(),
-  ).thenAnswer((_) => Stream.value([getScreenshotRoutine()]));
+  ).thenAnswer((_) => Stream.value([routine]));
 
   final mockTrophyRepo = MockTrophyRepository();
   when(
@@ -136,7 +140,7 @@ Widget createDashboardScreen({Locale? locale}) {
       trophyRepositoryProvider.overrideWithValue(mockTrophyRepo),
       exerciseRepositoryProvider.overrideWithValue(MockExerciseRepository()),
       healthRepositoryProvider.overrideWithValue(MockHealthRepository()),
-      workoutSessionRepositoryProvider.overrideWithValue(MockWorkoutSessionRepository()),
+      workoutSessionRepositoryProvider.overrideWithValue(mockSessionRepo),
     ],
   );
 

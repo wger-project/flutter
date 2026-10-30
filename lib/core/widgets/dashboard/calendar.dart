@@ -23,6 +23,7 @@ import 'package:wger/core/consts.dart';
 import 'package:wger/core/date.dart';
 import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/core/json.dart';
+import 'package:wger/core/widgets/error.dart';
 import 'package:wger/core/widgets/legacy_material_scope.dart';
 import 'package:wger/core/widgets/progress_indicator.dart';
 import 'package:wger/features/account/providers/user_profile_notifier.dart';
@@ -34,7 +35,7 @@ import 'package:wger/features/measurements/providers/measurement_notifier.dart';
 import 'package:wger/features/nutrition/models/nutritional_plan.dart';
 import 'package:wger/features/nutrition/providers/nutrition_notifier.dart';
 import 'package:wger/features/routines/models/session.dart';
-import 'package:wger/features/routines/providers/routines_notifier.dart';
+import 'package:wger/features/routines/providers/workout_session_notifier.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/theme/theme.dart';
 
@@ -208,15 +209,23 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
   Widget build(BuildContext context) {
     final categories = ref.watch(measurementCategoriesProvider).value;
     final dailyBuckets = ref.watch(measurementDailyBucketsProvider).value;
-    final routinesState = ref.watch(routinesRiverpodProvider).value;
+    final sessionsState = ref.watch(workoutSessionProvider);
     final nutritionState = ref.watch(nutritionProvider).value;
     final profile = ref.watch(userProfileProvider).value;
+
+    if (sessionsState.hasError) {
+      return _shell(
+        context,
+        StreamErrorIndicator(sessionsState.error!, stacktrace: sessionsState.stackTrace),
+      );
+    }
+    final sessions = sessionsState.value;
 
     // Show a spinner until every source has produced at least one value. Same
     // pattern as the other dashboard widgets via [AsyncValueWidget].
     if (categories == null ||
         dailyBuckets == null ||
-        routinesState == null ||
+        sessions == null ||
         nutritionState == null ||
         profile == null) {
       return _shell(context, const BoxedProgressIndicator());
@@ -227,7 +236,7 @@ class _DashboardCalendarWidgetState extends riverpod.ConsumerState<DashboardCale
       isMetric: profile.isMetric,
       categories: categories,
       dailyBuckets: dailyBuckets,
-      sessions: routinesState.sessions,
+      sessions: sessions,
       plans: nutritionState.plans,
       ownerZone: profile.timeZone,
     );
