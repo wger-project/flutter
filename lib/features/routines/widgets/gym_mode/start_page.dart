@@ -16,12 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/exercises/widgets/images.dart';
 import 'package:wger/features/routines/models/day.dart';
+import 'package:wger/features/routines/notifications/workout_notification_content.dart';
 import 'package:wger/features/routines/notifications/workout_notification_service.dart';
 import 'package:wger/features/routines/providers/gym_state.dart';
 import 'package:wger/features/routines/providers/gym_state_notifier.dart';
@@ -53,6 +56,15 @@ class _GymModeOptionsState extends ConsumerState<GymModeOptions> {
   void dispose() {
     _countdownController.dispose();
     super.dispose();
+  }
+
+  /// Gym mode only asks on opening if a notification is on, so switching one
+  /// on later has to ask as well
+  void _requestPermissionsIfOn(bool value) {
+    if (value) {
+      final labels = WorkoutNotificationLabels.of(AppLocalizations.of(context));
+      unawaited(ref.read(workoutNotificationServiceProvider).requestPermissions(labels));
+    }
   }
 
   @override
@@ -177,7 +189,10 @@ class _GymModeOptionsState extends ConsumerState<GymModeOptions> {
                             subtitle: Text(i18n.gymModeAlertOnRestEndHelp),
                             value: gymState.alertOnCountdownEnd,
                             onChanged: gymState.showTimerPages
-                                ? (value) => gymNotifier.setAlertOnCountdownEnd(value)
+                                ? (value) {
+                                    gymNotifier.setAlertOnCountdownEnd(value);
+                                    _requestPermissionsIfOn(value);
+                                  }
                                 : null,
                           ),
                           // Android delays alarms without the exact alarm permission
@@ -206,7 +221,10 @@ class _GymModeOptionsState extends ConsumerState<GymModeOptions> {
                               title: Text(i18n.gymModeWorkoutNotification),
                               subtitle: Text(i18n.gymModeWorkoutNotificationHelp),
                               value: gymState.showWorkoutNotification,
-                              onChanged: (value) => gymNotifier.setShowWorkoutNotification(value),
+                              onChanged: (value) {
+                                gymNotifier.setShowWorkoutNotification(value);
+                                _requestPermissionsIfOn(value);
+                              },
                             ),
 
                           const Divider(),

@@ -166,6 +166,35 @@ void main() {
     expect(notifier.state.alertOnCountdownEnd, isFalse);
   });
 
+  testWidgets('Switching a notification on asks for the permission, off does not', (tester) async {
+    // Gym mode was opened with both off, so it did not ask then
+    when(notificationService.requestPermissions(any)).thenAnswer((_) async {});
+    final notifier = container.read(gymStateProvider.notifier);
+    notifier.setAlertOnCountdownEnd(false);
+    notifier.setShowWorkoutNotification(false);
+    await pumpGymModeOptions(tester);
+    await tester.tap(find.byKey(const ValueKey('gym-mode-options-tile')));
+    await tester.pumpAndSettle();
+
+    for (final key in ['gym-mode-notify-countdown', 'gym-mode-workout-notification']) {
+      final toggle = find.byKey(ValueKey(key));
+      await tester.ensureVisible(toggle);
+      await tester.tap(toggle);
+      await tester.pump();
+    }
+    verify(notificationService.requestPermissions(any)).called(2);
+
+    for (final key in ['gym-mode-notify-countdown', 'gym-mode-workout-notification']) {
+      final toggle = find.byKey(ValueKey(key));
+      await tester.ensureVisible(toggle);
+      await tester.tap(toggle);
+      await tester.pump();
+    }
+    verifyNever(notificationService.requestPermissions(any));
+    expect(notifier.state.alertOnCountdownEnd, isFalse);
+    expect(notifier.state.showWorkoutNotification, isFalse);
+  });
+
   testWidgets('The workout notification switch only shows on Android', (tester) async {
     debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
     addTearDown(() => debugDefaultTargetPlatformOverride = null);
