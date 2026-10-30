@@ -211,4 +211,20 @@ class NutritionNotifier extends _$NutritionNotifier {
     final repo = ref.read(nutritionRepositoryProvider);
     await repo.deleteLogLocalDrift(logId);
   }
+
+  /// Saves portion and timestamp changes locally; diary streams update automatically.
+  Future<void> editLog({
+    required String id,
+    required num amount,
+    required DateTime datetime,
+    required int? weightUnitId,
+  }) async {
+    final repo = ref.read(nutritionRepositoryProvider);
+    await repo.editLogLocalDrift(
+      id: id,
+      amount: amount,
+      datetime: datetime,
+      weightUnitId: weightUnitId,
+    );
+  }
 }

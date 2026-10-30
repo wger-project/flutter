@@ -328,6 +328,39 @@ class NutritionRepository {
     await _db.into(_db.logItemTable).insert(log.toCompanion());
   }
 
+  /// Updates only the editable portion and timestamp, through the sync queue.
+  Future<void> editLogLocalDrift({
+    required String id,
+    required num amount,
+    required DateTime datetime,
+    required int? weightUnitId,
+  }) async {
+    if (!amount.isFinite ||
+        amount < 1 ||
+        amount > 1000 ||
+        amount != double.parse(amount.toStringAsFixed(2))) {
+      throw ArgumentError.value(amount, 'amount', 'Must be 1–1000 with at most two decimals');
+    }
+    await _db.transaction(() async {
+      // PowerSync writes through SQLite views, whose INSTEAD OF triggers do
+      // not contribute to the affected-row count. Check existence in the same
+      // transaction instead of interpreting a successful view update as missing.
+      final existing = await (_db.select(
+        _db.logItemTable,
+      )..where((t) => t.id.equals(id))).getSingleOrNull();
+      if (existing == null) {
+        throw StateError('Diary entry no longer exists');
+      }
+      await (_db.update(_db.logItemTable)..where((t) => t.id.equals(id))).write(
+        LogItemTableCompanion(
+          amount: Value(amount.toDouble()),
+          datetime: Value(datetime),
+          weightUnitId: Value(weightUnitId),
+        ),
+      );
+    });
+  }
+
   /// Deletes a diary entry by its UUID
   Future<void> deleteLogLocalDrift(String id) async {
     _logger.finer('Deleting local diary entry $id');
