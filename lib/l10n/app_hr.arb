@@ -1240,7 +1240,7 @@
     "@carbohydratesSugar": {
         "description": "Label for the carbohydrates sugar"
     },
-    "errorRawSource": "Neobrađeni podaci",
+    "errorRawSource": "Neobrađeno",
     "@errorRawSource": {
         "description": "Tab label for showing an HTML error response in its raw (unrendered) form, opposite of 'Preview'."
     },
@@ -1944,5 +1944,72 @@
                 "type": "int"
             }
         }
+    },
+    "gymModeAlertOnRestEnd": "Obavijesti kada odmor završi",
+    "gymModeAlertOnRestEndHelp": "Vibrira u modusu teretane ili šalje obavijest kada je aplikacija u pozadini",
+    "gymModeWorkoutNotification": "Obavijest o treningu",
+    "gymModeExactAlarmMissing": "Bez dozvole za točni alarm, alarm za kraj odmora može kasniti nekoliko minuta",
+    "gymModeExactAlarmAllow": "Dozvoli",
+    "gymModeWorkoutNotificationHelp": "Dozvoljava pristup trenutačnom treningu i upravljanje njime putem trajne obavijesti",
+    "workoutNotificationRestOver": "Odmor je završio",
+    "workoutNotificationNext": "Sljedeće: {set}",
+    "@workoutNotificationNext": {
+        "description": "Notification text with the next planned set, e.g. 'Next: Bench press 3 × 100 kg'",
+        "placeholders": {
+            "set": {
+                "type": "String"
+            }
+        }
+    },
+    "workoutNotificationSetOf": "Postavi {current} od {total}",
+    "@workoutNotificationSetOf": {
+        "placeholders": {
+            "current": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "workoutNotificationInProgress": "Trening u tijeku",
+    "workoutNotificationSkipRest": "Preskoči",
+    "@workoutNotificationSkipRest": {
+        "description": "Notification button that ends the running rest. Shown next to up to two other buttons in a single row, so keep it very short; translate the meaning, not word for word"
+    },
+    "workoutNotificationExtendRest": "+{seconds} s",
+    "@workoutNotificationExtendRest": {
+        "description": "Notification button that makes the running rest longer. Shown next to up to two other buttons in a single row, so keep it very short; translate the meaning, not word for word",
+        "placeholders": {
+            "seconds": {
+                "type": "int"
+            }
+        }
+    },
+    "workoutNotificationNotLoggedTitle": "Serija nije zapisana",
+    "workoutNotificationLogSet": "Zapiši planiranu seriju",
+    "@workoutNotificationLogSet": {
+        "description": "Notification button that logs the next set with its planned values. Shown next to up to two other buttons in a single row, so keep it very short; translate the meaning, not word for word"
+    },
+    "workoutNotificationNotLoggedBody": "Otvori modus teretane za nastavljanje treninga",
+    "workoutNotificationAlarmChannel": "Alarm za kraj odmora",
+    "@workoutNotificationAlarmChannel": {
+        "description": "Name of the Android notification channel for the alert at the end of a rest"
+    },
+    "workoutNotificationChannel": "Trening",
+    "@workoutNotificationChannel": {
+        "description": "Name of the Android notification channel for the ongoing workout notification"
+    },
+    "upNext": "Sljedeće",
+    "@upNext": {
+        "description": "Label shown on the rest timer pages in the gym mode above the information about the upcoming set"
+    },
+    "gymModeStickySetValues": "Zadržavanje vrijednosti serije",
+    "@gymModeStickySetValues": {
+        "description": "Label for a gym mode setting: when enabled, the next set of an exercise is pre-filled with the values last logged instead of the planned ones"
+    },
+    "gymModeStickySetValuesHelp": "Unaprijed ispuni sljedeću seriju vježbe vrijednostima koje si zadnji put zabilježio/la za tu vježbu",
+    "@gymModeStickySetValuesHelp": {
+        "description": "Help text for the sticky set values setting in the gym mode"
     }
 }
