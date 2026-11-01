@@ -300,6 +300,7 @@ class MainApp extends ConsumerWidget {
                 ExercisesScreen.routeName: (ctx) => const ExercisesScreen(),
                 ExerciseDetailScreen.routeName: (ctx) => const ExerciseDetailScreen(),
                 AddExerciseScreen.routeName: (ctx) => const AddExerciseScreen(),
+                AddExerciseScreen.routeNameEdit: (ctx) => const AddExerciseScreen(),
                 AboutPage.routeName: (ctx) => const AboutPage(),
                 SettingsPage.routeName: (ctx) => const SettingsPage(),
                 LogOverviewPage.routeName: (ctx) => const LogOverviewPage(),

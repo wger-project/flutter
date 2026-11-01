@@ -16,23 +16,45 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
+import 'package:wger/features/account/providers/account_notifier.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
+import 'package:wger/features/exercises/screens/add_exercise_screen.dart';
 import 'package:wger/features/exercises/widgets/exercises.dart';
+import 'package:wger/l10n/generated/app_localizations.dart';
 
-class ExerciseDetailScreen extends StatelessWidget {
+class ExerciseDetailScreen extends ConsumerWidget {
   static const routeName = '/exercise-detail';
 
   const ExerciseDetailScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final exercise = ModalRoute.of(context)!.settings.arguments as Exercise;
+    final account = ref.watch(accountProvider).value;
+    final isAuthor = account != null &&
+        (exercise.authors.contains(account.username) ||
+            exercise.authorsGlobal.contains(account.username));
 
     return Scaffold(
       appBar: AppBar(
         title: Text(exercise.getTranslation(Localizations.localeOf(context).languageCode).name),
+        actions: [
+          if (isAuthor)
+            IconButton(
+              icon: const Icon(Icons.edit),
+              onPressed: () {
+                Navigator.pushNamed(
+                  context,
+                  AddExerciseScreen.routeNameEdit,
+                  arguments: exercise,
+                );
+              },
+              tooltip: AppLocalizations.of(context).edit,
+            ),
+        ],
       ),
       body: WidescreenWrapper(
         child: Padding(

@@ -20,6 +20,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wger/core/language.dart';
 import 'package:wger/features/exercises/models/category.dart';
 import 'package:wger/features/exercises/models/equipment.dart';
+import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/exercises/models/exercise_submission_images.dart';
 import 'package:wger/features/exercises/models/muscle.dart';
 import 'package:wger/features/exercises/providers/add_exercise_repository.dart';
@@ -89,6 +90,62 @@ class AddExerciseNotifier extends _$AddExerciseNotifier {
       );
     }
     clear();
+    return exerciseId;
+  }
+
+  /// Pre-populates the form state from an existing [exercise] for editing.
+  ///
+  /// The English translation (if any) drives the base-data fields, any other
+  /// translation drives the translation fields. Images are not pre-populated
+  /// (they already exist on the server); the user may add new ones.
+  void initFromExercise(Exercise exercise) {
+    final enTranslation = exercise.translations.firstWhereOrNull(
+      (t) => t.language.shortName == LANGUAGE_SHORT_ENGLISH,
+    );
+    final otherTranslation = exercise.translations.where(
+      (t) => t.language.shortName != LANGUAGE_SHORT_ENGLISH,
+    ).firstOrNull;
+
+    final author = exercise.authors.isNotEmpty ? exercise.authors.first : '';
+
+    state = state.copyWith(
+      author: author,
+      exerciseNameEn: enTranslation?.name,
+      descriptionEn: enTranslation?.description,
+      alternateNamesEn: enTranslation?.aliases.map((a) => a.alias).toList() ?? [],
+      category: exercise.category,
+      equipment: exercise.equipment,
+      primaryMuscles: exercise.muscles,
+      secondaryMuscles: exercise.musclesSecondary,
+      variationGroup: exercise.variationGroup,
+    );
+
+    if (enTranslation != null) {
+      final enLanguage = exercise.translations
+          .firstWhere((t) => t.language.shortName == LANGUAGE_SHORT_ENGLISH)
+          .language;
+      setLanguageEn(enLanguage);
+    }
+
+    if (otherTranslation != null) {
+      setExerciseNameTrans(otherTranslation.name);
+      setDescriptionTrans(otherTranslation.description);
+      setAlternateNamesTrans(otherTranslation.aliases.map((a) => a.alias).toList());
+      setLanguageTranslation(otherTranslation.language);
+    }
+  }
+
+  /// Updates the existing exercise on the server and uploads any attached
+  /// images. Returns the id of the updated exercise.
+  Future<int> updateExerciseToServer(int exerciseId) async {
+    await _repo.updateExercise(exerciseId, state.exerciseApiObject);
+    for (final image in state.exerciseImages) {
+      await _repo.uploadImage(
+        exerciseId: exerciseId,
+        image: image,
+        author: state.author,
+      );
+    }
     return exerciseId;
   }
 }
