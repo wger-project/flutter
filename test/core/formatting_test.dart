@@ -23,6 +23,27 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/l10n/localizations_delegates.dart';
 
 void main() {
+  testWidgets('plural fallback preserves the count in relative dates', (tester) async {
+    final now = DateTime.utc(2026, 1, 1);
+    for (final years in [21, 31, 101]) {
+      await tester.pumpWidget(
+        MaterialApp(
+          locale: const Locale('ru'),
+          localizationsDelegates: appLocalizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Builder(
+            builder: (context) => Text(
+              relativeDate(context, now.subtract(Duration(days: 365 * years)), now: now),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining(RegExp('^$years\\b')), findsOneWidget);
+    }
+  });
+
   group('hoursAndMinutes', () {
     test('splits the minutes into hours and minutes', () {
       expect(hoursAndMinutes(452, 'en'), '7:32');
