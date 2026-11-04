@@ -691,7 +691,7 @@ class _PlanFormState extends ConsumerState<PlanForm> {
               if (value != null && value.length > NutritionalPlan.maxDescriptionChars) {
                 return AppLocalizations.of(
                   context,
-                ).enterMaxCharacters(NutritionalPlan.maxDescriptionChars.toString());
+                ).enterMaxCharacters(NutritionalPlan.maxDescriptionChars);
               }
               return null;
             },

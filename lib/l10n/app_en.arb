@@ -501,7 +501,7 @@
   "gymModeLogScope": "Previous logs",
   "gymModeLogScopeHelp": "Which logs to show as reference while training",
   "gymModeLogScopeCurrentRoutine": "Current routine",
-  "gymModeLogScopeWeeks": "Last {weeks} weeks",
+  "gymModeLogScopeWeeks": "{weeks, plural, one{Last {weeks} week} other{Last {weeks} weeks}}",
   "@gymModeLogScopeWeeks": {
   "placeholders": {
     "weeks": { "type": "int" }
@@ -920,14 +920,14 @@
   "@endBeforeStart": {
     "description": "Validation error shown when a plan or routine end date is before its start date"
   },
-  "minLengthRoutine": "The routine needs to be at least {number} weeks long",
+  "minLengthRoutine": "{number, plural, one{The routine needs to be at least {number} week long} other{The routine needs to be at least {number} weeks long}}",
   "@minLengthRoutine": {
     "description": "Validation error when a routine is shorter than the minimum allowed duration",
     "placeholders": {
       "number": { "type": "int" }
     }
   },
-  "maxLengthRoutine": "The routine can be at most {number} weeks long",
+  "maxLengthRoutine": "{number, plural, one{The routine can be at most {number} week long} other{The routine can be at most {number} weeks long}}",
   "@maxLengthRoutine": {
     "description": "Validation error when a routine is longer than the maximum allowed duration",
     "placeholders": {
@@ -1184,33 +1184,33 @@
       }
     }
   },
-  "enterMinCharacters": "Please enter at least {min} characters",
+  "enterMinCharacters": "{min, plural, one{Please enter at least {min} character} other{Please enter at least {min} characters}}",
   "@enterMinCharacters": {
     "description": "Error message when the user hasn't entered the minimum amount characters in a form",
     "type": "text",
     "placeholders": {
       "min": {
-        "type": "String"
+        "type": "int"
       }
     }
   },
-  "enterMinWords": "Please enter at least {min} words",
+  "enterMinWords": "{min, plural, one{Please enter at least {min} word} other{Please enter at least {min} words}}",
   "@enterMinWords": {
     "description": "Error message when the user hasn't entered the minimum amount of words in a form",
     "type": "text",
     "placeholders": {
       "min": {
-        "type": "String"
+        "type": "int"
       }
     }
   },
-  "enterMaxCharacters": "Please enter at most {max} characters",
+  "enterMaxCharacters": "{max, plural, one{Please enter at most {max} character} other{Please enter at most {max} characters}}",
   "@enterMaxCharacters": {
     "description": "Error message when the user has entered more than the allowed amount of characters in a form",
     "type": "text",
     "placeholders": {
       "max": {
-        "type": "String"
+        "type": "int"
       }
     }
   },
@@ -1450,12 +1450,12 @@
   },
   "settingsVerboseLoggingDescription": "Useful when reporting persistent problems.",
   "aboutPageTitle": "About us & Support",
-  "contributeExerciseWarning": "You can only contribute exercises if your account is older than {days} days and have verified your email",
+  "contributeExerciseWarning": "{days, plural, one{You can only contribute exercises if your account is older than {days} day and have verified your email} other{You can only contribute exercises if your account is older than {days} days and have verified your email}}",
   "@contributeExerciseWarning": {
     "description": "Number of days before which a person can add exercise",
     "placeholders": {
       "days": {
-        "type": "String",
+        "type": "int",
         "example": "14"
       }
     }
@@ -1845,7 +1845,7 @@
   "@weightOrRepsRequired": {
     "description": "Validation error when both weight and repetitions are empty in a workout log"
   },
-  "sessionTooLong": "A session cannot be longer than {hours} hours",
+  "sessionTooLong": "{hours, plural, one{A session cannot be longer than {hours} hour} other{A session cannot be longer than {hours} hours}}",
   "@sessionTooLong": {
     "description": "Validation error when a workout session exceeds the maximum length",
     "placeholders": {
@@ -1862,7 +1862,7 @@
   "@healthSyncDescription": {
     "description": "Subtitle for the health platform sync setting"
   },
-  "healthSyncSuccess": "Imported {count} measurements from Health",
+  "healthSyncSuccess": "{count, plural, one{Imported {count} measurement from Health} other{Imported {count} measurements from Health}}",
   "@healthSyncSuccess": {
     "description": "Snackbar message after successful health sync",
     "placeholders": {

@@ -596,13 +596,13 @@
             }
         }
     },
-    "enterMinCharacters": "Voer minstens {min} tekens in",
+    "enterMinCharacters": "{min, plural, one{Voer minstens {min} teken in} other{Voer minstens {min} tekens in}}",
     "@enterMinCharacters": {
         "description": "Error message when the user hasn't entered the minimum amount characters in a form",
         "type": "text",
         "placeholders": {
             "min": {
-                "type": "String"
+                "type": "int"
             }
         }
     },
@@ -795,12 +795,12 @@
     "settingsIngredientCacheDescription": "Ingrediënten­cache",
     "settingsCacheDeletedSnackbar": "Cache succesvol geleegd",
     "aboutPageTitle": "Over ons & onder­steuning",
-    "contributeExerciseWarning": "Je kunt alleen oefeningen bijdragen als je account ouder is dan {days} dagen en je e-mailadres is geverifieerd",
+    "contributeExerciseWarning": "{days, plural, one{Je kunt alleen oefeningen bijdragen als je account ouder is dan {days} dag en je e-mailadres is geverifieerd} other{Je kunt alleen oefeningen bijdragen als je account ouder is dan {days} dagen en je e-mailadres is geverifieerd}}",
     "@contributeExerciseWarning": {
         "description": "Number of days before which a person can add exercise",
         "placeholders": {
             "days": {
-                "type": "String",
+                "type": "int",
                 "example": "14"
             }
         }
@@ -1150,8 +1150,8 @@
         "description": "Button label to open the documentation about server configuration"
     },
     "endBeforeStart": "De eindwaarde mag niet vóór de beginwaarde liggen",
-    "minLengthRoutine": "De routine moet minimaal {number} weken duren",
-    "maxLengthRoutine": "De routine kan maximaal {number} weken duren",
+    "minLengthRoutine": "{number, plural, one{De routine moet minimaal {number} week duren} other{De routine moet minimaal {number} weken duren}}",
+    "maxLengthRoutine": "{number, plural, one{De routine kan maximaal {number} week duren} other{De routine kan maximaal {number} weken duren}}",
     "syncStatusConnected": "Verbonden",
     "@syncStatusConnected": {
         "description": "Tooltip on the sync icon when the app is online and idle (no upload or download in progress)"

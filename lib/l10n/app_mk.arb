@@ -277,7 +277,7 @@
         "type": "text",
         "placeholders": {
             "min": {
-                "type": "String"
+                "type": "int"
             }
         }
     },

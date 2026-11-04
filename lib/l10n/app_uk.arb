@@ -534,13 +534,13 @@
     "add_exercise_image_license": "Зображення повинні бути сумісні з ліцензією CC BY SA. Якщо ви сумніваєтеся, завантажуйте лише фотографії, які ви зробили самі.",
     "translateExercise": "Перекладіть цю вправу зараз",
     "selectEntry": "Будь ласка, виберіть запис",
-    "enterMinCharacters": "Будь ласка, введіть принаймні {min} символів",
+    "enterMinCharacters": "{min, plural, one{Будь ласка, введіть принаймні {min} символ} few{Будь ласка, введіть принаймні {min} символи} other{Будь ласка, введіть принаймні {min} символів}}",
     "@enterMinCharacters": {
         "description": "Error message when the user hasn't entered the minimum amount characters in a form",
         "type": "text",
         "placeholders": {
             "min": {
-                "type": "String"
+                "type": "int"
             }
         }
     },
@@ -571,12 +571,12 @@
     "contributeExercise": "Додати вправу спільноті",
     "translation": "Переклад",
     "cardio": "Кардіо",
-    "contributeExerciseWarning": "Ви можете пропонувати вправи, лише якщо ваш обліковий запис створено понад {days} днів тому, а електронну пошту підтверджено",
+    "contributeExerciseWarning": "{days, plural, one{Ви можете пропонувати вправи, лише якщо ваш обліковий запис створено понад {days} день тому, а електронну пошту підтверджено} few{Ви можете пропонувати вправи, лише якщо ваш обліковий запис створено понад {days} дні тому, а електронну пошту підтверджено} other{Ви можете пропонувати вправи, лише якщо ваш обліковий запис створено понад {days} днів тому, а електронну пошту підтверджено}}",
     "@contributeExerciseWarning": {
         "description": "Number of days before which a person can add exercise",
         "placeholders": {
             "days": {
-                "type": "String",
+                "type": "int",
                 "example": "14"
             }
         }
@@ -967,8 +967,8 @@
     "personalRecords": "Особисті рекорди",
     "noTrophies": "У вас ще немає трофеїв",
     "endBeforeStart": "Кінцеве значення не може передувати початку",
-    "minLengthRoutine": "Програма має тривати принаймні {number} тижнів",
-    "maxLengthRoutine": "Програма тренувань щонайбільше {number} тижнів",
+    "minLengthRoutine": "{number, plural, one{Програма має тривати принаймні {number} тиждень} few{Програма має тривати принаймні {number} тижні} other{Програма має тривати принаймні {number} тижнів}}",
+    "maxLengthRoutine": "{number, plural, one{Програма тренувань щонайбільше {number} тиждень} few{Програма тренувань щонайбільше {number} тижні} other{Програма тренувань щонайбільше {number} тижнів}}",
     "preview": "Попередній перегляд",
     "refreshToken": "Токен оновлення",
     "invalidRefreshToken": "Будь ласка, введіть дійсний токен оновлення",
@@ -1067,7 +1067,7 @@
     "gymModeLogScope": "Попередні записи",
     "gymModeLogScopeHelp": "Які записи показувати для довідки під час тренування",
     "gymModeLogScopeCurrentRoutine": "Поточний план тренування",
-    "gymModeLogScopeWeeks": "За останні {weeks} тижнів",
+    "gymModeLogScopeWeeks": "{weeks, plural, one{За останній {weeks} тиждень} few{За останні {weeks} тижні} other{За останні {weeks} тижнів}}",
     "@gymModeLogScopeWeeks": {
         "placeholders": {
             "weeks": {
@@ -1167,7 +1167,7 @@
     "@chartAverageWindow": {
         "description": "Label of the setting for how many days the moving average covers"
     },
-    "chartAverageWindowDays": "{days, plural, one{1 день} few{{days} дні} many{{days} днів} other{{days} дня}}",
+    "chartAverageWindowDays": "{days, plural, one{{days} день} few{{days} дні} many{{days} днів} other{{days} дня}}",
     "@chartAverageWindowDays": {
         "description": "One option of the average window setting, e.g. '7 days'",
         "placeholders": {
@@ -1198,7 +1198,7 @@
     "@distributionLatest": {
         "description": "Label of the marker for the most recent value in the distribution histogram"
     },
-    "distributionEntryCount": "{count, plural, one{1 запис} few{{count} записи} many{{count} записів} other{{count} запису}}",
+    "distributionEntryCount": "{count, plural, one{{count} запис} few{{count} записи} many{{count} записів} other{{count} запису}}",
     "@distributionEntryCount": {
         "description": "How many measurements fall into the tapped histogram bin",
         "placeholders": {
@@ -1216,7 +1216,7 @@
             }
         }
     },
-    "relativeMonthsAgo": "{count, plural, one{1 місяць тому} few{{count} місяці тому} many{{count} місяців тому} other{{count} місяця тому}}",
+    "relativeMonthsAgo": "{count, plural, one{{count} місяць тому} few{{count} місяці тому} many{{count} місяців тому} other{{count} місяця тому}}",
     "@relativeMonthsAgo": {
         "description": "How long ago something was measured, for distances below a year",
         "placeholders": {
@@ -1225,7 +1225,7 @@
             }
         }
     },
-    "relativeYearsAgo": "{count, plural, one{1 рік тому} few{{count} роки тому} many{{count} років тому} other{{count} року тому}}",
+    "relativeYearsAgo": "{count, plural, one{{count} рік тому} few{{count} роки тому} many{{count} років тому} other{{count} року тому}}",
     "@relativeYearsAgo": {
         "description": "How long ago something was measured, for distances of a year and more",
         "placeholders": {
@@ -1260,7 +1260,7 @@
     "@trackNewMetric": {
         "description": "Tooltip of the overview's + button, which opens the sheet for starting a new measurement category"
     },
-    "distributionDayCount": "{count, plural, one{1 день} few{{count} дні} many{{count} днів} other{{count} дня}}",
+    "distributionDayCount": "{count, plural, one{{count} день} few{{count} дні} many{{count} днів} other{{count} дня}}",
     "@distributionDayCount": {
         "description": "How many days fall into the tapped histogram bin, for metrics summed per day",
         "placeholders": {
@@ -1269,7 +1269,7 @@
             }
         }
     },
-    "chartRangeWeeks": "{count, plural, one{1 тиждень} few{{count} тижні} many{{count} тижнів} other{{count} тижня}}",
+    "chartRangeWeeks": "{count, plural, one{{count} тиждень} few{{count} тижні} many{{count} тижнів} other{{count} тижня}}",
     "@chartRangeWeeks": {
         "description": "Chart time-range selector option covering a number of weeks",
         "placeholders": {
@@ -1278,7 +1278,7 @@
             }
         }
     },
-    "chartRangeMonths": "{count, plural, one{1 місяць} few{{count} місяці} many{{count} місяців} other{{count} місяця}}",
+    "chartRangeMonths": "{count, plural, one{{count} місяць} few{{count} місяці} many{{count} місяців} other{{count} місяця}}",
     "@chartRangeMonths": {
         "description": "Chart time-range selector option covering a number of months",
         "placeholders": {
@@ -1287,7 +1287,7 @@
             }
         }
     },
-    "chartRangeYears": "{count, plural, one{1 рік} few{{count} роки} many{{count} років} other{{count} року}}",
+    "chartRangeYears": "{count, plural, one{{count} рік} few{{count} роки} many{{count} років} other{{count} року}}",
     "@chartRangeYears": {
         "description": "Chart time-range selector option covering a number of years",
         "placeholders": {
@@ -1645,7 +1645,7 @@
             }
         }
     },
-    "healthSyncStatus": "{count, plural, =0{Остання синхронізація: {time}, нових записів немає} one{Остання синхронізація: {time}, 1 новий запис} few{Остання синхронізація: {time}, {count} нові записи} many{Остання синхронізація: {time}, {count} нових записів} other{Остання синхронізація: {time}, {count} нового запису}}",
+    "healthSyncStatus": "{count, plural, =0{Остання синхронізація: {time}, нових записів немає} one{Остання синхронізація: {time}, {count} новий запис} few{Остання синхронізація: {time}, {count} нові записи} many{Остання синхронізація: {time}, {count} нових записів} other{Остання синхронізація: {time}, {count} нового запису}}",
     "@healthSyncStatus": {
         "description": "Status line under the health sync toggle showing when the last sync ran and how many entries it imported",
         "placeholders": {
@@ -1831,7 +1831,7 @@
             }
         }
     },
-    "relativeWeeksAgo": "{count, plural, one{1 тиждень тому} few{{count} тижні тому} many{{count} тижнів тому} other{{count} тижня тому}}",
+    "relativeWeeksAgo": "{count, plural, one{{count} тиждень тому} few{{count} тижні тому} many{{count} тижнів тому} other{{count} тижня тому}}",
     "@relativeWeeksAgo": {
         "description": "How long ago something was measured, for distances below a month",
         "placeholders": {
@@ -1860,17 +1860,17 @@
     "@carbohydratesSugar": {
         "description": "Label for the carbohydrates sugar"
     },
-    "enterMaxCharacters": "Введіть не більше ніж {max} символів",
+    "enterMaxCharacters": "{max, plural, one{Введіть не більше ніж {max} символ} few{Введіть не більше ніж {max} символи} other{Введіть не більше ніж {max} символів}}",
     "@enterMaxCharacters": {
         "description": "Error message when the user has entered more than the allowed amount of characters in a form",
         "type": "text",
         "placeholders": {
             "max": {
-                "type": "String"
+                "type": "int"
             }
         }
     },
-    "healthSyncSuccess": "Імпортовано {count} вимірювань із Health",
+    "healthSyncSuccess": "{count, plural, one{Імпортовано {count} вимірювання із Health} few{Імпортовано {count} вимірювання із Health} other{Імпортовано {count} вимірювань із Health}}",
     "@healthSyncSuccess": {
         "description": "Snackbar message after successful health sync",
         "placeholders": {

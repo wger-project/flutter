@@ -39,14 +39,14 @@ String? validateExerciseDescription(String? name, BuildContext context) {
   }
 
   if (name.length < MIN_CHARS_DESCRIPTION) {
-    return AppLocalizations.of(context).enterMinCharacters(MIN_CHARS_DESCRIPTION.toString());
+    return AppLocalizations.of(context).enterMinCharacters(MIN_CHARS_DESCRIPTION);
   }
 
   // Words are tokens with at least one letter, so markdown list markers don't count
   final letter = RegExp(r'\p{L}', unicode: true);
   final words = name.split(RegExp(r'\s+')).where((token) => letter.hasMatch(token)).length;
   if (words < MIN_WORDS_DESCRIPTION) {
-    return AppLocalizations.of(context).enterMinWords(MIN_WORDS_DESCRIPTION.toString());
+    return AppLocalizations.of(context).enterMinWords(MIN_WORDS_DESCRIPTION);
   }
 
   return null;

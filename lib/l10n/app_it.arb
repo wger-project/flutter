@@ -568,13 +568,13 @@
     "add_exercise_image_license": "Le immagini devono essere compatibili con la licenza CC BY SA. In caso di dubbi, carica solo le foto che hai scattato tu stesso.",
     "baseNameEnglish": "Tutti gli esercizi necessitano di un nome base in inglese",
     "aboutMastodonTitle": "Mastodonte",
-    "enterMinCharacters": "Inserisci almeno {min} caratteri",
+    "enterMinCharacters": "{min, plural, one{Inserisci almeno {min} carattere} other{Inserisci almeno {min} caratteri}}",
     "@enterMinCharacters": {
         "description": "Error message when the user hasn't entered the minimum amount characters in a form",
         "type": "text",
         "placeholders": {
             "min": {
-                "type": "String"
+                "type": "int"
             }
         }
     },
@@ -643,12 +643,12 @@
         "description": "Generated entry for translation for server strings"
     },
     "aboutPageTitle": "Chi siamo & Supporto",
-    "contributeExerciseWarning": "Puoi contribuire agli esercizi solo se il tuo account è più vecchio di {days} giorni e hai verificato la tua email",
+    "contributeExerciseWarning": "{days, plural, one{Puoi contribuire agli esercizi solo se il tuo account è più vecchio di {days} giorno e hai verificato la tua email} other{Puoi contribuire agli esercizi solo se il tuo account è più vecchio di {days} giorni e hai verificato la tua email}}",
     "@contributeExerciseWarning": {
         "description": "Number of days before which a person can add exercise",
         "placeholders": {
             "days": {
-                "type": "String",
+                "type": "int",
                 "example": "14"
             }
         }
@@ -1146,6 +1146,6 @@
         "description": "Button label to open the documentation about server configuration"
     },
     "endBeforeStart": "Il valore finale non può precedere quello iniziale",
-    "minLengthRoutine": "Il programma deve durare almeno {number} settimane",
-    "maxLengthRoutine": "Il programma può durare massimo {number} settimane"
+    "minLengthRoutine": "{number, plural, one{Il programma deve durare almeno {number} settimana} other{Il programma deve durare almeno {number} settimane}}",
+    "maxLengthRoutine": "{number, plural, one{Il programma può durare massimo {number} settimana} other{Il programma può durare massimo {number} settimane}}"
 }

@@ -463,13 +463,13 @@
             }
         }
     },
-    "enterMinCharacters": "Пожалуйста, введите как минимум {min} символов",
+    "enterMinCharacters": "{min, plural, one{Пожалуйста, введите как минимум {min} символ} few{Пожалуйста, введите как минимум {min} символа} other{Пожалуйста, введите как минимум {min} символов}}",
     "@enterMinCharacters": {
         "description": "Error message when the user hasn't entered the minimum amount characters in a form",
         "type": "text",
         "placeholders": {
             "min": {
-                "type": "String"
+                "type": "int"
             }
         }
     },
@@ -632,12 +632,12 @@
     "contributeExercise": "Добавить упражнение",
     "addExercise": "Добавить упражнение",
     "translateExercise": "Перевести это упражнение",
-    "contributeExerciseWarning": "Вы можете добавлять упражнения только в том случае, если ваша учетная запись старше {days} дней и вы подтвердили свою электронную почту",
+    "contributeExerciseWarning": "{days, plural, one{Вы можете добавлять упражнения только в том случае, если ваша учетная запись старше {days} дня и вы подтвердили свою электронную почту} other{Вы можете добавлять упражнения только в том случае, если ваша учетная запись старше {days} дней и вы подтвердили свою электронную почту}}",
     "@contributeExerciseWarning": {
         "description": "Number of days before which a person can add exercise",
         "placeholders": {
             "days": {
-                "type": "String",
+                "type": "int",
                 "example": "14"
             }
         }

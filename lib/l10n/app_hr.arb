@@ -463,13 +463,13 @@
     "@close": {
         "description": "Translation for close"
     },
-    "enterMinCharacters": "Upiši barem {min} znakova",
+    "enterMinCharacters": "{min, plural, one{Upiši barem {min} znak} few{Upiši barem {min} znaka} other{Upiši barem {min} znakova}}",
     "@enterMinCharacters": {
         "description": "Error message when the user hasn't entered the minimum amount characters in a form",
         "type": "text",
         "placeholders": {
             "min": {
-                "type": "String"
+                "type": "int"
             }
         }
     },
@@ -550,7 +550,7 @@
         "description": "Number of days before which a person can add exercise",
         "placeholders": {
             "days": {
-                "type": "String",
+                "type": "int",
                 "example": "14"
             }
         }
@@ -1301,13 +1301,13 @@
     "@syncStatusErrorDetails": {
         "description": "Header of the expandable section in the sync status dialog that reveals the raw error message"
     },
-    "enterMaxCharacters": "Upiši maksimalno {max} znakova",
+    "enterMaxCharacters": "{max, plural, one{Upiši maksimalno {max} znak} few{Upiši maksimalno {max} znaka} other{Upiši maksimalno {max} znakova}}",
     "@enterMaxCharacters": {
         "description": "Error message when the user has entered more than the allowed amount of characters in a form",
         "type": "text",
         "placeholders": {
             "max": {
-                "type": "String"
+                "type": "int"
             }
         }
     },
@@ -1337,8 +1337,8 @@
     },
     "powerSyncUnreachableContent": "Tvoj je wger server dostupan, ali (zasebna) usluga koja obrađuje izvanmrežnu sinkronizaciju ne odgovara. Ako pokrećeš vlastiti hosting za wger, provjeri konfiguraciju i provjeri je li PowerSync usluga ispravno radi.",
     "endBeforeStart": "Vrijednost kraja ne može biti prije vrijednosti početka",
-    "minLengthRoutine": "Rutina mora trajati barem {number} tjedna",
-    "maxLengthRoutine": "Rutina smije trajati najviše {number} tjedna",
+    "minLengthRoutine": "{number, plural, one{Rutina mora trajati barem {number} tjedan} few{Rutina mora trajati barem {number} tjedna} other{Rutina mora trajati barem {number} tjedana}}",
+    "maxLengthRoutine": "{number, plural, one{Rutina smije trajati najviše {number} tjedan} few{Rutina smije trajati najviše {number} tjedna} other{Rutina smije trajati najviše {number} tjedana}}",
     "allowSelfSignedCertsTitle": "Dopusti samopotpisane certifikate",
     "allowSelfSignedCertsDetail": "Deaktivira provjeru valjanosti TLS certifikata. Aktiviraj ovo samo za server kojem vjeruješ.",
     "certsNotVerifiedTitle": "Provjera valjanosti certifikata je isključena",
@@ -1359,7 +1359,7 @@
     "gymModeLogScope": "Prethodni zapisi",
     "gymModeLogScopeHelp": "Koje zapise prikazati kao referencu tijekom treniranja",
     "gymModeLogScopeCurrentRoutine": "Trenutačna rutina",
-    "gymModeLogScopeWeeks": "Zadnjih {weeks} tjedna",
+    "gymModeLogScopeWeeks": "{weeks, plural, one{Zadnji {weeks} tjedan} few{Zadnja {weeks} tjedna} other{Zadnjih {weeks} tjedana}}",
     "@gymModeLogScopeWeeks": {
         "placeholders": {
             "weeks": {
@@ -1559,7 +1559,7 @@
     "@distributionLatest": {
         "description": "Label of the marker for the most recent value in the distribution histogram"
     },
-    "distributionEntryCount": "{count, plural, one{1 unos} few{{count} unosa} other{{count} unosa}}",
+    "distributionEntryCount": "{count, plural, one{{count} unos} few{{count} unosa} other{{count} unosa}}",
     "@distributionEntryCount": {
         "description": "How many measurements fall into the tapped histogram bin",
         "placeholders": {
@@ -1568,7 +1568,7 @@
             }
         }
     },
-    "distributionDayCount": "{count, plural, one{1 dan} few{{count} dana} other{{count} dana}}",
+    "distributionDayCount": "{count, plural, one{{count} dan} few{{count} dana} other{{count} dana}}",
     "@distributionDayCount": {
         "description": "How many days fall into the tapped histogram bin, for metrics summed per day",
         "placeholders": {
@@ -1586,7 +1586,7 @@
             }
         }
     },
-    "relativeWeeksAgo": "{count, plural, one{prije 1 tjedan} few{prije {count} tjedna} other{prije {count} tjedna}}",
+    "relativeWeeksAgo": "{count, plural, one{prije {count} tjedan} few{prije {count} tjedna} other{prije {count} tjedna}}",
     "@relativeWeeksAgo": {
         "description": "How long ago something was measured, for distances below a month",
         "placeholders": {
@@ -1595,7 +1595,7 @@
             }
         }
     },
-    "relativeMonthsAgo": "{count, plural, one{prije 1 mjesec} few{prije {count} mjeseca} other{prije {count} mjeseci}}",
+    "relativeMonthsAgo": "{count, plural, one{prije {count} mjesec} few{prije {count} mjeseca} other{prije {count} mjeseci}}",
     "@relativeMonthsAgo": {
         "description": "How long ago something was measured, for distances below a year",
         "placeholders": {
@@ -1604,7 +1604,7 @@
             }
         }
     },
-    "relativeYearsAgo": "{count, plural, one{prije 1 godine} few{prije {count} godine} other{prije {count} godina}}",
+    "relativeYearsAgo": "{count, plural, one{prije {count} godine} few{prije {count} godine} other{prije {count} godina}}",
     "@relativeYearsAgo": {
         "description": "How long ago something was measured, for distances of a year and more",
         "placeholders": {
@@ -1658,7 +1658,7 @@
             }
         }
     },
-    "healthSyncSuccess": "Uvezeno {count} mjerenja iz Zdravlja",
+    "healthSyncSuccess": "{count, plural, one{Uvezeno {count} mjerenje iz Zdravlja} other{Uvezeno {count} mjerenja iz Zdravlja}}",
     "@healthSyncSuccess": {
         "description": "Snackbar message after successful health sync",
         "placeholders": {
@@ -1667,7 +1667,7 @@
             }
         }
     },
-    "chartRangeYears": "{count, plural, one{1 godina} few{{count} godine} other{{count} godina}}",
+    "chartRangeYears": "{count, plural, one{{count} godina} few{{count} godine} other{{count} godina}}",
     "@chartRangeYears": {
         "description": "Chart time-range selector option covering a number of years",
         "placeholders": {
@@ -1676,7 +1676,7 @@
             }
         }
     },
-    "chartRangeMonths": "{count, plural, one{1 mjesec} few{{count} mjeseca} other{{count} mjeseci}}",
+    "chartRangeMonths": "{count, plural, one{{count} mjesec} few{{count} mjeseca} other{{count} mjeseci}}",
     "@chartRangeMonths": {
         "description": "Chart time-range selector option covering a number of months",
         "placeholders": {
@@ -1685,7 +1685,7 @@
             }
         }
     },
-    "chartRangeWeeks": "{count, plural, one{1 tjedan} few{{count} tjedna} other{{count} tjedna}}",
+    "chartRangeWeeks": "{count, plural, one{{count} tjedan} few{{count} tjedna} other{{count} tjedna}}",
     "@chartRangeWeeks": {
         "description": "Chart time-range selector option covering a number of weeks",
         "placeholders": {
@@ -1694,7 +1694,7 @@
             }
         }
     },
-    "healthSyncStatus": "{count, plural, =0{Zadnja sinkronizacija: {time}, bez novih unosa} one{Zadnja sinkronizacija: {time}, 1 novi unos} few{Zadnja sinkronizacija: {time}, {count} nova unosa} other{Zadnja sinkronizacija: {time}, {count} novih unosa}}",
+    "healthSyncStatus": "{count, plural, =0{Zadnja sinkronizacija: {time}, bez novih unosa} one{Zadnja sinkronizacija: {time}, {count} novi unos} few{Zadnja sinkronizacija: {time}, {count} nova unosa} other{Zadnja sinkronizacija: {time}, {count} novih unosa}}",
     "@healthSyncStatus": {
         "description": "Status line under the health sync toggle showing when the last sync ran and how many entries it imported",
         "placeholders": {
@@ -1719,7 +1719,7 @@
     "@chartTypeHeatmap": {
         "description": "Chart type option: a calendar grid with one coloured cell per day"
     },
-    "chartAverageWindowDays": "{days, plural, one{1 dan} few{{days} dana} other{{days} dana}}",
+    "chartAverageWindowDays": "{days, plural, one{{days} dan} few{{days} dana} other{{days} dana}}",
     "@chartAverageWindowDays": {
         "description": "One option of the average window setting, e.g. '7 days'",
         "placeholders": {

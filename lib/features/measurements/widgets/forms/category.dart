@@ -277,7 +277,7 @@ class _IdentityFields extends StatelessWidget {
       return optional ? null : i18n.enterValue;
     }
 
-    return value.length > max ? i18n.enterMaxCharacters(max.toString()) : null;
+    return value.length > max ? i18n.enterMaxCharacters(max) : null;
   }
 }
 

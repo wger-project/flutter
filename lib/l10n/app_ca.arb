@@ -532,12 +532,12 @@
     "@noMatchingExerciseFound": {
         "description": "Message returned if no exercises match the searched string"
     },
-    "contributeExerciseWarning": "Només pots contribuir amb exercicis si el teu compte té més de {days} dies i has verificat el teu correu electrònic",
+    "contributeExerciseWarning": "{days, plural, one{Només pots contribuir amb exercicis si el teu compte té més de {days} dia i has verificat el teu correu electrònic} other{Només pots contribuir amb exercicis si el teu compte té més de {days} dies i has verificat el teu correu electrònic}}",
     "@contributeExerciseWarning": {
         "description": "Number of days before which a person can add exercise",
         "placeholders": {
             "days": {
-                "type": "String",
+                "type": "int",
                 "example": "14"
             }
         }
@@ -666,13 +666,13 @@
     "selectMealToLog": "Selecciona un àpat per registrar al diari",
     "goalFiber": "Objectiu de fibra",
     "loggedToday": "Registrat avui",
-    "enterMinCharacters": "Si us plau, introdueix almenys {min} caràcters",
+    "enterMinCharacters": "{min, plural, one{Si us plau, introdueix almenys {min} caràcter} other{Si us plau, introdueix almenys {min} caràcters}}",
     "@enterMinCharacters": {
         "description": "Error message when the user hasn't entered the minimum amount characters in a form",
         "type": "text",
         "placeholders": {
             "min": {
-                "type": "String"
+                "type": "int"
             }
         }
     },

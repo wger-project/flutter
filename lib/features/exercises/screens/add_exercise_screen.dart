@@ -350,7 +350,7 @@ class EmailNotVerified extends ConsumerWidget {
                   subtitle: Text(
                     AppLocalizations.of(
                       context,
-                    ).contributeExerciseWarning(MIN_ACCOUNT_AGE.toString()),
+                    ).contributeExerciseWarning(MIN_ACCOUNT_AGE),
                   ),
                 ),
                 Row(

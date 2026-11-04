@@ -380,7 +380,7 @@
     "gymModeLogScope": "Prejšnji dnevniki",
     "gymModeLogScopeHelp": "Kateri dnevniki naj bodo med treningom prikazani kot referenčni",
     "gymModeLogScopeCurrentRoutine": "Trenutna rutina",
-    "gymModeLogScopeWeeks": "Zadnjih {weeks} tednov",
+    "gymModeLogScopeWeeks": "{weeks, plural, one{Zadnji {weeks} teden} two{Zadnja {weeks} tedna} few{Zadnje {weeks} tedne} other{Zadnjih {weeks} tednov}}",
     "@gymModeLogScopeWeeks": {
         "placeholders": {
             "weeks": {
@@ -495,7 +495,7 @@
     "@endBeforeStart": {
         "description": "Validation error shown when a plan or routine end date is before its start date"
     },
-    "minLengthRoutine": "Rutina mora trajati vsaj {number} tednov",
+    "minLengthRoutine": "{number, plural, one{Rutina mora trajati vsaj {number} teden} two{Rutina mora trajati vsaj {number} tedna} few{Rutina mora trajati vsaj {number} tedne} other{Rutina mora trajati vsaj {number} tednov}}",
     "@minLengthRoutine": {
         "description": "Validation error when a routine is shorter than the minimum allowed duration",
         "placeholders": {
@@ -504,7 +504,7 @@
             }
         }
     },
-    "maxLengthRoutine": "Rutina lahko traja največ {number} tednov",
+    "maxLengthRoutine": "{number, plural, one{Rutina lahko traja največ {number} teden} two{Rutina lahko traja največ {number} tedna} few{Rutina lahko traja največ {number} tedne} other{Rutina lahko traja največ {number} tednov}}",
     "@maxLengthRoutine": {
         "description": "Validation error when a routine is longer than the maximum allowed duration",
         "placeholders": {
@@ -770,23 +770,23 @@
             }
         }
     },
-    "enterMinCharacters": "Vnesite vsaj {min} znakov",
+    "enterMinCharacters": "{min, plural, one{Vnesite vsaj {min} znak} two{Vnesite vsaj {min} znaka} few{Vnesite vsaj {min} znake} other{Vnesite vsaj {min} znakov}}",
     "@enterMinCharacters": {
         "description": "Error message when the user hasn't entered the minimum amount characters in a form",
         "type": "text",
         "placeholders": {
             "min": {
-                "type": "String"
+                "type": "int"
             }
         }
     },
-    "enterMaxCharacters": "Vnesite največ {max} znakov",
+    "enterMaxCharacters": "{max, plural, one{Vnesite največ {max} znak} two{Vnesite največ {max} znaka} few{Vnesite največ {max} znake} other{Vnesite največ {max} znakov}}",
     "@enterMaxCharacters": {
         "description": "Error message when the user has entered more than the allowed amount of characters in a form",
         "type": "text",
         "placeholders": {
             "max": {
-                "type": "String"
+                "type": "int"
             }
         }
     },
@@ -1012,12 +1012,12 @@
     "settingsKeepDataOnLogout": "Po odjavi obdrži podatke",
     "settingsKeepDataOnLogoutDescription": "Krajevna podatkovna zbirka ostane na vaši napravi dokler se ne prijavi drug račun.",
     "aboutPageTitle": "O nas in podpora",
-    "contributeExerciseWarning": "Vaje lahko prispevate, ko je vaš račun starejši od {days} dni in ste potrdili vašo e-pošto",
+    "contributeExerciseWarning": "{days, plural, one{Vaje lahko prispevate, ko je vaš račun starejši od {days} dneva in ste potrdili vašo e-pošto} other{Vaje lahko prispevate, ko je vaš račun starejši od {days} dni in ste potrdili vašo e-pošto}}",
     "@contributeExerciseWarning": {
         "description": "Number of days before which a person can add exercise",
         "placeholders": {
             "days": {
-                "type": "String",
+                "type": "int",
                 "example": "14"
             }
         }

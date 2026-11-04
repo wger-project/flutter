@@ -144,7 +144,7 @@ class _SessionFormState extends ConsumerState<SessionForm> {
               if (value != null && value.length > WorkoutSession.maxNotesChars) {
                 return AppLocalizations.of(
                   context,
-                ).enterMaxCharacters(WorkoutSession.maxNotesChars.toString());
+                ).enterMaxCharacters(WorkoutSession.maxNotesChars);
               }
               return null;
             },

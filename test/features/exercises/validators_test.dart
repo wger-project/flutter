@@ -58,7 +58,7 @@ void main() {
       expect(_fifteenWords.length, lessThan(MIN_CHARS_DESCRIPTION));
       expect(
         validateExerciseDescription(_fifteenWords, context),
-        i18n.enterMinCharacters('$MIN_CHARS_DESCRIPTION'),
+        i18n.enterMinCharacters(MIN_CHARS_DESCRIPTION),
       );
     });
 
@@ -67,7 +67,7 @@ void main() {
       final fewWords = 'Supercalifragilisticexpialidocious ' * 5;
       expect(
         validateExerciseDescription(fewWords, context),
-        i18n.enterMinWords('$MIN_WORDS_DESCRIPTION'),
+        i18n.enterMinWords(MIN_WORDS_DESCRIPTION),
       );
     });
 
@@ -77,7 +77,7 @@ void main() {
       expect(padded.length, greaterThanOrEqualTo(MIN_CHARS_DESCRIPTION));
       expect(
         validateExerciseDescription(padded, context),
-        i18n.enterMinWords('$MIN_WORDS_DESCRIPTION'),
+        i18n.enterMinWords(MIN_WORDS_DESCRIPTION),
       );
     });
   });

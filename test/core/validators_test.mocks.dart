@@ -6051,7 +6051,7 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
-  String enterMinCharacters(String? min) =>
+  String enterMinCharacters(int? min) =>
       (super.noSuchMethod(
             Invocation.method(#enterMinCharacters, [min]),
             returnValue: _i3.dummyValue<String>(
@@ -6062,7 +6062,7 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
-  String enterMaxCharacters(String? max) =>
+  String enterMaxCharacters(int? max) =>
       (super.noSuchMethod(
             Invocation.method(#enterMaxCharacters, [max]),
             returnValue: _i3.dummyValue<String>(
@@ -6150,7 +6150,7 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
-  String contributeExerciseWarning(String? days) =>
+  String contributeExerciseWarning(int? days) =>
       (super.noSuchMethod(
             Invocation.method(#contributeExerciseWarning, [days]),
             returnValue: _i3.dummyValue<String>(

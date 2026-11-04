@@ -493,13 +493,13 @@
             }
         }
     },
-    "enterMinCharacters": "Escreve pelo menos {min} caracteres",
+    "enterMinCharacters": "{min, plural, one{Escreve pelo menos {min} caractere} other{Escreve pelo menos {min} caracteres}}",
     "@enterMinCharacters": {
         "description": "Error message when the user hasn't entered the minimum amount characters in a form",
         "type": "text",
         "placeholders": {
             "min": {
-                "type": "String"
+                "type": "int"
             }
         }
     },
@@ -669,12 +669,12 @@
     "settingsIngredientCacheDescription": "Cache de ingredientes",
     "settingsCacheDeletedSnackbar": "Cache limpo com sucesso",
     "aboutPageTitle": "Sobre nós & Apoio",
-    "contributeExerciseWarning": "Só podes contribuir com exercícios se a tua conta tiver mais de {days} dias e e-mail verificado",
+    "contributeExerciseWarning": "{days, plural, one{Só podes contribuir com exercícios se a tua conta tiver mais de {days} dia e e-mail verificado} other{Só podes contribuir com exercícios se a tua conta tiver mais de {days} dias e e-mail verificado}}",
     "@contributeExerciseWarning": {
         "description": "Number of days before which a person can add exercise",
         "placeholders": {
             "days": {
-                "type": "String",
+                "type": "int",
                 "example": "14"
             }
         }
@@ -898,6 +898,6 @@
     "dayTypeAfap": "O mais rápido possível",
     "slotEntryTypeNormal": "Normal",
     "endBeforeStart": "O valor final não pode ser anterior ao inicial",
-    "minLengthRoutine": "A rotina tem de ter pelo menos {number} semanas",
-    "maxLengthRoutine": "A rotina pode ter no máximo {number} semanas"
+    "minLengthRoutine": "{number, plural, one{A rotina tem de ter pelo menos {number} semana} other{A rotina tem de ter pelo menos {number} semanas}}",
+    "maxLengthRoutine": "{number, plural, one{A rotina pode ter no máximo {number} semana} other{A rotina pode ter no máximo {number} semanas}}"
 }
