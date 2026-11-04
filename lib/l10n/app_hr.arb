@@ -545,7 +545,7 @@
             }
         }
     },
-    "contributeExerciseWarning": "Vježbe možeš dodati samo ako je tvoj račun stariji od {days} dana i ako si potvrdio/la tvoju e-mail adresu",
+    "contributeExerciseWarning": "{days, plural, one{Vježbama možeš doprinijeti samo ako je tvoj račun stariji od {days} dan i ako si potvrdio/la tvoju e-mail adresu} few{Vježbama možeš doprinijeti samo ako je tvoj račun stariji od {days} dana i ako si potvrdio/la tvoju e-mail adresu} other{Vježbama možeš doprinijeti samo ako je tvoj račun stariji od {days} dana i ako si potvrdio/la tvoju e-mail adresu}}",
     "@contributeExerciseWarning": {
         "description": "Number of days before which a person can add exercise",
         "placeholders": {
@@ -1586,7 +1586,7 @@
             }
         }
     },
-    "relativeWeeksAgo": "{count, plural, one{prije {count} tjedan} few{prije {count} tjedna} other{prije {count} tjedna}}",
+    "relativeWeeksAgo": "{count, plural, one{prije {count} tjedan} few{prije {count} tjedna} other{prije {count} tjedana}}",
     "@relativeWeeksAgo": {
         "description": "How long ago something was measured, for distances below a month",
         "placeholders": {
@@ -1658,7 +1658,7 @@
             }
         }
     },
-    "healthSyncSuccess": "{count, plural, one{Uvezeno {count} mjerenje iz Zdravlja} other{Uvezeno {count} mjerenja iz Zdravlja}}",
+    "healthSyncSuccess": "{count, plural, one{Uvezeno je {count} mjerenje iz Zdravlja} few{Uvezena su {count} mjerenja iz Zdravlja} other{Uvezeno je {count} mjerenja iz Zdravlja}}",
     "@healthSyncSuccess": {
         "description": "Snackbar message after successful health sync",
         "placeholders": {
@@ -1685,7 +1685,7 @@
             }
         }
     },
-    "chartRangeWeeks": "{count, plural, one{{count} tjedan} few{{count} tjedna} other{{count} tjedna}}",
+    "chartRangeWeeks": "{count, plural, one{{count} tjedan} few{{count} tjedna} other{{count} tjedana}}",
     "@chartRangeWeeks": {
         "description": "Chart time-range selector option covering a number of weeks",
         "placeholders": {
@@ -1840,7 +1840,7 @@
     "@authorHelpText": {
         "description": "Helper text below the author field when contributing an exercise"
     },
-    "sessionTooLong": "Sesija ne može biti dulja od {hours} sata",
+    "sessionTooLong": "{hours, plural, one{Sesija ne može biti dulja od {hours} sat} few{Sesija ne može biti dulja od {hours} sata} other{Sesija ne može biti dulja od {hours} sati}}",
     "@sessionTooLong": {
         "description": "Validation error when a workout session exceeds the maximum length",
         "placeholders": {
@@ -2011,5 +2011,17 @@
     "gymModeStickySetValuesHelp": "Unaprijed ispuni sljedeću seriju vježbe vrijednostima koje si zadnji put zabilježio/la za tu vježbu",
     "@gymModeStickySetValuesHelp": {
         "description": "Help text for the sticky set values setting in the gym mode"
-    }
+    },
+    "personalExercisesWarningTitle": "Nemoj dodati osobne vježbe",
+    "enterMinWords": "{min, plural, one{Upiši barem {min} riječ} few{Upiši barem {min} riječi} other{Upiši barem {min} riječi}}",
+    "@enterMinWords": {
+        "description": "Error message when the user hasn't entered the minimum amount of words in a form",
+        "type": "text",
+        "placeholders": {
+            "min": {
+                "type": "int"
+            }
+        }
+    },
+    "personalExercisesWarningBody": "Vježbe se dodaju u dijeljenu bazu podataka i vidljive su svim korisnicima. Dodaj samo opće vježbe koje su korisne svima. Vježbe koje su stvorene samo kako bi uvoz iz jedne druge aplikacije funkcionirao će se izbrisati."
 }
