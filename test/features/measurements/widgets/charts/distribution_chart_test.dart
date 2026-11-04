@@ -23,7 +23,8 @@ import 'package:wger/features/measurements/widgets/charts/distribution_chart.dar
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/l10n/localizations_delegates.dart';
 
-Widget _wrap(Widget child) => MaterialApp(
+Widget _wrap(Widget child, {Locale? locale}) => MaterialApp(
+  locale: locale,
   localizationsDelegates: appLocalizationsDelegates,
   supportedLocales: AppLocalizations.supportedLocales,
   home: Scaffold(
@@ -69,6 +70,25 @@ void main() {
       final step = (box.width - countLabelWidth) / bins;
       return Offset(box.left + countLabelWidth + step / 2, box.top + readoutHeight + 100);
     }
+
+    testWidgets('plural fallback preserves the selected distribution count', (tester) async {
+      await tester.pumpWidget(
+        _wrap(
+          const MeasurementDistributionWidgetFl(
+            [(value: 60, count: 21)],
+            latest: 60,
+            unit: 'kg',
+            binWidth: 2,
+          ),
+          locale: const Locale('ru'),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tapAt(firstBinCenter(tester, bins: 1));
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining(RegExp(r': 21\b')), findsOneWidget);
+    });
 
     testWidgets('a tapped bin reads out as its range and count', (tester) async {
       await tester.pumpWidget(

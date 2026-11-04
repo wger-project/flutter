@@ -6,6 +6,13 @@ These files are usually edited on weblate, and not directly in the repo:
 
 ## Maintenance
 
+Use the numeric placeholder in grammatical plural branches, including `one`:
+`{count, plural, one{{count} week} other{{count} weeks}}`. In some languages,
+`one` also applies to numbers such as 21; it is not an exact match for 1.
+Use exact selectors such as `=1` for wording that really is specific to that
+number, for example `yesterday`. Keep existing exact selectors when editing
+plural messages, and have translators review the changed source strings in Weblate.
+
 Find keys that are not used in the code anymore:
 
 ```bash

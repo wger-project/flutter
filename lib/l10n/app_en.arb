@@ -603,7 +603,7 @@
   "@chartRangeAll": {
     "description": "Label for the chart time-range selector option showing all data"
   },
-  "chartRangeWeeks": "{count, plural, one{1 week} other{{count} weeks}}",
+  "chartRangeWeeks": "{count, plural, one{{count} week} other{{count} weeks}}",
   "@chartRangeWeeks": {
     "description": "Chart time-range selector option covering a number of weeks",
     "placeholders": {
@@ -612,7 +612,7 @@
       }
     }
   },
-  "chartRangeMonths": "{count, plural, one{1 month} other{{count} months}}",
+  "chartRangeMonths": "{count, plural, one{{count} month} other{{count} months}}",
   "@chartRangeMonths": {
     "description": "Chart time-range selector option covering a number of months",
     "placeholders": {
@@ -621,7 +621,7 @@
       }
     }
   },
-  "chartRangeYears": "{count, plural, one{1 year} other{{count} years}}",
+  "chartRangeYears": "{count, plural, one{{count} year} other{{count} years}}",
   "@chartRangeYears": {
     "description": "Chart time-range selector option covering a number of years",
     "placeholders": {
@@ -684,7 +684,7 @@
   "@chartAverageWindow": {
     "description": "Label of the setting for how many days the moving average covers"
   },
-  "chartAverageWindowDays": "{days, plural, one{1 day} other{{days} days}}",
+  "chartAverageWindowDays": "{days, plural, one{{days} day} other{{days} days}}",
   "@chartAverageWindowDays": {
     "description": "One option of the average window setting, e.g. '7 days'",
     "placeholders": {
@@ -715,7 +715,7 @@
   "@distributionLatest": {
     "description": "Label of the marker for the most recent value in the distribution histogram"
   },
-  "distributionEntryCount": "{count, plural, one{1 entry} other{{count} entries}}",
+  "distributionEntryCount": "{count, plural, one{{count} entry} other{{count} entries}}",
   "@distributionEntryCount": {
     "description": "How many measurements fall into the tapped histogram bin",
     "placeholders": {
@@ -724,7 +724,7 @@
       }
     }
   },
-  "distributionDayCount": "{count, plural, one{1 day} other{{count} days}}",
+  "distributionDayCount": "{count, plural, one{{count} day} other{{count} days}}",
   "@distributionDayCount": {
     "description": "How many days fall into the tapped histogram bin, for metrics summed per day",
     "placeholders": {
@@ -742,7 +742,7 @@
       }
     }
   },
-  "relativeWeeksAgo": "{count, plural, one{1 week ago} other{{count} weeks ago}}",
+  "relativeWeeksAgo": "{count, plural, one{{count} week ago} other{{count} weeks ago}}",
   "@relativeWeeksAgo": {
     "description": "How long ago something was measured, for distances below a month",
     "placeholders": {
@@ -751,7 +751,7 @@
       }
     }
   },
-  "relativeMonthsAgo": "{count, plural, one{1 month ago} other{{count} months ago}}",
+  "relativeMonthsAgo": "{count, plural, one{{count} month ago} other{{count} months ago}}",
   "@relativeMonthsAgo": {
     "description": "How long ago something was measured, for distances below a year",
     "placeholders": {
@@ -760,7 +760,7 @@
       }
     }
   },
-  "relativeYearsAgo": "{count, plural, one{1 year ago} other{{count} years ago}}",
+  "relativeYearsAgo": "{count, plural, one{{count} year ago} other{{count} years ago}}",
   "@relativeYearsAgo": {
     "description": "How long ago something was measured, for distances of a year and more",
     "placeholders": {
@@ -1885,7 +1885,7 @@
       }
     }
   },
-  "healthSyncStatus": "{count, plural, =0{Last sync: {time}, no new entries} one{Last sync: {time}, 1 new entry} other{Last sync: {time}, {count} new entries}}",
+  "healthSyncStatus": "{count, plural, =0{Last sync: {time}, no new entries} one{Last sync: {time}, {count} new entry} other{Last sync: {time}, {count} new entries}}",
   "@healthSyncStatus": {
     "description": "Status line under the health sync toggle showing when the last sync ran and how many entries it imported",
     "placeholders": {
