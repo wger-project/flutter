@@ -27,6 +27,7 @@ import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/measurement_entry.dart';
 import 'package:wger/features/measurements/models/unit_conversion.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
+import 'package:wger/features/measurements/widgets/imported_entry_warning.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 /// Stepper sizes for the quick +/- buttons. The value bounds come from the
@@ -86,6 +87,7 @@ class _WeightFormState extends riverpod.ConsumerState<WeightForm> {
       key: _form,
       child: Column(
         children: [
+          if (_draft.isImported) const ImportedEntryWarning(),
           DateTimeInputWidget(
             key: const Key('dateTimeInput'),
             value: _draft.date,

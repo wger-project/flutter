@@ -25,12 +25,13 @@ import 'package:wger/l10n/generated/app_localizations.dart';
 /// On confirm it awaits [onConfirm], closes the dialog, calls [onDeleted] (for
 /// extra navigation, e.g. popping a detail screen) and shows a "deleted"
 /// snackbar. Cancelling or dismissing does nothing. Pass [title] for the few
-/// callers that want a heading above the message.
+/// callers that want a heading above the message, [warning] for a note below it.
 Future<void> showConfirmDeleteDialog(
   BuildContext context, {
   required String itemName,
   required Future<void> Function() onConfirm,
   String? title,
+  String? warning,
   VoidCallback? onDeleted,
 }) {
   return showDialog<void>(
@@ -39,7 +40,17 @@ Future<void> showConfirmDeleteDialog(
       final i18n = AppLocalizations.of(dialogContext);
       return AlertDialog(
         title: title != null ? Text(title) : null,
-        content: Text(i18n.confirmDelete(itemName)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(i18n.confirmDelete(itemName)),
+            if (warning != null) ...[
+              const SizedBox(height: 8),
+              Text(warning),
+            ],
+          ],
+        ),
         actions: [
           TextButton(
             key: const ValueKey('cancel-button'),

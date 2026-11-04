@@ -5490,12 +5490,12 @@ class MockAppLocalizations extends _i1.Mock implements _i2.AppLocalizations {
           as String);
 
   @override
-  String get importedEntry =>
+  String get importedEntryOverwriteWarning =>
       (super.noSuchMethod(
-            Invocation.getter(#importedEntry),
+            Invocation.getter(#importedEntryOverwriteWarning),
             returnValue: _i3.dummyValue<String>(
               this,
-              Invocation.getter(#importedEntry),
+              Invocation.getter(#importedEntryOverwriteWarning),
             ),
           )
           as String);

@@ -22,6 +22,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:wger/core/form_screen.dart';
 import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/core/snackbar.dart';
+import 'package:wger/core/widgets/confirm_delete_dialog.dart';
 import 'package:wger/core/widgets/error.dart';
 import 'package:wger/features/measurements/charts/data.dart';
 import 'package:wger/features/measurements/charts/range.dart';
@@ -252,70 +253,86 @@ class _EntryListState extends ConsumerState<_EntryList> with _GrowsWhileScrolled
       hasMore: entries.length >= limit,
       itemBuilder: (context, index) {
         final currentEntry = entries[index];
-        final isCalculated = currentEntry.source == measurementSourceCalculated;
+        final formattedValue = unitSuffixed(
+          measurementValue(
+            context,
+            currentEntry.valueIn(widget.unit, categoryUnit: category.unit),
+            widget.unit,
+          ),
+          widget.unitLabel,
+        );
 
         return Card(
           child: ListTile(
-            title: Text(
-              unitSuffixed(
-                measurementValue(
-                  context,
-                  currentEntry.valueIn(widget.unit, categoryUnit: category.unit),
-                  widget.unit,
-                ),
-                widget.unitLabel,
-              ),
-            ),
+            title: Text(formattedValue),
             subtitle: Text(datetimeFormat.format(currentEntry.date)),
-            // Entries the user did not write are read-only, for two
-            // different reasons: an import belongs to the app it came from,
-            // a calculated value to the data it is computed from
-            trailing: currentEntry.source != measurementSourceUser
+            // A calculated value belongs to the data it is computed from. An
+            // import can be changed, but its app may overwrite that again
+            trailing: !currentEntry.isEditable
                 ? Tooltip(
-                    message: isCalculated
-                        ? AppLocalizations.of(context).calculationEntryInfo
-                        : AppLocalizations.of(context).importedEntry,
-                    child: Icon(
-                      isCalculated ? Icons.calculate_outlined : Icons.monitor_heart_outlined,
-                    ),
+                    message: AppLocalizations.of(context).calculationEntryInfo,
+                    child: const Icon(Icons.calculate_outlined),
                   )
-                : PopupMenuButton(
-                    itemBuilder: (BuildContext context) {
-                      return [
-                        PopupMenuItem(
-                          child: Text(AppLocalizations.of(context).edit),
-                          onTap: () => Navigator.pushNamed(
-                            context,
-                            FormScreen.routeName,
-                            arguments: FormScreenArguments(
-                              AppLocalizations.of(context).edit,
-                              widget.editFormBuilder?.call(currentEntry) ??
-                                  MeasurementEntryForm(category.id!, currentEntry),
-                            ),
-                          ),
-                        ),
-                        PopupMenuItem(
-                          child: Text(AppLocalizations.of(context).delete),
-                          onTap: () async {
-                            await ref
-                                .read(measurementProvider.notifier)
-                                .deleteEntry(currentEntry.id!);
-
-                            if (context.mounted) {
-                              showSnackbar(
-                                context,
-                                AppLocalizations.of(context).successfullyDeleted,
-                                center: true,
-                              );
-                            }
-                          },
-                        ),
-                      ];
-                    },
-                  ),
+                : _entryActions(context, currentEntry, formattedValue),
           ),
         );
       },
+    );
+  }
+
+  Widget _entryActions(BuildContext context, MeasurementEntry entry, String formattedValue) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (entry.isImported)
+          Tooltip(
+            message: AppLocalizations.of(context).importedEntryOverwriteWarning,
+            child: const Icon(Icons.monitor_heart_outlined),
+          ),
+        PopupMenuButton(
+          itemBuilder: (BuildContext context) {
+            return [
+              PopupMenuItem(
+                child: Text(AppLocalizations.of(context).edit),
+                onTap: () => Navigator.pushNamed(
+                  context,
+                  FormScreen.routeName,
+                  arguments: FormScreenArguments(
+                    AppLocalizations.of(context).edit,
+                    widget.editFormBuilder?.call(entry) ??
+                        MeasurementEntryForm(widget.category.id!, entry),
+                  ),
+                ),
+              ),
+              PopupMenuItem(
+                child: Text(AppLocalizations.of(context).delete),
+                onTap: () async {
+                  final notifier = ref.read(measurementProvider.notifier);
+                  if (entry.isImported) {
+                    await showConfirmDeleteDialog(
+                      context,
+                      itemName: formattedValue,
+                      warning: AppLocalizations.of(context).importedEntryOverwriteWarning,
+                      onConfirm: () => notifier.deleteEntry(entry.id!),
+                    );
+                    return;
+                  }
+
+                  await notifier.deleteEntry(entry.id!);
+
+                  if (context.mounted) {
+                    showSnackbar(
+                      context,
+                      AppLocalizations.of(context).successfullyDeleted,
+                      center: true,
+                    );
+                  }
+                },
+              ),
+            ];
+          },
+        ),
+      ],
     );
   }
 }

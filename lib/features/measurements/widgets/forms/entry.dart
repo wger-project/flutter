@@ -25,6 +25,7 @@ import 'package:wger/core/widgets/form_submit_button.dart';
 import 'package:wger/core/widgets/progress_indicator.dart';
 import 'package:wger/features/measurements/models/measurement_entry.dart';
 import 'package:wger/features/measurements/providers/measurement_notifier.dart';
+import 'package:wger/features/measurements/widgets/imported_entry_warning.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
 class MeasurementEntryForm extends ConsumerStatefulWidget {
@@ -80,6 +81,7 @@ class _MeasurementEntryFormState extends ConsumerState<MeasurementEntryForm> {
           key: _form,
           child: Column(
             children: [
+              if (_draft.isImported) const ImportedEntryWarning(),
               DateTimeInputWidget(
                 value: _draft.date,
                 onChanged: (date) => _draft = _draft.copyWith(date: date),

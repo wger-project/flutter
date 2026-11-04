@@ -26,6 +26,7 @@ import 'package:wger/features/measurements/models/measurement_category.dart';
 import 'package:wger/features/measurements/models/measurement_entry.dart';
 import 'package:wger/features/measurements/providers/measurement_repository.dart';
 import 'package:wger/features/measurements/widgets/forms/entry.dart';
+import 'package:wger/features/measurements/widgets/imported_entry_warning.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/l10n/localizations_delegates.dart';
 
@@ -89,6 +90,32 @@ void main() {
       expect(saved.extraData, {'unit': 'kg'});
       expect(saved.value, 30);
     });
+
+    for (final (source, warning) in [
+      ('device', findsOneWidget),
+      ('apple', findsOneWidget),
+      ('user', findsNothing),
+    ]) {
+      testWidgets('warning that the app may overwrite the entry for source $source', (
+        tester,
+      ) async {
+        final category = getMeasurementCategories()[0];
+        stubMeasurementReads(mockRepo, [category]);
+        final entry = MeasurementEntry(
+          id: 'e-1',
+          categoryId: category.id!,
+          date: DateTime(2026, 1, 1),
+          value: 30,
+          notes: '',
+          source: source,
+        );
+
+        await tester.pumpWidget(wrap(MeasurementEntryForm(category.id!, entry)));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(ImportedEntryWarning), warning);
+      });
+    }
 
     testWidgets('a value outside the limits of the metric type is refused', (tester) async {
       final category = MeasurementCategory(

@@ -91,25 +91,71 @@ void main() {
     );
   }
 
-  testWidgets('Imported entries show a badge instead of the edit menu', (
+  final bodyFat = MeasurementCategory(id: 'c1', name: 'Body fat', unit: '%');
+
+  /// Opens the entry menu of [row] (the entries are listed newest first) and
+  /// taps delete.
+  Future<void> tapDelete(WidgetTester tester, {required int row}) async {
+    await tester.tap(find.byTooltip('Show menu').at(row));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Delete'));
+    await tester.pumpAndSettle();
+  }
+
+  testWidgets('Imported entries have the edit menu and carry a warning badge', (
     WidgetTester tester,
   ) async {
-    final category = MeasurementCategory(
-      id: 'c1',
-      name: 'Body fat',
-      unit: '%',
-    );
-
     await tester.pumpWidget(
-      createEntriesList(category, {
+      createEntriesList(bodyFat, {
         'c1': [userEntry, importedEntry],
       }),
     );
     await tester.pumpAndSettle();
 
-    // Only the manual entry has the menu, the imported one carries the badge
-    expect(find.byTooltip('Show menu'), findsOneWidget);
+    expect(find.byTooltip('Show menu'), findsNWidgets(2));
     expect(find.byIcon(Icons.monitor_heart_outlined), findsOneWidget);
+  });
+
+  testWidgets('An imported entry is only deleted after confirming the warning', (
+    WidgetTester tester,
+  ) async {
+    final repo = MockMeasurementRepository();
+    when(repo.deleteLocalDrift(any)).thenAnswer((_) async {});
+    await tester.pumpWidget(
+      createEntriesList(bodyFat, {
+        'c1': [userEntry, importedEntry],
+      }, repo: repo),
+    );
+    await tester.pumpAndSettle();
+
+    await tapDelete(tester, row: 1);
+
+    verifyNever(repo.deleteLocalDrift(any));
+    expect(
+      find.text('Changes to this entry may be overwritten by the app it came from'),
+      findsOneWidget,
+    );
+
+    await tester.tap(find.byKey(const ValueKey('delete-button')));
+    await tester.pumpAndSettle();
+
+    verify(repo.deleteLocalDrift('e-import')).called(1);
+  });
+
+  testWidgets('A manual entry is deleted without asking', (WidgetTester tester) async {
+    final repo = MockMeasurementRepository();
+    when(repo.deleteLocalDrift(any)).thenAnswer((_) async {});
+    await tester.pumpWidget(
+      createEntriesList(bodyFat, {
+        'c1': [userEntry, importedEntry],
+      }, repo: repo),
+    );
+    await tester.pumpAndSettle();
+
+    await tapDelete(tester, row: 0);
+
+    verify(repo.deleteLocalDrift('e-user')).called(1);
+    expect(find.byKey(const ValueKey('delete-button')), findsNothing);
   });
 
   testWidgets('A calculated category is marked and its entries are read-only', (

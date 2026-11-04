@@ -203,7 +203,7 @@ void main() {
     expect(find.textContaining('176.4'), findsNothing);
   });
 
-  testWidgets('Imported entries show a badge instead of the edit menu', (
+  testWidgets('Imported entries have the edit menu and carry a warning badge', (
     WidgetTester tester,
   ) async {
     final imported = MeasurementEntry(
@@ -221,8 +221,7 @@ void main() {
     await tester.pumpWidget(createWeightScreen());
     await tester.pumpAndSettle();
 
-    // Only the manual entry has the menu, the imported one carries the badge
-    expect(find.byTooltip('Show menu'), findsOneWidget);
+    expect(find.byTooltip('Show menu'), findsNWidgets(2));
     expect(find.byIcon(Icons.monitor_heart_outlined), findsOneWidget);
   });
 

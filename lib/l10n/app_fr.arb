@@ -1121,7 +1121,7 @@
     "healthSyncDescription": "Importe les mesures corporelles depuis Apple Santé ou Health Connect",
     "healthSyncSuccess": "{count, plural, one{{count} mesure de santé importée} other{{count} mesures de santé importées}}",
     "health": "Santé",
-    "importedEntry": "Cette entrée a été synchronisée depuis une app de santé et ne peut être modifiée que là-bas",
+    "importedEntryOverwriteWarning": "Les modifications de cette entrée peuvent être écrasées par l'app dont elle provient",
     "healthSyncPermissionDenied": "L'accès aux données de santé n'a pas été autorisé",
     "chartRangeAll": "Tout",
     "chartRangeMonths": "{count, plural, one{{count} mois} other{{count} mois}}",

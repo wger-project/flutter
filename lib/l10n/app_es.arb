@@ -1128,7 +1128,7 @@
     "healthSyncDescription": "Importa medidas corporales desde Apple Health o Health Connect",
     "healthSyncSuccess": "{count, plural, one{Se importó {count} medida de salud} other{Se importaron {count} medidas de salud}}",
     "health": "Salud",
-    "importedEntry": "Esta entrada se sincronizó desde una aplicación de salud y solo se puede cambiar allí",
+    "importedEntryOverwriteWarning": "Los cambios en esta entrada pueden ser sobrescritos por la aplicación de la que procede",
     "healthSyncPermissionDenied": "No se concedió el acceso a los datos de salud",
     "chartRangeAll": "Todo",
     "chartRangeMonths": "{count, plural, one{{count} mes} other{{count} meses}}",

@@ -22,8 +22,7 @@ import 'package:wger/database/powersync/database.dart';
 
 part 'measurement_entry.freezed.dart';
 
-/// The server's `source` for an entry the user wrote themselves, the only one
-/// the app lets them edit or delete.
+/// The server's `source` for an entry the user wrote themselves.
 const measurementSourceUser = 'user';
 
 /// The server's `source` for an entry it computed itself, see the calculated
@@ -45,7 +44,8 @@ class MeasurementEntry with _$MeasurementEntry {
   final String notes;
 
   /// Origin of the reading; one of the server's `source` values
-  /// (`user`, `google`, `apple`).
+  /// (`user`, `google`, `apple`, `device`, `calculated`). Treated as an open
+  /// list, new values are added without a client release.
   final String source;
 
   /// Platform record UUID, used to deduplicate re-imports. `null` for manual
@@ -105,4 +105,10 @@ class MeasurementEntry with _$MeasurementEntry {
       extraData: Value(extraData),
     );
   }
+
+  /// A calculated entry belongs to the server, which refuses changes to it
+  bool get isEditable => source != measurementSourceCalculated;
+
+  /// Written by another app, which can overwrite what the user changes here
+  bool get isImported => source != measurementSourceUser && isEditable;
 }
