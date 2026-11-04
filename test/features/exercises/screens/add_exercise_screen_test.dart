@@ -162,6 +162,15 @@ void main() {
       expect(find.text(l10nOf(tester).authorHelpText), findsOneWidget);
     });
 
+    testWidgets('Warns against adding personal exercises', (tester) async {
+      setTrustworthy(true);
+      await tester.pumpWidget(createExerciseScreen());
+      await tester.pumpAndSettle();
+
+      expect(find.text(l10nOf(tester).personalExercisesWarningTitle), findsOneWidget);
+      expect(find.text(l10nOf(tester).personalExercisesWarningBody), findsOneWidget);
+    });
+
     testWidgets('Exercise name field is required and displays validation error', (tester) async {
       setTrustworthy(true);
       await tester.pumpWidget(createExerciseScreen());

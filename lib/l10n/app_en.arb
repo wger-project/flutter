@@ -1421,6 +1421,8 @@
   "addSuperset": "Add superset",
   "setHasNoExercises": "This set has no exercises yet!",
   "contributeExercise": "Contribute an exercise",
+  "personalExercisesWarningTitle": "Don't add personal exercises",
+  "personalExercisesWarningBody": "Exercises are added to the shared database and are visible to all users. Only add general exercises that are useful to everyone. Exercises created just to make an import from another app work will be deleted.",
   "translation": "Translation",
   "translateExercise": "Translate this exercise now",
   "baseData": "Basics in English",

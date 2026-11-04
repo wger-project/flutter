@@ -39,8 +39,9 @@ class InfoCard extends StatelessWidget {
 
 class WarningCard extends StatelessWidget {
   final String text;
+  final String? title;
 
-  const WarningCard({super.key, this.text = ''});
+  const WarningCard({super.key, this.text = '', this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +52,8 @@ class WarningCard extends StatelessWidget {
       child: ListTile(
         dense: true,
         leading: Icon(Icons.info_outline, color: theme.colorScheme.primary),
-        title: Text(text),
+        title: Text(title ?? text),
+        subtitle: title == null ? null : Text(text),
       ),
     );
   }

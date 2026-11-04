@@ -21,6 +21,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/i18n.dart';
 import 'package:wger/core/language.dart';
+import 'package:wger/core/widgets/cards.dart';
 import 'package:wger/features/account/providers/account_notifier.dart';
 import 'package:wger/features/exercises/models/category.dart';
 import 'package:wger/features/exercises/models/equipment.dart';
@@ -70,6 +71,10 @@ class Step1Basics extends ConsumerWidget {
           final username = ref.watch(accountProvider).value?.username ?? '';
           return Column(
             children: [
+              WarningCard(
+                title: AppLocalizations.of(context).personalExercisesWarningTitle,
+                text: AppLocalizations.of(context).personalExercisesWarningBody,
+              ),
               AddExerciseTextArea(
                 initialValue: state.exerciseNameEn ?? '',
                 title: '${AppLocalizations.of(context).name}*',

@@ -491,6 +491,8 @@
         "description": "Variations of one exercise (e.g. benchpress and benchpress narrow)"
     },
     "contributeExercise": "Eine Übung beisteuern",
+    "personalExercisesWarningTitle": "Füge keine persönlichen Übungen hinzu",
+    "personalExercisesWarningBody": "Übungen werden der gemeinsamen Datenbank hinzugefügt und sind für alle Nutzer sichtbar. Füge nur allgemeine Übungen hinzu, die für alle nützlich sind. Übungen, die nur erstellt werden, damit ein Import aus einer anderen App funktioniert, werden gelöscht.",
     "hamstrings": "Oberschenkelmuskeln",
     "lower_back": "Unterer Rücken",
     "aboutPageTitle": "Über uns & Support",

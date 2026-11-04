@@ -485,6 +485,8 @@
     "images": "Imágenes",
     "language": "Lenguaje",
     "contributeExercise": "Aporta un ejercicio",
+    "personalExercisesWarningTitle": "No agregues ejercicios personales",
+    "personalExercisesWarningBody": "Los ejercicios se agregan a la base de datos compartida y son visibles para todos los usuarios. Agrega solo ejercicios generales que sean útiles para todos. Los ejercicios creados solo para que funcione una importación desde otra aplicación se eliminarán.",
     "translation": "Traducción",
     "translateExercise": "Traduce este ejercicio ahora",
     "baseData": "Conceptos básicos en Inglés",
