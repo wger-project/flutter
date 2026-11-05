@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -197,6 +198,50 @@ void main() {
             as DateTime;
     expect(saved.toUtc(), DateTime.utc(2026, 10, 25, 1, 45));
   });
+
+  testWidgets('spring-gap picker displays the normalized time that is saved', (tester) async {
+    expect(DateTime(2026, 3, 29, 1, 30).timeZoneOffset, const Duration(hours: 1));
+    expect(DateTime(2026, 3, 29, 3, 30).timeZoneOffset, const Duration(hours: 2));
+    final normalized = DateTime(2026, 3, 29, 2, 30);
+    expect(normalized.hour, isNot(2));
+    entry.datetime = normalized.toUtc();
+    await open(tester);
+    final timeField = find.descendant(
+      of: find.byType(TimeInputWidget),
+      matching: find.byType(TextFormField),
+    );
+    final displayedTime = TimeOfDay.fromDateTime(normalized).format(tester.element(timeField));
+    expect(find.text(displayedTime), findsOneWidget);
+    await tester.tap(timeField);
+    await tester.pumpAndSettle();
+    await tester.tap(find.byIcon(Icons.keyboard_outlined));
+    await tester.pumpAndSettle();
+    final inputs = find.descendant(
+      of: find.byType(TimePickerDialog),
+      matching: find.byType(TextFormField),
+    );
+    expect(inputs, findsNWidgets(2));
+    await tester.enterText(inputs.at(0), '2');
+    await tester.enterText(inputs.at(1), '30');
+    await tester.tap(find.text('OK'));
+    await tester.pumpAndSettle();
+    expect(find.text(displayedTime), findsOneWidget);
+    await tester.tap(find.byKey(const Key('diary-edit-save')));
+    await tester.pumpAndSettle();
+    final saved =
+        verify(
+              repo.editLogLocalDrift(
+                id: 'entry',
+                amount: 100,
+                datetime: captureAnyNamed('datetime'),
+                weightUnitId: 10,
+              ),
+            ).captured.single
+            as DateTime;
+    expect(saved.toUtc(), normalized.toUtc());
+    expect(find.byType(DiaryEntryEditDialog), findsNothing);
+    expect(tester.takeException(), isNull);
+  }, skip: Platform.environment['TZ'] != 'Europe/Berlin');
 
   testWidgets('a failed local write keeps the dialog open and shows an error', (tester) async {
     when(
