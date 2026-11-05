@@ -94,6 +94,39 @@ void main() {
   const planUuidA = 'cc000000-0000-4000-8000-00000000000a';
   const planUuidB = 'cc000000-0000-4000-8000-00000000000b';
 
+  group('Diary logs', () {
+    test('editLog forwards the portion, instant and cleared unit to the repository', () async {
+      final instant = DateTime.utc(2026, 10, 25, 1, 30);
+      when(
+        mockRepo.editLogLocalDrift(
+          id: 'log-edit',
+          amount: 80.5,
+          datetime: instant,
+          weightUnitId: null,
+        ),
+      ).thenAnswer((_) async {});
+      final container = makeContainer();
+
+      await container
+          .read(nutritionProvider.notifier)
+          .editLog(
+            id: 'log-edit',
+            amount: 80.5,
+            datetime: instant,
+            weightUnitId: null,
+          );
+
+      verify(
+        mockRepo.editLogLocalDrift(
+          id: 'log-edit',
+          amount: 80.5,
+          datetime: instant,
+          weightUnitId: null,
+        ),
+      ).called(1);
+    });
+  });
+
   group('currentPlan', () {
     test('gibt den aktiven Plan zurück, wenn nur einer aktiv ist', () async {
       final plan = NutritionalPlan(
