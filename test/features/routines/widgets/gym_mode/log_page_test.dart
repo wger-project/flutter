@@ -477,7 +477,7 @@ void main() {
         await tester.pumpAndSettle();
         expect(notesToggle, findsNothing);
 
-        await tester.enterText(notesField, 'Paused reps');
+        await tester.enterText(notesField, ' Paused reps\n');
         await tester.pump();
         await tester.tap(find.byKey(const ValueKey('save-log-button')));
         await tester.pumpAndSettle();

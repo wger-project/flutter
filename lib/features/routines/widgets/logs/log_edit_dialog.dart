@@ -68,7 +68,7 @@ class _LogEditDialogState extends ConsumerState<LogEditDialog> {
   num? _rir;
   RepetitionUnit? _repetitionUnit;
   WeightUnit? _weightUnit;
-  late TextEditingController _notesController;
+  String _notes = '';
 
   bool _saving = false;
 
@@ -80,13 +80,7 @@ class _LogEditDialogState extends ConsumerState<LogEditDialog> {
     _rir = widget.log.rir;
     _repetitionUnit = widget.log.repetitionsUnitObj;
     _weightUnit = widget.log.weightUnitObj;
-    _notesController = TextEditingController(text: widget.log.notes ?? '');
-  }
-
-  @override
-  void dispose() {
-    _notesController.dispose();
-    super.dispose();
+    _notes = widget.log.notes ?? '';
   }
 
   Future<void> _onSave() async {
@@ -109,7 +103,7 @@ class _LogEditDialogState extends ConsumerState<LogEditDialog> {
 
     setState(() => _saving = true);
 
-    final notes = _notesController.text.trim();
+    final notes = _notes.trim();
     // copyWith falls back to the old value on null, so the fields the user can
     // clear are assigned directly
     final updated =
@@ -183,7 +177,8 @@ class _LogEditDialogState extends ConsumerState<LogEditDialog> {
               const SizedBox(height: 12),
               TextFormField(
                 key: const ValueKey('edit-notes-widget'),
-                controller: _notesController,
+                initialValue: _notes,
+                onChanged: (v) => _notes = v,
                 decoration: InputDecoration(
                   labelText: AppLocalizations.of(context).notes,
                 ),
