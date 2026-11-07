@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/core/wide_screen_wrapper.dart';
 import 'package:wger/features/routines/widgets/plate_calculator.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';

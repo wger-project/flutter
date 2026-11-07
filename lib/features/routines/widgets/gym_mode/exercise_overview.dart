@@ -15,9 +15,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/features/exercises/widgets/exercises.dart';
 import 'package:wger/features/routines/providers/gym_state_notifier.dart';
 import 'package:wger/features/routines/widgets/gym_mode/navigation.dart';
@@ -28,17 +28,17 @@ class ExerciseOverview extends ConsumerWidget {
 
   /// Identifies which slot page this widget renders, so it shows its own
   /// content instead of whatever the globally-current page happens to be.
-  final String slotUuid;
+  final String slotKey;
 
-  ExerciseOverview(this._controller, this.slotUuid);
+  ExerciseOverview(this._controller, this.slotKey);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final page = ref.watch(gymStateProvider).getSlotPageByUUID(slotUuid);
+    final page = ref.watch(gymStateProvider).getSlotPageByKey(slotKey);
 
     if (page == null) {
       _logger.info(
-        'getSlotPageByUUID for $slotUuid returned null, showing empty container.',
+        'getSlotPageByKey for $slotKey returned null, showing empty container.',
       );
       return Container();
     }

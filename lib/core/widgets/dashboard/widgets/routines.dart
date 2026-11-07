@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/core/date.dart';
 import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/core/network/network_provider.dart';
@@ -32,7 +32,6 @@ import 'package:wger/features/routines/screens/gym_mode.dart';
 import 'package:wger/features/routines/screens/routine_screen.dart';
 import 'package:wger/features/routines/widgets/forms/routine.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/theme/theme.dart';
 
 class DashboardRoutineWidget extends ConsumerStatefulWidget {
   const DashboardRoutineWidget();
@@ -246,8 +245,9 @@ class DetailContentWidget extends StatelessWidget {
                       const Icon(Icons.hotel)
                     else
                       IconButton(
+                        tooltip: AppLocalizations.of(context).gymMode,
                         icon: const Icon(Icons.play_arrow),
-                        color: wgerPrimaryButtonColor,
+                        color: Theme.of(context).colorScheme.primary,
                         onPressed: () {
                           Navigator.of(context).pushNamed(
                             GymModeScreen.routeName,

@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/core/validators.dart';
 import 'package:wger/features/exercises/models/exercise_submission_images.dart';
 import 'package:wger/features/exercises/validators.dart';
@@ -155,13 +155,13 @@ class _ImageDetailsFormState extends State<ImageDetailsForm> {
             widget.onAdd(widget.submissionImage);
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: Theme.of(context).primaryColor,
-            foregroundColor: Colors.white,
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            foregroundColor: Theme.of(context).colorScheme.onPrimary,
             padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
           ),
           child: Text(
             AppLocalizations.of(context).add,
-            style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
       ],
@@ -181,7 +181,7 @@ class ImagePreview extends StatelessWidget {
         constraints: const BoxConstraints(maxWidth: 300, maxHeight: 200),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: Colors.grey.shade300),
+          border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(8),

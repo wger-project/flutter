@@ -81,11 +81,11 @@ void main() {
   });
 
   group('addLocalDrift, log without sessionId', () {
-    test('reuses an existing session for the same routine and day', () async {
+    test('reuses an open session within the window', () async {
       final existingSession = WorkoutSession(
         id: 'existing-session-1',
         routineId: 100,
-        date: DateTime.utc(2026, 4, 15),
+        datetimeStart: DateTime.utc(2026, 4, 15, 16),
       );
       await db.into(db.workoutSessionTable).insert(existingSession.toCompanion());
 
@@ -98,12 +98,60 @@ void main() {
       expect(logs.single.sessionId, existingSession.id);
     });
 
+    test('reuses a closed session the log falls into', () async {
+      final existingSession = WorkoutSession(
+        id: 'existing-session-1',
+        routineId: 100,
+        datetimeStart: DateTime.utc(2026, 4, 15, 16),
+        datetimeEnd: DateTime.utc(2026, 4, 15, 19),
+      );
+      await db.into(db.workoutSessionTable).insert(existingSession.toCompanion());
+
+      final log = makeLog(date: DateTime.utc(2026, 4, 15, 18));
+      await repo.addLocalDrift(log);
+
+      expect(await readSessions(), hasLength(1));
+      expect(log.sessionId, existingSession.id);
+    });
+
+    test('reuses a session that runs past midnight for a log after it', () async {
+      // The session it belongs to started the day before, so a lookup by day
+      // would put this log in one of its own (issue wger#2379)
+      final existingSession = WorkoutSession(
+        id: 'existing-session-1',
+        routineId: 100,
+        datetimeStart: DateTime.utc(2026, 4, 15, 23, 30),
+        datetimeEnd: DateTime.utc(2026, 4, 16, 1),
+      );
+      await db.into(db.workoutSessionTable).insert(existingSession.toCompanion());
+
+      final log = makeLog(date: DateTime.utc(2026, 4, 16, 0, 30));
+      await repo.addLocalDrift(log);
+
+      expect(await readSessions(), hasLength(1));
+      expect(log.sessionId, existingSession.id);
+    });
+
+    test('does not reuse a closed session the log falls outside of', () async {
+      await db
+          .into(db.workoutSessionTable)
+          .insert(
+            WorkoutSession(
+              routineId: 100,
+              datetimeStart: DateTime.utc(2026, 4, 15, 16),
+              datetimeEnd: DateTime.utc(2026, 4, 15, 17),
+            ).toCompanion(),
+          );
+
+      await repo.addLocalDrift(makeLog(date: DateTime.utc(2026, 4, 15, 18)));
+
+      expect(await readSessions(), hasLength(2));
+    });
+
     test('reuses a server-synced session whose date has no time component', () async {
-      // After a round-trip the backend stores the date as a bare 'YYYY-MM-DD'
-      // (Django DateField), not the local 'T00:00:00.000Z' format. The day
-      // lookup must still match it, otherwise a duplicate session is created
-      // and the server rejects it on the unique (date, routine, user)
-      // constraint, taking every log on it down with it.
+      // A row replicated before 2.7 carries only the bare 'YYYY-MM-DD' date and
+      // no datetime_start. The day lookup has to keep matching it, otherwise a
+      // duplicate session appears next to every one of them.
       await db.customStatement(
         "INSERT INTO manager_workoutsession (id, routine_id, date, impression) VALUES ('server-session', 100, '2026-04-15', '2')",
       );
@@ -117,22 +165,50 @@ void main() {
       expect(logs.single.sessionId, 'server-session');
     });
 
-    test('creates a new session at midnight UTC of the log date', () async {
+    test('creates a new session starting at the moment of the log', () async {
+      // Without a start the lookups above could never find it again and every
+      // further log would create one of its own.
       final log = makeLog(date: DateTime.utc(2026, 4, 15, 18, 30));
 
       await repo.addLocalDrift(log);
 
       final sessions = await readSessions();
       expect(sessions, hasLength(1));
-      expect(sessions.single.date, DateTime.utc(2026, 4, 15));
+      expect(sessions.single.datetimeStart, DateTime.utc(2026, 4, 15, 18, 30).toLocal());
       expect(log.sessionId, sessions.single.id);
+    });
+
+    test('stamps the new session with the day it was logged on', () async {
+      // A session without a day is invisible to days that need logs to
+      // advance, stalling the routine's date sequence (issue wger#2460)
+      final log = makeLog();
+
+      await repo.addLocalDrift(log, dayId: 42);
+
+      final sessions = await readSessions();
+      expect(sessions.single.dayId, 42);
+    });
+
+    test('starts a new session when the open one is older than the window', () async {
+      await db
+          .into(db.workoutSessionTable)
+          .insert(
+            WorkoutSession(
+              routineId: 100,
+              datetimeStart: DateTime.utc(2026, 4, 15, 8),
+            ).toCompanion(),
+          );
+
+      await repo.addLocalDrift(makeLog(routineId: 100, date: DateTime.utc(2026, 4, 15, 18)));
+
+      expect(await readSessions(), hasLength(2));
     });
 
     test('does not reuse a session from a different day', () async {
       await db
           .into(db.workoutSessionTable)
           .insert(
-            WorkoutSession(routineId: 100, date: DateTime.utc(2026, 4, 14)).toCompanion(),
+            WorkoutSession(routineId: 100, datetimeStart: DateTime.utc(2026, 4, 14)).toCompanion(),
           );
 
       await repo.addLocalDrift(makeLog(date: DateTime.utc(2026, 4, 15)));
@@ -144,7 +220,7 @@ void main() {
       await db
           .into(db.workoutSessionTable)
           .insert(
-            WorkoutSession(routineId: 999, date: DateTime.utc(2026, 4, 15)).toCompanion(),
+            WorkoutSession(routineId: 999, datetimeStart: DateTime.utc(2026, 4, 15)).toCompanion(),
           );
 
       await repo.addLocalDrift(makeLog(routineId: 100, date: DateTime.utc(2026, 4, 15)));
@@ -167,7 +243,7 @@ void main() {
       final existingSession = WorkoutSession(
         id: 'free-session',
         routineId: null,
-        date: DateTime.utc(2026, 4, 15),
+        datetimeStart: DateTime.utc(2026, 4, 15, 16),
       );
       await db.into(db.workoutSessionTable).insert(existingSession.toCompanion());
 
@@ -182,12 +258,46 @@ void main() {
       await db
           .into(db.workoutSessionTable)
           .insert(
-            WorkoutSession(routineId: 100, date: DateTime.utc(2026, 4, 15)).toCompanion(),
+            WorkoutSession(routineId: 100, datetimeStart: DateTime.utc(2026, 4, 15)).toCompanion(),
           );
 
       await repo.addLocalDrift(makeLog(routineId: null, date: DateTime.utc(2026, 4, 15)));
 
       expect(await readSessions(), hasLength(2));
+    });
+  });
+
+  group('getLatestLogByExercise', () {
+    test('returns null when the exercise was never logged', () async {
+      await db.into(db.workoutLogTable).insert(makeLog(exerciseId: 2).toCompanion());
+
+      expect(await repo.getLatestLogByExercise(1), isNull);
+    });
+
+    test('returns the newest log of the exercise across routines', () async {
+      await seedUnits();
+      await db
+          .into(db.workoutLogTable)
+          .insert(makeLog(date: DateTime.utc(2026, 4, 14), weight: 14).toCompanion());
+      await db
+          .into(db.workoutLogTable)
+          .insert(
+            makeLog(routineId: 999, date: DateTime.utc(2026, 4, 16), weight: 16).toCompanion(),
+          );
+      await db
+          .into(db.workoutLogTable)
+          .insert(makeLog(date: DateTime.utc(2026, 4, 15), weight: 15).toCompanion());
+      // Newer, but a different exercise
+      await db
+          .into(db.workoutLogTable)
+          .insert(
+            makeLog(exerciseId: 2, date: DateTime.utc(2026, 4, 17), weight: 17).toCompanion(),
+          );
+
+      final log = await repo.getLatestLogByExercise(1);
+
+      expect(log!.weight, 16);
+      expect(log.weightUnitObj?.name, 'kg');
     });
   });
 
@@ -202,6 +312,21 @@ void main() {
       final rows = await readLogs();
       expect(rows, hasLength(1));
       expect(rows.single.weight, 75);
+    });
+
+    test('clears values that were nulled', () async {
+      final log = makeLog(sessionId: 'session-1', weight: 50);
+      log.rir = 2;
+      await repo.addLocalDrift(log);
+
+      // The user clears the RiR and the weight in the log edit dialog
+      log.rir = null;
+      log.weight = null;
+      await repo.updateLocalDrift(log);
+
+      final rows = await readLogs();
+      expect(rows.single.rir, isNull);
+      expect(rows.single.weight, isNull);
     });
   });
 
@@ -425,6 +550,23 @@ void main() {
 
       final rows = await readLogs();
       expect(rows.first.notes, 'PR attempt');
+    });
+  });
+
+  group('getLogsByIds', () {
+    test('returns the logs with the given ids, with their units', () async {
+      await seedUnits();
+      final logs = [
+        for (final weight in [10, 20, 30]) makeLog(weight: weight, sessionId: 's'),
+      ];
+      for (final log in logs) {
+        await repo.addLocalDrift(log);
+      }
+
+      final found = await repo.getLogsByIds([logs[0].id!, logs[2].id!, 'does-not-exist']);
+
+      expect(found.map((l) => l.weight), unorderedEquals([10, 30]));
+      expect(found.map((l) => l.weightUnitObj?.name), everyElement('kg'));
     });
   });
 }

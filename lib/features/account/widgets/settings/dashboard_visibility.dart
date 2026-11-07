@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/core/app_settings_notifier.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
@@ -46,7 +46,7 @@ class SettingsDashboardVisibility extends ConsumerWidget {
     }
 
     final items = ref.watch(
-      appSettingsProvider.select((s) => s.value?.dashboardItems ?? const <DashboardItem>[]),
+      appSettingsProvider.select((s) => s.value?.dashboardItems ?? defaultDashboardItems),
     );
     final notifier = ref.read(appSettingsProvider.notifier);
 

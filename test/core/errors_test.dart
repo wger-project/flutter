@@ -19,9 +19,12 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
+import 'package:logging/logging.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/errors.dart';
 import 'package:wger/core/exceptions/http_exception.dart';
@@ -128,6 +131,41 @@ void main() {
     });
   });
 
+  group('collectAppVersion', () {
+    void mockPackageInfo({String? installerStore}) {
+      PackageInfo.setMockInitialValues(
+        appName: 'wger',
+        packageName: 'de.wger.flutter',
+        version: '2.1.0',
+        buildNumber: '260',
+        buildSignature: '',
+        installerStore: installerStore,
+      );
+    }
+
+    setUp(() {
+      debugDefaultTargetPlatformOverride = TargetPlatform.android;
+      addTearDown(() {
+        debugDefaultTargetPlatformOverride = null;
+      });
+    });
+
+    test('Reports version, build, platform and installer', () async {
+      mockPackageInfo(installerStore: 'org.fdroid.fdroid');
+
+      expect(
+        await collectAppVersion(),
+        '2.1.0+260 on android, installed by org.fdroid.fdroid',
+      );
+    });
+
+    test('Omits the installer when the platform reports none', () async {
+      mockPackageInfo();
+
+      expect(await collectAppVersion(), '2.1.0+260 on android');
+    });
+  });
+
   group('buildGithubIssueUrl', () {
     test('Encodes the title and pre-fills the description', () {
       final url = buildGithubIssueUrl(
@@ -135,11 +173,18 @@ void main() {
         issueErrorMessage: 'Something broke',
         stackTrace: '#0 main (file.dart:1)',
         applicationLogs: ['log line 1', 'log line 2'],
+        appVersion: '2.1.0+260 on android',
+        serverVersion: '2.7.0',
       );
 
       expect(url, startsWith(GITHUB_ISSUES_BUG_URL));
       expect(url, contains('&title=An%20error%20occurred'));
       expect(url.length, lessThanOrEqualTo(GITHUB_ISSUES_MAX_URL_LENGTH));
+
+      // The template renders these as its own fields, not in the description
+      final query = Uri.parse(url).queryParameters;
+      expect(query['app-version'], '2.1.0+260 on android');
+      expect(query['server-version'], '2.7.0');
 
       final description = Uri.parse(url).queryParameters['description']!;
       expect(description, contains('Error message: Something broke'));
@@ -155,6 +200,8 @@ void main() {
 
       expect(url, startsWith(GITHUB_ISSUES_BUG_URL));
       expect(url, isNot(contains('&title=')));
+      expect(url, isNot(contains('&app-version=')));
+      expect(url, isNot(contains('&server-version=')));
       final description = Uri.parse(url).queryParameters['description']!;
       expect(description, contains('[Please describe the problem you are seeing.]'));
       expect(description, isNot(contains('Error details')));
@@ -280,6 +327,69 @@ void main() {
       expect(classifyError(Exception('boom')), ErrorSeverity.fatal);
       expect(classifyError(StateError('bad state')), ErrorSeverity.fatal);
       expect(classifyError(null), ErrorSeverity.fatal);
+    });
+  });
+
+  group('serverWithLocalFallback', () {
+    final logger = Logger('test');
+
+    test('online: returns the server result without touching local', () async {
+      var localCalls = 0;
+      final result = await serverWithLocalFallback(
+        isOnline: true,
+        server: () async => 'server',
+        local: () {
+          localCalls++;
+          return 'local';
+        },
+        logger: logger,
+        fallbackLog: 'falling back',
+      );
+
+      expect(result, 'server');
+      expect(localCalls, 0);
+    });
+
+    test('offline: skips the server attempt entirely', () async {
+      var serverCalls = 0;
+      final result = await serverWithLocalFallback(
+        isOnline: false,
+        server: () async {
+          serverCalls++;
+          return 'server';
+        },
+        local: () => 'local',
+        logger: logger,
+        fallbackLog: 'falling back',
+      );
+
+      expect(result, 'local');
+      expect(serverCalls, 0);
+    });
+
+    test('online: a network error falls back to local', () async {
+      final result = await serverWithLocalFallback(
+        isOnline: true,
+        server: () async => throw const SocketException('no route to host'),
+        local: () => 'local',
+        logger: logger,
+        fallbackLog: 'falling back',
+      );
+
+      expect(result, 'local');
+    });
+
+    test('online: an error that is not about the network rethrows', () async {
+      await expectLater(
+        serverWithLocalFallback<String>(
+          isOnline: true,
+          server: () async => throw StateError('broken'),
+          local: () => 'local',
+          logger: logger,
+          fallbackLog: 'falling back',
+        ),
+        throwsStateError,
+      );
     });
   });
 }

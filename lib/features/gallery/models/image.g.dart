@@ -10,7 +10,7 @@ GalleryImage _$GalleryImageFromJson(Map<String, dynamic> json) {
   $checkKeys(json, requiredKeys: const ['id', 'date']);
   return GalleryImage(
     id: (json['id'] as num?)?.toInt(),
-    date: utcIso8601ToLocalDate(json['date'] as String),
+    date: json['date'] == null ? null : utcIso8601ToLocalDate(json['date'] as String),
     imagePath: json['image'] as String?,
     description: json['description'] as String? ?? '',
   );

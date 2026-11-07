@@ -19,12 +19,13 @@
 import 'dart:io';
 
 import 'package:clock/clock.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/core/network/network_provider.dart';
+import 'package:wger/features/account/providers/user_profile_repository.dart';
 import 'package:wger/features/routines/models/log.dart';
 import 'package:wger/features/routines/models/repetition_unit.dart';
 import 'package:wger/features/routines/models/routine.dart';
@@ -34,11 +35,13 @@ import 'package:wger/features/routines/providers/workout_logs_repository.dart';
 import 'package:wger/features/routines/screens/routine_logs_screen.dart';
 import 'package:wger/features/routines/screens/routine_screen.dart';
 import 'package:wger/features/routines/widgets/logs/log_overview_routine.dart';
+import 'package:wger/features/routines/widgets/logs/session_info.dart';
 import 'package:wger/features/trophies/providers/trophy_repository.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 
 import '../../../../test_data/routines.dart';
-import '../../../test_data/trophies.dart';
+import '../../../../test_data/trophies.dart';
 import 'routine_logs_screen_test.mocks.dart';
 
 class _StubRoutinesRiverpod extends RoutinesRiverpod {
@@ -49,14 +52,14 @@ class _StubRoutinesRiverpod extends RoutinesRiverpod {
   Stream<RoutinesState> build() => Stream.value(RoutinesState(routines: _routines));
 }
 
-@GenerateMocks([TrophyRepository, WorkoutLogRepository])
+@GenerateMocks([TrophyRepository, WorkoutLogRepository, UserProfileRepository])
 void main() {
   late Routine routine;
   final mockWorkoutLogRepository = MockWorkoutLogRepository();
 
   setUp(() {
     routine = getTestRoutine();
-    routine.sessions[0] = routine.sessions[0].copyWith(date: DateTime(2025, 3, 29));
+    routine.sessions[0] = routine.sessions[0].copyWith(datetimeStart: DateTime(2025, 3, 29));
     // Pin every log to a known session id so we can verify the edit
     // dialog round-trips the value through the model.
     for (final log in routine.sessions[0].logs) {
@@ -78,9 +81,17 @@ void main() {
       ),
     ).thenAnswer((_) async => getUserTrophies());
 
+    // The log calendar cuts its days in the owner's zone, which reaches the
+    // Drift-backed profile repository. Stub it so the real database is not
+    // pulled into a widget test: a failing stream there leaves Riverpod's
+    // retry timer pending after the tree is disposed.
+    final mockUserProfileRepository = MockUserProfileRepository();
+    when(mockUserProfileRepository.watchDrift()).thenAnswer((_) => Stream.value(null));
+
     final container = ProviderContainer.test(
       overrides: [
         networkStatusProvider.overrideWithValue(isOnline),
+        userProfileRepositoryProvider.overrideWithValue(mockUserProfileRepository),
         workoutLogRepositoryProvider.overrideWithValue(mockWorkoutLogRepository),
         trophyRepositoryProvider.overrideWithValue(mockRepository),
         routinesRiverpodProvider.overrideWith(
@@ -99,7 +110,7 @@ void main() {
       container: container,
       child: MaterialApp(
         locale: Locale(locale),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: key,
         home: TextButton(
@@ -123,6 +134,7 @@ void main() {
     (WidgetTester tester) async {
       tester.view.physicalSize = const Size(500, 1000);
       tester.view.devicePixelRatio = 1.0; // Ensure correct pixel ratio
+      addTearDown(tester.view.reset);
 
       await withClock(Clock.fixed(DateTime(2025, 3, 29)), () async {
         await tester.pumpWidget(renderWidget());
@@ -148,6 +160,12 @@ void main() {
   );
 
   testWidgets('Test deleting log entries', (WidgetTester tester) async {
+    // Needs the taller surface itself: it used to inherit the one the test
+    // before it left behind
+    tester.view.physicalSize = const Size(500, 1000);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+
     await withClock(Clock.fixed(DateTime(2025, 3, 29)), () async {
       await tester.pumpWidget(renderWidget());
       await tester.tap(find.byType(TextButton));
@@ -169,6 +187,7 @@ void main() {
   ) async {
     tester.view.physicalSize = const Size(500, 1200);
     tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
 
     await withClock(Clock.fixed(DateTime(2025, 3, 29)), () async {
       await tester.pumpWidget(renderWidget());
@@ -209,6 +228,29 @@ void main() {
     });
   });
 
+  testWidgets('Shows every session logged on the selected day', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(500, 1200);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+
+    // A second workout later the same day, which the server allows since 2.7
+    routine.sessions[1] = routine.sessions[1].copyWith(
+      datetimeStart: DateTime(2025, 3, 29, 18, 0),
+      datetimeEnd: DateTime(2025, 3, 29, 19, 30),
+    );
+
+    await withClock(Clock.fixed(DateTime(2025, 3, 29)), () async {
+      await tester.pumpWidget(renderWidget());
+      await tester.tap(find.byType(TextButton));
+      await tester.pumpAndSettle();
+
+      // Both sessions are rendered, each with its own logs
+      expect(find.byType(SessionInfo), findsNWidgets(2));
+      expect(find.byKey(const ValueKey('delete-log-1')), findsOneWidget);
+      expect(find.byKey(const ValueKey('delete-log-3')), findsOneWidget);
+    });
+  });
+
   testWidgets('Edit dialog quick-plus updates the controller without rebuild error', (
     WidgetTester tester,
   ) async {
@@ -220,6 +262,7 @@ void main() {
 
     tester.view.physicalSize = const Size(500, 1200);
     tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
 
     await withClock(Clock.fixed(DateTime(2025, 3, 29)), () async {
       await tester.pumpWidget(renderWidget());
@@ -255,6 +298,7 @@ void main() {
   testWidgets('Edit dialog shows all input fields by default', (WidgetTester tester) async {
     tester.view.physicalSize = const Size(500, 1200);
     tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
 
     await withClock(Clock.fixed(DateTime(2025, 3, 29)), () async {
       await tester.pumpWidget(renderWidget());
@@ -289,9 +333,46 @@ void main() {
     });
   });
 
+  testWidgets('Edit dialog clearing the RiR passes null to the repository', (
+    WidgetTester tester,
+  ) async {
+    // Regression test: the hand-written Log.copyWith falls back to the old
+    // value on null, so a cleared field must not be routed through it.
+    tester.view.physicalSize = const Size(500, 1200);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+
+    await withClock(Clock.fixed(DateTime(2025, 3, 29)), () async {
+      await tester.pumpWidget(renderWidget());
+      await tester.tap(find.byType(TextButton));
+      await tester.pumpAndSettle();
+      await tester.drag(find.byType(ListView), const Offset(0, -500));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const ValueKey('edit-log-1')));
+      await tester.pumpAndSettle();
+
+      // Log 1 starts with a RiR of 1.5; dragging the slider all the way to the
+      // left selects "not used", which clears the value
+      final rirSlider = find.descendant(
+        of: find.byKey(const ValueKey('edit-rir-widget')),
+        matching: find.byType(Slider),
+      );
+      await tester.drag(rirSlider, const Offset(-500, 0));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const ValueKey('edit-save-button')));
+      await tester.pumpAndSettle();
+
+      final captured = verify(mockWorkoutLogRepository.updateLocalDrift(captureAny)).captured;
+      expect((captured.single as Log).rir, isNull);
+    });
+  });
+
   testWidgets('Edit dialog cancel does not call the repository', (WidgetTester tester) async {
     tester.view.physicalSize = const Size(500, 1200);
     tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
 
     await withClock(Clock.fixed(DateTime(2025, 3, 29)), () async {
       await tester.pumpWidget(renderWidget());
@@ -315,6 +396,9 @@ void main() {
   ) async {
     // Log deletion is backed by PowerSync, so it must work even when offline:
     // the delete is queued locally and synced once the network is back.
+    tester.view.physicalSize = const Size(500, 1000);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
 
     await withClock(Clock.fixed(DateTime(2025, 3, 29)), () async {
       await tester.pumpWidget(renderWidget(isOnline: false));

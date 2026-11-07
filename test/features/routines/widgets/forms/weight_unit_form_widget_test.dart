@@ -16,15 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/features/routines/models/slot_entry.dart';
 import 'package:wger/features/routines/models/weight_unit.dart';
 import 'package:wger/features/routines/providers/routines_notifier.dart';
 import 'package:wger/features/routines/screens/routine_screen.dart';
 import 'package:wger/features/routines/widgets/forms/weight.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 
 void main() {
   WeightUnit? result;
@@ -56,7 +57,7 @@ void main() {
         routineWeightUnitProvider.overrideWithValue(const AsyncValue.data([unit1, unit2, unit3])),
       ],
       child: MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: key,
         home: Scaffold(body: WeightUnitInputWidget(unit1, onChanged: (value) => result = value)),
@@ -90,5 +91,31 @@ void main() {
 
     // assert
     expect(result, equals(unit2));
+  });
+
+  testWidgets('prefills a fractional value in the active locale', (WidgetTester tester) async {
+    final formKey = GlobalKey<FormState>();
+    num? saved;
+    await tester.pumpWidget(
+      ProviderScope(
+        child: MaterialApp(
+          locale: const Locale('de'),
+          localizationsDelegates: appLocalizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Scaffold(
+            body: Form(
+              key: formKey,
+              child: WeightInputWidget(value: 52.5, onChanged: (value) => saved = value),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('52,5'), findsOneWidget);
+    expect(formKey.currentState!.validate(), isTrue);
+    formKey.currentState!.save();
+    expect(saved, 52.5);
   });
 }

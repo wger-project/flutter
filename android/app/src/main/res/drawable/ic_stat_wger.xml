@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Status bar icon of the workout notifications, the dumbbell of the app icon
+     filled in, its outlines would be too thin at this size -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="60"
+    android:viewportHeight="60">
+    <group
+        android:translateX="-24"
+        android:translateY="-24">
+        <path
+            android:fillColor="#FFFFFFFF"
+            android:pathData="M27,51H28.5V57H27ZM28.5,43.5H32.25V64.5H28.5ZM33.75,42H36.75V66H33.75ZM38.25,40.5H43.5V67.5H38.25ZM43.5,51H54V57H43.5ZM79.5,51H81V57H79.5ZM75.75,43.5H79.5V64.5H75.75ZM71.25,42H74.25V66H71.25ZM64.5,40.5H69.75V67.5H64.5ZM54,51H64.5V57H54Z" />
+    </group>
+</vector>

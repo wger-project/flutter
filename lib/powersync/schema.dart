@@ -26,7 +26,6 @@ import 'package:wger/database/powersync/tables/measurements.dart';
 import 'package:wger/database/powersync/tables/nutrition.dart';
 import 'package:wger/database/powersync/tables/routines.dart';
 import 'package:wger/database/powersync/tables/user_profile.dart';
-import 'package:wger/database/powersync/tables/weight.dart';
 
 Schema schema = const Schema(
   [
@@ -55,9 +54,6 @@ Schema schema = const Schema(
     PowersyncMealTable,
     PowersyncMealItemTable,
     PowersyncLogItemTable,
-
-    // Body weight
-    PowersyncWeightEntryTable,
 
     // Measurements
     PowersyncMeasurementCategoryTable,

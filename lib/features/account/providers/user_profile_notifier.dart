@@ -16,11 +16,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:wger/features/account/models/user_profile.dart';
 import 'package:wger/features/account/providers/user_profile_repository.dart';
 
 part 'user_profile_notifier.g.dart';
+
+/// The IANA zone the owner's calendar days are cut in, like the server's
+/// UserProfile.zone_info; null while the profile has not synced or no client
+/// has reported a zone yet (the day helpers then fall back to the device zone)
+final ownerTimeZoneProvider = Provider<String?>((ref) {
+  final zone = ref.watch(userProfileProvider).value?.timeZone;
+  return (zone == null || zone.isEmpty) ? null : zone;
+});
 
 @Riverpod(keepAlive: true)
 class UserProfileNotifier extends _$UserProfileNotifier {

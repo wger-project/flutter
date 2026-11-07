@@ -17,9 +17,9 @@
  */
 
 import 'package:clock/clock.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/features/routines/models/routine.dart';
@@ -28,6 +28,7 @@ import 'package:wger/features/routines/providers/gym_state_notifier.dart';
 import 'package:wger/features/routines/providers/workout_session_repository.dart';
 import 'package:wger/features/routines/widgets/gym_mode/session_page.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 
 import '../../../../../test_data/routines.dart';
 import 'session_page_test.mocks.dart';
@@ -78,7 +79,7 @@ void main() {
 
       child: MaterialApp(
         locale: Locale(locale),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
           body: PageView(
@@ -105,13 +106,12 @@ void main() {
     });
   });
 
-  testWidgets('Existing session with null times falls back to defaults', (
+  testWidgets('An open session keeps its start and gets the current time as end', (
     WidgetTester tester,
   ) async {
-    // A session created lazily while logging has no times; the page should
-    // prefill the gym session's start and the current time instead of leaving
-    // both fields blank.
-    testRoutine.sessions[0] = testRoutine.sessions[0].copyWith(timeStart: null, timeEnd: null);
+    // A session created lazily while logging has a start but no end yet; the
+    // page prefills the current time so the form opens on a full interval.
+    testRoutine.sessions[0] = testRoutine.sessions[0].copyWith(datetimeEnd: null);
 
     notifier.state = notifier.state.copyWith(
       routine: testRoutine,
@@ -123,7 +123,7 @@ void main() {
       await tester.pumpWidget(renderSessionPage());
       await tester.pumpAndSettle();
 
-      expect(find.text('1:35 PM'), findsOneWidget);
+      expect(find.text('10:00 AM'), findsOneWidget);
       expect(find.text('3:23 PM'), findsOneWidget);
     });
   });
@@ -159,8 +159,8 @@ void main() {
       expect(captured.id, '1');
       expect(captured.impression, WorkoutImpression.good);
       expect(captured.notes, equals('This is a note'));
-      expect(captured.timeStart, equals(const TimeOfDay(hour: 10, minute: 0)));
-      expect(captured.timeEnd, equals(const TimeOfDay(hour: 12, minute: 34)));
+      expect(captured.datetimeStart, equals(DateTime(2021, 5, 1, 10, 0)));
+      expect(captured.datetimeEnd, equals(DateTime(2021, 5, 1, 12, 34)));
     });
   });
 }

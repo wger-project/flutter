@@ -23,8 +23,8 @@ import 'package:wger/core/network/network_provider.dart';
 
 /// Global setup wrapped around every test file under `test/`.
 ///
-/// - Disables [NetworkStatus]'s periodic backend re-probe: a `Timer.periodic`
-///   left running past a test fails the test runner with a pending-timer error.
+/// - Disables [NetworkStatus]'s scheduled backend re-probe: a timer left
+///   running past a test fails the test runner with a pending-timer error.
 ///   Production keeps the default interval.
 /// - Silences drift's multiple-instances warning. Drift counts [GeneratedDatabase]
 ///   instantiations per process and warns from the second one, but never

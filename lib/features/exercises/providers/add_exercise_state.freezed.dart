@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'add_exercise_state.dart';
@@ -9,6 +9,7 @@ part of 'add_exercise_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
@@ -25,16 +26,21 @@ $AddExerciseStateCopyWith<AddExerciseState> get copyWith => _$AddExerciseStateCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AddExerciseState&&(identical(other.author, author) || other.author == author)&&(identical(other.exerciseNameEn, exerciseNameEn) || other.exerciseNameEn == exerciseNameEn)&&(identical(other.exerciseNameTrans, exerciseNameTrans) || other.exerciseNameTrans == exerciseNameTrans)&&(identical(other.descriptionEn, descriptionEn) || other.descriptionEn == descriptionEn)&&(identical(other.descriptionTrans, descriptionTrans) || other.descriptionTrans == descriptionTrans)&&(identical(other.variationGroup, variationGroup) || other.variationGroup == variationGroup)&&(identical(other.variationConnectToExercise, variationConnectToExercise) || other.variationConnectToExercise == variationConnectToExercise)&&(identical(other.languageEn, languageEn) || other.languageEn == languageEn)&&(identical(other.languageTranslation, languageTranslation) || other.languageTranslation == languageTranslation)&&const DeepCollectionEquality().equals(other.alternateNamesEn, alternateNamesEn)&&const DeepCollectionEquality().equals(other.alternateNamesTrans, alternateNamesTrans)&&(identical(other.category, category) || other.category == category)&&const DeepCollectionEquality().equals(other.equipment, equipment)&&const DeepCollectionEquality().equals(other.primaryMuscles, primaryMuscles)&&const DeepCollectionEquality().equals(other.secondaryMuscles, secondaryMuscles)&&const DeepCollectionEquality().equals(other.exerciseImages, exerciseImages));
+  final _this = this as AddExerciseState;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AddExerciseState&&(identical(other.author, _this.author) || other.author == _this.author)&&(identical(other.exerciseNameEn, _this.exerciseNameEn) || other.exerciseNameEn == _this.exerciseNameEn)&&(identical(other.exerciseNameTrans, _this.exerciseNameTrans) || other.exerciseNameTrans == _this.exerciseNameTrans)&&(identical(other.descriptionEn, _this.descriptionEn) || other.descriptionEn == _this.descriptionEn)&&(identical(other.descriptionTrans, _this.descriptionTrans) || other.descriptionTrans == _this.descriptionTrans)&&(identical(other.variationGroup, _this.variationGroup) || other.variationGroup == _this.variationGroup)&&(identical(other.variationConnectToExercise, _this.variationConnectToExercise) || other.variationConnectToExercise == _this.variationConnectToExercise)&&(identical(other.languageEn, _this.languageEn) || other.languageEn == _this.languageEn)&&(identical(other.languageTranslation, _this.languageTranslation) || other.languageTranslation == _this.languageTranslation)&&const DeepCollectionEquality().equals(other.alternateNamesEn, _this.alternateNamesEn)&&const DeepCollectionEquality().equals(other.alternateNamesTrans, _this.alternateNamesTrans)&&(identical(other.category, _this.category) || other.category == _this.category)&&const DeepCollectionEquality().equals(other.equipment, _this.equipment)&&const DeepCollectionEquality().equals(other.primaryMuscles, _this.primaryMuscles)&&const DeepCollectionEquality().equals(other.secondaryMuscles, _this.secondaryMuscles)&&const DeepCollectionEquality().equals(other.exerciseImages, _this.exerciseImages));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,author,exerciseNameEn,exerciseNameTrans,descriptionEn,descriptionTrans,variationGroup,variationConnectToExercise,languageEn,languageTranslation,const DeepCollectionEquality().hash(alternateNamesEn),const DeepCollectionEquality().hash(alternateNamesTrans),category,const DeepCollectionEquality().hash(equipment),const DeepCollectionEquality().hash(primaryMuscles),const DeepCollectionEquality().hash(secondaryMuscles),const DeepCollectionEquality().hash(exerciseImages));
+int get hashCode {
+  final _this = this as AddExerciseState;
+  return Object.hash(runtimeType,_this.author,_this.exerciseNameEn,_this.exerciseNameTrans,_this.descriptionEn,_this.descriptionTrans,_this.variationGroup,_this.variationConnectToExercise,_this.languageEn,_this.languageTranslation,const DeepCollectionEquality().hash(_this.alternateNamesEn),const DeepCollectionEquality().hash(_this.alternateNamesTrans),_this.category,const DeepCollectionEquality().hash(_this.equipment),const DeepCollectionEquality().hash(_this.primaryMuscles),const DeepCollectionEquality().hash(_this.secondaryMuscles),const DeepCollectionEquality().hash(_this.exerciseImages));
+}
 
 @override
 String toString() {
-  return 'AddExerciseState(author: $author, exerciseNameEn: $exerciseNameEn, exerciseNameTrans: $exerciseNameTrans, descriptionEn: $descriptionEn, descriptionTrans: $descriptionTrans, variationGroup: $variationGroup, variationConnectToExercise: $variationConnectToExercise, languageEn: $languageEn, languageTranslation: $languageTranslation, alternateNamesEn: $alternateNamesEn, alternateNamesTrans: $alternateNamesTrans, category: $category, equipment: $equipment, primaryMuscles: $primaryMuscles, secondaryMuscles: $secondaryMuscles, exerciseImages: $exerciseImages)';
+  final _this = this as AddExerciseState;
+  return 'AddExerciseState(author: ${_this.author}, exerciseNameEn: ${_this.exerciseNameEn}, exerciseNameTrans: ${_this.exerciseNameTrans}, descriptionEn: ${_this.descriptionEn}, descriptionTrans: ${_this.descriptionTrans}, variationGroup: ${_this.variationGroup}, variationConnectToExercise: ${_this.variationConnectToExercise}, languageEn: ${_this.languageEn}, languageTranslation: ${_this.languageTranslation}, alternateNamesEn: ${_this.alternateNamesEn}, alternateNamesTrans: ${_this.alternateNamesTrans}, category: ${_this.category}, equipment: ${_this.equipment}, primaryMuscles: ${_this.primaryMuscles}, secondaryMuscles: ${_this.secondaryMuscles}, exerciseImages: ${_this.exerciseImages})';
 }
 
 
@@ -63,7 +69,7 @@ class _$AddExerciseStateCopyWithImpl<$Res>
 /// Create a copy of AddExerciseState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? author = null,Object? exerciseNameEn = freezed,Object? exerciseNameTrans = freezed,Object? descriptionEn = freezed,Object? descriptionTrans = freezed,Object? variationGroup = freezed,Object? variationConnectToExercise = freezed,Object? languageEn = freezed,Object? languageTranslation = freezed,Object? alternateNamesEn = null,Object? alternateNamesTrans = null,Object? category = freezed,Object? equipment = null,Object? primaryMuscles = null,Object? secondaryMuscles = null,Object? exerciseImages = null,}) {
-  return _then(_self.copyWith(
+  return _then(AddExerciseState(
 author: null == author ? _self.author : author // ignore: cast_nullable_to_non_nullable
 as String,exerciseNameEn: freezed == exerciseNameEn ? _self.exerciseNameEn : exerciseNameEn // ignore: cast_nullable_to_non_nullable
 as String?,exerciseNameTrans: freezed == exerciseNameTrans ? _self.exerciseNameTrans : exerciseNameTrans // ignore: cast_nullable_to_non_nullable
@@ -215,7 +221,7 @@ return $default(_that.author,_that.exerciseNameEn,_that.exerciseNameTrans,_that.
 
 
 class _AddExerciseState extends AddExerciseState {
-  const _AddExerciseState({this.author = '', this.exerciseNameEn, this.exerciseNameTrans, this.descriptionEn, this.descriptionTrans, this.variationGroup, this.variationConnectToExercise, this.languageEn, this.languageTranslation, final  List<String> alternateNamesEn = const [], final  List<String> alternateNamesTrans = const [], this.category, final  List<Equipment> equipment = const [], final  List<Muscle> primaryMuscles = const [], final  List<Muscle> secondaryMuscles = const [], final  List<ExerciseSubmissionImage> exerciseImages = const []}): _alternateNamesEn = alternateNamesEn,_alternateNamesTrans = alternateNamesTrans,_equipment = equipment,_primaryMuscles = primaryMuscles,_secondaryMuscles = secondaryMuscles,_exerciseImages = exerciseImages,super._();
+  const _AddExerciseState({this.author = '', this.exerciseNameEn, this.exerciseNameTrans, this.descriptionEn, this.descriptionTrans, this.variationGroup, this.variationConnectToExercise, this.languageEn, this.languageTranslation,  List<String> alternateNamesEn = const [],  List<String> alternateNamesTrans = const [], this.category,  List<Equipment> equipment = const [],  List<Muscle> primaryMuscles = const [],  List<Muscle> secondaryMuscles = const [],  List<ExerciseSubmissionImage> exerciseImages = const []}): _alternateNamesEn = alternateNamesEn,_alternateNamesTrans = alternateNamesTrans,_equipment = equipment,_primaryMuscles = primaryMuscles,_secondaryMuscles = secondaryMuscles,_exerciseImages = exerciseImages,super._();
   
 
 @override@JsonKey() final  String author;
@@ -281,16 +287,18 @@ _$AddExerciseStateCopyWith<_AddExerciseState> get copyWith => __$AddExerciseStat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AddExerciseState&&(identical(other.author, author) || other.author == author)&&(identical(other.exerciseNameEn, exerciseNameEn) || other.exerciseNameEn == exerciseNameEn)&&(identical(other.exerciseNameTrans, exerciseNameTrans) || other.exerciseNameTrans == exerciseNameTrans)&&(identical(other.descriptionEn, descriptionEn) || other.descriptionEn == descriptionEn)&&(identical(other.descriptionTrans, descriptionTrans) || other.descriptionTrans == descriptionTrans)&&(identical(other.variationGroup, variationGroup) || other.variationGroup == variationGroup)&&(identical(other.variationConnectToExercise, variationConnectToExercise) || other.variationConnectToExercise == variationConnectToExercise)&&(identical(other.languageEn, languageEn) || other.languageEn == languageEn)&&(identical(other.languageTranslation, languageTranslation) || other.languageTranslation == languageTranslation)&&const DeepCollectionEquality().equals(other._alternateNamesEn, _alternateNamesEn)&&const DeepCollectionEquality().equals(other._alternateNamesTrans, _alternateNamesTrans)&&(identical(other.category, category) || other.category == category)&&const DeepCollectionEquality().equals(other._equipment, _equipment)&&const DeepCollectionEquality().equals(other._primaryMuscles, _primaryMuscles)&&const DeepCollectionEquality().equals(other._secondaryMuscles, _secondaryMuscles)&&const DeepCollectionEquality().equals(other._exerciseImages, _exerciseImages));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AddExerciseState&&(identical(other.author, author) || other.author == author)&&(identical(other.exerciseNameEn, exerciseNameEn) || other.exerciseNameEn == exerciseNameEn)&&(identical(other.exerciseNameTrans, exerciseNameTrans) || other.exerciseNameTrans == exerciseNameTrans)&&(identical(other.descriptionEn, descriptionEn) || other.descriptionEn == descriptionEn)&&(identical(other.descriptionTrans, descriptionTrans) || other.descriptionTrans == descriptionTrans)&&(identical(other.variationGroup, variationGroup) || other.variationGroup == variationGroup)&&(identical(other.variationConnectToExercise, variationConnectToExercise) || other.variationConnectToExercise == variationConnectToExercise)&&(identical(other.languageEn, languageEn) || other.languageEn == languageEn)&&(identical(other.languageTranslation, languageTranslation) || other.languageTranslation == languageTranslation)&&const DeepCollectionEquality().equals(other.alternateNamesEn, _alternateNamesEn)&&const DeepCollectionEquality().equals(other.alternateNamesTrans, _alternateNamesTrans)&&(identical(other.category, category) || other.category == category)&&const DeepCollectionEquality().equals(other.equipment, _equipment)&&const DeepCollectionEquality().equals(other.primaryMuscles, _primaryMuscles)&&const DeepCollectionEquality().equals(other.secondaryMuscles, _secondaryMuscles)&&const DeepCollectionEquality().equals(other.exerciseImages, _exerciseImages));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,author,exerciseNameEn,exerciseNameTrans,descriptionEn,descriptionTrans,variationGroup,variationConnectToExercise,languageEn,languageTranslation,const DeepCollectionEquality().hash(_alternateNamesEn),const DeepCollectionEquality().hash(_alternateNamesTrans),category,const DeepCollectionEquality().hash(_equipment),const DeepCollectionEquality().hash(_primaryMuscles),const DeepCollectionEquality().hash(_secondaryMuscles),const DeepCollectionEquality().hash(_exerciseImages));
+int get hashCode {
+    return Object.hash(runtimeType,author,exerciseNameEn,exerciseNameTrans,descriptionEn,descriptionTrans,variationGroup,variationConnectToExercise,languageEn,languageTranslation,const DeepCollectionEquality().hash(_alternateNamesEn),const DeepCollectionEquality().hash(_alternateNamesTrans),category,const DeepCollectionEquality().hash(_equipment),const DeepCollectionEquality().hash(_primaryMuscles),const DeepCollectionEquality().hash(_secondaryMuscles),const DeepCollectionEquality().hash(_exerciseImages));
+}
 
 @override
 String toString() {
-  return 'AddExerciseState(author: $author, exerciseNameEn: $exerciseNameEn, exerciseNameTrans: $exerciseNameTrans, descriptionEn: $descriptionEn, descriptionTrans: $descriptionTrans, variationGroup: $variationGroup, variationConnectToExercise: $variationConnectToExercise, languageEn: $languageEn, languageTranslation: $languageTranslation, alternateNamesEn: $alternateNamesEn, alternateNamesTrans: $alternateNamesTrans, category: $category, equipment: $equipment, primaryMuscles: $primaryMuscles, secondaryMuscles: $secondaryMuscles, exerciseImages: $exerciseImages)';
+    return 'AddExerciseState(author: $author, exerciseNameEn: $exerciseNameEn, exerciseNameTrans: $exerciseNameTrans, descriptionEn: $descriptionEn, descriptionTrans: $descriptionTrans, variationGroup: $variationGroup, variationConnectToExercise: $variationConnectToExercise, languageEn: $languageEn, languageTranslation: $languageTranslation, alternateNamesEn: $alternateNamesEn, alternateNamesTrans: $alternateNamesTrans, category: $category, equipment: $equipment, primaryMuscles: $primaryMuscles, secondaryMuscles: $secondaryMuscles, exerciseImages: $exerciseImages)';
 }
 
 

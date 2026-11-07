@@ -27,19 +27,19 @@ import 'package:wger/core/network/secure_token_storage.dart';
 import 'package:wger/core/shared_preferences.dart';
 
 /// Credential + server URL pair restored from on-disk storage. The refresh
-/// token (for the JWT path) is intentionally absent: it lives in secure
-/// storage and is only read when a refresh actually runs.
+/// token is intentionally absent: it lives in secure storage and is only
+/// read when a refresh actually runs.
 class StoredAuth {
-  final AuthCredential credential;
+  final JwtCredential credential;
   final String serverUrl;
 
   const StoredAuth({required this.credential, required this.serverUrl});
 }
 
 /// All persistence for the auth flow in one place. Holds the JWT-keyed
-/// shared-preference bundle, the legacy `PREFS_USER` blob, and the
-/// secure-storage refresh token. Lifts the storage layout details out of
-/// the notifier so callers don't have to know which keys back which fact.
+/// shared-preference bundle and the secure-storage refresh token. Lifts the
+/// storage layout details out of the notifier so callers don't have to know
+/// which keys back which fact.
 class AuthCredentialsStorage {
   final SecureTokenStorage _secureStorage;
   final _logger = Logger('AuthCredentialsStorage');
@@ -48,23 +48,10 @@ class AuthCredentialsStorage {
 
   SharedPreferencesAsync get _prefs => PreferenceHelper.asyncPref;
 
-  /// Reads the persisted credential bundle. The headless-JWT keys take
-  /// priority over the legacy `PREFS_USER` blob, so a partial migration
-  /// state still resolves to the JWT path. Returns null when neither
-  /// shape is fully present.
+  /// Reads the persisted credential bundle. Returns null when the access
+  /// token or the server URL is missing, so a half-written bundle resolves
+  /// to logged-out rather than to a session that cannot make requests.
   Future<StoredAuth?> load() async {
-    final jwt = await _readJwt();
-    if (jwt != null) {
-      return jwt;
-    }
-    return _readLegacy();
-  }
-
-  Future<StoredAuth?> _readJwt() async {
-    final tokenType = await _prefs.getString(PREFS_TOKEN_TYPE);
-    if (tokenType != AuthTokenType.headlessJwt.name) {
-      return null;
-    }
     final accessToken = await _prefs.getString(PREFS_ACCESS_TOKEN);
     final serverUrl = await _prefs.getString(PREFS_SERVER_URL);
     if (accessToken == null || accessToken.isEmpty || serverUrl == null || serverUrl.isEmpty) {
@@ -80,34 +67,10 @@ class AuthCredentialsStorage {
     );
   }
 
-  Future<StoredAuth?> _readLegacy() async {
-    if (!(await _prefs.containsKey(PREFS_USER))) {
-      return null;
-    }
-    final raw = await _prefs.getString(PREFS_USER);
-    if (raw == null) {
-      return null;
-    }
-    final Map<String, dynamic> blob;
-    try {
-      blob = json.decode(raw) as Map<String, dynamic>;
-    } catch (e, s) {
-      _logger.warning('Could not decode PREFS_USER blob', e, s);
-      return null;
-    }
-    final token = blob['token'] as String?;
-    final serverUrl = blob['serverUrl'] as String?;
-    if (token == null || serverUrl == null) {
-      return null;
-    }
-    return StoredAuth(credential: LegacyCredential(token), serverUrl: serverUrl);
-  }
-
   /// Persists a fresh JWT bundle. As a side effect this records the
-  /// server URL as the "last server" for the next login screen and wipes
-  /// the legacy `PREFS_USER` blob (legacy users transition to JWT on first
-  /// login through this path). The DB-owner marker is intentionally NOT
-  /// written here; the login flow sets it after any required DB wipe.
+  /// server URL as the "last server" for the next login screen. The
+  /// DB-owner marker is intentionally NOT written here; the login flow sets
+  /// it after any required DB wipe.
   Future<void> saveJwt({
     required JwtCredential credential,
     required String serverUrl,
@@ -120,7 +83,6 @@ class AuthCredentialsStorage {
     } else {
       await _prefs.remove(PREFS_ACCESS_EXPIRES_AT);
     }
-    await _prefs.setString(PREFS_TOKEN_TYPE, AuthTokenType.headlessJwt.name);
     await _prefs.setString(PREFS_SERVER_URL, serverUrl);
 
     if (refreshToken != null) {
@@ -133,13 +95,11 @@ class AuthCredentialsStorage {
         _logger.warning('Could not persist refresh token, auto-login disabled', e, s);
       }
     }
-
-    await clearLegacy();
   }
 
   /// Updates the persisted JWT bundle in place after a successful refresh.
-  /// Identical to [saveJwt] minus the legacy-cleanup and last-server side
-  /// effects (the original login already wrote those).
+  /// Identical to [saveJwt] minus the last-server side effect (the original
+  /// login already wrote it).
   Future<void> updateJwt({
     required JwtCredential credential,
     String? refreshToken,
@@ -162,15 +122,18 @@ class AuthCredentialsStorage {
     }
   }
 
-  /// Wipes the headless-JWT preference bundle and the secure-storage
-  /// refresh token. Used both for involuntary session clears and as part
-  /// of a full [clearAll]. The DB-owner marker is deliberately left intact:
-  /// it tracks who owns the on-disk data, which clearing credentials does
-  /// not change. It is reset only when the DB is actually wiped.
-  Future<void> clearJwt() async {
+  /// Wipes the credential bundle and the secure-storage refresh token, but
+  /// keeps the "has ever synced" flag so the next login takes the
+  /// offline-friendly restored-session path. Used for involuntary session
+  /// loss (refresh token expired, 401 retries exhausted) where the local
+  /// PowerSync DB is preserved, and as part of a full [clearAll].
+  ///
+  /// The DB-owner marker is deliberately left intact: it tracks who owns
+  /// the on-disk data, which clearing credentials does not change. It is
+  /// reset only when the DB is actually wiped.
+  Future<void> clearCredentials() async {
     await _prefs.remove(PREFS_ACCESS_TOKEN);
     await _prefs.remove(PREFS_ACCESS_EXPIRES_AT);
-    await _prefs.remove(PREFS_TOKEN_TYPE);
     await _prefs.remove(PREFS_SERVER_URL);
     try {
       await _secureStorage.deleteRefreshToken();
@@ -181,21 +144,10 @@ class AuthCredentialsStorage {
     }
   }
 
-  /// Wipes only the legacy `PREFS_USER` blob. Used by the JWT-migration
-  /// path on a 401 from the exchange endpoint (DRF token revoked) and as
-  /// a side effect of [saveJwt].
-  Future<void> clearLegacy() async {
-    await _prefs.remove(PREFS_USER);
-  }
-
-  /// Wipes both credential shapes but keeps the "has ever synced" flag,
-  /// so the next login takes the offline-friendly restored-session path.
-  /// Used for involuntary session loss (refresh token expired, 401
-  /// retries exhausted) where the local PowerSync DB is preserved.
-  Future<void> clearCredentials() async {
-    await clearLegacy();
-    await clearJwt();
-  }
+  /// Removes the pre-JWT credential blob left behind by installs that
+  /// upgraded from a build using permanent DRF tokens. Best-effort, runs
+  /// once per app start; can be dropped a couple of releases from now.
+  Future<void> clearLegacyDrfToken() => _prefs.remove(PREFS_USER);
 
   /// Manual-logout wipe: clears credentials plus the "has ever synced"
   /// flag, so the next login takes the full first-run gating path

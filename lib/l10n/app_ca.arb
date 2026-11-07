@@ -123,10 +123,6 @@
         "description": "A (logged) workout session"
     },
     "newDay": "Nou dia",
-    "newSet": "Nova sèrie",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
-    },
     "selectExercises": "Si vols fer una supersèrie, pots cercar diversos exercicis: s'agruparan junts",
     "plateCalculator": "Plaques",
     "@plateCalculator": {
@@ -431,16 +427,6 @@
             }
         }
     },
-    "imageFormatNotSupportedDetail": "Les imatges {imageFormat} encara no són compatibles.",
-    "@imageFormatNotSupportedDetail": {
-        "description": "Label shown on the image preview container when image format is not supported",
-        "type": "text",
-        "placeholders": {
-            "imageFormat": {
-                "type": "String"
-            }
-        }
-    },
     "addImage": "Afegeix imatge",
     "dataCopied": "Dades copiades a una nova entrada",
     "@dataCopied": {
@@ -546,12 +532,12 @@
     "@noMatchingExerciseFound": {
         "description": "Message returned if no exercises match the searched string"
     },
-    "contributeExerciseWarning": "Només pots contribuir amb exercicis si el teu compte té més de {days} dies i has verificat el teu correu electrònic",
+    "contributeExerciseWarning": "{days, plural, one{Només pots contribuir amb exercicis si el teu compte té més de {days} dia i has verificat el teu correu electrònic} other{Només pots contribuir amb exercicis si el teu compte té més de {days} dies i has verificat el teu correu electrònic}}",
     "@contributeExerciseWarning": {
         "description": "Number of days before which a person can add exercise",
         "placeholders": {
             "days": {
-                "type": "String",
+                "type": "int",
                 "example": "14"
             }
         }
@@ -680,13 +666,13 @@
     "selectMealToLog": "Selecciona un àpat per registrar al diari",
     "goalFiber": "Objectiu de fibra",
     "loggedToday": "Registrat avui",
-    "enterMinCharacters": "Si us plau, introdueix almenys {min} caràcters",
+    "enterMinCharacters": "{min, plural, one{Si us plau, introdueix almenys {min} caràcter} other{Si us plau, introdueix almenys {min} caràcters}}",
     "@enterMinCharacters": {
         "description": "Error message when the user hasn't entered the minimum amount characters in a form",
         "type": "text",
         "placeholders": {
             "min": {
-                "type": "String"
+                "type": "int"
             }
         }
     },
@@ -884,7 +870,6 @@
     "countdown": "Compte enrere",
     "stopwatch": "Cronometre",
     "gymModeDefaultCountdownTime": "Temps de compte enrere per defecte, en segons",
-    "gymModeNotifyOnCountdownFinish": "Notifica en finalitzar el compte enrere",
     "duration": "Duració",
     "durationHoursMinutes": "{hours}h {minutes}m",
     "@durationHoursMinutes": {
@@ -920,39 +905,6 @@
     "copyToClipboard": "Copia al porta-retalls",
     "min": "Mínim",
     "max": "Màxim",
-    "chartAllTimeTitle": "Històric: {name}",
-    "@chartAllTimeTitle": {
-        "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chart30DaysTitle": "Últims 30 dies: {name}",
-    "@chart30DaysTitle": {
-        "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chartDuringPlanTitle": "{chartName} durant el pla nutricional {planName}",
-    "@chartDuringPlanTitle": {
-        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-        "type": "text",
-        "placeholders": {
-            "chartName": {
-                "type": "String"
-            },
-            "planName": {
-                "type": "String"
-            }
-        }
-    },
     "endDate": "Data fi",
     "@endDate": {
         "description": "The End date of a nutritional plan or routine"
@@ -986,7 +938,6 @@
             }
         }
     },
-    "identicalExercisePleaseDiscard": "Si notes que ja hi ha un exercici idèntic al que estàs afegint, descarta l'esborrany i edita l'exercici.",
     "checkInformationBeforeSubmitting": "Comprova que la informació introduïda es correcte abans d'enviar l'exercici",
     "imageDetailsTitle": "Detalls de la imatge",
     "@imageDetailsTitle": {
@@ -1034,7 +985,6 @@
     "fitInWeek": "Horari setmanal fixe",
     "fitInWeekHelp": "Si està actiu, els dies es repetiran en un cicle setmanal, d'altre manera els dies seran seqüencials sense importar l'inici d'una nova setmana.",
     "addSuperset": "Afegir superserie",
-    "superset": "Super-serie",
     "setHasProgression": "La serie té progressió",
     "setHasProgressionWarning": "Ara mateix no és possible editar totes les configuracions per a una serie o configurar la progressió automàtica des de l'aplicació mòbil. Per ara, usa l'aplicació web.",
     "setHasNoExercises": "Aquesta serie encara no te exercicis!",

@@ -24,11 +24,10 @@ import 'package:http/http.dart' as http;
 /// Thin REST client used by the PowerSync connector.
 ///
 /// In production the [http.Client] passed in is the project-wide
-/// `AuthHttpClient`, which injects the right `Authorization` header
-/// (`Bearer` for headless JWT, `Token` for legacy permanent tokens) and
-/// runs pre-emptive refresh ahead of token expiry. This class itself
-/// therefore stays auth-agnostic: it only sets `Content-Type` and lets
-/// the client own everything else.
+/// `AuthHttpClient`, which injects the `Authorization` header and runs
+/// pre-emptive refresh ahead of token expiry. This class itself therefore
+/// stays auth-agnostic: it only sets `Content-Type` and lets the client own
+/// everything else.
 class ApiClient {
   late final uri = Uri.parse('$serverUrl/api/v2/upload-powersync-data');
 

@@ -19,6 +19,7 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:http/io_client.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/http_overrides.dart';
 
@@ -116,6 +117,33 @@ void main() {
       WgerHttpOverrides.trustServer(DEFAULT_SERVER_PROD);
       expect(WgerHttpOverrides.exemptHost(DEFAULT_SERVER_PROD), isNull);
     });
+  });
+
+  group('acceptsBadCertificateFrom', () {
+    test('trusts only the captured host', () {
+      final callback = WgerHttpOverrides.acceptsBadCertificateFrom('gym.example.com');
+
+      expect(callback(cert, 'gym.example.com', 443), isTrue);
+      expect(callback(cert, 'other.example.com', 443), isFalse);
+    });
+
+    test('decides without the statics, which the sync isolate never sees', () {
+      // The regression that matters: in PowerSync's sync isolate the statics
+      // hold their defaults, so an implementation reading them (like
+      // acceptsBadCertificate does) would reject the exempted host there.
+      WgerHttpOverrides.allowSelfSignedCerts = false;
+      WgerHttpOverrides.trustedHost = null;
+
+      final callback = WgerHttpOverrides.acceptsBadCertificateFrom('gym.example.com');
+      expect(callback(cert, 'gym.example.com', 443), isTrue);
+    });
+  });
+
+  test('syncHttpClientFactory builds a dart:io backed client', () {
+    final client = WgerHttpOverrides.syncHttpClientFactory('gym.example.com')();
+    addTearDown(client.close);
+
+    expect(client, isA<IOClient>());
   });
 
   test('trustServer clears the host for a null, empty or hostless URL', () {

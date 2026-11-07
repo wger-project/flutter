@@ -16,15 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
-import 'package:wger/core/consts.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/core/formatting/formatting.dart';
 import 'package:wger/core/snackbar.dart';
 import 'package:wger/core/widgets/core.dart';
 import 'package:wger/core/widgets/error.dart';
-import 'package:wger/features/exercises/models/exercise.dart';
 import 'package:wger/features/routines/models/log.dart';
 import 'package:wger/features/routines/models/set_config_data.dart';
 import 'package:wger/features/routines/models/slot_entry.dart';
@@ -49,9 +47,9 @@ class LogPage extends ConsumerWidget {
 
   /// Identifies which slot page this widget renders, so it shows its own
   /// content instead of whatever the globally-current page happens to be.
-  final String slotUuid;
+  final String slotKey;
 
-  LogPage(this._controller, this.slotUuid);
+  LogPage(this._controller, this.slotKey);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -59,9 +57,9 @@ class LogPage extends ConsumerWidget {
     final gymState = ref.watch(gymStateProvider);
     final languageCode = Localizations.localeOf(context).languageCode;
 
-    final slotEntryPage = gymState.getSlotPageByUUID(slotUuid);
+    final slotEntryPage = gymState.getSlotPageByKey(slotKey);
     if (slotEntryPage == null) {
-      _logger.info('getSlotPageByUUID for $slotUuid returned null, showing empty container.');
+      _logger.info('getSlotPageByKey for $slotKey returned null, showing empty container.');
       return Container();
     }
 
@@ -86,7 +84,7 @@ class LogPage extends ConsumerWidget {
     );
 
     // Mark done sets
-    final decorationStyle = slotEntryPage.logDone
+    final decorationStyle = gymState.progressOf(slotEntryPage.key).done
         ? TextDecoration.lineThrough
         : TextDecoration.none;
 
@@ -143,7 +141,7 @@ class LogPage extends ConsumerWidget {
         // Overriding the log scope from here is handled in a follow-up, the
         // settings currently only live in the gym mode options.
         // _LogScopeControls(gymState: gymState),
-        Expanded(child: _buildPastLogs(pastLogs, setConfigData.exercise)),
+        Expanded(child: _buildPastLogs(pastLogs)),
 
         Padding(
           padding: const EdgeInsets.all(10),
@@ -155,7 +153,7 @@ class LogPage extends ConsumerWidget {
               child: LogFormWidget(
                 controller: _controller,
                 configData: setConfigData,
-                key: ValueKey('log-form-${slotEntryPage.uuid}'),
+                key: ValueKey('log-form-${slotEntryPage.key}'),
               ),
             ),
           ),
@@ -166,7 +164,7 @@ class LogPage extends ConsumerWidget {
   }
 
   /// Renders the previous logs for this exercise
-  Widget _buildPastLogs(AsyncValue<List<Log>> pastLogs, Exercise exercise) {
+  Widget _buildPastLogs(AsyncValue<List<Log>> pastLogs) {
     if (pastLogs.hasError) {
       _logger.warning('Could not load past logs', pastLogs.error, pastLogs.stackTrace);
       // Scroll-wrap so the indicator fits this slim slot instead of overflowing.
@@ -175,9 +173,7 @@ class LogPage extends ConsumerWidget {
       );
     }
     final logs = pastLogs.value ?? const <Log>[];
-    return logs.isEmpty
-        ? const SizedBox.shrink()
-        : LogsPastLogsWidget(pastLogs: logs, exercise: exercise);
+    return logs.isEmpty ? const SizedBox.shrink() : LogsPastLogsWidget(pastLogs: logs);
   }
 }
 
@@ -189,6 +185,7 @@ class LogsPlatesWidget extends ConsumerWidget {
     final plateWeightsState = ref.watch(plateCalculatorProvider);
 
     return Container(
+      width: double.infinity,
       color: Theme.of(context).colorScheme.onInverseSurface,
       child: Column(
         children: [
@@ -238,13 +235,9 @@ class LogsPlatesWidget extends ConsumerWidget {
 class LogsPastLogsWidget extends ConsumerWidget {
   final List<Log> pastLogs;
 
-  /// The exercise the logs belong to, they only carry its ID
-  final Exercise exercise;
-
   const LogsPastLogsWidget({
     super.key,
     required this.pastLogs,
-    required this.exercise,
   });
 
   @override
@@ -272,7 +265,7 @@ class LogsPastLogsWidget extends ConsumerWidget {
               ),
               trailing: const Icon(Icons.copy),
               onTap: () {
-                logProvider.setLog(pastLog, exercise: exercise);
+                logProvider.copyValuesFrom(pastLog);
                 ScaffoldMessenger.of(context).hideCurrentSnackBar();
                 showSnackbar(context, AppLocalizations.of(context).dataCopied);
               },
@@ -312,7 +305,6 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
   @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
-    final logProvider = ref.read(workoutLogProvider);
     final log = ref.watch(gymLogProvider);
 
     // The log is populated when the page becomes current: the PageView can lay
@@ -321,13 +313,16 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
       return const SizedBox.shrink();
     }
 
+    // A log with an id was already saved, saving it again updates the row
+    final isNewEntry = log.id == null;
+
     return Form(
       key: _form,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            i18n.newEntry,
+            isNewEntry ? i18n.newEntry : i18n.edit,
             style: Theme.of(context).textTheme.titleLarge,
             textAlign: TextAlign.center,
           ),
@@ -389,49 +384,56 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
               ref.read(gymLogProvider.notifier).setNotes(value);
             },
           ),
-          FilledButton(
-            key: const ValueKey('save-log-button'),
-            onPressed: () async {
-              final isValid = _form.currentState!.validate();
-              if (!isValid) {
-                return;
-              }
-              _form.currentState!.save();
+          // Side by side to save the height, wrapped only if they don't fit
+          Wrap(
+            alignment: WrapAlignment.center,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 8,
+            children: [
+              if (!isNewEntry)
+                TextButton.icon(
+                  key: const ValueKey('add-set-button'),
+                  onPressed: () => ref.read(gymStateProvider.notifier).startNewEntry(),
+                  label: Text(i18n.addSet),
+                ),
+              FilledButton(
+                key: const ValueKey('save-log-button'),
+                onPressed: () async {
+                  final isValid = _form.currentState!.validate();
+                  if (!isValid) {
+                    return;
+                  }
+                  _form.currentState!.save();
 
-              final error = validateWorkoutLogCrossField(
-                repetitions: log.repetitions,
-                weight: log.weight,
-                i18n: i18n,
-              );
-              if (error != null) {
-                showSnackbar(context, error);
-                return;
-              }
+                  final error = validateWorkoutLogCrossField(
+                    repetitions: log.repetitions,
+                    weight: log.weight,
+                    i18n: i18n,
+                  );
+                  if (error != null) {
+                    showSnackbar(context, error);
+                    return;
+                  }
 
-              final gymState = ref.read(gymStateProvider);
-              final gymProvider = ref.read(gymStateProvider.notifier);
-              final page = gymState.getSlotEntryPageByIndex()!;
+                  // A failed write is intentionally left to propagate to the global
+                  // error handler; the success path below is then skipped. A page
+                  // logged before updates its row, and the PageView follows the
+                  // page change from the gym state.
+                  await ref.read(gymStateProvider.notifier).logCurrentSet();
+                  if (!context.mounted) {
+                    return;
+                  }
 
-              // A failed write is intentionally left to propagate to the global
-              // error handler; the success path below is then skipped.
-              await logProvider.addEntry(log);
-              if (!context.mounted) {
-                return;
-              }
-
-              gymProvider.markSlotPageAsDone(page.uuid, isDone: true);
-              showSnackbar(
-                context,
-                i18n.successfullySaved,
-                center: true,
-                duration: const Duration(seconds: 2),
-              );
-              widget.controller.nextPage(
-                duration: DEFAULT_ANIMATION_DURATION,
-                curve: DEFAULT_ANIMATION_CURVE,
-              );
-            },
-            child: Text(i18n.save),
+                  showSnackbar(
+                    context,
+                    i18n.successfullySaved,
+                    center: true,
+                    duration: const Duration(seconds: 2),
+                  );
+                },
+                child: Text(i18n.save),
+              ),
+            ],
           ),
         ],
       ),

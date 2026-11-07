@@ -27,11 +27,21 @@ class UserProfileTable extends Table {
 
   IntColumn get id => integer()();
   TextColumn get weightUnitStr => text().named('weight_unit')();
+
+  /// Body height in cm, null for a profile that has none and for a row that
+  /// synced before the column existed.
+  IntColumn get height => integer().nullable()();
+
+  /// IANA timezone name, empty when no client has reported one yet and null
+  /// for a row that synced before the column existed.
+  TextColumn get timeZone => text().named('time_zone').nullable()();
 }
 
 const PowersyncUserProfileTable = ps.Table(
   'core_userprofile',
   [
     ps.Column.text('weight_unit'),
+    ps.Column.integer('height'),
+    ps.Column.text('time_zone'),
   ],
 );

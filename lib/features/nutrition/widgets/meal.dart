@@ -16,14 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg_icons/flutter_svg_icons.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/form_screen.dart';
 import 'package:wger/core/snackbar.dart';
 import 'package:wger/core/widgets/core.dart';
 import 'package:wger/core/widgets/progress_indicator.dart';
+import 'package:wger/core/widgets/svg_icon.dart';
 import 'package:wger/features/nutrition/models/meal.dart';
 import 'package:wger/features/nutrition/models/meal_item.dart';
 import 'package:wger/features/nutrition/providers/nutrition_notifier.dart';
@@ -262,7 +262,7 @@ class MealHeader extends StatelessWidget {
                   },
                 ),
               if (_meal.isRealMeal) const SizedBox(width: 5),
-              if (_meal.isRealMeal) const SvgIcon(icon: SvgIconData('assets/icons/meal-diary.svg')),
+              if (_meal.isRealMeal) const SvgIcon('assets/icons/meal-diary.svg'),
             ],
           ),
           onTap: _meal.isRealMeal

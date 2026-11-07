@@ -11,11 +11,6 @@ updates:
     schedule:
       interval: "weekly"
 
-  - package-ecosystem: "pub"
-    directory: "/flatpak/scripts"
-    schedule:
-      interval: "weekly"
-
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:

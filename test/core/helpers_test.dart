@@ -181,6 +181,29 @@ void main() {
     });
   });
 
+  group('makePageUri', () {
+    test('builds the page URL on the server itself', () {
+      expect(
+        makePageUri('https://wger.de', 'software/terms-of-service').toString(),
+        'https://wger.de/software/terms-of-service',
+      );
+    });
+
+    test('handles a trailing slash on the server URL', () {
+      expect(
+        makePageUri('https://wger.de/', 'software/terms-of-service').toString(),
+        'https://wger.de/software/terms-of-service',
+      );
+    });
+
+    test('keeps a subpath and a non-default port (self-hosted setups)', () {
+      expect(
+        makePageUri('http://localhost:8000/wger', 'software/terms-of-service').toString(),
+        'http://localhost:8000/wger/software/terms-of-service',
+      );
+    });
+  });
+
   group('findLivePowerSyncUrl', () {
     const serverUrl = 'https://wger.example.com';
 

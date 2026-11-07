@@ -170,10 +170,6 @@
     "@workoutSession": {
         "description": "A (logged) workout session"
     },
-    "newSet": "Nowa seria",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
-    },
     "selectExercises": "Jeśli chcesz zrobić super serię, możesz wyszukać kilka ćwiczeń, zostaną one zgrupowane razem",
     "gymMode": "Tryb treningu",
     "@gymMode": {
@@ -472,13 +468,13 @@
     "@moreMeasurementEntries": {
         "description": "Message shown when the user wants to add new measurement"
     },
-    "enterMinCharacters": "Proszę wpisać co najmniej {min} znaków",
+    "enterMinCharacters": "{min, plural, one{Proszę wpisać co najmniej {min} znak} few{Proszę wpisać co najmniej {min} znaki} other{Proszę wpisać co najmniej {min} znaków}}",
     "@enterMinCharacters": {
         "description": "Error message when the user hasn't entered the minimum amount characters in a form",
         "type": "text",
         "placeholders": {
             "min": {
-                "type": "String"
+                "type": "int"
             }
         }
     },
@@ -565,12 +561,12 @@
     "abs": "Brzuch",
     "quads": "Mięsień czworogłowy uda",
     "cardio": "Kardio",
-    "contributeExerciseWarning": "Możesz dodawać ćwiczenia tylko wtedy, gdy Twoje konto jest starsze niż {days} dni i zweryfikowałeś swój adres e-mail",
+    "contributeExerciseWarning": "{days, plural, one{Możesz dodawać ćwiczenia tylko wtedy, gdy Twoje konto jest starsze niż {days} dzień i zweryfikowałeś swój adres e-mail} other{Możesz dodawać ćwiczenia tylko wtedy, gdy Twoje konto jest starsze niż {days} dni i zweryfikowałeś swój adres e-mail}}",
     "@contributeExerciseWarning": {
         "description": "Number of days before which a person can add exercise",
         "placeholders": {
             "days": {
-                "type": "String",
+                "type": "int",
                 "example": "14"
             }
         }
@@ -683,26 +679,6 @@
     "@deficit": {
         "description": "Caloric deficit (either planned or unplanned)"
     },
-    "chartAllTimeTitle": "{name} Z całego okresu",
-    "@chartAllTimeTitle": {
-        "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chart30DaysTitle": "{name} ostatnie 30 dni",
-    "@chart30DaysTitle": {
-        "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
     "useApiToken": "Użyj API Token",
     "apiToken": "API Token",
     "restTime": "Czas odpoczynku",
@@ -773,19 +749,6 @@
     "toAddMealsToThePlanGoToNutritionalPlanDetails": "Aby dodać posiłki do planu, przejdź do szczegółów planu żywieniowego",
     "@toAddMealsToThePlanGoToNutritionalPlanDetails": {
         "description": "Message shown to guide users to the nutritional plan details page to add meals"
-    },
-    "chartDuringPlanTitle": "{chartName} w planie żywieniowym {planName}",
-    "@chartDuringPlanTitle": {
-        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-        "type": "text",
-        "placeholders": {
-            "chartName": {
-                "type": "String"
-            },
-            "planName": {
-                "type": "String"
-            }
-        }
     },
     "aboutContributeTitle": "Współtwórz",
     "aboutContributeText": "Zachęcamy do wszelkiego rodzaju wkładu. Niezależnie od tego, czy jesteś programistą, tłumaczem, czy po prostu pasjonatem fitnessu, każda forma wsparcia jest mile widziana!",
@@ -871,7 +834,6 @@
     "countdown": "Odliczanie",
     "stopwatch": "Stoper",
     "gymModeDefaultCountdownTime": "Domyślny czas timera, w sekundach",
-    "gymModeNotifyOnCountdownFinish": "Powiadom na koniec odliczania",
     "duration": "Czas trwania",
     "durationHoursMinutes": "{hours}h {minutes}m",
     "@durationHoursMinutes": {

@@ -20,7 +20,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/core/network/base_provider.dart';
+import 'package:wger/core/search_options.dart';
 import 'package:wger/database/powersync/database.dart';
+import 'package:wger/features/exercises/models/category.dart';
+import 'package:wger/features/exercises/models/exercise_filters.dart';
 import 'package:wger/features/exercises/models/image.dart';
 import 'package:wger/features/exercises/providers/exercise_repository.dart';
 
@@ -393,6 +396,110 @@ void main() {
               ).captured.single
               as Map<String, dynamic>;
       expect(captured['language__code'], 'en');
+    });
+  });
+
+  group('searchExerciseServerWithSearchMode', () {
+    /// Stubs the endpoint and returns the query the repository built.
+    Future<Map<String, dynamic>> capturedQuery(Future<void> Function() search) async {
+      final uri = Uri.https('localhost', 'api/v2/exerciseinfo/');
+      when(mockBase.makeUrl('exerciseinfo', query: anyNamed('query'))).thenReturn(uri);
+      when(mockBase.fetch(uri)).thenAnswer((_) async => {'results': []});
+
+      await search();
+
+      return verify(
+            mockBase.makeUrl('exerciseinfo', query: captureAnyNamed('query')),
+          ).captured.single
+          as Map<String, dynamic>;
+    }
+
+    test('returns an empty list for terms shorter than 2 chars', () async {
+      expect(await repo.searchExerciseServerWithSearchMode('a'), isEmpty);
+      verifyNever(mockBase.fetch(any));
+    });
+
+    test('fulltext mode searches by name__search', () async {
+      final query = await capturedQuery(
+        () => repo.searchExerciseServerWithSearchMode('bench', languageCode: 'de'),
+      );
+
+      expect(query['name__search'], 'bench');
+      expect(query, isNot(contains('name__exact')));
+      expect(query['language__code'], 'de,en');
+    });
+
+    test('exact mode searches by name__exact', () async {
+      final query = await capturedQuery(
+        () => repo.searchExerciseServerWithSearchMode(
+          'bench press',
+          searchMode: ExerciseSearchMode.exact,
+        ),
+      );
+
+      expect(query['name__exact'], 'bench press');
+      expect(query, isNot(contains('name__search')));
+    });
+
+    test('SearchLanguage.all drops the language filter entirely', () async {
+      final query = await capturedQuery(
+        () => repo.searchExerciseServerWithSearchMode(
+          'bench',
+          languageCode: 'de',
+          searchLanguage: SearchLanguage.all,
+        ),
+      );
+
+      expect(query, isNot(contains('language__code')));
+    });
+
+    test('SearchLanguage.current keeps only the given language', () async {
+      final query = await capturedQuery(
+        () => repo.searchExerciseServerWithSearchMode(
+          'bench',
+          languageCode: 'de',
+          searchLanguage: SearchLanguage.current,
+        ),
+      );
+
+      expect(query['language__code'], 'de');
+    });
+
+    test('categories are sent as a comma separated id list', () async {
+      final query = await capturedQuery(
+        () => repo.searchExerciseServerWithSearchMode(
+          'bench',
+          categories: {
+            const ExerciseCategory(id: 2, name: 'Chest'),
+            const ExerciseCategory(id: 5, name: 'Legs'),
+          },
+        ),
+      );
+
+      expect(query['category__in'], '2,5');
+    });
+
+    test('no categories means no category filter', () async {
+      final query = await capturedQuery(
+        () => repo.searchExerciseServerWithSearchMode('bench'),
+      );
+
+      expect(query, isNot(contains('category__in')));
+    });
+
+    test('extracts the ids from the results', () async {
+      final uri = Uri.https('localhost', 'api/v2/exerciseinfo/');
+      when(mockBase.makeUrl('exerciseinfo', query: anyNamed('query'))).thenReturn(uri);
+      when(mockBase.fetch(uri)).thenAnswer(
+        (_) async => {
+          'results': [
+            {'id': 7},
+            {'id': 9},
+          ],
+        },
+      );
+
+      expect(await repo.searchExerciseServerWithSearchMode('bench'), [7, 9]);
     });
   });
 

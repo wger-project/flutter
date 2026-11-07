@@ -16,12 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:io';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/core/network/network_provider.dart';
+import 'package:wger/core/search_options.dart';
 import 'package:wger/features/exercises/models/exercise.dart';
+import 'package:wger/features/exercises/models/exercise_filters.dart';
 import 'package:wger/features/exercises/providers/exercise_repository.dart';
 import 'package:wger/features/exercises/providers/exercises_notifier.dart';
 
@@ -200,10 +204,183 @@ void main() {
       expect(result.map((e) => e.id).toList(), [testDeadLift.id]);
     });
 
+    test('online: a network error falls back to the local snapshot', () async {
+      // The cached "online" may be stale, so the failing server search must
+      // degrade to the local catalogue instead of surfacing an error.
+      when(
+        mockRepo.searchExerciseServer(
+          any,
+          languageCode: anyNamed('languageCode'),
+          searchEnglish: anyNamed('searchEnglish'),
+        ),
+      ).thenThrow(const SocketException('no route to host'));
+      final container = await primedContainer(isOnline: true);
+
+      final result = await container.read(exercisesProvider.notifier).searchExercise('dead');
+
+      expect(result.map((e) => e.id).toList(), [testDeadLift.id]);
+    });
+
+    test('online: an error that is not about the network still surfaces', () async {
+      when(
+        mockRepo.searchExerciseServer(
+          any,
+          languageCode: anyNamed('languageCode'),
+          searchEnglish: anyNamed('searchEnglish'),
+        ),
+      ).thenThrow(StateError('broken response'));
+      final container = await primedContainer(isOnline: true);
+
+      await expectLater(
+        container.read(exercisesProvider.notifier).searchExercise('dead'),
+        throwsStateError,
+      );
+    });
+
     // NOTE: a focused test for the searchEnglish=true branch is omitted because
     // Exercise.getTranslation('xx') falls back to English when no 'xx'
     // translation exists, so a German search already matches English names in
     // this fixture set. A useful test would need a German translation that
     // intentionally diverges from the English one.
+  });
+
+  group('searchExerciseWithSearchMode', () {
+    // The variant the exercise autocompleter uses. Online it hands the options
+    // to the backend, offline it has to apply them itself.
+    void stubServer(List<int> ids) => when(
+      mockRepo.searchExerciseServerWithSearchMode(
+        any,
+        languageCode: anyNamed('languageCode'),
+        searchLanguage: anyNamed('searchLanguage'),
+        searchMode: anyNamed('searchMode'),
+        categories: anyNamed('categories'),
+      ),
+    ).thenAnswer((_) async => ids);
+
+    test('returns empty for a single character, without asking the server', () async {
+      final container = await primedContainer();
+
+      expect(
+        await container.read(exercisesProvider.notifier).searchExerciseWithSearchMode('a'),
+        isEmpty,
+      );
+      verifyNever(
+        mockRepo.searchExerciseServerWithSearchMode(
+          any,
+          languageCode: anyNamed('languageCode'),
+          searchLanguage: anyNamed('searchLanguage'),
+          searchMode: anyNamed('searchMode'),
+          categories: anyNamed('categories'),
+        ),
+      );
+    });
+
+    test('online: passes the options through and hydrates the returned ids', () async {
+      stubServer([testSquats.id]);
+      final container = await primedContainer();
+
+      final result = await container
+          .read(exercisesProvider.notifier)
+          .searchExerciseWithSearchMode(
+            'squats',
+            searchLanguage: SearchLanguage.all,
+            searchMode: ExerciseSearchMode.exact,
+          );
+
+      expect(result.map((e) => e.id).toList(), [testSquats.id]);
+      verify(
+        mockRepo.searchExerciseServerWithSearchMode(
+          'squats',
+          languageCode: anyNamed('languageCode'),
+          searchLanguage: SearchLanguage.all,
+          searchMode: ExerciseSearchMode.exact,
+          categories: anyNamed('categories'),
+        ),
+      ).called(1);
+    });
+
+    test('online: a network error falls back through the local post-filters', () async {
+      // The options the backend would have applied have to be applied here
+      // too, so the fallback has to run the filtering path, not just the
+      // substring search.
+      when(
+        mockRepo.searchExerciseServerWithSearchMode(
+          any,
+          languageCode: anyNamed('languageCode'),
+          searchLanguage: anyNamed('searchLanguage'),
+          searchMode: anyNamed('searchMode'),
+          categories: anyNamed('categories'),
+        ),
+      ).thenThrow(const SocketException('no route to host'));
+      final container = await primedContainer();
+      final notifier = container.read(exercisesProvider.notifier);
+
+      expect(
+        (await notifier.searchExerciseWithSearchMode(
+          'squats',
+          searchMode: ExerciseSearchMode.exact,
+        )).map((e) => e.id),
+        [testSquats.id],
+      );
+      expect(
+        await notifier.searchExerciseWithSearchMode(
+          'squa',
+          searchMode: ExerciseSearchMode.exact,
+        ),
+        isEmpty,
+        reason: 'the exact-mode filter has to survive the fallback',
+      );
+    });
+
+    test('offline: exact mode only matches a full name', () async {
+      final container = await primedContainer(isOnline: false);
+      final notifier = container.read(exercisesProvider.notifier);
+
+      expect(
+        await notifier.searchExerciseWithSearchMode(
+          'squa',
+          searchMode: ExerciseSearchMode.exact,
+        ),
+        isEmpty,
+      );
+      expect(
+        (await notifier.searchExerciseWithSearchMode(
+          'squats',
+          searchMode: ExerciseSearchMode.exact,
+        )).map((e) => e.id),
+        [testSquats.id],
+      );
+    });
+
+    test('offline: fulltext mode still matches a substring', () async {
+      final container = await primedContainer(isOnline: false);
+
+      final result = await container
+          .read(exercisesProvider.notifier)
+          .searchExerciseWithSearchMode('squa');
+
+      expect(result.map((e) => e.id), [testSquats.id]);
+    });
+
+    test('offline: the category filter is applied after the search', () async {
+      final container = await primedContainer(isOnline: false);
+      final notifier = container.read(exercisesProvider.notifier);
+
+      expect(
+        await notifier.searchExerciseWithSearchMode(
+          'squats',
+          categories: {testCategoryArms},
+        ),
+        isEmpty,
+        reason: 'squats are in the abs category',
+      );
+      expect(
+        (await notifier.searchExerciseWithSearchMode(
+          'squats',
+          categories: {testCategoryAbs},
+        )).map((e) => e.id),
+        [testSquats.id],
+      );
+    });
   });
 }

@@ -16,11 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/i18n.dart';
 import 'package:wger/core/language.dart';
+import 'package:wger/core/widgets/cards.dart';
+import 'package:wger/features/account/providers/account_notifier.dart';
 import 'package:wger/features/exercises/models/category.dart';
 import 'package:wger/features/exercises/models/equipment.dart';
 import 'package:wger/features/exercises/models/muscle.dart';
@@ -66,8 +68,13 @@ class Step1Basics extends ConsumerWidget {
       child: Consumer(
         builder: (context, ref, child) {
           final state = ref.watch(addExerciseProvider);
+          final username = ref.watch(accountProvider).value?.username ?? '';
           return Column(
             children: [
+              WarningCard(
+                title: AppLocalizations.of(context).personalExercisesWarningTitle,
+                text: AppLocalizations.of(context).personalExercisesWarningBody,
+              ),
               AddExerciseTextArea(
                 initialValue: state.exerciseNameEn ?? '',
                 title: '${AppLocalizations.of(context).name}*',
@@ -88,8 +95,9 @@ class Step1Basics extends ConsumerWidget {
               AddExerciseTextArea(
                 title: '${AppLocalizations.of(context).author}*',
                 isMultiline: false,
+                helperText: AppLocalizations.of(context).authorHelpText,
                 validator: (name) => validateAuthorName(name, context),
-                initialValue: state.author,
+                initialValue: state.author.isNotEmpty ? state.author : username,
                 onChange: (v) => notifier.setAuthor(v),
                 onSaved: (String? author) => notifier.setAuthor(author!),
               ),

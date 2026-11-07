@@ -17,17 +17,18 @@
  */
 
 import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/features/routines/models/log.dart';
 import 'package:wger/features/routines/widgets/charts.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 
 void main() {
   Widget createChartScreen(Map<num, List<Log>> data) {
     return MaterialApp(
       locale: const Locale('en'),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      localizationsDelegates: appLocalizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: Scaffold(
         body: Center(
@@ -69,5 +70,49 @@ void main() {
 
     expect(tester.takeException(), isNull);
     expect(find.byType(LineChart), findsNothing);
+  });
+
+  testWidgets('a group without logs is nothing to plot either', (WidgetTester tester) async {
+    await tester.pumpWidget(createChartScreen({10: []}));
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+    expect(find.byType(LineChart), findsNothing);
+  });
+
+  /// The interval the date axis is labelled at
+  double? intervalOf(WidgetTester tester) => tester
+      .widget<LineChart>(find.byType(LineChart))
+      .data
+      .titlesData
+      .bottomTitles
+      .sideTitles
+      .interval;
+
+  testWidgets('spaces the date labels over everything that is plotted', (
+    WidgetTester tester,
+  ) async {
+    // The groups are keyed by repetitions, so the first and the last of them
+    // say nothing about the range: here they sit on one day while the logs
+    // span a year. An interval taken from those two would be minutes wide on
+    // a year-long axis, and fl_chart builds one label per step
+    final start = DateTime(2026, 1, 1);
+    final end = DateTime(2026, 12, 31);
+    await tester.pumpWidget(
+      createChartScreen({
+        // Insertion order decides what `keys.first` and `keys.last` are, and
+        // both of these sit on the same July day
+        10: [makeLog(10, 100, DateTime(2026, 7, 1))],
+        // while the series that spans the axis is neither of them
+        5: [makeLog(5, 140, start), makeLog(5, 150, end)],
+        8: [makeLog(8, 120, DateTime(2026, 7, 1))],
+      }),
+    );
+    await tester.pumpAndSettle();
+
+    // Taken from the two July logs the span reads as zero, which used to fall
+    // back to a hundred seconds: fl_chart would then label a year-long axis
+    // every hundred seconds, some three hundred thousand times over
+    expect(intervalOf(tester), end.difference(start).inMilliseconds / 3);
   });
 }

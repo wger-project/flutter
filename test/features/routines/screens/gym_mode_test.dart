@@ -16,11 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'dart:io';
+
 import 'package:clock/clock.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:flutter_riverpod/misc.dart' as riverpod;
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
@@ -34,7 +36,10 @@ import 'package:wger/features/exercises/providers/exercises_notifier.dart';
 import 'package:wger/features/routines/models/repetition_unit.dart';
 import 'package:wger/features/routines/models/session.dart';
 import 'package:wger/features/routines/models/weight_unit.dart';
+import 'package:wger/features/routines/notifications/workout_notification_controller.dart';
+import 'package:wger/features/routines/notifications/workout_notification_service.dart';
 import 'package:wger/features/routines/providers/gym_state.dart';
+import 'package:wger/features/routines/providers/gym_state_notifier.dart';
 import 'package:wger/features/routines/providers/routines_notifier.dart';
 import 'package:wger/features/routines/providers/routines_repository.dart';
 import 'package:wger/features/routines/providers/workout_logs_repository.dart';
@@ -50,10 +55,11 @@ import 'package:wger/features/routines/widgets/gym_mode/summary.dart';
 import 'package:wger/features/routines/widgets/gym_mode/timer.dart';
 import 'package:wger/features/trophies/providers/trophy_repository.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
+import 'package:wger/l10n/localizations_delegates.dart';
 
 import '../../../../test_data/exercises.dart';
 import '../../../../test_data/routines.dart';
-import '../../../fake_connectivity.dart';
+import '../../../helpers/fake_connectivity.dart';
 import 'gym_mode_test.mocks.dart';
 
 @GenerateMocks([
@@ -63,6 +69,7 @@ import 'gym_mode_test.mocks.dart';
   TrophyRepository,
   WorkoutLogRepository,
   UserProfileRepository,
+  WorkoutNotificationService,
 ])
 void main() {
   installFakeConnectivity();
@@ -77,9 +84,13 @@ void main() {
   final mockRoutinesRepo = MockRoutinesRepository();
   final mockLogRepo = MockWorkoutLogRepository();
   final mockUserProfileRepo = MockUserProfileRepository();
+  late MockWorkoutNotificationService mockNotificationService;
 
   setUp(() {
     SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
+    mockNotificationService = MockWorkoutNotificationService();
+    when(mockNotificationService.supportsControls).thenReturn(true);
+    when(mockNotificationService.requestPermissions(any)).thenAnswer((_) async {});
     when(mockUserProfileRepo.watchDrift()).thenAnswer((_) => Stream.value(null));
     when(mockSessionRepo.watchAllDrift()).thenAnswer(
       (_) => Stream<List<WorkoutSession>>.multi((controller) {
@@ -128,6 +139,7 @@ void main() {
         workoutSessionRepositoryProvider.overrideWithValue(mockSessionRepo),
         workoutLogRepositoryProvider.overrideWithValue(mockLogRepo),
         userProfileRepositoryProvider.overrideWithValue(mockUserProfileRepo),
+        workoutNotificationServiceProvider.overrideWithValue(mockNotificationService),
         ...extraOverrides,
         // The repetition + weight unit catalogues are tiny direct-Drift
         // stream providers, overriding them inline is the established
@@ -141,7 +153,7 @@ void main() {
       ],
       child: MaterialApp(
         locale: Locale(locale),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         navigatorKey: key,
         home: TextButton(
@@ -398,6 +410,37 @@ void main() {
     });
   });
 
+  testWidgets('falls back to the cached routine when the server is unreachable', (
+    WidgetTester tester,
+  ) async {
+    // The status says online but the request fails: the workout still has to
+    // start from the already-downloaded routine instead of an error screen.
+    when(mockRoutinesRepo.watchAllDrift()).thenAnswer(
+      (_) => Stream.value([testRoutine]),
+    );
+    when(
+      mockRoutinesRepo.fetchAndSetRoutineFullServer(any),
+    ).thenThrow(const SocketException('no route to host'));
+
+    await withClock(Clock.fixed(DateTime(2025, 3, 29, 14, 33)), () async {
+      await tester.pumpWidget(renderGymMode());
+      await tester.pumpAndSettle();
+
+      // Prime the keepAlive routines stream (see the offline test above).
+      final container = riverpod.ProviderScope.containerOf(
+        tester.element(find.byType(TextButton)),
+      );
+      container.listen(routinesRiverpodProvider, (_, _) {});
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byType(TextButton));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(StreamErrorIndicator), findsNothing);
+      expect(find.byType(StartPage), findsOneWidget);
+    });
+  });
+
   testWidgets('offline summary shows the local session stats', (WidgetTester tester) async {
     // The trophy fetch is REST-only; offline it is skipped so the locally
     // stored session stats (duration, volume) render right away instead of
@@ -471,6 +514,148 @@ void main() {
     });
   });
 
+  /// Opens gym mode and walks to the first log page (start, overview, log)
+  Future<riverpod.ProviderContainer> openOnFirstLogPage(WidgetTester tester) async {
+    await tester.pumpWidget(renderGymMode());
+    await tester.pumpAndSettle();
+    await tester.tap(find.byType(TextButton));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byIcon(Icons.chevron_right));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byIcon(Icons.chevron_right));
+    await tester.pumpAndSettle();
+    expect(find.byType(LogPage), findsOneWidget);
+
+    return riverpod.ProviderScope.containerOf(tester.element(find.byType(PageView)));
+  }
+
+  testWidgets(
+    'the PageView follows page changes made in the gym state',
+    (WidgetTester tester) async {
+      await withClock(Clock.fixed(DateTime(2025, 3, 29, 14, 33)), () async {
+        final container = await openOnFirstLogPage(tester);
+        final notifier = container.read(gymStateProvider.notifier);
+        PageController controller() => tester.widget<PageView>(find.byType(PageView)).controller!;
+
+        // One page, e.g. skipping the rest from a notification
+        await tester.tap(find.byIcon(Icons.chevron_right));
+        await tester.pumpAndSettle();
+        expect(find.byType(TimerCountdownWidget), findsOneWidget);
+        notifier.skipRest();
+        await tester.pumpAndSettle();
+        expect(find.byType(LogPage), findsOneWidget);
+        expect(controller().page, notifier.state.currentPage);
+
+        // Several pages at once
+        final sessionPage = notifier.state.pages.firstWhere((p) => p.type == PageType.session);
+        notifier.setCurrentPage(sessionPage.pageIndex);
+        await tester.pumpAndSettle();
+        expect(find.byType(SessionPage), findsOneWidget);
+        expect(controller().page, sessionPage.pageIndex);
+      });
+    },
+    semanticsEnabled: false,
+  );
+
+  testWidgets(
+    'saving a set moves on to the pause exactly once',
+    (WidgetTester tester) async {
+      // The gym state advances and the PageView follows it, the save button
+      // must not add a page change of its own
+      when(mockLogRepo.addLocalDrift(any, dayId: anyNamed('dayId'))).thenAnswer((_) async {});
+
+      await withClock(Clock.fixed(DateTime(2025, 3, 29, 14, 33)), () async {
+        final container = await openOnFirstLogPage(tester);
+        final logPage = container.read(gymStateProvider).currentPage;
+
+        await tester.tap(find.byKey(const ValueKey('save-log-button')));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(TimerCountdownWidget), findsOneWidget);
+        expect(container.read(gymStateProvider).currentPage, logPage + 1);
+        expect(
+          tester.widget<PageView>(find.byType(PageView)).controller!.page,
+          logPage + 1,
+        );
+      });
+    },
+    semanticsEnabled: false,
+  );
+
+  testWidgets(
+    'opening gym mode asks for the notification permission and hides the notifications',
+    (WidgetTester tester) async {
+      await withClock(Clock.fixed(DateTime(2025, 3, 29, 14, 33)), () async {
+        await tester.pumpWidget(renderGymMode());
+        await tester.pumpAndSettle();
+        await tester.tap(find.byType(TextButton));
+        await tester.pumpAndSettle();
+        final container = riverpod.ProviderScope.containerOf(
+          tester.element(find.byType(StartPage)),
+        );
+
+        verify(mockNotificationService.requestPermissions(any)).called(1);
+        expect(container.read(gymModeVisibleProvider), isTrue);
+
+        key.currentState!.pop();
+        await tester.pumpAndSettle();
+        expect(container.read(gymModeVisibleProvider), isFalse);
+      });
+    },
+    semanticsEnabled: false,
+  );
+
+  testWidgets(
+    'no permission request with both notification settings off',
+    (WidgetTester tester) async {
+      await PreferenceHelper.asyncPref.setBool(PREFS_ALERT_COUNTDOWN, false);
+      await PreferenceHelper.asyncPref.setBool(PREFS_WORKOUT_NOTIFICATION, false);
+      addTearDown(() async {
+        await PreferenceHelper.asyncPref.remove(PREFS_ALERT_COUNTDOWN);
+        await PreferenceHelper.asyncPref.remove(PREFS_WORKOUT_NOTIFICATION);
+      });
+
+      await withClock(Clock.fixed(DateTime(2025, 3, 29, 14, 33)), () async {
+        await tester.pumpWidget(renderGymMode());
+        await tester.pumpAndSettle();
+        await tester.tap(find.byType(TextButton));
+        await tester.pumpAndSettle();
+
+        verifyNever(mockNotificationService.requestPermissions(any));
+      });
+    },
+    semanticsEnabled: false,
+  );
+
+  testWidgets(
+    'resuming an interrupted session reopens the page it was left on',
+    (WidgetTester tester) async {
+      // Coming back into a running workout must not restart it at page 0:
+      // initData returns the stored page and gym_mode jumps the PageView
+      // there. Seed the state the way a still-valid session would leave it.
+      await withClock(Clock.fixed(DateTime(2025, 3, 29, 14, 33)), () async {
+        await tester.pumpWidget(
+          renderGymMode(
+            extraOverrides: [
+              gymStateProvider.overrideWith(() => _ResumedGymState(dayId: 1, currentPage: 3)),
+            ],
+          ),
+        );
+        await tester.pumpAndSettle();
+        await tester.tap(find.byType(TextButton));
+        await tester.pumpAndSettle();
+
+        expect(tester.takeException(), isNull);
+        expect(
+          tester.widget<PageView>(find.byType(PageView)).controller!.page,
+          3,
+          reason: 'the PageView has to open on the stored page, not on page 0',
+        );
+      });
+    },
+    semanticsEnabled: false,
+  );
+
   testWidgets(
     'fresh session with exercise pages off: first swipe to a log page does not crash',
     (WidgetTester tester) async {
@@ -496,5 +681,22 @@ void main() {
       });
     },
     semanticsEnabled: false,
+  );
+}
+
+/// A gym state as an interrupted-but-still-valid session leaves it behind:
+/// initialised, on a later page, and not yet expired.
+class _ResumedGymState extends GymStateNotifier {
+  _ResumedGymState({required this.dayId, required this.currentPage});
+
+  final int dayId;
+  final int currentPage;
+
+  @override
+  GymModeState build() => GymModeState(
+    isInitialized: true,
+    dayId: dayId,
+    currentPage: currentPage,
+    validUntil: clock.now().add(const Duration(hours: 2)),
   );
 }

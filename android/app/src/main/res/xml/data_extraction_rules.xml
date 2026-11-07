@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Android 12 and higher. Only the cloud backup is restricted: a device transfer
+  never leaves the user's hands and spares the new phone the initial sync. The
+  device-transfer section is absent on purpose, an include would narrow it.
+-->
+<data-extraction-rules>
+    <cloud-backup>
+        <exclude domain="file" path="database" />
+    </cloud-backup>
+</data-extraction-rules>

@@ -89,10 +89,6 @@
         "description": "Label when starting the gym mode"
     },
     "description": "Beskrivelse",
-    "newSet": "Nytt sett",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
-    },
     "newDay": "Ny dag",
     "workoutSession": "Treningsøkt",
     "@workoutSession": {

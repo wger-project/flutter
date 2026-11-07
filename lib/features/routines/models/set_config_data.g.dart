@@ -55,6 +55,7 @@ SetConfigData _$SetConfigDataFromJson(Map<String, dynamic> json) {
     maxRestTime: stringToNumNull(json['max_rest'] as String?),
     comment: json['comment'] as String? ?? '',
     textRepr: json['text_repr'] as String? ?? '',
+    textReprShort: json['text_repr_short'] as String?,
   );
 }
 
@@ -63,6 +64,7 @@ Map<String, dynamic> _$SetConfigDataToJson(SetConfigData instance) => <String, d
   'slot_entry_id': instance.slotEntryId,
   'type': _$SlotEntryTypeEnumMap[instance.type]!,
   'text_repr': instance.textRepr,
+  'text_repr_short': instance.textReprShort,
   'sets': instance.nrOfSets,
   'max_sets': instance.maxNrOfSets,
   'weight': instance.weight,

@@ -17,7 +17,7 @@
  */
 
 import 'package:drift/drift.dart' as drift;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/core/consts.dart';
 import 'package:wger/core/date.dart';
 import 'package:wger/database/powersync/database.dart';
@@ -105,7 +105,7 @@ class Meal {
       id: id != null ? drift.Value(id!) : const drift.Value.absent(),
       planId: drift.Value(planId),
       order: drift.Value(order),
-      time: time == null ? const drift.Value.absent() : drift.Value(time),
+      time: drift.Value(time),
       name: drift.Value(name),
     );
   }

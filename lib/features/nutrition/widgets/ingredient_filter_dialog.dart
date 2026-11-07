@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/core/widgets/language_dropdown.dart';
 import 'package:wger/features/nutrition/models/ingredient.dart';
 import 'package:wger/features/nutrition/providers/ingredient_filters_notifier.dart';
@@ -158,7 +158,7 @@ class _NutriscoreSlider extends StatelessWidget {
             min: 0,
             max: maxIndex.toDouble(),
             divisions: maxIndex,
-            label: value == null ? i18n.filterNutriscoreOff : value!.name.toUpperCase(),
+            label: value == null ? i18n.off : value!.name.toUpperCase(),
             onChanged: (v) => onChanged(_indexToValue(v.round())),
           ),
           Padding(
@@ -167,7 +167,7 @@ class _NutriscoreSlider extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  i18n.filterNutriscoreOff,
+                  i18n.off,
                   style: Theme.of(context).textTheme.labelSmall,
                 ),
                 ...NutriScore.values.map(

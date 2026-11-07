@@ -29,7 +29,7 @@ import 'package:wger/core/network/auth_credentials_storage.dart';
 import 'package:wger/core/network/secure_token_storage.dart';
 import 'package:wger/core/shared_preferences.dart';
 
-import '../../fake_auth_environment.dart';
+import '../../helpers/fake_auth_environment.dart';
 import 'auth_credentials_storage_test.mocks.dart';
 
 @GenerateMocks([SecureTokenStorage])
@@ -94,11 +94,11 @@ void main() {
       expect(loggedKeyringWarning(), isTrue);
     });
 
-    test('clearJwt clears the prefs, logs, and does not rethrow', () async {
+    test('clearCredentials clears the prefs, logs, and does not rethrow', () async {
       when(secureStorage.deleteRefreshToken()).thenThrow(keyringLocked);
       await PreferenceHelper.asyncPref.setString(PREFS_ACCESS_TOKEN, 'stale');
 
-      await expectLater(storage.clearJwt(), completes);
+      await expectLater(storage.clearCredentials(), completes);
 
       verify(secureStorage.deleteRefreshToken()).called(1);
       expect(await PreferenceHelper.asyncPref.getString(PREFS_ACCESS_TOKEN), isNull);

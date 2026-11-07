@@ -18,11 +18,13 @@
 
 import 'dart:convert';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/core/network/base_provider.dart';
+import 'package:wger/core/network/wger_base.dart';
 import 'package:wger/database/powersync/database.dart';
 import 'package:wger/features/routines/models/base_config.dart';
 import 'package:wger/features/routines/models/day.dart';
@@ -176,6 +178,20 @@ void main() {
 
       expect(created.id, 7);
       expect(created.routineId, 100);
+
+      // The payload has to carry the names the Django serializer expects; a
+      // renamed or dropped field only shows up as a 400 from the server
+      final sent = verify(mockBase.post(captureAny, dayUri)).captured.single;
+      expect(sent, {
+        'routine': 100,
+        'name': 'Day 1',
+        'description': '',
+        'type': 'custom',
+        'is_rest': false,
+        'need_logs_to_advance': false,
+        'order': 1,
+        'config': null,
+      });
     });
 
     test('editDayServer PATCHes /day/<id>/', () async {
@@ -185,7 +201,9 @@ void main() {
 
       await repo.editDayServer(Day(id: 5, routineId: 100, name: 'updated'));
 
-      verify(mockBase.patch(any, uri)).called(1);
+      final sent = verify(mockBase.patch(captureAny, uri)).captured.single as Map;
+      expect(sent['name'], 'updated');
+      expect(sent['routine'], 100);
     });
 
     test('deleteDayServer sends DELETE for /day/<id>/', () async {
@@ -208,6 +226,10 @@ void main() {
       final created = await repo.addSlotServer(Slot.withData(day: 1, order: 1));
 
       expect(created.id, 7);
+
+      final sent = verify(mockBase.post(captureAny, uri)).captured.single as Map;
+      expect(sent['day'], 1);
+      expect(sent['order'], 1);
     });
 
     test('editSlotServer PATCHes /slot/<id>/', () async {
@@ -268,6 +290,16 @@ void main() {
       final created = await repo.addSlotEntryServer(makeEntry());
 
       expect(created.id, 11);
+
+      // The FK fields carry the names the serializer expects, and the two
+      // rounding decimals go out as numbers (DRF accepts both those and the
+      // strings it renders them as)
+      final sent = verify(mockBase.post(captureAny, uri)).captured.single as Map;
+      expect(sent.keys, containsAll(['slot', 'exercise', 'repetition_unit', 'weight_unit']));
+      expect(sent['slot'], 1);
+      expect(sent['exercise'], 1);
+      expect(sent['repetition_rounding'], 1);
+      expect(sent['weight_rounding'], 1.25);
     });
 
     test('editSlotEntryServer PATCHes /slot-entry/<id>/', () async {
@@ -504,6 +536,30 @@ void main() {
       expect(result.dayDataCurrentIterationGym.length, 8);
       expect(result.dayData.length, 32);
       expect(result.dayDataGym.length, 32);
+    });
+  });
+
+  group('routinesRepositoryProvider', () {
+    test('a rebuild of the base provider does not invalidate the repository', () async {
+      // Regression: with a watch on the base provider, flushing the dirty auth
+      // chain during a widget build invalidated the repository and scheduled a
+      // provider refresh mid-build, which crashes.
+      final container = ProviderContainer.test(
+        overrides: [
+          driftPowerSyncDatabase.overrideWithValue(db),
+          wgerBaseProvider.overrideWith((ref) => MockWgerBaseProvider()),
+        ],
+      );
+      var rebuilds = 0;
+      container.listen(routinesRepositoryProvider, (_, _) => rebuilds++);
+      container.read(routinesRepositoryProvider);
+
+      // Act
+      container.invalidate(wgerBaseProvider);
+      await container.pump();
+
+      // Assert
+      expect(rebuilds, 0);
     });
   });
 }

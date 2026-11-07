@@ -18,12 +18,28 @@
 
 import 'package:flutter_test/flutter_test.dart';
 
+import '../../../../test_data/exercises.dart';
 import '../../../../test_data/routines.dart';
 
 void main() {
   group('Routine model tests', () {
     test('correctly filters out null days', () {
-      // Arrange
+      // Arrange: a rest day of the "fixed weekly schedule" carries no day
+      final routine = getTestRoutine();
+      final withDay = getTestRoutine().dayData[0];
+      final withoutDay = getTestRoutine().dayData[0]..day = null;
+      routine.dayData = [withDay, withoutDay];
+      withDay.date = DateTime(2026, 1, 1);
+      withoutDay.date = DateTime(2026, 1, 2);
+
+      // Assert
+      expect(routine.dayDataCurrentIteration.length, equals(2));
+      expect(routine.dayDataCurrentIterationFiltered, [withDay]);
+    });
+
+    test('keeps the last entry of a day repeated by the weekly schedule', () {
+      // Arrange: three entries for the same day, as the fixed weekly
+      // schedule produces them
       final routine = getTestRoutine();
       routine.dayData = [
         getTestRoutine().dayData[0],
@@ -36,7 +52,7 @@ void main() {
 
       // Assert
       expect(routine.dayDataCurrentIteration.length, equals(3));
-      expect(routine.dayDataCurrentIterationFiltered.length, equals(1));
+      expect(routine.dayDataCurrentIterationFiltered, [routine.dayData[2]]);
     });
 
     test('Test the filterLogsByExercise method', () {
@@ -64,6 +80,30 @@ void main() {
       expect(result[8], [routine.logs[2]]);
       expect(result[10], [routine.logs[0]]);
       expect(result[12], [routine.logs[1]]);
+    });
+
+    test('replaceExercise returns a copy and leaves the original untouched', () {
+      final routine = getTestRoutine();
+
+      final replaced = routine.replaceExercise(1, testSquats);
+
+      final gymSlot = replaced.dayDataGym[0].slots[0];
+      expect(gymSlot.exerciseIds, [testSquats.id]);
+      expect(gymSlot.setConfigs.map((c) => c.exerciseId), everyElement(testSquats.id));
+      expect(gymSlot.setConfigs.map((c) => c.exercise.id), everyElement(testSquats.id));
+      expect(replaced.dayData[0].slots[0].exerciseIds, [testSquats.id]);
+      expect(replaced.dayData[0].slots[0].setConfigs.single.exerciseId, testSquats.id);
+      expect(replaced.logs.map((l) => l.exerciseId), [testSquats.id, testSquats.id, 2]);
+      expect(replaced.logs.first.exerciseObj.id, testSquats.id);
+
+      final originalGymSlot = routine.dayDataGym[0].slots[0];
+      expect(originalGymSlot.exerciseIds, [1]);
+      expect(originalGymSlot.setConfigs.map((c) => c.exerciseId), everyElement(1));
+      expect(originalGymSlot.setConfigs.map((c) => c.exercise.id), everyElement(1));
+      expect(routine.dayData[0].slots[0].exerciseIds, [1]);
+      expect(routine.dayData[0].slots[0].setConfigs.single.exerciseId, 1);
+      expect(routine.logs.map((l) => l.exerciseId), [1, 1, 2]);
+      expect(routine.logs.first.exerciseObj.id, 1);
     });
   });
 }

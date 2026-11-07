@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/database/powersync/database.dart';
@@ -37,6 +38,18 @@ class UserProfileRepository {
   Stream<UserProfile?> watchDrift() {
     _logger.finer('Watching local user profile');
     return _db.select(_db.userProfileTable).watchSingleOrNull();
+  }
+
+  /// Writes only the timezone column; PowerSync pushes it upstream.
+  ///
+  /// Deliberately not routed through a full [UserProfile] write: that would
+  /// set every column, and a model field this code path was never taught
+  /// about would be overwritten with null.
+  Future<void> updateTimeZoneDrift(int id, String timeZone) async {
+    _logger.finer('Updating time zone of user profile $id');
+    await (_db.update(
+      _db.userProfileTable,
+    )..where((t) => t.id.equals(id))).write(UserProfileTableCompanion(timeZone: Value(timeZone)));
   }
 
   /// Writes the edited preferences locally; PowerSync pushes them upstream.

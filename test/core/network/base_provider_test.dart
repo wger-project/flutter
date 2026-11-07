@@ -29,14 +29,13 @@ import 'package:wger/core/exceptions/http_exception.dart';
 import 'package:wger/core/network/base_provider.dart';
 
 import '../../fixtures/fixture_reader.dart';
-import '../../utils.dart';
 import 'base_provider_test.mocks.dart';
 
 @GenerateMocks([http.Client])
 void main() {
   group('test base provider', () {
     test('Test the makeUrl helper', () {
-      final WgerBaseProvider provider = buildTestBaseProvider();
+      final WgerBaseProvider provider = WgerBaseProvider(serverUrl: 'https://localhost');
 
       expect(
         Uri.https('localhost', '/api/v2/endpoint/'),
@@ -70,9 +69,7 @@ void main() {
 
     test('Test the makeUrl helper with sub url', () {
       // Trailing slash is removed when saving the server URL
-      final WgerBaseProvider provider = buildTestBaseProvider(
-        serverUrl: 'https://example.com/wger-url',
-      );
+      final WgerBaseProvider provider = WgerBaseProvider(serverUrl: 'https://example.com/wger-url');
 
       expect(
         Uri.https('example.com', '/wger-url/api/v2/endpoint/'),
@@ -141,7 +138,10 @@ void main() {
       ).thenAnswer((_) => Future.value(response3));
 
       // Act
-      final WgerBaseProvider provider = buildTestBaseProvider(client: mockHttpClient);
+      final WgerBaseProvider provider = WgerBaseProvider(
+        serverUrl: 'https://localhost',
+        client: mockHttpClient,
+      );
       final data = await provider.fetchPaginated(paginationUri1);
 
       // Assert
@@ -160,7 +160,7 @@ void main() {
 
     setUp(() {
       mockClient = MockClient();
-      repo = buildTestBaseProvider(client: mockClient);
+      repo = WgerBaseProvider(serverUrl: 'https://localhost', client: mockClient);
     });
 
     final uri = Uri.https('localhost', '/api/v2/endpoint/');
@@ -265,6 +265,36 @@ void main() {
           repo.fetch(uri, maxRetries: 1, initialDelay: const Duration(milliseconds: 1)),
           throwsA(isA<SocketException>()),
         );
+      });
+
+      test('retries on a SocketException and eventually succeeds', () async {
+        var calls = 0;
+        when(mockClient.get(uri, headers: anyNamed('headers'))).thenAnswer((_) async {
+          calls++;
+          if (calls < 2) {
+            throw const SocketException('no network');
+          }
+          return Response(jsonEncode({'ok': true}), 200);
+        });
+
+        final result = await repo.fetch(uri, initialDelay: const Duration(milliseconds: 1));
+
+        expect(result, {'ok': true});
+        expect(calls, 2);
+      });
+
+      test('without maxRetries it tries four times in total', () async {
+        var calls = 0;
+        when(mockClient.get(uri, headers: anyNamed('headers'))).thenAnswer((_) async {
+          calls++;
+          throw ClientException('conn fail');
+        });
+
+        await expectLater(
+          repo.fetch(uri, initialDelay: const Duration(milliseconds: 1)),
+          throwsA(isA<ClientException>()),
+        );
+        expect(calls, 4, reason: 'the initial attempt plus the three default retries');
       });
     });
 

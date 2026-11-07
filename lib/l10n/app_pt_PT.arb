@@ -295,39 +295,6 @@
     },
     "min": "Mín",
     "max": "Máx",
-    "chartAllTimeTitle": "{name} total",
-    "@chartAllTimeTitle": {
-        "description": "All-time chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chart30DaysTitle": "{name} últimos 30 dias",
-    "@chart30DaysTitle": {
-        "description": "last 30 days chart of 'name' (e.g. 'weight', 'body fat' etc.)",
-        "type": "text",
-        "placeholders": {
-            "name": {
-                "type": "String"
-            }
-        }
-    },
-    "chartDuringPlanTitle": "{chartName} durante o plano nutricional {planName}",
-    "@chartDuringPlanTitle": {
-        "description": "chart of 'chartName' (e.g. 'weight', 'body fat' etc.) logged during plan",
-        "type": "text",
-        "placeholders": {
-            "chartName": {
-                "type": "String"
-            },
-            "planName": {
-                "type": "String"
-            }
-        }
-    },
     "measurement": "Medição",
     "measurementCategoriesHelpText": "Categoria de medição, como 'bíceps' ou 'gordura corporal'",
     "measurementEntriesHelpText": "Unidade usada para medir, como 'cm' ou '%'",
@@ -418,10 +385,6 @@
     "noIngredientsDefined": "Ainda não há ingredientes definidos",
     "routineDays": "Dias na rotina",
     "newDay": "Novo dia",
-    "newSet": "Nova série",
-    "@newSet": {
-        "description": "Header when adding a new set to a workout day"
-    },
     "kcalValue": "{value} kcal",
     "@kcalValue": {
         "description": "A value in kcal, e.g. 500 kcal",
@@ -530,13 +493,13 @@
             }
         }
     },
-    "enterMinCharacters": "Escreve pelo menos {min} caracteres",
+    "enterMinCharacters": "{min, plural, one{Escreve pelo menos {min} caractere} other{Escreve pelo menos {min} caracteres}}",
     "@enterMinCharacters": {
         "description": "Error message when the user hasn't entered the minimum amount characters in a form",
         "type": "text",
         "placeholders": {
             "min": {
-                "type": "String"
+                "type": "int"
             }
         }
     },
@@ -706,12 +669,12 @@
     "settingsIngredientCacheDescription": "Cache de ingredientes",
     "settingsCacheDeletedSnackbar": "Cache limpo com sucesso",
     "aboutPageTitle": "Sobre nós & Apoio",
-    "contributeExerciseWarning": "Só podes contribuir com exercícios se a tua conta tiver mais de {days} dias e e-mail verificado",
+    "contributeExerciseWarning": "{days, plural, one{Só podes contribuir com exercícios se a tua conta tiver mais de {days} dia e e-mail verificado} other{Só podes contribuir com exercícios se a tua conta tiver mais de {days} dias e e-mail verificado}}",
     "@contributeExerciseWarning": {
         "description": "Number of days before which a person can add exercise",
         "placeholders": {
             "days": {
-                "type": "String",
+                "type": "int",
                 "example": "14"
             }
         }
@@ -935,6 +898,6 @@
     "dayTypeAfap": "O mais rápido possível",
     "slotEntryTypeNormal": "Normal",
     "endBeforeStart": "O valor final não pode ser anterior ao inicial",
-    "minLengthRoutine": "A rotina tem de ter pelo menos {number} semanas",
-    "maxLengthRoutine": "A rotina pode ter no máximo {number} semanas"
+    "minLengthRoutine": "{number, plural, one{A rotina tem de ter pelo menos {number} semana} other{A rotina tem de ter pelo menos {number} semanas}}",
+    "maxLengthRoutine": "{number, plural, one{A rotina pode ter no máximo {number} semana} other{A rotina pode ter no máximo {number} semanas}}"
 }

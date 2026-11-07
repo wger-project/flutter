@@ -309,7 +309,7 @@ void main() {
       expect(companion.notes.value, 'Test note');
     });
 
-    test('toCompanion omits notes when null', () {
+    test('toCompanion writes NULL notes when null', () {
       final log = Log(
         exerciseId: 1,
         weight: 50,
@@ -318,7 +318,8 @@ void main() {
         date: DateTime.utc(2026, 1, 1),
       );
       final companion = log.toCompanion();
-      expect(companion.notes.present, isFalse);
+      expect(companion.notes.present, isTrue);
+      expect(companion.notes.value, isNull);
     });
   });
 

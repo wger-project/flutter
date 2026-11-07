@@ -17,33 +17,46 @@
  */
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:clock/clock.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:wger/features/routines/providers/gym_state.dart';
 import 'package:wger/features/routines/providers/gym_state_notifier.dart';
 import 'package:wger/features/routines/widgets/gym_mode/navigation.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
-import 'package:wger/theme/theme.dart';
 
-class TimerWidget extends StatefulWidget {
+class TimerWidget extends ConsumerStatefulWidget {
   final PageController _controller;
 
-  const TimerWidget(this._controller);
+  /// Identifies which slot page this widget renders, so it shows its own
+  /// up-next information instead of whatever the globally-current page
+  /// happens to be.
+  final String slotKey;
+
+  const TimerWidget(this._controller, this.slotKey);
 
   @override
   _TimerWidgetState createState() => _TimerWidgetState();
 }
 
-class _TimerWidgetState extends State<TimerWidget> {
-  late DateTime _startTime;
+class _TimerWidgetState extends ConsumerState<TimerWidget> {
   final _maxSeconds = 600;
   late Timer _uiTimer;
 
   @override
   void initState() {
     super.initState();
-    _startTime = DateTime.now();
+
+    // The start time lives in the gym state so the timer continues when the
+    // page is disposed and re-created while navigating. Deferred because a
+    // provider can't be modified during the widget life-cycle.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        ref.read(gymStateProvider.notifier).startTimerIfNeeded(widget.slotKey);
+      }
+    });
 
     _uiTimer = Timer.periodic(const Duration(seconds: 1), (_) {
       // ignore: no-empty-block, avoid-empty-setstate
@@ -61,7 +74,8 @@ class _TimerWidgetState extends State<TimerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final elapsed = DateTime.now().difference(_startTime).inSeconds;
+    final startTime = ref.watch(gymStateProvider).progressOf(widget.slotKey).timerStartedAt;
+    final elapsed = clock.now().difference(startTime ?? clock.now()).inSeconds;
     final displaySeconds = elapsed > _maxSeconds ? _maxSeconds : elapsed;
     final displayTime = DateTime(2000, 1, 1, 0, 0, 0).add(Duration(seconds: displaySeconds));
 
@@ -72,11 +86,18 @@ class _TimerWidgetState extends State<TimerWidget> {
           widget._controller,
         ),
         Expanded(
-          child: Center(
-            child: Text(
-              DateFormat('m:ss').format(displayTime),
-              style: Theme.of(context).textTheme.displayLarge!.copyWith(color: wgerPrimaryColor),
-            ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                DateFormat('m:ss').format(displayTime),
+                style: Theme.of(
+                  context,
+                ).textTheme.displayLarge!.copyWith(color: Theme.of(context).colorScheme.primary),
+              ),
+              const SizedBox(height: 16),
+              UpNextWidget(widget.slotKey),
+            ],
           ),
         ),
         NavigationFooter(widget._controller),
@@ -89,9 +110,15 @@ class TimerCountdownWidget extends ConsumerStatefulWidget {
   final PageController _controller;
   final int _seconds;
 
+  /// Identifies which slot page this widget renders, so it shows its own
+  /// up-next information instead of whatever the globally-current page
+  /// happens to be.
+  final String slotKey;
+
   const TimerCountdownWidget(
     this._controller,
     this._seconds,
+    this.slotKey,
   );
 
   @override
@@ -99,15 +126,36 @@ class TimerCountdownWidget extends ConsumerStatefulWidget {
 }
 
 class _TimerCountdownWidgetState extends ConsumerState<TimerCountdownWidget> {
-  late DateTime _endTime;
   late Timer _uiTimer;
 
-  bool _hasNotified = false;
+  /// The end the alert was played for, so each rest (also an extended one)
+  /// alerts once
+  DateTime? _alertedFor;
+
+  /// The moment the countdown ends. The start time lives in the gym state so
+  /// the countdown continues when the page is disposed and re-created while
+  /// navigating; until the state is updated, fall back to starting now.
+  DateTime _endTime(GymModeState gymState) {
+    final startedAt = gymState.progressOf(widget.slotKey).timerStartedAt;
+    return (startedAt ?? clock.now()).add(Duration(seconds: widget._seconds));
+  }
 
   @override
   void initState() {
     super.initState();
-    _endTime = DateTime.now().add(Duration(seconds: widget._seconds));
+
+    // Don't notify when returning to a countdown that already expired while
+    // the user was on another page. Set before the first build, which notifies.
+    final endTime = _endTime(ref.read(gymStateProvider));
+    _alertedFor = endTime.isBefore(clock.now()) ? endTime : null;
+
+    // Deferred because a provider can't be modified during the widget
+    // life-cycle.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        ref.read(gymStateProvider.notifier).startTimerIfNeeded(widget.slotKey);
+      }
+    });
 
     _uiTimer = Timer.periodic(const Duration(seconds: 1), (_) {
       // ignore: no-empty-block, avoid-empty-setstate
@@ -125,22 +173,23 @@ class _TimerCountdownWidgetState extends ConsumerState<TimerCountdownWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final remaining = _endTime.difference(DateTime.now());
+    final gymState = ref.watch(gymStateProvider);
+    final endTime = _endTime(gymState);
+    final remaining = endTime.difference(clock.now());
     final remainingSeconds = remaining.inSeconds <= 0 ? 0 : remaining.inSeconds;
     final displayTime = DateTime(2000, 1, 1, 0, 0, 0).add(Duration(seconds: remainingSeconds));
-    final gymState = ref.watch(gymStateProvider);
 
     //  When countdown finishes, notify ONCE, and respect settings
-    if (remainingSeconds == 0 && !_hasNotified) {
+    if (remainingSeconds == 0 && _alertedFor != endTime) {
+      _alertedFor = endTime;
       if (gymState.alertOnCountdownEnd) {
-        HapticFeedback.mediumImpact();
+        // Strongest built-in haptic on both platforms (iOS: full vibration,
+        // Android: LONG_PRESS). heavyImpact maps to a weak tick on Android.
+        HapticFeedback.vibrate();
 
         // Not that this only works on desktop platforms
         SystemSound.play(SystemSoundType.alert);
       }
-      setState(() {
-        _hasNotified = true;
-      });
     }
 
     return Column(
@@ -155,13 +204,74 @@ class _TimerCountdownWidgetState extends ConsumerState<TimerCountdownWidget> {
             children: [
               Text(
                 DateFormat('m:ss').format(displayTime),
-                style: Theme.of(context).textTheme.displayLarge!.copyWith(color: wgerPrimaryColor),
+                style: Theme.of(
+                  context,
+                ).textTheme.displayLarge!.copyWith(color: Theme.of(context).colorScheme.primary),
               ),
               const SizedBox(height: 16),
+              UpNextWidget(widget.slotKey),
             ],
           ),
         ),
         NavigationFooter(widget._controller),
+      ],
+    );
+  }
+}
+
+/// Shows the set that will be performed once the rest timer on the slot page
+/// identified by [slotKey] ends. This can be the next set of the same
+/// exercise (e.g. when progressing weights within an exercise) or the first
+/// set of the next exercise. Renders nothing for the last rest of the day.
+class UpNextWidget extends ConsumerWidget {
+  final String slotKey;
+
+  const UpNextWidget(this.slotKey, {super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final gymState = ref.watch(gymStateProvider);
+
+    final currentSlotPage = gymState.getSlotPageByKey(slotKey);
+    final nextSlotPage = currentSlotPage == null
+        ? null
+        : gymState.getNextLogPage(currentSlotPage.pageIndex);
+    if (nextSlotPage == null) {
+      return const SizedBox.shrink();
+    }
+
+    final setConfigData = nextSlotPage.setConfigData!;
+    final exerciseName = setConfigData.exercise
+        .getTranslation(Localizations.localeOf(context).languageCode)
+        .name;
+    final nrOfLogPages = gymState
+        .getPageByIndex(nextSlotPage.pageIndex)
+        ?.slotPages
+        .where((e) => e.type == SlotPageType.log)
+        .length;
+
+    return Column(
+      children: [
+        Text(
+          AppLocalizations.of(context).upNext,
+          style: theme.textTheme.titleMedium,
+        ),
+        Text(
+          exerciseName,
+          textAlign: TextAlign.center,
+          style: theme.textTheme.headlineSmall,
+        ),
+        Text(
+          setConfigData.textReprWithType,
+          textAlign: TextAlign.center,
+          style: theme.textTheme.titleLarge?.copyWith(color: theme.colorScheme.primary),
+        ),
+        if (nrOfLogPages != null)
+          Text(
+            '${nextSlotPage.setIndex + 1} / $nrOfLogPages',
+            style: theme.textTheme.bodyLarge,
+          ),
       ],
     );
   }

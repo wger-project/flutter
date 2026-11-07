@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:wger/core/json.dart';
 
 void main() {
@@ -66,10 +66,12 @@ void main() {
       });
 
       test('should convert an iso8601 datetime to local', () {
-        expect(
-          utcIso8601ToLocalDate('2025-11-18T18:15:00+08:00'),
-          DateTime.parse('2025-11-18T11:15:00.000'),
-        );
+        final converted = utcIso8601ToLocalDate('2025-11-18T18:15:00+08:00');
+
+        // Compare the instant, not the wall clock: the local representation
+        // depends on the zone the suite runs in
+        expect(converted.isUtc, isFalse);
+        expect(converted.isAtSameMomentAs(DateTime.utc(2025, 11, 18, 10, 15)), isTrue);
       });
     });
 

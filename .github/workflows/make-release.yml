@@ -75,6 +75,7 @@ jobs:
       - name: Checkout application
         uses: actions/checkout@v7
         with:
+          persist-credentials: false
           lfs: true
           ref: ${{ github.event.inputs.version }}
 

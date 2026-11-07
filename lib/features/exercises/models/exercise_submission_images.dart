@@ -18,7 +18,7 @@
 
 import 'dart:io';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 enum ImageType {
   photo(id: 1, label: 'Photo', icon: Icons.photo_camera),

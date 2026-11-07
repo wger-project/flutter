@@ -54,7 +54,7 @@ void main() {
     return WorkoutSession(
       id: id,
       routineId: routineId,
-      date: date ?? DateTime.utc(2026, 4, 15),
+      datetimeStart: date ?? DateTime.utc(2026, 4, 15),
     );
   }
 
@@ -95,6 +95,22 @@ void main() {
       expect(rows.single.notes, 'updated');
     });
 
+    test('editLocalDrift clears an end that was nulled', () async {
+      final inserted = await repo.addLocalDrift(
+        makeSession().copyWith(
+          datetimeStart: DateTime(2021, 5, 1, 8, 0),
+          datetimeEnd: DateTime(2021, 5, 1, 9, 30),
+        ),
+      );
+
+      // The user clears the end via the form's clear button
+      await repo.editLocalDrift(inserted.copyWith(datetimeEnd: null));
+
+      final row = await db.select(db.workoutSessionTable).getSingle();
+      expect(row.datetimeStart, DateTime(2021, 5, 1, 8, 0));
+      expect(row.datetimeEnd, isNull);
+    });
+
     test('deleteLocalDrift removes the row with matching id', () async {
       final inserted = await repo.addLocalDrift(makeSession());
 
@@ -117,7 +133,7 @@ void main() {
       expect(await repo.watchAllDrift().first, isEmpty);
     });
 
-    test('emits sessions sorted by date desc', () async {
+    test('emits sessions sorted by start desc', () async {
       await repo.addLocalDrift(makeSession(routineId: 1, date: DateTime.utc(2026, 4, 14)));
       await repo.addLocalDrift(makeSession(routineId: 2, date: DateTime.utc(2026, 4, 16)));
       await repo.addLocalDrift(makeSession(routineId: 3, date: DateTime.utc(2026, 4, 15)));

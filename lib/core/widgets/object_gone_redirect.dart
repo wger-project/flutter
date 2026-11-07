@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Leaves a detail screen whose object was deleted and dropped from the live
 /// stream while it was open. Returns a blank placeholder and pops on the next

@@ -27,7 +27,7 @@ import 'package:wger/features/nutrition/providers/ingredient_repository.dart';
 import 'package:wger/features/nutrition/providers/nutrition_notifier.dart';
 import 'package:wger/features/nutrition/providers/nutrition_repository.dart';
 
-import '../../../fake_connectivity.dart';
+import '../../../helpers/fake_connectivity.dart';
 import 'nutrition_notifier_test.mocks.dart';
 
 @GenerateMocks([NutritionRepository, IngredientRepository])
