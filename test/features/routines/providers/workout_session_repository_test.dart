@@ -156,6 +156,23 @@ void main() {
       expect(sessions.single.logs.map((l) => l.exerciseId).toSet(), {1, 2});
     });
 
+    test('sorts the logs of a session by date', () async {
+      await seedUnits();
+      final session = await repo.addLocalDrift(makeSession());
+      for (final (id, minute) in [('a', 40), ('b', 30), ('c', 35)]) {
+        final log = makeLog(
+          id: id,
+          sessionId: session.id!,
+          date: DateTime.utc(2026, 4, 15, 10, minute),
+        );
+        await db.into(db.workoutLogTable).insert(log.toCompanion());
+      }
+
+      final sessions = await repo.watchAllDrift().first;
+
+      expect(sessions.single.logs.map((l) => l.id).toList(), ['b', 'c', 'a']);
+    });
+
     test('hydrates each log with its repetition and weight unit', () async {
       await seedUnits();
       final session = await repo.addLocalDrift(makeSession());
