@@ -462,6 +462,77 @@ void main() {
       expect(state.progressOf(state.getSlotEntryPageByIndex(2)!.key).loggedEntry!.id, 'log-2');
     });
 
+    group('notes', () {
+      final notesField = find.byKey(const ValueKey('notes-input-widget'));
+      final notesToggle = find.byKey(const ValueKey('notes-toggle-button'));
+
+      testWidgets('the field shows after tapping the toggle and its notes are saved', (
+        tester,
+      ) async {
+        seedLogPage(testdata.getTestRoutine());
+        await pumpLogPage(tester);
+        expect(notesField, findsNothing);
+
+        await tester.tap(notesToggle);
+        await tester.pumpAndSettle();
+        expect(notesToggle, findsNothing);
+
+        await tester.enterText(notesField, 'Paused reps');
+        await tester.pump();
+        await tester.tap(find.byKey(const ValueKey('save-log-button')));
+        await tester.pumpAndSettle();
+
+        final saved =
+            verify(
+                  mockWorkoutLogRepo.addLocalDrift(captureAny, dayId: anyNamed('dayId')),
+                ).captured.single
+                as Log;
+        expect(saved.notes, 'Paused reps');
+      });
+
+      testWidgets('blank notes are stored as null and keep the field open', (tester) async {
+        seedLogPage(testdata.getTestRoutine());
+        await pumpLogPage(tester);
+        await tester.tap(notesToggle);
+        await tester.pumpAndSettle();
+
+        await tester.enterText(notesField, 'Paused reps');
+        await tester.pump();
+        await tester.enterText(notesField, '  ');
+        await tester.pump();
+
+        expect(container.read(gymLogProvider)!.notes, isNull);
+        expect(notesField, findsOneWidget);
+      });
+
+      testWidgets('a logged page shows its notes and "add set" starts without them', (
+        tester,
+      ) async {
+        seedLogPage(testdata.getTestRoutine());
+        await pumpLogPage(tester);
+        await tester.tap(notesToggle);
+        await tester.pumpAndSettle();
+        await tester.enterText(notesField, 'Paused reps');
+        await tester.pump();
+        await tester.tap(find.byKey(const ValueKey('save-log-button')));
+        await tester.pumpAndSettle();
+
+        // Leave and come back: the saved set is edited with its notes
+        final gymNotifier = container.read(gymStateProvider.notifier);
+        gymNotifier.setCurrentPage(3);
+        gymNotifier.setCurrentPage(2);
+        await tester.pumpAndSettle();
+        expect(tester.widget<TextFormField>(notesField).controller!.text, 'Paused reps');
+
+        // A new set doesn't inherit the notes of the previous one
+        await tester.tap(find.byKey(const ValueKey('add-set-button')));
+        await tester.pumpAndSettle();
+        expect(container.read(gymLogProvider)!.notes, isNull);
+        expect(notesField, findsNothing);
+        expect(notesToggle, findsOneWidget);
+      });
+    });
+
     testWidgets('an unsaved edit on a logged page does not change the saved entry', (
       tester,
     ) async {
