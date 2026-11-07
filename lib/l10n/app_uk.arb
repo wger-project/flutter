@@ -1614,7 +1614,7 @@
     "@weightOrRepsRequired": {
         "description": "Validation error when both weight and repetitions are empty in a workout log"
     },
-    "sessionTooLong": "Сесія не може тривати довше ніж {hours} год",
+    "sessionTooLong": "{hours, plural, one{Тренування не може тривати довше ніж {hours} годину} few{Тренування не може тривати довше ніж {hours} години} many{Тренування не може тривати довше ніж {hours} годин} other{Тренування не може тривати довше ніж {hours} години}}",
     "@sessionTooLong": {
         "description": "Validation error when a workout session exceeds the maximum length",
         "placeholders": {
@@ -1954,5 +1954,17 @@
     "workoutNotificationChannel": "Тренування",
     "@workoutNotificationChannel": {
         "description": "Name of the Android notification channel for the ongoing workout notification"
-    }
+    },
+    "enterMinWords": "{min, plural, one{Введіть щонайменше {min} слово} few{Введіть щонайменше {min} слова} many{Введіть щонайменше {min} слів} other{Введіть щонайменше {min} слова}}",
+    "@enterMinWords": {
+        "description": "Error message when the user hasn't entered the minimum amount of words in a form",
+        "type": "text",
+        "placeholders": {
+            "min": {
+                "type": "int"
+            }
+        }
+    },
+    "personalExercisesWarningTitle": "Не додавайте особисті вправи",
+    "personalExercisesWarningBody": "Додані вправи потрапляють до спільної бази даних і стають доступними всім користувачам. Додавайте лише загальні вправи, які можуть бути корисними кожному. Вправи, створені виключно для перенесення даних з іншого застосунку, буде видалено."
 }
