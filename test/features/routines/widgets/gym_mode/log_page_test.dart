@@ -490,6 +490,24 @@ void main() {
         expect(saved.notes, 'Paused reps');
       });
 
+      testWidgets('a past log shows its notes after the date', (tester) async {
+        when(
+          mockWorkoutLogRepo.watchLogsByExerciseDrift(
+            routineId: anyNamed('routineId'),
+            exerciseId: anyNamed('exerciseId'),
+          ),
+        ).thenAnswer((invocation) {
+          final exerciseId = invocation.namedArguments[#exerciseId] as int;
+          final logs = testdata.getTestRoutine().filterLogsByExercise(exerciseId).map(asDriftLog);
+          return Stream.value([for (final log in logs) log..notes = 'Grip slipped']);
+        });
+
+        seedLogPage(testdata.getTestRoutine());
+        await pumpLogPage(tester);
+
+        expect(find.textContaining(' · Grip slipped'), findsWidgets);
+      });
+
       testWidgets('blank notes are stored as null and keep the field open', (tester) async {
         seedLogPage(testdata.getTestRoutine());
         await pumpLogPage(tester);
