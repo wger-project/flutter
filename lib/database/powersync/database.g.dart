@@ -6305,6 +6305,10 @@ class $WorkoutLogTableTable extends WorkoutLogTable with TableInfo<$WorkoutLogTa
         DriftSqlType.double,
         data['${effectivePrefix}rir_target'],
       ),
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      ),
       weight: attachedDatabase.typeMapping.read(
         DriftSqlType.double,
         data['${effectivePrefix}weight'],
@@ -6316,10 +6320,6 @@ class $WorkoutLogTableTable extends WorkoutLogTable with TableInfo<$WorkoutLogTa
       weightUnitId: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}weight_unit_id'],
-      ),
-      notes: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}notes'],
       ),
       date: $WorkoutLogTableTable.$converterdate.fromSql(
         attachedDatabase.typeMapping.read(
@@ -10845,10 +10845,11 @@ class $$LanguageTableTableTableManager
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (exerciseTranslationTableRefs)
-                    await $_getPrefetchedData<
+                    await $_getPrefetchedDataByColumns<
                       Language,
                       $LanguageTableTable,
-                      ExerciseTranslationRow
+                      ExerciseTranslationRow,
+                      $ExerciseTranslationTableTable
                     >(
                       currentTable: table,
                       referencedTable: $$LanguageTableTableReferences
@@ -10858,8 +10859,8 @@ class $$LanguageTableTableTableManager
                         table,
                         p0,
                       ).exerciseTranslationTableRefs,
-                      referencedItemsForCurrentItem: (item, referencedItems) =>
-                          referencedItems.where((e) => e.languageId == item.id),
+                      currentColumn: 'id',
+                      referencedColumn: 'language_id',
                       typedResults: items,
                     ),
                 ];
@@ -11485,10 +11486,11 @@ class $$ExerciseCategoryTableTableTableManager
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (exerciseTableRefs)
-                    await $_getPrefetchedData<
+                    await $_getPrefetchedDataByColumns<
                       ExerciseCategory,
                       $ExerciseCategoryTableTable,
-                      ExerciseRow
+                      ExerciseRow,
+                      $ExerciseTableTable
                     >(
                       currentTable: table,
                       referencedTable: $$ExerciseCategoryTableTableReferences
@@ -11498,8 +11500,8 @@ class $$ExerciseCategoryTableTableTableManager
                         table,
                         p0,
                       ).exerciseTableRefs,
-                      referencedItemsForCurrentItem: (item, referencedItems) =>
-                          referencedItems.where((e) => e.categoryId == item.id),
+                      currentColumn: 'id',
+                      referencedColumn: 'category_id',
                       typedResults: items,
                     ),
                 ];
@@ -12286,10 +12288,11 @@ class $$ExerciseTableTableTableManager
                   getPrefetchedDataCallback: (items) async {
                     return [
                       if (exerciseTranslationTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           ExerciseRow,
                           $ExerciseTableTable,
-                          ExerciseTranslationRow
+                          ExerciseTranslationRow,
+                          $ExerciseTranslationTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$ExerciseTableTableReferences
@@ -12299,17 +12302,16 @@ class $$ExerciseTableTableTableManager
                             table,
                             p0,
                           ).exerciseTranslationTableRefs,
-                          referencedItemsForCurrentItem: (item, referencedItems) =>
-                              referencedItems.where(
-                                (e) => e.exerciseId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'exercise_id',
                           typedResults: items,
                         ),
                       if (exerciseMuscleM2NRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           ExerciseRow,
                           $ExerciseTableTable,
-                          ExerciseMuscleM2NData
+                          ExerciseMuscleM2NData,
+                          $ExerciseMuscleM2NTable
                         >(
                           currentTable: table,
                           referencedTable: $$ExerciseTableTableReferences
@@ -12319,17 +12321,16 @@ class $$ExerciseTableTableTableManager
                             table,
                             p0,
                           ).exerciseMuscleM2NRefs,
-                          referencedItemsForCurrentItem: (item, referencedItems) =>
-                              referencedItems.where(
-                                (e) => e.exerciseId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'exercise_id',
                           typedResults: items,
                         ),
                       if (exerciseSecondaryMuscleM2NRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           ExerciseRow,
                           $ExerciseTableTable,
-                          ExerciseSecondaryMuscleM2NData
+                          ExerciseSecondaryMuscleM2NData,
+                          $ExerciseSecondaryMuscleM2NTable
                         >(
                           currentTable: table,
                           referencedTable: $$ExerciseTableTableReferences
@@ -12339,17 +12340,16 @@ class $$ExerciseTableTableTableManager
                             table,
                             p0,
                           ).exerciseSecondaryMuscleM2NRefs,
-                          referencedItemsForCurrentItem: (item, referencedItems) =>
-                              referencedItems.where(
-                                (e) => e.exerciseId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'exercise_id',
                           typedResults: items,
                         ),
                       if (exerciseEquipmentM2NRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           ExerciseRow,
                           $ExerciseTableTable,
-                          ExerciseEquipmentM2NData
+                          ExerciseEquipmentM2NData,
+                          $ExerciseEquipmentM2NTable
                         >(
                           currentTable: table,
                           referencedTable: $$ExerciseTableTableReferences
@@ -12359,14 +12359,17 @@ class $$ExerciseTableTableTableManager
                             table,
                             p0,
                           ).exerciseEquipmentM2NRefs,
-                          referencedItemsForCurrentItem: (item, referencedItems) =>
-                              referencedItems.where(
-                                (e) => e.exerciseId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'exercise_id',
                           typedResults: items,
                         ),
                       if (exerciseImageTableRefs)
-                        await $_getPrefetchedData<ExerciseRow, $ExerciseTableTable, ExerciseImage>(
+                        await $_getPrefetchedDataByColumns<
+                          ExerciseRow,
+                          $ExerciseTableTable,
+                          ExerciseImage,
+                          $ExerciseImageTableTable
+                        >(
                           currentTable: table,
                           referencedTable: $$ExerciseTableTableReferences
                               ._exerciseImageTableRefsTable(db),
@@ -12375,14 +12378,17 @@ class $$ExerciseTableTableTableManager
                             table,
                             p0,
                           ).exerciseImageTableRefs,
-                          referencedItemsForCurrentItem: (item, referencedItems) =>
-                              referencedItems.where(
-                                (e) => e.exerciseId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'exercise_id',
                           typedResults: items,
                         ),
                       if (exerciseVideoTableRefs)
-                        await $_getPrefetchedData<ExerciseRow, $ExerciseTableTable, Video>(
+                        await $_getPrefetchedDataByColumns<
+                          ExerciseRow,
+                          $ExerciseTableTable,
+                          Video,
+                          $ExerciseVideoTableTable
+                        >(
                           currentTable: table,
                           referencedTable: $$ExerciseTableTableReferences
                               ._exerciseVideoTableRefsTable(db),
@@ -12391,10 +12397,8 @@ class $$ExerciseTableTableTableManager
                             table,
                             p0,
                           ).exerciseVideoTableRefs,
-                          referencedItemsForCurrentItem: (item, referencedItems) =>
-                              referencedItems.where(
-                                (e) => e.exerciseId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'exercise_id',
                           typedResults: items,
                         ),
                     ];
@@ -13036,10 +13040,11 @@ class $$ExerciseTranslationTableTableTableManager
                   getPrefetchedDataCallback: (items) async {
                     return [
                       if (exerciseAliasTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           ExerciseTranslationRow,
                           $ExerciseTranslationTableTable,
-                          Alias
+                          Alias,
+                          $ExerciseAliasTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$ExerciseTranslationTableTableReferences
@@ -13049,17 +13054,16 @@ class $$ExerciseTranslationTableTableTableManager
                             table,
                             p0,
                           ).exerciseAliasTableRefs,
-                          referencedItemsForCurrentItem: (item, referencedItems) =>
-                              referencedItems.where(
-                                (e) => e.translationId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'translation_id',
                           typedResults: items,
                         ),
                       if (exerciseCommentTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           ExerciseTranslationRow,
                           $ExerciseTranslationTableTable,
-                          Comment
+                          Comment,
+                          $ExerciseCommentTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$ExerciseTranslationTableTableReferences
@@ -13069,10 +13073,8 @@ class $$ExerciseTranslationTableTableTableManager
                             table,
                             p0,
                           ).exerciseCommentTableRefs,
-                          referencedItemsForCurrentItem: (item, referencedItems) =>
-                              referencedItems.where(
-                                (e) => e.translationId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'translation_id',
                           typedResults: items,
                         ),
                     ];
@@ -14038,7 +14040,12 @@ class $$MuscleTableTableTableManager
                   getPrefetchedDataCallback: (items) async {
                     return [
                       if (exerciseMuscleM2NRefs)
-                        await $_getPrefetchedData<Muscle, $MuscleTableTable, ExerciseMuscleM2NData>(
+                        await $_getPrefetchedDataByColumns<
+                          Muscle,
+                          $MuscleTableTable,
+                          ExerciseMuscleM2NData,
+                          $ExerciseMuscleM2NTable
+                        >(
                           currentTable: table,
                           referencedTable: $$MuscleTableTableReferences._exerciseMuscleM2NRefsTable(
                             db,
@@ -14048,17 +14055,16 @@ class $$MuscleTableTableTableManager
                             table,
                             p0,
                           ).exerciseMuscleM2NRefs,
-                          referencedItemsForCurrentItem: (item, referencedItems) =>
-                              referencedItems.where(
-                                (e) => e.muscleId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'muscle_id',
                           typedResults: items,
                         ),
                       if (exerciseSecondaryMuscleM2NRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           Muscle,
                           $MuscleTableTable,
-                          ExerciseSecondaryMuscleM2NData
+                          ExerciseSecondaryMuscleM2NData,
+                          $ExerciseSecondaryMuscleM2NTable
                         >(
                           currentTable: table,
                           referencedTable: $$MuscleTableTableReferences
@@ -14068,10 +14074,8 @@ class $$MuscleTableTableTableManager
                             table,
                             p0,
                           ).exerciseSecondaryMuscleM2NRefs,
-                          referencedItemsForCurrentItem: (item, referencedItems) =>
-                              referencedItems.where(
-                                (e) => e.muscleId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'muscle_id',
                           typedResults: items,
                         ),
                     ];
@@ -15070,10 +15074,11 @@ class $$EquipmentTableTableTableManager
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (exerciseEquipmentM2NRefs)
-                    await $_getPrefetchedData<
+                    await $_getPrefetchedDataByColumns<
                       Equipment,
                       $EquipmentTableTable,
-                      ExerciseEquipmentM2NData
+                      ExerciseEquipmentM2NData,
+                      $ExerciseEquipmentM2NTable
                     >(
                       currentTable: table,
                       referencedTable: $$EquipmentTableTableReferences
@@ -15083,10 +15088,8 @@ class $$EquipmentTableTableTableManager
                         table,
                         p0,
                       ).exerciseEquipmentM2NRefs,
-                      referencedItemsForCurrentItem: (item, referencedItems) =>
-                          referencedItems.where(
-                            (e) => e.equipmentId == item.id,
-                          ),
+                      currentColumn: 'id',
+                      referencedColumn: 'equipment_id',
                       typedResults: items,
                     ),
                 ];
@@ -17171,10 +17174,11 @@ class $$MeasurementCategoryTableTableTableManager
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (measurementEntryTableRefs)
-                    await $_getPrefetchedData<
+                    await $_getPrefetchedDataByColumns<
                       MeasurementCategory,
                       $MeasurementCategoryTableTable,
-                      MeasurementEntry
+                      MeasurementEntry,
+                      $MeasurementEntryTableTable
                     >(
                       currentTable: table,
                       referencedTable: $$MeasurementCategoryTableTableReferences
@@ -17184,10 +17188,8 @@ class $$MeasurementCategoryTableTableTableManager
                         table,
                         p0,
                       ).measurementEntryTableRefs,
-                      referencedItemsForCurrentItem: (item, referencedItems) =>
-                          referencedItems.where(
-                            (e) => e.categoryId == item.id,
-                          ),
+                      currentColumn: 'id',
+                      referencedColumn: 'category_id',
                       typedResults: items,
                     ),
                 ];
@@ -18012,8 +18014,10 @@ class $$WorkoutLogTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get notes =>
-      $composableBuilder(column: $table.notes, builder: (column) => ColumnFilters(column));
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnWithTypeConverterFilters<DateTime, DateTime, DateTime> get date => $composableBuilder(
     column: $table.date,
@@ -18100,8 +18104,10 @@ class $$WorkoutLogTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get notes =>
-      $composableBuilder(column: $table.notes, builder: (column) => ColumnOrderings(column));
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<DateTime> get date => $composableBuilder(
     column: $table.date,
@@ -19453,7 +19459,12 @@ class $$NutritionalPlanTableTableTableManager
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (mealTableRefs)
-                    await $_getPrefetchedData<NutritionalPlan, $NutritionalPlanTableTable, Meal>(
+                    await $_getPrefetchedDataByColumns<
+                      NutritionalPlan,
+                      $NutritionalPlanTableTable,
+                      Meal,
+                      $MealTableTable
+                    >(
                       currentTable: table,
                       referencedTable: $$NutritionalPlanTableTableReferences._mealTableRefsTable(
                         db,
@@ -19463,14 +19474,17 @@ class $$NutritionalPlanTableTableTableManager
                         table,
                         p0,
                       ).mealTableRefs,
-                      referencedItemsForCurrentItem: (item, referencedItems) =>
-                          referencedItems.where(
-                            (e) => e.planId == item.id,
-                          ),
+                      currentColumn: 'id',
+                      referencedColumn: 'plan_id',
                       typedResults: items,
                     ),
                   if (logItemTableRefs)
-                    await $_getPrefetchedData<NutritionalPlan, $NutritionalPlanTableTable, LogItem>(
+                    await $_getPrefetchedDataByColumns<
+                      NutritionalPlan,
+                      $NutritionalPlanTableTable,
+                      LogItem,
+                      $LogItemTableTable
+                    >(
                       currentTable: table,
                       referencedTable: $$NutritionalPlanTableTableReferences._logItemTableRefsTable(
                         db,
@@ -19480,10 +19494,8 @@ class $$NutritionalPlanTableTableTableManager
                         table,
                         p0,
                       ).logItemTableRefs,
-                      referencedItemsForCurrentItem: (item, referencedItems) =>
-                          referencedItems.where(
-                            (e) => e.planId == item.id,
-                          ),
+                      currentColumn: 'id',
+                      referencedColumn: 'plan_id',
                       typedResults: items,
                     ),
                 ];
@@ -20334,10 +20346,11 @@ class $$IngredientTableTableTableManager
                   getPrefetchedDataCallback: (items) async {
                     return [
                       if (ingredientImageTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           Ingredient,
                           $IngredientTableTable,
-                          IngredientImage
+                          IngredientImage,
+                          $IngredientImageTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$IngredientTableTableReferences
@@ -20347,17 +20360,16 @@ class $$IngredientTableTableTableManager
                             table,
                             p0,
                           ).ingredientImageTableRefs,
-                          referencedItemsForCurrentItem: (item, referencedItems) =>
-                              referencedItems.where(
-                                (e) => e.ingredientId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'ingredient_id',
                           typedResults: items,
                         ),
                       if (ingredientWeightUnitTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           Ingredient,
                           $IngredientTableTable,
-                          IngredientWeightUnit
+                          IngredientWeightUnit,
+                          $IngredientWeightUnitTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$IngredientTableTableReferences
@@ -20367,14 +20379,17 @@ class $$IngredientTableTableTableManager
                             table,
                             p0,
                           ).ingredientWeightUnitTableRefs,
-                          referencedItemsForCurrentItem: (item, referencedItems) =>
-                              referencedItems.where(
-                                (e) => e.ingredientId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'ingredient_id',
                           typedResults: items,
                         ),
                       if (mealItemTableRefs)
-                        await $_getPrefetchedData<Ingredient, $IngredientTableTable, MealItem>(
+                        await $_getPrefetchedDataByColumns<
+                          Ingredient,
+                          $IngredientTableTable,
+                          MealItem,
+                          $MealItemTableTable
+                        >(
                           currentTable: table,
                           referencedTable: $$IngredientTableTableReferences._mealItemTableRefsTable(
                             db,
@@ -20384,14 +20399,17 @@ class $$IngredientTableTableTableManager
                             table,
                             p0,
                           ).mealItemTableRefs,
-                          referencedItemsForCurrentItem: (item, referencedItems) =>
-                              referencedItems.where(
-                                (e) => e.ingredientId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'ingredient_id',
                           typedResults: items,
                         ),
                       if (logItemTableRefs)
-                        await $_getPrefetchedData<Ingredient, $IngredientTableTable, LogItem>(
+                        await $_getPrefetchedDataByColumns<
+                          Ingredient,
+                          $IngredientTableTable,
+                          LogItem,
+                          $LogItemTableTable
+                        >(
                           currentTable: table,
                           referencedTable: $$IngredientTableTableReferences._logItemTableRefsTable(
                             db,
@@ -20401,10 +20419,8 @@ class $$IngredientTableTableTableManager
                             table,
                             p0,
                           ).logItemTableRefs,
-                          referencedItemsForCurrentItem: (item, referencedItems) =>
-                              referencedItems.where(
-                                (e) => e.ingredientId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'ingredient_id',
                           typedResults: items,
                         ),
                     ];
@@ -21649,7 +21665,12 @@ class $$MealTableTableTableManager
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (mealItemTableRefs)
-                    await $_getPrefetchedData<Meal, $MealTableTable, MealItem>(
+                    await $_getPrefetchedDataByColumns<
+                      Meal,
+                      $MealTableTable,
+                      MealItem,
+                      $MealItemTableTable
+                    >(
                       currentTable: table,
                       referencedTable: $$MealTableTableReferences._mealItemTableRefsTable(db),
                       managerFromTypedResult: (p0) => $$MealTableTableReferences(
@@ -21657,8 +21678,8 @@ class $$MealTableTableTableManager
                         table,
                         p0,
                       ).mealItemTableRefs,
-                      referencedItemsForCurrentItem: (item, referencedItems) =>
-                          referencedItems.where((e) => e.mealId == item.id),
+                      currentColumn: 'id',
+                      referencedColumn: 'meal_id',
                       typedResults: items,
                     ),
                 ];
