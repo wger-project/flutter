@@ -11,7 +11,7 @@
     "@logout": {
         "description": "Text for logout button"
     },
-    "register": "Реєстрація",
+    "register": "Зареєструватися",
     "@register": {
         "description": "Text for registration button"
     },
@@ -50,7 +50,7 @@
         "description": "Error message when the user enters an invalid username"
     },
     "username": "Ім'я користувача",
-    "customServerHint": "Введіть адресу власного сервера, інакше буде використовуватись стандартний",
+    "customServerHint": "Введіть адресу власного сервера, інакше використовуватиметься стандартний",
     "@customServerHint": {
         "description": "Hint text for the form where the users can enter their own wger instance"
     },
@@ -63,11 +63,11 @@
     "@labelBottomNavWorkout": {
         "description": "Label used in bottom navigation, use a short word"
     },
-    "labelWorkoutLogs": "Записи тренувань",
+    "labelWorkoutLogs": "Журнал тренувань",
     "@labelWorkoutLogs": {
         "description": "(Workout) logs"
     },
-    "labelWorkoutPlan": "Плани тренування",
+    "labelWorkoutPlan": "План тренування",
     "@labelWorkoutPlan": {
         "description": "Title for screen workout plan"
     },
@@ -161,7 +161,7 @@
     "@jumpTo": {
         "description": "Imperative. Label used in popup allowing the user to jump to a specific exercise while in the gym mode"
     },
-    "todaysWorkout": "Ваше сьогоднішнє тренування",
+    "todaysWorkout": "Тренування на сьогодні",
     "password": "Пароль",
     "passwordTooShort": "Пароль занадто короткий",
     "@passwordTooShort": {
@@ -185,7 +185,7 @@
         "description": "Label used in bottom navigation, use a short word"
     },
     "weightUnit": "Одиниця ваги",
-    "dayDescriptionHelp": "Опис тренування на цей день (наприклад, «день підтягування») або які групи м'язів працюють (наприклад, («груди та плечі»)",
+    "dayDescriptionHelp": "Опис тренування на цей день (наприклад, «день тяги») або які групи м'язів працюють (наприклад, «груди та плечі»)",
     "workoutSession": "Тренування",
     "@workoutSession": {
         "description": "A (logged) workout session"
@@ -194,7 +194,7 @@
     "@notes": {
         "description": "Personal notes, e.g. for a workout session"
     },
-    "measurementCategoriesHelpText": "Категорія замірів (наприклад, 'біцепс' чи 'відсоток жиру'",
+    "measurementCategoriesHelpText": "Категорія замірів (наприклад, «біцепс» чи «відсоток жиру»)",
     "time": "Час",
     "@time": {
         "description": "The time of a meal or workout"
@@ -255,25 +255,25 @@
     "@addSet": {
         "description": "Label for the button that adds a set (to a workout day)"
     },
-    "addMeal": "Додати страву",
+    "addMeal": "Додати прийом їжі",
     "mealLogged": "Прийом їжі записано у щоденник",
-    "logMeal": "Запис прийому їжі у щоденник харчування",
+    "logMeal": "Записати прийом їжі у щоденник харчування",
     "addIngredient": "Додати інгредієнт",
-    "logIngredient": "Додати інгредієнт до щоденника харчування",
+    "logIngredient": "Записати інгредієнт у щоденник харчування",
     "searchIngredient": "Пошук інгредієнта",
     "@searchIngredient": {
         "description": "Label on ingredient search form"
     },
     "nutritionalDiary": "Щоденник харчування",
     "nutritionalPlans": "Плани харчування",
-    "noNutritionalPlans": "Ви не маєте планів харчування",
+    "noNutritionalPlans": "У вас немає планів харчування",
     "@noNutritionalPlans": {
         "description": "Message shown when the user has no nutritional plans"
     },
     "anErrorOccurred": "Сталася помилка!",
     "measurement": "Замір",
     "logHelpEntries": "Якщо за один день зроблено кілька записів з однаковою кількістю повторень, але різними вагами, то на графіку відобразиться лише найбільший показник.",
-    "logHelpEntriesUnits": "Зверніть увагу, що на графіку відображаються тільки записи з одиницями ваги (кг або lb) і повтореннями. Інші комбінації, такі як час або \"до відмови\", тут ігноруються.",
+    "logHelpEntriesUnits": "Зверніть увагу, що на графіку відображаються тільки записи з одиницями ваги (кг або lb) і повтореннями. Інші комбінації, такі як час або «до відмови», тут ігноруються.",
     "measurements": "Заміри тіла",
     "@measurements": {
         "description": "Categories for the measurements such as biceps size, body fat, etc."
@@ -302,7 +302,7 @@
     "@logged": {
         "description": "Header for the column of 'logged' nutritional values, i.e. what was eaten"
     },
-    "weekAverage": "В середньому за 7 днів",
+    "weekAverage": "У середньому за 7 днів",
     "@weekAverage": {
         "description": "Header for the column of '7 day average' nutritional values, i.e. what was logged last week"
     },
@@ -340,7 +340,7 @@
     "saturatedFat": "Насичені жири",
     "fiber": "Клітковина",
     "sodium": "Натрій",
-    "amount": "Маса",
+    "amount": "Кількість",
     "@amount": {
         "description": "The amount (e.g. in grams) of an ingredient in a meal"
     },
@@ -379,7 +379,7 @@
     "@goToToday": {
         "description": "Label on button to jump back to 'today' in the calendar widget"
     },
-    "enterCharacters": "Введи від {min} до {max} символів",
+    "enterCharacters": "Введіть від {min} до {max} символів",
     "@enterCharacters": {
         "description": "Error message when the user hasn't entered the correct number of characters in a form",
         "type": "text",
@@ -424,7 +424,7 @@
         "description": "Label for the popup with general app options"
     },
     "takePicture": "Зробити знімок",
-    "chooseFromLibrary": "Вибрати із бібліотеки світлин",
+    "chooseFromLibrary": "Вибрати з бібліотеки світлин",
     "gallery": "Галерея",
     "imageFormatNotSupported": "{imageFormat} не підтримується",
     "@imageFormatNotSupported": {
@@ -451,7 +451,7 @@
     "@productNotFound": {
         "description": "Header label for dialog when product is not found with barcode"
     },
-    "productNotFoundDescription": "Продукт із відсканованим штрих-кодом {barcode} не знайдено в базі даних Wger",
+    "productNotFoundDescription": "Продукт із відсканованим штрих-кодом {barcode} не знайдено в базі даних wger",
     "@productNotFoundDescription": {
         "description": "Dialog info when product is not found with barcode",
         "type": "text",
@@ -501,7 +501,7 @@
     "seconds": "Секунди",
     "bench": "Лава",
     "barbell": "Штанга",
-    "triceps": "Трицепси",
+    "triceps": "Трицепс",
     "swiss_ball": "Фітбол",
     "lower_back": "Нижня частина спини",
     "shoulders": "Плечі",
@@ -531,7 +531,7 @@
     "@exerciseName": {
         "description": "Label for the name of a workout exercise"
     },
-    "add_exercise_image_license": "Зображення повинні бути сумісні з ліцензією CC BY SA. Якщо ви сумніваєтеся, завантажуйте лише фотографії, які ви зробили самі.",
+    "add_exercise_image_license": "Зображення мають бути сумісними з ліцензією CC BY SA. Якщо сумніваєтеся, завантажуйте лише власні фотографії.",
     "translateExercise": "Перекладіть цю вправу зараз",
     "selectEntry": "Будь ласка, виберіть запис",
     "enterMinCharacters": "{min, plural, one{Будь ласка, введіть принаймні {min} символ} few{Будь ласка, введіть принаймні {min} символи} other{Будь ласка, введіть принаймні {min} символів}}",
@@ -581,7 +581,7 @@
             }
         }
     },
-    "success": "Успіх",
+    "success": "Успішно",
     "@success": {
         "description": "Message when an action completed successfully, usually used as a heading"
     },
@@ -627,11 +627,11 @@
     "@goalTypeBasic": {
         "description": "added for localization of Class GoalType's filed basic"
     },
-    "goalTypeAdvanced": "Просунутий",
+    "goalTypeAdvanced": "Розширений",
     "@goalTypeAdvanced": {
         "description": "added for localization of Class GoalType's filed advanced"
     },
-    "useMetric": "Використовуйте метричні одиниці вимірювання маси тіла",
+    "useMetric": "Метричні одиниці для маси тіла",
     "settingsTitle": "Налаштування",
     "deficit": "дефіцит",
     "@deficit": {
@@ -690,7 +690,7 @@
         "description": "added for localization of Class Indicator's field text"
     },
     "onlyLogging": "Стежте лише за калоріями",
-    "onlyLoggingHelpText": "Позначте прапорець, якщо ви хочете лише реєструвати свої калорії та не хочете встановлювати детальний план прийому їжі з певними стравами",
+    "onlyLoggingHelpText": "Позначте, якщо хочете лише записувати калорії й не налаштовувати докладний план харчування з окремими прийомами їжі",
     "goalEnergy": "Рекомендований рівень калорій",
     "goalProtein": "Рекомендований рівень білка",
     "goalCarbohydrates": "Рекомендований рівень вуглеводів",
@@ -709,8 +709,8 @@
     "@noMatchingExerciseFound": {
         "description": "Message returned if no exercises match the searched string"
     },
-    "ingredientLogged": "Інгредієнт зареєстровано в щоденнику",
-    "selectMealToLog": "Виберіть страву, яку потрібно додати у щоденник харчування",
+    "ingredientLogged": "Інгредієнт записано у щоденник",
+    "selectMealToLog": "Виберіть прийом їжі для запису у щоденник харчування",
     "aboutMastodonTitle": "Mastodon",
     "settingsCacheTitle": "Кеш",
     "settingsCacheDeletedSnackbar": "Кеш успішно очищено",
@@ -719,7 +719,7 @@
     "lightMode": "Завжди світлий режим",
     "systemMode": "Налаштування системи",
     "restDay": "День відпочинку",
-    "noRoutines": "У вас немає програми тренувань",
+    "noRoutines": "У вас немає програм тренувань",
     "restTime": "Відпочинок",
     "sets": "Підходи",
     "@sets": {
@@ -761,7 +761,7 @@
             }
         }
     },
-    "needsLogsToAdvanceHelp": "Виберіть, якщо ви бажаєте, щоб програма перейшла до наступного запланованого дня, лише якщо ви зареєстрували тренування на цей день",
+    "needsLogsToAdvanceHelp": "Програма переходитиме до наступного дня лише після того, як для поточного дня записано тренування",
     "setHasProgressionWarning": "Зверніть увагу, що на даний момент неможливо змінити всі параметри набору в мобільному додатку або налаштувати автоматичний прогрес. Наразі використовуйте веб-додаток.",
     "setHasNoExercises": "У цьому підході ще немає вправ!",
     "errorViewDetails": "Технічні деталі",
@@ -800,7 +800,7 @@
     "@yourCurrentNutritionPlanHasNoMealsDefinedYet": {
         "description": "Message shown when a nutrition plan doesn't have any meals"
     },
-    "toAddMealsToThePlanGoToNutritionalPlanDetails": "Щоб додати страви до плану, перейдіть до деталей плану прийому їжі",
+    "toAddMealsToThePlanGoToNutritionalPlanDetails": "Щоб додати прийоми їжі, відкрийте деталі плану харчування",
     "@toAddMealsToThePlanGoToNutritionalPlanDetails": {
         "description": "Message shown to guide users to the nutritional plan details page to add meals"
     },
@@ -909,11 +909,11 @@
     "slotEntryTypeTut": "Час під напругою (TUT)",
     "slotEntryTypeIso": "Ізометричне утримання",
     "slotEntryTypeJump": "Стрибок",
-    "endWorkout": "Закінчити тренування",
+    "endWorkout": "Завершити тренування",
     "impressionGood": "Добре",
     "impressionNeutral": "Нейтрально",
     "impressionBad": "Погано",
-    "gymModeShowExercises": "Перегляд вправ",
+    "gymModeShowExercises": "Показувати огляд вправ",
     "gymModeShowTimer": "Показувати таймер між підходами",
     "gymModeTimerType": "Тип таймера",
     "gymModeTimerTypeHelText": "Якщо для підходу вказано час відпочинку, завжди запускається зворотний відлік.",
@@ -952,7 +952,7 @@
             }
         }
     },
-    "dashboardWidgets": "Віджети панелі інструментів",
+    "dashboardWidgets": "Віджети панелі керування",
     "trophies": "Трофеї",
     "topSet": "Найважчий підхід: {value}",
     "@topSet": {
@@ -975,7 +975,7 @@
     "@invalidRefreshToken": {
         "description": "Error message when the user enters an invalid refresh token"
     },
-    "refreshTokenValidChars": "Токен оновлення має складатися з трьох частин, розділених крапками (заголовок.корисне_навантаження.підпис), кожна з яких містить літери, цифри, дефіс '-' та підкреслення '_'",
+    "refreshTokenValidChars": "Токен оновлення має складатися з трьох частин, розділених крапками (header.payload.signature), кожна з яких містить літери, цифри, дефіс «-» та підкреслення «_»",
     "@refreshTokenValidChars": {
         "description": "Error message when the user pastes a string that does not match the JWT shape"
     },
@@ -1066,7 +1066,7 @@
     "gymModeShowWorkoutDuration": "Показувати тривалість тренування",
     "gymModeLogScope": "Попередні записи",
     "gymModeLogScopeHelp": "Які записи показувати для довідки під час тренування",
-    "gymModeLogScopeCurrentRoutine": "Поточний план тренування",
+    "gymModeLogScopeCurrentRoutine": "Поточна програма",
     "gymModeLogScopeWeeks": "{weeks, plural, one{За останній {weeks} тиждень} few{За останні {weeks} тижні} other{За останні {weeks} тижнів}}",
     "@gymModeLogScopeWeeks": {
         "placeholders": {
@@ -1207,7 +1207,7 @@
             }
         }
     },
-    "relativeDaysAgo": "{count, plural, =0{сьогодні} =1{учора} few{{count} дні тому} many{{count} днів тому} other{{count} дня тому}}",
+    "relativeDaysAgo": "{count, plural, =0{сьогодні} =1{учора} one{{count} день тому} few{{count} дні тому} many{{count} днів тому} other{{count} дня тому}}",
     "@relativeDaysAgo": {
         "description": "How long ago something was measured, for distances below a week",
         "placeholders": {
@@ -1432,7 +1432,7 @@
         "description": "Title of the setting that makes the app write detailed diagnostic entries to the application log"
     },
     "settingsVerboseLoggingDescription": "Знадобиться під час надсилання звітів про повторювані проблеми.",
-    "indicatorTrend": "тренд",
+    "indicatorTrend": "Тренд",
     "@indicatorTrend": {
         "description": "Legend label for the smoothed trendline on measurement charts"
     },
@@ -1559,7 +1559,7 @@
     "@syncStatusReconnect": {
         "description": "Button in the sync status dialog that drops the stuck connection to the sync service and opens a fresh one"
     },
-    "syncStatusPendingUploads": "{count, plural, =1{Одна локальна зміна очікує на завантаження} few{{count} локальні зміни очікують на завантаження} many{{count} локальних змін очікують на завантаження} other{{count} локальної зміни очікує на завантаження}}",
+    "syncStatusPendingUploads": "{count, plural, =1{Одна локальна зміна очікує на завантаження} one{{count} локальна зміна очікує на завантаження} few{{count} локальні зміни очікують на завантаження} many{{count} локальних змін очікують на завантаження} other{{count} локальної зміни очікує на завантаження}}",
     "@syncStatusPendingUploads": {
         "description": "Line in the sync status dialog showing how many local changes have not reached the server yet",
         "placeholders": {
@@ -1758,11 +1758,11 @@
     "@calculationNameWhtr": {
         "description": "Name of a calculated category: waist circumference divided by height. It is also prefilled as the category name and stored, so keep it short"
     },
-    "calculationNameOneRepMax": "Повторний максимум",
+    "calculationNameOneRepMax": "Одноповторний максимум",
     "@calculationNameOneRepMax": {
         "description": "Name of a calculated category: the heaviest weight liftable for a single repetition. It is also prefilled as the category name and stored, so keep it short"
     },
-    "calculationNameOneRmTotal": "Сума повторних максимумів",
+    "calculationNameOneRmTotal": "Сума одноповторних максимумів",
     "@calculationNameOneRmTotal": {
         "description": "Name of a calculated category: the one-rep maxima of several exercises added up. It is also prefilled as the category name and stored, so keep it short"
     },
@@ -1901,13 +1901,13 @@
         "description": "Helper text below the author field when contributing an exercise"
     },
     "gymModeAlertOnRestEnd": "Сповіщати про завершення відпочинку",
-    "gymModeAlertOnRestEndHelp": "Вібрація в режимі тренування або сповіщення, коли застосунок працює у фоновому режимі",
+    "gymModeAlertOnRestEndHelp": "Вібрація в режимі тренажерного залу або сповіщення, коли застосунок працює у фоновому режимі",
     "gymModeWorkoutNotification": "Сповіщення про тренування",
     "gymModeExactAlarmMissing": "Без дозволу на точне планування сигналів сповіщення про завершення відпочинку може надійти із запізненням на кілька хвилин",
     "gymModeExactAlarmAllow": "Дозволити",
     "gymModeWorkoutNotificationHelp": "Дає змогу переглядати поточне тренування та керувати ним через постійне сповіщення",
-    "workoutNotificationRestOver": "Час відпочинку завершився",
-    "workoutNotificationNext": "Далі:: {set}",
+    "workoutNotificationRestOver": "Відпочинок завершено",
+    "workoutNotificationNext": "Далі: {set}",
     "@workoutNotificationNext": {
         "description": "Notification text with the next planned set, e.g. 'Next: Bench press 3 × 100 kg'",
         "placeholders": {
