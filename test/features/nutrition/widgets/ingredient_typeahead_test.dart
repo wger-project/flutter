@@ -22,11 +22,9 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences_platform_interface/in_memory_shared_preferences_async.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_async_platform_interface.dart';
 import 'package:wger/core/search_options.dart';
-import 'package:wger/core/shared_preferences.dart';
 import 'package:wger/features/nutrition/models/ingredient.dart';
 import 'package:wger/features/nutrition/providers/ingredient_repository.dart';
 import 'package:wger/features/nutrition/widgets/widgets.dart';
@@ -45,9 +43,7 @@ void main() {
   late MockIngredientRepository mockIngredientRepo;
 
   setUp(() async {
-    SharedPreferences.setMockInitialValues(<String, Object>{});
     SharedPreferencesAsyncPlatform.instance = InMemorySharedPreferencesAsync.empty();
-    await PreferenceHelper.instance.migrationSupportFunctionForSharedPreferences();
     mockIngredientRepo = MockIngredientRepository();
     when(mockIngredientRepo.getById(any)).thenAnswer((_) async => null);
 

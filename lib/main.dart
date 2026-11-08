@@ -123,9 +123,6 @@ void main() async {
 
   final logger = Logger('main');
 
-  // SharedPreferences to SharedPreferencesAsync migration function
-  await PreferenceHelper.instance.migrationSupportFunctionForSharedPreferences();
-
   // Seed the log level from the prefs, the phase right after a cold start is
   // the interesting one; AppSettingsNotifier keeps it in sync from here on.
   applyVerboseLogging(

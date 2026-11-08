@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:shared_preferences/util/legacy_to_async_migration_util.dart';
 import 'package:wger/core/search_options.dart';
 import 'package:wger/features/exercises/models/exercise_filters.dart';
 import 'package:wger/features/nutrition/models/ingredient.dart';
@@ -11,9 +10,7 @@ import 'package:wger/features/nutrition/models/ingredient_filters.dart';
 /// leaves with the local data.
 const PREFS_WORKOUT_PROGRESS = 'workoutProgressPrefs';
 
-/// A helper class that manages preferences using SharedPreferencesAsync
-/// and handles migration from the legacy SharedPreferences to
-/// SharedPreferencesAsync.
+/// A helper class that manages preferences using SharedPreferencesAsync.
 class PreferenceHelper {
   PreferenceHelper._instantiate();
 
@@ -24,22 +21,6 @@ class PreferenceHelper {
   static SharedPreferencesAsync get asyncPref => SharedPreferencesAsync();
 
   static PreferenceHelper get instance => _instance;
-
-  /// Migration function that ensures any legacy data stored in
-  /// SharedPreferences is migrated to SharedPreferencesAsync. This migration
-  /// only happens once, as checked by the migrationCompletedKey.
-  ///
-  /// `migrationCompletedKey` is used to track if the migration has been
-  /// completed.
-  Future<void> migrationSupportFunctionForSharedPreferences() async {
-    const SharedPreferencesOptions sharedPreferencesOptions = SharedPreferencesOptions();
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await migrateLegacySharedPreferencesToSharedPreferencesAsyncIfNecessary(
-      legacySharedPreferencesInstance: prefs,
-      sharedPreferencesAsyncOptions: sharedPreferencesOptions,
-      migrationCompletedKey: 'migrationCompleted',
-    );
-  }
 
   //ingredients filters
   //1.vegan
