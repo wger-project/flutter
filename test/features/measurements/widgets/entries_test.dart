@@ -79,12 +79,10 @@ void main() {
         localizationsDelegates: appLocalizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
-          body: SingleChildScrollView(
-            child: EntriesList(
-              category,
-              range: ChartRange.last3Months,
-              onRangeChanged: (_) {},
-            ),
+          body: EntriesList(
+            category,
+            range: ChartRange.last3Months,
+            onRangeChanged: (_) {},
           ),
         ),
       ),
@@ -257,8 +255,6 @@ void main() {
         ],
     };
     final mockRepo = MockMeasurementRepository();
-    // Tall enough that the list below the chart is on screen and can be
-    // dragged rather than the page around it
     tester.view.physicalSize = const Size(800, 1600);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.reset);
@@ -268,10 +264,40 @@ void main() {
     verify(mockRepo.watchGroupEntries('bp', limit: 50)).called(greaterThanOrEqualTo(1));
 
     // Past the end, so the assertion does not hang on a row height
-    await tester.drag(find.byType(ListView).last, const Offset(0, -3000));
+    await tester.drag(find.byType(CustomScrollView), const Offset(0, -3000));
     await tester.pumpAndSettle();
 
     verify(mockRepo.watchGroupEntries('bp', limit: 100)).called(greaterThanOrEqualTo(1));
+    // The larger page loads under a new provider; showing nothing meanwhile
+    // emptied the list and threw the user back to the top
+    final scrollable = tester.state<ScrollableState>(
+      find.descendant(of: find.byType(CustomScrollView), matching: find.byType(Scrollable)).first,
+    );
+    expect(scrollable.position.pixels, greaterThan(0));
+  });
+
+  testWidgets('A tall screen lists the entries past the first few', (WidgetTester tester) async {
+    // The list used to sit in a box of fixed height, so a tablet showed a
+    // handful of rows and left the rest of the screen empty (#1002)
+    final entries = [
+      for (var day = 0; day < 30; day++)
+        MeasurementEntry(
+          id: 'e-$day',
+          categoryId: 'c1',
+          date: DateTime.now().subtract(Duration(days: day)),
+          value: 100 + day,
+          notes: '',
+        ),
+    ];
+    tester.view.physicalSize = const Size(800, 2400);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+
+    await tester.pumpWidget(createEntriesList(bodyFat, {'c1': entries}));
+    await tester.pumpAndSettle();
+
+    // Newest first, so the fifteenth row is the value 114
+    expect(find.text('114 %'), findsOneWidget);
   });
 
   testWidgets('A distribution category draws its histogram in the chart box', (

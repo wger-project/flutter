@@ -70,21 +70,18 @@ class WeightScreen extends ConsumerWidget {
               },
             ),
       body: WidescreenWrapper(
-        child: SingleChildScrollView(
-          child: category == null || profile == null
-              ? const BoxedProgressIndicator()
-              : EntriesList(
-                  category,
-                  // Shared with the whole measurements tab, see ChartRangeSetting
-                  range: ref.watch(chartRangeSettingProvider),
-                  onRangeChanged: (range) =>
-                      ref.read(chartRangeSettingProvider.notifier).set(range),
-                  title: i18n.weight,
-                  displayUnit: weightDisplayUnit(profile.isMetric),
-                  displayUnitLabel: weightUnit(profile.isMetric, context),
-                  editFormBuilder: (entry) => WeightForm(category, entry),
-                ),
-        ),
+        child: category == null || profile == null
+            ? const BoxedProgressIndicator()
+            : EntriesList(
+                category,
+                // Shared with the whole measurements tab, see ChartRangeSetting
+                range: ref.watch(chartRangeSettingProvider),
+                onRangeChanged: (range) => ref.read(chartRangeSettingProvider.notifier).set(range),
+                title: i18n.weight,
+                displayUnit: weightDisplayUnit(profile.isMetric),
+                displayUnitLabel: weightUnit(profile.isMetric, context),
+                editFormBuilder: (entry) => WeightForm(category, entry),
+              ),
       ),
     );
   }

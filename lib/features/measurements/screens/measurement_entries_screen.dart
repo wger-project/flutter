@@ -147,14 +147,12 @@ class _MeasurementEntriesScreenState extends ConsumerState<MeasurementEntriesScr
             ),
       body: WidescreenWrapper(
         child: switch ((category, categoryValue)) {
-          (final MeasurementCategory category, _) => SingleChildScrollView(
-            child: EntriesList(
-              category,
-              // Shared with the overview: the range picked there follows the
-              // user in here, and a pick here follows them back out
-              range: ref.watch(chartRangeSettingProvider),
-              onRangeChanged: (range) => ref.read(chartRangeSettingProvider.notifier).set(range),
-            ),
+          (final MeasurementCategory category, _) => EntriesList(
+            category,
+            // Shared with the overview: the range picked there follows the
+            // user in here, and a pick here follows them back out
+            range: ref.watch(chartRangeSettingProvider),
+            onRangeChanged: (range) => ref.read(chartRangeSettingProvider.notifier).set(range),
           ),
           (_, AsyncError(:final error)) => StreamErrorIndicator(error.toString()),
           _ => const BoxedProgressIndicator(),

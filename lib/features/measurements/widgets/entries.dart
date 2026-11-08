@@ -103,8 +103,8 @@ class EntriesList extends ConsumerWidget {
           ]
         : const <PlanPeriod>[];
 
-    return Column(
-      children: [
+    return _scrollView(
+      header: [
         if (category.isCalculated)
           Padding(
             padding: const EdgeInsets.fromLTRB(15, 8, 15, 0),
@@ -125,12 +125,23 @@ class EntriesList extends ConsumerWidget {
           builder: (context, points) => _chart(context, points, name, unit, unitLabel, planPeriods),
           onError: (_, error) => [StreamErrorIndicator(error.toString())],
         ),
-        _EntryList(
-          category: category,
-          unit: unit,
-          unitLabel: unitLabel,
-          editFormBuilder: editFormBuilder,
-        ),
+      ],
+      list: _EntryList(
+        category: category,
+        unit: unit,
+        unitLabel: unitLabel,
+        editFormBuilder: editFormBuilder,
+      ),
+    );
+  }
+
+  /// The screen's scroll view: [header] on top, then [list], which scrolls
+  /// with it instead of in a box of its own.
+  Widget _scrollView({required List<Widget> header, required Widget list}) {
+    return CustomScrollView(
+      slivers: [
+        SliverToBoxAdapter(child: Column(children: header)),
+        list,
       ],
     );
   }
@@ -177,8 +188,8 @@ class EntriesList extends ConsumerWidget {
   Widget _buildGroup(BuildContext context, WidgetRef ref, MeasurementCategory category) {
     final i18n = AppLocalizations.of(context);
 
-    return Column(
-      children: [
+    return _scrollView(
+      header: [
         ChartRangeSelector(
           value: range,
           onChanged: onRangeChanged,
@@ -209,8 +220,8 @@ class EntriesList extends ConsumerWidget {
           trailing: (_, _) => const Icon(Icons.chevron_right),
         ),
         const Divider(),
-        _GroupReadingsList(category),
       ],
+      list: _GroupReadingsList(category),
     );
   }
 }
@@ -243,12 +254,12 @@ class _EntryListState extends ConsumerState<_EntryList> with _GrowsWhileScrolled
     final category = widget.category;
     final page = ref.watch(measurementEntriesPageProvider(category.id!, limit));
     if (page case AsyncError(:final error)) {
-      return StreamErrorIndicator(error.toString());
+      return SliverToBoxAdapter(child: StreamErrorIndicator(error.toString()));
     }
-    final entries = page.value ?? const <MeasurementEntry>[];
+    final entries = _entriesOf(page);
     final datetimeFormat = localizedDate(context);
 
-    return _pagedBox(
+    return _pagedList(
       itemCount: entries.length,
       hasMore: entries.length >= limit,
       itemBuilder: (context, index) {
@@ -357,15 +368,15 @@ class _GroupReadingsListState extends ConsumerState<_GroupReadingsList> with _Gr
     final category = widget.category;
     final page = ref.watch(measurementGroupEntriesPageProvider(category.id!, limit));
     if (page case AsyncError(:final error)) {
-      return StreamErrorIndicator(error.toString());
+      return SliverToBoxAdapter(child: StreamErrorIndicator(error.toString()));
     }
-    final entries = page.value ?? const <MeasurementEntry>[];
+    final entries = _entriesOf(page);
     final readings = groupReadings(category, entries);
     final datetimeFormat = localizedDate(context);
     final total = category.children.firstWhereOrNull((c) => c.metricType.isGroupTotal)?.id;
     final componentsById = {for (final c in category.children) c.id!: c};
 
-    return _pagedBox(
+    return _pagedList(
       itemCount: readings.length,
       hasMore: entries.length >= limit,
       itemBuilder: (context, index) {
@@ -399,43 +410,74 @@ class _GroupReadingsListState extends ConsumerState<_GroupReadingsList> with _Gr
   }
 }
 
-/// A fixed-height list that asks for the next page as it nears its end.
+/// A sliver list at the end of the screen's scroll view that asks for the
+/// next page as the view nears its end.
 mixin _GrowsWhileScrolled<T extends ConsumerStatefulWidget> on ConsumerState<T> {
   static const _pageSize = 50;
 
   int limit = _pageSize;
 
+  /// Whether the current page came back full. Cleared once a larger page is
+  /// asked for, so a drag grows it once and not on every scroll update.
+  bool _hasMore = false;
+
+  ScrollPosition? _position;
+
+  List<MeasurementEntry> _lastEntries = const [];
+
+  /// The entries of [page], or the previous page's while a larger one loads.
+  /// An empty list in between would throw the scroll position back to the top.
+  List<MeasurementEntry> _entriesOf(AsyncValue<List<MeasurementEntry>> page) =>
+      _lastEntries = page.value ?? _lastEntries;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final position = Scrollable.of(context).position;
+    if (position != _position) {
+      _position?.removeListener(_growIfNearEnd);
+      _position = position..addListener(_growIfNearEnd);
+    }
+  }
+
+  @override
+  void dispose() {
+    _position?.removeListener(_growIfNearEnd);
+    super.dispose();
+  }
+
+  // Grown before the end is reached, so the next page is there by the time
+  // the user gets to it
+  void _growIfNearEnd() {
+    final position = _position;
+    if (!mounted || !_hasMore || position == null || !position.hasContentDimensions) {
+      return;
+    }
+    if (position.extentAfter < 200) {
+      _hasMore = false;
+      setState(() => limit += _pageSize);
+    }
+  }
+
   /// [hasMore] says whether the page came back full, i.e. whether asking for
   /// a larger one can yield anything. It cannot be read off [itemCount], which
   /// counts what is listed rather than what was read: a group lists one
   /// reading per several entries.
-  Widget _pagedBox({
+  Widget _pagedList({
     required int itemCount,
     required bool hasMore,
     required Widget? Function(BuildContext context, int index) itemBuilder,
   }) {
-    // The limit [hasMore] was decided against. A drag sends many notifications
-    // before the rebuild, and without this one gesture would grow the page by
-    // several at once, since the answer to "is there more" cannot change
-    // until the next build.
-    final asked = limit;
+    _hasMore = hasMore;
+    // A page too short to scroll sends no scroll updates, so check once laid out
+    WidgetsBinding.instance.addPostFrameCallback((_) => _growIfNearEnd());
 
-    return SizedBox(
-      height: 300,
-      child: NotificationListener<ScrollNotification>(
-        onNotification: (notification) {
-          // Grown before the end is reached, so the next page is there by the
-          // time the user gets to it
-          if (notification.metrics.extentAfter < 200 && hasMore && limit == asked) {
-            setState(() => limit += _pageSize);
-          }
-          return false;
-        },
-        child: ListView.builder(
-          padding: const EdgeInsets.all(10.0),
-          itemCount: itemCount,
-          itemBuilder: itemBuilder,
-        ),
+    return SliverPadding(
+      // Bottom space so the FAB does not cover the last entry
+      padding: const EdgeInsets.fromLTRB(10, 10, 10, 80),
+      sliver: SliverList.builder(
+        itemCount: itemCount,
+        itemBuilder: itemBuilder,
       ),
     );
   }
