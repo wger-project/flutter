@@ -190,23 +190,6 @@ class WorkoutLogRepository {
       return open.id;
     }
 
-    // Sessions that came from the server without a time can only be matched by
-    // their day. Dropping this would create a duplicate next to every one of them.
-    final dayMidnightUtc = DateTime.utc(log.date.year, log.date.month, log.date.day);
-    final sameDay =
-        await (_db.select(_db.workoutSessionTable)
-              ..where(
-                (t) =>
-                    t.routineId.equalsNullable(log.routineId) &
-                    t.datetimeStart.isNull() &
-                    t.date.equalsValue(dayMidnightUtc),
-              )
-              ..limit(1))
-            .getSingleOrNull();
-    if (sameDay != null) {
-      return sameDay.id;
-    }
-
     // The start has to be set, otherwise the lookups above can never find this
     // session again and every further log would create one of its own. The day
     // is set so the routine's date sequence advances (issue wger#2460).

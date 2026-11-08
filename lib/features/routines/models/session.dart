@@ -90,9 +90,8 @@ class WorkoutSession with _$WorkoutSession {
   /// Builds the model from a database row.
   ///
   /// Rows that were replicated before 2.7 have no `datetime_start` in their
-  /// stored JSON and read as NULL, for as long as that local database lives.
-  /// They are rebuilt from the pre-2.7 date and time columns. Application code
-  /// uses the default constructor.
+  /// stored JSON and read as NULL until they are downloaded again; they start
+  /// now. Application code uses the default constructor.
   factory WorkoutSession.fromDb({
     String? id,
     int? routineId,
@@ -101,32 +100,15 @@ class WorkoutSession with _$WorkoutSession {
     WorkoutImpression impression = WorkoutImpression.neutral,
     DateTime? datetimeStart,
     DateTime? datetimeEnd,
-    DateTime? date,
-    TimeOfDay? timeStart,
-    TimeOfDay? timeEnd,
   }) {
-    DateTime on(DateTime day, TimeOfDay? time) =>
-        DateTime(day.year, day.month, day.day, time?.hour ?? 0, time?.minute ?? 0);
-
-    final start = datetimeStart ?? (date == null ? clock.now() : on(date, timeStart));
-
-    var end = datetimeEnd;
-    if (end == null && date != null && timeEnd != null) {
-      end = on(date, timeEnd);
-      // An end before the start means the session ran past midnight
-      if (end.isBefore(start)) {
-        end = end.add(const Duration(days: 1));
-      }
-    }
-
     return WorkoutSession(
       id: id,
       routineId: routineId,
       dayId: dayId,
       notes: notes,
       impression: impression,
-      datetimeStart: start,
-      datetimeEnd: end,
+      datetimeStart: datetimeStart ?? clock.now(),
+      datetimeEnd: datetimeEnd,
     );
   }
 
@@ -137,8 +119,7 @@ class WorkoutSession with _$WorkoutSession {
       dayId: drift.Value(dayId),
       notes: drift.Value(notes),
       impression: drift.Value(impression),
-      // Explicit NULL, not absent: clearing the end has to clear the column too.
-      // The pre-2.7 columns are never written again, only read by fromDb.
+      // Explicit NULL, not absent: clearing the end has to clear the column too
       datetimeStart: drift.Value(datetimeStart),
       datetimeEnd: drift.Value(datetimeEnd),
     );

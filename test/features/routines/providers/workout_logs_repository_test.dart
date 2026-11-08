@@ -148,23 +148,6 @@ void main() {
       expect(await readSessions(), hasLength(2));
     });
 
-    test('reuses a server-synced session whose date has no time component', () async {
-      // A row replicated before 2.7 carries only the bare 'YYYY-MM-DD' date and
-      // no datetime_start. The day lookup has to keep matching it, otherwise a
-      // duplicate session appears next to every one of them.
-      await db.customStatement(
-        "INSERT INTO manager_workoutsession (id, routine_id, date, impression) VALUES ('server-session', 100, '2026-04-15', '2')",
-      );
-
-      final log = makeLog(routineId: 100, date: DateTime.utc(2026, 4, 15, 18));
-      await repo.addLocalDrift(log);
-
-      expect(await readSessions(), hasLength(1));
-      expect(log.sessionId, 'server-session');
-      final logs = await readLogs();
-      expect(logs.single.sessionId, 'server-session');
-    });
-
     test('creates a new session starting at the moment of the log', () async {
       // Without a start the lookups above could never find it again and every
       // further log would create one of its own.

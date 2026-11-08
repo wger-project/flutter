@@ -19,7 +19,6 @@
 import 'package:drift/drift.dart';
 import 'package:powersync/powersync.dart' as ps;
 import 'package:wger/database/converters/date_only_text_converter.dart';
-import 'package:wger/database/converters/time_of_day_converter.dart';
 import 'package:wger/database/converters/utc_datetime_converter.dart';
 import 'package:wger/database/converters/workout_impression_converter.dart';
 import 'package:wger/features/routines/models/log.dart';
@@ -123,20 +122,12 @@ class WorkoutSessionTable extends Table {
   TextColumn get notes => text().nullable()();
   TextColumn get impression => text().map(const WorkoutImpressionConverter())();
 
-  // Nullable, and permanently so: rows that were replicated before 2.7 have no
-  // such key in the stored JSON and read as NULL for as long as that local
-  // database lives. WorkoutSession.fromDb rebuilds them from the columns below.
+  // Nullable: rows replicated before 2.7 have no such key in the stored JSON
+  // and read as NULL until they are downloaded again.
   TextColumn get datetimeStart =>
       text().named('datetime_start').nullable().map(const DateTimeTextConverter())();
   TextColumn get datetimeEnd =>
       text().named('datetime_end').nullable().map(const DateTimeTextConverter())();
-
-  // Pre-2.7 shape, only ever read. Remove once MIN_APP_VERSION has passed the
-  // versions that wrote them.
-  TextColumn get date => text().nullable().map(const DateOnlyTextConverter())();
-  TextColumn get timeStart =>
-      text().named('time_start').nullable().map(const TimeOfDayConverter())();
-  TextColumn get timeEnd => text().named('time_end').nullable().map(const TimeOfDayConverter())();
 }
 
 const PowersyncWorkoutSessionTable = ps.Table(
@@ -148,9 +139,6 @@ const PowersyncWorkoutSessionTable = ps.Table(
     ps.Column.text('impression'),
     ps.Column.text('datetime_start'),
     ps.Column.text('datetime_end'),
-    ps.Column.text('date'),
-    ps.Column.text('time_start'),
-    ps.Column.text('time_end'),
   ],
   indexes: [
     ps.Index('routine_idx', [ps.IndexedColumn('routine_id')]),

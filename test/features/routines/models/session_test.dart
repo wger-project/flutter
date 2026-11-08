@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:clock/clock.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:timezone/data/latest.dart' as tzdata;
 import 'package:wger/core/consts.dart';
 import 'package:wger/features/routines/models/log.dart';
@@ -36,34 +36,14 @@ void main() {
       expect(session.datetimeEnd, DateTime(2026, 4, 15, 19, 45));
     });
 
-    test('rebuilds a row that predates 2.7 from its date and times', () {
-      final session = WorkoutSession.fromDb(
-        routineId: 1,
-        date: DateTime(2026, 4, 15),
-        timeStart: const TimeOfDay(hour: 18, minute: 30),
-        timeEnd: const TimeOfDay(hour: 19, minute: 45),
+    test('a row without a start starts now', () {
+      final now = DateTime(2026, 4, 15, 18, 30);
+      final session = withClock(
+        Clock.fixed(now),
+        () => WorkoutSession.fromDb(routineId: 1, datetimeEnd: null),
       );
 
-      expect(session.datetimeStart, DateTime(2026, 4, 15, 18, 30));
-      expect(session.datetimeEnd, DateTime(2026, 4, 15, 19, 45));
-    });
-
-    test('reads an end before the start as the next day', () {
-      final session = WorkoutSession.fromDb(
-        routineId: 1,
-        date: DateTime(2026, 4, 15),
-        timeStart: const TimeOfDay(hour: 23, minute: 0),
-        timeEnd: const TimeOfDay(hour: 1, minute: 30),
-      );
-
-      expect(session.datetimeStart, DateTime(2026, 4, 15, 23, 0));
-      expect(session.datetimeEnd, DateTime(2026, 4, 16, 1, 30));
-    });
-
-    test('an old row without times starts at midnight and stays open', () {
-      final session = WorkoutSession.fromDb(routineId: 1, date: DateTime(2026, 4, 15));
-
-      expect(session.datetimeStart, DateTime(2026, 4, 15));
+      expect(session.datetimeStart, now);
       expect(session.datetimeEnd, isNull);
     });
   });
