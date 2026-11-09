@@ -95,7 +95,7 @@ jobs:
         uses: ./.github/actions/flutter-common
 
       - name: Setup flutpak
-        uses: o-murphy/flutpak/.github/actions/setup-flutpak@v0.8.7
+        uses: o-murphy/flutpak/.github/actions/setup-flutpak@v0.8.8
 
       - name: Generate manifest with flutpak
         env:
