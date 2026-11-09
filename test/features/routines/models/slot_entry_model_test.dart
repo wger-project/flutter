@@ -20,6 +20,7 @@ import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:wger/features/routines/models/base_config.dart';
+import 'package:wger/features/routines/models/requirement_rules.dart';
 import 'package:wger/features/routines/models/slot_entry.dart';
 
 import '../../../../test_data/exercises.dart';
@@ -71,6 +72,60 @@ void main() {
     expect(slotEntry.hasProgressionRules, true);
   });
 
+  test('hasProgressionRules stays true after removing the duplicated branch', () {
+    // Regression test for the removed duplicate code: previously
+    // `maxWeightConfigs.length > 1` appeared twice in the OR chain.
+    final slotEntry = SlotEntry.empty();
+    slotEntry.maxWeightConfigs.add(BaseConfig.firstIteration(22, 3));
+    slotEntry.maxWeightConfigs.add(BaseConfig.firstIteration(1, 3));
+
+    expect(slotEntry.hasProgressionRules, true);
+  });
+
+  test('a single-iteration entry has no progression rules', () {
+    final slotEntry = SlotEntry.empty();
+    slotEntry.maxWeightConfigs.add(BaseConfig.firstIteration(22, 3));
+
+    expect(slotEntry.hasProgressionRules, false);
+  });
+
+  group('reading a gated progression entry from the backend (routine_structure.json)', () {
+    late SlotEntry gatedEntry;
+
+    setUp(() {
+      final apiResponse = fixture('routines/routine_structure.json');
+      final routineJson = json.decode(apiResponse) as Map<String, dynamic>;
+
+      // id: 10 slot entry has weight_configs / max_weight_configs sequence.
+      final armsDay = (routineJson['days'] as List).firstWhere((d) => d['id'] == 10);
+      final entryJson = armsDay['slots'][0]['entries'][0];
+      gatedEntry = SlotEntry.fromJson(entryJson);
+    });
+
+    test('parses all three weight iterations', () {
+      expect(gatedEntry.weightConfigs.length, 3);
+      expect(gatedEntry.weightConfigs[0].iteration, 1);
+      expect(gatedEntry.weightConfigs[1].iteration, 2);
+      expect(gatedEntry.weightConfigs[2].iteration, 8);
+    });
+
+    test('is flagged as having progression rules', () {
+      expect(gatedEntry.hasProgressionRules, true);
+    });
+
+    test('the repeating +1kg step carries an (empty) requirements map, not null', () {
+      final steppingConfig = gatedEntry.weightConfigs[1];
+
+      expect(steppingConfig.repeat, true);
+      expect(steppingConfig.requirements, isNotNull);
+      expect(ConfigRequirements.fromMap(steppingConfig.requirements)!.isEmpty, isTrue);
+    });
+
+    test('getConfigsByType(ConfigType.maxWeight) returns the parsed max_weight_configs list', () {
+      expect(gatedEntry.getConfigsByType(ConfigType.maxWeight), gatedEntry.maxWeightConfigs);
+      expect(gatedEntry.getConfigsByType(ConfigType.maxWeight).length, 3);
+    });
+  });
   group('exercise hydration', () {
     SlotEntry makeEntry() => SlotEntry(
       id: 42,
