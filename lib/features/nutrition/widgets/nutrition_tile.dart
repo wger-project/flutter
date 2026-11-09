@@ -7,13 +7,15 @@ class NutritionTile extends StatelessWidget {
   final double vPadding;
   final Widget? title;
   final Widget? subtitle;
-  final Widget? trailing; // always constrained to 20px wide
+  final Widget? trailing;
+  final double trailingWidth;
 
   const NutritionTile({
     this.leading,
     this.title,
     this.subtitle,
     this.trailing,
+    this.trailingWidth = 20,
     this.vPadding = 8,
   });
 
@@ -39,7 +41,7 @@ class NutritionTile extends StatelessWidget {
           ),
           const SizedBox(width: 8),
           ConstrainedBox(
-            constraints: const BoxConstraints(minWidth: 20, maxWidth: 20),
+            constraints: BoxConstraints.tightFor(width: trailingWidth),
             child: trailing ?? const SizedBox(width: 20),
           ),
         ],
