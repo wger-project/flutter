@@ -108,7 +108,7 @@ dev_dependencies:
   mockito: ^5.6.4
   network_image_mock: ^2.1.1
   plugin_platform_interface: ^2.1.8
-  riverpod_generator: ^4.0.4
+  riverpod_generator: ^4.0.10
   shared_preferences_platform_interface: ^2.4.2
 
   # Script to read out unused translations
