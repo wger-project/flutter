@@ -26,7 +26,9 @@ class GymModeArguments {
   final int dayId;
   final int iteration;
 
-  const GymModeArguments(this.routineId, this.dayId, this.iteration);
+  final bool alreadyOpened;
+
+  const GymModeArguments(this.routineId, this.dayId, this.iteration, {this.alreadyOpened = false});
 }
 
 class GymModeScreen extends ConsumerWidget {
