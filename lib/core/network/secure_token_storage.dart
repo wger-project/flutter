@@ -16,9 +16,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:flutter/services.dart' show PlatformException;
 import 'package:flutter_riverpod/flutter_riverpod.dart' show Provider;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:wger/core/consts.dart';
+
+/// Keychain status `errSecInteractionNotAllowed`: the item exists but its
+/// protection class keeps it sealed right now (device locked).
+const _errSecInteractionNotAllowed = -25308;
+
+/// Secure storage cannot be read at the moment, but may hold a token. Unlike
+/// a missing or undecryptable token this says nothing about the session.
+class SecureStorageLockedException implements Exception {
+  final Object cause;
+
+  const SecureStorageLockedException(this.cause);
+
+  @override
+  String toString() => 'SecureStorageLockedException: $cause';
+}
 
 /// Persists the headless refresh token in platform-level secure storage
 /// (Keychain on iOS, EncryptedSharedPreferences on Android).
@@ -30,7 +46,8 @@ abstract interface class SecureTokenStorage {
   /// previous value.
   Future<void> writeRefreshToken(String token);
 
-  /// Returns the persisted refresh token, or null if none is stored.
+  /// Returns the persisted refresh token, or null if none is stored. Throws
+  /// [SecureStorageLockedException] while the storage is temporarily sealed.
   Future<String?> readRefreshToken();
 
   /// Removes the persisted refresh token. No-op when none is stored.
@@ -40,14 +57,29 @@ abstract interface class SecureTokenStorage {
 class FlutterSecureTokenStorage implements SecureTokenStorage {
   final FlutterSecureStorage _storage;
 
-  const FlutterSecureTokenStorage([this._storage = const FlutterSecureStorage()]);
+  // A background refresh (phone locked between sets) must still read the
+  // token. Existing items move to this class on their next write.
+  const FlutterSecureTokenStorage([
+    this._storage = const FlutterSecureStorage(
+      iOptions: IOSOptions(accessibility: KeychainAccessibility.first_unlock_this_device),
+    ),
+  ]);
 
   @override
   Future<void> writeRefreshToken(String token) =>
       _storage.write(key: SECURE_STORAGE_REFRESH_TOKEN, value: token);
 
   @override
-  Future<String?> readRefreshToken() => _storage.read(key: SECURE_STORAGE_REFRESH_TOKEN);
+  Future<String?> readRefreshToken() async {
+    try {
+      return await _storage.read(key: SECURE_STORAGE_REFRESH_TOKEN);
+    } on PlatformException catch (e) {
+      if (e.details == _errSecInteractionNotAllowed) {
+        throw SecureStorageLockedException(e);
+      }
+      rethrow;
+    }
+  }
 
   @override
   Future<void> deleteRefreshToken() => _storage.delete(key: SECURE_STORAGE_REFRESH_TOKEN);

@@ -617,7 +617,7 @@ packages:
     source: hosted
     version: "11.2.0"
   flutter_secure_storage_darwin:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: flutter_secure_storage_darwin
       sha256: a031ceac9b070e62ef183cd7f7d1a8798ebde402d5049f0fe6eb3a51bd797a21

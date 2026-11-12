@@ -38,6 +38,7 @@ import 'package:wger/core/network/headless_auth_api.dart';
 import 'package:wger/core/network/jwt.dart';
 import 'package:wger/core/network/network_provider.dart';
 import 'package:wger/core/network/powersync_session.dart';
+import 'package:wger/core/network/secure_token_storage.dart';
 import 'package:wger/core/network/server_gating.dart';
 import 'package:wger/core/shared_preferences.dart';
 import 'package:wger/database/powersync/powersync.dart';
@@ -420,13 +421,19 @@ class AuthNotifier extends _$AuthNotifier {
   /// Exchanges the stored refresh token for a fresh bundle ahead of the
   /// first-time probe. `renewed` carries the new session; it stays null when
   /// the server could not be reached, answered a transient status or an
-  /// unreadable body. `rejected` marks a refused or missing refresh token,
-  /// with the credentials already wiped.
+  /// unreadable body, or secure storage was locked. `rejected` marks a
+  /// refused or missing refresh token, with the credentials already wiped.
   Future<({StoredAuth? renewed, bool rejected})> _refreshBeforeProbe(
     StoredAuth stored,
     PackageInfo appVersion,
   ) async {
-    final refreshToken = await _readStoredRefreshToken();
+    final String? refreshToken;
+    try {
+      refreshToken = await _readStoredRefreshToken();
+    } on SecureStorageLockedException {
+      _logger.info('autologin: secure storage locked, keeping saved session');
+      return (renewed: null, rejected: false);
+    }
     if (refreshToken == null) {
       _logger.warning('autologin: no usable refresh token, clearing credentials');
       await _storage.clearCredentials();
@@ -465,11 +472,14 @@ class AuthNotifier extends _$AuthNotifier {
   /// The persisted refresh token, or null when there is none or secure storage
   /// cannot read it (e.g. an Android backup restored onto a new device leaves
   /// an undecryptable blob behind). The failure is logged here, callers only
-  /// decide what to clear.
+  /// decide what to clear. A [SecureStorageLockedException] passes through:
+  /// the token may well be there, so callers must keep the session.
   Future<String?> _readStoredRefreshToken() async {
     try {
       final token = await _storage.readRefreshToken();
       return (token == null || token.isEmpty) ? null : token;
+    } on SecureStorageLockedException {
+      rethrow;
     } on Exception catch (e, s) {
       _logger.warning('secure storage read failed', e, s);
       return null;
@@ -664,10 +674,11 @@ class AuthNotifier extends _$AuthNotifier {
   ///
   /// Single-flight: concurrent callers share one HTTP request. When the
   /// server rejects the refresh token (400, 401, 403), or the stored bundle
-  /// is unusable (missing refresh token, missing serverUrl, malformed body),
-  /// the session is cleared via [clearSessionOnly] so the user can
-  /// re-authenticate without losing local data. Network errors and transient
-  /// statuses (5xx, 408, 429) keep the session so offline use continues.
+  /// is unusable (missing refresh token, missing serverUrl), the session is
+  /// cleared via [clearSessionOnly] so the user can re-authenticate without
+  /// losing local data. Anything that says nothing about the token keeps the
+  /// session: network errors, transient statuses (5xx, 408, 429), a body
+  /// without tokens, or secure storage locked while the device is.
   ///
   /// On success: `state.credential` is updated to the new JWT, the rotated
   /// refresh token (when present) is written to secure storage, and the
@@ -688,7 +699,13 @@ class AuthNotifier extends _$AuthNotifier {
       return;
     }
 
-    final refreshToken = await _readStoredRefreshToken();
+    final String? refreshToken;
+    try {
+      refreshToken = await _readStoredRefreshToken();
+    } on SecureStorageLockedException {
+      _logger.info('refreshAccessToken: secure storage locked, keeping session');
+      return;
+    }
     if (refreshToken == null) {
       _logger.warning('refreshAccessToken: no usable refresh token, clearing session');
       await clearSessionOnly();
@@ -751,16 +768,15 @@ class AuthNotifier extends _$AuthNotifier {
       newRefresh = (data?['refresh_token'] ?? meta?['refresh_token']) as String?;
       newExp = jwtExpOnLocalClock(decodeJwtPayload(newAccess));
     } catch (e, s) {
-      // Don't log the body: on the success-shaped path it holds the rotated
-      // refresh token
+      // A captive portal or bot filter answers 200 too. If the token did rotate,
+      // the next refresh is refused and ends the session then.
+      // Don't log the body: on the success-shaped path it holds the token.
       _logger.warning(
-        'refreshAccessToken: malformed response body, clearing session. '
+        'refreshAccessToken: malformed response body, keeping session. '
         'Status: ${response.statusCode}, body length: ${response.body.length}',
         e,
         s,
       );
-      await clearSessionOnly();
-      showSessionExpiredSnackbar();
       return;
     }
     _logger.fine(

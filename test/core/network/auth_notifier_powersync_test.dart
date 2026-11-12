@@ -715,6 +715,20 @@ void main() {
       expect(await PreferenceHelper.asyncPref.containsKey(PREFS_ACCESS_TOKEN), true);
     });
 
+    test('secure storage locked → logged in offline, credentials kept', () async {
+      when(mockSecureStorage.readRefreshToken()).thenThrow(
+        SecureStorageLockedException(PlatformException(code: 'locked', details: -25308)),
+      );
+
+      final container = makeContainer();
+      final state = await container.read(authProvider.future);
+
+      expect(state.status, AuthStatus.loggedIn);
+      verifyNever(mockClient.get(tProbe, headers: anyNamed('headers')));
+      verifyNever(mockSecureStorage.deleteRefreshToken());
+      expect(await PreferenceHelper.asyncPref.containsKey(PREFS_ACCESS_TOKEN), true);
+    });
+
     test('refresh token rejected (400) → loggedOut and saved user wiped', () async {
       when(
         mockClient.post(tHeadlessRefresh, headers: anyNamed('headers'), body: anyNamed('body')),
@@ -1330,6 +1344,24 @@ void main() {
       },
     );
 
+    test('secure storage locked (iOS, device locked) → stays logged in, no request', () async {
+      // The keychain refuses reads while the device is locked: the token is
+      // still there, so the refresh waits for the next attempt (#1417).
+      await PreferenceHelper.asyncPref.setBool(PREFS_HAS_EVER_SYNCED, true);
+      when(mockSecureStorage.readRefreshToken()).thenThrow(
+        SecureStorageLockedException(PlatformException(code: 'locked', details: -25308)),
+      );
+
+      final container = makeContainer();
+      await container.read(authProvider.future);
+      await container.read(authProvider.notifier).refreshAccessToken();
+
+      expect(container.read(authProvider).value!.status, AuthStatus.loggedIn);
+      expect(await PreferenceHelper.asyncPref.containsKey(PREFS_ACCESS_TOKEN), true);
+      verifyNever(mockSecureStorage.deleteRefreshToken());
+      verifyNever(mockClient.post(tRefresh, headers: anyNamed('headers'), body: anyNamed('body')));
+    });
+
     test('rejected refresh token (400, 401, 403) → clears session, keeps DB', () async {
       // The refresh token is genuinely dead (expired server-side after a long
       // offline period, or rotated away). allauth's ErrorResponse is a 400.
@@ -1420,19 +1452,27 @@ void main() {
       expect(container.read(authProvider).value!.status, AuthStatus.loggedIn);
     });
 
-    test('malformed body (no tokens) → clears session, keeps DB', () async {
-      await PreferenceHelper.asyncPref.setBool(PREFS_HAS_EVER_SYNCED, true);
-      when(mockSecureStorage.readRefreshToken()).thenAnswer((_) async => 'old-refresh');
-      when(
-        mockClient.post(tRefresh, headers: anyNamed('headers'), body: anyNamed('body')),
-      ).thenAnswer((_) async => Response(jsonEncode({'status': 200}), 200));
+    test('200 without tokens (captive portal, bot filter) → stays logged in', () async {
+      // The answer may not come from the server at all, so it says nothing
+      // about the refresh token.
+      for (final body in [
+        jsonEncode({'status': 200}),
+        '<html>Sign in to Wi-Fi</html>',
+      ]) {
+        await PreferenceHelper.asyncPref.setBool(PREFS_HAS_EVER_SYNCED, true);
+        when(mockSecureStorage.readRefreshToken()).thenAnswer((_) async => 'old-refresh');
+        when(
+          mockClient.post(tRefresh, headers: anyNamed('headers'), body: anyNamed('body')),
+        ).thenAnswer((_) async => Response(body, 200));
 
-      final container = makeContainer();
-      await container.read(authProvider.future);
-      await container.read(authProvider.notifier).refreshAccessToken();
+        final container = makeContainer();
+        await container.read(authProvider.future);
+        await container.read(authProvider.notifier).refreshAccessToken();
 
-      expect(container.read(authProvider).value!.status, AuthStatus.loggedOut);
-      expect(await PreferenceHelper.asyncPref.getBool(PREFS_HAS_EVER_SYNCED), true);
+        expect(container.read(authProvider).value!.status, AuthStatus.loggedIn, reason: body);
+        expect(await PreferenceHelper.asyncPref.containsKey(PREFS_ACCESS_TOKEN), true);
+        verifyNever(mockSecureStorage.deleteRefreshToken());
+      }
     });
 
     test('single-flight: concurrent callers share one HTTP request', () async {
