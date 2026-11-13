@@ -8,15 +8,45 @@
 
 /* Begin PBXBuildFile section */
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
+		236F8C830BE34165396536B9 /* RestWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35AAC8AC5F6DDC10C08F7219 /* RestWidget.swift */; };
+		26590EA2D1C673824F2666D9 /* WorkoutIslandIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10333199066B60236A47548B /* WorkoutIslandIntent.swift */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
+		5236D890206AA2DEF5C74ACE /* WgerRestWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = E290BC51713CABF3AA3E74AB /* WgerRestWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		691E04182C9F910DA516BF95 /* RestActivityPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = F34268CA52E89AD9440ABEA8 /* RestActivityPlugin.swift */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		78A318202AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage in Frameworks */ = {isa = PBXBuildFile; productRef = 78A3181F2AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage */; };
+		94458B90DE8F0B05211B0375 /* RestAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A777E5E74CB1F54C4FBAE5D /* RestAttributes.swift */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
+		AAE0D3C6CDDE5023190BF87C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C9E6C5109C11E84CFC36F37 /* Foundation.framework */; };
+		B5D85B8F329B1D04D73F8EB6 /* WorkoutIslandIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10333199066B60236A47548B /* WorkoutIslandIntent.swift */; };
+		B684536913AB2ABC412EDB15 /* RestAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A777E5E74CB1F54C4FBAE5D /* RestAttributes.swift */; };
+		D9BD445A19EE9854D96621C4 /* WorkoutShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 393B3C68977DD5B40D35DE09 /* WorkoutShortcuts.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		387F7B0042FCE056D0758593 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 97C146E61CF9000F007C117D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 49D30CE1D46548FB39715544;
+			remoteInfo = WgerRestWidget;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXCopyFilesBuildPhase section */
+		1504904EED9BC14C078B572F /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				5236D890206AA2DEF5C74ACE /* WgerRestWidget.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		9705A1C41CF9048500538489 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -30,9 +60,15 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0A777E5E74CB1F54C4FBAE5D /* RestAttributes.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RestAttributes.swift; sourceTree = "<group>"; };
+		10333199066B60236A47548B /* WorkoutIslandIntent.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WorkoutIslandIntent.swift; sourceTree = "<group>"; };
 		1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
 		1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
+		2C9E6C5109C11E84CFC36F37 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		35AAC8AC5F6DDC10C08F7219 /* RestWidget.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RestWidget.swift; sourceTree = "<group>"; };
+		393B3C68977DD5B40D35DE09 /* WorkoutShortcuts.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WorkoutShortcuts.swift; sourceTree = "<group>"; };
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
+		5A4605FCF0E4756378E9E136 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		78E0A7A72DC9AD7400C4905E /* FlutterGeneratedPluginSwiftPackage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = FlutterGeneratedPluginSwiftPackage; path = Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage; sourceTree = "<group>"; };
@@ -45,9 +81,19 @@
 		97C146FD1CF9000F007C117D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		97C147001CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E290BC51713CABF3AA3E74AB /* WgerRestWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WgerRestWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		F34268CA52E89AD9440ABEA8 /* RestActivityPlugin.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RestActivityPlugin.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		2DEC7FD6B09477F66B25E34A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AAE0D3C6CDDE5023190BF87C /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		97C146EB1CF9000F007C117D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -59,6 +105,36 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		227BACE4A189D0F79A411EB1 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				4BF152BE3D475F5B8CEBA94C /* iOS */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		25705FCC561E7357AC85BA1C /* RestActivity */ = {
+			isa = PBXGroup;
+			children = (
+				0A777E5E74CB1F54C4FBAE5D /* RestAttributes.swift */,
+				10333199066B60236A47548B /* WorkoutIslandIntent.swift */,
+				5A4605FCF0E4756378E9E136 /* Info.plist */,
+				F34268CA52E89AD9440ABEA8 /* RestActivityPlugin.swift */,
+				393B3C68977DD5B40D35DE09 /* WorkoutShortcuts.swift */,
+				35AAC8AC5F6DDC10C08F7219 /* RestWidget.swift */,
+			);
+			name = RestActivity;
+			path = RestActivity;
+			sourceTree = "<group>";
+		};
+		4BF152BE3D475F5B8CEBA94C /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				2C9E6C5109C11E84CFC36F37 /* Foundation.framework */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
 		9740EEB11CF90186004384FC /* Flutter */ = {
 			isa = PBXGroup;
 			children = (
@@ -77,6 +153,8 @@
 				9740EEB11CF90186004384FC /* Flutter */,
 				97C146F01CF9000F007C117D /* Runner */,
 				97C146EF1CF9000F007C117D /* Products */,
+				25705FCC561E7357AC85BA1C /* RestActivity */,
+				227BACE4A189D0F79A411EB1 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -84,6 +162,7 @@
 			isa = PBXGroup;
 			children = (
 				97C146EE1CF9000F007C117D /* Runner.app */,
+				E290BC51713CABF3AA3E74AB /* WgerRestWidget.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -107,6 +186,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		49D30CE1D46548FB39715544 /* WgerRestWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C497779234A5262ACCD38F19 /* Build configuration list for PBXNativeTarget "WgerRestWidget" */;
+			buildPhases = (
+				A52B3CB9580A5451082CA07F /* Sources */,
+				2DEC7FD6B09477F66B25E34A /* Frameworks */,
+				E123CEE2E5854CFB89AFAE8B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = WgerRestWidget;
+			productName = WgerRestWidget;
+			productReference = E290BC51713CABF3AA3E74AB /* WgerRestWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		97C146ED1CF9000F007C117D /* Runner */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 97C147051CF9000F007C117D /* Build configuration list for PBXNativeTarget "Runner" */;
@@ -116,11 +212,13 @@
 				97C146EB1CF9000F007C117D /* Frameworks */,
 				97C146EC1CF9000F007C117D /* Resources */,
 				9705A1C41CF9048500538489 /* Embed Frameworks */,
+				1504904EED9BC14C078B572F /* Embed Foundation Extensions */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				CB530323BD6EEFD01ED601FF /* PBXTargetDependency */,
 			);
 			name = Runner;
 			packageProductDependencies = (
@@ -162,6 +260,7 @@
 			projectRoot = "";
 			targets = (
 				97C146ED1CF9000F007C117D /* Runner */,
+				49D30CE1D46548FB39715544 /* WgerRestWidget */,
 			);
 		};
 /* End PBXProject section */
@@ -175,6 +274,13 @@
 				3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */,
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E123CEE2E5854CFB89AFAE8B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -221,10 +327,33 @@
 			files = (
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
+				B684536913AB2ABC412EDB15 /* RestAttributes.swift in Sources */,
+				691E04182C9F910DA516BF95 /* RestActivityPlugin.swift in Sources */,
+				B5D85B8F329B1D04D73F8EB6 /* WorkoutIslandIntent.swift in Sources */,
+				D9BD445A19EE9854D96621C4 /* WorkoutShortcuts.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A52B3CB9580A5451082CA07F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				94458B90DE8F0B05211B0375 /* RestAttributes.swift in Sources */,
+				26590EA2D1C673824F2666D9 /* WorkoutIslandIntent.swift in Sources */,
+				236F8C830BE34165396536B9 /* RestWidget.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		CB530323BD6EEFD01ED601FF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = WgerRestWidget;
+			target = 49D30CE1D46548FB39715544 /* WgerRestWidget */;
+			targetProxy = 387F7B0042FCE056D0758593 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		97C146FA1CF9000F007C117D /* Main.storyboard */ = {
@@ -246,6 +375,31 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		140581A8D90FD7B95CB57EDD /* Profile */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9740EEB31CF90195004384FC /* Generated.xcconfig */;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = U92KZ4HZ4C;
+				INFOPLIST_FILE = RestActivity/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = de.wger.flutter.community.RestWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Profile;
+		};
 		249021D3217E4FDB00AE95B9 /* Profile */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -500,6 +654,55 @@
 			};
 			name = Release;
 		};
+		9A0ED675573720E1F7416EF4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9740EEB31CF90195004384FC /* Generated.xcconfig */;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = U92KZ4HZ4C;
+				INFOPLIST_FILE = RestActivity/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = de.wger.flutter.community.RestWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		C762A2717CED4F46DD0719ED /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9740EEB31CF90195004384FC /* Generated.xcconfig */;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = U92KZ4HZ4C;
+				INFOPLIST_FILE = RestActivity/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = de.wger.flutter.community.RestWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -519,6 +722,16 @@
 				97C147061CF9000F007C117D /* Debug */,
 				97C147071CF9000F007C117D /* Release */,
 				249021D4217E4FDB00AE95B9 /* Profile */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C497779234A5262ACCD38F19 /* Build configuration list for PBXNativeTarget "WgerRestWidget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C762A2717CED4F46DD0719ED /* Release */,
+				9A0ED675573720E1F7416EF4 /* Debug */,
+				140581A8D90FD7B95CB57EDD /* Profile */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

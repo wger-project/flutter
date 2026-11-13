@@ -32,6 +32,20 @@ final class WorkoutSessionNotifier extends _$WorkoutSessionNotifier {
     return _repo.watchAllDrift();
   }
 
+  Future<bool> finishGymSession({
+    required int routineId,
+    required int dayId,
+    required DateTime start,
+    required DateTime end,
+    required String? sessionId,
+  }) => _repo.finishGymSession(
+    routineId: routineId,
+    dayId: dayId,
+    start: start,
+    end: end,
+    sessionId: sessionId,
+  );
+
   Future<void> deleteEntry(String id) async {
     await _repo.deleteLocalDrift(id);
   }
