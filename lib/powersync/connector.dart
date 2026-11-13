@@ -109,6 +109,12 @@ class DjangoConnector extends PowerSyncBackendConnector {
   /// sync, disconnect() included, until the process restarts.
   static const credentialFetchTimeout = Duration(seconds: 30);
 
+  /// Ceiling for one upload request. disconnect() and disconnectAndClear()
+  /// wait for a running upload, so a request stuck on a dead connection would
+  /// hold up logout and every reconnect. A timeout counts as a network error:
+  /// the transaction stays queued and is retried.
+  static const uploadRequestTimeout = Duration(seconds: 30);
+
   /// Spacing between repeated "backend unreachable" log lines while the
   /// credential fetch keeps failing, so PowerSync's retry loop doesn't
   /// flood the app logs during a longer outage.
@@ -322,18 +328,11 @@ class DjangoConnector extends PowerSyncBackendConnector {
 
         // logger.finer('Uploading record $record to server with operation ${op.op}');
 
-        final http.Response response;
-        switch (op.op) {
-          case UpdateType.put:
-            response = await apiClient.upsert(record);
-            break;
-          case UpdateType.patch:
-            response = await apiClient.update(record);
-            break;
-          case UpdateType.delete:
-            response = await apiClient.delete(record);
-            break;
-        }
+        final response = await switch (op.op) {
+          UpdateType.put => apiClient.upsert(record),
+          UpdateType.patch => apiClient.update(record),
+          UpdateType.delete => apiClient.delete(record),
+        }.timeout(uploadRequestTimeout);
 
         switch (_classifyResponse(response)) {
           case _UploadOutcome.ok:

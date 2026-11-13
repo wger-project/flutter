@@ -599,6 +599,34 @@ void main() {
       verify(api.delete(any)).called(1);
     });
 
+    test('times out a hanging upload and leaves the op queued', () {
+      // disconnect() waits for a running upload; without the ceiling a request
+      // on a dead connection would hold up logout and every reconnect.
+      fakeAsync((async) {
+        when(api.upsert(any)).thenAnswer((_) => Completer<http.Response>().future);
+
+        Object? error;
+        conn
+            .processTransaction(
+              txWith(CrudEntry(1, UpdateType.put, 'manager_routine', 'r1', 1, {'name': 'x'})),
+            )
+            .then<void>(
+              (_) {},
+              onError: (Object e) {
+                error = e;
+              },
+            );
+
+        async.elapse(DjangoConnector.uploadRequestTimeout - const Duration(seconds: 1));
+        expect(error, isNull);
+
+        async.elapse(const Duration(seconds: 2));
+        expect(error, isA<TimeoutException>());
+        expect(completed, isFalse);
+        expect(logLines(Level.SEVERE, 'Error uploading data'), isEmpty);
+      });
+    });
+
     test('hands an unexpected error on as a plain stand-in', () async {
       // An error object that cannot be sent between isolates never reaches
       // the sync isolate and wedges the upload queue for the rest of the
