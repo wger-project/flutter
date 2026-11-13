@@ -24,6 +24,7 @@ import 'package:wger/core/widgets/async_value_widget.dart';
 import 'package:wger/core/widgets/confirm_delete_dialog.dart';
 import 'package:wger/core/widgets/text_prompt.dart';
 import 'package:wger/features/routines/providers/routines_notifier.dart';
+import 'package:wger/features/routines/screens/routine_edit_screen.dart';
 import 'package:wger/features/routines/screens/routine_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 
@@ -98,6 +99,18 @@ class _RoutinesListState extends ConsumerState<RoutinesList> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     if (!canOpen) const Icon(Icons.cloud_off),
+                    IconButton(
+                      icon: const Icon(Icons.edit),
+                      tooltip: AppLocalizations.of(context).edit,
+                      onPressed: canOpen
+                          ? () {
+                              Navigator.of(context).pushNamed(
+                                RoutineEditScreen.routeName,
+                                arguments: routineId,
+                              );
+                            }
+                          : null,
+                    ),
                     const VerticalDivider(),
                     if (_loadingRoutine == currentRoutine.id)
                       const IconButton(
