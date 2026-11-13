@@ -63,6 +63,8 @@ class Log {
   num? rir;
   num? rirTarget;
 
+  String? notes;
+
   num? repetitions;
   num? repetitionsTarget;
   int? repetitionsUnitId;
@@ -88,6 +90,7 @@ class Log {
     this.repetitionsUnitObj,
     this.rir,
     this.rirTarget,
+    this.notes,
     this.weight,
     this.weightTarget,
     this.weightUnitId = WEIGHT_UNIT_KG,
@@ -127,6 +130,7 @@ class Log {
     int? slotEntryId,
     num? rir,
     num? rirTarget,
+    String? notes,
     num? repetitions,
     num? repetitionsTarget,
     int? repetitionsUnitId,
@@ -150,6 +154,7 @@ class Log {
       repetitionsUnitObj: repetitionsUnitObj ?? this.repetitionsUnitObj,
       rir: rir ?? this.rir,
       rirTarget: rirTarget ?? this.rirTarget,
+      notes: notes ?? this.notes,
       weight: weight ?? this.weight,
       weightTarget: weightTarget ?? this.weightTarget,
       weightUnitId: weightUnitId ?? this.weightUnitId,
@@ -193,6 +198,7 @@ class Log {
       weight: drift.Value(weight?.toDouble()),
       weightTarget: drift.Value(weightTarget?.toDouble()),
       weightUnitId: drift.Value(weightUnitId),
+      notes: drift.Value(notes),
       date: drift.Value(date),
     );
   }

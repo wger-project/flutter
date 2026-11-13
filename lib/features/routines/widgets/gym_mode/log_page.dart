@@ -258,7 +258,13 @@ class LogsPastLogsWidget extends ConsumerWidget {
             return ListTile(
               key: ValueKey('past-log-${pastLog.id}'),
               title: Text(pastLog.repTextNoNl(context)),
-              subtitle: Text(dateFormat.format(pastLog.date)),
+              subtitle: Text(
+                pastLog.notes != null && pastLog.notes!.isNotEmpty
+                    ? '${dateFormat.format(pastLog.date)} · ${pastLog.notes}'
+                    : dateFormat.format(pastLog.date),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
               trailing: const Icon(Icons.copy),
               onTap: () {
                 logProvider.copyValuesFrom(pastLog);
@@ -290,11 +296,38 @@ class LogFormWidget extends ConsumerStatefulWidget {
 
 class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
   final _form = GlobalKey<FormState>();
+  late final TextEditingController _notesController;
+
+  /// The notes field takes room from the past logs, so it only shows on request
+  /// or when the log already has notes
+  bool _showNotes = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _notesController = TextEditingController(text: ref.read(gymLogProvider)?.notes ?? '');
+  }
+
+  @override
+  void dispose() {
+    _notesController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
     final log = ref.watch(gymLogProvider);
+
+    // Follow a switch to another log (next set, editing a logged one), but leave
+    // the text alone while the user types, setNotes stores blank text as null
+    ref.listen(gymLogProvider, (previous, next) {
+      final text = _notesController.text;
+      if (next?.notes != (text.trim().isEmpty ? null : text)) {
+        _notesController.text = next?.notes ?? '';
+        setState(() => _showNotes = false);
+      }
+    });
 
     // The log is populated when the page becomes current: the PageView can lay
     // out and mount this page before that happens, so guard against null.
@@ -307,114 +340,141 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
 
     return Form(
       key: _form,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            isNewEntry ? i18n.newEntry : i18n.edit,
-            style: Theme.of(context).textTheme.titleLarge,
-            textAlign: TextAlign.center,
-          ),
-          Row(
-            children: [
-              Flexible(
-                child: RepetitionInputWidget(
-                  key: const ValueKey('logs-reps-widget'),
-                  value: log.repetitions,
-                  valueChange: widget.configData.repetitionsRounding,
-                  unit: log.repetitionsUnitObj,
-                  onChanged: (v) {
-                    if (v != null) {
-                      ref.read(gymLogProvider.notifier).setRepetitions(v);
-                    }
-                  },
-                  onUnitChanged: (v) {
-                    if (v != null) {
-                      ref.read(gymLogProvider.notifier).setRepetitionUnit(v);
-                    }
-                  },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 5),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              isNewEntry ? i18n.newEntry : i18n.edit,
+              style: Theme.of(context).textTheme.titleLarge,
+              textAlign: TextAlign.center,
+            ),
+            Row(
+              children: [
+                Flexible(
+                  child: RepetitionInputWidget(
+                    key: const ValueKey('logs-reps-widget'),
+                    value: log.repetitions,
+                    valueChange: widget.configData.repetitionsRounding,
+                    unit: log.repetitionsUnitObj,
+                    onChanged: (v) {
+                      if (v != null) {
+                        ref.read(gymLogProvider.notifier).setRepetitions(v);
+                      }
+                    },
+                    onUnitChanged: (v) {
+                      if (v != null) {
+                        ref.read(gymLogProvider.notifier).setRepetitionUnit(v);
+                      }
+                    },
+                  ),
                 ),
-              ),
-              Flexible(
-                child: WeightInputWidget(
-                  key: const ValueKey('logs-weight-widget'),
-                  value: log.weight,
-                  valueChange: widget.configData.weightRounding,
-                  unit: log.weightUnitObj,
-                  onChanged: (v) {
-                    if (v != null) {
-                      ref.read(gymLogProvider.notifier).setWeight(v);
-                      ref.read(plateCalculatorProvider.notifier).setWeight(v);
-                    }
-                  },
-                  onUnitChanged: (v) {
-                    if (v != null) {
-                      ref.read(gymLogProvider.notifier).setWeightUnit(v);
-                    }
-                  },
+                Flexible(
+                  child: WeightInputWidget(
+                    key: const ValueKey('logs-weight-widget'),
+                    value: log.weight,
+                    valueChange: widget.configData.weightRounding,
+                    unit: log.weightUnitObj,
+                    onChanged: (v) {
+                      if (v != null) {
+                        ref.read(gymLogProvider.notifier).setWeight(v);
+                        ref.read(plateCalculatorProvider.notifier).setWeight(v);
+                      }
+                    },
+                    onUnitChanged: (v) {
+                      if (v != null) {
+                        ref.read(gymLogProvider.notifier).setWeightUnit(v);
+                      }
+                    },
+                  ),
                 ),
-              ),
-            ],
-          ),
-          RiRInputWidget(
-            key: const ValueKey('rir-input-widget'),
-            log.rir,
-            onChanged: (value) {
-              log.rir = value == '' ? null : num.parse(value);
-            },
-          ),
-          // Side by side to save the height, wrapped only if they don't fit
-          Wrap(
-            alignment: WrapAlignment.center,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            spacing: 8,
-            children: [
-              if (!isNewEntry)
-                TextButton.icon(
-                  key: const ValueKey('add-set-button'),
-                  onPressed: () => ref.read(gymStateProvider.notifier).startNewEntry(),
-                  label: Text(i18n.addSet),
-                ),
-              FilledButton(
-                key: const ValueKey('save-log-button'),
-                onPressed: () async {
-                  final isValid = _form.currentState!.validate();
-                  if (!isValid) {
-                    return;
+              ],
+            ),
+            RiRInputWidget(
+              key: const ValueKey('rir-input-widget'),
+              log.rir,
+              onChanged: (value) {
+                log.rir = value == '' ? null : num.parse(value);
+              },
+            ),
+            if (_showNotes || log.notes != null)
+              TextFormField(
+                key: const ValueKey('notes-input-widget'),
+                controller: _notesController,
+                autofocus: _showNotes && log.notes == null,
+                decoration: InputDecoration(labelText: i18n.notes, isDense: true),
+                minLines: 1,
+                maxLines: 3,
+                keyboardType: TextInputType.multiline,
+                onChanged: (value) {
+                  // Keep the field when the user clears the notes while typing
+                  if (!_showNotes) {
+                    setState(() => _showNotes = true);
                   }
-                  _form.currentState!.save();
-
-                  final error = validateWorkoutLogCrossField(
-                    repetitions: log.repetitions,
-                    weight: log.weight,
-                    i18n: i18n,
-                  );
-                  if (error != null) {
-                    showSnackbar(context, error);
-                    return;
-                  }
-
-                  // A failed write is intentionally left to propagate to the global
-                  // error handler; the success path below is then skipped. A page
-                  // logged before updates its row, and the PageView follows the
-                  // page change from the gym state.
-                  await ref.read(gymStateProvider.notifier).logCurrentSet();
-                  if (!context.mounted) {
-                    return;
-                  }
-
-                  showSnackbar(
-                    context,
-                    i18n.successfullySaved,
-                    center: true,
-                    duration: const Duration(seconds: 2),
-                  );
+                  ref.read(gymLogProvider.notifier).setNotes(value);
                 },
-                child: Text(i18n.save),
               ),
-            ],
-          ),
-        ],
+            // Side by side to save the height, wrapped only if they don't fit
+            Wrap(
+              alignment: WrapAlignment.center,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 8,
+              children: [
+                if (!isNewEntry)
+                  TextButton.icon(
+                    key: const ValueKey('add-set-button'),
+                    onPressed: () => ref.read(gymStateProvider.notifier).startNewEntry(),
+                    label: Text(i18n.addSet),
+                  ),
+                if (!_showNotes && log.notes == null)
+                  IconButton(
+                    key: const ValueKey('notes-toggle-button'),
+                    icon: const Icon(Icons.edit_note),
+                    tooltip: i18n.notes,
+                    onPressed: () => setState(() => _showNotes = true),
+                  ),
+                FilledButton(
+                  key: const ValueKey('save-log-button'),
+                  onPressed: () async {
+                    final isValid = _form.currentState!.validate();
+                    if (!isValid) {
+                      return;
+                    }
+                    _form.currentState!.save();
+
+                    final error = validateWorkoutLogCrossField(
+                      repetitions: log.repetitions,
+                      weight: log.weight,
+                      i18n: i18n,
+                    );
+                    if (error != null) {
+                      showSnackbar(context, error);
+                      return;
+                    }
+
+                    // A failed write is intentionally left to propagate to the global
+                    // error handler; the success path below is then skipped. A page
+                    // logged before updates its row, and the PageView follows the
+                    // page change from the gym state.
+                    await ref.read(gymStateProvider.notifier).logCurrentSet();
+                    if (!context.mounted) {
+                      return;
+                    }
+
+                    showSnackbar(
+                      context,
+                      i18n.successfullySaved,
+                      center: true,
+                      duration: const Duration(seconds: 2),
+                    );
+                  },
+                  child: Text(i18n.save),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

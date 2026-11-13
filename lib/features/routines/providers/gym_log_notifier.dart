@@ -84,4 +84,9 @@ class GymLogNotifier extends _$GymLogNotifier {
   void setWeightUnit(WeightUnit weightUnit) {
     state = state?.copyWith(weightUnitObj: weightUnit);
   }
+
+  /// An empty or blank text clears the notes, copyWith would keep the old ones
+  void setNotes(String notes) {
+    state = state?.copyWith()?..notes = notes.trim().isEmpty ? null : notes;
+  }
 }

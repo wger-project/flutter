@@ -19,6 +19,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:wger/core/date.dart';
+import 'package:wger/core/widgets/core.dart';
 import 'package:wger/features/account/providers/user_profile_notifier.dart';
 import 'package:wger/features/routines/models/routine.dart';
 import 'package:wger/features/routines/models/session.dart';
@@ -109,16 +110,24 @@ class SessionLogWidget extends ConsumerWidget {
                             (log) => Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Row(
-                                  children: [
-                                    if (prTrophies.any((t) => t.contextData?.logId == log.id))
-                                      Icon(
-                                        Icons.emoji_events,
-                                        color: theme.colorScheme.primary,
-                                        size: 20,
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          if (prTrophies.any((t) => t.contextData?.logId == log.id))
+                                            Icon(
+                                              Icons.emoji_events,
+                                              color: theme.colorScheme.primary,
+                                              size: 20,
+                                            ),
+                                          Text(log.repTextNoNl(context)),
+                                        ],
                                       ),
-                                    Text(log.repTextNoNl(context)),
-                                  ],
+                                      if (log.notes != null) MutedText(log.notes!),
+                                    ],
+                                  ),
                                 ),
                                 Row(
                                   mainAxisSize: MainAxisSize.min,

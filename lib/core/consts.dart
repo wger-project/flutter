@@ -38,7 +38,7 @@ import 'package:material_ui/material_ui.dart';
 ///
 /// Count with a dot: '2.8.0-dev.10' is above '2.8.0-dev.9', while
 /// '2.8.0-dev10' would sort below '2.8.0-dev9'.
-const MIN_SERVER_VERSION = '2.7';
+const MIN_SERVER_VERSION = '2.8';
 
 /// Size for the "smaller" icons, e.g. when they belong to less important items
 /// and we don't want to fill the whole screen

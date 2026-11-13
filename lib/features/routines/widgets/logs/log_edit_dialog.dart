@@ -68,6 +68,7 @@ class _LogEditDialogState extends ConsumerState<LogEditDialog> {
   num? _rir;
   RepetitionUnit? _repetitionUnit;
   WeightUnit? _weightUnit;
+  String _notes = '';
 
   bool _saving = false;
 
@@ -79,6 +80,7 @@ class _LogEditDialogState extends ConsumerState<LogEditDialog> {
     _rir = widget.log.rir;
     _repetitionUnit = widget.log.repetitionsUnitObj;
     _weightUnit = widget.log.weightUnitObj;
+    _notes = widget.log.notes ?? '';
   }
 
   Future<void> _onSave() async {
@@ -101,6 +103,7 @@ class _LogEditDialogState extends ConsumerState<LogEditDialog> {
 
     setState(() => _saving = true);
 
+    final notes = _notes.trim();
     // copyWith falls back to the old value on null, so the fields the user can
     // clear are assigned directly
     final updated =
@@ -110,7 +113,8 @@ class _LogEditDialogState extends ConsumerState<LogEditDialog> {
           )
           ..repetitions = _repetitions
           ..weight = _weight
-          ..rir = _rir;
+          ..rir = _rir
+          ..notes = notes.isEmpty ? null : notes;
 
     try {
       await ref.read(workoutLogProvider).updateEntry(updated);
@@ -169,6 +173,17 @@ class _LogEditDialogState extends ConsumerState<LogEditDialog> {
                 onChanged: (v) => setState(() {
                   _rir = v.isEmpty ? null : num.parse(v);
                 }),
+              ),
+              const SizedBox(height: 12),
+              TextFormField(
+                key: const ValueKey('edit-notes-widget'),
+                initialValue: _notes,
+                onChanged: (v) => _notes = v,
+                decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context).notes,
+                ),
+                maxLines: 2,
+                keyboardType: TextInputType.multiline,
               ),
             ],
           ),
