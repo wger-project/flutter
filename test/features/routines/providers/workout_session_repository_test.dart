@@ -77,6 +77,43 @@ void main() {
     );
   }
 
+  test('finishing twice preserves the first end and creates just one session', () async {
+    final start = DateTime.utc(2026, 4, 15, 9);
+    final end = start.add(const Duration(hours: 1));
+    Future<bool> finish(DateTime at) => repo.finishGymSession(
+      routineId: 100,
+      dayId: 2,
+      start: start,
+      end: at,
+      sessionId: null,
+    );
+    expect(await finish(end), isTrue);
+    expect(await finish(end.add(const Duration(minutes: 2))), isTrue);
+    final row = await db.select(db.workoutSessionTable).getSingle();
+    expect(row.datetimeEnd!.isAtSameMomentAs(end), isTrue);
+  });
+
+  test('finishing preserves notes and the session already used by sets', () async {
+    final start = DateTime.utc(2026, 4, 15, 9);
+    final row = await repo.addLocalDrift(
+      makeSession(date: start.add(const Duration(minutes: 1))).copyWith(dayId: 2, notes: 'bench'),
+    );
+    expect(
+      await repo.finishGymSession(
+        routineId: 100,
+        dayId: 2,
+        start: start,
+        end: start.add(const Duration(hours: 1)),
+        sessionId: row.id,
+      ),
+      isTrue,
+    );
+    final finished = await db.select(db.workoutSessionTable).getSingle();
+    expect(finished.id, row.id);
+    expect(finished.notes, 'bench');
+    expect(finished.datetimeStart.isAtSameMomentAs(start), isTrue);
+  });
+
   group('CRUD', () {
     test('addLocalDrift inserts a row', () async {
       final inserted = await repo.addLocalDrift(makeSession());

@@ -86,6 +86,17 @@ class _GymModeState extends ConsumerState<GymMode> {
     await yieldPastBuild();
     _visibility.set(true);
 
+    if (widget._args.alreadyOpened) {
+      final state = ref.read(gymStateProvider);
+      if (state.isInitialized &&
+          state.routine.id == widget._args.routineId &&
+          state.dayId == widget._args.dayId &&
+          state.iteration == widget._args.iteration) {
+        _requestNotificationPermissions();
+        return state.currentPage;
+      }
+    }
+
     final notifier = ref.read(routinesRiverpodProvider.notifier);
     final routineId = widget._args.routineId;
 
