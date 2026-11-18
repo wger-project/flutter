@@ -70,7 +70,7 @@ class _TimeInputWidgetState extends State<TimeInputWidget> {
   @override
   void didUpdateWidget(TimeInputWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.value != oldWidget.value) {
+    if (widget.value != _value) {
       _value = widget.value;
     }
   }

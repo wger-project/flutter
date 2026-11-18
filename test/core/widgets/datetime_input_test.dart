@@ -33,6 +33,46 @@ void main() {
   }
 
   group('TimeInputWidget', () {
+    for (final parentRebuilds in [true, false]) {
+      testWidgets('picker display follows parent reconciliation: $parentRebuilds', (tester) async {
+        TimeOfDay? reported;
+        await tester.pumpWidget(
+          wrap(
+            StatefulBuilder(
+              builder: (context, setState) => TimeInputWidget(
+                value: const TimeOfDay(hour: 3, minute: 30),
+                labelText: 'Time',
+                onChanged: (picked) {
+                  reported = picked;
+                  // A parent may normalize a nonexistent local time back to its
+                  // previous value, or collect a pick without rebuilding at all.
+                  if (parentRebuilds) {
+                    setState(() {});
+                  }
+                },
+              ),
+            ),
+          ),
+        );
+        await tester.tap(find.byType(TextFormField));
+        await tester.pumpAndSettle();
+        await tester.tap(find.byIcon(Icons.keyboard_outlined));
+        await tester.pumpAndSettle();
+        final inputs = find.descendant(
+          of: find.byType(TimePickerDialog),
+          matching: find.byType(TextFormField),
+        );
+        expect(inputs, findsNWidgets(2));
+        await tester.enterText(inputs.at(0), '2');
+        await tester.enterText(inputs.at(1), '30');
+        await tester.tap(find.text('OK'));
+        await tester.pumpAndSettle();
+        expect(reported, const TimeOfDay(hour: 2, minute: 30));
+        expect(find.text(parentRebuilds ? '3:30 AM' : '2:30 AM'), findsOneWidget);
+        expect(tester.takeException(), isNull);
+      });
+    }
+
     testWidgets('renders the value in a 12-hour locale', (WidgetTester tester) async {
       await tester.pumpWidget(
         wrap(

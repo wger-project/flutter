@@ -18,8 +18,10 @@ import 'package:wger/features/nutrition/models/log.dart' as _i15;
 import 'package:wger/features/nutrition/models/meal.dart' as _i13;
 import 'package:wger/features/nutrition/models/meal_item.dart' as _i14;
 import 'package:wger/features/nutrition/models/nutritional_plan.dart' as _i12;
-import 'package:wger/features/nutrition/providers/ingredient_repository.dart' as _i7;
-import 'package:wger/features/nutrition/providers/nutrition_repository.dart' as _i11;
+import 'package:wger/features/nutrition/providers/ingredient_repository.dart'
+    as _i7;
+import 'package:wger/features/nutrition/providers/nutrition_repository.dart'
+    as _i11;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -38,10 +40,12 @@ import 'package:wger/features/nutrition/providers/nutrition_repository.dart' as 
 // ignore_for_file: invalid_use_of_internal_member
 
 class _FakeResponse_0 extends _i1.SmartFake implements _i2.Response {
-  _FakeResponse_0(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+  _FakeResponse_0(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
-class _FakeStreamedResponse_1 extends _i1.SmartFake implements _i2.StreamedResponse {
+class _FakeStreamedResponse_1 extends _i1.SmartFake
+    implements _i2.StreamedResponse {
   _FakeStreamedResponse_1(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
@@ -231,7 +235,8 @@ class MockClient extends _i1.Mock implements _i2.Client {
 /// A class which mocks [IngredientRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockIngredientRepository extends _i1.Mock implements _i7.IngredientRepository {
+class MockIngredientRepository extends _i1.Mock
+    implements _i7.IngredientRepository {
   MockIngredientRepository() {
     _i1.throwOnMissingStub(this);
   }
@@ -355,7 +360,8 @@ class MockIngredientRepository extends _i1.Mock implements _i7.IngredientReposit
 /// A class which mocks [NutritionRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockNutritionRepository extends _i1.Mock implements _i11.NutritionRepository {
+class MockNutritionRepository extends _i1.Mock
+    implements _i11.NutritionRepository {
   MockNutritionRepository() {
     _i1.throwOnMissingStub(this);
   }
@@ -469,6 +475,25 @@ class MockNutritionRepository extends _i1.Mock implements _i11.NutritionReposito
   _i3.Future<void> addLogLocalDrift(_i15.LogItem? log) =>
       (super.noSuchMethod(
             Invocation.method(#addLogLocalDrift, [log]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
+
+  @override
+  _i3.Future<void> editLogLocalDrift({
+    required String? id,
+    required num? amount,
+    required DateTime? datetime,
+    required int? weightUnitId,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#editLogLocalDrift, [], {
+              #id: id,
+              #amount: amount,
+              #datetime: datetime,
+              #weightUnitId: weightUnitId,
+            }),
             returnValue: _i3.Future<void>.value(),
             returnValueForMissingStub: _i3.Future<void>.value(),
           )
