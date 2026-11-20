@@ -1216,5 +1216,15 @@
     "authorHelpText": "Se muestra como autor del ejercicio (CC BY-SA 4.0). Cámbialo solo si no eres el autor.",
     "gymModeStickySetValues": "Mantener los valores de la última serie",
     "gymModeStickySetValuesHelp": "Rellenar la siguiente serie de un ejercicio con los valores que registraste por última vez",
-    "upNext": "A continuación"
+    "upNext": "A continuación",
+    "enterMinWords": "{min, plural, one{Por favor, introduce al menos {min} palabra} other{Por favor, introduce al menos {min} palabras}}",
+    "@enterMinWords": {
+        "description": "Error message when the user hasn't entered the minimum amount of words in a form",
+        "type": "text",
+        "placeholders": {
+            "min": {
+                "type": "int"
+            }
+        }
+    }
 }
