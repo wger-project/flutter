@@ -74,7 +74,7 @@
     "@weekAverage": {
         "description": "Header for the column of '7 day average' nutritional values, i.e. what was logged last week"
     },
-    "total": "Sumarycznie",
+    "total": "Razem",
     "@total": {
         "description": "Label used for total sums of e.g. calories or similar"
     },
@@ -797,12 +797,12 @@
     "systemMode": "Ustawienia systemu",
     "appLanguage": "Język aplikacji",
     "appLanguageSystem": "Domyślny systemu",
-    "fitInWeek": "Dopasuj w tygodniu",
+    "fitInWeek": "Stały plan tygodniowy",
     "dayTypeAmrap": "Tak dużo rund jak to możliwe",
     "trophies": "Trofea",
     "dashboardWidgets": "Kokpit widgetów",
     "dayTypeCustom": "Niestandardowy",
-    "dayTypeEnom": "Każda minuta w minutę",
+    "dayTypeEnom": "Co minutę",
     "dayTypeHiit": "Trening interwałowy, wysoka intensywność",
     "dayTypeTabata": "Tabata",
     "dayTypeRft": "Rundy na czas",
@@ -853,5 +853,1095 @@
         "description": "The volume of a workout or set, i.e. weight x reps"
     },
     "workoutCompleted": "Trening skończony",
-    "endBeforeStart": "Wartość końcowa nie może być przed rozpoczęciem"
+    "endBeforeStart": "Wartość końcowa nie może być przed rozpoczęciem",
+    "applicationLogs": "Logi aplikacji",
+    "openEnded": "Bezterminowy",
+    "@openEnded": {
+        "description": "When a nutrition plan has no pre-defined end date"
+    },
+    "overview": "Przegląd",
+    "checkInformationBeforeSubmitting": "Sprawdź, czy wprowadzone dane są poprawne, przed zapisaniem ćwiczenia",
+    "enterTextInLanguage": "Wpisz tekst w poprawnym języku!",
+    "imageDetailsTitle": "Szczegóły zdjęcia",
+    "@imageDetailsTitle": {
+        "description": "Title for image details form"
+    },
+    "imageDetailsLicenseTitle": "Tytuł",
+    "@imageDetailsLicenseTitle": {
+        "description": "Label for image title field"
+    },
+    "imageDetailsLicenseTitleHint": "Wpisz tytuł zdjęcia",
+    "@imageDetailsLicenseTitleHint": {
+        "description": "Hint text for image title field"
+    },
+    "imageDetailsSourceLink": "Link do strony źródłowej",
+    "@imageDetailsSourceLink": {
+        "description": "Label for source link field"
+    },
+    "imageDetailsAuthorLink": "Link do strony lub profilu autora",
+    "@imageDetailsAuthorLink": {
+        "description": "Label for author link field"
+    },
+    "imageDetailsDerivativeSource": "Link do oryginalnego źródła, jeśli to jest utwór pochodny",
+    "@imageDetailsDerivativeSource": {
+        "description": "Label for derivative source field"
+    },
+    "imageDetailsDerivativeHelp": "Utwór zależny opiera się na wcześniejszym utworze, ale zawiera wystarczająco dużo nowej, twórczej treści, aby uzyskać własną ochronę prawnoautorską.",
+    "@imageDetailsDerivativeHelp": {
+        "description": "Helper text explaining derivative works"
+    },
+    "imageDetailsImageType": "Typ zdjęcia",
+    "@imageDetailsImageType": {
+        "description": "Label for image type selector"
+    },
+    "add": "Dodaj",
+    "@add": {
+        "description": "Add button text"
+    },
+    "imageDetailsLicenseNotice": "Przesyłając to zdjęcie, zgadzasz się na jego udostępnienie na licencji CC-BY-SA-4. Zdjęcie musi być Twoim autorskim dziełem lub autor musi udostępnić je na licencji kompatybilnej z tą licencją.",
+    "imageDetailsLicenseNoticeLinkToLicense": "Zobacz tekst licencji.",
+    "author": "Autor(zy)",
+    "authorHint": "Wpisz autora",
+    "@authorHint": {
+        "description": "Hint text for author field"
+    },
+    "imageFormatNotSupported": "Nieobsługiwany format {imageFormat}",
+    "@imageFormatNotSupported": {
+        "description": "Label shown on the error container when image format is not supported",
+        "type": "text",
+        "placeholders": {
+            "imageFormat": {
+                "type": "String"
+            }
+        }
+    },
+    "dayTypeEdt": "Trening narastającej gęstości",
+    "slotEntryTypeDropset": "Dropset",
+    "slotEntryTypePartial": "Częściowe powtórzenia",
+    "endWorkout": "Zakończ trening",
+    "@endWorkout": {
+        "description": "Use the imperative, label on button to finish the current workout in gym mode"
+    },
+    "formMinMaxValues": "Wpisz wartość między {min} a {max}",
+    "@formMinMaxValues": {
+        "description": "Error message when the user needs to enter a value between min and max",
+        "type": "text",
+        "placeholders": {
+            "min": {
+                "type": "int"
+            },
+            "max": {
+                "type": "int"
+            }
+        }
+    },
+    "noTrophies": "Nie masz jeszcze żadnych odznak",
+    "productNotFoundOpenFoodFacts": "Możesz dodać ten produkt do Open Food Facts, żeby pomóc społeczności!",
+    "@productNotFoundOpenFoodFacts": {
+        "description": "Label shown when product is not found to encourage users to go on Open Food Facts and add it themselves"
+    },
+    "addToOpenFoodFacts": "Dodaj do Open Food Facts",
+    "@addToOpenFoodFacts": {
+        "description": "Label shown as the clickable link to go on Open Food Facts"
+    },
+    "isVegan": "Wegański",
+    "@isVegan": {
+        "description": "Label for vegan toggle"
+    },
+    "isVegetarian": "Wegetariański",
+    "@isVegetarian": {
+        "description": "Label for vegetarian toggle"
+    },
+    "filter": "Filtruj",
+    "@filter": {
+        "description": "Label for filter button"
+    },
+    "searchLanguageCurrent": "Tylko w bieżącym języku ({lang})",
+    "@searchLanguageCurrent": {
+        "type": "text",
+        "placeholders": {
+            "lang": {
+                "type": "String"
+            }
+        }
+    },
+    "searchLanguageEnglish": "Obecny język ({lang}) i angielski",
+    "@searchLanguageEnglish": {
+        "type": "text",
+        "placeholders": {
+            "lang": {
+                "type": "String"
+            }
+        }
+    },
+    "searchLanguageAll": "Wszystkie języki",
+    "@searchLanguageAll": {
+        "description": "Label used in the language selector to indicate no specific language filter is applied"
+    },
+    "serverUpdateTitle": "Wymagana aktualizacja serwera",
+    "serverUpdateContent": "Połączony serwer jest zbyt stary dla tej wersji aplikacji. Poproś administratora serwera o aktualizację do wersji co najmniej {minVersion}.",
+    "@serverUpdateContent": {
+        "description": "Message shown when the server version is too old. minVersion is the minimum required server version string.",
+        "type": "text",
+        "placeholders": {
+            "minVersion": {
+                "type": "String"
+            }
+        }
+    },
+    "slotEntryTypeWarmup": "Rozgrzewka",
+    "preview": "Podgląd",
+    "useBasicMarkdown": "Możesz użyć podstawowego Markdowna do formatowania tekstu",
+    "editorBold": "Pogrubienie",
+    "@editorBold": {
+        "description": "Label for bold formatting"
+    },
+    "editorItalic": "Kursywa",
+    "editorList": "Lista",
+    "filterNutriscore": "Filtr Nutri-Score",
+    "@filterNutriscore": {
+        "description": "Heading for the Nutri-Score slider in the ingredient search filter dialog"
+    },
+    "filterNutriscoreNoFilter": "Brak filtra",
+    "@filterNutriscoreNoFilter": {
+        "description": "Helper text shown under the Nutri-Score slider when it is at the Off position"
+    },
+    "filterNutriscoreOrBetter": "{grade} lub lepiej",
+    "@filterNutriscoreOrBetter": {
+        "description": "Helper text shown under the Nutri-Score slider when a grade is selected (e.g. 'C or better')",
+        "placeholders": {
+            "grade": {
+                "type": "String",
+                "example": "C"
+            }
+        }
+    },
+    "exerciseSearchMode": "Tryb wyszukiwania",
+    "@exerciseSearchMode": {
+        "description": "Heading above the segmented control that lets the user pick between fuzzy and exact name matching"
+    },
+    "searchModeFuzzy": "Przybliżone",
+    "@searchModeFuzzy": {
+        "description": "Label for the search mode that performs a fuzzy/substring search on exercise names"
+    },
+    "searchModeExact": "Dokładne",
+    "@searchModeExact": {
+        "description": "Label for the search mode that only matches exercises with this exact name"
+    },
+    "serverConfigIssueTitle": "Problem z konfiguracją serwera",
+    "@serverConfigIssueTitle": {
+        "description": "Title of the dialog shown when server misconfiguration is detected"
+    },
+    "serverConfigIssueMessage": "Wykryto nieprawidłową konfigurację serwera – nagłówki nie są przekazywane poprawnie. Sprawdź dokumentację.",
+    "@serverConfigIssueMessage": {
+        "description": "Message explaining server misconfiguration and linking to documentation"
+    },
+    "understand": "Rozumiem",
+    "@understand": {
+        "description": "Button label to acknowledge and dismiss the server configuration warning"
+    },
+    "viewDocumentation": "Zobacz dokumentację",
+    "@viewDocumentation": {
+        "description": "Button label to open the documentation about server configuration"
+    },
+    "increase": "Zwiększ",
+    "@increase": {
+        "description": "Tooltip / screen-reader label for a button that increases a numeric input by one step"
+    },
+    "decrease": "Zmniejsz",
+    "@decrease": {
+        "description": "Tooltip / screen-reader label for a button that decreases a numeric input by one step"
+    },
+    "refreshToken": "Token odświeżania",
+    "invalidRefreshToken": "Wprowadź poprawny token odświeżania",
+    "@invalidRefreshToken": {
+        "description": "Error message when the user enters an invalid refresh token"
+    },
+    "refreshTokenValidChars": "Token odświeżania ma trzy segmenty oddzielone kropkami (header.payload.signature), każdy złożony wyłącznie z liter, cyfr, '-' i '_'",
+    "@refreshTokenValidChars": {
+        "description": "Error message when the user pastes a string that does not match the JWT shape"
+    },
+    "refreshTokenHelperText": "Wygeneruj token odświeżania JWT na stronie wger i wklej go tutaj. Przydatne, gdy serwer działa za proxy autoryzacji lub gdy chcesz pominąć standardowe logowanie.",
+    "@refreshTokenHelperText": {
+        "description": "Helper text on the refresh-token paste field"
+    },
+    "mfaChallengeTitle": "Weryfikacja dwuetapowa",
+    "@mfaChallengeTitle": {
+        "description": "App bar title on the 2FA challenge screen"
+    },
+    "mfaChallengeTotpPrompt": "Wpisz 6-cyfrowy kod z aplikacji uwierzytelniającej",
+    "@mfaChallengeTotpPrompt": {
+        "description": "Helper text above the TOTP input field"
+    },
+    "mfaChallengeRecoveryPrompt": "Wpisz jeden z kodów odzyskiwania",
+    "@mfaChallengeRecoveryPrompt": {
+        "description": "Helper text above the recovery-code input field"
+    },
+    "mfaCodeLabel": "Kod",
+    "@mfaCodeLabel": {
+        "description": "Label on the 2FA code input field"
+    },
+    "mfaInvalidCode": "Wpisz kod",
+    "@mfaInvalidCode": {
+        "description": "Validation error when the 2FA code field is empty"
+    },
+    "mfaUseRecoveryCode": "Użyj kodu odzyskiwania",
+    "@mfaUseRecoveryCode": {
+        "description": "Button that switches the 2FA challenge to recovery-code mode"
+    },
+    "mfaUseTotpCode": "Użyj kodu z aplikacji uwierzytelniającej",
+    "@mfaUseTotpCode": {
+        "description": "Button that switches the 2FA challenge back to TOTP mode"
+    },
+    "mfaSubmit": "Zweryfikuj",
+    "@mfaSubmit": {
+        "description": "Submit button on the 2FA challenge screen"
+    },
+    "mfaUnsupportedFactor": "Twoje konto ma skonfigurowany drugi czynnik uwierzytelniania, którego ta aplikacja jeszcze nie obsługuje. Zaloguj się na stronie internetowej.",
+    "@mfaUnsupportedFactor": {
+        "description": "Shown when the server reports only factor types the app cannot handle (e.g. webauthn)"
+    },
+    "manageAccountOnWeb": "Zarządzaj kontem online",
+    "@manageAccountOnWeb": {
+        "description": "Label on a button that opens the user's preferences page on the wger website"
+    },
+    "manageAccountOnWebSubtitle": "Zmień hasło, ustaw weryfikację dwuetapową, zarządzaj tokenami API lub usuń konto.",
+    "@manageAccountOnWebSubtitle": {
+        "description": "Helper text below the 'Manage account on the web' button listing what is configurable there"
+    },
+    "advanced": "Zaawansowane",
+    "advancedSubtitle": "Opcje serwera i uwierzytelniania",
+    "serverSectionLabel": "Serwer",
+    "signInMethodSectionLabel": "Metoda logowania",
+    "serverOptionDefaultDetail": "Oficjalny serwer",
+    "serverOptionSelfHostedTitle": "Własny serwer",
+    "serverOptionSelfHostedDetail": "Połącz z własną instancją",
+    "authOptionPasswordTitle": "Login i hasło",
+    "signInWithToken": "Zaloguj się tokenem",
+    "tokenSubtitle": "Wygeneruj na stronie wger",
+    "newToWger": "Pierwszy raz w wger?",
+    "alreadyHaveAccount": "Masz już konto?",
+    "tokenLabel": "Token",
+    "webHandoffLinkLabel": "Inne opcje logowania",
+    "webHandoffLinkSubtitle": "Logowanie przez media społecznościowe, passkey, SSO",
+    "clearSearchTerm": "Wyczyść frazę (tekst)",
+    "@clearSearchTerm": {
+        "description": "Tooltip for the icon-button that clears the ingredient search text field"
+    },
+    "ingredients": "Składniki",
+    "@ingredients": {
+        "description": "Plural title for the ingredients overview screen"
+    },
+    "errorRawSource": "Surowy",
+    "@errorRawSource": {
+        "description": "Tab label for showing an HTML error response in its raw (unrendered) form, opposite of 'Preview'."
+    },
+    "dietaryInformation": "Informacje dietetyczne",
+    "aboutViewDocsTitle": "Otwórz dokumentację",
+    "aboutViewLicensesTitle": "Zobacz licencje",
+    "enterMaxCharacters": "{max, plural, one{Wpisz maksymalnie {max} znak} few{Wpisz maksymalnie {max} znaki} many{Wpisz maksymalnie {max} znaków} other{Wpisz maksymalnie {max} znaków}}",
+    "@enterMaxCharacters": {
+        "description": "Error message when the user has entered more than the allowed amount of characters in a form",
+        "type": "text",
+        "placeholders": {
+            "max": {
+                "type": "int"
+            }
+        }
+    },
+    "powerSyncUnreachableTitle": "Usługa synchronizacji niedostępna",
+    "powerSyncUnreachableContent": "Serwer wger jest dostępny, ale (osobna) usługa obsługująca synchronizację offline nie odpowiada. Jeśli hostujesz wger samodzielnie, sprawdź konfigurację i upewnij się, że usługa PowerSync działa poprawnie.",
+    "serverUnreachableRetry": "Spróbuj ponownie",
+    "@serverUnreachableRetry": {
+        "description": "Button that re-runs the auto-login attempt against the saved server."
+    },
+    "settingsImageCacheDescription": "Pamięć podręczna zdjęć",
+    "settingsDataTitle": "Prywatność",
+    "settingsKeepDataOnLogout": "Zachowuj dane przy wylogowaniu",
+    "settingsKeepDataOnLogoutDescription": "Lokalna baza danych pozostaje na Twoim urządzeniu do momentu zalogowania się na inne konto.",
+    "youAreOffline": "Jesteś offline",
+    "syncStatusConnected": "Połączono",
+    "@syncStatusConnected": {
+        "description": "Tooltip on the sync icon when the app is online and idle (no upload or download in progress)"
+    },
+    "syncStatusConnecting": "Łączenie",
+    "@syncStatusConnecting": {
+        "description": "Tooltip on the sync icon while the app is establishing a connection to the sync service"
+    },
+    "syncStatusDisconnected": "Brak połączenia",
+    "@syncStatusDisconnected": {
+        "description": "Tooltip on the sync icon when the app has no active connection to the sync service"
+    },
+    "syncStatusUploading": "Wysyłanie",
+    "@syncStatusUploading": {
+        "description": "Tooltip on the sync icon while local changes are being uploaded to the server"
+    },
+    "syncStatusDownloading": "Pobieranie",
+    "@syncStatusDownloading": {
+        "description": "Tooltip on the sync icon while remote changes are being downloaded from the server"
+    },
+    "syncStatusSyncing": "Synchronizacja",
+    "@syncStatusSyncing": {
+        "description": "Tooltip on the sync icon when the app is uploading and downloading at the same time"
+    },
+    "syncStatusError": "Błąd synchronizacji",
+    "@syncStatusError": {
+        "description": "Status label shown in the sync status dialog when the latest sync attempt failed"
+    },
+    "syncStatusDialogTitle": "Status synchronizacji",
+    "@syncStatusDialogTitle": {
+        "description": "Title of the dialog opened by tapping the sync icon in the app bar"
+    },
+    "syncStatusLastSynced": "Ostatnia synchronizacja",
+    "@syncStatusLastSynced": {
+        "description": "Label in the sync status dialog above the timestamp of the last successful sync"
+    },
+    "syncStatusErrorDetails": "Szczegóły błędu",
+    "@syncStatusErrorDetails": {
+        "description": "Header of the expandable section in the sync status dialog that reveals the raw error message"
+    },
+    "sessionExpired": "Twoja sesja wygasła, zaloguj się ponownie",
+    "@sessionExpired": {
+        "description": "Snackbar message shown when the saved login token is no longer valid"
+    },
+    "weightOrRepsRequired": "Wpisz ciężar, liczbę powtórzeń lub oba",
+    "@weightOrRepsRequired": {
+        "description": "Validation error when both weight and repetitions are empty in a workout log"
+    },
+    "planDateRange": "od {startDate} do {endDate}",
+    "@planDateRange": {
+        "description": "Label for the start and end date range of a plan",
+        "placeholders": {
+            "startDate": {
+                "type": "String"
+            },
+            "endDate": {
+                "type": "String"
+            }
+        }
+    },
+    "planStartDate": "od {startDate}",
+    "@planStartDate": {
+        "description": "Label for the start date of a plan",
+        "placeholders": {
+            "startDate": {
+                "type": "String"
+            }
+        }
+    },
+    "otherLogs": "Inne wpisy",
+    "@otherLogs": {
+        "description": "Other unassigned logs. Label for the pseudo-meal section that groups all nutritional diary entries not assigned to a specific meal"
+    },
+    "carbohydratesSugar": "Cukry (węglowodany)",
+    "@carbohydratesSugar": {
+        "description": "Label for the carbohydrates sugar"
+    },
+    "gymModeLogScope": "Poprzednie wpisy",
+    "gymModeLogScopeHelp": "Które wpisy pokazać jako odniesienie podczas treningu",
+    "gymModeLogScopeCurrentRoutine": "Aktualny plan treningowy",
+    "gymModeLogScopeWeeks": "{weeks, plural, one{Ostatni {weeks} tydzień} few{Ostatnie {weeks} tygodnie} many{Ostatnie {weeks} tygodni} other{Ostatnie {weeks} tygodni}}",
+    "@gymModeLogScopeWeeks": {
+        "placeholders": {
+            "weeks": {
+                "type": "int"
+            }
+        }
+    },
+    "gymModeDistinctLogs": "Ukryj duplikaty",
+    "minLengthRoutine": "{number, plural, one{Plan treningowy musi trwać co najmniej {number} tydzień} few{Plan treningowy musi trwać co najmniej {number} tygodnie} many{Plan treningowy musi trwać co najmniej {number} tygodni} other{Plan treningowy musi trwać co najmniej {number} tygodni}}",
+    "@minLengthRoutine": {
+        "description": "Validation error when a routine is shorter than the minimum allowed duration",
+        "placeholders": {
+            "number": {
+                "type": "int"
+            }
+        }
+    },
+    "maxLengthRoutine": "{number, plural, one{Plan treningowy może trwać maksymalnie {number} tydzień} few{Plan treningowy może trwać maksymalnie {number} tygodnie} many{Plan treningowy może trwać maksymalnie {number} tygodni} other{Plan treningowy może trwać maksymalnie {number} tygodni}}",
+    "@maxLengthRoutine": {
+        "description": "Validation error when a routine is longer than the maximum allowed duration",
+        "placeholders": {
+            "number": {
+                "type": "int"
+            }
+        }
+    },
+    "gymModeShowWorkoutDuration": "Pokaż czas trwania treningu",
+    "syncStatusStalledHint": "Połączenie z usługą synchronizacji wydaje się zablokowane. VPN, bloker reklam, antywirus lub zapora sieciowa w tej sieci mogą blokować połączenie.",
+    "@syncStatusStalledHint": {
+        "description": "Hint shown in the sync status dialog when the app keeps connecting but never receives any sync data, which usually means something on the network is blocking the connection"
+    },
+    "syncStatusReconnect": "Połącz ponownie",
+    "@syncStatusReconnect": {
+        "description": "Button in the sync status dialog that drops the stuck connection to the sync service and opens a fresh one"
+    },
+    "syncStatusPendingUploads": "{count, plural, one{Jedna lokalna zmiana oczekuje na przesłanie} few{{count} lokalne zmiany oczekują na przesłanie} many{{count} lokalnych zmian oczekuje na przesłanie} other{{count} lokalnych zmian oczekuje na przesłanie}}",
+    "@syncStatusPendingUploads": {
+        "description": "Line in the sync status dialog showing how many local changes have not reached the server yet",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "syncStatusNeverSynced": "Nie zsynchronizowano jeszcze",
+    "@syncStatusNeverSynced": {
+        "description": "Shown in the sync status dialog instead of the last-sync timestamp when this device has never completed a synchronisation"
+    },
+    "meal": "Posiłek",
+    "allowSelfSignedCertsTitle": "Zezwól na certyfikaty samopodpisane",
+    "allowSelfSignedCertsDetail": "Wyłącza weryfikację certyfikatów TLS. Włączaj tylko dla zaufanego serwera.",
+    "certsNotVerifiedTitle": "Weryfikacja certyfikatów wyłączona",
+    "@certsNotVerifiedTitle": {
+        "description": "Warning shown in the settings while the app accepts invalid TLS certificates from the server the user is logged into."
+    },
+    "certsNotVerifiedDetail": "Certyfikaty dla {host} nie są weryfikowane. Aby to zmienić, wyloguj się i zmień tę opcję na ekranie logowania.",
+    "@certsNotVerifiedDetail": {
+        "description": "Explains the certificate warning. The option can only be set before logging in, hence the hint to log out.",
+        "type": "text",
+        "placeholders": {
+            "host": {
+                "type": "String"
+            }
+        }
+    },
+    "useDynamicColor": "Dynamiczne kolory",
+    "@useDynamicColor": {
+        "description": "Settings toggle to follow the system wallpaper colors (Material You) on supported platforms"
+    },
+    "settingsVerboseLogging": "Szczegółowe logowanie",
+    "@settingsVerboseLogging": {
+        "description": "Title of the setting that makes the app write detailed diagnostic entries to the application log"
+    },
+    "settingsVerboseLoggingDescription": "Przydatne przy zgłaszaniu powtarzających się problemów.",
+    "syncStatusStalledNotStartedHint": "Aplikacja poprosiła o synchronizację, ale klient synchronizacji nie uruchomił się. Zwykle pomaga ponowne uruchomienie aplikacji.",
+    "@syncStatusStalledNotStartedHint": {
+        "description": "Hint shown in the sync status dialog when a connection was requested but the sync client never reported any state at all"
+    },
+    "syncStatusStalledNotAppliedHint": "Dane docierają, ale nie da się ich zastosować, więc nic nowego się nie pojawia. Zgłoszenie z skopiowanymi szczegółami pomoże nam to naprawić.",
+    "@syncStatusStalledNotAppliedHint": {
+        "description": "Hint shown in the sync status dialog when sync data keeps arriving but no checkpoint ever completes, so the downloaded data stays invisible"
+    },
+    "labelBottomNavBody": "Ciało",
+    "@labelBottomNavBody": {
+        "description": "Label used in bottom navigation and as the title of the screen holding the body weight and the other measurements, use a short word"
+    },
+    "chartRangeAll": "Wszystko",
+    "@chartRangeAll": {
+        "description": "Label for the chart time-range selector option showing all data"
+    },
+    "chartRangeWeeks": "{count, plural, one{{count} tydzień} few{{count} tygodnie} many{{count} tygodni} other{{count} tygodni}}",
+    "@chartRangeWeeks": {
+        "description": "Chart time-range selector option covering a number of weeks",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "chartRangeMonths": "{count, plural, one{{count} miesiąc} few{{count} miesiące} many{{count} miesięcy} other{{count} miesięcy}}",
+    "@chartRangeMonths": {
+        "description": "Chart time-range selector option covering a number of months",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "chartRangeYears": "{count, plural, one{{count} rok} few{{count} lata} many{{count} lat} other{{count} lat}}",
+    "@chartRangeYears": {
+        "description": "Chart time-range selector option covering a number of years",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "chartType": "Typ wykresu",
+    "@chartType": {
+        "description": "Label of the chart type picker of a measurement category"
+    },
+    "chartTypeAuto": "Automatyczny",
+    "@chartTypeAuto": {
+        "description": "Chart type option that leaves the chart to the metric type of the category"
+    },
+    "chartTypeLine": "Liniowy",
+    "@chartTypeLine": {
+        "description": "Chart type option: a line through the measured values"
+    },
+    "chartTypeBar": "Słupki",
+    "@chartTypeBar": {
+        "description": "Chart type option: one bar per day"
+    },
+    "chartTypeHeatmap": "Mapa ciepła",
+    "@chartTypeHeatmap": {
+        "description": "Chart type option: a calendar grid with one coloured cell per day"
+    },
+    "chartTypeDelta": "Zmiana",
+    "@chartTypeDelta": {
+        "description": "Chart type option: one bar per week, showing how much the value changed"
+    },
+    "chartWeeklyChangeTitle": "{name}, zmiana tygodniowa",
+    "@chartWeeklyChangeTitle": {
+        "description": "Title of the chart showing the weekly change of 'name' (e.g. 'weight', 'body fat' etc.)",
+        "type": "text",
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "chartTrend": "Linia trendu",
+    "@chartTrend": {
+        "description": "Label of the setting for how closely the trend line follows the values"
+    },
+    "trendReactive": "Reaktywna",
+    "@trendReactive": {
+        "description": "Trend line option: follows the values closely"
+    },
+    "trendBalanced": "Wyważona",
+    "@trendBalanced": {
+        "description": "Trend line option: the default, between reactive and sluggish"
+    },
+    "trendSluggish": "Wygładzona",
+    "@trendSluggish": {
+        "description": "Trend line option: ignores short-term swings"
+    },
+    "chartAverageWindow": "Średnia za",
+    "@chartAverageWindow": {
+        "description": "Label of the setting for how many days the moving average covers"
+    },
+    "chartAverageWindowDays": "{days, plural, one{{days} dzień} few{{days} dni} many{{days} dni} other{{days} dni}}",
+    "@chartAverageWindowDays": {
+        "description": "One option of the average window setting, e.g. '7 days'",
+        "placeholders": {
+            "days": {
+                "type": "int"
+            }
+        }
+    },
+    "chartTypeDistribution": "Rozkład",
+    "@chartTypeDistribution": {
+        "description": "Chart type option: a histogram of how often each value occurred"
+    },
+    "chartDistributionTitle": "Rozkład {name}",
+    "@chartDistributionTitle": {
+        "description": "Title of the histogram showing how the values of 'name' (e.g. 'weight') are distributed",
+        "type": "text",
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "distributionMedian": "Mediana",
+    "@distributionMedian": {
+        "description": "Label of the median marker in the distribution histogram"
+    },
+    "distributionLatest": "Ostatni",
+    "@distributionLatest": {
+        "description": "Label of the marker for the most recent value in the distribution histogram"
+    },
+    "distributionEntryCount": "{count, plural, one{{count} pomiar} few{{count} pomiary} many{{count} pomiarów} other{{count} pomiarów}}",
+    "@distributionEntryCount": {
+        "description": "How many measurements fall into the tapped histogram bin",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "distributionDayCount": "{count, plural, one{{count} dzień} other{{count} dni}}",
+    "@distributionDayCount": {
+        "description": "How many days fall into the tapped histogram bin, for metrics summed per day",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "relativeDaysAgo": "{count, plural, =0{dziś} =1{wczoraj} few{{count} dni temu} many{{count} dni temu} other{{count} dnia temu}}",
+    "@relativeDaysAgo": {
+        "description": "How long ago something was measured, for distances below a week",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "relativeWeeksAgo": "{count, plural, one{{count} tydzień temu} few{{count} tygodnie temu} many{{count} tygodni temu} other{{count} tygodni temu}}",
+    "@relativeWeeksAgo": {
+        "description": "How long ago something was measured, for distances below a month",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "relativeMonthsAgo": "{count, plural, one{{count} miesiąc temu} few{{count} miesiące temu} many{{count} miesięcy temu} other{{count} miesięcy temu}}",
+    "@relativeMonthsAgo": {
+        "description": "How long ago something was measured, for distances below a year",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "relativeYearsAgo": "{count, plural, one{{count} rok temu} few{{count} lata temu} many{{count} lat temu} other{{count} lat temu}}",
+    "@relativeYearsAgo": {
+        "description": "How long ago something was measured, for distances of a year and more",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "sparkAverage": "śr. {value}",
+    "@sparkAverage": {
+        "description": "Chip on an overview tile: the average over the charted days, e.g. 'avg 7:05' for sleep",
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    },
+    "sparkTrendPerWeek": "{value}/tydzień",
+    "@sparkTrendPerWeek": {
+        "description": "Chip on an overview tile: how much the value changes per week, shown after a direction arrow",
+        "placeholders": {
+            "value": {
+                "type": "String"
+            }
+        }
+    },
+    "sparkTrendStable": "Stabilnie",
+    "@sparkTrendStable": {
+        "description": "Chip on an overview tile when the value barely changes, shown after a right arrow"
+    },
+    "trackNewMetric": "Śledź coś nowego",
+    "@trackNewMetric": {
+        "description": "Tooltip of the overview's + button, which opens the sheet for starting a new measurement category"
+    },
+    "whatToTrack": "Co chcesz śledzić?",
+    "@whatToTrack": {
+        "description": "Title of the sheet that starts a new measurement category"
+    },
+    "customMeasurement": "Własny pomiar",
+    "@customMeasurement": {
+        "description": "Option that creates a free-form measurement category with its own name and unit"
+    },
+    "metricAlreadyTracked": "Już śledzone",
+    "@metricAlreadyTracked": {
+        "description": "Shown for a metric the user already has a category for, which cannot be picked twice"
+    },
+    "reorderCategories": "Zmień kolejność kategorii",
+    "@reorderCategories": {
+        "description": "measurement categories reordering"
+    },
+    "metricCustom": "Własny",
+    "@metricCustom": {
+        "description": "Label for custom metric type"
+    },
+    "metricLeanBodyMass": "Beztłuszczowa masa ciała",
+    "@metricLeanBodyMass": {
+        "description": "Label for lean body mass measurement"
+    },
+    "metricBodyFat": "Tłuszcz",
+    "@metricBodyFat": {
+        "description": "Label for body fat percentage measurement"
+    },
+    "metricHeight": "Wzrost",
+    "@metricHeight": {
+        "description": "Label for height measurement"
+    },
+    "metricBloodPressure": "Ciśnienie krwi",
+    "@metricBloodPressure": {
+        "description": "Label for blood pressure measurement"
+    },
+    "metricBloodPressureSystolic": "Skurczowe",
+    "@metricBloodPressureSystolic": {
+        "description": "Label for the systolic component of a blood pressure reading"
+    },
+    "metricBloodPressureDiastolic": "Rozkurczowe",
+    "@metricBloodPressureDiastolic": {
+        "description": "Label for the diastolic component of a blood pressure reading"
+    },
+    "metricHeartRate": "Puls",
+    "@metricHeartRate": {
+        "description": "Label for heart rate measurement"
+    },
+    "metricRestingHeartRate": "Puls spoczynkowy",
+    "@metricRestingHeartRate": {
+        "description": "Label for resting heart rate measurement"
+    },
+    "metricBloodOxygen": "Tlen we krwi",
+    "@metricBloodOxygen": {
+        "description": "Label for blood oxygen saturation measurement"
+    },
+    "metricSteps": "Kroki",
+    "@metricSteps": {
+        "description": "Label for step count measurement"
+    },
+    "metricDistance": "Dystans",
+    "@metricDistance": {
+        "description": "Label for distance measurement"
+    },
+    "metricSleep": "Sen",
+    "@metricSleep": {
+        "description": "Label for sleep duration measurement"
+    },
+    "noDataAvailable": "Brak danych",
+    "@noDataAvailable": {
+        "description": "Shown in place of a chart when the category has no entries in the selected range"
+    },
+    "metricSleepTotal": "Łącznie",
+    "@metricSleepTotal": {
+        "description": "Component of the 'Sleep' category, listed under that heading, so 'sleep' is not repeated. The total time asleep in a night, all sleep stages together"
+    },
+    "metricSleepLight": "Lekki",
+    "@metricSleepLight": {
+        "description": "Component of the 'Sleep' category, listed under that heading, so 'sleep' is not repeated. The light sleep stage, meaning shallow sleep, never 'light' as in brightness or weight"
+    },
+    "metricSleepDeep": "Głęboki",
+    "@metricSleepDeep": {
+        "description": "Component of the 'Sleep' category, listed under that heading, so 'sleep' is not repeated. The deep sleep stage, also called slow-wave sleep"
+    },
+    "metricSleepRem": "REM",
+    "@metricSleepRem": {
+        "description": "Component of the 'Sleep' category, listed under that heading, so 'sleep' is not repeated. The REM (rapid eye movement) sleep stage, usually kept as the abbreviation"
+    },
+    "metricSleepAwake": "Na jawie",
+    "@metricSleepAwake": {
+        "description": "Component of the 'Sleep' category, listed under that heading. The time spent awake during a night, not counted as sleep"
+    },
+    "partOfGroup": "Część grupy",
+    "@partOfGroup": {
+        "description": "Dropdown label: makes a measurement category a component of a multi-value group (e.g. blood pressure)"
+    },
+    "noGroup": "Brak grupy",
+    "@noGroup": {
+        "description": "Dropdown option for a measurement category that is not part of any group"
+    },
+    "aboutPrivacyPolicyTitle": "Regulamin i polityka prywatności",
+    "@aboutPrivacyPolicyTitle": {
+        "description": "Menu entry on the about page that opens the terms of service and privacy policy"
+    },
+    "indicatorTrend": "trend",
+    "@indicatorTrend": {
+        "description": "Legend label for the smoothed trendline on measurement charts"
+    },
+    "off": "Wyłączone",
+    "@off": {
+        "description": "Generic label for the option that switches something off, e.g. a filter or a line of a chart"
+    },
+    "sessionTooLong": "{hours, plural, one{Trening nie może trwać dłużej niż {hours} godzinę} few{Trening nie może trwać dłużej niż {hours} godziny} many{Trening nie może trwać dłużej niż {hours} godzin} other{Trening nie może trwać dłużej niż {hours} godzin}}",
+    "@sessionTooLong": {
+        "description": "Validation error when a workout session exceeds the maximum length",
+        "placeholders": {
+            "hours": {
+                "type": "int"
+            }
+        }
+    },
+    "healthSync": "Synchronizacja zdrowia",
+    "@healthSync": {
+        "description": "Title for the health platform sync setting"
+    },
+    "healthSyncDescription": "Importuj pomiary ciała z Apple Health lub Health Connect",
+    "@healthSyncDescription": {
+        "description": "Subtitle for the health platform sync setting"
+    },
+    "healthSyncSuccess": "{count, plural, one{Zaimportowano {count} pomiar z Health} few{Zaimportowano {count} pomiary z Health} many{Zaimportowano {count} pomiarów z Health} other{Zaimportowano {count} pomiarów z Health}}",
+    "@healthSyncSuccess": {
+        "description": "Snackbar message after successful health sync",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "healthSyncPermissionDenied": "Brak dostępu do danych o zdrowiu",
+    "@healthSyncPermissionDenied": {
+        "description": "Snackbar shown when enabling health sync fails because the platform permissions were denied"
+    },
+    "healthSyncNoData": "Nie znaleziono danych zdrowotnych. Sprawdź w {platform}, czy wger ma uprawnienie do odczytu Twoich danych.",
+    "@healthSyncNoData": {
+        "description": "Snackbar shown when enabling health sync imported nothing, pointing at the platform's permission settings",
+        "placeholders": {
+            "platform": {
+                "type": "String",
+                "example": "Apple Health"
+            }
+        }
+    },
+    "healthSyncStatus": "{count, plural, =0{Ostatnia synchronizacja: {time}, brak nowych wpisów} one{Ostatnia synchronizacja: {time}, {count} nowy wpis} few{Ostatnia synchronizacja: {time}, {count} nowe wpisy} many{Ostatnia synchronizacja: {time}, {count} nowych wpisów} other{Ostatnia synchronizacja: {time}, {count} nowych wpisów}}",
+    "@healthSyncStatus": {
+        "description": "Status line under the health sync toggle showing when the last sync ran and how many entries it imported",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            },
+            "time": {
+                "type": "String",
+                "example": "7/31/2026 14:32"
+            }
+        }
+    },
+    "healthSyncSyncing": "Synchronizacja danych zdrowotnych…",
+    "@healthSyncSyncing": {
+        "description": "Status line under the health sync toggle while a sync is running"
+    },
+    "healthSyncNow": "Synchronizuj teraz",
+    "@healthSyncNow": {
+        "description": "Label of the manual health sync action in the settings"
+    },
+    "healthSyncPermissionMissing": "{platform} nie udostępnia Twoich danych",
+    "@healthSyncPermissionMissing": {
+        "description": "Status line under the health sync toggle when the platform refuses to hand over data",
+        "placeholders": {
+            "platform": {
+                "type": "String",
+                "example": "Apple Health"
+            }
+        }
+    },
+    "healthSyncGrantAccess": "Dotknij, aby ponownie udzielić dostępu",
+    "@healthSyncGrantAccess": {
+        "description": "Action hint below the missing-permission status line"
+    },
+    "healthSyncFailed": "Ostatnia synchronizacja nie powiodła się",
+    "@healthSyncFailed": {
+        "description": "Status line under the health sync toggle after a failed sync"
+    },
+    "healthConnectInstall": "Zainstaluj Health Connect",
+    "@healthConnectInstall": {
+        "description": "Action shown instead of the health sync toggle when Health Connect is missing on Android"
+    },
+    "healthConnectUpdate": "Zaktualizuj Health Connect",
+    "@healthConnectUpdate": {
+        "description": "Action shown instead of the health sync toggle when the installed Health Connect is too old"
+    },
+    "healthConnectRequired": "Health Connect jest wymagany do importu pomiarów ciała",
+    "@healthConnectRequired": {
+        "description": "Explanation below the install/update Health Connect action"
+    },
+    "health": "Zdrowie",
+    "@health": {
+        "description": "Section header for health-related settings"
+    },
+    "calculationValuesManual": "Wpisane ręcznie",
+    "@calculationValuesManual": {
+        "description": "One of two options when creating a measurement category: the user types the values in themselves. The other option is 'Calculated'"
+    },
+    "calculationType": "Obliczenie",
+    "@calculationType": {
+        "description": "Label of the field that picks what the server calculates for a category"
+    },
+    "calculationUnknown": "To obliczenie zostało utworzone w nowszej wersji wger i nie można go tutaj zmienić.",
+    "@calculationUnknown": {
+        "description": "Shown when the server uses a calculation type this version of the app does not know"
+    },
+    "calculationParamsIncomplete": "Obliczenie nie jest jeszcze w pełni skonfigurowane",
+    "@calculationParamsIncomplete": {
+        "description": "Validation error when a calculation is still missing one of its settings"
+    },
+    "calculationDuplicate": "Masz już kategorię {name} z takimi ustawieniami",
+    "@calculationDuplicate": {
+        "description": "Refuses a second calculated category that would compute exactly the same series",
+        "placeholders": {
+            "name": {
+                "type": "String",
+                "example": "Waist to height ratio"
+            }
+        }
+    },
+    "calculationLocked": "Tego obliczenia nie można zmienić. Usuń kategorię, aby je wyłączyć.",
+    "@calculationLocked": {
+        "description": "Helper text under the disabled calculation picker when editing a category that already calculates"
+    },
+    "calculationMissingHeight": "W Twoim profilu nie ustawiono wzrostu, dlatego nie można jeszcze obliczyć wartości.",
+    "@calculationMissingHeight": {
+        "description": "Warning shown when a calculation needs the height from the user profile but it is not set"
+    },
+    "calculationNoSourceCategory": "Nie masz jeszcze innej kategorii, z której można by pobierać wartości.",
+    "@calculationNoSourceCategory": {
+        "description": "Shown when a calculation needs another measurement category to read from and the user has none yet"
+    },
+    "calculationBadge": "Obliczone",
+    "@calculationBadge": {
+        "description": "Badge marking a measurement category whose values the server computes, and the matching option when creating one. Keep it short, it sits next to a category title and opposite 'Entered by hand'"
+    },
+    "calculationEntryInfo": "Ta wartość jest obliczana przez wger i nie można jej edytować",
+    "@calculationEntryInfo": {
+        "description": "Tooltip on a measurement entry that wger computed, so it cannot be edited by hand"
+    },
+    "calculationNameBmi": "BMI",
+    "@calculationNameBmi": {
+        "description": "Body mass index, the name of a calculated measurement category. It is also prefilled as the category name and stored, so keep it short. Usually left as the abbreviation"
+    },
+    "calculationNameWhtr": "Współczynnik talia/wzrost",
+    "@calculationNameWhtr": {
+        "description": "Name of a calculated category: waist circumference divided by height. It is also prefilled as the category name and stored, so keep it short"
+    },
+    "calculationNameOneRepMax": "Maksymalny ciężar (1RM)",
+    "@calculationNameOneRepMax": {
+        "description": "Name of a calculated category: the heaviest weight liftable for a single repetition. It is also prefilled as the category name and stored, so keep it short"
+    },
+    "calculationNameOneRmTotal": "Suma maksymalnych ciężarów (1RM)",
+    "@calculationNameOneRmTotal": {
+        "description": "Name of a calculated category: the one-rep maxima of several exercises added up. It is also prefilled as the category name and stored, so keep it short"
+    },
+    "calculationDescriptionBmi": "Na podstawie wagi ciała i wzrostu z Twojego profilu",
+    "@calculationDescriptionBmi": {
+        "description": "Explains where a calculated category takes its numbers from, shown under the calculation type picker"
+    },
+    "calculationDescriptionWhtr": "Na podstawie {category} i wzrostu z Twojego profilu",
+    "@calculationDescriptionWhtr": {
+        "description": "Explains where a calculated category takes its numbers from. {category} is the name of another measurement category, e.g. 'Waist'",
+        "placeholders": {
+            "category": {
+                "type": "String",
+                "example": "Waist"
+            }
+        }
+    },
+    "calculationParamCategory": "Kategoria źródłowa",
+    "@calculationParamCategory": {
+        "description": "Form field label: which other measurement category a calculation reads its values from"
+    },
+    "calculationParamMaxReps": "Maks. powtórzenia",
+    "@calculationParamMaxReps": {
+        "description": "Form field label: the highest number of repetitions a set may have to still count"
+    },
+    "calculationParamWindowDays": "Okno czasowe (dni)",
+    "@calculationParamWindowDays": {
+        "description": "Form field label: how many days back the calculation looks for a best set"
+    },
+    "calculationHelpExercises": "Od {min} do {max} ćwiczeń, wybrano {count}.",
+    "@calculationHelpExercises": {
+        "description": "Helper text under the exercise picker of a calculated category. {count} is how many are picked so far",
+        "placeholders": {
+            "min": {
+                "type": "int"
+            },
+            "max": {
+                "type": "int"
+            },
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "calculationHelpMaxReps": "{min} do {max}. Serie z większą liczbą powtórzeń są pomijane.",
+    "@calculationHelpMaxReps": {
+        "description": "Helper text under the 'Max reps counted' field. Sets with more repetitions than this are left out of the calculation",
+        "placeholders": {
+            "min": {
+                "type": "int"
+            },
+            "max": {
+                "type": "int"
+            }
+        }
+    },
+    "calculationHelpWindowDays": "{min} do {max}. Ile dni wstecz liczy się najlepsza seria.",
+    "@calculationHelpWindowDays": {
+        "description": "Helper text under the 'Window in days' field, how many days back a best set still counts",
+        "placeholders": {
+            "min": {
+                "type": "int"
+            },
+            "max": {
+                "type": "int"
+            }
+        }
+    },
+    "authorHelpText": "Wyświetlane jako autor ćwiczenia (CC BY-SA 4.0). Zmień tylko, jeśli nie jesteś autorem.",
+    "@authorHelpText": {
+        "description": "Helper text below the author field when contributing an exercise"
+    },
+    "gymModeStickySetValues": "Wartości z ostatniej serii",
+    "@gymModeStickySetValues": {
+        "description": "Label for a gym mode setting: when enabled, the next set of an exercise is pre-filled with the values last logged instead of the planned ones"
+    },
+    "gymModeStickySetValuesHelp": "Wstępnie wypełnij następną serię ćwiczenia wartościami z ostatniego wpisu",
+    "@gymModeStickySetValuesHelp": {
+        "description": "Help text for the sticky set values setting in the gym mode"
+    },
+    "upNext": "Następne",
+    "@upNext": {
+        "description": "Label shown on the rest timer pages in the gym mode above the information about the upcoming set"
+    },
+    "gymModeAlertOnRestEnd": "Powiadomienie o końcu przerwy",
+    "gymModeAlertOnRestEndHelp": "Wibruje w trybie siłowni lub wysyła powiadomienie, gdy aplikacja jest w tle",
+    "gymModeWorkoutNotification": "Powiadomienie o treningu",
+    "gymModeExactAlarmMissing": "Bez uprawnień do dokładnych alarmów alarm przerwy może się opóźnić o kilka minut",
+    "gymModeExactAlarmAllow": "Zezwól",
+    "gymModeWorkoutNotificationHelp": "Umożliwia dostęp do bieżącego treningu i sterowanie nim za pomocą powiadomienia stałego",
+    "workoutNotificationRestOver": "Koniec przerwy",
+    "workoutNotificationNext": "Dalej: {set}",
+    "@workoutNotificationNext": {
+        "description": "Notification text with the next planned set, e.g. 'Next: Bench press 3 × 100 kg'",
+        "placeholders": {
+            "set": {
+                "type": "String"
+            }
+        }
+    },
+    "workoutNotificationSetOf": "Seria {current} z {total}",
+    "@workoutNotificationSetOf": {
+        "placeholders": {
+            "current": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "workoutNotificationInProgress": "Trwa trening",
+    "workoutNotificationLogSet": "Zapisz zaplanowaną serię",
+    "@workoutNotificationLogSet": {
+        "description": "Notification button that logs the next set with its planned values. Shown next to up to two other buttons in a single row, so keep it very short; translate the meaning, not word for word"
+    },
+    "workoutNotificationSkipRest": "Pomiń",
+    "@workoutNotificationSkipRest": {
+        "description": "Notification button that ends the running rest. Shown next to up to two other buttons in a single row, so keep it very short; translate the meaning, not word for word"
+    },
+    "workoutNotificationExtendRest": "+{seconds} s",
+    "@workoutNotificationExtendRest": {
+        "description": "Notification button that makes the running rest longer. Shown next to up to two other buttons in a single row, so keep it very short; translate the meaning, not word for word",
+        "placeholders": {
+            "seconds": {
+                "type": "int"
+            }
+        }
+    },
+    "workoutNotificationNotLoggedTitle": "Seria niezapisana",
+    "workoutNotificationNotLoggedBody": "Otwórz tryb siłowni, aby kontynuować trening",
+    "workoutNotificationAlarmChannel": "Alarm przerwy",
+    "@workoutNotificationAlarmChannel": {
+        "description": "Name of the Android notification channel for the alert at the end of a rest"
+    },
+    "workoutNotificationChannel": "Trening",
+    "@workoutNotificationChannel": {
+        "description": "Name of the Android notification channel for the ongoing workout notification"
+    },
+    "enterMinWords": "{min, plural, one{Wpisz co najmniej {min} słowo} few{Wpisz co najmniej {min} słowa} many{Wpisz co najmniej {min} słów} other{Wpisz co najmniej {min} słów}}",
+    "@enterMinWords": {
+        "description": "Error message when the user hasn't entered the minimum amount of words in a form",
+        "type": "text",
+        "placeholders": {
+            "min": {
+                "type": "int"
+            }
+        }
+    },
+    "personalExercisesWarningTitle": "Nie dodawaj własnych ćwiczeń",
+    "personalExercisesWarningBody": "Ćwiczenia trafiają do wspólnej bazy i są widoczne dla wszystkich użytkowników. Dodawaj tylko ogólne ćwiczenia, które mogą być przydatne dla każdego. Ćwiczenia tworzone wyłącznie po to, by import z innej aplikacji zadziałał, zostaną usunięte.",
+    "importedEntryOverwriteWarning": "Zmiany w tym pomiarze mogą zostać nadpisane przez aplikację, z której pochodzi",
+    "@importedEntryOverwriteWarning": {
+        "description": "Warning on a measurement entry written by another app (Apple Health, Health Connect, a scale). It can be edited or deleted here, but the other app may overwrite that"
+    }
 }
