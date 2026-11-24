@@ -19,7 +19,7 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:health_bridge/health.dart';
+import 'package:health/health.dart';
 import 'package:wger/database/powersync/powersync.dart';
 import 'package:wger/features/health/models/health_metric.dart';
 

@@ -17,7 +17,7 @@
  */
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:health_bridge/health.dart';
+import 'package:health/health.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:wger/features/health/models/health_metric.dart';
@@ -361,6 +361,41 @@ void main() {
         ),
         throwsException,
       );
+    });
+  });
+
+  group('readableTypes', () {
+    test('a declined type costs only itself', () async {
+      // Asked for both at once, the platform says false as soon as one is
+      // missing, which would drop the granted type too
+      when(health.hasPermissions(any)).thenAnswer((invocation) async {
+        final types = invocation.positionalArguments.first as List<HealthDataType>;
+        return !types.contains(HealthDataType.HEART_RATE);
+      });
+
+      final readable = await repository.readableTypes([
+        HealthDataType.WEIGHT,
+        HealthDataType.HEART_RATE,
+      ]);
+
+      expect(readable, {HealthDataType.WEIGHT});
+    });
+
+    test('an undisclosed read access counts as readable', () async {
+      // HealthKit never tells whether reading was granted
+      when(health.hasPermissions(any)).thenAnswer((_) async => null);
+
+      final readable = await repository.readableTypes([HealthDataType.WEIGHT]);
+
+      expect(readable, {HealthDataType.WEIGHT});
+    });
+
+    test('a failing check still tries the type', () async {
+      when(health.hasPermissions(any)).thenThrow(Exception('boom'));
+
+      final readable = await repository.readableTypes([HealthDataType.WEIGHT]);
+
+      expect(readable, {HealthDataType.WEIGHT});
     });
   });
 }

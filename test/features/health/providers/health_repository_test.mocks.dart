@@ -6,7 +6,7 @@
 
 import 'dart:async' as _i4;
 
-import 'package:health_bridge/health.dart' as _i2;
+import 'package:health/health.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i3;
 
@@ -33,6 +33,17 @@ class MockHealth extends _i1.Mock implements _i2.Health {
   MockHealth() {
     _i1.throwOnMissingStub(this);
   }
+
+  @override
+  _i2.HealthIsolateMode get isolateMode =>
+      (super.noSuchMethod(
+            Invocation.getter(#isolateMode),
+            returnValue: _i2.HealthIsolateMode.auto,
+          )
+          as _i2.HealthIsolateMode);
+
+  @override
+  int get pageSize => (super.noSuchMethod(Invocation.getter(#pageSize), returnValue: 0) as int);
 
   @override
   _i2.HealthConnectSdkStatus get healthConnectSdkStatus =>
@@ -62,6 +73,18 @@ class MockHealth extends _i1.Mock implements _i2.Health {
           as String);
 
   @override
+  set isolateMode(_i2.HealthIsolateMode? value) => super.noSuchMethod(
+    Invocation.setter(#isolateMode, value),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  set pageSize(int? value) => super.noSuchMethod(
+    Invocation.setter(#pageSize, value),
+    returnValueForMissingStub: null,
+  );
+
+  @override
   _i4.Future<void> configure() =>
       (super.noSuchMethod(
             Invocation.method(#configure, []),
@@ -79,51 +102,192 @@ class MockHealth extends _i1.Mock implements _i2.Health {
           as bool);
 
   @override
-  _i4.Future<bool?> hasPermissions(
-    List<_i2.HealthDataType>? types, {
-    List<_i2.HealthDataAccess>? permissions,
-  }) =>
-      (super.noSuchMethod(
-            Invocation.method(
-              #hasPermissions,
-              [types],
-              {#permissions: permissions},
-            ),
-            returnValue: _i4.Future<bool?>.value(),
-          )
-          as _i4.Future<bool?>);
-
-  @override
-  _i4.Future<_i2.HealthAuthorizationSnapshot> getAuthorizationSnapshot(
-    List<_i2.HealthDataType>? types,
-  ) =>
-      (super.noSuchMethod(
-            Invocation.method(#getAuthorizationSnapshot, [types]),
-            returnValue: _i4.Future<_i2.HealthAuthorizationSnapshot>.value(
-              _i3.dummyValue<_i2.HealthAuthorizationSnapshot>(
-                this,
-                Invocation.method(#getAuthorizationSnapshot, [types]),
-              ),
-            ),
-          )
-          as _i4.Future<_i2.HealthAuthorizationSnapshot>);
-
-  @override
-  _i4.Future<void> revokePermissions() =>
-      (super.noSuchMethod(
-            Invocation.method(#revokePermissions, []),
-            returnValue: _i4.Future<void>.value(),
-            returnValueForMissingStub: _i4.Future<void>.value(),
-          )
-          as _i4.Future<void>);
-
-  @override
   _i4.Future<_i2.HealthConnectSdkStatus?> getHealthConnectSdkStatus() =>
       (super.noSuchMethod(
             Invocation.method(#getHealthConnectSdkStatus, []),
             returnValue: _i4.Future<_i2.HealthConnectSdkStatus?>.value(),
           )
           as _i4.Future<_i2.HealthConnectSdkStatus?>);
+
+  @override
+  _i4.Future<bool> writeHealthData({
+    required double? value,
+    _i2.HealthDataUnit? unit,
+    required _i2.HealthDataType? type,
+    required DateTime? startTime,
+    String? clientRecordId,
+    double? clientRecordVersion,
+    DateTime? endTime,
+    _i2.RecordingMethod? recordingMethod = _i2.RecordingMethod.automatic,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#writeHealthData, [], {
+              #value: value,
+              #unit: unit,
+              #type: type,
+              #startTime: startTime,
+              #clientRecordId: clientRecordId,
+              #clientRecordVersion: clientRecordVersion,
+              #endTime: endTime,
+              #recordingMethod: recordingMethod,
+            }),
+            returnValue: _i4.Future<bool>.value(false),
+          )
+          as _i4.Future<bool>);
+
+  @override
+  _i4.Future<_i2.HealthDataPoint?> getHealthDataByUUID({
+    required String? uuid,
+    required _i2.HealthDataType? type,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#getHealthDataByUUID, [], {
+              #uuid: uuid,
+              #type: type,
+            }),
+            returnValue: _i4.Future<_i2.HealthDataPoint?>.value(),
+          )
+          as _i4.Future<_i2.HealthDataPoint?>);
+
+  @override
+  _i4.Future<List<_i2.HealthDataPoint>> getHealthDataFromTypes({
+    required List<_i2.HealthDataType>? types,
+    Map<_i2.HealthDataType, _i2.HealthDataUnit>? preferredUnits,
+    required DateTime? startTime,
+    required DateTime? endTime,
+    List<_i2.RecordingMethod>? recordingMethodsToFilter = const [],
+    int? limit,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#getHealthDataFromTypes, [], {
+              #types: types,
+              #preferredUnits: preferredUnits,
+              #startTime: startTime,
+              #endTime: endTime,
+              #recordingMethodsToFilter: recordingMethodsToFilter,
+              #limit: limit,
+            }),
+            returnValue: _i4.Future<List<_i2.HealthDataPoint>>.value(
+              <_i2.HealthDataPoint>[],
+            ),
+          )
+          as _i4.Future<List<_i2.HealthDataPoint>>);
+
+  @override
+  _i4.Stream<_i2.HealthDataPage> getHealthDataPages({
+    required List<_i2.HealthDataType>? types,
+    required DateTime? startTime,
+    required DateTime? endTime,
+    Map<_i2.HealthDataType, _i2.HealthDataUnit>? preferredUnits,
+    List<_i2.RecordingMethod>? recordingMethodsToFilter = const [],
+    int? pageSize,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#getHealthDataPages, [], {
+              #types: types,
+              #startTime: startTime,
+              #endTime: endTime,
+              #preferredUnits: preferredUnits,
+              #recordingMethodsToFilter: recordingMethodsToFilter,
+              #pageSize: pageSize,
+            }),
+            returnValue: _i4.Stream<_i2.HealthDataPage>.empty(),
+          )
+          as _i4.Stream<_i2.HealthDataPage>);
+
+  @override
+  List<_i2.HealthDataPoint> removeDuplicates(
+    List<_i2.HealthDataPoint>? points,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#removeDuplicates, [points]),
+            returnValue: <_i2.HealthDataPoint>[],
+          )
+          as List<_i2.HealthDataPoint>);
+
+  @override
+  _i4.Future<List<_i2.HealthDataPoint>> getHealthIntervalDataFromTypes({
+    required DateTime? startDate,
+    required DateTime? endDate,
+    required List<_i2.HealthDataType>? types,
+    required int? interval,
+    List<_i2.RecordingMethod>? recordingMethodsToFilter = const [],
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#getHealthIntervalDataFromTypes, [], {
+              #startDate: startDate,
+              #endDate: endDate,
+              #types: types,
+              #interval: interval,
+              #recordingMethodsToFilter: recordingMethodsToFilter,
+            }),
+            returnValue: _i4.Future<List<_i2.HealthDataPoint>>.value(
+              <_i2.HealthDataPoint>[],
+            ),
+          )
+          as _i4.Future<List<_i2.HealthDataPoint>>);
+
+  @override
+  _i4.Future<List<_i2.HealthDataPoint>> getHealthAggregateDataFromTypes({
+    required List<_i2.HealthDataType>? types,
+    required DateTime? startDate,
+    required DateTime? endDate,
+    int? activitySegmentDuration = 1,
+    bool? includeManualEntry = true,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#getHealthAggregateDataFromTypes, [], {
+              #types: types,
+              #startDate: startDate,
+              #endDate: endDate,
+              #activitySegmentDuration: activitySegmentDuration,
+              #includeManualEntry: includeManualEntry,
+            }),
+            returnValue: _i4.Future<List<_i2.HealthDataPoint>>.value(
+              <_i2.HealthDataPoint>[],
+            ),
+          )
+          as _i4.Future<List<_i2.HealthDataPoint>>);
+
+  @override
+  _i4.Future<int> getTotalStepsInInterval(
+    DateTime? startTime,
+    DateTime? endTime, {
+    bool? includeManualEntry = true,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #getTotalStepsInInterval,
+              [startTime, endTime],
+              {#includeManualEntry: includeManualEntry},
+            ),
+            returnValue: _i4.Future<int>.value(0),
+          )
+          as _i4.Future<int>);
+
+  @override
+  _i4.Future<String?> getChangesToken({
+    required List<_i2.HealthDataType>? types,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#getChangesToken, [], {#types: types}),
+            returnValue: _i4.Future<String?>.value(),
+          )
+          as _i4.Future<String?>);
+
+  @override
+  _i4.Future<_i2.HealthChangesResponse?> getChanges({
+    required String? changesToken,
+    bool? includeSelf = false,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#getChanges, [], {
+              #changesToken: changesToken,
+              #includeSelf: includeSelf,
+            }),
+            returnValue: _i4.Future<_i2.HealthChangesResponse?>.value(),
+          )
+          as _i4.Future<_i2.HealthChangesResponse?>);
 
   @override
   _i4.Future<bool> isHealthConnectAvailable() =>
@@ -199,6 +363,37 @@ class MockHealth extends _i1.Mock implements _i2.Health {
           as _i4.Future<bool>);
 
   @override
+  _i4.Future<bool> isMindfulnessSessionAvailable() =>
+      (super.noSuchMethod(
+            Invocation.method(#isMindfulnessSessionAvailable, []),
+            returnValue: _i4.Future<bool>.value(false),
+          )
+          as _i4.Future<bool>);
+
+  @override
+  _i4.Future<bool> isActivityIntensityAvailable() =>
+      (super.noSuchMethod(
+            Invocation.method(#isActivityIntensityAvailable, []),
+            returnValue: _i4.Future<bool>.value(false),
+          )
+          as _i4.Future<bool>);
+
+  @override
+  _i4.Future<bool?> hasPermissions(
+    List<_i2.HealthDataType>? types, {
+    List<_i2.HealthDataAccess>? permissions,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #hasPermissions,
+              [types],
+              {#permissions: permissions},
+            ),
+            returnValue: _i4.Future<bool?>.value(),
+          )
+          as _i4.Future<bool?>);
+
+  @override
   _i4.Future<bool> requestAuthorization(
     List<_i2.HealthDataType>? types, {
     List<_i2.HealthDataAccess>? permissions,
@@ -214,7 +409,31 @@ class MockHealth extends _i1.Mock implements _i2.Health {
           as _i4.Future<bool>);
 
   @override
-  _i4.Future<String?> writeHealthData({
+  _i4.Future<_i2.HealthAuthorizationRequestStatus?> getRequestStatusForAuthorization(
+    List<_i2.HealthDataType>? types, {
+    List<_i2.HealthDataAccess>? permissions,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #getRequestStatusForAuthorization,
+              [types],
+              {#permissions: permissions},
+            ),
+            returnValue: _i4.Future<_i2.HealthAuthorizationRequestStatus?>.value(),
+          )
+          as _i4.Future<_i2.HealthAuthorizationRequestStatus?>);
+
+  @override
+  _i4.Future<void> revokePermissions() =>
+      (super.noSuchMethod(
+            Invocation.method(#revokePermissions, []),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<String?> writeHealthDataUUID({
     required double? value,
     _i2.HealthDataUnit? unit,
     required _i2.HealthDataType? type,
@@ -225,7 +444,7 @@ class MockHealth extends _i1.Mock implements _i2.Health {
     _i2.RecordingMethod? recordingMethod = _i2.RecordingMethod.automatic,
   }) =>
       (super.noSuchMethod(
-            Invocation.method(#writeHealthData, [], {
+            Invocation.method(#writeHealthDataUUID, [], {
               #value: value,
               #unit: unit,
               #type: type,
@@ -238,71 +457,6 @@ class MockHealth extends _i1.Mock implements _i2.Health {
             returnValue: _i4.Future<String?>.value(),
           )
           as _i4.Future<String?>);
-
-  @override
-  _i4.Future<bool> writeActivityIntensity({
-    required _i2.ActivityIntensityLevel? intensityLevel,
-    required DateTime? startTime,
-    DateTime? endTime,
-    _i2.RecordingMethod? recordingMethod = _i2.RecordingMethod.automatic,
-    String? clientRecordId,
-    double? clientRecordVersion,
-  }) =>
-      (super.noSuchMethod(
-            Invocation.method(#writeActivityIntensity, [], {
-              #intensityLevel: intensityLevel,
-              #startTime: startTime,
-              #endTime: endTime,
-              #recordingMethod: recordingMethod,
-              #clientRecordId: clientRecordId,
-              #clientRecordVersion: clientRecordVersion,
-            }),
-            returnValue: _i4.Future<bool>.value(false),
-          )
-          as _i4.Future<bool>);
-
-  @override
-  _i4.Future<bool> delete({
-    required _i2.HealthDataType? type,
-    required DateTime? startTime,
-    DateTime? endTime,
-  }) =>
-      (super.noSuchMethod(
-            Invocation.method(#delete, [], {
-              #type: type,
-              #startTime: startTime,
-              #endTime: endTime,
-            }),
-            returnValue: _i4.Future<bool>.value(false),
-          )
-          as _i4.Future<bool>);
-
-  @override
-  _i4.Future<bool> deleteByUUID({
-    required String? uuid,
-    _i2.HealthDataType? type,
-  }) =>
-      (super.noSuchMethod(
-            Invocation.method(#deleteByUUID, [], {#uuid: uuid, #type: type}),
-            returnValue: _i4.Future<bool>.value(false),
-          )
-          as _i4.Future<bool>);
-
-  @override
-  _i4.Future<bool> deleteByClientRecordId({
-    required _i2.HealthDataType? dataTypeKey,
-    required String? clientRecordId,
-    String? recordId,
-  }) =>
-      (super.noSuchMethod(
-            Invocation.method(#deleteByClientRecordId, [], {
-              #dataTypeKey: dataTypeKey,
-              #clientRecordId: clientRecordId,
-              #recordId: recordId,
-            }),
-            returnValue: _i4.Future<bool>.value(false),
-          )
-          as _i4.Future<bool>);
 
   @override
   _i4.Future<bool> writeBloodPressure({
@@ -341,6 +495,110 @@ class MockHealth extends _i1.Mock implements _i2.Health {
               #startTime: startTime,
               #endTime: endTime,
               #recordingMethod: recordingMethod,
+            }),
+            returnValue: _i4.Future<bool>.value(false),
+          )
+          as _i4.Future<bool>);
+
+  @override
+  _i4.Future<bool> writeMenstruationFlow({
+    required _i2.MenstrualFlow? flow,
+    required DateTime? startTime,
+    required DateTime? endTime,
+    required bool? isStartOfCycle,
+    _i2.RecordingMethod? recordingMethod = _i2.RecordingMethod.automatic,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#writeMenstruationFlow, [], {
+              #flow: flow,
+              #startTime: startTime,
+              #endTime: endTime,
+              #isStartOfCycle: isStartOfCycle,
+              #recordingMethod: recordingMethod,
+            }),
+            returnValue: _i4.Future<bool>.value(false),
+          )
+          as _i4.Future<bool>);
+
+  @override
+  _i4.Future<bool> writeSexualActivity({
+    _i2.SexualActivityProtection? protectionUsed = _i2.SexualActivityProtection.unknown,
+    required DateTime? startTime,
+    DateTime? endTime,
+    _i2.RecordingMethod? recordingMethod = _i2.RecordingMethod.automatic,
+    String? clientRecordId,
+    double? clientRecordVersion,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#writeSexualActivity, [], {
+              #protectionUsed: protectionUsed,
+              #startTime: startTime,
+              #endTime: endTime,
+              #recordingMethod: recordingMethod,
+              #clientRecordId: clientRecordId,
+              #clientRecordVersion: clientRecordVersion,
+            }),
+            returnValue: _i4.Future<bool>.value(false),
+          )
+          as _i4.Future<bool>);
+
+  @override
+  _i4.Future<bool> writeAudiogram({
+    required List<double>? frequencies,
+    required List<double>? leftEarSensitivities,
+    required List<double>? rightEarSensitivities,
+    required DateTime? startTime,
+    DateTime? endTime,
+    Map<String, dynamic>? metadata,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#writeAudiogram, [], {
+              #frequencies: frequencies,
+              #leftEarSensitivities: leftEarSensitivities,
+              #rightEarSensitivities: rightEarSensitivities,
+              #startTime: startTime,
+              #endTime: endTime,
+              #metadata: metadata,
+            }),
+            returnValue: _i4.Future<bool>.value(false),
+          )
+          as _i4.Future<bool>);
+
+  @override
+  _i4.Future<bool> writeInsulinDelivery(
+    double? units,
+    _i2.InsulinDeliveryReason? reason,
+    DateTime? startTime,
+    DateTime? endTime,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#writeInsulinDelivery, [
+              units,
+              reason,
+              startTime,
+              endTime,
+            ]),
+            returnValue: _i4.Future<bool>.value(false),
+          )
+          as _i4.Future<bool>);
+
+  @override
+  _i4.Future<bool> writeActivityIntensity({
+    required _i2.ActivityIntensityLevel? intensityLevel,
+    required DateTime? startTime,
+    DateTime? endTime,
+    _i2.RecordingMethod? recordingMethod = _i2.RecordingMethod.automatic,
+    String? clientRecordId,
+    double? clientRecordVersion,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#writeActivityIntensity, [], {
+              #intensityLevel: intensityLevel,
+              #startTime: startTime,
+              #endTime: endTime,
+              #recordingMethod: recordingMethod,
+              #clientRecordId: clientRecordId,
+              #clientRecordVersion: clientRecordVersion,
             }),
             returnValue: _i4.Future<bool>.value(false),
           )
@@ -453,19 +711,21 @@ class MockHealth extends _i1.Mock implements _i2.Health {
           as _i4.Future<bool>);
 
   @override
-  _i4.Future<bool> writeMenstruationFlow({
-    required _i2.MenstrualFlow? flow,
+  _i4.Future<bool> writeSleepSession({
     required DateTime? startTime,
     required DateTime? endTime,
-    required bool? isStartOfCycle,
+    List<_i2.SleepSessionStage>? stages = const [],
+    String? title,
+    String? notes,
     _i2.RecordingMethod? recordingMethod = _i2.RecordingMethod.automatic,
   }) =>
       (super.noSuchMethod(
-            Invocation.method(#writeMenstruationFlow, [], {
-              #flow: flow,
+            Invocation.method(#writeSleepSession, [], {
               #startTime: startTime,
               #endTime: endTime,
-              #isStartOfCycle: isStartOfCycle,
+              #stages: stages,
+              #title: title,
+              #notes: notes,
               #recordingMethod: recordingMethod,
             }),
             returnValue: _i4.Future<bool>.value(false),
@@ -473,254 +733,153 @@ class MockHealth extends _i1.Mock implements _i2.Health {
           as _i4.Future<bool>);
 
   @override
-  _i4.Future<bool> writeAudiogram({
-    required List<double>? frequencies,
-    required List<double>? leftEarSensitivities,
-    required List<double>? rightEarSensitivities,
-    required DateTime? startTime,
-    DateTime? endTime,
-    Map<String, dynamic>? metadata,
-  }) =>
-      (super.noSuchMethod(
-            Invocation.method(#writeAudiogram, [], {
-              #frequencies: frequencies,
-              #leftEarSensitivities: leftEarSensitivities,
-              #rightEarSensitivities: rightEarSensitivities,
-              #startTime: startTime,
-              #endTime: endTime,
-              #metadata: metadata,
-            }),
-            returnValue: _i4.Future<bool>.value(false),
-          )
-          as _i4.Future<bool>);
-
-  @override
-  _i4.Future<bool> writeInsulinDelivery(
-    double? units,
-    _i2.InsulinDeliveryReason? reason,
-    DateTime? startTime,
-    DateTime? endTime,
-  ) =>
-      (super.noSuchMethod(
-            Invocation.method(#writeInsulinDelivery, [
-              units,
-              reason,
-              startTime,
-              endTime,
-            ]),
-            returnValue: _i4.Future<bool>.value(false),
-          )
-          as _i4.Future<bool>);
-
-  @override
-  _i4.Future<_i2.HealthDataPoint?> getHealthDataByUUID({
-    required String? uuid,
-    required _i2.HealthDataType? type,
-  }) =>
-      (super.noSuchMethod(
-            Invocation.method(#getHealthDataByUUID, [], {
-              #uuid: uuid,
-              #type: type,
-            }),
-            returnValue: _i4.Future<_i2.HealthDataPoint?>.value(),
-          )
-          as _i4.Future<_i2.HealthDataPoint?>);
-
-  @override
-  _i4.Future<List<_i2.HealthDataPoint>> getHealthDataFromTypes({
-    required List<_i2.HealthDataType>? types,
-    Map<_i2.HealthDataType, _i2.HealthDataUnit>? preferredUnits,
+  _i4.Future<bool> writeMindfulnessSession({
     required DateTime? startTime,
     required DateTime? endTime,
-    List<_i2.RecordingMethod>? recordingMethodsToFilter = const [],
+    _i2.MindfulnessSessionType? sessionType = _i2.MindfulnessSessionType.UNKNOWN,
+    String? title,
+    String? notes,
+    _i2.RecordingMethod? recordingMethod = _i2.RecordingMethod.automatic,
   }) =>
       (super.noSuchMethod(
-            Invocation.method(#getHealthDataFromTypes, [], {
-              #types: types,
-              #preferredUnits: preferredUnits,
+            Invocation.method(#writeMindfulnessSession, [], {
               #startTime: startTime,
               #endTime: endTime,
-              #recordingMethodsToFilter: recordingMethodsToFilter,
+              #sessionType: sessionType,
+              #title: title,
+              #notes: notes,
+              #recordingMethod: recordingMethod,
             }),
-            returnValue: _i4.Future<List<_i2.HealthDataPoint>>.value(
-              <_i2.HealthDataPoint>[],
-            ),
+            returnValue: _i4.Future<bool>.value(false),
           )
-          as _i4.Future<List<_i2.HealthDataPoint>>);
+          as _i4.Future<bool>);
 
   @override
-  _i4.Future<List<_i2.HealthDataPoint>> getHealthIntervalDataFromTypes({
-    required DateTime? startDate,
-    required DateTime? endDate,
-    required List<_i2.HealthDataType>? types,
-    required int? interval,
-    List<_i2.RecordingMethod>? recordingMethodsToFilter = const [],
+  _i4.Future<bool> delete({
+    required _i2.HealthDataType? type,
+    required DateTime? startTime,
+    DateTime? endTime,
   }) =>
       (super.noSuchMethod(
-            Invocation.method(#getHealthIntervalDataFromTypes, [], {
-              #startDate: startDate,
-              #endDate: endDate,
-              #types: types,
-              #interval: interval,
-              #recordingMethodsToFilter: recordingMethodsToFilter,
+            Invocation.method(#delete, [], {
+              #type: type,
+              #startTime: startTime,
+              #endTime: endTime,
             }),
-            returnValue: _i4.Future<List<_i2.HealthDataPoint>>.value(
-              <_i2.HealthDataPoint>[],
-            ),
+            returnValue: _i4.Future<bool>.value(false),
           )
-          as _i4.Future<List<_i2.HealthDataPoint>>);
+          as _i4.Future<bool>);
 
   @override
-  _i4.Future<List<_i2.HealthDataPoint>> getHealthAggregateDataFromTypes({
-    required List<_i2.HealthDataType>? types,
-    required DateTime? startDate,
-    required DateTime? endDate,
-    int? activitySegmentDuration = 1,
-    bool? includeManualEntry = true,
+  _i4.Future<bool> deleteByUUID({
+    required String? uuid,
+    _i2.HealthDataType? type,
   }) =>
       (super.noSuchMethod(
-            Invocation.method(#getHealthAggregateDataFromTypes, [], {
-              #types: types,
-              #startDate: startDate,
-              #endDate: endDate,
-              #activitySegmentDuration: activitySegmentDuration,
-              #includeManualEntry: includeManualEntry,
+            Invocation.method(#deleteByUUID, [], {#uuid: uuid, #type: type}),
+            returnValue: _i4.Future<bool>.value(false),
+          )
+          as _i4.Future<bool>);
+
+  @override
+  _i4.Future<bool> deleteByClientRecordId({
+    required _i2.HealthDataType? dataTypeKey,
+    required String? clientRecordId,
+    String? recordId,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#deleteByClientRecordId, [], {
+              #dataTypeKey: dataTypeKey,
+              #clientRecordId: clientRecordId,
+              #recordId: recordId,
             }),
-            returnValue: _i4.Future<List<_i2.HealthDataPoint>>.value(
-              <_i2.HealthDataPoint>[],
-            ),
+            returnValue: _i4.Future<bool>.value(false),
           )
-          as _i4.Future<List<_i2.HealthDataPoint>>);
+          as _i4.Future<bool>);
 
   @override
-  _i4.Future<String?> getChangesToken({
-    required List<_i2.HealthDataType>? types,
-  }) =>
-      (super.noSuchMethod(
-            Invocation.method(#getChangesToken, [], {#types: types}),
-            returnValue: _i4.Future<String?>.value(),
-          )
-          as _i4.Future<String?>);
-
-  @override
-  _i4.Future<_i2.HealthChangesResponse?> getChanges({
-    required String? changesToken,
-    bool? includeSelf = false,
-  }) =>
-      (super.noSuchMethod(
-            Invocation.method(#getChanges, [], {
-              #changesToken: changesToken,
-              #includeSelf: includeSelf,
-            }),
-            returnValue: _i4.Future<_i2.HealthChangesResponse?>.value(),
-          )
-          as _i4.Future<_i2.HealthChangesResponse?>);
-
-  @override
-  List<_i2.HealthDataPoint> removeDuplicates(
-    List<_i2.HealthDataPoint>? points,
-  ) =>
-      (super.noSuchMethod(
-            Invocation.method(#removeDuplicates, [points]),
-            returnValue: <_i2.HealthDataPoint>[],
-          )
-          as List<_i2.HealthDataPoint>);
-
-  @override
-  _i4.Future<int?> getTotalStepsInInterval(
-    DateTime? startTime,
-    DateTime? endTime, {
-    bool? includeManualEntry = true,
-  }) =>
-      (super.noSuchMethod(
-            Invocation.method(
-              #getTotalStepsInInterval,
-              [startTime, endTime],
-              {#includeManualEntry: includeManualEntry},
-            ),
-            returnValue: _i4.Future<int?>.value(),
-          )
-          as _i4.Future<int?>);
-
-  @override
-  _i4.Future<_i2.HealthWorkoutWriteResult> writeWorkoutData({
-    required String? workoutClientRecordId,
-    String? energyClientRecordId,
-    required int? clientRecordVersion,
+  _i4.Future<bool> writeWorkoutData({
     required _i2.HealthWorkoutActivityType? activityType,
     required DateTime? start,
     required DateTime? end,
-    required int? startZoneOffsetSeconds,
-    required int? endZoneOffsetSeconds,
-    double? activeEnergyKcal,
-    required String? title,
-    required _i2.HealthRecordingProvenance? recordingProvenance,
-    required _i2.HealthRecordingDevice? recordingDevice,
+    int? totalEnergyBurned,
+    _i2.HealthDataUnit? totalEnergyBurnedUnit = _i2.HealthDataUnit.KILOCALORIE,
+    int? totalDistance,
+    _i2.HealthDataUnit? totalDistanceUnit = _i2.HealthDataUnit.METER,
+    String? title,
+    _i2.WorkoutMetadata? metadata,
+    _i2.RecordingMethod? recordingMethod = _i2.RecordingMethod.automatic,
+    String? clientRecordId,
+    double? clientRecordVersion,
+    Duration? startZoneOffset,
+    Duration? endZoneOffset,
+    _i2.SwimmingDetails? swimming,
+    int? totalSwimmingStrokeCount,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#writeWorkoutData, [], {
-              #workoutClientRecordId: workoutClientRecordId,
-              #energyClientRecordId: energyClientRecordId,
-              #clientRecordVersion: clientRecordVersion,
               #activityType: activityType,
               #start: start,
               #end: end,
-              #startZoneOffsetSeconds: startZoneOffsetSeconds,
-              #endZoneOffsetSeconds: endZoneOffsetSeconds,
-              #activeEnergyKcal: activeEnergyKcal,
+              #totalEnergyBurned: totalEnergyBurned,
+              #totalEnergyBurnedUnit: totalEnergyBurnedUnit,
+              #totalDistance: totalDistance,
+              #totalDistanceUnit: totalDistanceUnit,
               #title: title,
-              #recordingProvenance: recordingProvenance,
-              #recordingDevice: recordingDevice,
+              #metadata: metadata,
+              #recordingMethod: recordingMethod,
+              #clientRecordId: clientRecordId,
+              #clientRecordVersion: clientRecordVersion,
+              #startZoneOffset: startZoneOffset,
+              #endZoneOffset: endZoneOffset,
+              #swimming: swimming,
+              #totalSwimmingStrokeCount: totalSwimmingStrokeCount,
             }),
-            returnValue: _i4.Future<_i2.HealthWorkoutWriteResult>.value(
-              _i3.dummyValue<_i2.HealthWorkoutWriteResult>(
-                this,
-                Invocation.method(#writeWorkoutData, [], {
-                  #workoutClientRecordId: workoutClientRecordId,
-                  #energyClientRecordId: energyClientRecordId,
-                  #clientRecordVersion: clientRecordVersion,
-                  #activityType: activityType,
-                  #start: start,
-                  #end: end,
-                  #startZoneOffsetSeconds: startZoneOffsetSeconds,
-                  #endZoneOffsetSeconds: endZoneOffsetSeconds,
-                  #activeEnergyKcal: activeEnergyKcal,
-                  #title: title,
-                  #recordingProvenance: recordingProvenance,
-                  #recordingDevice: recordingDevice,
-                }),
-              ),
-            ),
+            returnValue: _i4.Future<bool>.value(false),
           )
-          as _i4.Future<_i2.HealthWorkoutWriteResult>);
+          as _i4.Future<bool>);
 
   @override
-  _i4.Future<_i2.HealthWorkoutLookupResult> lookupWorkoutData({
-    required String? workoutClientRecordId,
-    String? energyClientRecordId,
+  _i4.Future<String?> writeWorkoutDataUUID({
+    required _i2.HealthWorkoutActivityType? activityType,
     required DateTime? start,
     required DateTime? end,
+    int? totalEnergyBurned,
+    _i2.HealthDataUnit? totalEnergyBurnedUnit = _i2.HealthDataUnit.KILOCALORIE,
+    int? totalDistance,
+    _i2.HealthDataUnit? totalDistanceUnit = _i2.HealthDataUnit.METER,
+    String? title,
+    _i2.WorkoutMetadata? metadata,
+    _i2.RecordingMethod? recordingMethod = _i2.RecordingMethod.automatic,
+    String? clientRecordId,
+    double? clientRecordVersion,
+    Duration? startZoneOffset,
+    Duration? endZoneOffset,
+    _i2.SwimmingDetails? swimming,
+    int? totalSwimmingStrokeCount,
   }) =>
       (super.noSuchMethod(
-            Invocation.method(#lookupWorkoutData, [], {
-              #workoutClientRecordId: workoutClientRecordId,
-              #energyClientRecordId: energyClientRecordId,
+            Invocation.method(#writeWorkoutDataUUID, [], {
+              #activityType: activityType,
               #start: start,
               #end: end,
+              #totalEnergyBurned: totalEnergyBurned,
+              #totalEnergyBurnedUnit: totalEnergyBurnedUnit,
+              #totalDistance: totalDistance,
+              #totalDistanceUnit: totalDistanceUnit,
+              #title: title,
+              #metadata: metadata,
+              #recordingMethod: recordingMethod,
+              #clientRecordId: clientRecordId,
+              #clientRecordVersion: clientRecordVersion,
+              #startZoneOffset: startZoneOffset,
+              #endZoneOffset: endZoneOffset,
+              #swimming: swimming,
+              #totalSwimmingStrokeCount: totalSwimmingStrokeCount,
             }),
-            returnValue: _i4.Future<_i2.HealthWorkoutLookupResult>.value(
-              _i3.dummyValue<_i2.HealthWorkoutLookupResult>(
-                this,
-                Invocation.method(#lookupWorkoutData, [], {
-                  #workoutClientRecordId: workoutClientRecordId,
-                  #energyClientRecordId: energyClientRecordId,
-                  #start: start,
-                  #end: end,
-                }),
-              ),
-            ),
+            returnValue: _i4.Future<String?>.value(),
           )
-          as _i4.Future<_i2.HealthWorkoutLookupResult>);
+          as _i4.Future<String?>);
 
   @override
   _i4.Future<String> startWorkoutRoute() =>

@@ -6,7 +6,7 @@
 
 import 'dart:async' as _i11;
 
-import 'package:health_bridge/health.dart' as _i44;
+import 'package:health/health.dart' as _i44;
 import 'package:image_picker/image_picker.dart' as _i12;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i32;

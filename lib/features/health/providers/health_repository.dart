@@ -21,7 +21,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/services.dart' show PlatformException;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:health_bridge/health.dart';
+import 'package:health/health.dart';
 import 'package:logging/logging.dart';
 import 'package:wger/features/health/models/health_metric.dart';
 import 'package:wger/features/health/models/health_reading.dart';
@@ -101,15 +101,15 @@ class HealthRepository {
   /// The subset of [types] the platform lets us read, without ever showing a
   /// permission dialog.
   ///
-  /// Asked per type on purpose. Both platforms hand out access per data type,
-  /// and Health Connect's dialog invites the user to untick individual ones,
-  /// so a single declined type must cost only its own metric its import.
-  /// (`hasPermissions` answers for the whole list at once, which turned one
-  /// declined type into a full stop.)
+  /// Asked one type per call on purpose. Both platforms hand out access per
+  /// data type, and Health Connect's dialog invites the user to untick
+  /// individual ones, so a single declined type must cost only its own metric
+  /// its import. (`hasPermissions` with the whole list is only true when every
+  /// type is granted, which turned one declined type into a full stop.)
   ///
   /// Only Android answers exactly. HealthKit does not disclose read access, so
-  /// the types it maps come back as `requestedOrUnknown` and count as
-  /// readable; a denial there only shows up when the read fails, see
+  /// `hasPermissions` returns null there and the type counts as readable; a
+  /// denial there only shows up when the read fails, see
   /// [isAuthorizationMissing].
   Future<Set<HealthDataType>> readableTypes(List<HealthDataType> types) async {
     if (types.isEmpty) {
@@ -117,29 +117,22 @@ class HealthRepository {
     }
     await _health.configure();
 
-    try {
-      final snapshot = await _health.getAuthorizationSnapshot(types.toSet().toList());
-      if (!snapshot.available) {
-        return {};
+    final readable = <HealthDataType>{};
+    for (final type in types.toSet()) {
+      try {
+        if (await _health.hasPermissions([type]) != false) {
+          readable.add(type);
+        }
+      } catch (e) {
+        // The check only refines what we try: without it the type is read and
+        // fails on its own if the platform refuses it, which is the behaviour
+        // this method improves on, not one it depends on
+        _logger.warning('Could not check the permission for ${type.name}, trying it anyway: $e');
+        readable.add(type);
       }
-      return {
-        for (final entry in snapshot.types)
-          if (_isReadable(entry.read)) entry.type,
-      };
-    } catch (e) {
-      // The snapshot only refines what we try: without it every type is read
-      // and the ones the platform refuses fail individually, which is the
-      // behaviour this method improves on, not one it depends on
-      _logger.warning('Could not read the authorization snapshot, trying every type: $e');
-      return types.toSet();
     }
+    return readable;
   }
-
-  static bool _isReadable(HealthAuthorizationState state) => switch (state) {
-    // iOS never reports more than "was requested at some point"
-    HealthAuthorizationState.authorized || HealthAuthorizationState.requestedOrUnknown => true,
-    _ => false,
-  };
 
   /// Whether [error] is the platform refusing a read for lack of permissions.
   ///
@@ -201,9 +194,9 @@ class HealthRepository {
   /// record). Adding up the raw records instead counts those twice. The value
   /// is in the platform's raw unit (count, meters, kcal), like a raw read.
   ///
-  /// Null on iOS, on failure, or when the platform returned nothing, so the
-  /// caller can fall back to the raw sum. A range without data from the
-  /// user's priority list comes back as 0, not null.
+  /// Null on iOS, on failure, or when the platform returned nothing (it omits
+  /// a range without data from the user's priority list), so the caller can
+  /// fall back to the raw sum.
   Future<double?> platformTotal(HealthDataType type, DateTime start, DateTime end) async {
     if (!hasPlatformTotals || !end.isAfter(start)) {
       return null;

@@ -54,13 +54,7 @@ dependencies:
   flutter_zxing: ^3.1.1
   font_awesome_flutter: ^11.0.0
   freezed_annotation: ^3.1.0
-  # A maintained fork of `health` 13.3.1. We need its per-type authorization
-  # snapshot (see HealthRepository.readableTypes) plus its Health Connect and
-  # iOS crash fixes, none of which upstream has picked up.
-  health_bridge:
-    git:
-      url: https://github.com/ytsni/health_bridge.git
-      ref: v2.1.0
+  health: ^14.0.0
   http: ^1.6.0
   image_picker: ^1.2.3
   intl: ^0.20.2

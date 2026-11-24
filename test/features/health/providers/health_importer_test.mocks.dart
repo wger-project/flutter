@@ -6,7 +6,7 @@
 
 import 'dart:async' as _i4;
 
-import 'package:health_bridge/health.dart' as _i5;
+import 'package:health/health.dart' as _i5;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i3;
 import 'package:wger/core/network/auth_credentials_storage.dart' as _i11;
