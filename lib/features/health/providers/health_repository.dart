@@ -141,9 +141,29 @@ class HealthRepository {
   /// does report (a plain denial silently reads as "no data"). Reinstalling
   /// the app resets the grants while the app's own preferences survive, so a
   /// sync can hit this even though the user did grant access earlier.
-  static bool isAuthorizationMissing(Object error) =>
-      error is PlatformException &&
-      (error.message ?? '').toLowerCase().contains('authorization not determined');
+  ///
+  /// Matched by HealthKit's own error code, which the plugin passes on in the
+  /// details: the message is the localized description, so it only reads
+  /// "authorization not determined" on an English device. The plugin's
+  /// `PERMISSION_DENIED` is no substitute, it also covers restrictions (Screen
+  /// Time, managed devices, guest mode) that asking again cannot lift. The
+  /// message stays as a fallback for an error without the details.
+  static bool isAuthorizationMissing(Object error) {
+    if (error is! PlatformException) {
+      return false;
+    }
+    final details = error.details;
+    if (details is Map && details['domain'] == _healthKitErrorDomain) {
+      return details['nativeCode'] == _healthKitAuthorizationNotDetermined;
+    }
+    return (error.message ?? '').toLowerCase().contains('authorization not determined');
+  }
+
+  /// `HKErrorDomain`
+  static const _healthKitErrorDomain = 'com.apple.healthkit';
+
+  /// `HKError.Code.errorAuthorizationNotDetermined`
+  static const _healthKitAuthorizationNotDetermined = 5;
 
   /// Ensures READ access to [types] (requesting it if needed) and, on Android,
   /// access to historical data. Returns whether access is granted.

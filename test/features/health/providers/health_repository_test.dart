@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import 'package:flutter/services.dart' show PlatformException;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:health/health.dart';
 import 'package:mockito/annotations.dart';
@@ -396,6 +397,45 @@ void main() {
       final readable = await repository.readableTypes([HealthDataType.WEIGHT]);
 
       expect(readable, {HealthDataType.WEIGHT});
+    });
+  });
+
+  group('isAuthorizationMissing', () {
+    PlatformException healthKitError(int nativeCode, String message) => PlatformException(
+      code: 'PERMISSION_DENIED',
+      message: 'Error getting health data: $message',
+      details: {'domain': 'com.apple.healthkit', 'nativeCode': nativeCode},
+    );
+
+    test('is recognized by its HealthKit code on a non-English device', () {
+      // The message is HealthKit's localized description
+      expect(
+        HealthRepository.isAuthorizationMissing(
+          healthKitError(5, 'Die Autorisierung ist nicht festgelegt'),
+        ),
+        isTrue,
+      );
+    });
+
+    test('a restriction is not missing authorization', () {
+      // Screen Time or a managed device: asking again cannot lift it, even
+      // though the plugin reports it with the same PERMISSION_DENIED
+      expect(
+        HealthRepository.isAuthorizationMissing(healthKitError(2, 'Health data is restricted')),
+        isFalse,
+      );
+    });
+
+    test('falls back to the message without HealthKit details', () {
+      expect(
+        HealthRepository.isAuthorizationMissing(
+          PlatformException(
+            code: 'HEALTH_ERROR',
+            message: 'Error getting health data: Authorization not determined',
+          ),
+        ),
+        isTrue,
+      );
     });
   });
 }
