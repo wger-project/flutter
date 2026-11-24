@@ -32,18 +32,6 @@ finish-args:
   # Secret Service for flutter_secure_storage (JWT refresh token)
   - --talk-name=org.freedesktop.secrets
 
-# flutpak doesn't handle git dependencies (o-murphy/flutpak#60). Keep the commit in sync
-# with resolved-ref in pubspec.lock; the cache dir suffix is the sha1 of the url
-sources:
-  - type: git
-    url: https://github.com/ytsni/health_bridge.git
-    commit: 05515122beb1ac6e93a3b558b5468af16c3e5aaf
-    dest: .pub-cache/git/health_bridge-05515122beb1ac6e93a3b558b5468af16c3e5aaf
-  - type: shell
-    commands:
-      - mkdir -p .pub-cache/git/cache/health_bridge-dc30f18fd891da4313044228eccaea8192df5eda
-      - cp -rf .pub-cache/git/health_bridge-05515122beb1ac6e93a3b558b5468af16c3e5aaf/.git/* .pub-cache/git/cache/health_bridge-dc30f18fd891da4313044228eccaea8192df5eda
-
 foreign-deps:
   # EOL stub without native code; the registry's 0.6.8 entry would add an unused download
   sqlcipher_flutter_libs:
