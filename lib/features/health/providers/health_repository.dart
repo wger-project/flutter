@@ -202,23 +202,26 @@ class HealthRepository {
     return true;
   }
 
-  /// Whether [platformTotal] can answer here at all: Health Connect only.
-  bool get hasPlatformTotals => !kIsWeb && Platform.isAndroid;
+  /// Whether [platformTotal] can answer here at all: on Health Connect and
+  /// on Apple Health. Callers check this before asking.
+  bool get hasPlatformTotals => !kIsWeb && (Platform.isAndroid || Platform.isIOS);
 
   /// The total of a cumulative [type] (steps, distance, active energy)
-  /// between [start] and [end] as Health Connect itself reports it.
+  /// between [start] and [end] as the health platform itself reports it.
   ///
-  /// Health Connect resolves overlapping records from several apps by the
-  /// user's data source priority, and drops an app's second copy of the same
-  /// interval (e.g. a watch writing both its interval buckets and a workout
-  /// record). Adding up the raw records instead counts those twice. The value
-  /// is in the platform's raw unit (count, meters, kcal), like a raw read.
+  /// Both platforms resolve overlapping records from several sources by the
+  /// user's data source priority (a phone and a watch counting the same
+  /// steps), which is the number their own apps show. Health Connect also
+  /// drops an app's second copy of the same interval (e.g. a watch writing
+  /// both its interval buckets and a workout record). Adding up the raw
+  /// records instead counts those twice. The value is in the platform's raw
+  /// unit (count, meters, kcal), like a raw read.
   ///
-  /// Null on iOS, on failure, or when the platform returned nothing (it omits
-  /// a range without data from the user's priority list), so the caller can
-  /// fall back to the raw sum.
+  /// Null on failure or when the platform returned nothing (it omits a range
+  /// without data, on Android one without data from the user's priority
+  /// list), so the caller can fall back to the raw sum.
   Future<double?> platformTotal(HealthDataType type, DateTime start, DateTime end) async {
-    if (!hasPlatformTotals || !end.isAfter(start)) {
+    if (!end.isAfter(start)) {
       return null;
     }
     try {
@@ -231,7 +234,9 @@ class HealthRepository {
       );
       final values = [
         for (final point in points)
-          if (point.value is NumericHealthValue)
+          // HealthKit's query takes in records reaching across [end] and can
+          // list the bucket after it too, holding their part past the range
+          if (point.dateFrom.isBefore(end) && point.value is NumericHealthValue)
             (point.value as NumericHealthValue).numericValue.toDouble(),
       ];
       if (values.isEmpty) {

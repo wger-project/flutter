@@ -365,6 +365,85 @@ void main() {
     });
   });
 
+  group('platformTotal', () {
+    final day = DateTime(2026, 11, 13);
+    final nextDay = DateTime(2026, 11, 14);
+
+    HealthDataPoint bucket(DateTime from, DateTime to, num value) => HealthDataPoint(
+      uuid: '',
+      value: NumericHealthValue(numericValue: value),
+      type: HealthDataType.STEPS,
+      unit: HealthDataUnit.COUNT,
+      dateFrom: from,
+      dateTo: to,
+      sourcePlatform: HealthPlatformType.appleHealth,
+      sourceDeviceId: 'device',
+      sourceId: '',
+      sourceName: 'com.apple.health.phone, com.apple.health.watch',
+    );
+
+    void stubBuckets(List<HealthDataPoint> buckets) {
+      when(
+        health.getHealthIntervalDataFromTypes(
+          startDate: anyNamed('startDate'),
+          endDate: anyNamed('endDate'),
+          types: anyNamed('types'),
+          interval: anyNamed('interval'),
+        ),
+      ).thenAnswer((_) async => buckets);
+    }
+
+    test('asks for the range as one bucket and returns its total', () async {
+      stubBuckets([bucket(day, nextDay, 12797)]);
+
+      expect(await repository.platformTotal(HealthDataType.STEPS, day, nextDay), 12797);
+
+      final captured = verify(
+        health.getHealthIntervalDataFromTypes(
+          startDate: captureAnyNamed('startDate'),
+          endDate: captureAnyNamed('endDate'),
+          types: captureAnyNamed('types'),
+          interval: captureAnyNamed('interval'),
+        ),
+      ).captured;
+      expect(captured, [
+        day,
+        nextDay,
+        [HealthDataType.STEPS],
+        nextDay.difference(day).inSeconds,
+      ]);
+    });
+
+    test('leaves out the bucket after the range', () async {
+      // The part past midnight of a record reaching across it
+      stubBuckets([
+        bucket(day, nextDay, 12797),
+        bucket(nextDay, DateTime(2026, 11, 15), 240),
+      ]);
+
+      expect(await repository.platformTotal(HealthDataType.STEPS, day, nextDay), 12797);
+    });
+
+    test('is null without data, so the caller keeps its raw sum', () async {
+      stubBuckets([]);
+
+      expect(await repository.platformTotal(HealthDataType.STEPS, day, nextDay), isNull);
+    });
+
+    test('is null when the platform fails', () async {
+      when(
+        health.getHealthIntervalDataFromTypes(
+          startDate: anyNamed('startDate'),
+          endDate: anyNamed('endDate'),
+          types: anyNamed('types'),
+          interval: anyNamed('interval'),
+        ),
+      ).thenThrow(PlatformException(code: 'STATISTICS_ERROR'));
+
+      expect(await repository.platformTotal(HealthDataType.STEPS, day, nextDay), isNull);
+    });
+  });
+
   group('readableTypes', () {
     test('a declined type costs only itself', () async {
       // Asked for both at once, the platform says false as soon as one is
