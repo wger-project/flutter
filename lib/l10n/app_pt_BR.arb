@@ -1308,7 +1308,7 @@
     "@workoutNotificationSkipRest": {
         "description": "Notification button that ends the running rest. Shown next to up to two other buttons in a single row, so keep it very short; translate the meaning, not word for word"
     },
-    "workoutNotificationExtendRest": "+{segundos} s",
+    "workoutNotificationExtendRest": "+{seconds} s",
     "@workoutNotificationExtendRest": {
         "description": "Notification button that makes the running rest longer. Shown next to up to two other buttons in a single row, so keep it very short; translate the meaning, not word for word",
         "placeholders": {
@@ -1342,7 +1342,7 @@
     "gymModeLogScope": "Registros anteriores",
     "gymModeLogScopeHelp": "Quais registros exibir como referência durante o treinamento?",
     "gymModeLogScopeCurrentRoutine": "Rotina atual",
-    "gymModeLogScopeWeeks": "{weeks, plural, one{Last {weeks} week} outra{Last{weeks} weeks}}",
+    "gymModeLogScopeWeeks": "{weeks, plural, one{Última {weeks} semana} other{Últimas {weeks} semanas}}",
     "@gymModeLogScopeWeeks": {
         "placeholders": {
             "weeks": {
@@ -1360,7 +1360,7 @@
     "@chartRangeAll": {
         "description": "Label for the chart time-range selector option showing all data"
     },
-    "chartRangeWeeks": "{count, plural, one{{count} week}outra{count{weeks}}",
+    "chartRangeWeeks": "{count, plural, one{{count} semana} other{{count} semanas}}",
     "@chartRangeWeeks": {
         "description": "Chart time-range selector option covering a number of weeks",
         "placeholders": {
