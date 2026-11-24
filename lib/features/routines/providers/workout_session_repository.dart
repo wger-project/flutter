@@ -58,6 +58,9 @@ class WorkoutSessionRepository {
           ),
         ])..orderBy([
           OrderingTerm(expression: _db.workoutSessionTable.datetimeStart, mode: OrderingMode.desc),
+          // Without an order the logs come in storage order, which a sync rewrite shuffles
+          OrderingTerm.asc(_db.workoutLogTable.date),
+          OrderingTerm.asc(_db.workoutLogTable.id),
         ]);
 
     return query.watch().map((rows) {

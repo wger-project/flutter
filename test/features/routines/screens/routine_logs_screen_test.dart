@@ -369,6 +369,72 @@ void main() {
     });
   });
 
+  group('Notes', () {
+    final notesField = find.byKey(const ValueKey('edit-notes-widget'));
+
+    Future<void> showDayLogs(WidgetTester tester) async {
+      tester.view.physicalSize = const Size(500, 1200);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.reset);
+
+      await tester.pumpWidget(renderWidget());
+      await tester.tap(find.byType(TextButton));
+      await tester.pumpAndSettle();
+      await tester.drag(find.byType(ListView), const Offset(0, -500));
+      await tester.pumpAndSettle();
+    }
+
+    Future<void> openEditDialog(WidgetTester tester) async {
+      await showDayLogs(tester);
+      await tester.tap(find.byKey(const ValueKey('edit-log-1')));
+      await tester.pumpAndSettle();
+    }
+
+    Future<Log> saveAndCapture(WidgetTester tester) async {
+      await tester.tap(find.byKey(const ValueKey('edit-save-button')));
+      await tester.pumpAndSettle();
+      return verify(mockWorkoutLogRepository.updateLocalDrift(captureAny)).captured.single as Log;
+    }
+
+    testWidgets('the day logs show the notes under their set', (WidgetTester tester) async {
+      for (final log in routine.sessions[0].logs.where((l) => l.id == '1')) {
+        log.notes = 'Paused reps';
+      }
+
+      await withClock(Clock.fixed(DateTime(2025, 3, 29)), () async {
+        await showDayLogs(tester);
+        expect(find.text('Paused reps'), findsOneWidget);
+      });
+    });
+
+    testWidgets('saves the entered notes', (WidgetTester tester) async {
+      await withClock(Clock.fixed(DateTime(2025, 3, 29)), () async {
+        await openEditDialog(tester);
+
+        await tester.enterText(notesField, 'Grip slipped');
+        await tester.pump();
+
+        expect((await saveAndCapture(tester)).notes, 'Grip slipped');
+      });
+    });
+
+    testWidgets('clearing the notes passes null to the repository', (WidgetTester tester) async {
+      for (final log in routine.sessions[0].logs.where((l) => l.id == '1')) {
+        log.notes = 'Paused reps';
+      }
+
+      await withClock(Clock.fixed(DateTime(2025, 3, 29)), () async {
+        await openEditDialog(tester);
+        expect(find.descendant(of: notesField, matching: find.text('Paused reps')), findsOneWidget);
+
+        await tester.enterText(notesField, '  ');
+        await tester.pump();
+
+        expect((await saveAndCapture(tester)).notes, isNull);
+      });
+    });
+  });
+
   testWidgets('Edit dialog cancel does not call the repository', (WidgetTester tester) async {
     tester.view.physicalSize = const Size(500, 1200);
     tester.view.devicePixelRatio = 1.0;

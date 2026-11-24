@@ -300,16 +300,19 @@ void main() {
     test('clears values that were nulled', () async {
       final log = makeLog(sessionId: 'session-1', weight: 50);
       log.rir = 2;
+      log.notes = 'Paused reps';
       await repo.addLocalDrift(log);
 
-      // The user clears the RiR and the weight in the log edit dialog
+      // The user clears the RiR, the weight and the notes in the log edit dialog
       log.rir = null;
       log.weight = null;
+      log.notes = null;
       await repo.updateLocalDrift(log);
 
       final rows = await readLogs();
       expect(rows.single.rir, isNull);
       expect(rows.single.weight, isNull);
+      expect(rows.single.notes, isNull);
     });
   });
 

@@ -560,6 +560,8 @@ class GymStateNotifier extends _$GymStateNotifier {
       _logger.warning('logCurrentSet called without a log draft on a log page');
       return;
     }
+    // Trimmed only here, while typing the field has to keep the user's spaces
+    log.notes = log.notes?.trim();
 
     // Done before the write, so a repeated logPlannedSet is rejected meanwhile
     final wasDone = state.progressOf(slotPage.key).done;
