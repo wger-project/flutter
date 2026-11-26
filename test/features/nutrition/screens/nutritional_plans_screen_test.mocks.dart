@@ -13,19 +13,26 @@ import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i14;
 import 'package:wger/core/search_options.dart' as _i12;
 import 'package:wger/features/account/models/user_profile.dart' as _i21;
-import 'package:wger/features/account/providers/user_profile_repository.dart' as _i20;
-import 'package:wger/features/measurements/models/measurement_bucket.dart' as _i19;
-import 'package:wger/features/measurements/models/measurement_category.dart' as _i17;
-import 'package:wger/features/measurements/models/measurement_entry.dart' as _i18;
-import 'package:wger/features/measurements/providers/measurement_repository.dart' as _i16;
+import 'package:wger/features/account/providers/user_profile_repository.dart'
+    as _i20;
+import 'package:wger/features/measurements/models/measurement_bucket.dart'
+    as _i19;
+import 'package:wger/features/measurements/models/measurement_category.dart'
+    as _i17;
+import 'package:wger/features/measurements/models/measurement_entry.dart'
+    as _i18;
+import 'package:wger/features/measurements/providers/measurement_repository.dart'
+    as _i16;
 import 'package:wger/features/nutrition/models/ingredient.dart' as _i10;
 import 'package:wger/features/nutrition/models/ingredient_filters.dart' as _i11;
 import 'package:wger/features/nutrition/models/log.dart' as _i8;
 import 'package:wger/features/nutrition/models/meal.dart' as _i6;
 import 'package:wger/features/nutrition/models/meal_item.dart' as _i7;
 import 'package:wger/features/nutrition/models/nutritional_plan.dart' as _i5;
-import 'package:wger/features/nutrition/providers/ingredient_repository.dart' as _i9;
-import 'package:wger/features/nutrition/providers/nutrition_repository.dart' as _i3;
+import 'package:wger/features/nutrition/providers/ingredient_repository.dart'
+    as _i9;
+import 'package:wger/features/nutrition/providers/nutrition_repository.dart'
+    as _i3;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -44,10 +51,12 @@ import 'package:wger/features/nutrition/providers/nutrition_repository.dart' as 
 // ignore_for_file: invalid_use_of_internal_member
 
 class _FakeResponse_0 extends _i1.SmartFake implements _i2.Response {
-  _FakeResponse_0(Object parent, Invocation parentInvocation) : super(parent, parentInvocation);
+  _FakeResponse_0(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
-class _FakeStreamedResponse_1 extends _i1.SmartFake implements _i2.StreamedResponse {
+class _FakeStreamedResponse_1 extends _i1.SmartFake
+    implements _i2.StreamedResponse {
   _FakeStreamedResponse_1(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
@@ -55,7 +64,8 @@ class _FakeStreamedResponse_1 extends _i1.SmartFake implements _i2.StreamedRespo
 /// A class which mocks [NutritionRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockNutritionRepository extends _i1.Mock implements _i3.NutritionRepository {
+class MockNutritionRepository extends _i1.Mock
+    implements _i3.NutritionRepository {
   MockNutritionRepository() {
     _i1.throwOnMissingStub(this);
   }
@@ -175,6 +185,25 @@ class MockNutritionRepository extends _i1.Mock implements _i3.NutritionRepositor
           as _i4.Future<void>);
 
   @override
+  _i4.Future<void> editLogLocalDrift({
+    required String? id,
+    required num? amount,
+    required DateTime? datetime,
+    required int? weightUnitId,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#editLogLocalDrift, [], {
+              #id: id,
+              #amount: amount,
+              #datetime: datetime,
+              #weightUnitId: weightUnitId,
+            }),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
   _i4.Future<void> deleteLogLocalDrift(String? id) =>
       (super.noSuchMethod(
             Invocation.method(#deleteLogLocalDrift, [id]),
@@ -187,7 +216,8 @@ class MockNutritionRepository extends _i1.Mock implements _i3.NutritionRepositor
 /// A class which mocks [IngredientRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockIngredientRepository extends _i1.Mock implements _i9.IngredientRepository {
+class MockIngredientRepository extends _i1.Mock
+    implements _i9.IngredientRepository {
   MockIngredientRepository() {
     _i1.throwOnMissingStub(this);
   }
@@ -493,7 +523,8 @@ class MockClient extends _i1.Mock implements _i2.Client {
 /// A class which mocks [MeasurementRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockMeasurementRepository extends _i1.Mock implements _i16.MeasurementRepository {
+class MockMeasurementRepository extends _i1.Mock
+    implements _i16.MeasurementRepository {
   MockMeasurementRepository() {
     _i1.throwOnMissingStub(this);
   }
@@ -590,7 +621,8 @@ class MockMeasurementRepository extends _i1.Mock implements _i16.MeasurementRepo
               [parentId],
               {#since: since, #level: level, #maxPoints: maxPoints},
             ),
-            returnValue: _i4.Stream<Map<String, List<_i19.MeasurementBucket>>>.empty(),
+            returnValue:
+                _i4.Stream<Map<String, List<_i19.MeasurementBucket>>>.empty(),
           )
           as _i4.Stream<Map<String, List<_i19.MeasurementBucket>>>);
 
@@ -598,7 +630,8 @@ class MockMeasurementRepository extends _i1.Mock implements _i16.MeasurementRepo
   _i4.Stream<Map<String, List<_i19.MeasurementBucket>>> watchDailyBuckets() =>
       (super.noSuchMethod(
             Invocation.method(#watchDailyBuckets, []),
-            returnValue: _i4.Stream<Map<String, List<_i19.MeasurementBucket>>>.empty(),
+            returnValue:
+                _i4.Stream<Map<String, List<_i19.MeasurementBucket>>>.empty(),
           )
           as _i4.Stream<Map<String, List<_i19.MeasurementBucket>>>);
 
@@ -747,7 +780,8 @@ class MockMeasurementRepository extends _i1.Mock implements _i16.MeasurementRepo
 /// A class which mocks [UserProfileRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockUserProfileRepository extends _i1.Mock implements _i20.UserProfileRepository {
+class MockUserProfileRepository extends _i1.Mock
+    implements _i20.UserProfileRepository {
   MockUserProfileRepository() {
     _i1.throwOnMissingStub(this);
   }
