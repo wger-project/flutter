@@ -149,6 +149,7 @@ class MeasurementChartWidgetFl extends StatelessWidget {
             spots: spots,
             isCurved: true,
             curveSmoothness: 0.4,
+            preventCurveOverShooting: true,
             color: scheme.secondary,
             barWidth: 3,
             dotData: const FlDotData(show: false),

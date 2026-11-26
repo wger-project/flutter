@@ -158,6 +158,7 @@ class _LogChartWidgetFlState extends State<LogChartWidgetFl> {
               ),
             ],
             isCurved: true,
+            preventCurveOverShooting: true,
             color: color,
             barWidth: 2,
             isStrokeCapRound: true,
