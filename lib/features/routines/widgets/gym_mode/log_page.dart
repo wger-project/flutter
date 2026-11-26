@@ -398,10 +398,13 @@ class _LogFormWidgetState extends ConsumerState<LogFormWidget> {
                   // error handler; the success path below is then skipped. A page
                   // logged before updates its row, and the PageView follows the
                   // page change from the gym state.
+                  final inputFocus = FocusManager.instance.primaryFocus;
                   await ref.read(gymStateProvider.notifier).logCurrentSet();
                   if (!context.mounted) {
                     return;
                   }
+
+                  inputFocus?.unfocus();
 
                   showSnackbar(
                     context,

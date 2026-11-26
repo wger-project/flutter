@@ -282,6 +282,42 @@ void main() {
       expect(captured[1], gymState.dayId);
     });
 
+    for (final fieldKey in ['logs-reps-widget', 'logs-weight-widget']) {
+      testWidgets('save dismisses the keyboard after a successful write from $fieldKey', (
+        tester,
+      ) async {
+        final write = Completer<void>();
+        when(
+          mockWorkoutLogRepo.addLocalDrift(any, dayId: anyNamed('dayId')),
+        ).thenAnswer((_) => write.future);
+        seedLogPage(testdata.getTestRoutine());
+        await pumpLogPage(tester);
+
+        final field = find.descendant(
+          of: find.byKey(ValueKey(fieldKey)),
+          matching: find.byType(TextFormField),
+        );
+        await tester.enterText(field, '12');
+        await tester.pump();
+        final input = tester.widget<EditableText>(
+          find.descendant(of: field, matching: find.byType(EditableText)),
+        );
+        expect(input.focusNode.hasFocus, isTrue);
+        expect(tester.testTextInput.isVisible, isTrue);
+
+        await tester.tap(find.byKey(const ValueKey('save-log-button')));
+        await tester.pump();
+        expect(input.focusNode.hasFocus, isTrue);
+        expect(tester.testTextInput.isVisible, isTrue);
+
+        write.complete();
+        await tester.pumpAndSettle();
+
+        expect(input.focusNode.hasFocus, isFalse);
+        expect(tester.testTextInput.isVisible, isFalse);
+      });
+    }
+
     testWidgets('carries the logged values over to the next set when sticky values are enabled', (
       tester,
     ) async {
