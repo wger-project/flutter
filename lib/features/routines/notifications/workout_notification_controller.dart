@@ -27,6 +27,7 @@ import 'package:logging/logging.dart';
 import 'package:wger/core/app_settings_notifier.dart';
 import 'package:wger/core/network/wger_base.dart';
 import 'package:wger/features/routines/models/log.dart';
+import 'package:wger/features/routines/notifications/rest_live_activity.dart';
 import 'package:wger/features/routines/notifications/workout_notification_content.dart';
 import 'package:wger/features/routines/notifications/workout_notification_service.dart';
 import 'package:wger/features/routines/providers/gym_state.dart';
@@ -57,6 +58,7 @@ class WorkoutNotificationController {
   final _logger = Logger('WorkoutNotificationController');
   final Ref _ref;
   final WorkoutNotificationService _service;
+  final _restActivity = RestLiveActivity();
 
   /// What the platform shows, null if unknown
   WorkoutNotificationTarget? _shown = WorkoutNotificationTarget.none;
@@ -94,6 +96,11 @@ class WorkoutNotificationController {
     final inForeground = !_backgroundStates.contains(WidgetsBinding.instance.lifecycleState);
     final locale = _locale;
     final i18n = lookupAppLocalizations(locale);
+    _restActivity.update(
+      state,
+      visible: _ref.read(gymModeVisibleProvider),
+      label: i18n.pause,
+    );
 
     // Only while gym mode is open in the background: on screen it shows the
     // rest itself, and leaving it (X, back) ends the notifications

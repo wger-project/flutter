@@ -14,7 +14,20 @@
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
+		F01000000000000000000012 = {isa = PBXBuildFile; fileRef = F01000000000000000000001; };
+		F01000000000000000000013 = {isa = PBXBuildFile; fileRef = F01000000000000000000002; };
+		F01000000000000000000014 = {isa = PBXBuildFile; fileRef = F01000000000000000000001; };
+		F01000000000000000000015 = {isa = PBXBuildFile; fileRef = F01000000000000000000003; };
+		F01000000000000000000016 = {isa = PBXBuildFile; fileRef = F01000000000000000000005; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		F0100000000000000000000C = {isa = PBXContainerItemProxy; containerPortal = 97C146E61CF9000F007C117D; proxyType = 1; remoteGlobalIDString = F01000000000000000000007; remoteInfo = WgerRestWidget; };
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXTargetDependency section */
+		F0100000000000000000000D = {isa = PBXTargetDependency; target = F01000000000000000000007; targetProxy = F0100000000000000000000C; };
+/* End PBXTargetDependency section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		9705A1C41CF9048500538489 /* Embed Frameworks */ = {
@@ -27,6 +40,7 @@
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F0100000000000000000000B = {isa = PBXCopyFilesBuildPhase; buildActionMask = 2147483647; dstPath = ""; dstSubfolderSpec = 13; files = (F01000000000000000000016, ); name = "Embed App Extensions"; runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -45,6 +59,11 @@
 		97C146FD1CF9000F007C117D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		97C147001CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F01000000000000000000001 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestAttributes.swift; sourceTree = "<group>"; };
+		F01000000000000000000002 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestActivityPlugin.swift; sourceTree = "<group>"; };
+		F01000000000000000000003 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestWidget.swift; sourceTree = "<group>"; };
+		F01000000000000000000004 = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F01000000000000000000005 = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WgerRestWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +75,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F01000000000000000000009 = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -74,6 +94,7 @@
 		97C146E51CF9000F007C117D = {
 			isa = PBXGroup;
 			children = (
+				F01000000000000000000006 /* RestActivity */,
 				9740EEB11CF90186004384FC /* Flutter */,
 				97C146F01CF9000F007C117D /* Runner */,
 				97C146EF1CF9000F007C117D /* Products */,
@@ -84,6 +105,7 @@
 			isa = PBXGroup;
 			children = (
 				97C146EE1CF9000F007C117D /* Runner.app */,
+				F01000000000000000000005 /* WgerRestWidget.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -104,6 +126,7 @@
 			path = Runner;
 			sourceTree = "<group>";
 		};
+		F01000000000000000000006 = {isa = PBXGroup; children = (F01000000000000000000001, F01000000000000000000002, F01000000000000000000003, F01000000000000000000004, ); path = RestActivity; sourceTree = "<group>"; };
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -111,6 +134,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 97C147051CF9000F007C117D /* Build configuration list for PBXNativeTarget "Runner" */;
 			buildPhases = (
+				F0100000000000000000000B /* Embed App Extensions */,
 				9740EEB61CF901F6004384FC /* Run Script */,
 				97C146EA1CF9000F007C117D /* Sources */,
 				97C146EB1CF9000F007C117D /* Frameworks */,
@@ -121,6 +145,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				F0100000000000000000000D,
 			);
 			name = Runner;
 			packageProductDependencies = (
@@ -130,6 +155,7 @@
 			productReference = 97C146EE1CF9000F007C117D /* Runner.app */;
 			productType = "com.apple.product-type.application";
 		};
+		F01000000000000000000007 = {isa = PBXNativeTarget; buildConfigurationList = F0100000000000000000000E; buildPhases = (F01000000000000000000008, F01000000000000000000009, F0100000000000000000000A, ); buildRules = (); dependencies = (); name = WgerRestWidget; productName = WgerRestWidget; productReference = F01000000000000000000005; productType = "com.apple.product-type.app-extension"; };
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -161,6 +187,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
+				F01000000000000000000007 /* WgerRestWidget */,
 				97C146ED1CF9000F007C117D /* Runner */,
 			);
 		};
@@ -178,6 +205,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F0100000000000000000000A = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
@@ -219,11 +247,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F01000000000000000000012,
+				F01000000000000000000013,
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F01000000000000000000008 = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (F01000000000000000000014, F01000000000000000000015, ); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
@@ -500,6 +531,75 @@
 			};
 			name = Release;
 		};
+		F0100000000000000000000F = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9740EEB31CF90195004384FC /* Generated.xcconfig */;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
+				DEVELOPMENT_TEAM = U92KZ4HZ4C;
+				INFOPLIST_FILE = RestActivity/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MARKETING_VERSION = "$(FLUTTER_BUILD_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = de.wger.flutter.community.rest;
+				PRODUCT_MODULE_NAME = WgerRestWidget;
+				PRODUCT_NAME = WgerRestWidget;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		F01000000000000000000010 = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9740EEB31CF90195004384FC /* Generated.xcconfig */;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
+				DEVELOPMENT_TEAM = U92KZ4HZ4C;
+				INFOPLIST_FILE = RestActivity/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MARKETING_VERSION = "$(FLUTTER_BUILD_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = de.wger.flutter.community.rest;
+				PRODUCT_MODULE_NAME = WgerRestWidget;
+				PRODUCT_NAME = WgerRestWidget;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		F01000000000000000000011 = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9740EEB31CF90195004384FC /* Generated.xcconfig */;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
+				DEVELOPMENT_TEAM = U92KZ4HZ4C;
+				INFOPLIST_FILE = RestActivity/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MARKETING_VERSION = "$(FLUTTER_BUILD_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = de.wger.flutter.community.rest;
+				PRODUCT_MODULE_NAME = WgerRestWidget;
+				PRODUCT_NAME = WgerRestWidget;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Profile;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -523,6 +623,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		F0100000000000000000000E = {isa = XCConfigurationList; buildConfigurations = (F0100000000000000000000F, F01000000000000000000010, F01000000000000000000011, ); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
