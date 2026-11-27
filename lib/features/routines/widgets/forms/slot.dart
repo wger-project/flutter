@@ -90,7 +90,10 @@ class _SlotDetailWidgetState extends ConsumerState<SlotDetailWidget> {
         errorMessage,
         ...widget.slot.entries.map(
           (entry) => entry.hasProgressionRules
-              ? ProgressionRulesInfoBox(entry.exerciseObj)
+              ? ProgressionRulesInfoBox(
+                  entry.exerciseObj,
+                  entry: entry,
+                )
               : SlotEntryForm(entry, widget.routineId, simpleMode: widget.simpleMode),
         ),
         const SizedBox(height: 10),
