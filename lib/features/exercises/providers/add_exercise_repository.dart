@@ -51,6 +51,14 @@ class AddExerciseRepository {
     return result['id'];
   }
 
+  /// Updates an existing exercise submission on the server.
+  Future<void> updateExercise(int exerciseId, ExerciseSubmissionApi payload) async {
+    await _base.put(
+      payload.toJson(),
+      _base.makeUrl(_exerciseSubmissionUrlPath, id: exerciseId),
+    );
+  }
+
   /// Uploads a single exercise image with license metadata.
   Future<void> uploadImage({
     required int exerciseId,
