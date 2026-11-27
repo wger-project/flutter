@@ -183,7 +183,7 @@ class GymStateNotifier extends _$GymStateNotifier {
 
     await PreferenceHelper.asyncPref.setString(
       PREFS_WORKOUT_PROGRESS,
-      json.encode(progress.toJson()),
+      json.encode({...progress.toJson(), 'routineId': state.routine.id}),
     );
     _logger.finer('Saved $progress');
   }

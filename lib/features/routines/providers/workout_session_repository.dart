@@ -23,6 +23,7 @@
 import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
+import 'package:wger/core/json.dart';
 import 'package:wger/database/powersync/database.dart';
 import 'package:wger/features/routines/models/log.dart';
 import 'package:wger/features/routines/models/session.dart';
@@ -90,6 +91,53 @@ class WorkoutSessionRepository {
       return sessions.values.map((s) => s.copyWith(logs: logsBySession[s.id]!)).toList();
     });
   }
+
+  /// Finishes the exact gym session, keeping set links and user notes intact.
+  /// The start instant also identifies retries when no set has been logged.
+  Future<bool> finishGymSession({
+    required int routineId,
+    required int dayId,
+    required DateTime start,
+    required DateTime end,
+    required String? sessionId,
+  }) => _db.transaction(() async {
+    final table = _db.workoutSessionTable;
+    final query = _db.select(table)
+      ..where(
+        (t) => sessionId == null
+            ? t.routineId.equals(routineId) &
+                  t.dayId.equals(dayId) &
+                  t.datetimeStart.equals(dateToUtcIso8601(start))
+            : t.id.equals(sessionId),
+      );
+    final existing = await query.getSingleOrNull();
+    if (existing == null) {
+      if (sessionId != null) {
+        return false;
+      }
+      await addLocalDrift(
+        WorkoutSession(
+          routineId: routineId,
+          dayId: dayId,
+          datetimeStart: start,
+          datetimeEnd: end,
+        ),
+      );
+      return true;
+    }
+    if (existing.routineId != routineId || existing.dayId != dayId) {
+      return false;
+    }
+    final sameStart = dateToUtcIso8601(existing.datetimeStart) == dateToUtcIso8601(start);
+    if (existing.datetimeEnd != null) {
+      return sameStart;
+    }
+    if (!sameStart && existing.datetimeStart.isBefore(start.subtract(const Duration(seconds: 1)))) {
+      return false;
+    }
+    await editLocalDrift(existing.copyWith(datetimeStart: start, datetimeEnd: end));
+    return true;
+  });
 
   Future<void> deleteLocalDrift(String id) async {
     _logger.finer('Deleting local workout session entry $id');

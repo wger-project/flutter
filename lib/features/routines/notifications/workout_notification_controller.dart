@@ -27,6 +27,7 @@ import 'package:logging/logging.dart';
 import 'package:wger/core/app_settings_notifier.dart';
 import 'package:wger/core/network/wger_base.dart';
 import 'package:wger/features/routines/models/log.dart';
+import 'package:wger/features/routines/notifications/workout_live_activity.dart';
 import 'package:wger/features/routines/notifications/workout_notification_content.dart';
 import 'package:wger/features/routines/notifications/workout_notification_service.dart';
 import 'package:wger/features/routines/providers/gym_state.dart';
@@ -57,6 +58,7 @@ class WorkoutNotificationController {
   final _logger = Logger('WorkoutNotificationController');
   final Ref _ref;
   final WorkoutNotificationService _service;
+  final _liveActivity = WorkoutLiveActivity();
 
   /// What the platform shows, null if unknown
   WorkoutNotificationTarget? _shown = WorkoutNotificationTarget.none;
@@ -87,34 +89,53 @@ class WorkoutNotificationController {
         .catchError((Object e) => _logger.warning('Could not update the notification: $e'));
   }
 
-  /// Shows what the gym state calls for. Nothing while gym mode is on screen,
-  /// the screen itself shows the rest.
-  void update() {
-    final state = _ref.read(gymStateProvider);
-    final inForeground = !_backgroundStates.contains(WidgetsBinding.instance.lifecycleState);
+  /// What the notifications would say about [state] right now
+  WorkoutNotificationTarget _build(GymModeState state, {required bool withControls}) {
     final locale = _locale;
-    final i18n = lookupAppLocalizations(locale);
-
-    // Only while gym mode is open in the background: on screen it shows the
-    // rest itself, and leaving it (X, back) ends the notifications
-    WorkoutNotificationTarget build({required bool withControls}) => buildWorkoutNotification(
+    return buildWorkoutNotification(
       state,
       now: clock.now(),
-      i18n: i18n,
+      i18n: lookupAppLocalizations(locale),
       languageCode: locale.languageCode,
       withControls: withControls,
       recentLogs: _recentLogs,
       mediaUrl: _ref.read(mediaUrlBuilderProvider),
     );
+  }
 
-    final target = inForeground || !_ref.read(gymModeVisibleProvider)
+  /// The running workout as the ongoing notification would describe it, also
+  /// while that is hidden, e.g. for the iOS Shortcuts
+  WorkoutNotificationTarget describe() => _build(_ref.read(gymStateProvider), withControls: true);
+
+  /// Resolves once the Live Activity shows the latest update
+  Future<void> get liveActivityIdle => _liveActivity.idle;
+
+  /// Carries out the buttons of the iOS Live Activity like notification actions
+  void listenToLiveActivity() => _liveActivity.listen(handleAction);
+
+  /// Shows what the gym state calls for. Nothing while gym mode is on screen,
+  /// the screen itself shows the rest.
+  void update() {
+    final state = _ref.read(gymStateProvider);
+    final inForeground = !_backgroundStates.contains(WidgetsBinding.instance.lifecycleState);
+    final visible = _ref.read(gymModeVisibleProvider);
+    final labels = WorkoutNotificationLabels.of(lookupAppLocalizations(_locale));
+    final full = _build(state, withControls: true);
+
+    // The Live Activity follows the whole workout, also in the foreground: iOS
+    // only lets it start there, and shows it once the app is left
+    _liveActivity.update(state, full, visible: visible, labels: labels, now: clock.now());
+
+    // Only while gym mode is open in the background: on screen it shows the
+    // rest itself, and leaving it (X, back) ends the notifications
+    final withControls = _service.supportsControls && state.showWorkoutNotification;
+    final target = inForeground || !visible
         ? WorkoutNotificationTarget.none
-        : build(withControls: _service.supportsControls && state.showWorkoutNotification);
-    final labels = WorkoutNotificationLabels.of(i18n);
+        : (withControls ? full : _build(state, withControls: false));
     unawaited(_enqueue(() => _apply(target, labels)));
 
     // Also while nothing is shown, so the logs are there once something is
-    _watchRecentLogs(state, build(withControls: true));
+    _watchRecentLogs(state, full);
   }
 
   /// Follows the earlier logs of the set the notification can log
@@ -252,6 +273,7 @@ final workoutNotificationControllerProvider = Provider<WorkoutNotificationContro
     return controller;
   }
   unawaited(service.initialize(controller.labels));
+  controller.listenToLiveActivity();
 
   // Actions arrive from the background isolate
   final port = ReceivePort();

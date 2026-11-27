@@ -1,0 +1,33 @@
+name: Verify upstream iOS project
+on:
+  push:
+    branches: [ci/verify-upstream-live-activity]
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: macos-26-intel
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v7
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+      - uses: ./.github/actions/flutter-common
+      - name: Build unsigned with the committed Xcode project
+        run: |
+          flutter build ios --release --no-codesign
+          app=build/ios/iphoneos/Runner.app
+          test -d $app/PlugIns/WgerRestWidget.appex
+          /usr/libexec/PlistBuddy -c "Print NSSupportsLiveActivities" $app/Info.plist | grep true
+          /usr/libexec/PlistBuddy -c "Print CFBundleIdentifier" $app/PlugIns/WgerRestWidget.appex/Info.plist
+          /usr/libexec/PlistBuddy -c "Print CFBundleShortVersionString" $app/PlugIns/WgerRestWidget.appex/Info.plist
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          m = json.loads(Path('build/ios/iphoneos/Runner.app/Metadata.appintents/extract.actionsdata').read_bytes())
+          ids = {a['identifier'] for a in m['actions'].values()}
+          print(sorted(ids))
+          assert {'StartWorkoutAction', 'LogSetAction', 'LogSetWithValuesAction', 'RestEndAction',
+                  'RestRemainingAction', 'NextSetAction', 'WorkoutIslandIntent'} <= ids
+          PY

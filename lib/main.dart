@@ -75,6 +75,7 @@ import 'package:wger/features/routines/screens/routine_list_screen.dart';
 import 'package:wger/features/routines/screens/routine_logs_screen.dart';
 import 'package:wger/features/routines/screens/routine_screen.dart';
 import 'package:wger/features/routines/screens/settings_plates_screen.dart';
+import 'package:wger/features/routines/workout_shortcuts.dart';
 import 'package:wger/features/trophies/screens/trophy_screen.dart';
 import 'package:wger/l10n/generated/app_localizations.dart';
 import 'package:wger/l10n/localizations_delegates.dart';
@@ -205,6 +206,7 @@ class MainApp extends ConsumerWidget {
     // Instantiates the singleton on first build; the provider subscribes to
     // incoming deep links as a side effect of being read.
     ref.watch(appLinkRouterProvider);
+    ref.watch(workoutShortcutsProvider);
     // Keeps the workout notifications in line with the gym state
     ref.watch(workoutNotificationControllerProvider);
 
